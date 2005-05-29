@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1 cleanups
-Date: Sun, 29 May 2005 16:18:46 -0400
-Message-ID: <1117397926.20387.7.camel@mindpipe>
-References: <1117339570.19303.4.camel@mindpipe>
-	 <4299947B.30202@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001144]: alsamixer 1.0.9 crashes when browsing through emu10kx mixer controls
+Date: Sun, 29 May 2005 23:22:38 +0200
+Message-ID: <bc1680b9ff746d9e656d109e82b3277d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4299947B.30202@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C054419F
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 23:22:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,28 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-05-29 at 11:07 +0100, James Courtier-Dutton wrote:
-> Sorry, I can't accept this patch.
-> Different chips have different capabilities, and the ca0108(Audigy 2
-> Value) certainly does not have a ca0151 (P16V) chip.
 
-That's why I used || rather than &&.  But I see your point.
+The following issue has been set as DUPLICATE OF issue 0001131.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1144> 
+======================================================================
+Reported By:                ajs1984
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1144
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-29-2005 20:03 CEST
+Last Modified:              05-29-2005 23:22 CEST
+======================================================================
+Summary:                    alsamixer 1.0.9 crashes when browsing through
+emu10kx mixer controls
+Description: 
+What it says on the tin. When going through Audigy 2 Platinum's mixer
+controls, alsamixer (but not kmix) crashes with the following assertion:
 
-> The ca0102 is the DSP chip on Audigy 2 cards (and possibly Audigy 1, I
-> don't know for sure).
-> emu10k2 is to indicate that the card has all the same features of the
-> DSP chip found on Audigy 1 and Audigy 2 and Audigy 2 Value cards.
-> So, the information is not redundent.
-> 
+alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion `helem'
+failed.
+Aborted
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001131 Alsamixer crashing - using Audigy Plati...
+======================================================================
 
-OK, thanks for the info.  That's why I posted the rough version before
-spending any serious time on it.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-29-05 20:03 ajs1984        New Issue                                    
+05-29-05 23:22 rlrevell       Relationship added       duplicate of 0001131
+======================================================================
 
-Lee
 
 
 
