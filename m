@@ -1,12 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH 2/2] Modem drivers update
-Date: Sun, 29 May 2005 16:10:54 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505291610170.1748@pnote.perex-int.cz>
-References: <20050527235323.GD22222@tecr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001139]: alsa-lib-1.0.9 breaks WINE and icc
+Date: Sun, 29 May 2005 16:25:14 +0200
+Message-ID: <94c5801db841b1db63716b344a4568cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050527235323.GD22222@tecr>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15E38137
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 16:25:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sasha Khapyorsky <sashak@smlink.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 28 May 2005, Sasha Khapyorsky wrote:
 
-> Modem drivers (atiixp-modem, intel8x0m, via82xx-modem) migration
-> for using MC97 generic modem mixer for off-hook operation.
-> 
-> Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1139> 
+======================================================================
+Reported By:                canal
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1139
+Category:                   general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             05-29-2005 02:17 CEST
+Last Modified:              05-29-2005 16:25 CEST
+======================================================================
+Summary:                    alsa-lib-1.0.9 breaks WINE and icc
+Description: 
+alsa-lib uses identifier "interface". It's used as keyword in icc and WINE
+(in case of WINE - via #define interface struct).
 
-Thanks, both patches were applied to CVS.
+======================================================================
 
-						Jaroslav
+----------------------------------------------------------------------
+ perex - 05-29-05 16:25 
+----------------------------------------------------------------------
+Fixed in CVS.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-29-05 02:17 canal          New Issue                                    
+05-29-05 16:25 perex          Status                   new => resolved     
+05-29-05 16:25 perex          Resolution               open => fixed       
+05-29-05 16:25 perex          Assigned To               => perex           
+05-29-05 16:25 perex          Note Added: 0004789                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
