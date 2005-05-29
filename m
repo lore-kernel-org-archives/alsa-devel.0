@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001140]: sine wave generator only works for 16bit cards
-Date: Sun, 29 May 2005 03:11:07 +0200
-Message-ID: <0593aced17a2045b7e32e84b497e086b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001121]: Very low volume through SPDIF (no master volume?)
+Date: Sun, 29 May 2005 03:27:14 +0200
+Message-ID: <68b354ae5b5350d9c66f048cf81272f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 836301CB
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 03:11:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAE641D3
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 03:27:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1140> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1121> 
 ======================================================================
-Reported By:                grabner
-Assigned To:                
+Reported By:                dacid
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1140
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1121
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               Gentoo (vanilla kernel)
+Kernel Version:             2.6.12-rc4
 ======================================================================
-Date Submitted:             05-29-2005 03:11 CEST
-Last Modified:              05-29-2005 03:11 CEST
+Date Submitted:             05-21-2005 03:21 CEST
+Last Modified:              05-29-2005 03:27 CEST
 ======================================================================
-Summary:                    sine wave generator only works for 16bit cards
+Summary:                    Very low volume through SPDIF (no master volume?)
 Description: 
-The simple sine wave generator, which serves as a test program for PCM
-audio, only creates 16bit samples. It has no option to switch this
-behaviour (although it lists "recognized sample formats"). However, it
-doesn't refuse to play to non-16bit devices, which produces noise.
+Hello - 
+   I've been trying for a few weeks now to get SPDIF out working on my
+Soundblaster 24bit card working.
+   The issue is that the output to my receiver is very low, if I crank it
+way up (-8db), I can hear some audio, but it is very muffled and
+distored.
+   I've tried various setting combinations in alsamixer, to no avail.
+   I'm also a little curious as to why this soundcard has no master volume
+or PCM controls.
 
-Note: this refers to alsa-lib version 1.0.*9*, but this wasn't available
-in the "Product Version" selection.
 ======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 05-28-05 12:30 
+----------------------------------------------------------------------
+Please provide feedback.
+
+----------------------------------------------------------------------
+ dacid - 05-29-05 03:27 
+----------------------------------------------------------------------
+I'm not using the dongle - my instructions say it is optional, and that for
+coax output you can use a mono miniplug-to-RCA adapter (which is what I'm
+using).
+I dual-booted into windows, and I can get SPDIF playback through the
+output at normal levels.
+The model on my instructions is Sound Blaster Live! 24-bit
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-05 03:11 grabner        New Issue                                    
-05-29-05 03:11 grabner        File Added: pcm.diff                         
+05-21-05 03:21 dacid          New Issue                                    
+05-21-05 03:21 dacid          Distribution              => Gentoo (vanilla
+kernel)
+05-21-05 03:21 dacid          Kernel Version            => 2.6.12-rc4      
+05-24-05 01:54 dacid          Issue Monitored: dacid                       
+05-28-05 12:13 jcdutton       Note Added: 0004763                          
+05-28-05 12:30 jcdutton       Note Added: 0004772                          
+05-28-05 12:30 jcdutton       Status                   assigned => feedback
+05-29-05 03:27 dacid          Note Added: 0004778                          
 ======================================================================
 
 
