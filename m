@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Sun, 29 May 2005 08:23:45 +0200
-Message-ID: <1962bb9bb41bb3888115e43d113865df@bugtrack.alsa-project.org>
+Date: Sun, 29 May 2005 08:29:17 +0200
+Message-ID: <6f78c3ec2ab59c160c6b5163573e67be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89902166
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 08:23:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F5001C6
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 08:29:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              05-29-2005 08:23 CEST
+Last Modified:              05-29-2005 08:29 CEST
 ======================================================================
 Summary:                    Distorted sound with enabled dmix plugin
 Description: 
@@ -47,12 +47,6 @@ distorted sound. Appear noise.
 This problem is appear when enabled dmix plugin through configuration file
 ~/.asoundrc.
 ======================================================================
-
-----------------------------------------------------------------------
- yure - 04-04-05 16:15 
-----------------------------------------------------------------------
-After a week of testing I have such results: sound distorted only once.
-It's not 100% fix.
 
 ----------------------------------------------------------------------
  Xero - 05-29-05 08:23 
@@ -67,6 +61,14 @@ aren't 44100 perhaps?
 
 btw I believe this is the same bug:
 http://bugs.xmms.org/show_bug.cgi?id=1916
+
+----------------------------------------------------------------------
+ Xero - 05-29-05 08:29 
+----------------------------------------------------------------------
+hrm I should mention that I had upgraded to alsa 1.0.9 as well so that
+MIGHT have been what fixed it, I see there was some commits made on the
+19th. I was using 1.0.9rc3...I've switched back to 96000 and am going to
+see if this happens again...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,6 +101,7 @@ Date Modified  Username       Field                    Change
 04-04-05 16:15 yure           Note Added: 0004327                          
 04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
 05-29-05 08:23 Xero           Note Added: 0004781                          
+05-29-05 08:29 Xero           Note Added: 0004782                          
 ======================================================================
 
 
