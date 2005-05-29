@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001131]: Alsamixer crashing - using Audigy Platinum Ex
-Date: Sun, 29 May 2005 14:53:19 +0200
-Message-ID: <c8b2f2762941f73488771dbde1e81f3e@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001143]: echomixer shows vu meters in grmix wrong
+Date: Sun, 29 May 2005 14:58:14 +0200
+Message-ID: <b161b6f4112d8882e1ed89ebb43c21ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07B561B6
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 14:53:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F3531B6
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 14:58:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1143> 
 ======================================================================
-Reported By:                sorn73
+Reported By:                Xero
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1131
-Category:                   alsamixer
+Project:                    ALSA - tools
+Issue ID:                   1143
+Category:                   envy24control
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-27-2005 21:52 CEST
-Last Modified:              05-29-2005 14:53 CEST
+Date Submitted:             05-29-2005 14:58 CEST
+Last Modified:              05-29-2005 14:58 CEST
 ======================================================================
-Summary:                    Alsamixer crashing - using Audigy Platinum Ex
+Summary:                    echomixer shows vu meters in grmix wrong
 Description: 
-I'm having problems with setting the capture levels on my Audigy card. If I
-start up alsamixer and press F4 I get a crash:
-"alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion
-`helem' failed.
-Abort (core dumped)"
-
-Also, since Kmix (from KDE 3.4) doesn't show any capture devices, I'm
-thinking this is not a problem with alsamixer, but with something else.
-But since I don't know where I report it on alsamixer.
-
-This is actually alsa v1.0.9, but you can't select that from the list of
-versions.
-
+this happens with alsa 1.0.9, and the change that causes it is revision 1.2
+in cvs, so this problem has been around for a bit. Essentially, the vu
+meters show each channel outputting the same level across all outputs, not
+just the ones where it's actually outputting to. It's basically as if the
+vu meters are not acknowleding the volume levels that are set. I've
+attached a screen shot showing the issue, as it's sort of hard to
+describe. You can clearly see the little yellow volume bars for V4 and V5
+are bottomed out on all the outputs except for 2, but vu meters show up on
+all of them.
 ======================================================================
-
-----------------------------------------------------------------------
- Xero - 05-29-05 14:18 
-----------------------------------------------------------------------
-I can verify that the change in cvs fixed this for me.
-
-
-
-----------------------------------------------------------------------
- mrmachine - 05-29-05 14:53 
-----------------------------------------------------------------------
-cvs update fixed for me, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-27-05 21:52 sorn73         New Issue                                    
-05-28-05 04:13 mrmachine      File Added: aadebug.txt                      
-05-28-05 04:15 mrmachine      Note Added: 0004757                          
-05-28-05 04:16 mrmachine      Issue Monitored: mrmachine                    
-05-29-05 07:39 Xero           Note Added: 0004779                          
-05-29-05 12:35 jcdutton       Note Added: 0004784                          
-05-29-05 14:17 Xero           Note Added: 0004786                          
-05-29-05 14:18 Xero           Note Edited: 0004786                         
-05-29-05 14:53 mrmachine      Note Added: 0004788                          
+05-29-05 14:58 Xero           New Issue                                    
+05-29-05 14:58 Xero           File Added: window.jpg                       
 ======================================================================
 
 
