@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001131]: Alsamixer crashing - using Audigy Platinum Ex
-Date: Sun, 29 May 2005 12:35:46 +0200
-Message-ID: <f58739052db3065ddc327a38bf096cee@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001142]: alsamixer (alsa-utils-1.0.9) crash when going to right controls
+Date: Sun, 29 May 2005 13:31:19 +0200
+Message-ID: <2ebd1e0b5333f34d447517ce6d668f46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 474B8155
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 12:35:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CDCC1B5
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 13:31:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1142> 
 ======================================================================
-Reported By:                sorn73
+Reported By:                atermiles
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1131
+Issue ID:                   1142
 Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-27-2005 21:52 CEST
-Last Modified:              05-29-2005 12:35 CEST
+Date Submitted:             05-29-2005 13:31 CEST
+Last Modified:              05-29-2005 13:31 CEST
 ======================================================================
-Summary:                    Alsamixer crashing - using Audigy Platinum Ex
+Summary:                    alsamixer (alsa-utils-1.0.9) crash when going to
+right controls
 Description: 
-I'm having problems with setting the capture levels on my Audigy card. If I
-start up alsamixer and press F4 I get a crash:
-"alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion
-`helem' failed.
-Abort (core dumped)"
+When going to right controls in alsamixer(alsa-utils-1.0.9)
+there is an error:
+"mixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion `helem'
+failed"
 
-Also, since Kmix (from KDE 3.4) doesn't show any capture devices, I'm
-thinking this is not a problem with alsamixer, but with something else.
-But since I don't know where I report it on alsamixer.
+alsa-driver-1.0.9 and alsa-lib-1.0.9 works good with alsa-utils-1.0.8
 
-This is actually alsa v1.0.9, but you can't select that from the list of
-versions.
+(soundcard: au8830)
 
 ======================================================================
-
-----------------------------------------------------------------------
- Xero - 05-29-05 07:39 
-----------------------------------------------------------------------
-I get this problem on my echo mia midi. However, it's not when trying to
-set capture levels, seeing as this card doesn't really have any capture
-levels. Infact, pressing f4 to enter capture mode used to crash alsamixer,
-now it simply does this whenever I use left/right arrows to attempt to
-select a different item, and pressing f4 does nothing. Luckily I'm usually
-only using alsamixer to adjust the main volume level anyway...
-
-----------------------------------------------------------------------
- jcdutton - 05-29-05 12:35 
-----------------------------------------------------------------------
-There is a bug in alsamixer causing this.
-The current alsa-utils CVS removes the problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-27-05 21:52 sorn73         New Issue                                    
-05-28-05 04:13 mrmachine      File Added: aadebug.txt                      
-05-28-05 04:15 mrmachine      Note Added: 0004757                          
-05-28-05 04:16 mrmachine      Issue Monitored: mrmachine                    
-05-29-05 07:39 Xero           Note Added: 0004779                          
-05-29-05 12:35 jcdutton       Note Added: 0004784                          
+05-29-05 13:31 atermiles      New Issue                                    
 ======================================================================
 
 
