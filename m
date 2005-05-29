@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001142]: alsamixer (alsa-utils-1.0.9) crash when going to right controls
-Date: Sun, 29 May 2005 13:47:58 +0200
-Message-ID: <bd51c82a064ccb4273214fade9286d30@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001131]: Alsamixer crashing - using Audigy Platinum Ex
+Date: Sun, 29 May 2005 14:17:45 +0200
+Message-ID: <9e3187d4376ed0f524726dc19f9e7e77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4BEC1C8
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 13:47:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0464A1B6
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 14:17:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1142> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131> 
 ======================================================================
-Reported By:                atermiles
+Reported By:                sorn73
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1142
+Issue ID:                   1131
 Category:                   alsamixer
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-29-2005 13:31 CEST
-Last Modified:              05-29-2005 13:47 CEST
+Date Submitted:             05-27-2005 21:52 CEST
+Last Modified:              05-29-2005 14:17 CEST
 ======================================================================
-Summary:                    alsamixer (alsa-utils-1.0.9) crash when going to
-right controls
+Summary:                    Alsamixer crashing - using Audigy Platinum Ex
 Description: 
-When going to right controls in alsamixer(alsa-utils-1.0.9)
-there is an error:
-"mixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion `helem'
-failed"
+I'm having problems with setting the capture levels on my Audigy card. If I
+start up alsamixer and press F4 I get a crash:
+"alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion
+`helem' failed.
+Abort (core dumped)"
 
-alsa-driver-1.0.9 and alsa-lib-1.0.9 works good with alsa-utils-1.0.8
+Also, since Kmix (from KDE 3.4) doesn't show any capture devices, I'm
+thinking this is not a problem with alsamixer, but with something else.
+But since I don't know where I report it on alsamixer.
 
-(soundcard: au8830)
+This is actually alsa v1.0.9, but you can't select that from the list of
+versions.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-29-05 13:47 
+ jcdutton - 05-29-05 12:35 
 ----------------------------------------------------------------------
-This is a duplicate of bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131
+There is a bug in alsamixer causing this.
+The current alsa-utils CVS removes the problem.
+
+----------------------------------------------------------------------
+ Xero - 05-29-05 14:17 
+----------------------------------------------------------------------
+the change in cvs fixed this for me.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-05 13:31 atermiles      New Issue                                    
-05-29-05 13:47 jcdutton       Note Added: 0004785                          
+05-27-05 21:52 sorn73         New Issue                                    
+05-28-05 04:13 mrmachine      File Added: aadebug.txt                      
+05-28-05 04:15 mrmachine      Note Added: 0004757                          
+05-28-05 04:16 mrmachine      Issue Monitored: mrmachine                    
+05-29-05 07:39 Xero           Note Added: 0004779                          
+05-29-05 12:35 jcdutton       Note Added: 0004784                          
+05-29-05 14:17 Xero           Note Added: 0004786                          
 ======================================================================
 
 
