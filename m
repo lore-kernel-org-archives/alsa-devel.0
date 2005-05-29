@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001142]: alsamixer (alsa-utils-1.0.9) crash when going to right controls
-Date: Sun, 29 May 2005 13:31:19 +0200
-Message-ID: <2ebd1e0b5333f34d447517ce6d668f46@bugtrack.alsa-project.org>
+Date: Sun, 29 May 2005 13:47:58 +0200
+Message-ID: <bd51c82a064ccb4273214fade9286d30@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CDCC1B5
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 13:31:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4BEC1C8
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 13:47:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1142> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             05-29-2005 13:31 CEST
-Last Modified:              05-29-2005 13:31 CEST
+Last Modified:              05-29-2005 13:47 CEST
 ======================================================================
 Summary:                    alsamixer (alsa-utils-1.0.9) crash when going to
 right controls
@@ -54,10 +54,17 @@ alsa-driver-1.0.9 and alsa-lib-1.0.9 works good with alsa-utils-1.0.8
 
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 05-29-05 13:47 
+----------------------------------------------------------------------
+This is a duplicate of bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-29-05 13:31 atermiles      New Issue                                    
+05-29-05 13:47 jcdutton       Note Added: 0004785                          
 ======================================================================
 
 
