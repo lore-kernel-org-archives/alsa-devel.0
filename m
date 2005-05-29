@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001139]: alsa-lib-1.0.9 breaks WINE and icc
-Date: Sun, 29 May 2005 16:25:14 +0200
-Message-ID: <94c5801db841b1db63716b344a4568cc@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001131]: Alsamixer crashing - using Audigy Platinum Ex
+Date: Sun, 29 May 2005 18:45:53 +0200
+Message-ID: <2a7568e5ad7ce67a3cc7849c06c4fe41@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15E38137
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 16:25:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABC501A1
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 18:45:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1139> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131> 
 ======================================================================
-Reported By:                canal
-Assigned To:                perex
+Reported By:                sorn73
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1139
-Category:                   general
+Project:                    ALSA - utils
+Issue ID:                   1131
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             05-29-2005 02:17 CEST
-Last Modified:              05-29-2005 16:25 CEST
+Date Submitted:             05-27-2005 21:52 CEST
+Last Modified:              05-29-2005 18:45 CEST
 ======================================================================
-Summary:                    alsa-lib-1.0.9 breaks WINE and icc
+Summary:                    Alsamixer crashing - using Audigy Platinum Ex
 Description: 
-alsa-lib uses identifier "interface". It's used as keyword in icc and WINE
-(in case of WINE - via #define interface struct).
+I'm having problems with setting the capture levels on my Audigy card. If I
+start up alsamixer and press F4 I get a crash:
+"alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion
+`helem' failed.
+Abort (core dumped)"
+
+Also, since Kmix (from KDE 3.4) doesn't show any capture devices, I'm
+thinking this is not a problem with alsamixer, but with something else.
+But since I don't know where I report it on alsamixer.
+
+This is actually alsa v1.0.9, but you can't select that from the list of
+versions.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-29-05 16:25 
+ mrmachine - 05-29-05 14:53 
 ----------------------------------------------------------------------
-Fixed in CVS.
+cvs update fixed for me, too.
+
+----------------------------------------------------------------------
+ sorn73 - 05-29-05 18:45 
+----------------------------------------------------------------------
+Yes, CVS version worked for me too. I consider this issue resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-05 02:17 canal          New Issue                                    
-05-29-05 16:25 perex          Status                   new => resolved     
-05-29-05 16:25 perex          Resolution               open => fixed       
-05-29-05 16:25 perex          Assigned To               => perex           
-05-29-05 16:25 perex          Note Added: 0004789                          
+05-27-05 21:52 sorn73         New Issue                                    
+05-28-05 04:13 mrmachine      File Added: aadebug.txt                      
+05-28-05 04:15 mrmachine      Note Added: 0004757                          
+05-28-05 04:16 mrmachine      Issue Monitored: mrmachine                    
+05-29-05 07:39 Xero           Note Added: 0004779                          
+05-29-05 12:35 jcdutton       Note Added: 0004784                          
+05-29-05 14:17 Xero           Note Added: 0004786                          
+05-29-05 14:18 Xero           Note Edited: 0004786                         
+05-29-05 14:53 mrmachine      Note Added: 0004788                          
+05-29-05 18:45 sorn73         Note Added: 0004790                          
 ======================================================================
 
 
