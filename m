@@ -1,22 +1,12 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA 1.0.9 is out
-Date: Sun, 29 May 2005 16:01:16 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505291601000.1748@pnote.perex-int.cz>
-References: <Pine.LNX.4.58.0505271733230.1757@pnote.perex-int.cz>
- <20050527170116.GA11950@neu.nirvana>
+Subject: Re: [PATCH 2/2] Modem drivers update
+Date: Sun, 29 May 2005 16:10:54 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505291610170.1748@pnote.perex-int.cz>
+References: <20050527235323.GD22222@tecr>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BA351AE
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 16:01:18 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id ED2ED74F15
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 16:01:17 +0200 (MEST)
-Received: from pnote.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id DB37548004
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 16:01:17 +0200 (CEST)
-In-Reply-To: <20050527170116.GA11950@neu.nirvana>
+In-Reply-To: <20050527235323.GD22222@tecr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,17 +16,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Sasha Khapyorsky <sashak@smlink.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 27 May 2005, Axel Thimm wrote:
+On Sat, 28 May 2005, Sasha Khapyorsky wrote:
 
-> Thanks, Jaroslav!
+> Modem drivers (atiixp-modem, intel8x0m, via82xx-modem) migration
+> for using MC97 generic modem mixer for off-hook operation.
 > 
-> The web site has a bad download pointer for alsa-plugins (uses "---"
-> instead of "1.0.9"). Is this on purpose?
+> Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
 
-A bug. It's fixed now. Thanks.
+Thanks, both patches were applied to CVS.
 
 						Jaroslav
 
