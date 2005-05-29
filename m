@@ -1,12 +1,14 @@
-From: domen@coderock.org
-Subject: [patch 1/1] sound/pci/ca0106: Use the DMA_32BIT_MASK constant
-Date: Sun, 29 May 2005 01:17:01 +0200
-Message-ID: <20050528231700.448498000@nd47.coderock.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001139]: alsa-lib-1.0.9 breaks WINE and icc
+Date: Sun, 29 May 2005 02:17:21 +0200
+Message-ID: <0f6832718bacfe12ff49b8424d690354@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from trashy.coderock.org (coderock.org [193.77.147.115])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07E1A1DD
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 01:17:09 +0200 (MEST)
-Content-Disposition: inline; filename=dma_mask-sound_pci_ca0106_ca0106_main
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EEB61D0
+	for <alsa-devel@alsa-project.org>; Sun, 29 May 2005 02:17:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,49 +18,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, Tobias Klauser <tklauser@nuerscht.ch>, domen@coderock.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Tobias Klauser <tklauser@nuerscht.ch>
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1139> 
+======================================================================
+Reported By:                canal
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1139
+Category:                   general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-29-2005 02:17 CEST
+Last Modified:              05-29-2005 02:17 CEST
+======================================================================
+Summary:                    alsa-lib-1.0.9 breaks WINE and icc
+Description: 
+alsa-lib uses identifier "interface". It's used as keyword in icc and WINE
+(in case of WINE - via #define interface struct).
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-29-05 02:17 canal          New Issue                                    
+======================================================================
 
 
-Use the DMA_32BIT_MASK constant from dma-mapping.h
-when calling pci_set_dma_mask() or pci_set_consistent_dma_mask()
-See http://marc.theaimsgroup.com/?t=108001993000001&r=1&w=2 for details
-
-Signed-off-by: Tobias Klauser <tklauser@nuerscht.ch>
-Signed-off-by: Domen Puncer <domen@coderock.org>
-
----
- ca0106_main.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-Index: quilt/sound/pci/ca0106/ca0106_main.c
-===================================================================
---- quilt.orig/sound/pci/ca0106/ca0106_main.c
-+++ quilt/sound/pci/ca0106/ca0106_main.c
-@@ -136,6 +136,7 @@
- #include <linux/pci.h>
- #include <linux/slab.h>
- #include <linux/moduleparam.h>
-+#include <linux/dma-mapping.h>
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
-@@ -1003,8 +1004,8 @@ static int __devinit snd_ca0106_create(s
-   
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
--	if (pci_set_dma_mask(pci, 0xffffffffUL) < 0 ||
--	    pci_set_consistent_dma_mask(pci, 0xffffffffUL) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_32BIT_MASK) < 0 ||
-+	    pci_set_consistent_dma_mask(pci, DMA_32BIT_MASK) < 0) {
- 		printk(KERN_ERR "error to set 32bit mask DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
-
---
 
 
 -------------------------------------------------------
