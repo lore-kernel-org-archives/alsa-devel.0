@@ -1,12 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Modem support for ALI5451
-Date: Mon, 30 May 2005 09:15:37 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505300914130.2700@pnote.perex-int.cz>
-References: <20050529221419.GD24435@tecr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001094]: nforce4 - optical spdif out not working
+Date: Mon, 30 May 2005 09:33:01 +0200
+Message-ID: <5228635e828a2a482b684e2776140253@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050529221419.GD24435@tecr>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E08B519D
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 09:33:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sasha Khapyorsky <sashak@smlink.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 30 May 2005, Sasha Khapyorsky wrote:
 
-> Hello,
-> 
-> This patch adds modem support for ali5451. Since it is same pci device
-> all is done in ali5451.c.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1094> 
+======================================================================
+Reported By:                eklarson
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1094
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14_FC3
+======================================================================
+Date Submitted:             05-07-2005 11:36 CEST
+Last Modified:              05-30-2005 09:33 CEST
+======================================================================
+Summary:                    nforce4 - optical spdif out not working
+Description: 
+A 48K PCM optical signal is getting sent out to my receiver, however I
+can't get anything to play.  I saw in the "intel8x0.c" that there is no
+NFORCE4 callouts.  Does the code fully support the nforce4 yet?
+======================================================================
 
-Applied thanks.
+----------------------------------------------------------------------
+ jaskjok - 05-28-05 09:55 
+----------------------------------------------------------------------
+I have exactly same problem, although I am trying to use coaxial digital
+sound. My  amplifier notices digital signal, there just is no sound. Also
+light on optical out goes on when I change mixer settings for IEC958. I
+can test both coaxial/optical outs if someone tries to fix the problem.
 
-						Jaroslav
+Analog sound works fine.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+----------------------------------------------------------------------
+ gergap - 05-30-05 09:33 
+----------------------------------------------------------------------
+with version 1.0.9 the problem is fixed.
+The optical out on my XC Cube works now ;-)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-07-05 11:36 eklarson       New Issue                                    
+05-07-05 11:36 eklarson       Distribution              => Fedora Core 3   
+05-07-05 11:36 eklarson       Kernel Version            => 2.6.11-1.14_FC3 
+05-07-05 11:41 eklarson       Note Added: 0004604                          
+05-07-05 23:44 eklarson       Note Edited: 0004604                         
+05-09-05 09:56 gergap         Note Added: 0004622                          
+05-28-05 09:55 jaskjok        Note Added: 0004760                          
+05-30-05 09:33 gergap         Note Added: 0004796                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
