@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001032]: 1.0.9rc2 causes mplayer -ao alsa to crash on startup
-Date: Mon, 30 May 2005 11:37:52 +0200
-Message-ID: <a7e33e0751556c7ac1dc03025303bf6d@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000591]: Please allow control of shm gid
+Date: Mon, 30 May 2005 12:19:11 +0200
+Message-ID: <14c1f61bb2188f84e1b3c752def9b577@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACFC61C1
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 11:37:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B1121B9
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:19:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1032> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=591> 
 ======================================================================
-Reported By:                bero
+Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1032
-Category:                   pcm - digital audio
+Issue ID:                   591
+Category:                   general
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           1.0.9
+Status:                     feedback
 ======================================================================
-Date Submitted:             04-02-2005 16:10 CEST
-Last Modified:              05-30-2005 11:37 CEST
+Date Submitted:             10-21-2004 10:49 CEST
+Last Modified:              05-30-2005 12:19 CEST
 ======================================================================
-Summary:                    1.0.9rc2 causes mplayer -ao alsa to crash on startup
+Summary:                    Please allow control of shm gid
 Description: 
-1.0.9rc2 causes mplayer -ao alsa to crash on startup
+A Debian user requested:
+
+> ALSA provides options to specify shm permissions, but it 
+> is currently not possible to specify a shm gid.
+> So, if I want to use dmix system-wide I have to use 
+> shm_perm 0666, but I'd rather use shm_perm 0660 and 
+> shm_gid audio if that were possible.
+
+Please see Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=277539 "Please allow
+control of shm gid" for
+the whole submission.
+
+    http://bugs.debian.org/277539
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-24-05 14:11 
+ perex - 05-30-05 12:19 
 ----------------------------------------------------------------------
-These bugs should have been already fixed.
-Try 1.0.9rc4.
-
-----------------------------------------------------------------------
- perex - 05-30-05 11:37 
-----------------------------------------------------------------------
-Appearently resolved. Reopen if not....
+I have added ipc_gid support to alsa-lib. Could you test it?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-02-05 16:10 bero           New Issue                                    
-04-02-05 16:10 bero           File Added: alsa-lib-mplayer.patch                
-   
-04-05-05 21:08 Toph           Note Added: 0004340                          
-04-05-05 21:17 rlrevell       Note Added: 0004341                          
-04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
-05-24-05 13:55 jdthood        Note Added: 0004726                          
-05-24-05 14:11 tiwai          Note Added: 0004727                          
-05-30-05 11:37 perex          Status                   new => resolved     
-05-30-05 11:37 perex          Fixed in Version          => 1.0.9           
-05-30-05 11:37 perex          Resolution               open => fixed       
-05-30-05 11:37 perex          Assigned To               => perex           
-05-30-05 11:37 perex          Note Added: 0004800                          
+10-21-04 10:49 jdthood        New Issue                                    
+10-21-04 17:25 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
+ 
+05-30-05 12:19 perex          Note Added: 0004801                          
+05-30-05 12:19 perex          Assigned To               => perex           
+05-30-05 12:19 perex          Status                   new => feedback     
 ======================================================================
 
 
