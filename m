@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000591]: Please allow control of shm gid
-Date: Mon, 30 May 2005 12:19:11 +0200
-Message-ID: <14c1f61bb2188f84e1b3c752def9b577@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001140]: sine wave generator only works for 16bit cards
+Date: Mon, 30 May 2005 12:22:44 +0200
+Message-ID: <348db083a939cd886363b9421bf4390b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B1121B9
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:19:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B7DC19C
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:22:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=591> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1140> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                grabner
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   591
-Category:                   general
+Issue ID:                   1140
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             10-21-2004 10:49 CEST
-Last Modified:              05-30-2005 12:19 CEST
+Date Submitted:             05-29-2005 03:11 CEST
+Last Modified:              05-30-2005 12:22 CEST
 ======================================================================
-Summary:                    Please allow control of shm gid
+Summary:                    sine wave generator only works for 16bit cards
 Description: 
-A Debian user requested:
+The simple sine wave generator, which serves as a test program for PCM
+audio, only creates 16bit samples. It has no option to switch this
+behaviour (although it lists "recognized sample formats"). However, it
+doesn't refuse to play to non-16bit devices, which produces noise.
 
-> ALSA provides options to specify shm permissions, but it 
-> is currently not possible to specify a shm gid.
-> So, if I want to use dmix system-wide I have to use 
-> shm_perm 0666, but I'd rather use shm_perm 0660 and 
-> shm_gid audio if that were possible.
-
-Please see Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=277539 "Please allow
-control of shm gid" for
-the whole submission.
-
-    http://bugs.debian.org/277539
+Note: this refers to alsa-lib version 1.0.*9*, but this wasn't available
+in the "Product Version" selection.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-30-05 12:19 
+ perex - 05-30-05 12:22 
 ----------------------------------------------------------------------
-I have added ipc_gid support to alsa-lib. Could you test it?
+Thank you for your patch. It was applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 10:49 jdthood        New Issue                                    
-10-21-04 17:25 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
- 
-05-30-05 12:19 perex          Note Added: 0004801                          
-05-30-05 12:19 perex          Assigned To               => perex           
-05-30-05 12:19 perex          Status                   new => feedback     
+05-29-05 03:11 grabner        New Issue                                    
+05-29-05 03:11 grabner        File Added: pcm.diff                         
+05-29-05 03:12 grabner        Issue Monitored: grabner                     
+05-30-05 12:22 perex          Status                   new => resolved     
+05-30-05 12:22 perex          Resolution               open => fixed       
+05-30-05 12:22 perex          Assigned To               => perex           
+05-30-05 12:22 perex          Note Added: 0004802                          
 ======================================================================
 
 
