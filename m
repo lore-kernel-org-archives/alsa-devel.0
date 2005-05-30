@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000964]: "Swap surround slot" does not affect "Duplicate Front"
-Date: Mon, 30 May 2005 12:58:15 +0200
-Message-ID: <2de3353d2ad32ad515855dd754ce2957@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
+Date: Mon, 30 May 2005 12:59:13 +0200
+Message-ID: <8c7b7ed9ad14da6238526db10330acc2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EF621B4
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:58:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49B241B4
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:59:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,114 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=964> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
 ======================================================================
-Reported By:                slammer
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   964
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   829
+Category:                   general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             03-04-2005 20:20 CET
-Last Modified:              05-30-2005 12:58 CEST
+Date Submitted:             01-17-2005 09:21 CET
+Last Modified:              05-30-2005 12:59 CEST
 ======================================================================
-Summary:                    "Swap surround slot" does not affect "Duplicate
-Front"
+Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
+`snd_config_get_pointer' from incompatible pointer type"
 Description: 
-When i turn the "Swap surround slot" option "on" and physically do the
-swap, the "Duplicate Front" option duplicates front channels still to the
-Unswapped plug i.e. it sends them to the Center/LFE channels. I think that
-the "Duplicate front" switch should be affected by the "Swap surround"
-switch. Don't You think so?
+Making all in alisp
+[...]
+if /bin/sh ../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H -I.
+-I. -I../include -I../include  -D__ppc__  -g -Wall -O2 -MT confmisc.lo -MD
+-MP -MF ".deps/confmisc.Tpo" \
+  -c -o confmisc.lo `test -f 'confmisc.c' || echo './'`confmisc.c; \
+then mv -f ".deps/confmisc.Tpo" ".deps/confmisc.Plo"; \
+else rm -f ".deps/confmisc.Tpo"; exit 1; \
+fi
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
+confmisc.c  -fPIC -DPIC -o .libs/confmisc.o
+confmisc.c: In function `snd_func_private_pcm_subdevice':
+confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from
+incompatible pointer type
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
+confmisc.c -o confmisc.o >/dev/null 2>&1
+
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 01-17-05 09:30 
+----------------------------------------------------------------------
+This warning appears on alpha, ia64, hppa, sparc and powerpc too.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=alpha&stamp=1105907568&file=log&as=raw
+for the full alpha build log.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=ia64&stamp=1105907385&file=log&as=raw
+for the full ia64 buld log.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=hppa&stamp=1105909875&file=log&as=raw
+for the full hppa build log.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=sparc&stamp=1105912213&file=log&as=raw
+for the full sparc build log.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=powerpc&stamp=1105933411&file=log&as=raw
+for the full powerpc build log.
+
+----------------------------------------------------------------------
+ jdthood - 01-17-05 11:26 
+----------------------------------------------------------------------
+Also on s390.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
+for the full s390 build log.
+
+----------------------------------------------------------------------
+ jdthood - 01-18-05 16:49 
+----------------------------------------------------------------------
+Also on mips.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=mips&stamp=1106048896&file=log&as=raw
+for the full mips build log.
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 14:31 
+----------------------------------------------------------------------
+The warning is very cosmetic.  You can ignore it.
+Will fix in the later version.
+
+----------------------------------------------------------------------
+ jdthood - 01-19-05 14:39 
+----------------------------------------------------------------------
+> The warning is very cosmetic. You can ignore it.
+
+Yes, I guessed so when I started finding it on more and more
+architectures.
+
+> Will fix in the later version.
+
+OK, good.  It's best to eliminate as many spurious warning messages
+as possible.
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 14:44 
+----------------------------------------------------------------------
+Yep, this should get fixed.
+The problem is perhaps const void **.  Both const and "void **" are tricky
+to use...
+
+Anyway, thanks for these reports.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 20:20 slammer        New Issue                                    
-03-05-05 22:50 slammer        Issue Monitored: slammer                     
-05-30-05 12:57 perex          Project                  ALSA - lib => ALSA -
-driver
-05-30-05 12:58 perex          Category                 control / hcontrol => PCI
-- intel8x0
+01-17-05 09:21 jdthood        New Issue                                    
+01-17-05 09:30 jdthood        Note Added: 0003224                          
+01-17-05 11:26 jdthood        Note Added: 0003233                          
+01-18-05 16:49 jdthood        Note Added: 0003251                          
+01-19-05 14:31 tiwai          Note Added: 0003269                          
+01-19-05 14:39 jdthood        Note Added: 0003274                          
+01-19-05 14:44 tiwai          Note Added: 0003277                          
+05-30-05 12:59 perex          Category                 alisp => general    
 ======================================================================
 
 
