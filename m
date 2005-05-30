@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Mon, 30 May 2005 13:21:26 +0200
-Message-ID: <f87fe1f9e80f7824de6b83bbf497e810@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000897]: test/timer.c malfunctions with snd-rtctimer
+Date: Mon, 30 May 2005 13:30:20 +0200
+Message-ID: <c09c7fbd3a4e0111f321ae61e8f0af82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47BE71C7
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 13:21:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 180021B4
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 13:30:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=897> 
 ======================================================================
-Reported By:                vedran
-Assigned To:                
+Reported By:                phunge
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   897
+Category:                   timer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
+Status:                     resolved
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              05-30-2005 13:21 CEST
+Date Submitted:             02-09-2005 15:45 CET
+Last Modified:              05-30-2005 13:30 CEST
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    test/timer.c malfunctions with snd-rtctimer
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
+I'm trying to learn how to use the ALSA timer API for getting a hi-res
+interrupt in a program of mine. When I compile test/timer.c, it runs
+correctly using the default system timer. However, when I try to specify
+the RTC timer by modprobing snd-rtctimer and running
 
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
+./timer class=1 sclass=0 card=0 device=1 subdevice=0
 
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
+the program fails (output under "additional information").
 
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
-
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
+/dev/rtc is readable and I can run the RTC test from
+http://stommel.tamu.edu/~baum/linux-kernel/rtc.txt
+so I think the problem is in alsa.
 ======================================================================
 
 ----------------------------------------------------------------------
- vedran - 05-30-05 13:21 
+ Clemens Ladisch - 03-11-05 09:42 
 ----------------------------------------------------------------------
-Has anybody looked at this bug? What's the status?
+Works fine with 2.6.11, too.
+
+----------------------------------------------------------------------
+ perex - 05-30-05 13:30 
+----------------------------------------------------------------------
+We cannot duplicate and reporter is not active.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
+02-09-05 15:45 phunge         New Issue                                    
+02-14-05 10:47 Clemens LadischNote Added: 0003587                          
+02-14-05 11:35 phunge         Note Added: 0003589                          
+02-16-05 12:02 phunge         Note Added: 0003622                          
+03-11-05 09:42 Clemens LadischNote Added: 0003882                          
+05-30-05 13:30 perex          Status                   new => resolved     
+05-30-05 13:30 perex          Resolution               open => unable to
+duplicate
+05-30-05 13:30 perex          Assigned To               => perex           
+05-30-05 13:30 perex          Note Added: 0004810                          
 ======================================================================
 
 
