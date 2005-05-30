@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001094]: nforce4 - optical spdif out not working
-Date: Mon, 30 May 2005 09:33:01 +0200
-Message-ID: <5228635e828a2a482b684e2776140253@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001144]: alsamixer 1.0.9 crashes when browsing through emu10kx mixer controls
+Date: Mon, 30 May 2005 09:41:58 +0200
+Message-ID: <1951b8516bfade32caca67b3143873e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E08B519D
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 09:33:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B92A01B9
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 09:41:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1094> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1144> 
 ======================================================================
-Reported By:                eklarson
+Reported By:                ajs1984
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1094
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   1144
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14_FC3
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-07-2005 11:36 CEST
-Last Modified:              05-30-2005 09:33 CEST
+Date Submitted:             05-29-2005 20:03 CEST
+Last Modified:              05-30-2005 09:41 CEST
 ======================================================================
-Summary:                    nforce4 - optical spdif out not working
+Summary:                    alsamixer 1.0.9 crashes when browsing through
+emu10kx mixer controls
 Description: 
-A 48K PCM optical signal is getting sent out to my receiver, however I
-can't get anything to play.  I saw in the "intel8x0.c" that there is no
-NFORCE4 callouts.  Does the code fully support the nforce4 yet?
+What it says on the tin. When going through Audigy 2 Platinum's mixer
+controls, alsamixer (but not kmix) crashes with the following assertion:
+
+alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion `helem'
+failed.
+Aborted
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001131 Alsamixer crashing - using Audigy Plati...
 ======================================================================
 
 ----------------------------------------------------------------------
- jaskjok - 05-28-05 09:55 
+ perex - 05-30-05 09:41 
 ----------------------------------------------------------------------
-I have exactly same problem, although I am trying to use coaxial digital
-sound. My  amplifier notices digital signal, there just is no sound. Also
-light on optical out goes on when I change mixer settings for IEC958. I
-can test both coaxial/optical outs if someone tries to fix the problem.
-
-Analog sound works fine.
-
-----------------------------------------------------------------------
- gergap - 05-30-05 09:33 
-----------------------------------------------------------------------
-with version 1.0.9 the problem is fixed.
-The optical out on my XC Cube works now ;-)
+Duplicate.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-07-05 11:36 eklarson       New Issue                                    
-05-07-05 11:36 eklarson       Distribution              => Fedora Core 3   
-05-07-05 11:36 eklarson       Kernel Version            => 2.6.11-1.14_FC3 
-05-07-05 11:41 eklarson       Note Added: 0004604                          
-05-07-05 23:44 eklarson       Note Edited: 0004604                         
-05-09-05 09:56 gergap         Note Added: 0004622                          
-05-28-05 09:55 jaskjok        Note Added: 0004760                          
-05-30-05 09:33 gergap         Note Added: 0004796                          
+05-29-05 20:03 ajs1984        New Issue                                    
+05-29-05 23:22 rlrevell       Relationship added       duplicate of 0001131
+05-29-05 23:58 rlrevell       Note Added: 0004793                          
+05-30-05 09:41 perex          Status                   new => closed       
+05-30-05 09:41 perex          Note Added: 0004797                          
 ======================================================================
 
 
