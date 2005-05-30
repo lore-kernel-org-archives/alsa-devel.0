@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
-Date: Mon, 30 May 2005 12:57:35 +0200
-Message-ID: <94954e8631b3ea594baa0035a74f9657@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000964]: "Swap surround slot" does not affect "Duplicate Front"
+Date: Mon, 30 May 2005 12:58:15 +0200
+Message-ID: <2de3353d2ad32ad515855dd754ce2957@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 546721B4
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:57:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EF621B4
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:58:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=964> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
+Reported By:                slammer
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1053
-Category:                   PCI - ca0106
+Issue ID:                   964
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 test 2
-Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-14-2005 19:27 CEST
-Last Modified:              05-30-2005 12:57 CEST
+Date Submitted:             03-04-2005 20:20 CET
+Last Modified:              05-30-2005 12:58 CEST
 ======================================================================
-Summary:                    cannot change line-in volume on MSI K8N Platinum
-that has SBLive! 24 bit
+Summary:                    "Swap surround slot" does not affect "Duplicate
+Front"
 Description: 
-I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack in the pci version of the sb live 24
-bit (see image).
-
-The result is that I cannot use line-in for my soundcard becuase the
-volume is 0 and I cannot change it.
-
-The "Capture feedback into playback" in the mixer change the mic's volume.
+When i turn the "Swap surround slot" option "on" and physically do the
+swap, the "Duplicate Front" option duplicates front channels still to the
+Unswapped plug i.e. it sends them to the Center/LFE channels. I think that
+the "Duplicate front" switch should be affected by the "Swap surround"
+switch. Don't You think so?
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 05-28-05 12:16 
-----------------------------------------------------------------------
-We now have enough information to enable sound CAPTURE on the SB Live 24bit
-card.
-It is now supported in the current alsa-driver cvs.
-I have tested the PCI Card, and it now works for Mic and Line In.
-I have not tested the MSI motherboard based card.
-Please test and report.
-
-----------------------------------------------------------------------
- Cimmo - 05-30-05 12:57 
-----------------------------------------------------------------------
-Updated driver/kernel from CVS.
-
-Cannot change yet line-in volume.
-With alsamixer there is SPDIF Out item that is 00 and if I press '+'
-doens't change anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-05 19:27 Cimmo          New Issue                                    
-04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
-04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
-04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
-FC4-x86_64 that contains 2.6.12rc2
-04-14-05 21:42 jcdutton       Note Added: 0004495                          
-04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
-05-11-05 15:05 Cimmo          Note Added: 0004636                          
-05-14-05 13:14 pelias         Note Added: 0004657                          
-05-14-05 15:48 jcdutton       Note Added: 0004659                          
-05-20-05 00:14 dwh            Note Added: 0004697                          
-05-28-05 12:16 jcdutton       Note Added: 0004764                          
-05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
-05-30-05 12:57 Cimmo          Note Added: 0004805                          
+03-04-05 20:20 slammer        New Issue                                    
+03-05-05 22:50 slammer        Issue Monitored: slammer                     
+05-30-05 12:57 perex          Project                  ALSA - lib => ALSA -
+driver
+05-30-05 12:58 perex          Category                 control / hcontrol => PCI
+- intel8x0
 ======================================================================
 
 
