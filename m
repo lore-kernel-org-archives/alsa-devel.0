@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Mon, 30 May 2005 00:05:07 +0200
-Message-ID: <a6d164d5827fa1c4e48b8133a5ae1a54@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Mon, 30 May 2005 03:29:42 +0200
+Message-ID: <1882792ce10d11aaeec0202027eb33e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 552711A4
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 00:05:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA2901A3
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 03:29:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,114 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                mart
-Assigned To:                sashak
+Reported By:                liangalei
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   857
-Category:                   PCI - intel8x0m
+Issue ID:                   1134
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               slackware 10
-Kernel Version:             2.6.10
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              05-30-2005 00:05 CEST
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              05-30-2005 03:29 CEST
 ======================================================================
-Summary:                    intel8x0m does not work on asus a3n laptop
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-with this laptop, the sound by intel8x0 works ok, but the modem with the 
-alsa-driver intel8x0m and slmodemd 2.9.10 does not.
-slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
-when i try to dial a number (i tried with kppp and minicom) the modem does
-dial, but after a while it quits with a NO ANSWER error.
-making some exprtiments, i found that when i connect under windows, if i
-listen to the phone connected to the same line, i can hear the tones
-gererated by the modem, but when i dial under linux i can't hear anything,
-so i think this is a driver issue, the driver that can't make the modem
-produce any sound.
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-this is what lspci tells me on that modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
+
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
+
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000509 Conexant Moden &quot;not ready&quot;
-related to          0000890 no dialtone with modem &amp; strange lo...
-======================================================================
 
 ----------------------------------------------------------------------
- metal - 05-29-05 21:45 
+ liangalei - 05-28-05 09:17 
 ----------------------------------------------------------------------
-I have downloaded 2.6.12-rc5. Trying use command, this isn't help. Modem
-quiet and i don't hear sound in phone too.
+[root@room-1109 ~]# /sbin/lsmod | grep snd
+snd_intel8x0           34752  2
+snd_ac97_codec         78588  1 snd_intel8x0
+snd_mixer_oss          19072  1
+snd_pcm                99848  2 snd_intel8x0,snd_ac97_codec
+snd_timer              33668  1 snd_pcm
+snd                    59396  7
+snd_intel8x0,snd_ac97_codec,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              10785  2 snd
+snd_page_alloc         10244  2 snd_intel8x0,snd_pcm
+[root@room-1109 ~]#
 
 ----------------------------------------------------------------------
- sashak - 05-30-05 00:05 
+ liangalei - 05-30-05 03:29 
 ----------------------------------------------------------------------
-There is new mixer stuff in linux-2.6.12-rc5, it is supported only by
-slmodem-2.9.9d from http://linmodems.technion.ac.il/packages/smartlink .
-Speaker support is added to alsa cvs today, but not supported yet by any
-slmodem-2.9.9x, if you would like to try there is the patch for
-slmodem-2.9.9d .
+hinted by https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1078
+I have a look at my /proc/asound, it looks like following, ----- Is it
+strange? I see many "off" ---- but I cannot turn-ONs them, by either
+alsamixer or aumix, because in alsamixer jack-bars, them can not be seen
+!
 
-BTW drop your /proc/asound/card1/codec97#97/mc97#1 .
+[lal@lal ~]$ cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: Conexant id 31
+
+Revision         : 0x00
+Compat. Class    : 0x00
+Subsys. Vendor ID: 0x0000
+Subsys. ID       : 0x0000
+
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 SPDIF
+Extended status  : PRL SPCV LDAC SDAC CDAC SPDIF=10/11
+SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+Extended modem ID: codec=0 LIN1
+Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
+PRF(DAC2) PRG(HADC) PRH(HDAC)
+Line1 rate       : 48000Hz
+[lal@lal ~]$
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-05 16:43 mart           New Issue                                    
-01-29-05 16:43 mart           Distribution              => slackware 10    
-01-29-05 16:43 mart           Kernel Version            => 2.6.10          
-01-29-05 16:44 mart           Issue Monitored: mart                        
-02-03-05 21:55 mart           Note Added: 0003494                          
-02-03-05 23:21 sashak         Note Added: 0003495                          
-02-04-05 13:10 mart           Note Added: 0003501                          
-03-02-05 14:12 perex          Relationship added       related to 0000509  
-03-02-05 15:19 perex          Relationship added       related to 0000890  
-03-24-05 20:25 metal          Note Added: 0004200                          
-04-03-05 01:49 sashak         Note Added: 0004301                          
-04-05-05 21:29 metal          Note Added: 0004342                          
-04-14-05 11:55 sashak         Note Added: 0004486                          
-05-29-05 21:45 metal          Note Added: 0004791                          
-05-30-05 00:05 sashak         Note Added: 0004794                          
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
 ======================================================================
 
 
