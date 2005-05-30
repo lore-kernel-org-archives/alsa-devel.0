@@ -1,14 +1,14 @@
-From: mailinglist@teg-electronics.com
-Subject: Re: High Speed USB Support?
-Date: Mon, 30 May 2005 12:54:30 +0200 (CEST)
-Message-ID: <32909.192.168.0.245.1117450470.squirrel@www.teg-electronics.com>
-References: <33485.192.168.0.245.1115909520.squirrel@www.teg-electronics.com>
- <Pine.HPX.4.33n.0505171239130.4787-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001068]: enable dmix by default
+Date: Mon, 30 May 2005 12:54:51 +0200
+Message-ID: <05c508d3248e2708a4b79c581efc1119@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.HPX.4.33n.0505171239130.4787-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 168671C3
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:54:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,103 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, This works great now!
 
-I have not tested recording yet since I haven't implimented
-it on my device yet but playback works perfectly.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1068> 
+======================================================================
+Reported By:                mandreiana
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1068
+Category:                   mixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             04-21-2005 06:49 CEST
+Last Modified:              05-30-2005 12:54 CEST
+======================================================================
+Summary:                    enable dmix by default
+Description: 
+Please see this bug report:
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155421
 
-Have you tested recording on the Audygy 2 NX ?
+Someone suggested to change /etc/asound.conf so dmix is turned on, but
+please enable it by default.
+======================================================================
 
-Sorry for the slow respones, I had a little vacation.
+----------------------------------------------------------------------
+ pzad - 05-24-05 09:35 
+----------------------------------------------------------------------
+dmix should be enabled for all cheap motherboards cards (except I think
+envy24 based cards).
 
-TEG
+What other cards do you have ?
 
-> mailinglist@teg-electronics.com wrote:
->> if I send the wrong byte order to the feedback endpoint which may
->> lock the computer (I guess I shouldn't do that :-) ).
->
-> Thanks, fixed now.  :-)
->
->> I was hoping to avoid having do develop a driver by folowing the
->> USB audio spec, unfortunately neither the general USB audio driver
->> in Windows or Linux seems to support High Speed USB.
->
-> Playback on the Audigy 2 NX works fine now.
->
-> Please try the latest driver (my patch should be on the public
-> SourceForge CVS server in a few hours), _and_ apply the following
-> patch to the kernel:
->
->
-> Index: linux-2.6.11/drivers/usb/host/ehci-sched.c
-> ===================================================================
-> --- linux-2.6.11.orig/drivers/usb/host/ehci-sched.c	2005-03-02
-> 22:00:29.000000000 +0100
-> +++ linux-2.6.11/drivers/usb/host/ehci-sched.c	2005-05-14
-> 16:41:21.000000000 +0200
-> @@ -1203,8 +1203,7 @@
->  	struct ehci_itd		*itd,
->  	struct ehci_iso_sched	*iso_sched,
->  	unsigned		index,
-> -	u16			uframe,
-> -	int			first
-> +	u16			uframe
->  )
->  {
->  	struct ehci_iso_packet	*uf = &iso_sched->packet [index];
-> @@ -1221,7 +1220,7 @@
->  	itd->hw_bufp_hi [pg] |= cpu_to_le32 ((u32)(uf->bufp >> 32));
->
->  	/* iso_frame_desc[].offset must be strictly increasing */
-> -	if (unlikely (!first && uf->cross)) {
-> +	if (unlikely (uf->cross)) {
->  		u64	bufp = uf->bufp + 4096;
->  		itd->pg = ++pg;
->  		itd->hw_bufp [pg] |= cpu_to_le32 (bufp & ~(u32)0);
-> @@ -1250,7 +1249,7 @@
->  	struct ehci_iso_stream	*stream
->  )
->  {
-> -	int			packet, first = 1;
-> +	int			packet;
->  	unsigned		next_uframe, uframe, frame;
->  	struct ehci_iso_sched	*iso_sched = urb->hcpriv;
->  	struct ehci_itd		*itd;
-> @@ -1283,7 +1282,6 @@
->  			list_move_tail (&itd->itd_list, &stream->td_list);
->  			itd->stream = iso_stream_get (stream);
->  			itd->urb = usb_get_urb (urb);
-> -			first = 1;
->  			itd_init (stream, itd);
->  		}
->
-> @@ -1291,8 +1289,7 @@
->  		frame = next_uframe >> 3;
->
->  		itd->usecs [uframe] = stream->usecs;
-> -		itd_patch (itd, iso_sched, packet, uframe, first);
-> -		first = 0;
-> +		itd_patch (itd, iso_sched, packet, uframe);
->
->  		next_uframe += stream->interval;
->  		stream->depth += stream->interval;
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by Oracle Space Sweepstakes
-> Want to be the first software developer in space?
-> Enter now for the Oracle Space Sweepstakes!
-> http://ads.osdn.com/?ad_id=7412&alloc_id=16344&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+----------------------------------------------------------------------
+ perex - 05-30-05 12:54 
+----------------------------------------------------------------------
+The sympthom has been resolved. Please, create another bug, if something
+does not work.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-21-05 06:49 mandreiana     New Issue                                    
+04-21-05 07:59 pzad           Note Added: 0004546                          
+04-21-05 08:39 mandreiana     Note Added: 0004547                          
+04-21-05 08:42 mandreiana     Note Added: 0004548                          
+04-29-05 09:08 mandreiana     Note Added: 0004578                          
+05-24-05 09:29 Martin Pitt    Note Added: 0004707                          
+05-24-05 09:35 pzad           Note Added: 0004708                          
+05-30-05 12:54 perex          Status                   new => resolved     
+05-30-05 12:54 perex          Resolution               open => fixed       
+05-30-05 12:54 perex          Assigned To               => perex           
+05-30-05 12:54 perex          Note Added: 0004803                          
+======================================================================
 
 
 
