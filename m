@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001121]: Very low volume through SPDIF (no master volume?)
-Date: Mon, 30 May 2005 15:35:09 +0200
-Message-ID: <ed88eee8de306e126644188f3546278c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001146]: Cannot compile alsa-utils
+Date: Mon, 30 May 2005 15:36:53 +0200
+Message-ID: <fd7913b1c880be11afcbe84bce398c28@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A79301BF
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 15:35:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 617E91BF
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 15:36:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1121> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1146> 
 ======================================================================
-Reported By:                dacid
-Assigned To:                jcdutton
+Reported By:                Cimmo
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1121
-Category:                   PCI - ca0106
+Issue ID:                   1146
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     feedback
-Distribution:               Gentoo (vanilla kernel)
-Kernel Version:             2.6.12-rc4
+Distribution:               Fedora Core 4 test3
+Kernel Version:             2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
 ======================================================================
-Date Submitted:             05-21-2005 03:21 CEST
-Last Modified:              05-30-2005 15:35 CEST
+Date Submitted:             05-30-2005 15:06 CEST
+Last Modified:              05-30-2005 15:36 CEST
 ======================================================================
-Summary:                    Very low volume through SPDIF (no master volume?)
+Summary:                    Cannot compile alsa-utils
 Description: 
-Hello - 
-   I've been trying for a few weeks now to get SPDIF out working on my
-Soundblaster 24bit card working.
-   The issue is that the output to my receiver is very low, if I crank it
-way up (-8db), I can hear some audio, but it is very muffled and
-distored.
-   I've tried various setting combinations in alsamixer, to no avail.
-   I'm also a little curious as to why this soundcard has no master volume
-or PCM controls.
+Compiling alsa-utils 1.0.9 with gcc 4.0.0 I've this error:
 
+Making all in alsactl
+make[1]: Entering directory
+`/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
+gcc  -g -O2   -o alsactl  alsactl.o state.o power.o names.o  -lasound -lm
+-ldl -lpthread
+names.o(.text+0xdce): In function `probe_timers':
+/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425: undefined
+reference to `snd_timer_ginfo_sizeof'
+names.o(.text+0xdee):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425:
+undefined reference to `snd_timer_ginfo_sizeof'
+names.o(.text+0xe4e):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:435:
+undefined reference to `snd_timer_ginfo_set_tid'
+names.o(.text+0xebf):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:445:
+undefined reference to `snd_timer_ginfo_get_name'
+collect2: ld returned 1 exit status
+make[1]: *** [alsactl] Error 1
+make[1]: Leaving directory `/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
+make: *** [all-recursive] Error 1
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-29-05 12:23 
+ perex - 05-30-05 15:11 
 ----------------------------------------------------------------------
-Have you adjusted the volume controls in alsamixer?
-"SPDIF Front" and selected "SPDIF Out" to not say [Off] ?
-
-Are you looking at the Creative instructions for "Watching DVDs" ?
+Install correctly alsa-lib 1.0.9 as first.
 
 ----------------------------------------------------------------------
- dacid - 05-30-05 15:35 
+ Cimmo - 05-30-05 15:36 
 ----------------------------------------------------------------------
-Yup. I've got SPDIF Out activated, and all 4 SPDIF volume sliders are
-cranked up.  
+I've installed all CVS packages and followed these instructions
+http://alsa.opensrc.org/index.php?page=AlsaCVS
 
-As for the instructions - yes, I am following the left portion (mono
-miniplug-to-RCA cable) of the "Watching DVDs" section.  
-
-One thing I noticed that seems a bit strange:  My test files are 2 channel
-audio, but playback is occuring on all 5 speakers....
+so I think alsa-lib is now installed, but still compilation error...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-21-05 03:21 dacid          New Issue                                    
-05-21-05 03:21 dacid          Distribution              => Gentoo (vanilla
-kernel)
-05-21-05 03:21 dacid          Kernel Version            => 2.6.12-rc4      
-05-24-05 01:54 dacid          Issue Monitored: dacid                       
-05-28-05 12:13 jcdutton       Note Added: 0004763                          
-05-28-05 12:30 jcdutton       Note Added: 0004772                          
-05-28-05 12:30 jcdutton       Status                   assigned => feedback
-05-29-05 03:27 dacid          Note Added: 0004778                          
-05-29-05 12:23 jcdutton       Note Added: 0004783                          
-05-30-05 15:35 dacid          Note Added: 0004819                          
+05-30-05 15:06 Cimmo          New Issue                                    
+05-30-05 15:06 Cimmo          Distribution              => Fedora Core 4 test3
+05-30-05 15:06 Cimmo          Kernel Version            =>
+2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
+05-30-05 15:11 perex          Status                   assigned => resolved
+05-30-05 15:11 perex          Resolution               open => fixed       
+05-30-05 15:11 perex          Note Added: 0004818                          
+05-30-05 15:36 Cimmo          Status                   resolved => feedback
+05-30-05 15:36 Cimmo          Resolution               fixed => reopened   
+05-30-05 15:36 Cimmo          Note Added: 0004820                          
 ======================================================================
 
 
