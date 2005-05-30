@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
-Date: Mon, 30 May 2005 14:33:54 +0200
-Message-ID: <81e4e0ee2df77a10458fcf11d7a5d7c4@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
+Date: Mon, 30 May 2005 14:50:34 +0200
+Message-ID: <de512c2281efac1031b383f1a1162749@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61F9E196
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 14:33:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33F391B4
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 14:50:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
+Reported By:                TheOrwithVagrant
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1053
-Category:                   PCI - ca0106
+Project:                    ALSA - lib
+Issue ID:                   929
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 test 2
-Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+Status:                     new
 ======================================================================
-Date Submitted:             04-14-2005 19:27 CEST
-Last Modified:              05-30-2005 14:33 CEST
+Date Submitted:             02-21-2005 14:56 CET
+Last Modified:              05-30-2005 14:50 CEST
 ======================================================================
-Summary:                    cannot change line-in volume on MSI K8N Platinum
-that has SBLive! 24 bit
+Summary:                    Left/Right reversed when using the raw iec958 on
+Audigy2
 Description: 
-I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack in the pci version of the sb live 24
-bit (see image).
+When using an spdif-attatched amplifier, the iec958/spdif raw device to
+play a sound (or video file), the left and right channels end up
+reversed.
 
-The result is that I cannot use line-in for my soundcard becuase the
-volume is 0 and I cannot change it.
+Example:
 
-The "Capture feedback into playback" in the mixer change the mic's volume.
+This produces "correct" left and right mappings
+
+extract_ac3 AC3TEST.VOB |ac3dec
+
+The following, however, reverses left & right:
+
+extract_ac3 AC3TEST.VOB |ac3dec -R
+
+Likewise, when playing a dvd with mplayer, things are correct if i merely
+use -ao alsa, but end up with left/right reversed if i use -ao
+alsa:device=iec958.
+
+It appears to be an error in Audigy2.conf - changing the line
+
+value [ 255 255 0 0 0 0 0 0  0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
+
+to
+
+value [ 255 255 0 0 0 0 0 0  255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
+
+as in Audigy.conf, makes the channels appear from the right speaker even
+when using the raw spdif device.
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 05-30-05 12:57 
+ perex - 05-30-05 13:41 
 ----------------------------------------------------------------------
-Updated driver/kernel from CVS.
-
-Cannot change yet line-in volume.
-With alsamixer there is SPDIF Out item that is 00 and if I press '+'
-doens't change anything.
+Reporter - is this bug fixed in 1.0.9?
 
 ----------------------------------------------------------------------
- jcdutton - 05-30-05 14:33 
+ TheOrwithVagrant - 05-30-05 14:50 
 ----------------------------------------------------------------------
-At the "SPDIF Out", press M to change it. Not +
+It's been fixed since 1.0.9rc2. With 1.0.9 final out, this bug is a thing
+of the past, and should be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-05 19:27 Cimmo          New Issue                                    
-04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
-04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
-04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
-FC4-x86_64 that contains 2.6.12rc2
-04-14-05 21:42 jcdutton       Note Added: 0004495                          
-04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
-05-11-05 15:05 Cimmo          Note Added: 0004636                          
-05-14-05 13:14 pelias         Note Added: 0004657                          
-05-14-05 15:48 jcdutton       Note Added: 0004659                          
-05-20-05 00:14 dwh            Note Added: 0004697                          
-05-28-05 12:16 jcdutton       Note Added: 0004764                          
-05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
-05-30-05 12:57 Cimmo          Note Added: 0004805                          
-05-30-05 12:58 Cimmo          File Added: alsamixer.jpg                    
-05-30-05 14:33 jcdutton       Note Added: 0004814                          
+02-21-05 14:56 TheOrwithVagrantNew Issue                                    
+02-21-05 15:04 pzad           Note Added: 0003679                          
+02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
+02-22-05 03:59 rlrevell       Note Added: 0003684                          
+03-19-05 09:21 jdthood        Note Added: 0004013                          
+03-19-05 09:58 jdthood        Note Added: 0004028                          
+03-19-05 11:36 TheOrwithVagrantNote Added: 0004032                          
+03-19-05 11:46 jcdutton       Note Added: 0004033                          
+05-30-05 13:41 perex          Note Added: 0004813                          
+05-30-05 14:50 TheOrwithVagrantNote Added: 0004815                          
 ======================================================================
 
 
