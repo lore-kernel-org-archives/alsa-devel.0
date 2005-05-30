@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Mon, 30 May 2005 09:51:08 +0200
-Message-ID: <81c70f77f53c9a81186b4bc4db172672@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001145]: On ALSA 1.0.9 running more than one player with different users does not work
+Date: Mon, 30 May 2005 11:32:26 +0200
+Message-ID: <0d5bf99e727f99d8470406da28b9dd0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B0A11B9
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 09:51:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3EB018F
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 11:32:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,79 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1145> 
 ======================================================================
-Reported By:                minmax
-Assigned To:                
+Reported By:                ipartola
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
+Project:                    ALSA - lib
+Issue ID:                   1145
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
+Status:                     assigned
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-30-2005 09:51 CEST
+Date Submitted:             05-30-2005 08:37 CEST
+Last Modified:              05-30-2005 11:32 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    On ALSA 1.0.9 running more than one player with
+different users does not work
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+If I run mpg321 some.mp3 as john I cannot run mpg321 other.mp3 as ben.
+
+This does not work even if one user is root either. I simply get "No
+default libao driver available".
 ======================================================================
-
-----------------------------------------------------------------------
- parente - 05-27-05 15:41 
-----------------------------------------------------------------------
-perex: The fix2.patch does not work on my system. It compiles, but refuses
-to be inserted into the kernel with a "symbol error." (Probably because
-int64 isn't recognized on my system?)
-
-I also tried just casting to regular "int" but that does not solve the
-problem. Output from gnome-speech is still clipped.
-
-What about the patch submitted by Roger Mach? I can compile and install
-it, and it appears to correct the problem without introducing others.
-Maybe the last expression computes the number of bytes properly using the
-number of frames?
-
-----------------------------------------------------------------------
- perex - 05-30-05 09:51 
-----------------------------------------------------------------------
-Could you try 1.0.9 final? My patch is there and compilation should be
-fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
-05-16-05 16:08 gk4            Note Added: 0004676                          
-05-19-05 15:28 parente        Note Added: 0004693                          
-05-20-05 00:38 minmax         Note Added: 0004698                          
-05-26-05 17:27 Roger Mach     Note Added: 0004738                          
-05-27-05 10:56 perex          Note Added: 0004742                          
-05-27-05 11:03 perex          File Added: fix2.patch                       
-05-27-05 11:04 perex          Note Added: 0004743                          
-05-27-05 15:41 parente        Note Added: 0004752                          
-05-30-05 09:51 perex          Note Added: 0004798                          
+05-30-05 08:37 ipartola       New Issue                                    
+05-30-05 08:37 ipartola       Distribution              => Gentoo 2005.0   
+05-30-05 08:37 ipartola       Kernel Version            => linux-2.6.11-gentoo
+05-30-05 11:31 perex          Project                  ALSA - driver => ALSA -
+lib
+05-30-05 11:32 perex          Category                 0_compilation problem_!!!
+=> pcm - digital audio
 ======================================================================
 
 
