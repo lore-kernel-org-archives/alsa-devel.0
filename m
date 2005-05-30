@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001068]: enable dmix by default
-Date: Mon, 30 May 2005 12:54:51 +0200
-Message-ID: <05c508d3248e2708a4b79c581efc1119@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000591]: Please allow control of shm gid
+Date: Mon, 30 May 2005 12:55:46 +0200
+Message-ID: <b3b48fe6b6ddb1e2ace27feb9fcb4599@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 168671C3
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:54:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C815318B
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:55:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1068> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=591> 
 ======================================================================
-Reported By:                mandreiana
+Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1068
-Category:                   mixer
+Issue ID:                   591
+Category:                   general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
 ======================================================================
-Date Submitted:             04-21-2005 06:49 CEST
-Last Modified:              05-30-2005 12:54 CEST
+Date Submitted:             10-21-2004 10:49 CEST
+Last Modified:              05-30-2005 12:55 CEST
 ======================================================================
-Summary:                    enable dmix by default
+Summary:                    Please allow control of shm gid
 Description: 
-Please see this bug report:
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155421
+A Debian user requested:
 
-Someone suggested to change /etc/asound.conf so dmix is turned on, but
-please enable it by default.
+> ALSA provides options to specify shm permissions, but it 
+> is currently not possible to specify a shm gid.
+> So, if I want to use dmix system-wide I have to use 
+> shm_perm 0666, but I'd rather use shm_perm 0660 and 
+> shm_gid audio if that were possible.
+
+Please see Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=277539 "Please allow
+control of shm gid" for
+the whole submission.
+
+    http://bugs.debian.org/277539
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 05-24-05 09:35 
+ perex - 05-30-05 12:19 
 ----------------------------------------------------------------------
-dmix should be enabled for all cheap motherboards cards (except I think
-envy24 based cards).
-
-What other cards do you have ?
+I have added ipc_gid support to alsa-lib. Could you test it?
 
 ----------------------------------------------------------------------
- perex - 05-30-05 12:54 
+ jdthood - 05-30-05 12:55 
 ----------------------------------------------------------------------
-The sympthom has been resolved. Please, create another bug, if something
-does not work.
+Where and when will the new feature appear?  E.g.: CVS, tomorrow?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-05 06:49 mandreiana     New Issue                                    
-04-21-05 07:59 pzad           Note Added: 0004546                          
-04-21-05 08:39 mandreiana     Note Added: 0004547                          
-04-21-05 08:42 mandreiana     Note Added: 0004548                          
-04-29-05 09:08 mandreiana     Note Added: 0004578                          
-05-24-05 09:29 Martin Pitt    Note Added: 0004707                          
-05-24-05 09:35 pzad           Note Added: 0004708                          
-05-30-05 12:54 perex          Status                   new => resolved     
-05-30-05 12:54 perex          Resolution               open => fixed       
-05-30-05 12:54 perex          Assigned To               => perex           
-05-30-05 12:54 perex          Note Added: 0004803                          
+10-21-04 10:49 jdthood        New Issue                                    
+10-21-04 17:25 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
+ 
+05-30-05 12:19 perex          Note Added: 0004801                          
+05-30-05 12:19 perex          Assigned To               => perex           
+05-30-05 12:19 perex          Status                   new => feedback     
+05-30-05 12:55 jdthood        Note Added: 0004804                          
 ======================================================================
 
 
