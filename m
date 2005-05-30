@@ -1,11 +1,14 @@
-From: Mail Delivery Subsystem <MAILER-DAEMON@mailhub1.mclink.it>
-Subject: Returned mail: see transcript for details
-Date: Mon, 30 May 2005 14:06:38 +0200 (CEST)
-Message-ID: <200505301206.j4UC60AW097766@mailhub1.mclink.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
+Date: Mon, 30 May 2005 14:33:54 +0200
+Message-ID: <81e4e0ee2df77a10458fcf11d7a5d7c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="j4UC60AW097766.1117454798/mailhub1.mclink.it"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61F9E196
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 14:33:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,61 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
 
---j4UC60AW097766.1117454798/mailhub1.mclink.it
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+======================================================================
+Reported By:                Cimmo
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1053
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 4 test 2
+Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+======================================================================
+Date Submitted:             04-14-2005 19:27 CEST
+Last Modified:              05-30-2005 14:33 CEST
+======================================================================
+Summary:                    cannot change line-in volume on MSI K8N Platinum
+that has SBLive! 24 bit
+Description: 
+I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack in the pci version of the sb live 24
+bit (see image).
 
-The original message was received at Mon, 30 May 2005 14:05:02 +0200 (CEST)
-from ns3.mclink.it [195.110.128.118]
+The result is that I cannot use line-in for my soundcard becuase the
+volume is 0 and I cannot change it.
 
-   ----- The following addresses had permanent fatal errors -----
-<tia@mclink.it>
+The "Capture feedback into playback" in the mixer change the mic's volume.
+======================================================================
 
-   ----- Transcript of session follows -----
-Subject: Usercode not in use
-User tia does not exist or is disabled
-L'utente tia non esiste, o e' disabilitato
-550 5.1.1 <tia@mclink.it>... User unknown
+----------------------------------------------------------------------
+ Cimmo - 05-30-05 12:57 
+----------------------------------------------------------------------
+Updated driver/kernel from CVS.
 
---j4UC60AW097766.1117454798/mailhub1.mclink.it
-Content-Type: message/delivery-status
+Cannot change yet line-in volume.
+With alsamixer there is SPDIF Out item that is 00 and if I press '+'
+doens't change anything.
 
-Reporting-MTA: dns; mailhub1.mclink.it
-Arrival-Date: Mon, 30 May 2005 14:05:02 +0200 (CEST)
+----------------------------------------------------------------------
+ jcdutton - 05-30-05 14:33 
+----------------------------------------------------------------------
+At the "SPDIF Out", press M to change it. Not +
 
-Final-Recipient: RFC822; tia@mclink.it
-X-Actual-Recipient: rfc822; tia@mailhub1.mclink.it
-Action: failed
-Status: 5.1.1
-Last-Attempt-Date: Mon, 30 May 2005 14:06:38 +0200 (CEST)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-14-05 19:27 Cimmo          New Issue                                    
+04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
+04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
+04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
+FC4-x86_64 that contains 2.6.12rc2
+04-14-05 21:42 jcdutton       Note Added: 0004495                          
+04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
+05-11-05 15:05 Cimmo          Note Added: 0004636                          
+05-14-05 13:14 pelias         Note Added: 0004657                          
+05-14-05 15:48 jcdutton       Note Added: 0004659                          
+05-20-05 00:14 dwh            Note Added: 0004697                          
+05-28-05 12:16 jcdutton       Note Added: 0004764                          
+05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
+05-30-05 12:57 Cimmo          Note Added: 0004805                          
+05-30-05 12:58 Cimmo          File Added: alsamixer.jpg                    
+05-30-05 14:33 jcdutton       Note Added: 0004814                          
+======================================================================
 
---j4UC60AW097766.1117454798/mailhub1.mclink.it
-Content-Type: text/rfc822-headers
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Received: from ns3.mclink.it (ns3.mclink.it [195.110.128.118])
-	by mailhub1.mclink.it (8.12.9p2/8.12.3) with ESMTP id j4UC50T8097278
-	for <tia@mclink.it>; Mon, 30 May 2005 14:05:02 +0200 (CEST)
-	(envelope-from alsa-devel@lists.sourceforge.net)
-Received: from mclink.it ([62.85.89.194])
-	by ns3.mclink.it (8.12.11/8.12.8) with ESMTP id j4UC4o5H044562
-	for <tia@mclink.it>; Mon, 30 May 2005 14:04:51 +0200 (CEST)
-	(envelope-from alsa-devel@lists.sourceforge.net)
-Message-Id: <200505301204.j4UC4o5H044562@ns3.mclink.it>
-From: alsa-devel@lists.sourceforge.net
-To: tia@mclink.it
-Subject: Re: message
-Date: Mon, 30 May 2005 15:04:51 +0300
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016_0000067C.00000880"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
---j4UC60AW097766.1117454798/mailhub1.mclink.it--
 
 
 
