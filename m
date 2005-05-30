@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000591]: Please allow control of shm gid
-Date: Mon, 30 May 2005 13:03:44 +0200
-Message-ID: <e4d2935244d0e6b5bb36c245ae026557@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000753]: Setting of hw params rate and channels in c++ interface on development seems to use old parameter setting functions.
+Date: Mon, 30 May 2005 13:07:05 +0200
+Message-ID: <6e893dca68acbbaa478b2d7b2c920705@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DEB91B4
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 13:03:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A0D71B4
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 13:07:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=591> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=753> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                fredy
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   591
-Category:                   general
+Issue ID:                   753
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
+Status:                     new
 ======================================================================
-Date Submitted:             10-21-2004 10:49 CEST
-Last Modified:              05-30-2005 13:03 CEST
+Date Submitted:             12-28-2004 23:28 CET
+Last Modified:              05-30-2005 13:07 CEST
 ======================================================================
-Summary:                    Please allow control of shm gid
+Summary:                    Setting of hw params rate and channels in c++
+interface on development seems to use old parameter setting functions.
 Description: 
-A Debian user requested:
-
-> ALSA provides options to specify shm permissions, but it 
-> is currently not possible to specify a shm gid.
-> So, if I want to use dmix system-wide I have to use 
-> shm_perm 0666, but I'd rather use shm_perm 0660 and 
-> shm_gid audio if that were possible.
-
-Please see Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=277539 "Please allow
-control of shm gid" for
-the whole submission.
-
-    http://bugs.debian.org/277539
+In developing a c++ class for pcm_interface I can't set the rate an
+channels. For example setting a rate of 48000 samples/sec leaves the
+parameters with odd values.
+By debugging I see that while setting access and format uses the regular
+pcm_hw_params_... functions, setting rate uses _old_pcm_hw_params and
+probably uses different parameters structures. I've searched #defines in
+headers that force the use of old functions without finding anthing
+related.
+The test program pcm works correctly. 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 05-30-05 12:55 
+ jdthood - 03-16-05 22:27 
 ----------------------------------------------------------------------
-Where and when will the new feature appear?  E.g.: CVS, tomorrow?
-
-----------------------------------------------------------------------
- perex - 05-30-05 13:03 
-----------------------------------------------------------------------
-It's in CVS, so please, wait until SF's anonymous CVS will be in sync (a
-few hours).
+Could this possibly be related to http://bugs.debian.org/288652 ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 10:49 jdthood        New Issue                                    
-10-21-04 17:25 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
- 
-05-30-05 12:19 perex          Note Added: 0004801                          
-05-30-05 12:19 perex          Assigned To               => perex           
-05-30-05 12:19 perex          Status                   new => feedback     
-05-30-05 12:55 jdthood        Note Added: 0004804                          
-05-30-05 13:03 perex          Note Added: 0004806                          
+12-28-04 23:28 fredy          New Issue                                    
+03-16-05 22:27 jdthood        Note Added: 0003968                          
+05-30-05 13:07 perex          Category                 ordinary pcm => pcm -
+digital audio
 ======================================================================
 
 
