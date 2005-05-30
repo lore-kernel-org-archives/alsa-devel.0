@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000591]: Please allow control of shm gid
-Date: Mon, 30 May 2005 12:55:46 +0200
-Message-ID: <b3b48fe6b6ddb1e2ace27feb9fcb4599@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
+Date: Mon, 30 May 2005 12:57:35 +0200
+Message-ID: <94954e8631b3ea594baa0035a74f9657@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C815318B
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:55:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 546721B4
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:57:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=591> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                Cimmo
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   591
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   1053
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     feedback
+Distribution:               Fedora Core 4 test 2
+Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
 ======================================================================
-Date Submitted:             10-21-2004 10:49 CEST
-Last Modified:              05-30-2005 12:55 CEST
+Date Submitted:             04-14-2005 19:27 CEST
+Last Modified:              05-30-2005 12:57 CEST
 ======================================================================
-Summary:                    Please allow control of shm gid
+Summary:                    cannot change line-in volume on MSI K8N Platinum
+that has SBLive! 24 bit
 Description: 
-A Debian user requested:
+I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack in the pci version of the sb live 24
+bit (see image).
 
-> ALSA provides options to specify shm permissions, but it 
-> is currently not possible to specify a shm gid.
-> So, if I want to use dmix system-wide I have to use 
-> shm_perm 0666, but I'd rather use shm_perm 0660 and 
-> shm_gid audio if that were possible.
+The result is that I cannot use line-in for my soundcard becuase the
+volume is 0 and I cannot change it.
 
-Please see Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=277539 "Please allow
-control of shm gid" for
-the whole submission.
-
-    http://bugs.debian.org/277539
+The "Capture feedback into playback" in the mixer change the mic's volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-30-05 12:19 
+ jcdutton - 05-28-05 12:16 
 ----------------------------------------------------------------------
-I have added ipc_gid support to alsa-lib. Could you test it?
+We now have enough information to enable sound CAPTURE on the SB Live 24bit
+card.
+It is now supported in the current alsa-driver cvs.
+I have tested the PCI Card, and it now works for Mic and Line In.
+I have not tested the MSI motherboard based card.
+Please test and report.
 
 ----------------------------------------------------------------------
- jdthood - 05-30-05 12:55 
+ Cimmo - 05-30-05 12:57 
 ----------------------------------------------------------------------
-Where and when will the new feature appear?  E.g.: CVS, tomorrow?
+Updated driver/kernel from CVS.
+
+Cannot change yet line-in volume.
+With alsamixer there is SPDIF Out item that is 00 and if I press '+'
+doens't change anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 10:49 jdthood        New Issue                                    
-10-21-04 17:25 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
- 
-05-30-05 12:19 perex          Note Added: 0004801                          
-05-30-05 12:19 perex          Assigned To               => perex           
-05-30-05 12:19 perex          Status                   new => feedback     
-05-30-05 12:55 jdthood        Note Added: 0004804                          
+04-14-05 19:27 Cimmo          New Issue                                    
+04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
+04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
+04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
+FC4-x86_64 that contains 2.6.12rc2
+04-14-05 21:42 jcdutton       Note Added: 0004495                          
+04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
+05-11-05 15:05 Cimmo          Note Added: 0004636                          
+05-14-05 13:14 pelias         Note Added: 0004657                          
+05-14-05 15:48 jcdutton       Note Added: 0004659                          
+05-20-05 00:14 dwh            Note Added: 0004697                          
+05-28-05 12:16 jcdutton       Note Added: 0004764                          
+05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
+05-30-05 12:57 Cimmo          Note Added: 0004805                          
 ======================================================================
 
 
