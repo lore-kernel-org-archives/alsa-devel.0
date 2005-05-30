@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
-Date: Mon, 30 May 2005 12:59:13 +0200
-Message-ID: <8c7b7ed9ad14da6238526db10330acc2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000591]: Please allow control of shm gid
+Date: Mon, 30 May 2005 13:03:44 +0200
+Message-ID: <e4d2935244d0e6b5bb36c245ae026557@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49B241B4
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 12:59:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DEB91B4
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 13:03:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,116 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=591> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   829
+Issue ID:                   591
 Category:                   general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     feedback
 ======================================================================
-Date Submitted:             01-17-2005 09:21 CET
-Last Modified:              05-30-2005 12:59 CEST
+Date Submitted:             10-21-2004 10:49 CEST
+Last Modified:              05-30-2005 13:03 CEST
 ======================================================================
-Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
-`snd_config_get_pointer' from incompatible pointer type"
+Summary:                    Please allow control of shm gid
 Description: 
-Making all in alisp
-[...]
-if /bin/sh ../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H -I.
--I. -I../include -I../include  -D__ppc__  -g -Wall -O2 -MT confmisc.lo -MD
--MP -MF ".deps/confmisc.Tpo" \
-  -c -o confmisc.lo `test -f 'confmisc.c' || echo './'`confmisc.c; \
-then mv -f ".deps/confmisc.Tpo" ".deps/confmisc.Plo"; \
-else rm -f ".deps/confmisc.Tpo"; exit 1; \
-fi
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c  -fPIC -DPIC -o .libs/confmisc.o
-confmisc.c: In function `snd_func_private_pcm_subdevice':
-confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from
-incompatible pointer type
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c -o confmisc.o >/dev/null 2>&1
+A Debian user requested:
 
+> ALSA provides options to specify shm permissions, but it 
+> is currently not possible to specify a shm gid.
+> So, if I want to use dmix system-wide I have to use 
+> shm_perm 0666, but I'd rather use shm_perm 0660 and 
+> shm_gid audio if that were possible.
+
+Please see Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=277539 "Please allow
+control of shm gid" for
+the whole submission.
+
+    http://bugs.debian.org/277539
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 09:30 
+ jdthood - 05-30-05 12:55 
 ----------------------------------------------------------------------
-This warning appears on alpha, ia64, hppa, sparc and powerpc too.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=alpha&stamp=1105907568&file=log&as=raw
-for the full alpha build log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=ia64&stamp=1105907385&file=log&as=raw
-for the full ia64 buld log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=hppa&stamp=1105909875&file=log&as=raw
-for the full hppa build log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=sparc&stamp=1105912213&file=log&as=raw
-for the full sparc build log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=powerpc&stamp=1105933411&file=log&as=raw
-for the full powerpc build log.
+Where and when will the new feature appear?  E.g.: CVS, tomorrow?
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 11:26 
+ perex - 05-30-05 13:03 
 ----------------------------------------------------------------------
-Also on s390.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
-for the full s390 build log.
-
-----------------------------------------------------------------------
- jdthood - 01-18-05 16:49 
-----------------------------------------------------------------------
-Also on mips.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=mips&stamp=1106048896&file=log&as=raw
-for the full mips build log.
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 14:31 
-----------------------------------------------------------------------
-The warning is very cosmetic.  You can ignore it.
-Will fix in the later version.
-
-----------------------------------------------------------------------
- jdthood - 01-19-05 14:39 
-----------------------------------------------------------------------
-> The warning is very cosmetic. You can ignore it.
-
-Yes, I guessed so when I started finding it on more and more
-architectures.
-
-> Will fix in the later version.
-
-OK, good.  It's best to eliminate as many spurious warning messages
-as possible.
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 14:44 
-----------------------------------------------------------------------
-Yep, this should get fixed.
-The problem is perhaps const void **.  Both const and "void **" are tricky
-to use...
-
-Anyway, thanks for these reports.
+It's in CVS, so please, wait until SF's anonymous CVS will be in sync (a
+few hours).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:21 jdthood        New Issue                                    
-01-17-05 09:30 jdthood        Note Added: 0003224                          
-01-17-05 11:26 jdthood        Note Added: 0003233                          
-01-18-05 16:49 jdthood        Note Added: 0003251                          
-01-19-05 14:31 tiwai          Note Added: 0003269                          
-01-19-05 14:39 jdthood        Note Added: 0003274                          
-01-19-05 14:44 tiwai          Note Added: 0003277                          
-05-30-05 12:59 perex          Category                 alisp => general    
+10-21-04 10:49 jdthood        New Issue                                    
+10-21-04 17:25 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
+ 
+05-30-05 12:19 perex          Note Added: 0004801                          
+05-30-05 12:19 perex          Assigned To               => perex           
+05-30-05 12:19 perex          Status                   new => feedback     
+05-30-05 12:55 jdthood        Note Added: 0004804                          
+05-30-05 13:03 perex          Note Added: 0004806                          
 ======================================================================
 
 
