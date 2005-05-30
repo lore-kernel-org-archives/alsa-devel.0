@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001146]: Cannot compile alsa-utils
-Date: Mon, 30 May 2005 15:06:23 +0200
-Message-ID: <861bce20bea4f5e3652f7892c3f501e5@bugtrack.alsa-project.org>
+Date: Mon, 30 May 2005 15:11:55 +0200
+Message-ID: <623b0d3e92c0bcbc6bba9f3042cb61e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBBE81BF
-	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 15:06:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E6371BF
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2005 15:11:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1146> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Fedora Core 4 test3
 Kernel Version:             2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             05-30-2005 15:06 CEST
-Last Modified:              05-30-2005 15:06 CEST
+Last Modified:              05-30-2005 15:11 CEST
 ======================================================================
 Summary:                    Cannot compile alsa-utils
 Description: 
@@ -66,6 +68,11 @@ make[1]: Leaving directory `/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
 make: *** [all-recursive] Error 1
 ======================================================================
 
+----------------------------------------------------------------------
+ perex - 05-30-05 15:11 
+----------------------------------------------------------------------
+Install correctly alsa-lib 1.0.9 as first.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -73,6 +80,9 @@ Date Modified  Username       Field                    Change
 05-30-05 15:06 Cimmo          Distribution              => Fedora Core 4 test3
 05-30-05 15:06 Cimmo          Kernel Version            =>
 2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
+05-30-05 15:11 perex          Status                   assigned => resolved
+05-30-05 15:11 perex          Resolution               open => fixed       
+05-30-05 15:11 perex          Note Added: 0004818                          
 ======================================================================
 
 
