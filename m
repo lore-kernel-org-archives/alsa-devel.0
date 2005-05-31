@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
-Date: Tue, 31 May 2005 18:04:59 +0200
-Message-ID: <e14d96953f392b97bf76901c1047505f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000336]: No sound playing
+Date: Tue, 31 May 2005 18:05:01 +0200
+Message-ID: <209f26135f557c868473e3212740c19a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 954661CA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BA811BF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:05:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=336> 
 ======================================================================
-Reported By:                Gregoire
+Reported By:                davidgvh
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   668
-Category:                   PCI - via82xx
+Issue ID:                   336
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               gentoo amd64
-Kernel Version:             2.6.10-rc2
-Resolution:                 fixed
+Distribution:               Fedora Core 2
+Kernel Version:             2.4.27-pre5
+Resolution:                 not fixable
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-23-2004 16:04 CET
-Last Modified:              05-31-2005 18:04 CEST
+Date Submitted:             06-16-2004 14:03 CEST
+Last Modified:              05-31-2005 18:05 CEST
 ======================================================================
-Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
-rc2
+Summary:                    No sound playing
 Description: 
-I have checked the changelog but I don't know what exactly have changed to
-see which change breake the AC3 passtrough ?
+I cannot get sound to work. After probing snd-card-0, I cannot change the
+volume for the PCM channel in alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gregoire - 03-23-05 17:17 
+ davidgvh - 06-22-04 02:40 
 ----------------------------------------------------------------------
-Sorry, as it worked since post 2.6.10-rc2 kernels, I thought you fixed this
-issue.
-I use now 2.6.12-rc1 and it works perfectly, would it help if I do what
-you want with older kernels ?
+Sound plays under 2.4.27-rc1. Did not play before. Thinking the problem is
+a kernel issue. However, the kernel has timing issues. Everything is 2-3
+times faster. Sound plays at correct rate though. Still cannot change PCM
+volume in alsamixer though.
+
+edited on: 06-22-04 02:40
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 17:21 
+ tiwai - 06-30-04 15:51 
 ----------------------------------------------------------------------
-Just checking to make sure that the problem is indeed fixed.
+The codec doesn't support PCM volume indeed.  It's not a bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 16:04 Gregoire       New Issue                                    
-11-23-04 16:04 Gregoire       Distribution              => gentoo amd64    
-11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
-11-23-04 16:08 tiwai          Note Added: 0002518                          
-03-23-05 15:23 jdthood        Note Added: 0004158                          
-03-23-05 17:17 Gregoire       Note Added: 0004179                          
-03-23-05 17:21 jdthood        Note Added: 0004180                          
-03-23-05 17:21 jdthood        Status                   new => resolved     
-03-23-05 17:21 jdthood        Resolution               open => fixed       
-03-24-05 21:42 Ariel          Issue Monitored: Ariel                       
-05-31-05 18:04 perex          Status                   resolved => closed  
+06-16-04 14:03 davidgvh       New Issue                                    
+06-16-04 14:03 davidgvh       File Added: ac97#0-0+regs                    
+06-16-04 14:03 davidgvh       Distribution              => Fedora Core 2   
+06-16-04 14:03 davidgvh       Kernel Version            => 2.4.27-pre5     
+06-16-04 14:04 davidgvh       File Added: ac97#0-0                         
+06-16-04 14:06 davidgvh       Note Added: 0001312                          
+06-17-04 00:28 davidgvh       Note Added: 0001313                          
+06-22-04 02:37 davidgvh       Note Edited: 0001312                         
+06-22-04 02:38 davidgvh       Note Edited: 0001312                         
+06-22-04 02:39 davidgvh       Note Added: 0001327                          
+06-22-04 02:40 davidgvh       Note Edited: 0001327                         
+06-30-04 15:51 tiwai          Note Added: 0001353                          
+03-23-05 15:50 jdthood        Status                   new => resolved     
+03-23-05 15:50 jdthood        Resolution               open => not fixable 
+04-01-05 15:50 romano         Issue Monitored: romano                      
+05-31-05 18:05 perex          Status                   resolved => closed  
 ======================================================================
 
 
