@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000755]: get error when trying to build 1.0.5 drivers with kernel 2.6.10
-Date: Tue, 31 May 2005 18:03:58 +0200
-Message-ID: <e151bbaae5f18cf1039fef5c6b4783a4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000286]: Wrong MIDI I/O count in HDSP9632
+Date: Tue, 31 May 2005 18:04:21 +0200
+Message-ID: <d3c7cd7fd97f6e240c27381af839a74b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E313D1DC
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB2931CA
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=755> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286> 
 ======================================================================
-Reported By:                wschrep
-Assigned To:                perex
+Reported By:                penttiala
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   755
-Category:                   0_compilation problem_!!!
+Issue ID:                   286
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               knoppmyth r4v5
-Kernel Version:             2.6.10
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-29-2004 00:50 CET
-Last Modified:              05-31-2005 18:03 CEST
+Date Submitted:             05-20-2004 17:22 CEST
+Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    get error when trying to build 1.0.5 drivers with
-kernel 2.6.10
+Summary:                    Wrong MIDI I/O count in HDSP9632
 Description: 
-make -C /lib/modules/2.6.10/build
-SUBDIRS=/root/alsa/alsa-driver-1.0.5/kbuild modules
-make[1]: Entering directory `/usr/src/linux-2.6.10'
-  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/hwdep.o
-  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o
-/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: initializer
-element is not constant
-/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: (near
-initialization for `__param_arr_enable.num')
-make[3]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o]
-Error 1
-make[2]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore] Error 2
-make[1]: *** [_module_/root/alsa/alsa-driver-1.0.5/kbuild] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.10'
-make: *** [compile] Error 2
-root@mythtv:~/alsa/alsa-driver-1.0.5 # uname -r
-2.6.10
-root@mythtv:~/alsa/alsa-driver-1.0.5 # gcc --version
-gcc (GCC) 3.3.2 20030812 (Debian prerelease)
-Copyright (C) 2003 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is
-NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.
-
-
+There is only one MIDI I/O in HDSP9632 but driver tells there is two.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-29-04 00:56 
+ charbonnel - 01-28-05 18:22 
 ----------------------------------------------------------------------
-Please don't report bugs for old ALSA versions.  Try 1.0.8-rc1.
+I just submitted a patch on alsa-devel that should solve the problem.
+Sorry about the "soon" in my previous note :)
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:46 
+ charbonnel - 02-01-05 21:42 
 ----------------------------------------------------------------------
-No reaction.
+Fixed in cvs, fix should appear in alsa > 1.0.8
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 00:50 wschrep        New Issue                                    
-12-29-04 00:50 wschrep        Distribution              => knoppmyth r4v5  
-12-29-04 00:50 wschrep        Kernel Version            => 2.6.10          
-12-29-04 00:56 rlrevell       Note Added: 0002988                          
-02-22-05 09:46 perex          Status                   assigned => resolved
-02-22-05 09:46 perex          Resolution               open => fixed       
-02-22-05 09:46 perex          Note Added: 0003692                          
-05-31-05 18:03 perex          Status                   resolved => closed  
+05-20-04 17:22 penttiala      New Issue                                    
+05-22-04 13:42 charbonnel     Note Added: 0001170                          
+12-24-04 12:35 penttiala      Issue Monitored: penttiala                    
+01-28-05 18:22 charbonnel     Note Added: 0003433                          
+02-01-05 21:42 charbonnel     Status                   assigned => resolved
+02-01-05 21:42 charbonnel     Resolution               open => fixed       
+02-01-05 21:42 charbonnel     Note Added: 0003469                          
+03-13-05 15:27 penttiala      Issue End Monitor: penttiala                    
+05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
 
