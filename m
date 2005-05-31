@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000813]: Terratec USB surround broken
-Date: Tue, 31 May 2005 18:03:50 +0200
-Message-ID: <2b333f75fb1bd6e75c90c14a9dfb2f4d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000021]: HDSP 9652 not recognized on boot 80-90% of the time
+Date: Tue, 31 May 2005 18:04:18 +0200
+Message-ID: <3e47c1daf31e14311e37d4c6be4dcc3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A9E61D9
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B89421AF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,106 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21> 
 ======================================================================
-Reported By:                ilikejam
-Assigned To:                Clemens Ladisch
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   813
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   21
+Category:                   PCI - RME HDSP
+Reproducibility:            random
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10 (ALSA compiled in)
-Resolution:                 not an issue
+Distribution:               Gentoo
+Kernel Version:             2.4.22-rc2 & others
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-12-2005 19:41 CET
-Last Modified:              05-31-2005 18:03 CEST
+Date Submitted:             01-31-2004 23:13 CET
+Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    Terratec USB surround broken
+Summary:                    HDSP 9652 not recognized on boot 80-90% of the time
 Description: 
-I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
-'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
-'aplay -Dsurround51 file.wav' results in errors e.g.
------
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-aplay: main:508: audio open error: Invalid argument
------
-Xine similarly fails saying the sound card is in use. Xine works fine for
-stereo audio, even when configured to use 5.1 channel sound.
+The HDSP 9652 is not recognized 80-90% of the time on boot. Restarting Alsa
+in an xterm produces the same messages. Out of at least 20 boots this
+afternoon only one has found the device. 
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-24-05 08:55 
+ Mark Knecht - 02-01-05 21:41 
 ----------------------------------------------------------------------
-The resampling is done by ALSA (if the device could do it, it would be
-indicated in the stream0 file).  Using ALSA device name "default" or
-"plughw" enables the "plug" plugin which does automatic resampling and
-sample format conversions.
+Hi Thomas,
+   I'll just report that I haven't seen this problem for a very long time.
+Alsa and basic hdsp 9652 support for me is very good these days. I drive
+my Pro Tools hardware everyday with the HDSP 9652 and things work great
+here.
 
-To prevent resampling, use "hw" which goes directly to the hardware.
-
-However, you won't be able to send 44.1 kHz in this way because with
-SPDIF, it's always the sending device that determines the speed.
+- Mark
 
 ----------------------------------------------------------------------
- ilikejam - 02-24-05 16:33 
+ charbonnel - 02-01-05 22:10 
 ----------------------------------------------------------------------
-Yup. Right again. (Chipmunks style music with -D hw)
-
-Thanks a lot for your help. I think I'll look for a more capable sound
-card...
-
-Dave
+Unable to duplicate with current alsa versions.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 19:41 ilikejam       New Issue                                    
-01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
-01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
-in)
-01-26-05 09:02 ilikejam       Note Added: 0003413                          
-01-26-05 10:40 Clemens LadischNote Added: 0003414                          
-01-26-05 11:11 ilikejam       Note Added: 0003415                          
-01-31-05 20:52 ilikejam       Note Added: 0003458                          
-02-07-05 10:40 Clemens LadischNote Added: 0003528                          
-02-23-05 22:29 ilikejam       Note Added: 0003716                          
-02-24-05 08:55 Clemens LadischNote Added: 0003719                          
-02-24-05 16:33 ilikejam       Note Added: 0003722                          
-02-24-05 16:37 Clemens LadischStatus                   assigned => resolved
-02-24-05 16:37 Clemens LadischResolution               open => not an issue
-05-31-05 18:03 perex          Status                   resolved => closed  
+01-31-04 23:13 Mark Knecht    New Issue                                    
+01-31-04 23:14 Mark Knecht    Note Added: 0000081                          
+01-31-04 23:17 Mark Knecht    Note Added: 0000083                          
+02-01-04 08:21 perex          Assigned To               => charbonnel      
+02-01-04 08:21 perex          Status                   new => assigned     
+02-01-04 08:21 perex          Category                 PCI - RME Digi9652/9636
+=> PCI - RME HDSP
+02-01-04 13:11 charbonnel     File Added: hdsp9652.patch                    
+02-01-04 13:12 charbonnel     Note Added: 0000089                          
+02-01-04 13:36 Mark Knecht    Note Added: 0000090                          
+02-01-04 13:52 Mark Knecht    Note Added: 0000091                          
+02-01-04 14:01 charbonnel     File Added: hdsp9652_2.patch                    
+02-01-04 14:02 charbonnel     Note Added: 0000092                          
+02-01-04 14:15 Mark Knecht    Note Added: 0000093                          
+02-01-04 14:16 Mark Knecht    Note Edited: 0000093                         
+02-01-04 14:18 Mark Knecht    Note Added: 0000094                          
+02-01-04 14:53 charbonnel     Note Added: 0000095                          
+02-01-04 15:05 Mark Knecht    Note Added: 0000096                          
+02-01-04 15:42 charbonnel     File Added: hdsp9652_3.patch                    
+02-01-04 15:43 charbonnel     Note Added: 0000097                          
+02-01-04 17:55 Mark Knecht    Note Added: 0000099                          
+02-01-04 17:59 Mark Knecht    Note Added: 0000100                          
+02-01-04 18:00 Mark Knecht    Note Edited: 0000099                         
+02-01-04 18:09 charbonnel     Note Added: 0000101                          
+02-02-04 04:01 Mark Knecht    Note Added: 0000103                          
+02-02-04 04:01 Mark Knecht    File Added: alsa-driver-1.0.2a.ebuild             
+      
+02-02-04 04:03 Mark Knecht    Note Edited: 0000103                         
+02-02-04 04:04 Mark Knecht    Note Edited: 0000103                         
+02-08-04 23:04 Mark Knecht    Note Added: 0000206                          
+03-09-04 18:48 perex          Status                   assigned => resolved
+03-09-04 18:48 perex          Resolution               open => suspended   
+03-09-04 18:48 perex          Assigned To              charbonnel => perex 
+03-09-04 18:48 perex          Note Added: 0000556                          
+03-09-04 21:20 Mark Knecht    Status                   resolved => feedback
+03-09-04 21:20 Mark Knecht    Resolution               suspended => reopened
+03-09-04 21:21 Mark Knecht    Note Added: 0000558                          
+03-12-04 12:50 perex          Assigned To              perex => charbonnel 
+03-15-04 12:14 perex          Status                   feedback => assigned
+05-08-04 03:36 charbonnel     Note Added: 0001067                          
+05-08-04 06:14 Mark Knecht    Note Added: 0001068                          
+05-08-04 06:14 nquit          Note Added: 0001069                          
+05-09-04 21:30 charbonnel     Note Added: 0001073                          
+05-09-04 23:08 Mark Knecht    Note Added: 0001074                          
+05-09-04 23:53 nquit          Note Added: 0001075                          
+05-09-04 23:58 nquit          Note Added: 0001076                          
+05-12-04 11:32 charbonnel     Note Added: 0001091                          
+02-01-05 21:12 charbonnel     Note Added: 0003464                          
+02-01-05 21:41 Mark Knecht    Note Added: 0003468                          
+02-01-05 22:10 charbonnel     Status                   assigned => resolved
+02-01-05 22:10 charbonnel     Resolution               reopened => unable to
+duplicate
+02-01-05 22:10 charbonnel     Note Added: 0003473                          
+05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
 
