@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000861]: Inserting module returns no errors, but /proc/asound/cards is still empty
-Date: Tue, 31 May 2005 18:04:07 +0200
-Message-ID: <c70f6123178c24da3f8ca119bfe45e77@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000755]: get error when trying to build 1.0.5 drivers with kernel 2.6.10
+Date: Tue, 31 May 2005 18:03:58 +0200
+Message-ID: <e151bbaae5f18cf1039fef5c6b4783a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2046F1DA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E313D1DC
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=861> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=755> 
 ======================================================================
-Reported By:                olsonle
-Assigned To:                
+Reported By:                wschrep
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   861
-Category:                   ISA - cs4236
+Issue ID:                   755
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
+Distribution:               knoppmyth r4v5
 Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-30-2005 00:44 CET
-Last Modified:              05-31-2005 18:04 CEST
+Date Submitted:             12-29-2004 00:50 CET
+Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Inserting module returns no errors, but
-/proc/asound/cards is still empty
+Summary:                    get error when trying to build 1.0.5 drivers with
+kernel 2.6.10
 Description: 
-Inserting snd-cs4236 module appears to be successful.  In fact, lsmod shows
-that the modules have indeed been loaded.  However, /proc/asound/cards
-still reads "--- no soundcards ---".  Checking dmesg, as well as
-/var/log/kernel/current, shows the following error messages:
+make -C /lib/modules/2.6.10/build
+SUBDIRS=/root/alsa/alsa-driver-1.0.5/kbuild modules
+make[1]: Entering directory `/usr/src/linux-2.6.10'
+  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/hwdep.o
+  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o
+/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: initializer
+element is not constant
+/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: (near
+initialization for `__param_arr_enable.num')
+make[3]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o]
+Error 1
+make[2]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore] Error 2
+make[1]: *** [_module_/root/alsa/alsa-driver-1.0.5/kbuild] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.10'
+make: *** [compile] Error 2
+root@mythtv:~/alsa/alsa-driver-1.0.5 # uname -r
+2.6.10
+root@mythtv:~/alsa/alsa-driver-1.0.5 # gcc --version
+gcc (GCC) 3.3.2 20030812 (Debian prerelease)
+Copyright (C) 2003 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is
+NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
 
-[kernel] kobject_register failed for snd_page_alloc (-17)
-[kernel] kobject_register failed for snd (-17)
-[kernel] kobject_register failed for snd_timer (-17)
-[kernel] kobject_register failed for snd_pcm (-17)
-[kernel] kobject_register failed for snd_rawmidi (-17)
-[kernel] kobject_register failed for snd_cs4236 (-17)
 
-Running amixer of course fails as well, with a "no such device" error.
-
-Kernel .config file is attached.
 ======================================================================
 
 ----------------------------------------------------------------------
- olsonle - 02-14-05 19:40 
+ rlrevell - 12-29-04 00:56 
 ----------------------------------------------------------------------
-Updating to a later kernel build (2.6.10-gentoo-r6) seems to make the
-problem go away.  Works for me.
+Please don't report bugs for old ALSA versions.  Try 1.0.8-rc1.
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 19:41 
+ perex - 02-22-05 09:46 
 ----------------------------------------------------------------------
-Moved to FIXED.
+No reaction.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-30-05 00:44 olsonle        New Issue                                    
-01-30-05 00:44 olsonle        File Added: .config                          
-01-30-05 00:44 olsonle        Distribution              => Gentoo          
-01-30-05 00:44 olsonle        Kernel Version            => 2.6.10          
-02-14-05 19:40 olsonle        Note Added: 0003603                          
-02-14-05 19:41 tiwai          Status                   new => resolved     
-02-14-05 19:41 tiwai          Resolution               open => fixed       
-02-14-05 19:41 tiwai          Assigned To               => tiwai           
-02-14-05 19:41 tiwai          Note Added: 0003604                          
-02-14-05 19:41 tiwai          Assigned To              tiwai =>            
-05-31-05 18:04 perex          Status                   resolved => closed  
+12-29-04 00:50 wschrep        New Issue                                    
+12-29-04 00:50 wschrep        Distribution              => knoppmyth r4v5  
+12-29-04 00:50 wschrep        Kernel Version            => 2.6.10          
+12-29-04 00:56 rlrevell       Note Added: 0002988                          
+02-22-05 09:46 perex          Status                   assigned => resolved
+02-22-05 09:46 perex          Resolution               open => fixed       
+02-22-05 09:46 perex          Note Added: 0003692                          
+05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
 
