@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001142]: alsamixer (alsa-utils-1.0.9) crash when going to right controls
-Date: Tue, 31 May 2005 12:56:20 +0200
-Message-ID: <ee7ca8b60d59c95fe03d9aa9944b7023@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001135]: Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012] kernels (usbmidi.c patching).
+Date: Tue, 31 May 2005 12:57:43 +0200
+Message-ID: <af4514c2d30b9d5050dd1c5c083780f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A7FF196
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 12:56:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 95222196
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 12:57:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1142> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1135> 
 ======================================================================
-Reported By:                atermiles
-Assigned To:                tiwai
+Reported By:                thimm
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1142
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1135
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Resolution:                 duplicate
-Duplicate:                  1131
+Distribution:               
+Kernel Version:             2.4.20-22
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-29-2005 13:31 CEST
-Last Modified:              05-31-2005 12:56 CEST
+Date Submitted:             05-28-2005 09:52 CEST
+Last Modified:              05-31-2005 12:57 CEST
 ======================================================================
-Summary:                    alsamixer (alsa-utils-1.0.9) crash when going to
-right controls
+Summary:                    Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012]
+kernels (usbmidi.c patching).
 Description: 
-When going to right controls in alsamixer(alsa-utils-1.0.9)
-there is an error:
-"mixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion `helem'
-failed"
+Trying to build alsa-driver 1.0.9 on any 2.4 based RHL (7.3 to 9), FC1 or
+RHEL3 kernel the build aborts with:
 
-alsa-driver-1.0.9 and alsa-lib-1.0.9 works good with alsa-utils-1.0.8
+patching file usbmidi.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 FAILED at 288.
+1 out of 4 hunks FAILED -- saving rejects to file usbmidi.c.rej
+make[2]: *** [usbmidi.c] Error 1
+make[2]: Leaving directory `/var/tmp/BUILD/alsa-driver-1.0.9/usb'
+make[1]: *** [dep] Error 1
+make[1]: Leaving directory `/var/tmp/BUILD/alsa-driver-1.0.9'
 
-(soundcard: au8830)
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001131 Alsamixer crashing - using Audigy Plati...
-======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-29-05 13:47 
+ ZlatkO - 05-28-05 12:04 
 ----------------------------------------------------------------------
-This is a duplicate of bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131
+Trivial patch attached. :-)
+
+----------------------------------------------------------------------
+ tiwai - 05-31-05 12:57 
+----------------------------------------------------------------------
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-05 13:31 atermiles      New Issue                                    
-05-29-05 13:47 jcdutton       Note Added: 0004785                          
-05-31-05 12:56 tiwai          Relationship added       duplicate of 0001131
-05-31-05 12:56 tiwai          Duplicate ID             0 => 1131           
-05-31-05 12:56 tiwai          Status                   new => resolved     
-05-31-05 12:56 tiwai          Resolution               open => duplicate   
-05-31-05 12:56 tiwai          Assigned To               => tiwai           
+05-28-05 09:52 thimm          New Issue                                    
+05-28-05 09:52 thimm          Kernel Version            => 2.4.20-22       
+05-28-05 11:57 ZlatkO         Note Added: 0004761                          
+05-28-05 12:03 ZlatkO         File Added: alsa-driver-1.0.9.diff                
+   
+05-28-05 12:04 ZlatkO         Note Added: 0004762                          
+05-31-05 12:57 tiwai          Status                   assigned => resolved
+05-31-05 12:57 tiwai          Resolution               open => fixed       
+05-31-05 12:57 tiwai          Note Added: 0004824                          
 ======================================================================
 
 
