@@ -1,11 +1,14 @@
-From: =?ISO-8859-1?Q?Tobias_Rundstr=F6m?= <tru@xmms.org>
-Subject: ALSA Plugin for XMMS2. Help wanted.
-Date: Tue, 31 May 2005 13:08:36 +0200
-Message-ID: <A633824F-4FB6-446B-9C39-26F315518B3A@xmms.org>
-Mime-Version: 1.0 (Apple Message framework v730)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001146]: Cannot compile alsa-utils
+Date: Tue, 31 May 2005 13:27:37 +0200
+Message-ID: <d23363379f73550b758daa24a1a68eca@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E618C17E
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:27:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,32 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello ALSA developers.
 
-We have just released the first public version of XMMS2. This is  
-developer release and aimed for persons who want to poke around in  
-the sourcecode and help enhancing XMMS2. Since the release of DR1 we  
-had numeros bug-reports against our alsa-plugin. We had fairly hard  
-time trying to figure out how to use the API and cope with all error  
-handling.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1146> 
+======================================================================
+Reported By:                Cimmo
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1146
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 4 test3
+Kernel Version:             2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
+======================================================================
+Date Submitted:             05-30-2005 15:06 CEST
+Last Modified:              05-31-2005 13:27 CEST
+======================================================================
+Summary:                    Cannot compile alsa-utils
+Description: 
+Compiling alsa-utils 1.0.9 with gcc 4.0.0 I've this error:
 
-This is a call for help. We would like a senior ALSA developer look  
-at our plugin and give us advice (or even write the code himself).  
-The source is available from git at http://git.xmms.se/ - direct link  
-to the alsa plugin here :
-http://git.xmms.se/? 
-p=xmms2.git;a=blob;h=c6a9e2c5e0ee6e916c71c90cc924e55df4a1e61d;hb=08c7a63 
-cf1cbbc708304675f365e1538e55b4a97;f=src/plugins/alsa/alsa.c
+Making all in alsactl
+make[1]: Entering directory
+`/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
+gcc  -g -O2   -o alsactl  alsactl.o state.o power.o names.o  -lasound -lm
+-ldl -lpthread
+names.o(.text+0xdce): In function `probe_timers':
+/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425: undefined
+reference to `snd_timer_ginfo_sizeof'
+names.o(.text+0xdee):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425:
+undefined reference to `snd_timer_ginfo_sizeof'
+names.o(.text+0xe4e):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:435:
+undefined reference to `snd_timer_ginfo_set_tid'
+names.o(.text+0xebf):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:445:
+undefined reference to `snd_timer_ginfo_get_name'
+collect2: ld returned 1 exit status
+make[1]: *** [alsactl] Error 1
+make[1]: Leaving directory `/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
+make: *** [all-recursive] Error 1
+======================================================================
 
-If you are willing to help please contact me or join our IRC channel  
-on Freenode #xmms2 and we will supply the current issues we are  
-seeing. Any help on this will be highly appriciated.
+----------------------------------------------------------------------
+ tiwai - 05-31-05 13:04 
+----------------------------------------------------------------------
+Yes.  Or run configure with the proper option.
 
-Greetings
-XMMS Team via Tobias
+----------------------------------------------------------------------
+ Cimmo - 05-31-05 13:27 
+----------------------------------------------------------------------
+Ok using --libdir=/lib64 it compiled well.
+Sorry for this bug-report.
+
+best regards
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-30-05 15:06 Cimmo          New Issue                                    
+05-30-05 15:06 Cimmo          Distribution              => Fedora Core 4 test3
+05-30-05 15:06 Cimmo          Kernel Version            =>
+2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
+05-30-05 15:11 perex          Status                   assigned => resolved
+05-30-05 15:11 perex          Resolution               open => fixed       
+05-30-05 15:11 perex          Note Added: 0004818                          
+05-30-05 15:36 Cimmo          Status                   resolved => feedback
+05-30-05 15:36 Cimmo          Resolution               fixed => reopened   
+05-30-05 15:36 Cimmo          Note Added: 0004820                          
+05-31-05 12:52 tiwai          Note Added: 0004823                          
+05-31-05 13:03 Cimmo          Note Added: 0004826                          
+05-31-05 13:04 tiwai          Note Added: 0004828                          
+05-31-05 13:27 Cimmo          Note Added: 0004830                          
+======================================================================
+
 
 
 
