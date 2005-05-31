@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000638]: emerge alsa-driver-1.0.6a fails on kbuild enabled system
-Date: Tue, 31 May 2005 18:04:01 +0200
-Message-ID: <419f9ff0501903f2bb7b28c678424f06@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000910]: Interest in support for Sound Blaster Live! 24-Bit
+Date: Tue, 31 May 2005 18:04:05 +0200
+Message-ID: <008f873de1fb327ee868d47886d2c342@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 949FD1B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88B7D1DB
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=638> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=910> 
 ======================================================================
-Reported By:                eehmke
-Assigned To:                perex
+Reported By:                pointmanx
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   638
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   910
+Category:                   OTHERS
+Reproducibility:            have not tried
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.9-r1
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-09-2004 10:42 CET
+Date Submitted:             02-15-2005 23:40 CET
 Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    emerge alsa-driver-1.0.6a fails on kbuild enabled
-system
+Summary:                    Interest in support for Sound Blaster Live! 24-Bit
 Description: 
+Is the Live! 24-bit supported? It's not listed...
 
-
-My system is kbuild enabled, i.e. the kernel is not built into the
-standard /usr/src/linux directory. Only the sourced are here. The kernel
-aoutput is in /var/tmp/kernel-output/2.6.9-gentoo-r1, the environment
-variable KBUILD_OUTPUT is set correctly. When emerging alsa-driver, the
-process fails:
-
-checking for kernel version... The file
-/usr/src/linux/include/linux/version.h does not exist.
-Please, install the package with full kernel sources for your
-distribution
-or use --with-kernel=dir option to specify another directory with kernel
-sources (default is /lib/modules/2.6.9-gentoo-r1/build).
-
-!!! ERROR: media-sound/alsa-driver-1.0.6a failed.
-
-In fact the missing file is in
-/var/tmp/kernel-output/2.6.9-gentoo-r1/include/linux/version.h
-which is correct on my system.
-
-
+If not, could ALSA add it? I think it has the same chipset as the Audigy
+Series or the original Live! 5.1 cards.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 10:50 
+ sHINOBI - 02-15-05 23:42 
 ----------------------------------------------------------------------
-Try to specify the kernel source directory with --with-kernel
-configure option.
-
-Also, try 1.0.7rc2.  Some improvements have been done since 1.0.6.
-
-----------------------------------------------------------------------
- perex - 02-22-05 09:42 
-----------------------------------------------------------------------
-No reaction...
+Yes, its supported with ca0106 driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-09-04 10:42 eehmke         New Issue                                    
-11-09-04 10:42 eehmke         Distribution              => Gentoo          
-11-09-04 10:42 eehmke         Kernel Version            => 2.6.9-r1        
-11-09-04 10:50 tiwai          Note Added: 0002320                          
-02-22-05 09:42 perex          Status                   assigned => resolved
-02-22-05 09:42 perex          Resolution               open => fixed       
-02-22-05 09:42 perex          Note Added: 0003689                          
+02-15-05 23:40 pointmanx      New Issue                                    
+02-15-05 23:42 sHINOBI        Note Added: 0003621                          
+02-16-05 17:16 tiwai          Status                   new => resolved     
+02-16-05 17:16 tiwai          Resolution               open => not an issue
+02-16-05 17:16 tiwai          Assigned To               => tiwai           
+02-16-05 17:16 tiwai          Assigned To              tiwai =>            
 05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
