@@ -1,12 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Sample ctl plugin ?
-Date: Tue, 31 May 2005 11:36:21 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505311134530.1744@pnote.perex-int.cz>
-References: <XFMail.20050531104628.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001127]: kernel panic while accessing midi
+Date: Tue, 31 May 2005 12:51:10 +0200
+Message-ID: <aa50014198d3efff3733b6aaf3c956f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20050531104628.pochini@shiny.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0D87196
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 12:51:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 31 May 2005, Giuliano Pochini wrote:
 
-> Is there any docs, examples, neural plug teaching device
-> or anything that explains how to write a ctl plugin for
-> alsa-lib ?
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1127> 
+======================================================================
+Reported By:                ulrichmoehrke
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1127
+Category:                   PCI - als4000
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               debian sarge (kernel from sid)
+Kernel Version:             2.6.11 (2.6.11-1-k7)
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             05-26-2005 09:48 CEST
+Last Modified:              05-31-2005 12:51 CEST
+======================================================================
+Summary:                    kernel panic while accessing midi
+Description: 
+When I try to play a midi file the system freezes/kernel panic.
+======================================================================
 
-Nope, but copy src/control/control_hw.c to a new file and replace ioctl() 
-calls with your code.
+----------------------------------------------------------------------
+ ulrichmoehrke - 05-30-05 22:31 
+----------------------------------------------------------------------
+The patch helps. Thank you.
 
-						Jaroslav
+----------------------------------------------------------------------
+ tiwai - 05-31-05 12:51 
+----------------------------------------------------------------------
+The patch is already on CVS.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-05 09:48 ulrichmoehrke  New Issue                                    
+05-26-05 09:48 ulrichmoehrke  File Added: aadebug.out                      
+05-26-05 09:48 ulrichmoehrke  Distribution              => debian sarge (kernel
+from sid)
+05-26-05 09:48 ulrichmoehrke  Kernel Version            => 2.6.11 (2.6.11-1-k7)
+05-27-05 12:32 tiwai          Note Added: 0004749                          
+05-27-05 12:32 tiwai          File Added: als4000-mpu401-fix.diff               
+    
+05-30-05 22:31 ulrichmoehrke  Note Added: 0004821                          
+05-31-05 12:51 tiwai          Status                   new => resolved     
+05-31-05 12:51 tiwai          Resolution               open => fixed       
+05-31-05 12:51 tiwai          Assigned To               => tiwai           
+05-31-05 12:51 tiwai          Note Added: 0004822                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
