@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001004]: Doesn't accept all sample rates, when capturing sound in S16_LE or S16_BE format.
-Date: Tue, 31 May 2005 17:56:50 +0200
-Message-ID: <f9808f25e35379e3aa1efb041985bc17@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
+Date: Tue, 31 May 2005 17:57:00 +0200
+Message-ID: <49ec472c9c09c3dece55a5e3bf299164@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E381B1B6
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05DF51C6
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:57:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1004> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=395> 
 ======================================================================
-Reported By:                hyp
-Assigned To:                tiwai
+Reported By:                thorstenl
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1004
+Issue ID:                   395
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.4.29
-Resolution:                 not an issue
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.6-1.435.2.3
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-21-2005 19:26 CET
-Last Modified:              05-31-2005 17:56 CEST
+Date Submitted:             07-17-2004 11:32 CEST
+Last Modified:              05-31-2005 17:57 CEST
 ======================================================================
-Summary:                    Doesn't accept all sample rates, when capturing
-sound in S16_LE or S16_BE format.
+Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free
+from Kenrel works)
 Description: 
-When I request to capture sound with: 8000Hz, S16 LE, stereo the ioctl
-returns me that the accepted values are the same as requested. But the
-whole read()-ed data is captured with 44100 or 48000Hz (I don't know 
-the right value, I guess it by ear), independendly from the requested
-sample rate.
-
-I tried to capture sound via sox's recorder. For example with command:
-# rec -c 1 -d /dev/dsp0 -f s -r 8000 p.snd
-When I started to play this file, I noticed that the file is captured 
-with 44100 or 48000Hz sample rate, but in the .snd header are written
-that the file is recorder with 8000Hz sample rate (as I have requested 
-it). If I set the sample rate to 48000 and play the tune, it sounds 
-good. Also this problem can be seen with my own oss recorder.
-
-When I'm using anouther sound card, for example Creative Ensoniq 1371
-or Creative EMU10K1 everything is good!
-
-best regards.
+On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
+(compiled by myself) or the version that comes with the Fedora Core 2
+Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
+Trying to experiment with the different volume settings in alsamixer did
+not help. With the oss-free module i810_audio (compiled from the Fedora
+Core 2 kernel-sourcecode) it works fine.  
 ======================================================================
 
 ----------------------------------------------------------------------
- hyp - 03-21-05 19:30 
+ thorstenl - 03-25-05 15:27 
 ----------------------------------------------------------------------
-ups...
-Intel ICH5 with Analog Devices AD1985
+jdthood, thanks for the tip. I removed the system/boards two weeks ago, so
+I can't try it anymore.
 
 ----------------------------------------------------------------------
- hyp - 03-22-05 09:43 
+ thorstenl - 03-25-05 15:31 
 ----------------------------------------------------------------------
-I'm sorry for my confusion!!!
-This is a side effect from an improper loading of snd-ca0106, which card
-doesn't exist.
-So this post can be closed...
+Seems I'm blind. I can't find any option to close this bug...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-21-05 19:26 hyp            New Issue                                    
-03-21-05 19:26 hyp            Distribution              => Slackware       
-03-21-05 19:26 hyp            Kernel Version            => 2.4.29          
-03-21-05 19:30 hyp            Note Added: 0004121                          
-03-22-05 09:43 hyp            Note Added: 0004123                          
-03-29-05 19:03 tiwai          Status                   new => resolved     
-03-29-05 19:03 tiwai          Resolution               open => not an issue
-03-29-05 19:03 tiwai          Assigned To               => tiwai           
-05-31-05 17:56 perex          Status                   resolved => closed  
+07-17-04 11:32 thorstenl      New Issue                                    
+07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
+07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
+07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
+07-17-04 11:33 thorstenl      Issue Monitored: thorstenl                    
+03-23-05 16:11 jdthood        Note Added: 0004176                          
+03-25-05 15:27 thorstenl      Note Added: 0004208                          
+03-25-05 15:27 thorstenl      Issue End Monitor: thorstenl                    
+03-25-05 15:31 thorstenl      Note Added: 0004209                          
+03-25-05 15:46 jdthood        Status                   new => resolved     
+03-25-05 15:46 jdthood        Resolution               open => unable to
+duplicate
+05-31-05 17:57 perex          Status                   resolved => closed  
 ======================================================================
 
 
