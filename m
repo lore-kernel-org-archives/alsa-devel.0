@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000071]: sizzly sound with ac97 and linux 2.6.3/2.6.2
-Date: Tue, 31 May 2005 18:02:08 +0200
-Message-ID: <ed1f9e73ac8060f7c264aa1d0b8089ea@bugtrack.alsa-project.org>
+Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
+Date: Tue, 31 May 2005 18:03:10 +0200
+Message-ID: <741fca21be8c05a65cba20883bd8139c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C98BE1B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58B131AF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=71> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
 ======================================================================
-Reported By:                MsK
-Assigned To:                perex
+Reported By:                Tom
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   71
-Category:                   PCI - via82xx
+Issue ID:                   855
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo 1.4
-Kernel Version:             linux 2.6.3/2.6.2
-Resolution:                 suspended
+Distribution:               Fedora Core 3 + Alsa 1.0.8
+Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-18-2004 22:39 CET
-Last Modified:              05-31-2005 18:02 CEST
+Date Submitted:             01-28-2005 13:21 CET
+Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    sizzly sound with ac97 and linux 2.6.3/2.6.2
+Summary:                    Analog Input doesn´t work
 Description: 
-The sound always sizzles with linux 2.6.3 ( alsa 1.0.2c ) and linux 2.6.2.
-It does'nt sizzles with linux 2.6.0 ( alsa 0.9.7 ) and with alsa 0.9.8.
-It sizzles with older versions of alsa like 0.9.2 or 0.9.3. I was very
-happy when this was solved :)
-But sorry, i can't gave you more information :/
+I tried to capture some tunes with my CMI9880 (an a ASUS P5GD2). It doesn´t
+care with mixer settings are made, the is simply no sound input.
+
+Does the azx driver support line-in anyways?
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-23-04 16:35 
+ tiwai - 03-22-05 22:10 
 ----------------------------------------------------------------------
-No reaction from user.
+This codec chip has no input loop-back path.  You have to do copy the audio
+data from line-in to line-out in software.
 
 ----------------------------------------------------------------------
- noaq - 05-19-04 22:52 
+ jdthood - 03-22-05 22:13 
 ----------------------------------------------------------------------
-Reminder sent to perex
-
-For some reason I can't add notes to this bug. I think that I have this
-problem also and I might be able to help out in debugging it.
-
-I have noticed that if i resample tests from 44.1khz to 48khz the sizzle
-disappears
+OK, thanks for the explanation.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-04 22:39 MsK            New Issue                                    
-02-18-04 22:40 MsK            Note Added: 0000265                          
-03-05-04 19:58 tiwai          Note Added: 0000514                          
-03-23-04 16:35 perex          Status                   new => resolved     
-03-23-04 16:35 perex          Resolution               open => suspended   
-03-23-04 16:35 perex          Assigned To               => perex           
-03-23-04 16:35 perex          Note Added: 0000671                          
-05-19-04 22:46 noaq           Issue Monitored: noaq                        
-05-19-04 22:52 noaq           Note Added: 0001156                          
-05-31-05 18:02 perex          Status                   resolved => closed  
+01-28-05 13:21 Tom            New Issue                                    
+01-28-05 13:21 Tom            Distribution              => Fedora Core 3 + Alsa
+1.0.8
+01-28-05 13:21 Tom            Kernel Version            => 2.6.9 and 2.6.10
+(from Fedora)
+01-31-05 14:10 Tom            Issue Monitored: Tom                         
+01-31-05 14:10 Tom            Issue End Monitor: Tom                       
+03-11-05 00:48 jdthood        Note Added: 0003876                          
+03-16-05 14:48 tiwai          Note Added: 0003958                          
+03-22-05 22:01 jdthood        Note Added: 0004134                          
+03-22-05 22:10 tiwai          Note Added: 0004136                          
+03-22-05 22:13 jdthood        Note Added: 0004137                          
+03-22-05 22:13 jdthood        Status                   new => resolved     
+03-22-05 22:13 jdthood        Resolution               open => won't fix   
+05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
 
