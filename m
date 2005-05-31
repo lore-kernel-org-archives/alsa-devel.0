@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
-Date: Tue, 31 May 2005 19:26:23 +0200
-Message-ID: <61b3ad8a440a279a159973de7ffb2de0@bugtrack.alsa-project.org>
+Date: Tue, 31 May 2005 19:44:38 +0200
+Message-ID: <04049163e7574462ac418afaa05415d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25B93172
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 19:26:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7238B178
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 19:44:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               RHEL 3 U5 gold
 Kernel Version:             2.4.21-32
 ======================================================================
 Date Submitted:             05-28-2005 02:02 CEST
-Last Modified:              05-31-2005 19:26 CEST
+Last Modified:              05-31-2005 19:44 CEST
 ======================================================================
 Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
 catastrophic CrAsH
@@ -57,26 +57,25 @@ compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
 ======================================================================
 
 ----------------------------------------------------------------------
- speedking - 05-31-05 19:26 
-----------------------------------------------------------------------
-I'm sure.  When I run 'alsaconf' it says 'Version 1.0.9' plus I rebuilt my
-test machine with a fresh copy of RHEL 3 U5 Gold x86_64, then copied on
-all the new 1.0.9_final bz2 files before building them.
-
-I've made sure the ALC260 HD chip is turned on in the BIOS while testing. 
-
-
-I'm installing an Audigy 2ZS PCI card right now to see if 1.0.9 Final will
-recognize it.
-
-
-
-----------------------------------------------------------------------
  tiwai - 05-31-05 19:26 
 ----------------------------------------------------------------------
 OK, then any relevant kernel messages?
 What happens if you run "modprobe snd-hda-intel" manually (see kernel
 messages)?
+
+----------------------------------------------------------------------
+ speedking - 05-31-05 19:44 
+----------------------------------------------------------------------
+a 'modprobe snd-hda-intel' says "Can't locate module snd-hda-intel"
+
+I don't see any relevant kernel messages in /var/log/messages.  There are
+no 'snd', 'hda', 'intel', or 'sound' strings in /var/log/messages and
+manually walking through the file doesn't reveal any relevelan kernel
+messages.
+
+Is there somewhere else I should be looking?
+
+I'm running the Audigy 2ZS test currently.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +95,7 @@ Date Modified  Username       Field                    Change
 05-31-05 19:23 speedking      Note Added: 0004850                          
 05-31-05 19:26 speedking      Note Edited: 0004850                         
 05-31-05 19:26 tiwai          Note Added: 0004851                          
+05-31-05 19:44 speedking      Note Added: 0004852                          
 ======================================================================
 
 
