@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000886]: alsactl store = crash
-Date: Tue, 31 May 2005 18:03:54 +0200
-Message-ID: <b077647aac0c2cf69c783a5ff405867d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000902]: Some channels not working
+Date: Tue, 31 May 2005 18:03:40 +0200
+Message-ID: <1750b91e07e788f9981a960f9982dad2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B29801D9
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E79FC1BF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,147 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=902> 
 ======================================================================
-Reported By:                udasoft
+Reported By:                slammer
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   886
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   crash
+Issue ID:                   902
+Category:                   PCI - intel8x0
+Reproducibility:            have not tried
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-Resolution:                 fixed
+Distribution:               Slackware
+Kernel Version:             2.6.11-rc2
+Resolution:                 duplicate
+Duplicate:                  846
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-06-2005 16:01 CET
+Date Submitted:             02-12-2005 00:02 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    alsactl store = crash
+Summary:                    Some channels not working
 Description: 
-I have a Intel D915PBL Motherboard with High Definition Audio Controller
-(ICH6 Family).
+I wanted to get my Creative Inspire 5300 5.1 analog surround speaker set
+working  with my souncard working on linux.
+I use speaker-test for testing the speakers under linux. I have to add
+that they're working fine in Windows (tested each speaker using nvMixer).
+I have two independent sockets for LFE/Center and Rear channels (they're
+not shared with Mic and Line in as in some other products e.g. Epox
+8RDA+).
+I've noticed that the surround51 pcm defined in
+/usr/share/alsa/NFORCE.conf does some routing on the stream - namely swaps
+LFE/Center with rear channels and that seems right, because hw:0,0 tested
+by speaker-test plays them incorrectly. So when doing my test, creating
+own pcms and else I had it on my mind.
 
-When I save the state of mixer with alsactl, receive this error:
+However what this bug report is all about is that I can't get any sound
+playing from the first channel through anything connected to the socket
+originally (according to the MoBo manual) used for LFE/Center neither
+using the surround51 nor hw:0,0 pcm. I also tried to make my own pcm but
+the diagnosis is the 
+same.
 
-udasoftware root # alsactl  store
-Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-PREEMPT SMP
-Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
-snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
-snd_timer snd snd_page_alloc nvidia
-CPU:    0
-EIP:    0060:[<00000000>]    Tainted: P      VLI
-EFLAGS: 00010282   (2.6.10-gentoo-r6)
-EIP is at 0x0
-eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
-esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
-ds: 007b   es: 007b   ss: 0068
-Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
-Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
-00000022
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-              00000000 00000000 00000000 00000000 00000000 00000000
-00000000 00000000
-              Call Trace:
-               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
-                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
-                 [<c016f8ba>] sys_ioctl+0xca/0x230
-                  [<c01031af>] syscall_call+0x7/0xb
-                  Code:  Bad EIP value.
-                   Segmentation fault
+Here are the facts:
+My speakers connected just the way they work in Windows.
+
+$speaker-test -c6 -Dsurround51
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Sine wave rate is 440.0000Hz
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 3 to 5461
+Period size range from 3 to 5461
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 5460
+To choose period_size = 1365
+was set period_size = 1365
+was set buffer_size = 5460
+ 0 - Front Left            # I hear the beep correctly from correct
+speaker
+ 4 - Center                # I hear the beep correctly from correct
+speaker
+ 1 - Front Right           # I hear the beep correctly from correct
+speaker
+ 3 - Rear Right            # No sound ;(((
+ 2 - Rear Left             # I hear the beep correctly from correct
+speaker
+ 5 - LFE                   # I hear the beep correctly from correct
+speaker (yes it's quiet, but I''m sure it comes from the Subwoofer only)
+
+When I create my own pcm that reroutes the 3rd channel to some other - it
+plays from the position where routed, but nothing ever gets played from
+that muted channel when routed there - hence my diagnosis.
+When I use hw:0,0 the situation's the same except the LFE/Center and Rear
+sockets are swapped, as stated before.
+
+Moreover if I turn the switches "Mic as Center" and "Line-in as surround"
+"on" to use it the Epox way, and plug my jacks where stated, the case is
+similar but even worse, since it won't play ANY of the first channels
+(i.e. Rear Right and LFE from surround51 pcm) at both sockets. Second
+channels (Center and Rear Left) work just fine.
+
+Or maybe it has something to do with settings for capture, because I
+haven't used it and played with it at all? Let me know if they can affect
+it and if so, I think there should be some notice somewhere (on the
+module's istalation manual), because I couldn't find any.
+
+Additionally when tried to play with the "Swap surround slot" option there
+was a thought of another may-be-issue that came to me. Namely when i turn
+the option "on" and physically do the swap, the "Duplicate Front" option
+duplicates front channels still to the Unswapped plug i.e. I hear the
+channels through the Center/LFE channels. I think that the "Duplicate
+front"  switch should be affected by the "Swap surround" switch. Don't You
+think so?
+
+I'm in a dead end right now and quite desperate. I also am interested in
+making Linux work on more hardware!
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000846 Can't hear sound from one of the surrou...
 ======================================================================
 
 ----------------------------------------------------------------------
- udasoft - 02-18-05 22:19 
+ stephenv - 03-04-05 01:56 
 ----------------------------------------------------------------------
-I have mistaken :(
-I don't clean the sound directory in /lib/modules/... and I used the old
-module snd-azx.
-
-In cvs version of asla i don't found the snd-azx because it is substituted
-from snd-hda-intel.
-
-The snd-hda-intel seems to work perfectly ;)
-(alsactl store don't crash)
-
-Tnx, U D A.
+This looks exactly like what is reported in 0000846. But so far, nothing
+has been done to fix it. Think I am going to have to splurge on an
+audigy2.
 
 ----------------------------------------------------------------------
- perex - 02-22-05 10:01 
+ slammer - 03-10-05 13:20 
 ----------------------------------------------------------------------
-Fixed now.
+CVS version fixes the issue. And yes - I guess it's the same issue as
+reported in 846
+Thanks for your great job guys!
+I realy appreciate what you're doing for the community!!!!
+I'm planning to follow your example!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 16:01 udasoft        New Issue                                    
-02-06-05 16:01 udasoft        Distribution              => Gentoo          
-02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
-02-09-05 11:54 tiwai          Note Added: 0003544                          
-02-09-05 19:35 udasoft        Note Added: 0003562                          
-02-14-05 19:48 tiwai          Note Added: 0003606                          
-02-18-05 22:19 udasoft        Note Added: 0003667                          
-02-22-05 10:01 perex          Status                   new => resolved     
-02-22-05 10:01 perex          Resolution               open => fixed       
-02-22-05 10:01 perex          Assigned To               => perex           
-02-22-05 10:01 perex          Note Added: 0003695                          
-02-22-05 10:01 perex          Assigned To              perex =>            
+02-12-05 00:02 slammer        New Issue                                    
+02-12-05 00:02 slammer        Distribution              => Slackware       
+02-12-05 00:02 slammer        Kernel Version            => 2.6.11-rc2      
+02-12-05 00:43 slammer        Issue Monitored: slammer                     
+02-25-05 12:44 slammer        Note Added: 0003733                          
+02-28-05 21:51 slammer        Note Added: 0003750                          
+03-03-05 20:07 slammer        Note Added: 0003791                          
+03-04-05 01:56 stephenv       Note Added: 0003794                          
+03-06-05 13:31 slammer        Note Edited: 0003791                         
+03-10-05 13:20 slammer        Note Added: 0003851                          
+03-10-05 14:36 tiwai          Relationship added       duplicate of 0000846
+03-10-05 14:36 tiwai          Duplicate ID             0 => 846            
+03-10-05 14:36 tiwai          Status                   new => resolved     
+03-10-05 14:36 tiwai          Resolution               open => duplicate   
+03-10-05 14:36 tiwai          Assigned To               => tiwai           
+03-10-05 14:36 tiwai          Assigned To              tiwai =>            
+03-10-05 15:14 slammer        Issue End Monitor: slammer                    
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
