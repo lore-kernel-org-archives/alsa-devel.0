@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Tue, 31 May 2005 17:44:03 +0200
-Message-ID: <e312ea4dad0cbac48450fa2ffcb9edbb@bugtrack.alsa-project.org>
+Date: Tue, 31 May 2005 17:53:00 +0200
+Message-ID: <b9f1cdf2fc5bf8e0ece614f4449ea281@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A02741AB
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:44:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5E771AF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:53:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             vanilla 2.6.7
 ======================================================================
 Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-31-2005 17:44 CEST
+Last Modified:              05-31-2005 17:52 CEST
 ======================================================================
 Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
 situation
@@ -50,28 +50,16 @@ way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 17:39 
-----------------------------------------------------------------------
-I'm really puzzled what's the correct implementation of blocks.
-And, yes, my patch isn't correct anyway for blocks field, but the current
-implementation seems also wrong, too.
-
-Looking at the other OSS/free codes, the blocks field contains basically
-(snd_pcm_avail() / fragsize).  That is, for playback, the empty space on
-the ring buffer / fragsize.
-
-So, it should be like
-
-    info.blocks = (runtime->oss.buffer_bytes - frames_to_bytes(delay) -
-fixup) / runtime->oss.period_bytes;
-
-for playback.
-
-----------------------------------------------------------------------
  parente - 05-31-05 17:44 
 ----------------------------------------------------------------------
 pcm-oss-ptr-fix4.diff appears to fix the problem. Speech is no longer
 clipped in gnopernicus or test-speech.
+
+----------------------------------------------------------------------
+ perex - 05-31-05 17:52 
+----------------------------------------------------------------------
+Ok, fix5 patch is available for review. I think that info.blocks is not
+used in OSS apps, but we should follow the "standard" behaviour...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +106,9 @@ Date Modified  Username       Field                    Change
 05-31-05 17:18 perex          Note Added: 0004842                          
 05-31-05 17:39 tiwai          Note Added: 0004843                          
 05-31-05 17:44 parente        Note Added: 0004844                          
+05-31-05 17:51 perex          File Added: oss-optr-fix5.patch                   
+
+05-31-05 17:52 perex          Note Added: 0004845                          
 ======================================================================
 
 
