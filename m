@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
-Date: Tue, 31 May 2005 19:15:02 +0200
-Message-ID: <995c205a197f2336405140168608620f@bugtrack.alsa-project.org>
+Date: Tue, 31 May 2005 19:23:26 +0200
+Message-ID: <c96529324094f4065516fc3f29eeb2bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AD72172
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 19:15:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C2DD172
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 19:23:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               RHEL 3 U5 gold
 Kernel Version:             2.4.21-32
 ======================================================================
 Date Submitted:             05-28-2005 02:02 CEST
-Last Modified:              05-31-2005 19:15 CEST
+Last Modified:              05-31-2005 19:23 CEST
 ======================================================================
 Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
 catastrophic CrAsH
@@ -57,26 +57,16 @@ compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
 ======================================================================
 
 ----------------------------------------------------------------------
- speedking - 05-31-05 19:14 
-----------------------------------------------------------------------
-I have tried 1.0.9 final this morning and now 'alsaconf' gives me the
-following error:
-
-"No Supported PnP or PCI card found.  Would you like to probe Legacy ISA
-sound cards/chips"
-
-Saying 'yes' finds no supported chips while saying 'no' bails out.
-
-At least 1.0.9 final doesn't hang the machine.  :D
-
-I don't know if I mentioned this is RHEL 3 U5 x86_64.
-
-
-
-----------------------------------------------------------------------
  tiwai - 05-31-05 19:15 
 ----------------------------------------------------------------------
 Are you sure that the running alsaconf was installed from alsa-utils 1.0.9?
+
+----------------------------------------------------------------------
+ speedking - 05-31-05 19:23 
+----------------------------------------------------------------------
+I'm sure.  When I run 'alsaconf' it says 'Version 1.0.9' plus I rebuilt my
+test machine with a fresh copy of RHEL 3 U5 Gold x86_64, then copied on
+all the new 1.0.9_final bz2 files before building them.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +83,7 @@ Date Modified  Username       Field                    Change
 05-31-05 19:11 speedking      Note Edited: 0004848                         
 05-31-05 19:14 speedking      Note Edited: 0004848                         
 05-31-05 19:15 tiwai          Note Added: 0004849                          
+05-31-05 19:23 speedking      Note Added: 0004850                          
 ======================================================================
 
 
