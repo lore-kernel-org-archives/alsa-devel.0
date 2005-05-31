@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000118]: Soundcard doesn't produce any output
-Date: Tue, 31 May 2005 17:56:57 +0200
-Message-ID: <aee417e59fdc214e4d653b5031a07d75@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001004]: Doesn't accept all sample rates, when capturing sound in S16_LE or S16_BE format.
+Date: Tue, 31 May 2005 17:56:50 +0200
+Message-ID: <f9808f25e35379e3aa1efb041985bc17@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D0A01CE
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E381B1B6
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=118> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1004> 
 ======================================================================
-Reported By:                jordi
-Assigned To:                
+Reported By:                hyp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   118
-Category:                   PCI - via82xx
+Issue ID:                   1004
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Distribution:               Slackware
+Kernel Version:             2.4.29
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-05-2004 11:53 CET
+Date Submitted:             03-21-2005 19:26 CET
 Last Modified:              05-31-2005 17:56 CEST
 ======================================================================
-Summary:                    Soundcard doesn't produce any output
+Summary:                    Doesn't accept all sample rates, when capturing
+sound in S16_LE or S16_BE format.
 Description: 
-This card had been working ok until 0.9.6 or 0.9.7. When I upgraded to
-0.9.8 and until now, the card hasn't been able to produce any output,
-although the driver gets loaded correctly.
-The OSS driver works correctly. It's not, I believe, a muted mixer
-problem.
+When I request to capture sound with: 8000Hz, S16 LE, stereo the ioctl
+returns me that the accepted values are the same as requested. But the
+whole read()-ed data is captured with 44100 or 48000Hz (I don't know 
+the right value, I guess it by ear), independendly from the requested
+sample rate.
+
+I tried to capture sound via sox's recorder. For example with command:
+# rec -c 1 -d /dev/dsp0 -f s -r 8000 p.snd
+When I started to play this file, I noticed that the file is captured 
+with 44100 or 48000Hz sample rate, but in the .snd header are written
+that the file is recorder with 8000Hz sample rate (as I have requested 
+it). If I set the sample rate to 48000 and play the tune, it sounds 
+good. Also this problem can be seen with my own oss recorder.
+
+When I'm using anouther sound card, for example Creative Ensoniq 1371
+or Creative EMU10K1 everything is good!
+
+best regards.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-28-05 04:13 
+ hyp - 03-21-05 19:30 
 ----------------------------------------------------------------------
-Submitter: Has this problem been fixed in later versions of ALSA?
+ups...
+Intel ICH5 with Analog Devices AD1985
 
 ----------------------------------------------------------------------
- mhdyousif - 03-29-05 15:32 
+ hyp - 03-22-05 09:43 
 ----------------------------------------------------------------------
-I'm not the submitter but I had the same problem.
-
-I tried version 1.0.8 and found that the problem has been fixed and ALSA
-produces sound as expected (no silence anymore).
-
-Thanks for fixing this.
-
-
+I'm sorry for my confusion!!!
+This is a side effect from an improper loading of snd-ca0106, which card
+doesn't exist.
+So this post can be closed...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-05-04 11:53 jordi          New Issue                                    
-03-06-04 16:06 mhdyousif      Note Added: 0000519                          
-03-08-04 11:48 tiwai          Note Added: 0000529                          
-03-08-04 15:18 mhdyousif      File Added: asound.state                     
-03-08-04 15:22 mhdyousif      Note Added: 0000533                          
-03-08-04 15:27 tiwai          Note Added: 0000534                          
-03-08-04 18:12 mhdyousif      Note Added: 0000536                          
-03-08-04 19:30 jordi          Note Added: 0000537                          
-03-08-04 19:30 jordi          File Added: asound.state                     
-03-10-04 12:26 jordi          Note Added: 0000560                          
-03-10-04 17:44 tiwai          Note Added: 0000562                          
-03-12-04 12:58 bacsa81        File Added: ac97#0-0                         
-03-12-04 12:58 bacsa81        Issue Monitored: bacsa81                     
-03-12-04 12:58 bacsa81        File Added: ac97#0-0+regs                    
-03-12-04 13:00 bacsa81        Note Added: 0000574                          
-03-25-04 18:45 jordi          Note Added: 0000706                          
-05-31-04 18:33 pawlik         Note Added: 0001284                          
-05-31-04 18:34 pawlik         Note Added: 0001285                          
-05-31-04 18:35 pawlik         Note Deleted: 0001285                        
-03-28-05 04:13 jdthood        Note Added: 0004232                          
-03-29-05 15:31 mhdyousif      Note Added: 0004244                          
-03-29-05 15:32 mhdyousif      Note Edited: 0004244                         
-03-29-05 15:44 jdthood        Status                   new => resolved     
-03-29-05 15:44 jdthood        Resolution               open => fixed       
+03-21-05 19:26 hyp            New Issue                                    
+03-21-05 19:26 hyp            Distribution              => Slackware       
+03-21-05 19:26 hyp            Kernel Version            => 2.4.29          
+03-21-05 19:30 hyp            Note Added: 0004121                          
+03-22-05 09:43 hyp            Note Added: 0004123                          
+03-29-05 19:03 tiwai          Status                   new => resolved     
+03-29-05 19:03 tiwai          Resolution               open => not an issue
+03-29-05 19:03 tiwai          Assigned To               => tiwai           
 05-31-05 17:56 perex          Status                   resolved => closed  
 ======================================================================
 
