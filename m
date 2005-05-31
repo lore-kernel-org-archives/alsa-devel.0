@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000953]: corrupted file in alsa-driver CVS
-Date: Tue, 31 May 2005 18:03:49 +0200
-Message-ID: <9ba9d54375e3191d21c192fb98597089@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
+Date: Tue, 31 May 2005 18:03:31 +0200
+Message-ID: <8a0be2cda5b559c642528a0a46c1b4bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E58A1D9
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14EB71AF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=953> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
 ======================================================================
-Reported By:                Wummel
-Assigned To:                
+Reported By:                rbechard1
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   953
-Category:                   OTHERS
+Issue ID:                   971
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Distribution:               
 Kernel Version:             
-Resolution:                 won't fix
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-01-2005 12:05 CET
+Date Submitted:             03-08-2005 01:50 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    corrupted file in alsa-driver CVS
+Summary:                    Compilation Errors - Cannot find specific files
+during compilation
 Description: 
-When running cvs2cl command, I get the following error:
-cvs log: Logging kernel
-cvs [log aborted]: unrecognized operation '\x9' in
-/cvsroot/alsa/alsa-driver/kernel/Attic/mixer.c,v
-Problem reading log input (pid/exit/signal/core: 32710/1/0/0)
+When installing the application using the method described in this link:
 
-I think the mentioned file is corrupted (as suggested while googling for
-this error).
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
+
+I get error messages during the compilation, yet the process tells me it
+has completed successfully. When I go to configure my sound card it has
+the correct driver loaded but yet there is no sound. When I checked the
+mixer settings nothing is muted. 
+
+There is no option within the sound configuration panel to switch to the
+correct driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- Wummel - 03-01-05 12:06 
+ rbechard1 - 03-14-05 21:44 
 ----------------------------------------------------------------------
-The web interface also gives a traceback:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/kernel/Attic/mixer.c?rev=1.89&view=log
+I recently found the new alsa 1.0.8 RPM packages for Mandrake 10.2 and
+installed them with RPMDRAKE. This resolved this problem. It was much
+easier as your src code continues to give be problems. I no longer need
+help as this issue has now been resolved.
 
-Traceback (most recent call last):
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 2730, in
-main
-    request.run_viewcvs()
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 353, in
-run_viewcvs
-    self.view_func(self)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 1591, in
-view_log
-    show_revs = request.repos.filelog(request.path_parts, rev, options)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
-line 193, in filelog
-    filtered_revs = _file_log(revs, tags, default_branch, rev)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
-line 703, in _file_log
-    taginfo['HEAD'] = _add_tag('HEAD', taginfo['MAIN'].co_rev)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
-line 373, in _add_tag
-    tag = Tag(tag_name, revision.string)
-AttributeError: 'NoneType' object has no attribute 'string'
+I 'strongly" suggest that your webmaster should put the RPM packages on
+your website for the various distributions, it would save your support
+people alot of time!!!!!!!!!!!!!!!!!
 
 ----------------------------------------------------------------------
- perex - 03-02-05 14:20 
+ tiwai - 03-18-05 18:25 
 ----------------------------------------------------------------------
-Yes, this corruption has caused probably an older version of CVS server. As
-far as I know, it cannot be fixed (maybe, we can remove this file from CVS
-manually). Skip this file..
+Then let's close this one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 12:05 Wummel         New Issue                                    
-03-01-05 12:06 Wummel         Note Added: 0003759                          
-03-02-05 14:20 perex          Status                   new => resolved     
-03-02-05 14:20 perex          Resolution               open => won't fix   
-03-02-05 14:20 perex          Assigned To               => perex           
-03-02-05 14:20 perex          Note Added: 0003775                          
-03-02-05 14:20 perex          Assigned To              perex =>            
+03-08-05 01:50 rbechard1      New Issue                                    
+03-08-05 01:51 rbechard1      Issue Monitored: rbechard1                    
+03-08-05 09:52 rbechard1      Note Added: 0003812                          
+03-09-05 02:10 fmoraes        Note Added: 0003819                          
+03-09-05 03:32 rbechard1      Note Added: 0003825                          
+03-09-05 07:12 rbechard1      File Added: Driver 1.0.8 installation output      
+             
+03-14-05 21:41 rbechard1      Note Added: 0003906                          
+03-14-05 21:44 rbechard1      Issue Monitored: fmoraes                     
+03-14-05 21:44 rbechard1      Note Added: 0003907                          
+03-14-05 21:47 rbechard1      Issue End Monitor: rbechard1                    
+03-18-05 18:25 tiwai          Status                   assigned => resolved
+03-18-05 18:25 tiwai          Resolution               open => unable to
+duplicate
+03-18-05 18:25 tiwai          Note Added: 0004004                          
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
