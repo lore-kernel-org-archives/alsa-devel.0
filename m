@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000868]: I can't find a Intel HD sound subsystem (supously realtek alc860) alsa driver.
-Date: Tue, 31 May 2005 18:04:26 +0200
-Message-ID: <073f812b528b50f9e26dbbdbfa8ce9fa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
+Date: Tue, 31 May 2005 18:04:24 +0200
+Message-ID: <8c4944b3baef048dd711d5c95ce82d4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42CFB1CF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F9AA1B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=868> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
 ======================================================================
-Reported By:                Luis Durán
+Reported By:                jeffgus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   868
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   779
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Mandrake 10.1
-Kernel Version:             2.6.8.1.24
-Resolution:                 not an issue
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.9-ac16
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-31-2005 16:47 CET
+Date Submitted:             01-03-2005 05:50 CET
 Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    I can't find a Intel HD sound subsystem (supously
-realtek alc860) alsa driver.
+Summary:                    SPDIF audio is broken up... stutters
 Description: 
-My hardware has installed an intel hd sound subsystem, this is the built-in
-sound card on intel 915gav mobo, intel's website drivers doesn't work,
-they even break your GNU/Linux installation even changing your root
-password (pretty weird). intel's website said intel hd sound subsystem
-chip is based on realtek alc860 or something like that. I will really
-appreciate if you know something, please answer me.
+I was previously able to send ac3 audio via the coaxial output to an
+external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
+(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
+out right.  It's all broken up.  The light on the amp blinks.  The light
+comes on when it decodes a segment of audio then goes out with silence.
+
+The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
+caused the problem (upgrade to 2.6?).
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 18:52 
+ jeffgus - 01-30-05 06:53 
 ----------------------------------------------------------------------
-Use ALSA 1.0.8.  1.0.6a is way too old.
-The driver for your device is snd-azx.
+This issue can now be closed.  The problem seemed to go away after I
+finally got around to installing alsa 1.0.8 this evening.
+
+----------------------------------------------------------------------
+ tiwai - 01-31-05 18:57 
+----------------------------------------------------------------------
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 16:47 Luis Durán     New Issue                                    
-01-31-05 16:47 Luis Durán     Distribution              => Mandrake 10.1   
-01-31-05 16:47 Luis Durán     Kernel Version            => 2.6.8.1.24      
-01-31-05 18:52 tiwai          Status                   new => resolved     
-01-31-05 18:52 tiwai          Resolution               open => not an issue
-01-31-05 18:52 tiwai          Assigned To               => tiwai           
-01-31-05 18:52 tiwai          Note Added: 0003451                          
-01-31-05 18:53 tiwai          Assigned To              tiwai =>            
+01-03-05 05:50 jeffgus        New Issue                                    
+01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
+01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
+01-07-05 02:22 chutzimir      Note Added: 0003100                          
+01-07-05 02:32 chutzimir      Issue Monitored: chutzimir                    
+01-07-05 11:10 jeffgus        Note Added: 0003101                          
+01-07-05 11:15 jeffgus        Note Edited: 0003101                         
+01-30-05 06:53 jeffgus        Note Added: 0003440                          
+01-31-05 18:57 tiwai          Status                   new => resolved     
+01-31-05 18:57 tiwai          Resolution               open => fixed       
+01-31-05 18:57 tiwai          Assigned To               => tiwai           
+01-31-05 18:57 tiwai          Note Added: 0003454                          
+01-31-05 18:57 tiwai          Assigned To              tiwai =>            
 05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
