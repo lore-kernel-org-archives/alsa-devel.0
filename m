@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Tue, 31 May 2005 16:56:58 +0200
-Message-ID: <4b376ddae31b6a7a0eda924fae72123c@bugtrack.alsa-project.org>
+Date: Tue, 31 May 2005 17:14:14 +0200
+Message-ID: <cd6c9d69005d81654e5bfc4f2f7e0710@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E021119A
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 16:56:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77CE919C
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:14:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             vanilla 2.6.7
 ======================================================================
 Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-31-2005 16:56 CEST
+Last Modified:              05-31-2005 17:14 CEST
 ======================================================================
 Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
 situation
@@ -50,25 +50,14 @@ way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 16:55 
+ tiwai - 05-31-05 17:13 
 ----------------------------------------------------------------------
-Hmm, I'm just reading the code again, and afraid that the fix3 patch isn't
-right, if I understand correctly.
-
-oss.bytes for playback contains the bytes actually transferred to h/w
-buffer, i.e. the OSS-adjusted position of appl_ptr.  Then, getoptr.bytes
-should return simply
-  oss.bytes - frames_to_bytes(delay)
-without fixup.  This means, setting fixup = 0 for playback should
-suffice.
-
-The above assumes that getoptr returns the "hwptr" for OSS.
+Try fix4 patch.
 
 ----------------------------------------------------------------------
- parente - 05-31-05 16:56 
+ perex - 05-31-05 17:14 
 ----------------------------------------------------------------------
-Applied oss-optr-fix3.patch. Ran gnome-speech's test-speech utility
-callback test. Speech is still clipped as before.
+Ok, try fix4 patch, please.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +94,13 @@ Date Modified  Username       Field                    Change
 05-31-05 16:41 perex          Note Added: 0004837                          
 05-31-05 16:55 tiwai          Note Added: 0004838                          
 05-31-05 16:56 parente        Note Added: 0004839                          
+05-31-05 17:02 parente        Note Edited: 0004839                         
+05-31-05 17:13 tiwai          Note Added: 0004840                          
+05-31-05 17:13 perex          File Added: oss-optr-fix4.patch                   
+
+05-31-05 17:13 tiwai          File Added: pcm-oss-ptr-fix4.diff                 
+  
+05-31-05 17:14 perex          Note Added: 0004841                          
 ======================================================================
 
 
