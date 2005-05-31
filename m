@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000845]: Getting sound from the headphones but not from the internal speakers
-Date: Tue, 31 May 2005 18:04:23 +0200
-Message-ID: <16b036e6023431d8e65f978c4a65231f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
+Date: Tue, 31 May 2005 18:05:07 +0200
+Message-ID: <b3cf7bebee36ca83dc2afc61d30fb416@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22A4F1DA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43BE71B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:05:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=845> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
 ======================================================================
-Reported By:                zeffy
+Reported By:                Envel
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   845
+Issue ID:                   846
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.741_FC3
+Distribution:               
+Kernel Version:             2.6.8.1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-23-2005 21:36 CET
-Last Modified:              05-31-2005 18:04 CEST
+Date Submitted:             01-24-2005 13:44 CET
+Last Modified:              05-31-2005 18:05 CEST
 ======================================================================
-Summary:                    Getting sound from the headphones but not from the
-internal speakers
+Summary:                    Can't hear sound from one of the surround speaker,
+while other is working (speakers are functional).
 Description: 
-Hey all,
-
-I am experiencing a problem with my laptop running the Intel AC'97 codec.
-I get a sound from the headphones but not from the built-in speakers.
-I tried the volume settings and playing with alsamixer, aumix and others,
-tried to  use the ac97_quirk options, but still no clues.
-My laptop is HP Pavillion ZT3447EA running the lastest kernel and FC-3.
-
-
-Any ideas?
-
-Thanks.
+With options "Line-In as surround" and "Duplicate front" the right surround
+speaker is not working, while others are functional. After uninstalling
+ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
+configuration the error is not occures. SoundCard: nForce2 Audio Codec,
+Driver: snd-intel8x0, 4 speakers.
+p.s. sorry for my English.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000902 Some channels not working
 ======================================================================
 
 ----------------------------------------------------------------------
- zeffy - 01-25-05 20:53 
+ jor - 03-20-05 14:47 
 ----------------------------------------------------------------------
-I've managed to solve this issue.
-I've changed the asound.state and UNMUTED the headphone jack sence.
-You can close this problem. 
+When you try alsa driver 1.0.9rc1, make sure its not still using your old
+kernel module, look at /proc/asound/version to make sure it's 1.0.9rc1.
 
-BTW: why isn't there a feature on this bug tracking system that allows you
-to edit your own bug state?
-
-Keep up the good work with ALSA.
-
-Regards,
-Zeffy.
+Or you could upgrade the whole kernel, but plain 2.6.11 still has the bug.
+Try 2.6.11.5 (note the .5 at the end, new kernel versioning for 'stable'
+kernel with only small bugfixes, can be downloaded at normal kernel
+sources like kernel.org).
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 19:07 
+ stephenv - 03-20-05 19:58 
 ----------------------------------------------------------------------
-OK, closing now.
+It's working now, looks like an overnight rest did the trick. Went and
+checked back in 2.6.10. Still not working there with same modules. so
+2.6.11 and the new version do the trick. Wonder what the difference is in
+the 2.6.10. I hate that because I need to roll some of my drivers by hand
+under this kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-23-05 21:36 zeffy          New Issue                                    
-01-23-05 21:36 zeffy          Distribution              => Fedora Core 3   
-01-23-05 21:36 zeffy          Kernel Version            => 2.6.10-1.741_FC3
-01-25-05 15:23 tiwai          Note Added: 0003404                          
-01-25-05 20:53 zeffy          Note Added: 0003410                          
-01-31-05 19:07 tiwai          Status                   new => resolved     
-01-31-05 19:07 tiwai          Resolution               open => fixed       
-01-31-05 19:07 tiwai          Assigned To               => tiwai           
-01-31-05 19:07 tiwai          Note Added: 0003456                          
-01-31-05 19:07 tiwai          Assigned To              tiwai =>            
-05-31-05 18:04 perex          Status                   resolved => closed  
+01-24-05 13:44 Envel          New Issue                                    
+01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
+01-25-05 15:18 tiwai          Note Added: 0003402                          
+01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
+01-28-05 08:19 ivantheviking  File Added: asound.state                     
+01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
+01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
+01-28-05 08:30 ivantheviking  Note Added: 0003424                          
+01-29-05 17:13 ivantheviking  Note Added: 0003438                          
+03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
+03-01-05 00:06 stephenv       Note Added: 0003752                          
+03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
+03-04-05 22:53 slammer        Note Added: 0003802                          
+03-04-05 22:55 slammer        Issue Monitored: slammer                     
+03-07-05 00:12 stephenv       File Added: svs.tar                          
+03-08-05 18:43 jor            Issue Monitored: jor                         
+03-08-05 19:03 jor            Note Added: 0003816                          
+03-09-05 18:43 tiwai          Note Added: 0003834                          
+03-09-05 18:43 tiwai          Note Added: 0003835                          
+03-09-05 19:24 jor            Note Added: 0003845                          
+03-10-05 03:27 stephenv       Note Added: 0003847                          
+03-10-05 11:55 slammer        Note Added: 0003848                          
+03-10-05 13:17 slammer        Note Added: 0003850                          
+03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
+03-10-05 18:03 stephenv       Note Added: 0003869                          
+03-10-05 23:28 slammer        Note Added: 0003875                          
+03-16-05 14:49 tiwai          Note Added: 0003959                          
+03-16-05 16:41 stephenv       Note Added: 0003962                          
+03-19-05 18:06 jor            Note Added: 0004059                          
+03-20-05 04:03 stephenv       Note Added: 0004071                          
+03-20-05 04:53 stephenv       Note Added: 0004072                          
+03-20-05 14:47 jor            Note Added: 0004089                          
+03-20-05 19:58 stephenv       Note Added: 0004098                          
+03-22-05 20:56 stephenv       Issue End Monitor: stephenv                    
+03-22-05 22:35 jdthood        Status                   new => resolved     
+03-22-05 22:35 jdthood        Resolution               open => fixed       
+03-23-05 22:19 slammer        Issue End Monitor: slammer                    
+04-02-05 19:54 jor            Issue End Monitor: jor                       
+05-31-05 18:05 perex          Status                   resolved => closed  
 ======================================================================
 
 
