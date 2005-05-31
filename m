@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Tue, 31 May 2005 18:01:51 +0200
-Message-ID: <fcc62950a15010817affa4db336fbdd8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000067]: Alsa sound repeats first half a second over and over
+Date: Tue, 31 May 2005 18:02:11 +0200
+Message-ID: <a32754724d8dd0211733c2d735cbfdff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C0231AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DCD21C8
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=67> 
 ======================================================================
-Reported By:                1g0R
-Assigned To:                tiwai
+Reported By:                trejkaz
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   822
-Category:                   PCI - azx
+Issue ID:                   67
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               FC3
-Kernel Version:             2.6.10-ac8
-Resolution:                 fixed
+Distribution:               Gentoo
+Kernel Version:             2.6.2
+Resolution:                 suspended
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              05-31-2005 18:01 CEST
+Date Submitted:             02-17-2004 10:05 CET
+Last Modified:              05-31-2005 18:02 CEST
 ======================================================================
-Summary:                    CMI9880 (IHDA) alsamixer no controll
+Summary:                    Alsa sound repeats first half a second over and over
 Description: 
-The compile went fine.
-I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
-I cant raise the trigger.
-No SPDIF out.
+When playing a sound with /usr/bin/aplay, it will play the first half a
+second and repeat the same fragment of the file over and over.
+
+Playing with /usr/bin/play, it repeats every second instead.
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 21:40 
+ trejkaz - 02-26-04 13:47 
 ----------------------------------------------------------------------
-oops, im in Hungary.....
+Okay, I'll take this up with the kernel team.  Although I noticed Kernel
+2.6.3 had a whole bunch of fixes which may or may not be relevant anyway,
+I just need to get it to compile. ;-)
 
 ----------------------------------------------------------------------
- tiwai - 01-21-05 21:46 
+ perex - 03-14-04 19:50 
 ----------------------------------------------------------------------
-Glad to hear it's not a bug ;)
-Let's close this one.
+No further response from user.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-05 19:06 1g0R           New Issue                                    
-01-16-05 19:06 1g0R           Distribution              => FC3             
-01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
-01-17-05 15:05 tiwai          Status                   new => resolved     
-01-17-05 15:05 tiwai          Resolution               open => not an issue
-01-17-05 15:05 tiwai          Assigned To               => tiwai           
-01-17-05 15:05 tiwai          Note Added: 0003235                          
-01-17-05 15:05 tiwai          Assigned To              tiwai =>            
-01-17-05 16:43 1g0R           Status                   resolved => feedback
-01-17-05 16:43 1g0R           Resolution               not an issue => reopened
-01-17-05 16:43 1g0R           Note Added: 0003238                          
-01-17-05 16:43 1g0R           Assigned To               => tiwai           
-01-18-05 14:01 1g0R           Note Added: 0003249                          
-01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
-01-18-05 17:57 tiwai          Note Added: 0003254                          
-01-19-05 13:33 1g0R           Note Added: 0003264                          
-01-19-05 14:25 tiwai          Note Added: 0003265                          
-01-19-05 14:36 1g0R           Note Added: 0003272                          
-01-19-05 14:40 tiwai          Note Added: 0003275                          
-01-19-05 14:59 1g0R           Note Added: 0003280                          
-01-19-05 15:16 tiwai          Note Added: 0003281                          
-01-19-05 15:46 1g0R           Note Added: 0003289                          
-01-19-05 16:08 tiwai          Note Added: 0003290                          
-01-19-05 16:25 1g0R           Note Added: 0003291                          
-01-19-05 18:39 1g0R           File Added: asound.state                     
-01-19-05 18:39 1g0R           File Added: codec#0                          
-01-19-05 18:40 1g0R           Note Added: 0003315                          
-01-19-05 18:44 tiwai          Note Added: 0003316                          
-01-19-05 21:53 1g0R           Note Added: 0003318                          
-01-19-05 21:58 1g0R           Note Added: 0003319                          
-01-20-05 00:13 1g0R           File Added: alsamixer.png                    
-01-20-05 00:18 1g0R           File Added: alsamixer.jpg                    
-01-21-05 12:15 tiwai          Note Added: 0003345                          
-01-21-05 20:53 1g0R           Note Added: 0003352                          
-01-21-05 20:55 tiwai          Note Added: 0003353                          
-01-21-05 21:03 1g0R           Note Added: 0003354                          
-01-21-05 21:05 1g0R           Note Added: 0003355                          
-01-21-05 21:05 1g0R           Note Added: 0003357                          
-01-21-05 21:07 1g0R           Note Added: 0003358                          
-01-21-05 21:15 tiwai          Note Added: 0003359                          
-01-21-05 21:19 1g0R           Note Added: 0003361                          
-01-21-05 21:28 rlrevell       Note Added: 0003362                          
-01-21-05 21:30 tiwai          Note Added: 0003363                          
-01-21-05 21:34 1g0R           Note Added: 0003364                          
-01-21-05 21:36 1g0R           Note Added: 0003365                          
-01-21-05 21:38 1g0R           Note Added: 0003366                          
-01-21-05 21:39 1g0R           Note Added: 0003367                          
-01-21-05 21:40 1g0R           Note Added: 0003368                          
-01-21-05 21:46 tiwai          Status                   feedback => resolved
-01-21-05 21:46 tiwai          Resolution               reopened => fixed   
-01-21-05 21:46 tiwai          Note Added: 0003369                          
-05-31-05 18:01 perex          Status                   resolved => closed  
+02-17-04 10:05 trejkaz        New Issue                                    
+02-17-04 10:09 trejkaz        Issue Monitored: trejkaz                     
+02-17-04 10:10 trejkaz        Note Added: 0000249                          
+02-17-04 18:49 tiwai          Note Added: 0000258                          
+02-17-04 22:04 trejkaz        Note Added: 0000261                          
+02-26-04 12:06 perex          Note Added: 0000339                          
+02-26-04 13:47 trejkaz        Note Added: 0000349                          
+03-14-04 19:50 perex          Status                   new => resolved     
+03-14-04 19:50 perex          Resolution               open => suspended   
+03-14-04 19:50 perex          Assigned To               => perex           
+03-14-04 19:50 perex          Note Added: 0000603                          
+05-31-05 18:02 perex          Status                   resolved => closed  
 ======================================================================
 
 
