@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000910]: Interest in support for Sound Blaster Live! 24-Bit
-Date: Tue, 31 May 2005 18:04:05 +0200
-Message-ID: <008f873de1fb327ee868d47886d2c342@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
+Date: Tue, 31 May 2005 18:04:59 +0200
+Message-ID: <e14d96953f392b97bf76901c1047505f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88B7D1DB
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 954661CA
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=910> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
 ======================================================================
-Reported By:                pointmanx
+Reported By:                Gregoire
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   910
-Category:                   OTHERS
-Reproducibility:            have not tried
-Severity:                   feature
+Issue ID:                   668
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
+Distribution:               gentoo amd64
+Kernel Version:             2.6.10-rc2
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-15-2005 23:40 CET
+Date Submitted:             11-23-2004 16:04 CET
 Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    Interest in support for Sound Blaster Live! 24-Bit
+Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
+rc2
 Description: 
-Is the Live! 24-bit supported? It's not listed...
-
-If not, could ALSA add it? I think it has the same chipset as the Audigy
-Series or the original Live! 5.1 cards.
+I have checked the changelog but I don't know what exactly have changed to
+see which change breake the AC3 passtrough ?
 ======================================================================
 
 ----------------------------------------------------------------------
- sHINOBI - 02-15-05 23:42 
+ Gregoire - 03-23-05 17:17 
 ----------------------------------------------------------------------
-Yes, its supported with ca0106 driver.
+Sorry, as it worked since post 2.6.10-rc2 kernels, I thought you fixed this
+issue.
+I use now 2.6.12-rc1 and it works perfectly, would it help if I do what
+you want with older kernels ?
+
+----------------------------------------------------------------------
+ jdthood - 03-23-05 17:21 
+----------------------------------------------------------------------
+Just checking to make sure that the problem is indeed fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-15-05 23:40 pointmanx      New Issue                                    
-02-15-05 23:42 sHINOBI        Note Added: 0003621                          
-02-16-05 17:16 tiwai          Status                   new => resolved     
-02-16-05 17:16 tiwai          Resolution               open => not an issue
-02-16-05 17:16 tiwai          Assigned To               => tiwai           
-02-16-05 17:16 tiwai          Assigned To              tiwai =>            
+11-23-04 16:04 Gregoire       New Issue                                    
+11-23-04 16:04 Gregoire       Distribution              => gentoo amd64    
+11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
+11-23-04 16:08 tiwai          Note Added: 0002518                          
+03-23-05 15:23 jdthood        Note Added: 0004158                          
+03-23-05 17:17 Gregoire       Note Added: 0004179                          
+03-23-05 17:21 jdthood        Note Added: 0004180                          
+03-23-05 17:21 jdthood        Status                   new => resolved     
+03-23-05 17:21 jdthood        Resolution               open => fixed       
+03-24-05 21:42 Ariel          Issue Monitored: Ariel                       
 05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
