@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000852]: alsa driver do not work on IBM thinkpad T42
-Date: Tue, 31 May 2005 18:04:13 +0200
-Message-ID: <c42806e66776b196c4d0cca49f3290f8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000868]: I can't find a Intel HD sound subsystem (supously realtek alc860) alsa driver.
+Date: Tue, 31 May 2005 18:04:26 +0200
+Message-ID: <073f812b528b50f9e26dbbdbfa8ce9fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC4D11BF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42CFB1CF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=868> 
 ======================================================================
-Reported By:                lithium7456
+Reported By:                Luis Durán
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   852
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   868
+Category:                   OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Distribution:               Mandrake 10.1
+Kernel Version:             2.6.8.1.24
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-28-2005 05:26 CET
+Date Submitted:             01-31-2005 16:47 CET
 Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    alsa driver do not work on IBM thinkpad T42
+Summary:                    I can't find a Intel HD sound subsystem (supously
+realtek alc860) alsa driver.
 Description: 
-After the installation of slackware linux 10 ,I found that the alsa driver
-1.05(with slackware linux )do not work: when i run "alsamixer" it shows
-that "no mixer elems". So I downloaded driver 1.08 and had it installed.
-now I can run alsamixer without any error message but my computer does not
-play any sound at all(I have run alsaconf and it detected the soundcard as
-snd-intel8x0)
-What steps shall I
-take&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=65311;
-please Re to lithium7456@sohu.com
-Thank you
+My hardware has installed an intel hd sound subsystem, this is the built-in
+sound card on intel 915gav mobo, intel's website drivers doesn't work,
+they even break your GNU/Linux installation even changing your root
+password (pretty weird). intel's website said intel hd sound subsystem
+chip is based on realtek alc860 or something like that. I will really
+appreciate if you know something, please answer me.
 ======================================================================
 
 ----------------------------------------------------------------------
- lithium7456 - 02-02-05 16:20 
+ tiwai - 01-31-05 18:52 
 ----------------------------------------------------------------------
-oh..it works....now I can hear music in linux now 
-Thank you very much!!
-
-----------------------------------------------------------------------
- tiwai - 02-04-05 13:14 
-----------------------------------------------------------------------
-Ok, moved to FIXED.
-Note that the latest version doesn't enable these controls.
+Use ALSA 1.0.8.  1.0.6a is way too old.
+The driver for your device is snd-azx.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-05 05:26 lithium7456    New Issue                                    
-01-28-05 17:47 tiwai          Note Added: 0003430                          
-02-02-05 16:20 lithium7456    Note Added: 0003489                          
-02-04-05 13:14 tiwai          Status                   new => resolved     
-02-04-05 13:14 tiwai          Resolution               open => fixed       
-02-04-05 13:14 tiwai          Assigned To               => tiwai           
-02-04-05 13:14 tiwai          Note Added: 0003503                          
-02-04-05 13:14 tiwai          Assigned To              tiwai =>            
-02-18-05 18:36 mutated        Issue Monitored: mutated                     
+01-31-05 16:47 Luis Durán     New Issue                                    
+01-31-05 16:47 Luis Durán     Distribution              => Mandrake 10.1   
+01-31-05 16:47 Luis Durán     Kernel Version            => 2.6.8.1.24      
+01-31-05 18:52 tiwai          Status                   new => resolved     
+01-31-05 18:52 tiwai          Resolution               open => not an issue
+01-31-05 18:52 tiwai          Assigned To               => tiwai           
+01-31-05 18:52 tiwai          Note Added: 0003451                          
+01-31-05 18:53 tiwai          Assigned To              tiwai =>            
 05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
