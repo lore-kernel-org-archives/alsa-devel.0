@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Tue, 31 May 2005 16:55:44 +0200
-Message-ID: <bd8b5b94da8be5f737d023dabe831334@bugtrack.alsa-project.org>
+Date: Tue, 31 May 2005 16:56:58 +0200
+Message-ID: <4b376ddae31b6a7a0eda924fae72123c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E436119A
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 16:55:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E021119A
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 16:56:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             vanilla 2.6.7
 ======================================================================
 Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-31-2005 16:55 CEST
+Last Modified:              05-31-2005 16:56 CEST
 ======================================================================
 Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
 situation
@@ -48,11 +48,6 @@ Description:
 When the first few writes to the oss emulation device are done in specific
 way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 05-31-05 16:41 
-----------------------------------------------------------------------
-Please, try oss-optr-fix3.patch . It should be the final and right fix.
 
 ----------------------------------------------------------------------
  tiwai - 05-31-05 16:55 
@@ -68,6 +63,12 @@ without fixup.  This means, setting fixup = 0 for playback should
 suffice.
 
 The above assumes that getoptr returns the "hwptr" for OSS.
+
+----------------------------------------------------------------------
+ parente - 05-31-05 16:56 
+----------------------------------------------------------------------
+Applied oss-optr-fix3.patch. Ran gnome-speech's test-speech utility
+callback test. Speech is still clipped as before.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +104,7 @@ Date Modified  Username       Field                    Change
 
 05-31-05 16:41 perex          Note Added: 0004837                          
 05-31-05 16:55 tiwai          Note Added: 0004838                          
+05-31-05 16:56 parente        Note Added: 0004839                          
 ======================================================================
 
 
