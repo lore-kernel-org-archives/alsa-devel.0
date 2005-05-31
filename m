@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000980]: nforce4/alc850 line-in -> spdif out - solution ???
-Date: Tue, 31 May 2005 18:03:36 +0200
-Message-ID: <a47b8d0874c6a7a211c7160151bcf64d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000953]: corrupted file in alsa-driver CVS
+Date: Tue, 31 May 2005 18:03:49 +0200
+Message-ID: <9ba9d54375e3191d21c192fb98597089@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 456051D5
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E58A1D9
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=980> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=953> 
 ======================================================================
-Reported By:                dobromir
-Assigned To:                sashak
+Reported By:                Wummel
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   980
-Category:                   PCI - intel8x0m
+Issue ID:                   953
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-11-2005 01:17 CET
+Date Submitted:             03-01-2005 12:05 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    nforce4/alc850 line-in -> spdif out - solution ???
+Summary:                    corrupted file in alsa-driver CVS
 Description: 
-I found in the alc850 spec that setting 12th bit in register 0x6a routes to
-spdif all data from ADC. I write small program that sets this register,
-and this works for me, but I use only 2 speakers configuration.
-Unfortunately I don't have enough 
-knowledge of alsa architecture to write a proper patch.
+When running cvs2cl command, I get the following error:
+cvs log: Logging kernel
+cvs [log aborted]: unrecognized operation '\x9' in
+/cvsroot/alsa/alsa-driver/kernel/Attic/mixer.c,v
+Problem reading log input (pid/exit/signal/core: 32710/1/0/0)
+
+I think the mentioned file is corrupted (as suggested while googling for
+this error).
 ======================================================================
 
 ----------------------------------------------------------------------
- dobromir - 03-11-05 16:44 
+ Wummel - 03-01-05 12:06 
 ----------------------------------------------------------------------
-Yes, it works. Thank You for your help.
+The web interface also gives a traceback:
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/kernel/Attic/mixer.c?rev=1.89&view=log
+
+Traceback (most recent call last):
+  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 2730, in
+main
+    request.run_viewcvs()
+  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 353, in
+run_viewcvs
+    self.view_func(self)
+  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 1591, in
+view_log
+    show_revs = request.repos.filelog(request.path_parts, rev, options)
+  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
+line 193, in filelog
+    filtered_revs = _file_log(revs, tags, default_branch, rev)
+  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
+line 703, in _file_log
+    taginfo['HEAD'] = _add_tag('HEAD', taginfo['MAIN'].co_rev)
+  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
+line 373, in _add_tag
+    tag = Tag(tag_name, revision.string)
+AttributeError: 'NoneType' object has no attribute 'string'
 
 ----------------------------------------------------------------------
- tiwai - 03-11-05 16:48 
+ perex - 03-02-05 14:20 
 ----------------------------------------------------------------------
-Thanks for the confirmation.  Applied to CVS.
-
-BTW, you don't need to write a program to change the AC97 registers on the
-fly.  You can do it by writing to proc file ac97#0-0+regs.  See
-alsa-kernel/Documentation/Procfile.txt for details.
+Yes, this corruption has caused probably an older version of CVS server. As
+far as I know, it cannot be fixed (maybe, we can remove this file from CVS
+manually). Skip this file..
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-05 01:17 dobromir       New Issue                                    
-03-11-05 08:27 dobromir       Note Added: 0003880                          
-03-11-05 10:19 dobromir       File Added: alc_850_mixer.patch                   
-
-03-11-05 10:24 dobromir       Note Added: 0003883                          
-03-11-05 12:11 tiwai          Note Added: 0003884                          
-03-11-05 16:08 dobromir       Note Added: 0003889                          
-03-11-05 16:15 tiwai          Note Added: 0003890                          
-03-11-05 16:16 tiwai          File Added: alc655-spdif-route-fix.diff           
-        
-03-11-05 16:44 dobromir       Note Added: 0003892                          
-03-11-05 16:48 tiwai          Status                   assigned => resolved
-03-11-05 16:48 tiwai          Resolution               open => fixed       
-03-11-05 16:48 tiwai          Note Added: 0003893                          
+03-01-05 12:05 Wummel         New Issue                                    
+03-01-05 12:06 Wummel         Note Added: 0003759                          
+03-02-05 14:20 perex          Status                   new => resolved     
+03-02-05 14:20 perex          Resolution               open => won't fix   
+03-02-05 14:20 perex          Assigned To               => perex           
+03-02-05 14:20 perex          Note Added: 0003775                          
+03-02-05 14:20 perex          Assigned To              perex =>            
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
