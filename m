@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
-Date: Tue, 31 May 2005 18:03:10 +0200
-Message-ID: <741fca21be8c05a65cba20883bd8139c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000126]: SBLive (Value, 1024) card's external analog inputs are only 2 channel
+Date: Tue, 31 May 2005 18:02:16 +0200
+Message-ID: <07f5293e12de848c651860de30323560@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58B131AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E6D91CF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=126> 
 ======================================================================
-Reported By:                Tom
-Assigned To:                
+Reported By:                Sipi
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   855
-Category:                   PCI - azx
+Issue ID:                   126
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 3 + Alsa 1.0.8
-Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
-Resolution:                 won't fix
+Distribution:               Gentoo Linux 1.4
+Kernel Version:             2.6.1, 2.6.2, 2.6.3
+Resolution:                 suspended
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-28-2005 13:21 CET
-Last Modified:              05-31-2005 18:03 CEST
+Date Submitted:             03-09-2004 12:57 CET
+Last Modified:              05-31-2005 18:02 CEST
 ======================================================================
-Summary:                    Analog Input doesn´t work
+Summary:                    SBLive (Value, 1024) card's external analog inputs
+are only 2 channel
 Description: 
-I tried to capture some tunes with my CMI9880 (an a ASUS P5GD2). It doesn´t
-care with mixer settings are made, the is simply no sound input.
-
-Does the azx driver support line-in anyways?
+On my SBLive! 1024 card (with 4.1 loudspeakers), all analog inputs (mic,
+line, cd-in) sounds only on the front speakers, not on rear. PCM sounds
+(mp3, movie) play fine, even in surround. Alsamixer does nothing with it.
+(BTW, it is the same with all 1.x.x alsa-driver.)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-22-05 22:10 
+ tiwai - 03-09-04 15:11 
 ----------------------------------------------------------------------
-This codec chip has no input loop-back path.  You have to do copy the audio
-data from line-in to line-out in software.
+it's a feature of the current driver.
+ac97 input is connected onlt to the front output FX BUS.
 
-----------------------------------------------------------------------
- jdthood - 03-22-05 22:13 
-----------------------------------------------------------------------
-OK, thanks for the explanation.
+the routing can be changed dynamically once when the DSP loader
+is finished.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-05 13:21 Tom            New Issue                                    
-01-28-05 13:21 Tom            Distribution              => Fedora Core 3 + Alsa
-1.0.8
-01-28-05 13:21 Tom            Kernel Version            => 2.6.9 and 2.6.10
-(from Fedora)
-01-31-05 14:10 Tom            Issue Monitored: Tom                         
-01-31-05 14:10 Tom            Issue End Monitor: Tom                       
-03-11-05 00:48 jdthood        Note Added: 0003876                          
-03-16-05 14:48 tiwai          Note Added: 0003958                          
-03-22-05 22:01 jdthood        Note Added: 0004134                          
-03-22-05 22:10 tiwai          Note Added: 0004136                          
-03-22-05 22:13 jdthood        Note Added: 0004137                          
-03-22-05 22:13 jdthood        Status                   new => resolved     
-03-22-05 22:13 jdthood        Resolution               open => won't fix   
-05-31-05 18:03 perex          Status                   resolved => closed  
+03-09-04 12:57 Sipi           New Issue                                    
+03-09-04 15:11 tiwai          Status                   new => resolved     
+03-09-04 15:11 tiwai          Resolution               open => suspended   
+03-09-04 15:11 tiwai          Assigned To               => tiwai           
+03-09-04 15:11 tiwai          Note Added: 0000545                          
+05-31-05 18:02 perex          Status                   resolved => closed  
 ======================================================================
 
 
