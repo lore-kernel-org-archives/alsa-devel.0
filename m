@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Tue, 31 May 2005 18:01:56 +0200
-Message-ID: <d025301fb89e0f5442b5373458e8d644@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000037]: no sound
+Date: Tue, 31 May 2005 18:02:13 +0200
+Message-ID: <fba894a998d13b7bf3fafcf6fc33b13f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DEAF1B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3EE461B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,116 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=37> 
 ======================================================================
-Reported By:                footcow
-Assigned To:                
+Reported By:                zoltan
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
+Issue ID:                   37
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.9
-Resolution:                 fixed
+Distribution:               Mandrake 9.2
+Kernel Version:             2.4.22-10mdksmp
+Resolution:                 suspended
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              05-31-2005 18:01 CEST
+Date Submitted:             02-04-2004 17:04 CET
+Last Modified:              05-31-2005 18:02 CEST
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    no sound
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
+Takashi Iwai was assisting me with this problem. I think he is on your team
+- if not, let me know and I can be more specific about the issues.
 
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000789 With AZX Sound card
+Thanks,
+Zoltan.
 ======================================================================
 
 ----------------------------------------------------------------------
- footcow - 01-15-05 00:21 
+ zoltan - 02-26-04 17:03 
 ----------------------------------------------------------------------
-Perfect sound is back with version 1.8.0 ;o)
-You can close the bug report for me.
+ping.... and the man ponged.
+
+I've moved that motherboard onto a WinXP box and the sound works
+perfectly.
+
+I've replaced the M/B in the Mdk box with the a newer version of the same
+MSI motherboard - and rebooted Mdk - and the sound works!!! Well, mplayer
+works, but aplay does not!!! Good luck figuring this one out - I'm not at
+all hassled.
+
+I suppose my final feeling is that there are probably a lot more
+outstanding issues with ALSA drivers than Win drivers, but hey, as long as
+you can afford to bang your head on a wall, spend the time and money
+replacing hardware, it's a great system :-)
+
+btw: I've been using I386/SCO/then Linux since 1990, so it my hassles
+weren't  "Linux Newbie" hassles.
+
+Feel free to close this bug report, or whatever floats your boat.
+
+Thanks (sincerely) for your early efforts.
+
+Kind regards,
+Zoltan.
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 17:14 
+ perex - 03-13-04 18:32 
 ----------------------------------------------------------------------
-OK, go to Fixed.
+Unfortunate, we're not able to solve this bug and the user doesn't use
+ALSA
+on the affected system now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-12-10-04 22:08 footcow        File Added: alsamix.png                      
-12-11-04 17:40 tiwai          Note Added: 0002811                          
-12-12-04 00:58 footcow        Note Added: 0002813                          
-12-12-04 00:59 footcow        File Added: alsamix2.png                     
-12-16-04 18:32 tiwai          Note Added: 0002836                          
-12-16-04 21:06 footcow        Note Added: 0002841                          
-01-07-05 00:44 footcow        Note Added: 0003099                          
-01-07-05 18:04 tiwai          Note Added: 0003107                          
-01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
-01-08-05 01:22 footcow        Note Added: 0003125                          
-01-11-05 16:14 tiwai          Note Added: 0003152                          
-01-11-05 16:15 tiwai          File Added: azx-cmedia-pcm-fix.diff               
-    
-01-11-05 16:16 tiwai          Relationship added       has duplicate 0000789
-01-15-05 00:21 footcow        Note Added: 0003211                          
-01-19-05 17:14 tiwai          Status                   new => resolved     
-01-19-05 17:14 tiwai          Resolution               open => fixed       
-01-19-05 17:14 tiwai          Assigned To               => tiwai           
-01-19-05 17:14 tiwai          Note Added: 0003301                          
-01-19-05 17:14 tiwai          Assigned To              tiwai =>            
-05-31-05 18:01 perex          Status                   resolved => closed  
+02-04-04 17:04 zoltan         New Issue                                    
+02-04-04 17:04 zoltan         File Added: asound.state                     
+02-04-04 17:13 tiwai          Note Added: 0000148                          
+02-04-04 17:35 zoltan         File Added: cat_log                          
+02-04-04 17:36 zoltan         File Added: aplay_log                        
+02-04-04 17:36 zoltan         File Added: aplay_log                        
+02-04-04 17:38 zoltan         Note Added: 0000152                          
+02-04-04 17:44 tiwai          Note Added: 0000153                          
+02-04-04 17:53 zoltan         Note Added: 0000156                          
+02-04-04 18:09 zoltan         File Added: aplay48_log                      
+02-04-04 18:13 zoltan         Note Added: 0000158                          
+02-04-04 19:39 tiwai          Note Added: 0000162                          
+02-05-04 07:30 zoltan         File Added: alsamixer.png                    
+02-05-04 07:30 zoltan         File Added: amixer_log                       
+02-05-04 07:31 zoltan         File Added: proc_mod_log                     
+02-05-04 07:44 zoltan         Note Added: 0000173                          
+02-05-04 10:52 zoltan         Issue Monitored: zoltan                      
+02-05-04 13:02 zoltan         File Added: lspci_log                        
+02-05-04 13:03 zoltan         Note Added: 0000179                          
+02-05-04 17:38 zoltan         Note Added: 0000183                          
+02-05-04 21:25 zoltan         Note Added: 0000184                          
+02-06-04 15:53 tiwai          Note Added: 0000190                          
+02-06-04 17:26 zoltan         Note Added: 0000191                          
+02-06-04 17:54 tiwai          Note Added: 0000192                          
+02-06-04 19:05 zoltan         Note Added: 0000198                          
+02-07-04 16:44 DaMouse        Note Added: 0000203                          
+02-09-04 20:03 tiwai          Note Added: 0000212                          
+02-09-04 20:15 zoltan         Note Added: 0000213                          
+02-13-04 17:08 zoltan         Note Added: 0000237                          
+02-24-04 16:56 zoltan         Note Added: 0000303                          
+02-25-04 22:58 zoltan         Note Added: 0000329                          
+02-26-04 10:48 tiwai          Note Added: 0000332                          
+02-26-04 17:03 zoltan         Note Added: 0000356                          
+03-13-04 18:32 perex          Status                   new => resolved     
+03-13-04 18:32 perex          Resolution               open => suspended   
+03-13-04 18:32 perex          Assigned To               => perex           
+03-13-04 18:32 perex          Note Added: 0000596                          
+05-31-05 18:02 perex          Status                   resolved => closed  
 ======================================================================
 
 
