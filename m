@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001146]: Cannot compile alsa-utils
-Date: Tue, 31 May 2005 13:27:37 +0200
-Message-ID: <d23363379f73550b758daa24a1a68eca@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA Plugin for XMMS2. Help wanted.
+Date: Tue, 31 May 2005 13:48:52 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0505311333490.7269-100000@studcom.urz.uni-halle.de>
+References: <A633824F-4FB6-446B-9C39-26F315518B3A@xmms.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E618C17E
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:27:37 +0200 (MEST)
+In-Reply-To: <A633824F-4FB6-446B-9C39-26F315518B3A@xmms.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Tobias_Rundstr=F6m?= <tru@xmms.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Tobias Rundstr=F6m wrote:
+> This is a call for help. We would like a senior ALSA developer look
+> at our plugin and give us advice (or even write the code himself).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1146> 
-======================================================================
-Reported By:                Cimmo
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1146
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 test3
-Kernel Version:             2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
-======================================================================
-Date Submitted:             05-30-2005 15:06 CEST
-Last Modified:              05-31-2005 13:27 CEST
-======================================================================
-Summary:                    Cannot compile alsa-utils
-Description: 
-Compiling alsa-utils 1.0.9 with gcc 4.0.0 I've this error:
+I guess the second value in the rates array should be 11025 and not
+12025.
 
-Making all in alsactl
-make[1]: Entering directory
-`/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
-gcc  -g -O2   -o alsactl  alsactl.o state.o power.o names.o  -lasound -lm
--ldl -lpthread
-names.o(.text+0xdce): In function `probe_timers':
-/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425: undefined
-reference to `snd_timer_ginfo_sizeof'
-names.o(.text+0xdee):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425:
-undefined reference to `snd_timer_ginfo_sizeof'
-names.o(.text+0xe4e):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:435:
-undefined reference to `snd_timer_ginfo_set_tid'
-names.o(.text+0xebf):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:445:
-undefined reference to `snd_timer_ginfo_get_name'
-collect2: ld returned 1 exit status
-make[1]: *** [alsactl] Error 1
-make[1]: Leaving directory `/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
-make: *** [all-recursive] Error 1
-======================================================================
+The default value for mixer_dev should be "default" and not "hw:0".
 
-----------------------------------------------------------------------
- tiwai - 05-31-05 13:04 
-----------------------------------------------------------------------
-Yes.  Or run configure with the proper option.
+Without the SND_PCM_NONBLOCK flag, the snd_pcm_open call will block
+until the device is available instead of returning an error.  If you
+add this flag, call snd_pcm_nonblock(..., 0) afterwards to make sure
+that the later write calls will block. write ca
 
-----------------------------------------------------------------------
- Cimmo - 05-31-05 13:27 
-----------------------------------------------------------------------
-Ok using --libdir=/lib64 it compiled well.
-Sorry for this bug-report.
+I didn't find any other obvious issues.
 
-best regards
+> We had fairly hard time trying to figure out how to use the API
+> and cope with all error handling.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-05 15:06 Cimmo          New Issue                                    
-05-30-05 15:06 Cimmo          Distribution              => Fedora Core 4 test3
-05-30-05 15:06 Cimmo          Kernel Version            =>
-2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
-05-30-05 15:11 perex          Status                   assigned => resolved
-05-30-05 15:11 perex          Resolution               open => fixed       
-05-30-05 15:11 perex          Note Added: 0004818                          
-05-30-05 15:36 Cimmo          Status                   resolved => feedback
-05-30-05 15:36 Cimmo          Resolution               fixed => reopened   
-05-30-05 15:36 Cimmo          Note Added: 0004820                          
-05-31-05 12:52 tiwai          Note Added: 0004823                          
-05-31-05 13:03 Cimmo          Note Added: 0004826                          
-05-31-05 13:04 tiwai          Note Added: 0004828                          
-05-31-05 13:27 Cimmo          Note Added: 0004830                          
-======================================================================
+It isn't obvious what happens when there is an unrecoverable error
+(if, e.g., a USB device gets unplugged).  I guess in such a case XMMS
+should stop playing, but it seems xmms_alsa_write cannot actually
+signal an error.
 
+
+HTH
+Clemens
 
 
 
@@ -105,4 +55,5 @@ Date Modified  Username       Field                    Change
 This SF.Net email is sponsored by Yahoo.
 Introducing Yahoo! Search Developer Network - Create apps using Yahoo!
 Search APIs Find out how you can build Yahoo! directly into your own
-Applications - visit http://developer.yahoo.net/?fr=offad-ysdn-ostg-q22005
+Applications - visit http://developer.yahoo.net/?fr=3Doffad-ysdn-ostg-q22=
+005
