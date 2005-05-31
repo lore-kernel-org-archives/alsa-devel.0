@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000925]: no sound with CMI9761A
-Date: Tue, 31 May 2005 18:03:52 +0200
-Message-ID: <0a4e50f53858c8f09bb9393fd4dd3b2d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000088]: rounding errors in increasing/decreasing volume?
+Date: Tue, 31 May 2005 18:03:21 +0200
+Message-ID: <6a463086332586dee2125166fbb69b1f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56AE21CA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48C5E1CA
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=88> 
 ======================================================================
-Reported By:                Cus
+Reported By:                cbm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   925
-Category:                   PCI - intel8x0
+Issue ID:                   88
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
 Status:                     closed
-Distribution:               SuSE Linux 9.2
-Kernel Version:             2.6.11-rc3
-Resolution:                 fixed
+Distribution:               Gentoo GNU Linux
+Kernel Version:             2.4.24
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-19-2005 18:55 CET
+Date Submitted:             02-26-2004 08:33 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    no sound with CMI9761A
+Summary:                    rounding errors in increasing/decreasing volume?
 Description: 
-I have no sound with my Chaintech VNF-250 motherboard. It has
-an integrated CMI9761A chip, the alsa driver detects it as CMI9761,
-everything seems to be ok, but i hear nothing.
+See this gnome bug report:
+
+http://bugs.gnome.org/show_bug.cgi?id=124741
+
+Someone commented that its caused in the drivers?  I assume they meant
+ALSA.  If its not at your end, I'll poke the gnome folk some more ;-)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-22-05 14:34 
+ jdthood - 03-19-05 09:23 
 ----------------------------------------------------------------------
-Maybe better to use 0x0001 instead?  I guess 0x0008 controls the "IEC958
-Capture Monitor", and got some reports that this disturbs the output.
+Submitter: Do you still think that there is a bug in ALSA?
 
 ----------------------------------------------------------------------
- tiwai - 02-23-05 15:05 
+ cbm - 03-20-05 01:10 
 ----------------------------------------------------------------------
-Now fixed on CVS.  Thanks.
+I just tested with gnome 2.8 and the problem I'd been seeing is not evident
+anymore.  Feel free to close this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-05 18:55 Cus            New Issue                                    
-02-19-05 18:55 Cus            File Added: lspci                            
-02-19-05 18:55 Cus            Distribution              => SuSE Linux 9.2  
-02-19-05 18:55 Cus            Kernel Version            => 2.6.11-rc3      
-02-22-05 14:34 tiwai          Note Added: 0003700                          
-02-23-05 15:05 tiwai          Status                   new => resolved     
-02-23-05 15:05 tiwai          Resolution               open => fixed       
-02-23-05 15:05 tiwai          Assigned To               => tiwai           
-02-23-05 15:05 tiwai          Note Added: 0003712                          
-02-23-05 15:05 tiwai          Assigned To              tiwai =>            
+02-26-04 08:33 cbm            New Issue                                    
+02-26-04 11:12 tiwai          Note Added: 0000334                          
+02-26-04 11:35 cbm            Note Added: 0000337                          
+03-19-05 09:23 jdthood        Note Added: 0004015                          
+03-20-05 01:10 cbm            Note Added: 0004070                          
+03-22-05 14:59 jdthood        Status                   new => resolved     
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
