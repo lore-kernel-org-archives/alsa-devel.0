@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000903]: Patch for acpi resume.
-Date: Tue, 31 May 2005 18:03:55 +0200
-Message-ID: <da5c37776285089e4101b61bcda44d92@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000954]: no audible sound with AD1981B
+Date: Tue, 31 May 2005 18:03:42 +0200
+Message-ID: <0b10787f80c8a7281def6d0d3d7e47b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3CA41DA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 678D81D8
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,106 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=903> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=954> 
 ======================================================================
-Reported By:                ryo-dairiki
+Reported By:                gismo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   903
+Issue ID:                   954
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10
+Distribution:               Debian unstable
+Kernel Version:             2.6.10 / 2.6.11-rc[24]
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-12-2005 04:48 CET
+Date Submitted:             03-01-2005 14:20 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Patch for acpi resume.
+Summary:                    no audible sound with AD1981B
 Description: 
-When you use acpi suspend-to-ram (=S3 sleep), you have to kill applications
-playing sounds and unload snd_intel8x0 module.
-(You can't unload the module when you are using sound servers)
-Otherwise, the applications will freeze when you resume the machine.
-I found that this problem is caused by "snd_pcm_suspend_all" call in
-"intel8x0_suspend" method described in "intel8x0.c".
-It suspend pcm streams and won't resume them, then causes the applications
-to freeze.
-So I made a patch to make it resume pcm streams on resume.
+Already reported in the Debian BTS [1].
 
-This works fine for me.
-I mean I can suspend and resume even if some applications are playing
-sounds without unloading the modules or killing them.
+Since having upgraded to 1.0.8, I've no more audible sound on my
+Debian. This happens on 2.6.10 and on 2.6.11-rc[24] (on the latest,
+with or without the external compiled ALSA modules).
+
+What is strange is that all is working as expected, but I cannot hear
+the sound: if I launch the GNOME Volume Meter ('vumeter'), I can see
+the bars moving when Rhythmbox is playing, indicating that there's
+sound.
+
+Obviously, all modules are correctly loaded (I don't use the OSS
+emulation, but I tried with it and it doens't change anything) and the
+volumes properly set and unmuted. As I've an IBM T42p, I unmuted the
+volume via the tpb-enabled keys.
+
+I guess the problem is something related to this ALSA bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925 [2], but I
+cannot find a solution (and actually I'm quite sure I don't have an
+S/PDIF output).
+
+Some useful info:
+=====
+gismo:/home/luca# lspci -v
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
+ (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 01)
+        Subsystem: IBM: Unknown device 0537
+        Flags: bus master, medium devsel, latency 0, IRQ 11
+        I/O ports at 1c00 [size=256]
+        I/O ports at 18c0 [size=64]
+        Memory at c0000c00 (32-bit, non-prefetchable) [size=512]
+        Memory at c0000800 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [50] Power Management version 2
+
+gismo:/home/luca# cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
+                  Intel 82801DB-ICH4 with AD1981B at 0xc0000c00,
+                  irq 11
+=====
+
+I just tried today CVS, but it didn't solve the problem.
+
+[1] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=297343
+[2] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ryo-dairiki - 02-15-05 05:29 
+ gismo - 03-01-05 14:23 
 ----------------------------------------------------------------------
-Thank you for replying.
+I'm sorry, after having digged in the bug reports, it seems that my problem
+is the same as ALSA bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 [1]. Am I correct?
 
-I've just found that problem is caused not by alsa itself, but by
-alsa-dmix.
+In this case, I don't know how to mark this bug as a duplicate of the
+other...
 
->From "pcm_dmix.c":
-
-static int snd_pcm_dmix_resume(snd_pcm_t *pcm ATTRIBUTE_UNUSED)
-{
-    // snd_pcm_direct_t *dmix = pcm->private_data;
-    // FIXME
-    return 0;
-}
-
-It seems like there is no valid code for resuming here.
-Anyway, thank you for the information.
+[1] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:54 
+ tiwai - 03-09-05 17:19 
 ----------------------------------------------------------------------
-Please, enter a new bug for alsa-lib (dmix resume problem).
+It might be a different matter.
+Just turn off 'Headphone Jack Sense' and 'Line Jack Sense' mixer switches.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-05 04:48 ryo-dairiki    New Issue                                    
-02-12-05 04:48 ryo-dairiki    File Added: alsa-resume-all.patch                 
-  
-02-12-05 04:48 ryo-dairiki    Distribution              => Fedora Core 3   
-02-12-05 04:48 ryo-dairiki    Kernel Version            => 2.6.10          
-02-13-05 04:44 ryo-dairiki    Note Added: 0003579                          
-02-13-05 08:36 ryo-dairiki    Note Deleted: 0003579                        
-02-14-05 07:27 ryo-dairiki    Note Added: 0003586                          
-02-14-05 16:13 tiwai          Note Added: 0003593                          
-02-15-05 05:29 ryo-dairiki    Note Added: 0003615                          
-02-22-05 09:54 perex          Status                   new => resolved     
-02-22-05 09:54 perex          Resolution               open => fixed       
-02-22-05 09:54 perex          Assigned To               => perex           
-02-22-05 09:54 perex          Note Added: 0003694                          
-02-22-05 09:54 perex          Assigned To              perex =>            
+03-01-05 14:20 gismo          New Issue                                    
+03-01-05 14:20 gismo          Distribution              => Debian unstable 
+03-01-05 14:20 gismo          Kernel Version            => 2.6.10 /
+2.6.11-rc[24]
+03-01-05 14:23 gismo          Note Added: 0003760                          
+03-09-05 17:19 tiwai          Status                   new => resolved     
+03-09-05 17:19 tiwai          Resolution               open => fixed       
+03-09-05 17:19 tiwai          Assigned To               => tiwai           
+03-09-05 17:19 tiwai          Note Added: 0003829                          
+03-09-05 17:20 tiwai          Assigned To              tiwai =>            
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
