@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000190]: Compilation Error 2.6.4 /usr/src/linux/include/linux/pci.h
-Date: Tue, 31 May 2005 18:03:25 +0200
-Message-ID: <9a6c7e885d9aeee927252a17fcd556c5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000148]: Master volume only controls front output
+Date: Tue, 31 May 2005 18:02:10 +0200
+Message-ID: <d2c75b45b817cd107dcf21e2fa2c24ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 013221CE
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D0DD1B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=190> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=148> 
 ======================================================================
-Reported By:                Sean
-Assigned To:                tiwai
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   190
-Category:                   0_compilation problem_!!!
+Issue ID:                   148
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.6.5
-Resolution:                 fixed
+Distribution:               Gentoo Linux 1.4
+Kernel Version:             2.6.4
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-06-2004 01:52 CEST
-Last Modified:              05-31-2005 18:03 CEST
+Date Submitted:             03-22-2004 16:06 CET
+Last Modified:              05-31-2005 18:02 CEST
 ======================================================================
-Summary:                    Compilation Error 2.6.4
-/usr/src/linux/include/linux/pci.h
+Summary:                    Master volume only controls front output
 Description: 
-Building Alsa driver 1.0.4 failed on Linux 2.6.5 building memory.o with the
-following error:
-In file included from
-/root/alsa/alsa-driver-1.0.4/alsa-kernel/core/memory.c:29,                
-from /root/alsa/alsa-driver-1.0.4/acore/memory.c:2:
-include/linux/pci.h:654: error: parse error before numeric constant
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001063 master volume change and mute only affe...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 04-25-04 10:15 
+ perex - 03-23-04 16:18 
 ----------------------------------------------------------------------
-Note that you have to way one day until anonymous CVS is synced on
-SourceForge.
-Please try again.
+Please, make this report for the alsa-lib project. We need to design an
+abstraction layer which will provide this "expected" behaviour.
 
-----------------------------------------------------------------------
- jdthood - 03-19-05 09:48 
-----------------------------------------------------------------------
-This one can be closed.
+Actually, we follow the hardware and rear output is totaly independent in
+case
+of SB Live.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-06-04 01:52 Sean           New Issue                                    
-04-06-04 01:52 Sean           Kernel Version            => 2.6.5           
-04-13-04 19:39 tiwai          Note Added: 0000794                          
-04-13-04 23:21 Sean           File Added: .config                          
-04-13-04 23:22 Sean           Note Added: 0000800                          
-04-16-04 12:02 tiwai          Note Added: 0000834                          
-04-16-04 22:32 Sean           Note Added: 0000845                          
-04-20-04 12:50 tiwai          Note Added: 0000875                          
-04-20-04 19:12 Sean           Note Added: 0000888                          
-04-23-04 17:19 tiwai          Note Added: 0000901                          
-04-23-04 21:47 Sean           Note Added: 0000919                          
-04-23-04 21:48 Sean           File Added: config.log                       
-04-24-04 21:58 tiwai          Status                   assigned => resolved
-04-24-04 21:58 tiwai          Resolution               open => fixed       
-04-24-04 21:58 tiwai          Assigned To              perex => tiwai      
-04-24-04 21:58 tiwai          Note Added: 0000929                          
-04-25-04 01:28 Sean           Status                   resolved => feedback
-04-25-04 01:28 Sean           Resolution               fixed => reopened   
-04-25-04 01:28 Sean           Note Added: 0000930                          
-04-25-04 01:29 Sean           File Added: config.log                       
-04-25-04 10:15 perex          Note Added: 0000936                          
-03-19-05 09:48 jdthood        Note Added: 0004027                          
-03-19-05 14:39 perex          Status                   feedback => resolved
-03-19-05 14:39 perex          Resolution               reopened => fixed   
-05-31-05 18:03 perex          Status                   resolved => closed  
+03-22-04 16:06 wzzrd          New Issue                                    
+03-22-04 16:06 wzzrd          Distribution              => Gentoo Linux 1.4
+03-22-04 16:06 wzzrd          Kernel Version            => 2.6.4           
+03-23-04 16:18 perex          Status                   new => resolved     
+03-23-04 16:18 perex          Resolution               open => not an issue
+03-23-04 16:18 perex          Assigned To               => perex           
+03-23-04 16:18 perex          Note Added: 0000665                          
+04-18-05 20:18 rlrevell       Relationship added       has duplicate 0001063
+05-31-05 18:02 perex          Status                   resolved => closed  
 ======================================================================
 
 
