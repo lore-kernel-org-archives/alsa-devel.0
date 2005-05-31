@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000336]: No sound playing
-Date: Tue, 31 May 2005 18:05:01 +0200
-Message-ID: <209f26135f557c868473e3212740c19a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
+Date: Tue, 31 May 2005 18:04:03 +0200
+Message-ID: <c1b9e97e879a5837ff3a43306e3aff36@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BA811BF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:05:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17F151DB
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=336> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=650> 
 ======================================================================
-Reported By:                davidgvh
-Assigned To:                
+Reported By:                pancogi
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   336
-Category:                   PCI - intel8x0
+Issue ID:                   650
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.4.27-pre5
-Resolution:                 not fixable
+Distribution:               
+Kernel Version:             2.4.27
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-16-2004 14:03 CEST
-Last Modified:              05-31-2005 18:05 CEST
+Date Submitted:             11-15-2004 11:59 CET
+Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    No sound playing
+Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
 Description: 
-I cannot get sound to work. After probing snd-card-0, I cannot change the
-volume for the PCM channel in alsamixer.
+hi
+my Sb Live do not work with emu10k1, lspci -v say:
+
+0000:00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 08)
+        Subsystem: Creative Labs CT4760 SBLive! OEM version
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at d800 [size=32]
+        Capabilities: [dc] Power Management version 2
+
+lspci -n, say:
+
+0000:00:0d.0 Class 0401: 1102:0002 (rev 08)
+
+dmesg after modprobe snd-emu10k1,
+
+PCI: Found IRQ 5 for device 00:0d.0
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1905: AC'97 0 does not
+respond - RESET
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1913: AC'97 0 access is not
+valid [0x0], removing mixer.
+
+dmesg after modprobe oss modules emu10k1, say:
+
+emu10k1: EMU10K1 rev 8 model 0x8028 found, IO at 0xd800-0xd81f, IRQ 5
+ac97_codec: AC97  codec, id: 0x0000:0x0000 (Unknown)
+
+but no sound output.
+with kernel 2.6.9, the same.
+
+thanks,
+giovanni.
 ======================================================================
 
 ----------------------------------------------------------------------
- davidgvh - 06-22-04 02:40 
+ pzad - 11-15-04 15:41 
 ----------------------------------------------------------------------
-Sound plays under 2.4.27-rc1. Did not play before. Thinking the problem is
-a kernel issue. However, the kernel has timing issues. Everything is 2-3
-times faster. Sound plays at correct rate though. Still cannot change PCM
-volume in alsamixer though.
+> thanks, which one?
 
-edited on: 06-22-04 02:40
+Working one. :-)
+
+This card looks damaged.
 
 ----------------------------------------------------------------------
- tiwai - 06-30-04 15:51 
+ perex - 02-22-05 09:31 
 ----------------------------------------------------------------------
-The codec doesn't support PCM volume indeed.  It's not a bug.
+Hardware is probably damaged.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-04 14:03 davidgvh       New Issue                                    
-06-16-04 14:03 davidgvh       File Added: ac97#0-0+regs                    
-06-16-04 14:03 davidgvh       Distribution              => Fedora Core 2   
-06-16-04 14:03 davidgvh       Kernel Version            => 2.4.27-pre5     
-06-16-04 14:04 davidgvh       File Added: ac97#0-0                         
-06-16-04 14:06 davidgvh       Note Added: 0001312                          
-06-17-04 00:28 davidgvh       Note Added: 0001313                          
-06-22-04 02:37 davidgvh       Note Edited: 0001312                         
-06-22-04 02:38 davidgvh       Note Edited: 0001312                         
-06-22-04 02:39 davidgvh       Note Added: 0001327                          
-06-22-04 02:40 davidgvh       Note Edited: 0001327                         
-06-30-04 15:51 tiwai          Note Added: 0001353                          
-03-23-05 15:50 jdthood        Status                   new => resolved     
-03-23-05 15:50 jdthood        Resolution               open => not fixable 
-04-01-05 15:50 romano         Issue Monitored: romano                      
-05-31-05 18:05 perex          Status                   resolved => closed  
+11-15-04 11:59 pancogi        New Issue                                    
+11-15-04 11:59 pancogi        Kernel Version            => 2.4.27          
+11-15-04 12:20 pancogi        Note Added: 0002411                          
+11-15-04 12:47 pancogi        Issue Monitored: pancogi                     
+11-15-04 12:53 pzad           Note Added: 0002412                          
+11-15-04 13:30 pancogi        Note Added: 0002413                          
+11-15-04 13:43 pzad           Note Added: 0002414                          
+11-15-04 13:45 pzad           Note Edited: 0002414                         
+11-15-04 15:07 pancogi        Note Added: 0002415                          
+11-15-04 15:41 pzad           Note Added: 0002416                          
+02-22-05 09:30 perex          Assigned To              perex => pzad       
+02-22-05 09:30 perex          Category                 0_compilation problem_!!!
+=> PCI - emu10k1
+02-22-05 09:31 perex          Status                   assigned => resolved
+02-22-05 09:31 perex          Resolution               open => won't fix   
+02-22-05 09:31 perex          Note Added: 0003686                          
+05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
 
