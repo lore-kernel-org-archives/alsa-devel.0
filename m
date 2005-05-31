@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
-Date: Tue, 31 May 2005 12:58:32 +0200
-Message-ID: <0845d1a1875e0fc78ecd3464d5d744a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001146]: Cannot compile alsa-utils
+Date: Tue, 31 May 2005 13:03:32 +0200
+Message-ID: <2543bd83ec8623e6403cc4334ff2af2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A572196
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 12:58:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B5EE19C
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:03:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1132> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1146> 
 ======================================================================
-Reported By:                speedking
-Assigned To:                tiwai
+Reported By:                Cimmo
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1132
-Category:                   PCI - hda-intel
+Issue ID:                   1146
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               RHEL 3 U5 gold
-Kernel Version:             2.4.21-32
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Fedora Core 4 test3
+Kernel Version:             2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
 ======================================================================
-Date Submitted:             05-28-2005 02:02 CEST
-Last Modified:              05-31-2005 12:58 CEST
+Date Submitted:             05-30-2005 15:06 CEST
+Last Modified:              05-31-2005 13:03 CEST
 ======================================================================
-Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
-catastrophic CrAsH
+Summary:                    Cannot compile alsa-utils
 Description: 
-system hangs when either 'alsaconf' runs or you attempt a 'modprobe
-snd-hda-intel'
+Compiling alsa-utils 1.0.9 with gcc 4.0.0 I've this error:
 
-System is a HP xw4300 workstation, Intel based, running an Azalia
-compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
-
-
-
-
+Making all in alsactl
+make[1]: Entering directory
+`/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
+gcc  -g -O2   -o alsactl  alsactl.o state.o power.o names.o  -lasound -lm
+-ldl -lpthread
+names.o(.text+0xdce): In function `probe_timers':
+/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425: undefined
+reference to `snd_timer_ginfo_sizeof'
+names.o(.text+0xdee):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425:
+undefined reference to `snd_timer_ginfo_sizeof'
+names.o(.text+0xe4e):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:435:
+undefined reference to `snd_timer_ginfo_set_tid'
+names.o(.text+0xebf):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:445:
+undefined reference to `snd_timer_ginfo_get_name'
+collect2: ld returned 1 exit status
+make[1]: *** [alsactl] Error 1
+make[1]: Leaving directory `/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
+make: *** [all-recursive] Error 1
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 12:58 
+ tiwai - 05-31-05 12:52 
 ----------------------------------------------------------------------
-Fixed with 1.0.9-final.
+Make sure that you have no /lib/libasound.so.*.  IIRC, FC3 installs
+alsa-lib into /lib instead of /usr/lib.
+
+----------------------------------------------------------------------
+ Cimmo - 05-31-05 13:03 
+----------------------------------------------------------------------
+In fact I have old lib in /lib and new one in /usr/lib, so I have to delete
+old one?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 02:02 speedking      New Issue                                    
-05-28-05 02:02 speedking      Distribution              => RHEL 3 U5 gold  
-05-28-05 02:02 speedking      Kernel Version            => 2.4.21-32       
-05-31-05 12:58 tiwai          Status                   assigned => resolved
-05-31-05 12:58 tiwai          Resolution               open => fixed       
-05-31-05 12:58 tiwai          Note Added: 0004825                          
+05-30-05 15:06 Cimmo          New Issue                                    
+05-30-05 15:06 Cimmo          Distribution              => Fedora Core 4 test3
+05-30-05 15:06 Cimmo          Kernel Version            =>
+2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
+05-30-05 15:11 perex          Status                   assigned => resolved
+05-30-05 15:11 perex          Resolution               open => fixed       
+05-30-05 15:11 perex          Note Added: 0004818                          
+05-30-05 15:36 Cimmo          Status                   resolved => feedback
+05-30-05 15:36 Cimmo          Resolution               fixed => reopened   
+05-30-05 15:36 Cimmo          Note Added: 0004820                          
+05-31-05 12:52 tiwai          Note Added: 0004823                          
+05-31-05 13:03 Cimmo          Note Added: 0004826                          
 ======================================================================
 
 
