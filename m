@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000088]: rounding errors in increasing/decreasing volume?
-Date: Tue, 31 May 2005 18:03:21 +0200
-Message-ID: <6a463086332586dee2125166fbb69b1f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000635]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
+Date: Tue, 31 May 2005 18:03:15 +0200
+Message-ID: <c6ab3593f252f410730447c2f5f4fbd1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48C5E1CA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D351B1BF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=88> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=635> 
 ======================================================================
-Reported By:                cbm
+Reported By:                betak
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   88
-Category:                   OTHERS
+Issue ID:                   635
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo GNU Linux
-Kernel Version:             2.4.24
-Resolution:                 open
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.9
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-26-2004 08:33 CET
+Date Submitted:             11-07-2004 21:41 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    rounding errors in increasing/decreasing volume?
+Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
+converters and GPIO not ready (0x1)
 Description: 
-See this gnome bug report:
+I tried to install kernel-2.6.9 with alsa-driver-1.0.7rc2. I use Fedora
+Core 2  on my Fujitsu - Siemens Lifebook C1020 ( technical dokumentation -
+see http://212.52.234.17/index.cfm?fuseaction=dspcontent&lid=11&page=2 )
+When I try to load module snd_via82xx first , I am not able to load second
+modul - snd_via82xx. I recieve following message "Unknown symbol
+snd_verbode_printk" and modul is not loded.
+But when I tried to load sdn_via82xx_modem  first, then I recieve
+following message "MC'97 0 converters and GPIO not ready (0x1)".
+Snd_via82xx_modem is loaded , but I am not able to setup them.
+Any useful information from my system are attached.
+Can you help me to setup this modem driver  ? How can I create /dev/modem
+... ?
 
-http://bugs.gnome.org/show_bug.cgi?id=124741
-
-Someone commented that its caused in the drivers?  I assume they meant
-ALSA.  If its not at your end, I'll poke the gnome folk some more ;-)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000634 Unknown symbol snd_verbode_printk, MC'9...
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:23 
+ betak - 11-09-04 20:12 
 ----------------------------------------------------------------------
-Submitter: Do you still think that there is a bug in ALSA?
+cd /usr/src
+tar xvjf alsa-driver-1.0.7rc2.tar.bz2
+./configure --with-kernel=/mnt/hda14/usr.src.hda17/linux-2.6.9
+make
+make install
+./snddevices
+
+less /proc/config.gz attached
 
 ----------------------------------------------------------------------
- cbm - 03-20-05 01:10 
+ jdthood - 03-19-05 12:57 
 ----------------------------------------------------------------------
-I just tested with gnome 2.8 and the problem I'd been seeing is not evident
-anymore.  Feel free to close this bug.
+This is merged with a resolved issue.  It should also be marked "resolved".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-26-04 08:33 cbm            New Issue                                    
-02-26-04 11:12 tiwai          Note Added: 0000334                          
-02-26-04 11:35 cbm            Note Added: 0000337                          
-03-19-05 09:23 jdthood        Note Added: 0004015                          
-03-20-05 01:10 cbm            Note Added: 0004070                          
-03-22-05 14:59 jdthood        Status                   new => resolved     
+11-07-04 21:41 betak          New Issue                                    
+11-07-04 21:41 betak          File Added: alsa.txt                         
+11-07-04 21:41 betak          Distribution              => Fedora Core 2   
+11-07-04 21:41 betak          Kernel Version            => 2.6.9           
+11-09-04 18:28 tiwai          Relationship added       has duplicate 0000634
+11-09-04 18:37 tiwai          Note Added: 0002331                          
+11-09-04 20:12 betak          Note Added: 0002350                          
+11-09-04 20:13 betak          File Added: proc.config.gx                    
+03-19-05 12:57 jdthood        Note Added: 0004043                          
+03-22-05 15:07 jdthood        Status                   new => resolved     
+03-22-05 15:07 jdthood        Resolution               open => fixed       
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
