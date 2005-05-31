@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001094]: nforce4 - optical spdif out not working
-Date: Tue, 31 May 2005 21:10:24 +0200
-Message-ID: <ef05eeb41149d76e047ac6bae7119e95@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
+Date: Tue, 31 May 2005 22:43:35 +0200
+Message-ID: <60ab8d8ebdcc600b5a5262e53daf4d92@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 501E1193
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 21:10:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 138A0193
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 22:43:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1094> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1132> 
 ======================================================================
-Reported By:                eklarson
-Assigned To:                
+Reported By:                speedking
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1094
-Category:                   PCI - intel8x0
+Issue ID:                   1132
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14_FC3
+Status:                     feedback
+Distribution:               RHEL 3 U5 gold
+Kernel Version:             2.4.21-32
 ======================================================================
-Date Submitted:             05-07-2005 11:36 CEST
-Last Modified:              05-31-2005 21:10 CEST
+Date Submitted:             05-28-2005 02:02 CEST
+Last Modified:              05-31-2005 22:43 CEST
 ======================================================================
-Summary:                    nforce4 - optical spdif out not working
+Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
+catastrophic CrAsH
 Description: 
-A 48K PCM optical signal is getting sent out to my receiver, however I
-can't get anything to play.  I saw in the "intel8x0.c" that there is no
-NFORCE4 callouts.  Does the code fully support the nforce4 yet?
+system hangs when either 'alsaconf' runs or you attempt a 'modprobe
+snd-hda-intel'
+
+System is a HP xw4300 workstation, Intel based, running an Azalia
+compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- gergap - 05-30-05 09:33 
+ speedking - 05-31-05 20:11 
 ----------------------------------------------------------------------
-with version 1.0.9 the problem is fixed.
-The optical out on my XC Cube works now ;-)
+Audigy 2ZS not working either.....so I'm building something wrong.
+
+checking now....
 
 ----------------------------------------------------------------------
- jaskjok - 05-31-05 21:10 
+ speedking - 05-31-05 22:43 
 ----------------------------------------------------------------------
-gergap: good for you, but i think this bugreport was for nforce4 chipset,
-my
-Asus A8N SLI deluxe coaxial digital out is unfortunately still dead silent
-:(
+So I have myself this fancy script to build all the ALSA components I need
+including a 'jack-audio-connection-kit' to sense when the headphones are
+plugged in.  So, I went back to the basics and copied my 1.0.9 bz2 files
+to /usr/src/alsa and ran a ./configure;make;make install on driver, lib,
+and utils.  I followed that up with a 'modprobe snd-emu10k1;modprobe
+snd-pcm-oss;modprobe snd-mixer-oss;modprobe snd-seq-oss and sure enough,
+the Audigy 2ZS card works.
+
+So...I removed the card, rebooted, and went back into my /usr/src/alsa
+directory.  Starting in the drivers directory I tried a 'make
+clean;./configure;make;make install' and got failures up the wazoo.  So I
+then skipped the 'make clean' and just did a './configure;make;make
+install' for each driver, lib, and util which was successful.  I followed
+that up with a 'modprobe snd-hda-intel;modprobe snd-pcm-oss;modprobe
+snd-mixer-oss;modprobe snd-seq-oss' and I can get .wav files to play out
+of the externel speaker.  Headphone is not working.
+
+I can't however get any music to play off the CD player through the
+ALC2670 chip.  I could get the CD to play through the Audigy 2ZS card
+however.
+
+Any idea where to look for what's wrong with the CD player.  The CD player
+is connected to the motherboard appropriately, the CD plays with the RHEL3
+CD player, but alsamixer only gets hissing out of the external speaker
+through the 'mono' channel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-07-05 11:36 eklarson       New Issue                                    
-05-07-05 11:36 eklarson       Distribution              => Fedora Core 3   
-05-07-05 11:36 eklarson       Kernel Version            => 2.6.11-1.14_FC3 
-05-07-05 11:41 eklarson       Note Added: 0004604                          
-05-07-05 23:44 eklarson       Note Edited: 0004604                         
-05-09-05 09:56 gergap         Note Added: 0004622                          
-05-28-05 09:55 jaskjok        Note Added: 0004760                          
-05-30-05 09:33 gergap         Note Added: 0004796                          
-05-31-05 21:10 jaskjok        Note Added: 0004855                          
+05-28-05 02:02 speedking      New Issue                                    
+05-28-05 02:02 speedking      Distribution              => RHEL 3 U5 gold  
+05-28-05 02:02 speedking      Kernel Version            => 2.4.21-32       
+05-31-05 12:58 tiwai          Status                   assigned => resolved
+05-31-05 12:58 tiwai          Resolution               open => fixed       
+05-31-05 12:58 tiwai          Note Added: 0004825                          
+05-31-05 19:10 speedking      Status                   resolved => feedback
+05-31-05 19:10 speedking      Resolution               fixed => reopened   
+05-31-05 19:10 speedking      Note Added: 0004848                          
+05-31-05 19:11 speedking      Note Edited: 0004848                         
+05-31-05 19:14 speedking      Note Edited: 0004848                         
+05-31-05 19:15 tiwai          Note Added: 0004849                          
+05-31-05 19:23 speedking      Note Added: 0004850                          
+05-31-05 19:26 speedking      Note Edited: 0004850                         
+05-31-05 19:26 tiwai          Note Added: 0004851                          
+05-31-05 19:44 speedking      Note Added: 0004852                          
+05-31-05 19:51 tiwai          Note Added: 0004853                          
+05-31-05 20:11 speedking      Note Added: 0004854                          
+05-31-05 22:43 speedking      Note Added: 0004856                          
 ======================================================================
 
 
