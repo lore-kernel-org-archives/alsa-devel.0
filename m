@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Tue, 31 May 2005 13:06:01 +0200
-Message-ID: <0dc736edee85141cedf4ab3c639ba553@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001125]: reproducible hang on nforce3 -- all applications
+Date: Tue, 31 May 2005 13:07:20 +0200
+Message-ID: <f15675d4a853fe732628f0230a84266b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97A4B158
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:06:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5E33185
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:07:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +22,170 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1125> 
 ======================================================================
-Reported By:                mr-k
-Assigned To:                
+Reported By:                dogpatch
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   1125
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Gentoo
-Kernel Version:             2.6.10
+Kernel Version:             2.6.11-gentoo-r8
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              05-31-2005 13:06 CEST
+Date Submitted:             05-24-2005 23:36 CEST
+Last Modified:              05-31-2005 13:07 CEST
 ======================================================================
-Summary:                    Driver and all sound aplications hangs
+Summary:                    reproducible hang on nforce3 -- all applications
 Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
+Just upgraded to the latest kernel/alsa-driver via Gentoo emerge. I'm using
+Gentoo profile 2005.0. Prior to the upgrade, sound worked fine both as
+direct ALSA and via OSS emulation.
 
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
+Now, any attempt to play a sound causes the playing application to hang
+forever on an ioctl.
 
-
+This happens even after a poweroff cold boot.
+intel8x0m module is not and has not ever been loaded.
+No other applications using the sound devices.
 ======================================================================
 
 ----------------------------------------------------------------------
- mr-k - 05-25-05 23:11 
+ dogpatch - 05-24-05 23:43 
 ----------------------------------------------------------------------
-I see that you can't do anything with that.. Am I only one who have this
-problem? Maybe there is anything else tha I could do to help you ?
+Forgot this ...
 
-
+pachyderm:asound 517 $> cat /proc/pci
+PCI devices found:
+  Bus  0, device   0, function  0:
+    Host bridge: PCI device 10de:00e1 (nVidia Corporation) (rev 161).
+      Prefetchable 32 bit memory at 0xd0000000 [0xd7ffffff].
+  Bus  0, device   1, function  0:
+    ISA bridge: PCI device 10de:00e0 (nVidia Corporation) (rev 162).
+  Bus  0, device   1, function  1:
+    SMBus: PCI device 10de:00e4 (nVidia Corporation) (rev 161).
+      IRQ 10.
+      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
+      I/O at 0x9000 [0x901f].
+      I/O at 0x4c00 [0x4c3f].
+      I/O at 0x4c40 [0x4c7f].
+  Bus  0, device   2, function  0:
+    USB Controller: PCI device 10de:00e7 (nVidia Corporation) (rev 161).
+      IRQ 5.
+      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
+      Non-prefetchable 32 bit memory at 0xe4002000 [0xe4002fff].
+  Bus  0, device   2, function  1:
+    USB Controller: PCI device 10de:00e7 (nVidia Corporation) (rev 161).
+      IRQ 5.
+      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
+      Non-prefetchable 32 bit memory at 0xe4003000 [0xe4003fff].
+  Bus  0, device   2, function  2:
+    USB Controller: PCI device 10de:00e8 (nVidia Corporation) (rev 162).
+      IRQ 5.
+      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
+      Non-prefetchable 32 bit memory at 0xe4004000 [0xe40040ff].
+  Bus  0, device   5, function  0:
+    Ethernet controller: PCI device 10de:00e6 (nVidia Corporation) (rev
+162).
+      IRQ 10.
+      Master Capable.  No bursts.  Min Gnt=1.Max Lat=20.
+      Non-prefetchable 32 bit memory at 0xe4005000 [0xe4005fff].
+      I/O at 0x9c00 [0x9c07].
+  Bus  0, device   6, function  0:
+    Multimedia audio controller: PCI device 10de:00ea (nVidia Corporation)
+(rev 161).
+      IRQ 11.
+      Master Capable.  No bursts.  Min Gnt=2.Max Lat=5.
+      I/O at 0xa000 [0xa0ff].
+      I/O at 0xa400 [0xa47f].
+      Non-prefetchable 32 bit memory at 0xe4000000 [0xe4000fff].
+  Bus  0, device   8, function  0:
+    IDE interface: PCI device 10de:00e5 (nVidia Corporation) (rev 162).
+      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
+      I/O at 0xf000 [0xf00f].
+  Bus  0, device  10, function  0:
+    IDE interface: PCI device 10de:00e3 (nVidia Corporation) (rev 162).
+      IRQ 11.
+      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
+      I/O at 0x9f0 [0x9f7].
+      I/O at 0xbf0 [0xbf3].
+      I/O at 0x970 [0x977].
+      I/O at 0xb70 [0xb73].
+      I/O at 0xc000 [0xc00f].
+      I/O at 0xc400 [0xc47f].
+  Bus  0, device  11, function  0:
+    PCI bridge: PCI device 10de:00e2 (nVidia Corporation) (rev 162).
+      Master Capable.  Latency=16.  Min Gnt=14.
+  Bus  0, device  14, function  0:
+    PCI bridge: PCI device 10de:00ed (nVidia Corporation) (rev 162).
+      Master Capable.  No bursts.  Min Gnt=6.Max Lat=2.
+  Bus  0, device  24, function  0:
+    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
+  Bus  0, device  24, function  1:
+    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
+  Bus  0, device  24, function  2:
+    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
+  Bus  0, device  24, function  3:
+    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
+  Bus  1, device   0, function  0:
+    VGA compatible controller: nVidia Corporation NV34 [GeForce FX 5200]
+(rev 161).
+      IRQ 5.
+      Master Capable.  Latency=248.  Min Gnt=5.Max Lat=1.
+      Non-prefetchable 32 bit memory at 0xe0000000 [0xe0ffffff].
+      Prefetchable 32 bit memory at 0xd8000000 [0xdfffffff].
+  Bus  2, device   8, function  0:
+    FireWire (IEEE 1394): NEC Corporation IEEE 1394 Host Controller (rev
+1).
+      IRQ 10.
+      Master Capable.  Latency=32.  Min Gnt=20.Max Lat=44.
+      Non-prefetchable 32 bit memory at 0xe2000000 [0xe2000fff].
+  Bus  2, device   9, function  0:
+    Multimedia video controller: Brooktree Corporation Bt878 Video Capture
+(rev 17).
+      IRQ 3.
+      Master Capable.  Latency=32.  Min Gnt=16.Max Lat=40.
+      Prefetchable 32 bit memory at 0xe3000000 [0xe3000fff].
+  Bus  2, device   9, function  1:
+    Multimedia controller: Brooktree Corporation Bt878 Audio Capture (rev
+17).
+      IRQ 3.
+      Master Capable.  Latency=32.  Min Gnt=4.Max Lat=255.
+      Prefetchable 32 bit memory at 0xe3001000 [0xe3001fff].
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 13:06 
+ dogpatch - 05-25-05 00:39 
 ----------------------------------------------------------------------
-Yeah, you seem to be the only one hitting this bad bug :)
-Anyway, could you try the attached patch?  It's to 1.0.9.
+Okay, this is probably my fault.
+
+Was using gentoo ebuild of alsa-driver 1.0.9r3.
+
+Removed alsa-driver ebuild and went with the kernel builtin drivers
+(1.0.8) and all is well again.
+
+Apologies ... please cancel this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
-01-11-05 22:11 mr-k           Note Added: 0003158                          
-01-11-05 22:12 mr-k           File Added: alsa.log                         
-01-12-05 15:14 tiwai          Note Added: 0003170                          
-01-12-05 15:57 mr-k           Note Added: 0003173                          
-01-16-05 15:38 mr-k           Note Added: 0003218                          
-02-09-05 21:45 mr-k           Note Edited: 0003173                         
-02-09-05 21:46 mr-k           Note Edited: 0003123                         
-03-10-05 16:46 mr-k           Note Added: 0003868                          
-03-10-05 16:47 mr-k           Note Edited: 0003868                         
-03-20-05 22:53 bendis         Issue Monitored: bendis                      
-03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
-03-22-05 17:59 mr-k           Note Added: 0004126                          
-03-30-05 18:27 tiwai          Note Added: 0004269                          
-03-30-05 19:06 mr-k           Note Added: 0004270                          
-03-30-05 19:19 tiwai          Note Added: 0004271                          
-03-31-05 00:36 mr-k           Note Added: 0004276                          
-03-31-05 00:36 mr-k           File Added: alsa-sysrq                       
-04-02-05 21:50 mr-k           Note Added: 0004300                          
-05-25-05 23:10 mr-k           Note Added: 0004737                          
-05-25-05 23:11 mr-k           Note Edited: 0004737                         
-05-31-05 13:06 tiwai          Note Added: 0004829                          
+05-24-05 23:36 dogpatch       New Issue                                    
+05-24-05 23:36 dogpatch       File Added: aplay.trace                      
+05-24-05 23:36 dogpatch       Distribution              => Gentoo          
+05-24-05 23:36 dogpatch       Kernel Version            => 2.6.11-gentoo-r8
+05-24-05 23:41 dogpatch       Issue Monitored: dogpatch                    
+05-24-05 23:43 dogpatch       Note Added: 0004733                          
+05-25-05 00:39 dogpatch       Note Added: 0004734                          
+05-31-05 13:07 tiwai          Status                   new => resolved     
+05-31-05 13:07 tiwai          Resolution               open => not an issue
+05-31-05 13:07 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
