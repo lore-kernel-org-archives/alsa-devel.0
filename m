@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000704]: low input levels
-Date: Tue, 31 May 2005 17:56:59 +0200
-Message-ID: <053258a45cc1788d79f108718f9f05c6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001012]: TI AC97 volume bit 5 sets bits 0-4
+Date: Tue, 31 May 2005 17:56:52 +0200
+Message-ID: <0aa359320e7e7e5f3c62e71d08c48d6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 732381B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20D1D1C6
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,16 +24,16 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1012> 
 ======================================================================
-Reported By:                spamatica
-Assigned To:                
+Reported By:                Daniel
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   704
-Category:                   PCI - ice1712
+Issue ID:                   1012
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
 Status:                     closed
 Distribution:               
@@ -41,41 +41,43 @@ Kernel Version:
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-03-2004 21:46 CET
+Date Submitted:             03-24-2005 19:15 CET
 Last Modified:              05-31-2005 17:56 CEST
 ======================================================================
-Summary:                    low input levels
+Summary:                    TI AC97 volume bit 5 sets bits 0-4
 Description: 
-As was noted recently on Linx audio user. It seems atleast the DELTA cards
-(I've got a Delta 44) have too low input level. Others reported that it
-differs when running the same card in windows. Myself I run it exclusively
-in Linux and have found that recording external signals I have to turn the
-volume for the external (pro) equipment, to max to get a reasonably high
-signal.
+Since ALSA driver 1.0.8 the width of the volume controls is probed to be 6
+bits.
+The Texas Instruments datasheet contains a footnote for the 5th and 13th
+bit of register 2 and the 5th bif of register 6, 12 and 14 saying:
+"Special function volume settings. If bit is set, then the 5 volume bits
+implemented are set to all ones."
+check_volume_resolution in ac97_codec.c should check if setting bit 5 (13)
+results in bits 0-4 (8-12) set.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:20 
+ Daniel - 03-24-05 20:13 
 ----------------------------------------------------------------------
-Submitter:  Are "IPGA Analog Capture Volume" adjusted properly?
+Yes, it does.
 
 ----------------------------------------------------------------------
- spamatica - 03-27-05 22:59 
+ tiwai - 03-29-05 17:33 
 ----------------------------------------------------------------------
-Sorry, was meaning to follow up on this one, this seems to have been the
-problem. 
-I don't know if there's a way for me to close this bug, I'd suggest doing
-so anyway.
+The patch was applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 21:46 spamatica      New Issue                                    
-12-06-04 20:56 tiwai          Note Added: 0002734                          
-03-23-05 15:20 jdthood        Note Added: 0004157                          
-03-27-05 22:59 spamatica      Note Added: 0004225                          
-03-28-05 03:58 jdthood        Status                   new => resolved     
-03-28-05 03:58 jdthood        Resolution               open => fixed       
+03-24-05 19:15 Daniel         New Issue                                    
+03-24-05 19:44 tiwai          Note Added: 0004196                          
+03-24-05 19:45 tiwai          File Added: ac97-res-check.diff                   
+
+03-24-05 20:13 Daniel         Note Added: 0004199                          
+03-29-05 17:33 tiwai          Status                   new => resolved     
+03-29-05 17:33 tiwai          Resolution               open => fixed       
+03-29-05 17:33 tiwai          Assigned To               => tiwai           
+03-29-05 17:33 tiwai          Note Added: 0004251                          
 05-31-05 17:56 perex          Status                   resolved => closed  
 ======================================================================
 
