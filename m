@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000602]: I do not compiled ALSA-DRIVER-1.0.6a
-Date: Tue, 31 May 2005 18:04:00 +0200
-Message-ID: <d82bbdb3b942864147269a2e9ab61f49@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000794]: can't compile alsa-driver 1.0.7 with a linux kernel 2.4.29-rc1
+Date: Tue, 31 May 2005 18:03:51 +0200
+Message-ID: <dc27d9f2ac6644c9e4ac7da92d3f5bc7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49D8C1CF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C4651B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=602> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=794> 
 ======================================================================
-Reported By:                ma13860
+Reported By:                zebul666
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   602
+Issue ID:                   794
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               slackware
+Kernel Version:             2.4.29-rc1 (from kernel.org and not provide by the
+distribution)
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-25-2004 17:48 CEST
+Date Submitted:             01-08-2005 18:20 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    I do not compiled ALSA-DRIVER-1.0.6a
+Summary:                    can't compile alsa-driver 1.0.7 with a linux kernel
+2.4.29-rc1
 Description: 
-When i realese the make the conpiler have 1 error,
-when compiled the program VXP440.C, because no found the filed VXPOCKET.C
-in the directory /ALSA-DRIVER-1.6a/PCMCIA/VX.
+[...]
+gcc -D__KERNEL__ -DMODULE=1 -I/tmp/buildSXOSxz/alsa-driver-1.0.7/include 
+-I/usr/src/linux/include -O2 -mpreferred-stack-boundary=2 -march=athlon
+-DLINUX -Wall-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include   -DEXPORT_SYMTAB -c timer.c
+In file included from timer.c:23:
+/usr/src/linux/include/linux/delay.h:57: error: parse error before "do"
+/usr/src/linux/include/linux/delay.h:57: error: parse error before '('
+token
+/usr/src/linux/include/linux/delay.h:60: error: parse error before '('
+token
+make[1]: *** [timer.o] Error 1
+make[1]: Leaving directory `/tmp/buildSXOSxz/alsa-driver-1.0.7/acore'
+make: *** [compile] Error 1
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 19:20 
+ zebul666 - 02-24-05 15:11 
 ----------------------------------------------------------------------
-Try 1.0.7rc2.  It should have been fixed.
+no.
+
+there is no pb with 1.0.8rc2.
+I haven't tested it with 1.0.8 but i don't think there will be any pb. No
+pb either with a stock kernel 2.4.29 and 1.0.8 
+
+not a usefull report ?
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:43 
+ perex - 02-24-05 15:13 
 ----------------------------------------------------------------------
-No reaction.
+Fixed in latest code.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-04 17:48 ma13860        New Issue                                    
-11-09-04 19:20 tiwai          Note Added: 0002344                          
-02-22-05 09:43 perex          Status                   assigned => resolved
-02-22-05 09:43 perex          Resolution               open => fixed       
-02-22-05 09:43 perex          Note Added: 0003690                          
+01-08-05 18:20 zebul666       New Issue                                    
+01-08-05 18:20 zebul666       Distribution              => slackware       
+01-08-05 18:20 zebul666       Kernel Version            => 2.4.29-rc1 (from
+kernel.org and not provide by the distribution)
+02-22-05 09:33 perex          Note Added: 0003687                          
+02-24-05 15:11 zebul666       Note Added: 0003720                          
+02-24-05 15:13 perex          Status                   assigned => resolved
+02-24-05 15:13 perex          Resolution               open => fixed       
+02-24-05 15:13 perex          Note Added: 0003721                          
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
