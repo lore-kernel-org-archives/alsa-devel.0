@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000924]: crash in oss emulation's rate conversion
-Date: Tue, 31 May 2005 18:03:53 +0200
-Message-ID: <c7f8c0f1a00b32e20777d5478373d395@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
+Date: Tue, 31 May 2005 18:03:19 +0200
+Message-ID: <dfa51a82e4b92776c566085083d0ba46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA22C1CA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E19B01C8
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=924> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
 ======================================================================
-Reported By:                Benjamin Otte
-Assigned To:                tiwai
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   924
-Category:                   PPC - powermac
+Issue ID:                   712
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian unstable
-Kernel Version:             2.6.9
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-19-2005 12:02 CET
+Date Submitted:             12-07-2004 18:36 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    crash in oss emulation's rate conversion
+Summary:                    Setting <4 channels in surround40 fails
 Description: 
-When running the attached code on my ibook, it crashes inside the kernel.
-After that, /dev/dsp is reported as in use until I restart.
-This is using OSS emulations with the snd-powermac driver.
+If you try
+alsa-lib/test/pcm -D surround40:0
+You obtain: Channels count (1) not available for playbacks: Invalid
+argument
+But we have 4 channels!
+I've tried to find the problem into the sources without luck :(
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-22-05 14:35 
+ jdthood - 03-19-05 16:34 
 ----------------------------------------------------------------------
-Already fixed in ALSA 1.0.8 (i.e. 2.6.11 kernel)
+Submitter: Is there still an issue here or can this report be closed?
+
+----------------------------------------------------------------------
+ darkbrain - 03-19-05 18:17 
+----------------------------------------------------------------------
+Yes it was my mistake on openal configuration file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-05 12:02 Benjamin Otte  New Issue                                    
-02-19-05 12:02 Benjamin Otte  File Added: bug.c                            
-02-19-05 12:02 Benjamin Otte  Distribution              => Debian unstable 
-02-19-05 12:02 Benjamin Otte  Kernel Version            => 2.6.9           
-02-22-05 14:35 tiwai          Status                   assigned => resolved
-02-22-05 14:35 tiwai          Resolution               open => fixed       
-02-22-05 14:35 tiwai          Note Added: 0003701                          
+12-07-04 18:36 darkbrain      New Issue                                    
+12-07-04 18:42 tiwai          Note Added: 0002757                          
+12-07-04 18:51 darkbrain      Note Added: 0002759                          
+12-07-04 18:54 tiwai          Note Added: 0002761                          
+12-07-04 18:59 darkbrain      Note Added: 0002762                          
+03-19-05 16:34 jdthood        Note Added: 0004056                          
+03-19-05 18:17 darkbrain      Note Added: 0004060                          
+03-22-05 15:01 jdthood        Status                   new => resolved     
+03-22-05 15:01 jdthood        Resolution               open => not an issue
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
