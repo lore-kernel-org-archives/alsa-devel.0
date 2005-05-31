@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000860]: Wrong detection of opl3 device
-Date: Tue, 31 May 2005 18:04:11 +0200
-Message-ID: <6a18be197f458991a54f289c8d8cec0f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
+Date: Tue, 31 May 2005 18:06:33 +0200
+Message-ID: <929afdcc7106894db7460799eb9096e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 643B61B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6CCE154
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:06:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,97 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=860> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
 ======================================================================
-Reported By:                theli
-Assigned To:                
+Reported By:                minmax
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   860
-Category:                   ISA - als100
+Issue ID:                   557
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.6.10-ck4
+Status:                     resolved
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.7
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-29-2005 18:20 CET
-Last Modified:              05-31-2005 18:04 CEST
+Date Submitted:             10-01-2004 16:18 CEST
+Last Modified:              05-31-2005 18:06 CEST
 ======================================================================
-Summary:                    Wrong detection of opl3 device
+Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
+situation
 Description: 
-driver als100.c has
-        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
-acard->dev);
-        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
-acard->devmpu);
-in "static int __devinit snd_card_als100_pnp".
-
-so search for opl device starts from devmpu...
-and in my MF1000 opl device is 00:01.03
-and opl3 is 00:01.01 so it can't be found that way ...
-and devopl is NULL :(
-
-but opl3 works when changed above code to 
-
-        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
-acard->dev);
-        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
-acard->dev);
-
-(search of opl3 starts from acard->dev )
-and that should work in any case
-
-PS: sorry for my english.
-PPS: don't even know does anyone else use such old sound card.
-PPPS: was fighting with alsa for weeks trying to get opl3 working before
-decided to look in sources.
+When the first few writes to the oss emulation device are done in specific
+way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
 
 ----------------------------------------------------------------------
- theli - 02-07-05 16:13 
+ tiwai - 05-31-05 17:55 
 ----------------------------------------------------------------------
-well i've added signed-off-by and description in patch...
-but .... well, my english is far from perfect :)
-
-(hm, wonder why i can't delete attachment, uploaded by me?)
+fix5 looks fine to me.  Let's commit it and close this issue.
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-07-05 16:21 
+ perex - 05-31-05 18:06 
 ----------------------------------------------------------------------
-Applied to CVS, thanks.
+Ok, the problem seems to be resolved. Reopen if not....
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-05 18:20 theli          New Issue                                    
-01-29-05 18:20 theli          Kernel Version            => 2.6.10-ck4      
-01-29-05 18:42 theli          Issue Monitored: theli                       
-01-29-05 19:43 theli          Note Added: 0003439                          
-02-05-05 19:53 theli          File Added: als100_opl3_fix.patch                 
+10-01-04 16:18 minmax         New Issue                                    
+10-01-04 16:18 minmax         Distribution              => Debian unstable 
+10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
+10-02-04 10:52 minmax         Issue Monitored: minmax                      
+04-09-05 16:09 jdthood        Note Added: 0004406                          
+04-09-05 16:22 minmax         Note Added: 0004410                          
+05-13-05 15:20 gk4            Note Added: 0004646                          
+05-13-05 15:24 perex          Note Added: 0004647                          
+05-13-05 15:26 tiwai          Note Added: 0004648                          
+05-13-05 19:35 gk4            Note Added: 0004651                          
+05-13-05 19:38 tiwai          Note Added: 0004652                          
+05-13-05 19:48 gk4            Note Added: 0004655                          
+05-15-05 15:50 tiwai          Note Added: 0004663                          
+05-16-05 16:08 gk4            Note Added: 0004676                          
+05-19-05 15:28 parente        Note Added: 0004693                          
+05-20-05 00:38 minmax         Note Added: 0004698                          
+05-26-05 17:27 Roger Mach     Note Added: 0004738                          
+05-27-05 10:56 perex          Note Added: 0004742                          
+05-27-05 11:03 perex          File Added: fix2.patch                       
+05-27-05 11:04 perex          Note Added: 0004743                          
+05-27-05 15:41 parente        Note Added: 0004752                          
+05-30-05 09:51 perex          Note Added: 0004798                          
+05-31-05 14:04 parente        Note Added: 0004831                          
+05-31-05 15:54 perex          Status                   new => assigned     
+05-31-05 15:54 perex          Assigned To               => perex           
+05-31-05 15:55 perex          Note Added: 0004833                          
+05-31-05 16:10 parente        Note Added: 0004834                          
+05-31-05 16:38 perex          File Added: oss-optr-fix3.patch                   
+
+05-31-05 16:41 perex          Note Added: 0004837                          
+05-31-05 16:55 tiwai          Note Added: 0004838                          
+05-31-05 16:56 parente        Note Added: 0004839                          
+05-31-05 17:02 parente        Note Edited: 0004839                         
+05-31-05 17:13 tiwai          Note Added: 0004840                          
+05-31-05 17:13 perex          File Added: oss-optr-fix4.patch                   
+
+05-31-05 17:13 tiwai          File Added: pcm-oss-ptr-fix4.diff                 
   
-02-05-05 19:54 theli          Note Added: 0003523                          
-02-07-05 10:50 Clemens LadischNote Added: 0003529                          
-02-07-05 16:06 theli          File Added: als100_opl3_fixx.patch                
-   
-02-07-05 16:13 theli          Note Added: 0003531                          
-02-07-05 16:21 Clemens LadischStatus                   new => resolved     
-02-07-05 16:21 Clemens LadischResolution               open => fixed       
-02-07-05 16:21 Clemens LadischAssigned To               => Clemens Ladisch 
-02-07-05 16:21 Clemens LadischNote Added: 0003532                          
-02-07-05 16:21 Clemens LadischAssigned To              Clemens Ladisch =>  
-05-31-05 18:04 perex          Status                   resolved => closed  
+05-31-05 17:14 perex          Note Added: 0004841                          
+05-31-05 17:18 perex          Note Added: 0004842                          
+05-31-05 17:39 tiwai          Note Added: 0004843                          
+05-31-05 17:44 parente        Note Added: 0004844                          
+05-31-05 17:51 perex          File Added: oss-optr-fix5.patch                   
+
+05-31-05 17:52 perex          Note Added: 0004845                          
+05-31-05 17:55 tiwai          Note Added: 0004846                          
+05-31-05 18:06 perex          Status                   assigned => resolved
+05-31-05 18:06 perex          Resolution               open => fixed       
+05-31-05 18:06 perex          Note Added: 0004847                          
 ======================================================================
 
 
