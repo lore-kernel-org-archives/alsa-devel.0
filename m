@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
-Date: Tue, 31 May 2005 18:04:03 +0200
-Message-ID: <c1b9e97e879a5837ff3a43306e3aff36@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000258]: Recording from line-in produces noise
+Date: Tue, 31 May 2005 18:04:56 +0200
+Message-ID: <017386a00183c471a265216c55b4dd93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17F151DB
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 222481B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,95 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=650> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=258> 
 ======================================================================
-Reported By:                pancogi
-Assigned To:                pzad
+Reported By:                Fancia
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   650
+Issue ID:                   258
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.4.27
-Resolution:                 won't fix
+Distribution:               Debian
+Kernel Version:             2.4.22
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-15-2004 11:59 CET
+Date Submitted:             05-06-2004 22:03 CEST
 Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
+Summary:                    Recording from line-in produces noise
 Description: 
-hi
-my Sb Live do not work with emu10k1, lspci -v say:
-
-0000:00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
-(rev 08)
-        Subsystem: Creative Labs CT4760 SBLive! OEM version
-        Flags: bus master, medium devsel, latency 32, IRQ 5
-        I/O ports at d800 [size=32]
-        Capabilities: [dc] Power Management version 2
-
-lspci -n, say:
-
-0000:00:0d.0 Class 0401: 1102:0002 (rev 08)
-
-dmesg after modprobe snd-emu10k1,
-
-PCI: Found IRQ 5 for device 00:0d.0
-ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1905: AC'97 0 does not
-respond - RESET
-ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1913: AC'97 0 access is not
-valid [0x0], removing mixer.
-
-dmesg after modprobe oss modules emu10k1, say:
-
-emu10k1: EMU10K1 rev 8 model 0x8028 found, IO at 0xd800-0xd81f, IRQ 5
-ac97_codec: AC97  codec, id: 0x0000:0x0000 (Unknown)
-
-but no sound output.
-with kernel 2.6.9, the same.
-
-thanks,
-giovanni.
+Attempting to record audio from the sound card's line-in port causes
+audible pops and crackle in the resulting recording, regardless of
+recording software used. These artefacts are not present in the input
+itself and are not audible during the recording itself, but are present in
+the resulting recording. I've tried recording from several different
+devices on the same line-in port, and the noise is consistent. I've spoken
+to several other AmigaOne owners with the same sound card, all of whom can
+reproduce the problem.
+Attached is a recording from my Roland MT-32 synthesizer module. Aside
+from normalization, it's unaltered from the original recording.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-15-04 15:41 
+ rlrevell - 11-17-04 19:21 
 ----------------------------------------------------------------------
-> thanks, which one?
-
-Working one. :-)
-
-This card looks damaged.
+Can you verify this bug still exists with latest ALSA version, 1.0.7?
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:31 
+ jdthood - 03-23-05 15:29 
 ----------------------------------------------------------------------
-Hardware is probably damaged.
+Submitter: Has there been any progress on this issue in later ALSA
+releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-15-04 11:59 pancogi        New Issue                                    
-11-15-04 11:59 pancogi        Kernel Version            => 2.4.27          
-11-15-04 12:20 pancogi        Note Added: 0002411                          
-11-15-04 12:47 pancogi        Issue Monitored: pancogi                     
-11-15-04 12:53 pzad           Note Added: 0002412                          
-11-15-04 13:30 pancogi        Note Added: 0002413                          
-11-15-04 13:43 pzad           Note Added: 0002414                          
-11-15-04 13:45 pzad           Note Edited: 0002414                         
-11-15-04 15:07 pancogi        Note Added: 0002415                          
-11-15-04 15:41 pzad           Note Added: 0002416                          
-02-22-05 09:30 perex          Assigned To              perex => pzad       
-02-22-05 09:30 perex          Category                 0_compilation problem_!!!
-=> PCI - emu10k1
-02-22-05 09:31 perex          Status                   assigned => resolved
-02-22-05 09:31 perex          Resolution               open => won't fix   
-02-22-05 09:31 perex          Note Added: 0003686                          
+05-06-04 22:03 Fancia         New Issue                                    
+05-06-04 22:03 Fancia         Distribution              => Debian          
+05-06-04 22:03 Fancia         Kernel Version            => 2.4.22          
+05-06-04 22:05 Fancia         Issue Monitored: Fancia                      
+05-06-04 22:06 Fancia         Issue End Monitor: Fancia                    
+05-06-04 22:14 Fancia         Note Added: 0001064                          
+11-17-04 19:21 rlrevell       Note Added: 0002440                          
+03-23-05 15:29 jdthood        Note Added: 0004161                          
+03-23-05 21:45 rlrevell       Status                   new => resolved     
+03-23-05 21:45 rlrevell       Resolution               open => unable to
+duplicate
 05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
