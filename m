@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
-Date: Tue, 31 May 2005 18:04:24 +0200
-Message-ID: <8c4944b3baef048dd711d5c95ce82d4b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000883]: Odd Mixer Controls with i810 on Fujitsu S6210
+Date: Tue, 31 May 2005 18:04:12 +0200
+Message-ID: <910e6e52fe799d8be7c3c8351b01cb5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F9AA1B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 904DF1CA
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,169 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=883> 
 ======================================================================
-Reported By:                jeffgus
+Reported By:                tonym
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   779
-Category:                   PCI - emu10k1
+Issue ID:                   883
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-ac16
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-03-2005 05:50 CET
+Date Submitted:             02-04-2005 12:35 CET
 Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    SPDIF audio is broken up... stutters
+Summary:                    Odd Mixer Controls with i810 on Fujitsu S6210
 Description: 
-I was previously able to send ac3 audio via the coaxial output to an
-external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
-(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
-out right.  It's all broken up.  The light on the amp blinks.  The light
-comes on when it decodes a segment of audio then goes out with silence.
+I have some very odd mixer controls with my integrated i810 audio
+lspci -v -n -s 00:1f.5
+0000:00:1f.5 Class 0401: 8086:24c5 (rev 03)
+        Subsystem: 10cf:1253
+        Flags: bus master, medium devsel, latency 0, IRQ 11
+        I/O ports at 1c00
+        I/O ports at 18c0 [size=64]
+        Memory at d0100c00 (32-bit, non-prefetchable) [size=512]
+        Memory at d0100800 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [50] Power Management version 2
 
-The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
-caused the problem (upgrade to 2.6?).
 
+List of controls and what they do:
+control.2 Master Playback Volume - no effect (so l/r doesn't work either)
+control.4 Headphone Playback Volume - controls all vol, headphones and
+speakers
+control.6 Master Mono Playback Volume - no effect
+control.8 PC Speaker Playback Volume - no effect
+control.23 PCM Playback Volume - Works as should
+control.33 External Amplifier - disables the builtin speakers, headphones
+still work
+
+Other controls I deemed irrelevent...
+
+I suspect this is just a quirk of this laptop, but I don't know what info
+you need, so please ask me.
 ======================================================================
 
 ----------------------------------------------------------------------
- jeffgus - 01-30-05 06:53 
+ tonym - 02-04-05 17:53 
 ----------------------------------------------------------------------
-This issue can now be closed.  The problem seemed to go away after I
-finally got around to installing alsa 1.0.8 this evening.
+ac97_quirk=1 works (don't think alsa-1.0.6 in 2.6.10 supports hp_only),
+thanks.
+
+First post contains lspci -nv, here is the other files:
+0-0/0: SigmaTel STAC9750/51
+
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 20-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=1 AMAP DSA=0 VRA
+Extended status  : VRA
+PCM front DAC    : 44100Hz
+PCM ADC          : 48000Hz
+
+...and...
+
+0:00 = 6a90
+0:02 = 9f1f
+0:04 = 1c1c
+0:06 = 801f
+0:08 = 0000
+0:0a = 0016
+0:0c = 801f
+0:0e = 0007
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 0000
+0:1a = 0505
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 0601
+0:2a = 0001
+0:2c = ac44
+0:2e = 0000
+0:30 = 0000
+0:32 = bb80
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 0000
+0:3c = 0000
+0:3e = 0100
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0003
+0:4e = ffff
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0000
+0:6a = 0000
+0:6c = 0002
+0:6e = 1000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0800
+0:76 = 0000
+0:78 = 0000
+0:7a = 0000
+0:7c = 8384
+0:7e = 7650
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 18:57 
+ tiwai - 02-04-05 18:01 
 ----------------------------------------------------------------------
-OK, closing now.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 05:50 jeffgus        New Issue                                    
-01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
-01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
-01-07-05 02:22 chutzimir      Note Added: 0003100                          
-01-07-05 02:32 chutzimir      Issue Monitored: chutzimir                    
-01-07-05 11:10 jeffgus        Note Added: 0003101                          
-01-07-05 11:15 jeffgus        Note Edited: 0003101                         
-01-30-05 06:53 jeffgus        Note Added: 0003440                          
-01-31-05 18:57 tiwai          Status                   new => resolved     
-01-31-05 18:57 tiwai          Resolution               open => fixed       
-01-31-05 18:57 tiwai          Assigned To               => tiwai           
-01-31-05 18:57 tiwai          Note Added: 0003454                          
-01-31-05 18:57 tiwai          Assigned To              tiwai =>            
+02-04-05 12:35 tonym          New Issue                                    
+02-04-05 12:35 tonym          Distribution              => Gentoo          
+02-04-05 12:35 tonym          Kernel Version            => 2.6.10          
+02-04-05 13:02 tiwai          Note Added: 0003498                          
+02-04-05 17:53 tonym          Note Added: 0003510                          
+02-04-05 18:01 tiwai          Status                   new => resolved     
+02-04-05 18:01 tiwai          Resolution               open => fixed       
+02-04-05 18:01 tiwai          Assigned To               => tiwai           
+02-04-05 18:01 tiwai          Note Added: 0003511                          
+02-04-05 18:01 tiwai          Assigned To              tiwai =>            
 05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
