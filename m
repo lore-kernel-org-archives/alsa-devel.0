@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000169]: Oopses when closing alsaplayer
-Date: Tue, 31 May 2005 17:56:49 +0200
-Message-ID: <4a23f37892ed76592d3e12ba71e81ddb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000704]: low input levels
+Date: Tue, 31 May 2005 17:56:59 +0200
+Message-ID: <053258a45cc1788d79f108718f9f05c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 653961AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 732381B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=169> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
 ======================================================================
-Reported By:                palcolor
+Reported By:                spamatica
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   169
-Category:                   PCI - intel8x0
+Issue ID:                   704
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               debian
-Kernel Version:             2.6.5-rc2
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-30-2004 13:16 CEST
+Date Submitted:             12-03-2004 21:46 CET
 Last Modified:              05-31-2005 17:56 CEST
 ======================================================================
-Summary:                    Oopses when closing alsaplayer
+Summary:                    low input levels
 Description: 
-Hi all
-I´m getting oopses (only and always) when closing alsaplayer. mpg123 or
-dcd works fine. I've found these messages at the alsa-devel list:
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg04024.html
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg03891.html
-
-Seem to be the same problem than mine.
-
-
+As was noted recently on Linx audio user. It seems atleast the DELTA cards
+(I've got a Delta 44) have too low input level. Others reported that it
+differs when running the same card in windows. Myself I run it exclusively
+in Linux and have found that recording external signals I have to turn the
+volume for the external (pro) equipment, to max to get a reasonably high
+signal.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 12:44 
+ jdthood - 03-23-05 15:20 
 ----------------------------------------------------------------------
-Submitter: Are you still getting these oopsen?
+Submitter:  Are "IPGA Analog Capture Volume" adjusted properly?
 
 ----------------------------------------------------------------------
- palcolor - 03-30-05 19:32 
+ spamatica - 03-27-05 22:59 
 ----------------------------------------------------------------------
-The oopses are gone. They went to segfaults after a libc6 upgrade, and
-dissappeared after a kernel upgrade. I can't tell you which kernel solved
-the issue, sorry.
-Thanks for your work
-Pal
+Sorry, was meaning to follow up on this one, this seems to have been the
+problem. 
+I don't know if there's a way for me to close this bug, I'd suggest doing
+so anyway.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 13:16 palcolor       New Issue                                    
-03-30-04 13:16 palcolor       Distribution              => debian          
-03-30-04 13:16 palcolor       Kernel Version            => 2.6.5-rc2       
-03-30-04 14:40 perex          Note Added: 0000719                          
-03-30-04 21:53 palcolor       File Added: ksymoops.txt                     
-03-31-04 20:12 palcolor       File Added: Oops.text                        
-03-31-04 20:13 palcolor       Note Added: 0000728                          
-04-01-04 20:49 palcolor       Issue Monitored: palcolor                    
-03-19-05 12:44 jdthood        Note Added: 0004038                          
-03-30-05 19:32 palcolor       Note Added: 0004273                          
-03-30-05 19:35 jdthood        Status                   new => resolved     
-03-30-05 19:35 jdthood        Resolution               open => fixed       
+12-03-04 21:46 spamatica      New Issue                                    
+12-06-04 20:56 tiwai          Note Added: 0002734                          
+03-23-05 15:20 jdthood        Note Added: 0004157                          
+03-27-05 22:59 spamatica      Note Added: 0004225                          
+03-28-05 03:58 jdthood        Status                   new => resolved     
+03-28-05 03:58 jdthood        Resolution               open => fixed       
 05-31-05 17:56 perex          Status                   resolved => closed  
 ======================================================================
 
