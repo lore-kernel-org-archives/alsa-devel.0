@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Tue, 31 May 2005 18:03:17 +0200
-Message-ID: <f612a1f60ce4870b6ecaf0d07845c17d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000975]: snd-hda-intel, no sound, no master control
+Date: Tue, 31 May 2005 18:03:43 +0200
+Message-ID: <fc75f6cfb63122a9cf580f566e2675d5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A72181B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7F9E1B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=975> 
 ======================================================================
-Reported By:                davidsrsb
+Reported By:                dirk-loesche
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   359
-Category:                   PCI - intel8x0
+Issue ID:                   975
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26
+Distribution:               Suse 9.2
+Kernel Version:             2.6.11.1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-01-2004 16:26 CEST
+Date Submitted:             03-08-2005 21:57 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Alsa always uses card0 and does not use card1, even
-when card0 is a modem
+Summary:                    snd-hda-intel, no sound, no master control
 Description: 
-PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
-Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
-mixer elems" error (like bug 338)
-KDE has no sound ( same as bug 353)
+No sound.
+
+alsaconf:
+I cant hear test sound.
+
+alsamixer:
+Card: HDA Intel                                                           
+                                                         
+Chip: Realtek ALC260                                                      
+                                                         View: Playback   
+                                                                          
+                                       Item: Headphone
+
+Headphon PCM Line CD Mic PC Speak Capture to 100 and unmutem
+Master not presend!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-28-05 18:02 
+ dirk-loesche - 03-09-05 15:44 
 ----------------------------------------------------------------------
-The default index of modem and bt87x drivers are now -2.
+Soundmixer by WindowsXP
+Master 
+Wave 
+SW Synt 
+SPDIF 
+CD Player
+PC Speaker
+Microphon
 
-I didn't change it for usb-audio, though.
+By Alsamixer no Master
+
+xmms play sound - i cant hear
+CD and Mic silent
+
+
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 13:01 
+ tiwai - 03-09-05 17:13 
 ----------------------------------------------------------------------
-I think that this report can be closed now.
+Some bugs have been already fixed on CVS.
+
+This controller has no real "Master" volume.  The volume for headphone and
+front line-out are separate.  This is not a bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-04 16:26 davidsrsb      New Issue                                    
-07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
-07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
-07-02-04 14:34 pzad           Note Added: 0001374                          
-01-05-05 23:34 jdthood        Note Added: 0003090                          
-01-06-05 17:48 phormix        Note Added: 0003092                          
-01-07-05 18:10 tiwai          Note Added: 0003108                          
-01-07-05 18:28 jdthood        Note Added: 0003112                          
-01-07-05 18:59 jdthood        Note Added: 0003114                          
-01-07-05 18:59 jdthood        Note Added: 0003115                          
-01-07-05 18:59 jdthood        Note Deleted: 0003115                        
-01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
-                 
-01-07-05 19:03 jdthood        Note Edited: 0003114                         
-01-07-05 19:18 tiwai          Note Added: 0003116                          
-01-07-05 21:51 jdthood        Note Added: 0003122                          
-01-07-05 21:51 jdthood        Note Edited: 0003114                         
-01-19-05 17:22 tiwai          Note Added: 0003303                          
-01-19-05 17:22 tiwai          Note Added: 0003304                          
-01-19-05 17:28 jdthood        Note Added: 0003305                          
-01-19-05 17:32 tiwai          Note Added: 0003306                          
-01-27-05 15:47 jdthood        Note Added: 0003419                          
-01-27-05 15:48 jdthood        File Added:
-ALSA-Configuration.txt_jdth20050127-1.patch                    
-01-27-05 15:54 jdthood        Note Added: 0003420                          
-01-27-05 15:55 jdthood        File Added:
-ALSA-Configuration.txt_jdth20050127-2.patch                    
-01-27-05 15:55 jdthood        Note Edited: 0003420                         
-01-28-05 17:55 tiwai          Note Added: 0003431                          
-01-28-05 18:02 tiwai          Note Added: 0003432                          
-03-19-05 13:01 jdthood        Note Added: 0004044                          
-03-22-05 15:07 jdthood        Status                   new => resolved     
-03-22-05 15:07 jdthood        Resolution               open => fixed       
+03-08-05 21:57 dirk-loesche   New Issue                                    
+03-08-05 21:57 dirk-loesche   Distribution              => Suse 9.2        
+03-08-05 21:57 dirk-loesche   Kernel Version            => 2.6.11.1        
+03-08-05 22:08 dirk-loesche   Issue Monitored: dirk-loesche                    
+03-08-05 22:45 dirk-loesche   Issue End Monitor: dirk-loesche                   
+
+03-09-05 15:42 dirk-loesche   Note Added: 0003827                          
+03-09-05 15:44 dirk-loesche   Note Edited: 0003827                         
+03-09-05 17:13 tiwai          Status                   new => resolved     
+03-09-05 17:13 tiwai          Resolution               open => fixed       
+03-09-05 17:13 tiwai          Assigned To               => tiwai           
+03-09-05 17:13 tiwai          Note Added: 0003828                          
+03-09-05 17:13 tiwai          Assigned To              tiwai =>            
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
