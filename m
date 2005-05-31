@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000634]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
-Date: Tue, 31 May 2005 18:02:07 +0200
-Message-ID: <aa21e218687cc247ceb5190433522242@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000746]: No sound when play
+Date: Tue, 31 May 2005 18:01:48 +0200
+Message-ID: <e4448009cc1e4ae4db237a9a21bb5897@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AEF51CE
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5EC31B6
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=634> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=746> 
 ======================================================================
-Reported By:                betak
-Assigned To:                tiwai
+Reported By:                smuslo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   634
-Category:                   PCI - via82xx
+Issue ID:                   746
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9
-Resolution:                 duplicate
-Duplicate:                  635
+Distribution:               fedora core 3
+Kernel Version:             2.6.9-1.681_FC3.smp
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-07-2004 21:28 CET
-Last Modified:              05-31-2005 18:02 CEST
+Date Submitted:             12-24-2004 19:34 CET
+Last Modified:              05-31-2005 18:01 CEST
 ======================================================================
-Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
-converters and GPIO not ready (0x1)
+Summary:                    No sound when play
 Description: 
-I tried to install kernel-2.6.9 with alsa-driver-1.0.7rc2. I use Fedora
-Core 2  on my Fujitsu - Siemens Lifebook C1020 ( technical dokumentation -
-see http://212.52.234.17/index.cfm?fuseaction=dspcontent&lid=11&page=2 )
-When I try to load module snd_via82xx first , I am not able to load second
-modul - snd_via82xx. I recieve following message "Unknown symbol
-snd_verbode_printk" and modul is not loded.
-But when I tried to load sdn_via82xx_modem  first, then I recieve
-following message "MC'97 0 converters and GPIO not ready (0x1)".
-Snd_via82xx_modem is loaded , but I am not able to setup them.
-Any useful information from my system are attached.
-Can you help me to setup this modem driver  ? How can I create /dev/modem
-... ?
+My system :
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: HDA [ICH6 HDA], device 0: CMI9880 [CMI9880]
+  Subdevices: 1/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+
+lsmod
+snd_pcm_oss            51496  0
+snd_mixer_oss          21632  2 snd_pcm_oss
+snd_azx                19312  1
+snd_hda_codec          44544  1 snd_azx
+snd_pcm                87044  3 snd_pcm_oss,snd_azx,snd_hda_codec
+snd_timer              27524  1 snd_pcm
+snd                    56804  6
+snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
+soundcore              12961  2 snd
+snd_page_alloc         14088  2 snd_azx,snd_pcm
+
+
 
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-duplicate of        0000635 Unknown symbol snd_verbode_printk, MC'9...
-======================================================================
+ smuslo - 12-24-04 20:59 
+----------------------------------------------------------------------
+Reboot and work fine !!!!
+
+----------------------------------------------------------------------
+ tiwai - 01-25-05 15:31 
+----------------------------------------------------------------------
+Forgot to resolve this issue...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-07-04 21:28 betak          New Issue                                    
-11-07-04 21:28 betak          File Added: alsa.txt                         
-11-07-04 21:28 betak          Distribution              => Fedora Core 2   
-11-07-04 21:28 betak          Kernel Version            => 2.6.9           
-11-09-04 18:28 tiwai          Relationship added       duplicate of 0000635
-11-09-04 18:29 tiwai          Duplicate ID             0 => 635            
-11-09-04 18:29 tiwai          Status                   new => resolved     
-11-09-04 18:29 tiwai          Resolution               open => duplicate   
-11-09-04 18:29 tiwai          Assigned To               => tiwai           
-05-31-05 18:02 perex          Status                   resolved => closed  
+12-24-04 19:34 smuslo         New Issue                                    
+12-24-04 19:34 smuslo         Distribution              => fedora core 3   
+12-24-04 19:34 smuslo         Kernel Version            => 2.6.9-1.681_FC3.smp
+12-24-04 19:38 smuslo         Issue Monitored: smuslo                      
+12-24-04 19:38 smuslo         Note Added: 0002931                          
+12-24-04 20:59 smuslo         Note Added: 0002932                          
+12-24-04 21:00 smuslo         Issue End Monitor: smuslo                    
+01-25-05 15:31 tiwai          Status                   new => resolved     
+01-25-05 15:31 tiwai          Resolution               open => not an issue
+01-25-05 15:31 tiwai          Assigned To               => tiwai           
+01-25-05 15:31 tiwai          Note Added: 0003407                          
+01-25-05 15:31 tiwai          Assigned To              tiwai =>            
+05-31-05 18:01 perex          Status                   resolved => closed  
 ======================================================================
 
 
