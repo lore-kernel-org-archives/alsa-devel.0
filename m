@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000286]: Wrong MIDI I/O count in HDSP9632
-Date: Tue, 31 May 2005 18:04:21 +0200
-Message-ID: <d3c7cd7fd97f6e240c27381af839a74b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000950]: Volume randomly(?) jumps to maximum, extreme distortion
+Date: Tue, 31 May 2005 18:05:14 +0200
+Message-ID: <f90acefdfe84769e8a4721e9ac161c4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB2931CA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4138B5
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:05:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=950> 
 ======================================================================
-Reported By:                penttiala
-Assigned To:                charbonnel
+Reported By:                ugly
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   286
-Category:                   PCI - RME HDSP
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   950
+Category:                   PCI - ice1724
+Reproducibility:            random
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Distribution:               Debian (sarge)
+Kernel Version:             2.4.28-rc1
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-20-2004 17:22 CEST
-Last Modified:              05-31-2005 18:04 CEST
+Date Submitted:             02-28-2005 04:38 CET
+Last Modified:              05-31-2005 18:05 CEST
 ======================================================================
-Summary:                    Wrong MIDI I/O count in HDSP9632
+Summary:                    Volume randomly(?) jumps to maximum, extreme
+distortion
 Description: 
-There is only one MIDI I/O in HDSP9632 but driver tells there is two.
+While listening to audio, my soundcard (M-Audio Revolution 7.1 - ice1724)
+will randomly (as far as I can tell) garble the audio and raise the volume
+to its maximum.  I continue to hear the distortion until I unload and
+reload the ALSA kernel modules-- that is, I'll continue to hear distorted
+sound while audio is playing.
+
+Switching between my headphones and speakers makes no difference, nor does
+changing media players (XMMS is what I use most often).  Adjusting the
+DAC/DAC 1 volume (which is what controls the volume with my card) has no
+effect either.
+
+My volume in XMMS is set to 50% (ALSA output), and DAC/DAC 1 in Alsamixer
+are both set to 49%.
 ======================================================================
 
 ----------------------------------------------------------------------
- charbonnel - 01-28-05 18:22 
+ ugly - 02-28-05 23:46 
 ----------------------------------------------------------------------
-I just submitted a patch on alsa-devel that should solve the problem.
-Sorry about the "soon" in my previous note :)
+I switched to OSS and it still happens, so I'm not sure what's causing the
+problem anymore.
 
 ----------------------------------------------------------------------
- charbonnel - 02-01-05 21:42 
+ jdthood - 03-22-05 22:25 
 ----------------------------------------------------------------------
-Fixed in cvs, fix should appear in alsa > 1.0.8
+Probably a local hardware problem of some sort.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-20-04 17:22 penttiala      New Issue                                    
-05-22-04 13:42 charbonnel     Note Added: 0001170                          
-12-24-04 12:35 penttiala      Issue Monitored: penttiala                    
-01-28-05 18:22 charbonnel     Note Added: 0003433                          
-02-01-05 21:42 charbonnel     Status                   assigned => resolved
-02-01-05 21:42 charbonnel     Resolution               open => fixed       
-02-01-05 21:42 charbonnel     Note Added: 0003469                          
-03-13-05 15:27 penttiala      Issue End Monitor: penttiala                    
-05-31-05 18:04 perex          Status                   resolved => closed  
+02-28-05 04:38 ugly           New Issue                                    
+02-28-05 04:38 ugly           Distribution              => Debian (sarge)  
+02-28-05 04:38 ugly           Kernel Version            => 2.4.28-rc1      
+02-28-05 04:42 ugly           Issue Monitored: ugly                        
+02-28-05 04:42 ugly           Issue End Monitor: ugly                      
+02-28-05 23:46 ugly           Note Added: 0003751                          
+03-22-05 22:25 jdthood        Note Added: 0004140                          
+03-22-05 22:25 jdthood        Status                   new => resolved     
+03-22-05 22:25 jdthood        Resolution               open => not an issue
+05-31-05 18:05 perex          Status                   resolved => closed  
 ======================================================================
 
 
