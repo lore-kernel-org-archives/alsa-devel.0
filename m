@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000613]: Getting configure error
-Date: Tue, 31 May 2005 18:04:02 +0200
-Message-ID: <cce482780a70bf87e03a6d3b8361b401@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000924]: crash in oss emulation's rate conversion
+Date: Tue, 31 May 2005 18:03:53 +0200
+Message-ID: <c7f8c0f1a00b32e20777d5478373d395@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFCD01CA
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA22C1CA
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=613> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=924> 
 ======================================================================
-Reported By:                glower0617
-Assigned To:                perex
+Reported By:                Benjamin Otte
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   613
-Category:                   0_compilation problem_!!!
+Issue ID:                   924
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Mandrake
-Kernel Version:             2.6.8.1-10MDK
+Distribution:               Debian unstable
+Kernel Version:             2.6.9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-28-2004 07:22 CEST
-Last Modified:              05-31-2005 18:04 CEST
+Date Submitted:             02-19-2005 12:02 CET
+Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Getting configure error
+Summary:                    crash in oss emulation's rate conversion
 Description: 
-checking how to run the C++ preprocessor... /lib/cpp
-configure: error: C++ preprocessor "/lib/cpp" fails sanity check
-See `config.log' for more details.
-make: *** No targets specified and no makefile found.  Stop.
-make: *** No rule to make target `install'.  Stop.
-
+When running the attached code on my ibook, it crashes inside the kernel.
+After that, /dev/dsp is reported as in use until I restart.
+This is using OSS emulations with the snd-powermac driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:40 
+ tiwai - 02-22-05 14:35 
 ----------------------------------------------------------------------
-Appearently, you don't have installed gcc package in your system.
+Already fixed in ALSA 1.0.8 (i.e. 2.6.11 kernel)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-28-04 07:22 glower0617     New Issue                                    
-10-28-04 07:22 glower0617     Distribution              => Mandrake        
-10-28-04 07:22 glower0617     Kernel Version            => 2.6.8.1-10MDK   
-02-22-05 09:40 perex          Status                   assigned => resolved
-02-22-05 09:40 perex          Resolution               open => fixed       
-02-22-05 09:40 perex          Note Added: 0003688                          
-05-31-05 18:04 perex          Status                   resolved => closed  
+02-19-05 12:02 Benjamin Otte  New Issue                                    
+02-19-05 12:02 Benjamin Otte  File Added: bug.c                            
+02-19-05 12:02 Benjamin Otte  Distribution              => Debian unstable 
+02-19-05 12:02 Benjamin Otte  Kernel Version            => 2.6.9           
+02-22-05 14:35 tiwai          Status                   assigned => resolved
+02-22-05 14:35 tiwai          Resolution               open => fixed       
+02-22-05 14:35 tiwai          Note Added: 0003701                          
+05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
 
