@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Tue, 31 May 2005 14:04:31 +0200
-Message-ID: <c36836154156acdb46f09417f3f39660@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Tue, 31 May 2005 15:43:42 +0200
+Message-ID: <5d29a377504be703a7beb3d779ad59de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4752217E
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 14:04:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B98D1186
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 15:43:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,98 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                minmax
+Reported By:                mr-k
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   761
+Category:                   OTHERS
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-31-2005 14:04 CEST
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              05-31-2005 15:43 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    Driver and all sound aplications hangs
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
+
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-30-05 09:51 
+ tiwai - 05-31-05 13:06 
 ----------------------------------------------------------------------
-Could you try 1.0.9 final? My patch is there and compilation should be
-fixed.
+Yeah, you seem to be the only one hitting this bad bug :)
+Anyway, could you try the attached patch?  It's to 1.0.9.
 
 ----------------------------------------------------------------------
- parente - 05-31-05 14:04 
+ bendis - 05-31-05 15:43 
 ----------------------------------------------------------------------
-perex: I can now compile and insert the module into the kernel on my
-machine.
+I have snd-via82xx and I have similar problems too, but when I recompiled
+the kernel with "Preemtp The Big Kernel Lock" set off, the problems seem
+to disapear (but not sure if this was the real reason). I will try to
+apply the patch and use the old kernel config.
 
-However, the clipping problem still remains. Considering that Roger Mach's
-patch works, I do not believe this is an overflow problem. Rather, the bug
-seems to stem from an incorrect calculation involving bytes instead of the
-desired frames.
+I'm using linux-2.6.11-gentoo-r8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
-05-16-05 16:08 gk4            Note Added: 0004676                          
-05-19-05 15:28 parente        Note Added: 0004693                          
-05-20-05 00:38 minmax         Note Added: 0004698                          
-05-26-05 17:27 Roger Mach     Note Added: 0004738                          
-05-27-05 10:56 perex          Note Added: 0004742                          
-05-27-05 11:03 perex          File Added: fix2.patch                       
-05-27-05 11:04 perex          Note Added: 0004743                          
-05-27-05 15:41 parente        Note Added: 0004752                          
-05-30-05 09:51 perex          Note Added: 0004798                          
-05-31-05 14:04 parente        Note Added: 0004831                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-11-05 22:11 mr-k           Note Added: 0003158                          
+01-11-05 22:12 mr-k           File Added: alsa.log                         
+01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-16-05 15:38 mr-k           Note Added: 0003218                          
+02-09-05 21:45 mr-k           Note Edited: 0003173                         
+02-09-05 21:46 mr-k           Note Edited: 0003123                         
+03-10-05 16:46 mr-k           Note Added: 0003868                          
+03-10-05 16:47 mr-k           Note Edited: 0003868                         
+03-20-05 22:53 bendis         Issue Monitored: bendis                      
+03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
+03-22-05 17:59 mr-k           Note Added: 0004126                          
+03-30-05 18:27 tiwai          Note Added: 0004269                          
+03-30-05 19:06 mr-k           Note Added: 0004270                          
+03-30-05 19:19 tiwai          Note Added: 0004271                          
+03-31-05 00:36 mr-k           Note Added: 0004276                          
+03-31-05 00:36 mr-k           File Added: alsa-sysrq                       
+04-02-05 21:50 mr-k           Note Added: 0004300                          
+05-25-05 23:10 mr-k           Note Added: 0004737                          
+05-25-05 23:11 mr-k           Note Edited: 0004737                         
+05-31-05 13:06 tiwai          Note Added: 0004829                          
+05-31-05 13:06 tiwai          File Added: pcm-drain-lock-fix.diff               
+    
+05-31-05 15:43 bendis         Note Added: 0004832                          
 ======================================================================
 
 
