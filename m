@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000954]: no audible sound with AD1981B
-Date: Tue, 31 May 2005 18:03:42 +0200
-Message-ID: <0b10787f80c8a7281def6d0d3d7e47b2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000861]: Inserting module returns no errors, but /proc/asound/cards is still empty
+Date: Tue, 31 May 2005 18:04:07 +0200
+Message-ID: <c70f6123178c24da3f8ca119bfe45e77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 678D81D8
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2046F1DA
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,107 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=954> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=861> 
 ======================================================================
-Reported By:                gismo
+Reported By:                olsonle
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   954
-Category:                   PCI - intel8x0
+Issue ID:                   861
+Category:                   ISA - cs4236
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian unstable
-Kernel Version:             2.6.10 / 2.6.11-rc[24]
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-01-2005 14:20 CET
-Last Modified:              05-31-2005 18:03 CEST
+Date Submitted:             01-30-2005 00:44 CET
+Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    no audible sound with AD1981B
+Summary:                    Inserting module returns no errors, but
+/proc/asound/cards is still empty
 Description: 
-Already reported in the Debian BTS [1].
+Inserting snd-cs4236 module appears to be successful.  In fact, lsmod shows
+that the modules have indeed been loaded.  However, /proc/asound/cards
+still reads "--- no soundcards ---".  Checking dmesg, as well as
+/var/log/kernel/current, shows the following error messages:
 
-Since having upgraded to 1.0.8, I've no more audible sound on my
-Debian. This happens on 2.6.10 and on 2.6.11-rc[24] (on the latest,
-with or without the external compiled ALSA modules).
+[kernel] kobject_register failed for snd_page_alloc (-17)
+[kernel] kobject_register failed for snd (-17)
+[kernel] kobject_register failed for snd_timer (-17)
+[kernel] kobject_register failed for snd_pcm (-17)
+[kernel] kobject_register failed for snd_rawmidi (-17)
+[kernel] kobject_register failed for snd_cs4236 (-17)
 
-What is strange is that all is working as expected, but I cannot hear
-the sound: if I launch the GNOME Volume Meter ('vumeter'), I can see
-the bars moving when Rhythmbox is playing, indicating that there's
-sound.
+Running amixer of course fails as well, with a "no such device" error.
 
-Obviously, all modules are correctly loaded (I don't use the OSS
-emulation, but I tried with it and it doens't change anything) and the
-volumes properly set and unmuted. As I've an IBM T42p, I unmuted the
-volume via the tpb-enabled keys.
-
-I guess the problem is something related to this ALSA bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925 [2], but I
-cannot find a solution (and actually I'm quite sure I don't have an
-S/PDIF output).
-
-Some useful info:
-=====
-gismo:/home/luca# lspci -v
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
- (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 01)
-        Subsystem: IBM: Unknown device 0537
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at 1c00 [size=256]
-        I/O ports at 18c0 [size=64]
-        Memory at c0000c00 (32-bit, non-prefetchable) [size=512]
-        Memory at c0000800 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
-
-gismo:/home/luca# cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                  Intel 82801DB-ICH4 with AD1981B at 0xc0000c00,
-                  irq 11
-=====
-
-I just tried today CVS, but it didn't solve the problem.
-
-[1] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=297343
-[2] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925
-
+Kernel .config file is attached.
 ======================================================================
 
 ----------------------------------------------------------------------
- gismo - 03-01-05 14:23 
+ olsonle - 02-14-05 19:40 
 ----------------------------------------------------------------------
-I'm sorry, after having digged in the bug reports, it seems that my problem
-is the same as ALSA bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 [1]. Am I correct?
-
-In this case, I don't know how to mark this bug as a duplicate of the
-other...
-
-[1] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
+Updating to a later kernel build (2.6.10-gentoo-r6) seems to make the
+problem go away.  Works for me.
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 17:19 
+ tiwai - 02-14-05 19:41 
 ----------------------------------------------------------------------
-It might be a different matter.
-Just turn off 'Headphone Jack Sense' and 'Line Jack Sense' mixer switches.
+Moved to FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 14:20 gismo          New Issue                                    
-03-01-05 14:20 gismo          Distribution              => Debian unstable 
-03-01-05 14:20 gismo          Kernel Version            => 2.6.10 /
-2.6.11-rc[24]
-03-01-05 14:23 gismo          Note Added: 0003760                          
-03-09-05 17:19 tiwai          Status                   new => resolved     
-03-09-05 17:19 tiwai          Resolution               open => fixed       
-03-09-05 17:19 tiwai          Assigned To               => tiwai           
-03-09-05 17:19 tiwai          Note Added: 0003829                          
-03-09-05 17:20 tiwai          Assigned To              tiwai =>            
-05-31-05 18:03 perex          Status                   resolved => closed  
+01-30-05 00:44 olsonle        New Issue                                    
+01-30-05 00:44 olsonle        File Added: .config                          
+01-30-05 00:44 olsonle        Distribution              => Gentoo          
+01-30-05 00:44 olsonle        Kernel Version            => 2.6.10          
+02-14-05 19:40 olsonle        Note Added: 0003603                          
+02-14-05 19:41 tiwai          Status                   new => resolved     
+02-14-05 19:41 tiwai          Resolution               open => fixed       
+02-14-05 19:41 tiwai          Assigned To               => tiwai           
+02-14-05 19:41 tiwai          Note Added: 0003604                          
+02-14-05 19:41 tiwai          Assigned To              tiwai =>            
+05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
 
