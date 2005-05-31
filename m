@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
-Date: Tue, 31 May 2005 18:03:19 +0200
-Message-ID: <dfa51a82e4b92776c566085083d0ba46@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000813]: Terratec USB surround broken
+Date: Tue, 31 May 2005 18:03:50 +0200
+Message-ID: <2b333f75fb1bd6e75c90c14a9dfb2f4d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E19B01C8
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A9E61D9
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                ilikejam
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   712
-Category:                   PCI - cs46xx
+Issue ID:                   813
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10 (ALSA compiled in)
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-07-2004 18:36 CET
+Date Submitted:             01-12-2005 19:41 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Setting <4 channels in surround40 fails
+Summary:                    Terratec USB surround broken
 Description: 
-If you try
-alsa-lib/test/pcm -D surround40:0
-You obtain: Channels count (1) not available for playbacks: Invalid
-argument
-But we have 4 channels!
-I've tried to find the problem into the sources without luck :(
+I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
+'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
+'aplay -Dsurround51 file.wav' results in errors e.g.
+-----
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+aplay: main:508: audio open error: Invalid argument
+-----
+Xine similarly fails saying the sound card is in use. Xine works fine for
+stereo audio, even when configured to use 5.1 channel sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 16:34 
+ Clemens Ladisch - 02-24-05 08:55 
 ----------------------------------------------------------------------
-Submitter: Is there still an issue here or can this report be closed?
+The resampling is done by ALSA (if the device could do it, it would be
+indicated in the stream0 file).  Using ALSA device name "default" or
+"plughw" enables the "plug" plugin which does automatic resampling and
+sample format conversions.
+
+To prevent resampling, use "hw" which goes directly to the hardware.
+
+However, you won't be able to send 44.1 kHz in this way because with
+SPDIF, it's always the sending device that determines the speed.
 
 ----------------------------------------------------------------------
- darkbrain - 03-19-05 18:17 
+ ilikejam - 02-24-05 16:33 
 ----------------------------------------------------------------------
-Yes it was my mistake on openal configuration file.
+Yup. Right again. (Chipmunks style music with -D hw)
+
+Thanks a lot for your help. I think I'll look for a more capable sound
+card...
+
+Dave
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:36 darkbrain      New Issue                                    
-12-07-04 18:42 tiwai          Note Added: 0002757                          
-12-07-04 18:51 darkbrain      Note Added: 0002759                          
-12-07-04 18:54 tiwai          Note Added: 0002761                          
-12-07-04 18:59 darkbrain      Note Added: 0002762                          
-03-19-05 16:34 jdthood        Note Added: 0004056                          
-03-19-05 18:17 darkbrain      Note Added: 0004060                          
-03-22-05 15:01 jdthood        Status                   new => resolved     
-03-22-05 15:01 jdthood        Resolution               open => not an issue
+01-12-05 19:41 ilikejam       New Issue                                    
+01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
+01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
+in)
+01-26-05 09:02 ilikejam       Note Added: 0003413                          
+01-26-05 10:40 Clemens LadischNote Added: 0003414                          
+01-26-05 11:11 ilikejam       Note Added: 0003415                          
+01-31-05 20:52 ilikejam       Note Added: 0003458                          
+02-07-05 10:40 Clemens LadischNote Added: 0003528                          
+02-23-05 22:29 ilikejam       Note Added: 0003716                          
+02-24-05 08:55 Clemens LadischNote Added: 0003719                          
+02-24-05 16:33 ilikejam       Note Added: 0003722                          
+02-24-05 16:37 Clemens LadischStatus                   assigned => resolved
+02-24-05 16:37 Clemens LadischResolution               open => not an issue
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
