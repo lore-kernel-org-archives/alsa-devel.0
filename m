@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000067]: Alsa sound repeats first half a second over and over
-Date: Tue, 31 May 2005 18:02:11 +0200
-Message-ID: <a32754724d8dd0211733c2d735cbfdff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000454]: cvs site is down
+Date: Tue, 31 May 2005 18:03:24 +0200
+Message-ID: <b391d31448d43137d554dc000a42696d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DCD21C8
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 861F21AF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=67> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=454> 
 ======================================================================
-Reported By:                trejkaz
-Assigned To:                perex
+Reported By:                ronis
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   67
-Category:                   PCI - via82xx
+Issue ID:                   454
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.2
-Resolution:                 suspended
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-17-2004 10:05 CET
-Last Modified:              05-31-2005 18:02 CEST
+Date Submitted:             08-18-2004 16:26 CEST
+Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Alsa sound repeats first half a second over and over
+Summary:                    cvs site is down
 Description: 
-When playing a sound with /usr/bin/aplay, it will play the first half a
-second and repeat the same fragment of the file over and over.
+cvs -z3 update -dP now gives:
 
-Playing with /usr/bin/play, it repeats every second instead.
+cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
+M PserverBackend::PserverBackend() Connect (Connection refused)
+
+It started a few days ago, and had been working properly for months
+before.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- trejkaz - 02-26-04 13:47 
+ ronis - 08-23-04 21:26 
 ----------------------------------------------------------------------
-Okay, I'll take this up with the kernel team.  Although I noticed Kernel
-2.6.3 had a whole bunch of fixes which may or may not be relevant anyway,
-I just need to get it to compile. ;-)
+The site is back.  Close this one.
 
 ----------------------------------------------------------------------
- perex - 03-14-04 19:50 
+ jdthood - 03-19-05 15:30 
 ----------------------------------------------------------------------
-No further response from user.
+This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-04 10:05 trejkaz        New Issue                                    
-02-17-04 10:09 trejkaz        Issue Monitored: trejkaz                     
-02-17-04 10:10 trejkaz        Note Added: 0000249                          
-02-17-04 18:49 tiwai          Note Added: 0000258                          
-02-17-04 22:04 trejkaz        Note Added: 0000261                          
-02-26-04 12:06 perex          Note Added: 0000339                          
-02-26-04 13:47 trejkaz        Note Added: 0000349                          
-03-14-04 19:50 perex          Status                   new => resolved     
-03-14-04 19:50 perex          Resolution               open => suspended   
-03-14-04 19:50 perex          Assigned To               => perex           
-03-14-04 19:50 perex          Note Added: 0000603                          
-05-31-05 18:02 perex          Status                   resolved => closed  
+08-18-04 16:26 ronis          New Issue                                    
+08-18-04 16:35 pzad           Note Added: 0001587                          
+08-23-04 21:26 ronis          Note Added: 0001614                          
+03-19-05 15:30 jdthood        Note Added: 0004051                          
+03-19-05 16:04 perex          Status                   new => resolved     
+03-19-05 16:04 perex          Resolution               open => fixed       
+05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
 
