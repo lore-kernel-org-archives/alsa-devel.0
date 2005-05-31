@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
-Date: Tue, 31 May 2005 19:10:41 +0200
-Message-ID: <9e13cb69599f0790b1dbb0ee6f12384d@bugtrack.alsa-project.org>
+Date: Tue, 31 May 2005 19:15:02 +0200
+Message-ID: <995c205a197f2336405140168608620f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B880A16E
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 19:10:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AD72172
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 19:15:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1132> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               RHEL 3 U5 gold
 Kernel Version:             2.4.21-32
 ======================================================================
 Date Submitted:             05-28-2005 02:02 CEST
-Last Modified:              05-31-2005 19:10 CEST
+Last Modified:              05-31-2005 19:15 CEST
 ======================================================================
 Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
 catastrophic CrAsH
@@ -57,12 +57,7 @@ compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 12:58 
-----------------------------------------------------------------------
-Fixed with 1.0.9-final.
-
-----------------------------------------------------------------------
- speedking - 05-31-05 19:10 
+ speedking - 05-31-05 19:14 
 ----------------------------------------------------------------------
 I have tried 1.0.9 final this morning and now 'alsaconf' gives me the
 following error:
@@ -71,6 +66,17 @@ following error:
 sound cards/chips"
 
 Saying 'yes' finds no supported chips while saying 'no' bails out.
+
+At least 1.0.9 final doesn't hang the machine.  :D
+
+I don't know if I mentioned this is RHEL 3 U5 x86_64.
+
+
+
+----------------------------------------------------------------------
+ tiwai - 05-31-05 19:15 
+----------------------------------------------------------------------
+Are you sure that the running alsaconf was installed from alsa-utils 1.0.9?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -84,6 +90,9 @@ Date Modified  Username       Field                    Change
 05-31-05 19:10 speedking      Status                   resolved => feedback
 05-31-05 19:10 speedking      Resolution               fixed => reopened   
 05-31-05 19:10 speedking      Note Added: 0004848                          
+05-31-05 19:11 speedking      Note Edited: 0004848                         
+05-31-05 19:14 speedking      Note Edited: 0004848                         
+05-31-05 19:15 tiwai          Note Added: 0004849                          
 ======================================================================
 
 
