@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001146]: Cannot compile alsa-utils
-Date: Tue, 31 May 2005 13:04:40 +0200
-Message-ID: <c4cf3746f07ce97c167ac2a9b5331b90@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Tue, 31 May 2005 13:06:01 +0200
+Message-ID: <0dc736edee85141cedf4ab3c639ba553@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0302319C
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:04:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97A4B158
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:06:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1146> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                perex
+Reported By:                mr-k
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1146
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   761
+Category:                   OTHERS
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 test3
-Kernel Version:             2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             05-30-2005 15:06 CEST
-Last Modified:              05-31-2005 13:04 CEST
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              05-31-2005 13:06 CEST
 ======================================================================
-Summary:                    Cannot compile alsa-utils
+Summary:                    Driver and all sound aplications hangs
 Description: 
-Compiling alsa-utils 1.0.9 with gcc 4.0.0 I've this error:
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
 
-Making all in alsactl
-make[1]: Entering directory
-`/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
-gcc  -g -O2   -o alsactl  alsactl.o state.o power.o names.o  -lasound -lm
--ldl -lpthread
-names.o(.text+0xdce): In function `probe_timers':
-/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425: undefined
-reference to `snd_timer_ginfo_sizeof'
-names.o(.text+0xdee):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425:
-undefined reference to `snd_timer_ginfo_sizeof'
-names.o(.text+0xe4e):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:435:
-undefined reference to `snd_timer_ginfo_set_tid'
-names.o(.text+0xebf):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:445:
-undefined reference to `snd_timer_ginfo_get_name'
-collect2: ld returned 1 exit status
-make[1]: *** [alsactl] Error 1
-make[1]: Leaving directory `/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
-make: *** [all-recursive] Error 1
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 05-31-05 13:03 
+ mr-k - 05-25-05 23:11 
 ----------------------------------------------------------------------
-In fact I have old lib in /lib and new one in /usr/lib, so I have to delete
-old one?
+I see that you can't do anything with that.. Am I only one who have this
+problem? Maybe there is anything else tha I could do to help you ?
+
+
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 13:04 
+ tiwai - 05-31-05 13:06 
 ----------------------------------------------------------------------
-Yes.  Or run configure with the proper option.
+Yeah, you seem to be the only one hitting this bad bug :)
+Anyway, could you try the attached patch?  It's to 1.0.9.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-30-05 15:06 Cimmo          New Issue                                    
-05-30-05 15:06 Cimmo          Distribution              => Fedora Core 4 test3
-05-30-05 15:06 Cimmo          Kernel Version            =>
-2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
-05-30-05 15:11 perex          Status                   assigned => resolved
-05-30-05 15:11 perex          Resolution               open => fixed       
-05-30-05 15:11 perex          Note Added: 0004818                          
-05-30-05 15:36 Cimmo          Status                   resolved => feedback
-05-30-05 15:36 Cimmo          Resolution               fixed => reopened   
-05-30-05 15:36 Cimmo          Note Added: 0004820                          
-05-31-05 12:52 tiwai          Note Added: 0004823                          
-05-31-05 13:03 Cimmo          Note Added: 0004826                          
-05-31-05 13:04 tiwai          Note Added: 0004828                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-11-05 22:11 mr-k           Note Added: 0003158                          
+01-11-05 22:12 mr-k           File Added: alsa.log                         
+01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-16-05 15:38 mr-k           Note Added: 0003218                          
+02-09-05 21:45 mr-k           Note Edited: 0003173                         
+02-09-05 21:46 mr-k           Note Edited: 0003123                         
+03-10-05 16:46 mr-k           Note Added: 0003868                          
+03-10-05 16:47 mr-k           Note Edited: 0003868                         
+03-20-05 22:53 bendis         Issue Monitored: bendis                      
+03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
+03-22-05 17:59 mr-k           Note Added: 0004126                          
+03-30-05 18:27 tiwai          Note Added: 0004269                          
+03-30-05 19:06 mr-k           Note Added: 0004270                          
+03-30-05 19:19 tiwai          Note Added: 0004271                          
+03-31-05 00:36 mr-k           Note Added: 0004276                          
+03-31-05 00:36 mr-k           File Added: alsa-sysrq                       
+04-02-05 21:50 mr-k           Note Added: 0004300                          
+05-25-05 23:10 mr-k           Note Added: 0004737                          
+05-25-05 23:11 mr-k           Note Edited: 0004737                         
+05-31-05 13:06 tiwai          Note Added: 0004829                          
 ======================================================================
 
 
