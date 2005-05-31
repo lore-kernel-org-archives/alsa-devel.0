@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000148]: Master volume only controls front output
-Date: Tue, 31 May 2005 18:02:10 +0200
-Message-ID: <d2c75b45b817cd107dcf21e2fa2c24ab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Tue, 31 May 2005 18:01:56 +0200
+Message-ID: <d025301fb89e0f5442b5373458e8d644@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D0DD1B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DEAF1B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,116 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=148> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
 ======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
+Reported By:                footcow
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   148
-Category:                   PCI - emu10k1
+Issue ID:                   666
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo Linux 1.4
-Kernel Version:             2.6.4
-Resolution:                 not an issue
+Distribution:               Debian
+Kernel Version:             2.6.9
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-22-2004 16:06 CET
-Last Modified:              05-31-2005 18:02 CEST
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              05-31-2005 18:01 CEST
 ======================================================================
-Summary:                    Master volume only controls front output
+Summary:                    Simply no sound ... no line ... no mixer
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
 
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+
+
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001063 master volume change and mute only affe...
+has duplicate       0000789 With AZX Sound card
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-23-04 16:18 
+ footcow - 01-15-05 00:21 
 ----------------------------------------------------------------------
-Please, make this report for the alsa-lib project. We need to design an
-abstraction layer which will provide this "expected" behaviour.
+Perfect sound is back with version 1.8.0 ;o)
+You can close the bug report for me.
 
-Actually, we follow the hardware and rear output is totaly independent in
-case
-of SB Live.
+----------------------------------------------------------------------
+ tiwai - 01-19-05 17:14 
+----------------------------------------------------------------------
+OK, go to Fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-04 16:06 wzzrd          New Issue                                    
-03-22-04 16:06 wzzrd          Distribution              => Gentoo Linux 1.4
-03-22-04 16:06 wzzrd          Kernel Version            => 2.6.4           
-03-23-04 16:18 perex          Status                   new => resolved     
-03-23-04 16:18 perex          Resolution               open => not an issue
-03-23-04 16:18 perex          Assigned To               => perex           
-03-23-04 16:18 perex          Note Added: 0000665                          
-04-18-05 20:18 rlrevell       Relationship added       has duplicate 0001063
-05-31-05 18:02 perex          Status                   resolved => closed  
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
+12-08-04 23:56 footcow        Note Added: 0002795                          
+12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
+12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
+12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
+  
+12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
+12-10-04 22:08 footcow        Note Added: 0002808                          
+12-10-04 22:08 footcow        File Added: alsamix.png                      
+12-11-04 17:40 tiwai          Note Added: 0002811                          
+12-12-04 00:58 footcow        Note Added: 0002813                          
+12-12-04 00:59 footcow        File Added: alsamix2.png                     
+12-16-04 18:32 tiwai          Note Added: 0002836                          
+12-16-04 21:06 footcow        Note Added: 0002841                          
+01-07-05 00:44 footcow        Note Added: 0003099                          
+01-07-05 18:04 tiwai          Note Added: 0003107                          
+01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
+01-08-05 01:22 footcow        Note Added: 0003125                          
+01-11-05 16:14 tiwai          Note Added: 0003152                          
+01-11-05 16:15 tiwai          File Added: azx-cmedia-pcm-fix.diff               
+    
+01-11-05 16:16 tiwai          Relationship added       has duplicate 0000789
+01-15-05 00:21 footcow        Note Added: 0003211                          
+01-19-05 17:14 tiwai          Status                   new => resolved     
+01-19-05 17:14 tiwai          Resolution               open => fixed       
+01-19-05 17:14 tiwai          Assigned To               => tiwai           
+01-19-05 17:14 tiwai          Note Added: 0003301                          
+01-19-05 17:14 tiwai          Assigned To              tiwai =>            
+05-31-05 18:01 perex          Status                   resolved => closed  
 ======================================================================
 
 
