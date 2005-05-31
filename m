@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
-Date: Tue, 31 May 2005 18:03:22 +0200
-Message-ID: <5491064148c10a776e651f2f655b2258@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000866]: Can not install snd-intel8x0
+Date: Tue, 31 May 2005 18:03:11 +0200
+Message-ID: <3b636a31aebb9b62f51ad03200497bec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEE471BF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E45F11B6
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=637> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=866> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                tiwai
+Reported By:                ghostdaemon
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   637
-Category:                   PCI - atiixp
+Issue ID:                   866
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+Distribution:               
+Kernel Version:             
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-08-2004 18:50 CET
+Date Submitted:             01-31-2005 05:30 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Laptop volume control & mute buttons don't work
+Summary:                    Can not install snd-intel8x0
 Description: 
-The Compaq, like may laptops, comes with buttons to increase and decrease
-volume, as well as a mute button. Under Linux these buttons do nothing.
-The mute button is always lit even when sound is coming out. The volume
-control buttons do not adjust volume.
+I have to use Redhat Linux 7.3.I have  tried ALSA 1.0.8 and 0.9.6,but they
+all failed .when i extact driver package to ./config;make;make install
+,some errors infomation displayed.such as:
+ unresolved symbol fasync_helper_Rsmp_0f820065
+ unresolved symbol proc_symlink_Rsmp_515b8074
+ ...........
+ ...........
+
+when i use modpobe command:
+[root@localhost root]# modprobe snd-intel8x0
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+fasync_helper_Rsmp_0f820065
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+proc_symlink_Rsmp_515b8074
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+remove_proc_entry_Rsmp_18199406
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+kill_fasync_Rsmp_f866c12a
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+proc_root_Rsmp_c79b35f0
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+register_chrdev_Rsmp_10735b95
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+create_proc_entry_Rsmp_9cfe096c
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+register_sound_special_Rsmp_3a650025
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+remove_wait_queue_Rsmp_ca8842ea
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+add_wait_queue_Rsmp_2fd0ca84
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+__pollwait_Rsmp_4c541ea9
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o failed
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod snd-intel8x0
+failed
+[root@localhost root]#
+
+My Motherboard is ASUS P4P800, AD1985 integrated on it.
+
+Many thanks !
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Mark Knecht - 11-09-04 17:49 
+ tiwai - 01-31-05 18:54 
 ----------------------------------------------------------------------
-There's no point discussing this. Bye.
+Possibly the linux kernel source tree (or its kernel config file) doesn't
+match with your running kernel.  Please check it.
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 15:33 
+ jdthood - 03-19-05 10:01 
 ----------------------------------------------------------------------
-This can be closed.
+This is most likely not an ALSA bug but a problem with modules
+being built against different sources than were used for building
+the running kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-08-04 18:50 Mark Knecht    New Issue                                    
-11-08-04 18:50 Mark Knecht    Distribution              => Gentoo          
-11-08-04 18:50 Mark Knecht    Kernel Version            =>
-2.6.9-rc2-mm4-VP-S7-noACPI-UMP
-11-09-04 10:35 tiwai          Note Added: 0002317                          
-11-09-04 10:36 tiwai          Resolution               open => not an issue
-11-09-04 10:37 tiwai          Status                   assigned => resolved
-11-09-04 16:13 Mark Knecht    Status                   resolved => feedback
-11-09-04 16:13 Mark Knecht    Resolution               not an issue => reopened
-11-09-04 16:13 Mark Knecht    Note Added: 0002326                          
-11-09-04 16:57 tiwai          Note Added: 0002328                          
-11-09-04 17:49 Mark Knecht    Note Added: 0002329                          
-03-19-05 15:33 jdthood        Note Added: 0004052                          
-03-19-05 16:06 perex          Status                   feedback => resolved
-03-19-05 16:06 perex          Resolution               reopened => not an issue
+01-31-05 05:30 ghostdaemon    New Issue                                    
+01-31-05 18:54 tiwai          Note Added: 0003452                          
+03-19-05 10:01 jdthood        Note Added: 0004029                          
+03-22-05 15:12 jdthood        Status                   new => resolved     
+03-22-05 15:12 jdthood        Resolution               open => not an issue
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
