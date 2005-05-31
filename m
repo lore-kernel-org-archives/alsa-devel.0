@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000876]: Crashes on suspend or standby
-Date: Tue, 31 May 2005 18:04:15 +0200
-Message-ID: <011b6239b572d2875dc889ff99850803@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000965]: No Sound from Right Surround Speaker
+Date: Tue, 31 May 2005 18:03:32 +0200
+Message-ID: <cc35bae12f35515bcbd09cfb1aa9331a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CB681B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FFF71BF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,385 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=876> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=965> 
 ======================================================================
-Reported By:                sleepkreep
+Reported By:                imac
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   876
-Category:                   CORE - control
+Issue ID:                   965
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               SuSE
-Kernel Version:             2.6.7
+Distribution:               Debian Sid
+Kernel Version:             2.6.11-rc4 (And many many kernels earlier)
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-01-2005 19:56 CET
-Last Modified:              05-31-2005 18:04 CEST
+Date Submitted:             03-06-2005 01:23 CET
+Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Crashes on suspend or standby
+Summary:                    No Sound from Right Surround Speaker
 Description: 
-When using APM to standby or suspend the computer, alsa crashes.  As far as
-I can tell, The alsa deamon doesn't crash, but the sound driver does. I
-can't determine if this is actually the case. I haven't tried it with
-acpi, but I imagine the result would be the same.  Currently I have SuSE's
-powersave deamon shutting down alsa on suspend or standby, and then
-restarting it on resume.  This works fine, but all my apps that were
-running crash with alsa's shutdown.  This is annoying. I can't find
-anybody with the same problem.  
+This bug has been around since 0000043 (Original ALSA Bugtrack #)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=43
+Lots of details there, but a bad bug description.  Here's my current
+details
+BTW, the profile pulldown in the bug form was empty :)
+
+Let me know how I can help debug this further, if there is no trivial
+fix.
+
+****LSPCI:
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+        Subsystem: ABIT Computer Corp.: Unknown device 1401
+        Flags: medium devsel, IRQ 22
+        I/O ports at cc00 [size=256]
+        Capabilities: [c0] Power Management version 2
+
+****AMIXER:
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 21 [68%] [on]
+  Front Right: Playback 21 [68%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 19 [61%] [on]
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Switch',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 16 [52%] [on]
+  Front Right: Playback 16 [52%] [on]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 28 [90%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Surround Down Mix',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 24 [77%] [on]
+Simple mixer control 'Center/LFE Down Mix',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 22 [71%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 20 [65%] [on] Capture [off]
+  Front Right: Playback 20 [65%] [on] Capture [off]
+Simple mixer control 'Line-In As Surround',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [on]
+  Front Right: Capture [on]
+Simple mixer control 'Mic As Center/LFE',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Video',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Mono: Playback [on] Capture [off]
+Simple mixer control 'IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'IEC958 Playback AC97-SPSA',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 3
+  Mono: 2 [67%]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 15
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 25 [81%] [on] Capture [off]
+  Front Right: Playback 25 [81%] [on] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Analog to IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Duplicate Front',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Exchange Center/LFE',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Input Source Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Input Source Select',1
+  Capabilities:
+  Mono:
+Simple mixer control 'Swap Surround Slot',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'VIA DXS',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',1
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',2
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',3
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+
+****PROC/CODEC97
+0-0/0: Realtek ALC650D
+
+Capabilities     :
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : Realtek 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Double rate slots: 10/11
+Extended ID      : codec=0 rev=1 AMAP LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
+Extended status  : SPCV LDAC SDAC CDAC SPDIF=6/9 SPDIF VRA
+PCM front DAC    : 44100Hz
+PCM Surr DAC     : 44100Hz
+PCM LFE DAC      : 44100Hz
+PCM ADC          : 48000Hz
+SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=44.1kHz
+
+
+0:00 = 5980
+0:02 = 0a0a
+0:04 = 0000
+0:06 = 000c
+0:08 = 0000
+0:0a = 801e
+0:0c = 801f
+0:0e = 801f
+0:10 = 0b0b
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 0606
+0:18 = 0f0f
+0:1a = 0000
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 07c7
+0:2a = 05e5
+0:2c = ac44
+0:2e = ac44
+0:30 = ac44
+0:32 = bb80
+0:34 = 0000
+0:36 = 0907
+0:38 = 0380
+0:3a = 0824
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0808
+0:66 = 0808
+0:68 = 0000
+0:6a = 4001
+0:6c = 0000
+0:6e = 0003
+0:70 = 0211
+0:72 = 6aa9
+0:74 = 0063
+0:76 = 0001
+0:78 = 8102
+0:7a = 57c0
+0:7c = 414c
+0:7e = 4720
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- sleepkreep - 02-03-05 02:19 
+ tiwai - 03-09-05 18:55 
 ----------------------------------------------------------------------
-Problem Solved.  Turns out in Yast sound configuration the power management
-option wasn't configurable.  So after I configured it in the config file,
-adding use_pm=1, it works. There are still a few problems with the apps,
-but I think they are bugs in the apps themselves.  XMMS deosn't resume
-playing after resuming suspend, but it will if I restart the current file.
- I have to restart amarok if using the arts deamon but amarok works fine
-if using the xine engine.  That's all that I've noticed so far.  This is
-also after I updated to 1.0.8. Keep up the good work guys.
+Try the latest CVS version, and adjust "surround" volume and mute again.
 
 ----------------------------------------------------------------------
- tiwai - 02-04-05 13:11 
+ tiwai - 03-16-05 15:01 
 ----------------------------------------------------------------------
-The resume problem of xmms is the problem of xmms ALSA output plugin.
-It got fixed in the xmms CVS version, AFAIK.
+This should have been fixed.  Try 1.0.9rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 19:56 sleepkreep     New Issue                                    
-02-01-05 19:56 sleepkreep     Distribution              => SuSE            
-02-01-05 19:56 sleepkreep     Kernel Version            => 2.6.7           
-02-02-05 10:51 tiwai          Note Added: 0003479                          
-02-02-05 23:16 sleepkreep     Note Added: 0003491                          
-02-03-05 02:19 sleepkreep     Note Added: 0003492                          
-02-04-05 13:11 tiwai          Status                   new => resolved     
-02-04-05 13:11 tiwai          Resolution               open => fixed       
-02-04-05 13:11 tiwai          Assigned To               => tiwai           
-02-04-05 13:11 tiwai          Note Added: 0003502                          
-02-04-05 13:11 tiwai          Assigned To              tiwai =>            
-05-31-05 18:04 perex          Status                   resolved => closed  
+03-06-05 01:23 imac           New Issue                                    
+03-06-05 01:23 imac           Distribution              => Debian Sid      
+03-06-05 01:23 imac           Kernel Version            => 2.6.11-rc4 (And many
+many kernels earlier)
+03-06-05 13:21 slammer        Issue Monitored: slammer                     
+03-06-05 13:27 slammer        Note Added: 0003805                          
+03-09-05 18:55 tiwai          Note Added: 0003841                          
+03-16-05 15:01 tiwai          Status                   new => resolved     
+03-16-05 15:01 tiwai          Resolution               open => fixed       
+03-16-05 15:01 tiwai          Assigned To               => tiwai           
+03-16-05 15:01 tiwai          Note Added: 0003961                          
+03-16-05 15:01 tiwai          Assigned To              tiwai =>            
+03-17-05 00:25 slammer        Issue End Monitor: slammer                    
+05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
 
