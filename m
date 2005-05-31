@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
-Date: Tue, 31 May 2005 18:03:31 +0200
-Message-ID: <8a0be2cda5b559c642528a0a46c1b4bc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000916]: no sound
+Date: Tue, 31 May 2005 18:03:47 +0200
+Message-ID: <fee911c031203f33cb999f82e29f7cd3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14EB71AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 406AB1D3
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=916> 
 ======================================================================
-Reported By:                rbechard1
-Assigned To:                perex
+Reported By:                mbarrett
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   971
-Category:                   0_compilation problem_!!!
+Issue ID:                   916
+Category:                   PCI - intel8x0m
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 unable to duplicate
+Distribution:               FC3
+Kernel Version:             2.6.10-1.766_FC3
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-08-2005 01:50 CET
+Date Submitted:             02-17-2005 17:00 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Compilation Errors - Cannot find specific files
-during compilation
+Summary:                    no sound
 Description: 
-When installing the application using the method described in this link:
+I have sound with kernel 2.6.9
+It dissapeared when I installed kernel 2.6.10
+Sound works on my Laptop (Dell) with the same kernel, just not my desktop
+(Compaq D310m)
+Any suggestions?
 
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
-
-I get error messages during the compilation, yet the process tells me it
-has completed successfully. When I go to configure my sound card it has
-the correct driver loaded but yet there is no sound. When I checked the
-mixer settings nothing is muted. 
-
-There is no option within the sound configuration panel to switch to the
-correct driver.
+My sound card is an Intel 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio
 ======================================================================
 
 ----------------------------------------------------------------------
- rbechard1 - 03-14-05 21:44 
+ manu-972 - 03-03-05 05:44 
 ----------------------------------------------------------------------
-I recently found the new alsa 1.0.8 RPM packages for Mandrake 10.2 and
-installed them with RPMDRAKE. This resolved this problem. It was much
-easier as your src code continues to give be problems. I no longer need
-help as this issue has now been resolved.
-
-I 'strongly" suggest that your webmaster should put the RPM packages on
-your website for the various distributions, it would save your support
-people alot of time!!!!!!!!!!!!!!!!!
+Just to be more precise here is the fix that I think cure this:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg11772.html
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:25 
+ perex - 03-03-05 09:57 
 ----------------------------------------------------------------------
-Then let's close this one.
+The mentioned patch is already in CVS, so I assume that the problem is
+fixed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 01:50 rbechard1      New Issue                                    
-03-08-05 01:51 rbechard1      Issue Monitored: rbechard1                    
-03-08-05 09:52 rbechard1      Note Added: 0003812                          
-03-09-05 02:10 fmoraes        Note Added: 0003819                          
-03-09-05 03:32 rbechard1      Note Added: 0003825                          
-03-09-05 07:12 rbechard1      File Added: Driver 1.0.8 installation output      
-             
-03-14-05 21:41 rbechard1      Note Added: 0003906                          
-03-14-05 21:44 rbechard1      Issue Monitored: fmoraes                     
-03-14-05 21:44 rbechard1      Note Added: 0003907                          
-03-14-05 21:47 rbechard1      Issue End Monitor: rbechard1                    
-03-18-05 18:25 tiwai          Status                   assigned => resolved
-03-18-05 18:25 tiwai          Resolution               open => unable to
-duplicate
-03-18-05 18:25 tiwai          Note Added: 0004004                          
+02-17-05 17:00 mbarrett       New Issue                                    
+02-17-05 17:00 mbarrett       Distribution              => FC3             
+02-17-05 17:00 mbarrett       Kernel Version            => 2.6.10-1.766_FC3
+02-17-05 18:27 tiwai          Note Added: 0003631                          
+03-03-05 05:42 manu-972       Note Added: 0003783                          
+03-03-05 05:44 manu-972       Note Added: 0003784                          
+03-03-05 09:55 perex          Category                 PCI - intel8x0 => PCI -
+intel8x0m
+03-03-05 09:57 perex          Status                   new => resolved     
+03-03-05 09:57 perex          Resolution               open => fixed       
+03-03-05 09:57 perex          Assigned To               => perex           
+03-03-05 09:57 perex          Note Added: 0003785                          
+03-03-05 09:57 perex          Assigned To              perex =>            
+03-10-05 05:53 johnz          Issue Monitored: johnz                       
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
