@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001125]: reproducible hang on nforce3 -- all applications
-Date: Tue, 31 May 2005 13:07:20 +0200
-Message-ID: <f15675d4a853fe732628f0230a84266b@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+From: =?ISO-8859-1?Q?Tobias_Rundstr=F6m?= <tru@xmms.org>
+Subject: ALSA Plugin for XMMS2. Help wanted.
+Date: Tue, 31 May 2005 13:08:36 +0200
+Message-ID: <A633824F-4FB6-446B-9C39-26F315518B3A@xmms.org>
+Mime-Version: 1.0 (Apple Message framework v730)
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5E33185
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 13:07:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,176 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello ALSA developers.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1125> 
-======================================================================
-Reported By:                dogpatch
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1125
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.11-gentoo-r8
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-24-2005 23:36 CEST
-Last Modified:              05-31-2005 13:07 CEST
-======================================================================
-Summary:                    reproducible hang on nforce3 -- all applications
-Description: 
-Just upgraded to the latest kernel/alsa-driver via Gentoo emerge. I'm using
-Gentoo profile 2005.0. Prior to the upgrade, sound worked fine both as
-direct ALSA and via OSS emulation.
+We have just released the first public version of XMMS2. This is  
+developer release and aimed for persons who want to poke around in  
+the sourcecode and help enhancing XMMS2. Since the release of DR1 we  
+had numeros bug-reports against our alsa-plugin. We had fairly hard  
+time trying to figure out how to use the API and cope with all error  
+handling.
 
-Now, any attempt to play a sound causes the playing application to hang
-forever on an ioctl.
+This is a call for help. We would like a senior ALSA developer look  
+at our plugin and give us advice (or even write the code himself).  
+The source is available from git at http://git.xmms.se/ - direct link  
+to the alsa plugin here :
+http://git.xmms.se/? 
+p=xmms2.git;a=blob;h=c6a9e2c5e0ee6e916c71c90cc924e55df4a1e61d;hb=08c7a63 
+cf1cbbc708304675f365e1538e55b4a97;f=src/plugins/alsa/alsa.c
 
-This happens even after a poweroff cold boot.
-intel8x0m module is not and has not ever been loaded.
-No other applications using the sound devices.
-======================================================================
+If you are willing to help please contact me or join our IRC channel  
+on Freenode #xmms2 and we will supply the current issues we are  
+seeing. Any help on this will be highly appriciated.
 
-----------------------------------------------------------------------
- dogpatch - 05-24-05 23:43 
-----------------------------------------------------------------------
-Forgot this ...
-
-pachyderm:asound 517 $> cat /proc/pci
-PCI devices found:
-  Bus  0, device   0, function  0:
-    Host bridge: PCI device 10de:00e1 (nVidia Corporation) (rev 161).
-      Prefetchable 32 bit memory at 0xd0000000 [0xd7ffffff].
-  Bus  0, device   1, function  0:
-    ISA bridge: PCI device 10de:00e0 (nVidia Corporation) (rev 162).
-  Bus  0, device   1, function  1:
-    SMBus: PCI device 10de:00e4 (nVidia Corporation) (rev 161).
-      IRQ 10.
-      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
-      I/O at 0x9000 [0x901f].
-      I/O at 0x4c00 [0x4c3f].
-      I/O at 0x4c40 [0x4c7f].
-  Bus  0, device   2, function  0:
-    USB Controller: PCI device 10de:00e7 (nVidia Corporation) (rev 161).
-      IRQ 5.
-      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
-      Non-prefetchable 32 bit memory at 0xe4002000 [0xe4002fff].
-  Bus  0, device   2, function  1:
-    USB Controller: PCI device 10de:00e7 (nVidia Corporation) (rev 161).
-      IRQ 5.
-      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
-      Non-prefetchable 32 bit memory at 0xe4003000 [0xe4003fff].
-  Bus  0, device   2, function  2:
-    USB Controller: PCI device 10de:00e8 (nVidia Corporation) (rev 162).
-      IRQ 5.
-      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
-      Non-prefetchable 32 bit memory at 0xe4004000 [0xe40040ff].
-  Bus  0, device   5, function  0:
-    Ethernet controller: PCI device 10de:00e6 (nVidia Corporation) (rev
-162).
-      IRQ 10.
-      Master Capable.  No bursts.  Min Gnt=1.Max Lat=20.
-      Non-prefetchable 32 bit memory at 0xe4005000 [0xe4005fff].
-      I/O at 0x9c00 [0x9c07].
-  Bus  0, device   6, function  0:
-    Multimedia audio controller: PCI device 10de:00ea (nVidia Corporation)
-(rev 161).
-      IRQ 11.
-      Master Capable.  No bursts.  Min Gnt=2.Max Lat=5.
-      I/O at 0xa000 [0xa0ff].
-      I/O at 0xa400 [0xa47f].
-      Non-prefetchable 32 bit memory at 0xe4000000 [0xe4000fff].
-  Bus  0, device   8, function  0:
-    IDE interface: PCI device 10de:00e5 (nVidia Corporation) (rev 162).
-      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
-      I/O at 0xf000 [0xf00f].
-  Bus  0, device  10, function  0:
-    IDE interface: PCI device 10de:00e3 (nVidia Corporation) (rev 162).
-      IRQ 11.
-      Master Capable.  No bursts.  Min Gnt=3.Max Lat=1.
-      I/O at 0x9f0 [0x9f7].
-      I/O at 0xbf0 [0xbf3].
-      I/O at 0x970 [0x977].
-      I/O at 0xb70 [0xb73].
-      I/O at 0xc000 [0xc00f].
-      I/O at 0xc400 [0xc47f].
-  Bus  0, device  11, function  0:
-    PCI bridge: PCI device 10de:00e2 (nVidia Corporation) (rev 162).
-      Master Capable.  Latency=16.  Min Gnt=14.
-  Bus  0, device  14, function  0:
-    PCI bridge: PCI device 10de:00ed (nVidia Corporation) (rev 162).
-      Master Capable.  No bursts.  Min Gnt=6.Max Lat=2.
-  Bus  0, device  24, function  0:
-    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
-  Bus  0, device  24, function  1:
-    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
-  Bus  0, device  24, function  2:
-    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
-  Bus  0, device  24, function  3:
-    Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge (rev 0).
-  Bus  1, device   0, function  0:
-    VGA compatible controller: nVidia Corporation NV34 [GeForce FX 5200]
-(rev 161).
-      IRQ 5.
-      Master Capable.  Latency=248.  Min Gnt=5.Max Lat=1.
-      Non-prefetchable 32 bit memory at 0xe0000000 [0xe0ffffff].
-      Prefetchable 32 bit memory at 0xd8000000 [0xdfffffff].
-  Bus  2, device   8, function  0:
-    FireWire (IEEE 1394): NEC Corporation IEEE 1394 Host Controller (rev
-1).
-      IRQ 10.
-      Master Capable.  Latency=32.  Min Gnt=20.Max Lat=44.
-      Non-prefetchable 32 bit memory at 0xe2000000 [0xe2000fff].
-  Bus  2, device   9, function  0:
-    Multimedia video controller: Brooktree Corporation Bt878 Video Capture
-(rev 17).
-      IRQ 3.
-      Master Capable.  Latency=32.  Min Gnt=16.Max Lat=40.
-      Prefetchable 32 bit memory at 0xe3000000 [0xe3000fff].
-  Bus  2, device   9, function  1:
-    Multimedia controller: Brooktree Corporation Bt878 Audio Capture (rev
-17).
-      IRQ 3.
-      Master Capable.  Latency=32.  Min Gnt=4.Max Lat=255.
-      Prefetchable 32 bit memory at 0xe3001000 [0xe3001fff].
-
-----------------------------------------------------------------------
- dogpatch - 05-25-05 00:39 
-----------------------------------------------------------------------
-Okay, this is probably my fault.
-
-Was using gentoo ebuild of alsa-driver 1.0.9r3.
-
-Removed alsa-driver ebuild and went with the kernel builtin drivers
-(1.0.8) and all is well again.
-
-Apologies ... please cancel this bug.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-24-05 23:36 dogpatch       New Issue                                    
-05-24-05 23:36 dogpatch       File Added: aplay.trace                      
-05-24-05 23:36 dogpatch       Distribution              => Gentoo          
-05-24-05 23:36 dogpatch       Kernel Version            => 2.6.11-gentoo-r8
-05-24-05 23:41 dogpatch       Issue Monitored: dogpatch                    
-05-24-05 23:43 dogpatch       Note Added: 0004733                          
-05-25-05 00:39 dogpatch       Note Added: 0004734                          
-05-31-05 13:07 tiwai          Status                   new => resolved     
-05-31-05 13:07 tiwai          Resolution               open => not an issue
-05-31-05 13:07 tiwai          Assigned To               => tiwai           
-======================================================================
-
+Greetings
+XMMS Team via Tobias
 
 
 
