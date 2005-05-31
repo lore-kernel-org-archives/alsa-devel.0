@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Tue, 31 May 2005 17:55:24 +0200
-Message-ID: <14d76783e639adc831280600d342864e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Tue, 31 May 2005 17:56:53 +0200
+Message-ID: <263629c97a95290d47f46908bbb5c170@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A424B1AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:55:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DEDB1B6
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
 ======================================================================
-Reported By:                minmax
-Assigned To:                perex
+Reported By:                1g0R
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
+Issue ID:                   848
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
+Status:                     closed
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-31-2005 17:55 CEST
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              05-31-2005 17:56 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-31-05 17:52 
+ 1g0R - 03-24-05 22:20 
 ----------------------------------------------------------------------
-Ok, fix5 patch is available for review. I think that info.blocks is not
-used in OSS apps, but we should follow the "standard" behaviour...
+Hi Folks,
+
+Thanks everyone the help.
+Now its working tha PCM output on spdif.
+I use xmms on receiver.
+Many thanks.
+tiwai lets close this one.
+And thanks again.
+Best Regards
+1g0R
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 17:55 
+ tiwai - 03-29-05 17:30 
 ----------------------------------------------------------------------
-fix5 looks fine to me.  Let's commit it and close this issue.
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
-05-16-05 16:08 gk4            Note Added: 0004676                          
-05-19-05 15:28 parente        Note Added: 0004693                          
-05-20-05 00:38 minmax         Note Added: 0004698                          
-05-26-05 17:27 Roger Mach     Note Added: 0004738                          
-05-27-05 10:56 perex          Note Added: 0004742                          
-05-27-05 11:03 perex          File Added: fix2.patch                       
-05-27-05 11:04 perex          Note Added: 0004743                          
-05-27-05 15:41 parente        Note Added: 0004752                          
-05-30-05 09:51 perex          Note Added: 0004798                          
-05-31-05 14:04 parente        Note Added: 0004831                          
-05-31-05 15:54 perex          Status                   new => assigned     
-05-31-05 15:54 perex          Assigned To               => perex           
-05-31-05 15:55 perex          Note Added: 0004833                          
-05-31-05 16:10 parente        Note Added: 0004834                          
-05-31-05 16:38 perex          File Added: oss-optr-fix3.patch                   
-
-05-31-05 16:41 perex          Note Added: 0004837                          
-05-31-05 16:55 tiwai          Note Added: 0004838                          
-05-31-05 16:56 parente        Note Added: 0004839                          
-05-31-05 17:02 parente        Note Edited: 0004839                         
-05-31-05 17:13 tiwai          Note Added: 0004840                          
-05-31-05 17:13 perex          File Added: oss-optr-fix4.patch                   
-
-05-31-05 17:13 tiwai          File Added: pcm-oss-ptr-fix4.diff                 
-  
-05-31-05 17:14 perex          Note Added: 0004841                          
-05-31-05 17:18 perex          Note Added: 0004842                          
-05-31-05 17:39 tiwai          Note Added: 0004843                          
-05-31-05 17:44 parente        Note Added: 0004844                          
-05-31-05 17:51 perex          File Added: oss-optr-fix5.patch                   
-
-05-31-05 17:52 perex          Note Added: 0004845                          
-05-31-05 17:55 tiwai          Note Added: 0004846                          
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+02-21-05 19:57 1g0R           Note Added: 0003683                          
+02-22-05 14:29 tiwai          Note Added: 0003699                          
+02-22-05 19:05 1g0R           Note Added: 0003709                          
+03-12-05 23:11 1g0R           Note Added: 0003900                          
+03-13-05 14:49 1g0R           Note Added: 0003902                          
+03-13-05 16:23 1g0R           Note Added: 0003903                          
+03-17-05 19:31 1g0R           Note Added: 0003984                          
+03-17-05 21:00 pzad           Note Added: 0003985                          
+03-18-05 14:41 1g0R           Note Added: 0003994                          
+03-18-05 17:22 tiwai          Note Added: 0003996                          
+03-24-05 03:39 cltien         Note Added: 0004191                          
+03-24-05 22:20 1g0R           Note Added: 0004203                          
+03-29-05 17:30 tiwai          Status                   new => resolved     
+03-29-05 17:30 tiwai          Resolution               open => fixed       
+03-29-05 17:30 tiwai          Assigned To               => tiwai           
+03-29-05 17:30 tiwai          Note Added: 0004250                          
+05-31-05 17:56 perex          Status                   resolved => closed  
 ======================================================================
 
 
