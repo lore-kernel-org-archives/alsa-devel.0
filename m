@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000091]: Realtek ALC658 rev 0: Input/output error on plughw:0,4
-Date: Tue, 31 May 2005 18:03:29 +0200
-Message-ID: <8ccc1fdf47723ced08c511fee0aff0cb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000062]: No volume control - cmi9739 AC97 codec
+Date: Tue, 31 May 2005 18:03:57 +0200
+Message-ID: <d13d009231c4a399fd8ae05757ec81ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BA141AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DC761B4
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=91> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=62> 
 ======================================================================
-Reported By:                da-x
-Assigned To:                
+Reported By:                LP
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   91
+Issue ID:                   62
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             Latest 2.6.3 from BK
-Resolution:                 unable to duplicate
+Distribution:               gentoo
+Kernel Version:             2.6.0
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-26-2004 15:36 CET
+Date Submitted:             02-15-2004 02:21 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Realtek ALC658 rev 0: Input/output error on
-plughw:0,4
+Summary:                    No volume control - cmi9739 AC97 codec
 Description: 
-while 'aplay -D plughw:0,0  test.wav' works, when I try to use the other
-playback device I get this:
+Using motherboard asrock k7s8xe+(sis748 chipset) which features sis7012,
+cmi9739 AC97 codec it is not possible to control volume. Is there any
+chance, that this can be implemented in future alsa versions, I heard, the
+problem is, that this hardware doesn't have a hardware PCM-Out volume
+control.
 
-# aplay -D plughw:0,4  test.wav 
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-aplay: pcm_write:1083: write error: Input/output error
-
-Plus, when playing on hw:0,0, if I mute one of these: Surround, Line-In As
-Surround, or Duplicate Front, I get no sound. Also, if I mute Aux, the
-volumes goes down by a factor. What is causing this?
+P.S. There is an OSS driver available:
+http://www.cmedia.com.tw/download/e_UDA9738_linux.htm
+which maybe helpful.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-26-04 20:02 
+ LP - 03-02-04 00:05 
 ----------------------------------------------------------------------
-BTW, try "external amplifier power down" OFF.
+Cool thanks.
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:25 
+ perex - 02-22-05 09:47 
 ----------------------------------------------------------------------
-This one can probably be closed.
+The softvol plugin in alsa-lib fixes this issue. It is default now (in
+CVS).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-26-04 15:36 da-x           New Issue                                    
-02-26-04 15:44 da-x           Issue Monitored: da-x                        
-02-26-04 20:00 tiwai          Note Added: 0000369                          
-02-26-04 20:02 tiwai          Note Added: 0000370                          
-03-12-04 20:51 Csan           Issue Monitored: Csan                        
-03-19-05 09:25 jdthood        Note Added: 0004016                          
-03-19-05 14:35 perex          Status                   new => resolved     
-03-19-05 14:35 perex          Resolution               open => unable to
-duplicate
-03-19-05 14:35 perex          Assigned To               => perex           
-03-19-05 14:35 perex          Assigned To              perex =>            
+02-15-04 02:21 LP             New Issue                                    
+02-26-04 12:08 perex          Status                   new => assigned     
+02-26-04 12:08 perex          Assigned To               => perex           
+02-26-04 12:08 perex          Note Added: 0000341                          
+02-29-04 20:19 perex          Summary                  No volume control => No
+volume control - cmi9739 AC97 codec
+03-02-04 00:05 LP             Note Added: 0000428                          
+03-20-04 11:37 erol           Issue Monitored: erol                        
+11-22-04 20:58 ajir           Issue Monitored: ajir                        
+02-22-05 09:47 perex          Status                   assigned => resolved
+02-22-05 09:47 perex          Resolution               open => fixed       
+02-22-05 09:47 perex          Note Added: 0003693                          
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
