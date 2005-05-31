@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000982]: Sound output locked at 48khz (lower freqs play faster, sound higher)
-Date: Tue, 31 May 2005 18:03:34 +0200
-Message-ID: <9ef3f5591da0fd3bfd0fefab71593da8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
+Date: Tue, 31 May 2005 18:03:22 +0200
+Message-ID: <5491064148c10a776e651f2f655b2258@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02DAB1CF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEE471BF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=982> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=637> 
 ======================================================================
-Reported By:                Minami Manami
-Assigned To:                
+Reported By:                Mark Knecht
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   982
-Category:                   PCI - via82xx
+Issue ID:                   637
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo
+Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-12-2005 12:19 CET
+Date Submitted:             11-08-2004 18:50 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Sound output locked at 48khz (lower freqs play
-faster, sound higher)
+Summary:                    Laptop volume control & mute buttons don't work
 Description: 
-Exactly what it says. In Tuxracer @ 22khz sound, it plays very fast and
-high pitched. When I switch it to 44khz, it sounds a bit more like normal,
-but when compared to another computer, the sound is high and plays
-slightly faster. Same with mpg123, mp3blaster, everything audio. Program
-detects a 44.1Khz stream (with an mp3 file) but sound comes out at 48000
-samples per second.
-
+The Compaq, like may laptops, comes with buttons to increase and decrease
+volume, as well as a mute button. Under Linux these buttons do nothing.
+The mute button is always lit even when sound is coming out. The volume
+control buttons do not adjust volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 03-12-05 12:35 
+ Mark Knecht - 11-09-04 17:49 
 ----------------------------------------------------------------------
-I think, this is not alsa problem, because you are not using alsa - you are
-using oss driver (via82cxxx is oss driver).
+There's no point discussing this. Bye.
 
 ----------------------------------------------------------------------
- perex - 03-12-05 12:51 
+ jdthood - 03-19-05 15:33 
 ----------------------------------------------------------------------
-Yes, we cannot solve bugs in OSS code, move to ALSA at first...
+This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 12:19 Minami Manami  New Issue                                    
-03-12-05 12:25 Minami Manami  Note Added: 0003895                          
-03-12-05 12:27 Minami Manami  Note Edited: 0003895                         
-03-12-05 12:35 pzad           Note Added: 0003896                          
-03-12-05 12:49 perex          Project                  ALSA - firmware => ALSA -
-driver
-03-12-05 12:49 perex          Category                  => PCI - via82xx   
-03-12-05 12:51 perex          Status                   new => resolved     
-03-12-05 12:51 perex          Resolution               open => not an issue
-03-12-05 12:51 perex          Assigned To               => perex           
-03-12-05 12:51 perex          Note Added: 0003897                          
-03-12-05 12:51 perex          Assigned To              perex =>            
+11-08-04 18:50 Mark Knecht    New Issue                                    
+11-08-04 18:50 Mark Knecht    Distribution              => Gentoo          
+11-08-04 18:50 Mark Knecht    Kernel Version            =>
+2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+11-09-04 10:35 tiwai          Note Added: 0002317                          
+11-09-04 10:36 tiwai          Resolution               open => not an issue
+11-09-04 10:37 tiwai          Status                   assigned => resolved
+11-09-04 16:13 Mark Knecht    Status                   resolved => feedback
+11-09-04 16:13 Mark Knecht    Resolution               not an issue => reopened
+11-09-04 16:13 Mark Knecht    Note Added: 0002326                          
+11-09-04 16:57 tiwai          Note Added: 0002328                          
+11-09-04 17:49 Mark Knecht    Note Added: 0002329                          
+03-19-05 15:33 jdthood        Note Added: 0004052                          
+03-19-05 16:06 perex          Status                   feedback => resolved
+03-19-05 16:06 perex          Resolution               reopened => not an issue
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
