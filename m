@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Tue, 31 May 2005 18:03:37 +0200
-Message-ID: <c949b95257537867e1a458f553a171ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000886]: alsactl store = crash
+Date: Tue, 31 May 2005 18:03:54 +0200
+Message-ID: <b077647aac0c2cf69c783a5ff405867d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E1B31BF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B29801D9
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,97 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
 ======================================================================
-Reported By:                jbrsubscribe
+Reported By:                udasoft
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   836
+Issue ID:                   886
 Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-19-2005 18:19 CET
+Date Submitted:             02-06-2005 16:01 CET
 Last Modified:              05-31-2005 18:03 CEST
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
+Summary:                    alsactl store = crash
 Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
+I have a Intel D915PBL Motherboard with High Definition Audio Controller
+(ICH6 Family).
+
+When I save the state of mixer with alsactl, receive this error:
+
+udasoftware root # alsactl  store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
+snd_timer snd snd_page_alloc nvidia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
+esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
+Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+              Call Trace:
+               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-11-05 00:50 
+ udasoft - 02-18-05 22:19 
 ----------------------------------------------------------------------
-Can this be closed now?
+I have mistaken :(
+I don't clean the sound directory in /lib/modules/... and I used the old
+module snd-azx.
+
+In cvs version of asla i don't found the snd-azx because it is substituted
+from snd-hda-intel.
+
+The snd-hda-intel seems to work perfectly ;)
+(alsactl store don't crash)
+
+Tnx, U D A.
 
 ----------------------------------------------------------------------
- tiwai - 03-11-05 12:13 
+ perex - 02-22-05 10:01 
 ----------------------------------------------------------------------
-Yes, let's close this.
+Fixed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
-01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-19-05 18:36 tiwai          Status                   new => resolved     
-01-19-05 18:36 tiwai          Resolution               open => not an issue
-01-19-05 18:36 tiwai          Assigned To               => tiwai           
-01-19-05 18:36 tiwai          Note Added: 0003311                          
-01-19-05 18:36 tiwai          Assigned To              tiwai =>            
-01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
-01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
-01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
-01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
-01-20-05 11:52 1g0R           Note Added: 0003325                          
-01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
-01-20-05 19:11 tiwai          Note Added: 0003331                          
-01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
-01-21-05 05:56 1g0R           Note Added: 0003338                          
-01-21-05 08:16 mab            Note Added: 0003339                          
-01-21-05 11:08 1g0R           Note Added: 0003340                          
-01-21-05 12:04 tiwai          Note Added: 0003343                          
-01-21-05 12:05 tiwai          Note Added: 0003344                          
-01-21-05 16:55 mab            Note Added: 0003348                          
-01-21-05 17:26 tiwai          Note Added: 0003349                          
-01-21-05 22:08 1g0R           Note Added: 0003370                          
-01-22-05 09:04 mab            Note Added: 0003373                          
-01-22-05 09:06 mab            Note Edited: 0003373                         
-01-22-05 12:33 1g0R           Note Added: 0003374                          
-01-22-05 21:30 mab            Note Added: 0003378                          
-01-22-05 21:43 mab            Note Edited: 0003378                         
-01-23-05 02:43 1g0R           Note Added: 0003385                          
-01-23-05 11:52 1g0R           Note Added: 0003387                          
-01-24-05 12:18 tiwai          Note Added: 0003391                          
-01-24-05 13:46 1g0R           Note Added: 0003392                          
-01-24-05 14:40 jbrsubscribe   Note Added: 0003393                          
-01-24-05 18:36 jbrsubscribe   Note Added: 0003394                          
-01-24-05 18:55 1g0R           Note Added: 0003395                          
-01-24-05 20:04 1g0R           Note Added: 0003396                          
-01-25-05 12:19 1g0R           Note Added: 0003398                          
-01-25-05 15:07 tiwai          Note Added: 0003399                          
-01-25-05 15:11 tiwai          Note Added: 0003400                          
-01-25-05 15:29 1g0R           Note Added: 0003406                          
-03-11-05 00:50 jdthood        Note Added: 0003877                          
-03-11-05 12:13 tiwai          Status                   feedback => resolved
-03-11-05 12:13 tiwai          Resolution               reopened => fixed   
-03-11-05 12:13 tiwai          Assigned To               => tiwai           
-03-11-05 12:13 tiwai          Note Added: 0003885                          
-03-11-05 12:13 tiwai          Assigned To              tiwai =>            
+02-06-05 16:01 udasoft        New Issue                                    
+02-06-05 16:01 udasoft        Distribution              => Gentoo          
+02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
+02-09-05 11:54 tiwai          Note Added: 0003544                          
+02-09-05 19:35 udasoft        Note Added: 0003562                          
+02-14-05 19:48 tiwai          Note Added: 0003606                          
+02-18-05 22:19 udasoft        Note Added: 0003667                          
+02-22-05 10:01 perex          Status                   new => resolved     
+02-22-05 10:01 perex          Resolution               open => fixed       
+02-22-05 10:01 perex          Assigned To               => perex           
+02-22-05 10:01 perex          Note Added: 0003695                          
+02-22-05 10:01 perex          Assigned To              perex =>            
 05-31-05 18:03 perex          Status                   resolved => closed  
 ======================================================================
 
