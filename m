@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000258]: Recording from line-in produces noise
-Date: Tue, 31 May 2005 18:04:56 +0200
-Message-ID: <017386a00183c471a265216c55b4dd93@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000852]: alsa driver do not work on IBM thinkpad T42
+Date: Tue, 31 May 2005 18:04:13 +0200
+Message-ID: <c42806e66776b196c4d0cca49f3290f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 222481B4
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC4D11BF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:04:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=258> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852> 
 ======================================================================
-Reported By:                Fancia
+Reported By:                lithium7456
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   258
-Category:                   PCI - emu10k1
+Issue ID:                   852
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.4.22
-Resolution:                 unable to duplicate
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-06-2004 22:03 CEST
+Date Submitted:             01-28-2005 05:26 CET
 Last Modified:              05-31-2005 18:04 CEST
 ======================================================================
-Summary:                    Recording from line-in produces noise
+Summary:                    alsa driver do not work on IBM thinkpad T42
 Description: 
-Attempting to record audio from the sound card's line-in port causes
-audible pops and crackle in the resulting recording, regardless of
-recording software used. These artefacts are not present in the input
-itself and are not audible during the recording itself, but are present in
-the resulting recording. I've tried recording from several different
-devices on the same line-in port, and the noise is consistent. I've spoken
-to several other AmigaOne owners with the same sound card, all of whom can
-reproduce the problem.
-Attached is a recording from my Roland MT-32 synthesizer module. Aside
-from normalization, it's unaltered from the original recording.
+After the installation of slackware linux 10 ,I found that the alsa driver
+1.05(with slackware linux )do not work: when i run "alsamixer" it shows
+that "no mixer elems". So I downloaded driver 1.08 and had it installed.
+now I can run alsamixer without any error message but my computer does not
+play any sound at all(I have run alsaconf and it detected the soundcard as
+snd-intel8x0)
+What steps shall I
+take&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=65311;
+please Re to lithium7456@sohu.com
+Thank you
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-17-04 19:21 
+ lithium7456 - 02-02-05 16:20 
 ----------------------------------------------------------------------
-Can you verify this bug still exists with latest ALSA version, 1.0.7?
+oh..it works....now I can hear music in linux now 
+Thank you very much!!
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:29 
+ tiwai - 02-04-05 13:14 
 ----------------------------------------------------------------------
-Submitter: Has there been any progress on this issue in later ALSA
-releases?
+Ok, moved to FIXED.
+Note that the latest version doesn't enable these controls.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-04 22:03 Fancia         New Issue                                    
-05-06-04 22:03 Fancia         Distribution              => Debian          
-05-06-04 22:03 Fancia         Kernel Version            => 2.4.22          
-05-06-04 22:05 Fancia         Issue Monitored: Fancia                      
-05-06-04 22:06 Fancia         Issue End Monitor: Fancia                    
-05-06-04 22:14 Fancia         Note Added: 0001064                          
-11-17-04 19:21 rlrevell       Note Added: 0002440                          
-03-23-05 15:29 jdthood        Note Added: 0004161                          
-03-23-05 21:45 rlrevell       Status                   new => resolved     
-03-23-05 21:45 rlrevell       Resolution               open => unable to
-duplicate
+01-28-05 05:26 lithium7456    New Issue                                    
+01-28-05 17:47 tiwai          Note Added: 0003430                          
+02-02-05 16:20 lithium7456    Note Added: 0003489                          
+02-04-05 13:14 tiwai          Status                   new => resolved     
+02-04-05 13:14 tiwai          Resolution               open => fixed       
+02-04-05 13:14 tiwai          Assigned To               => tiwai           
+02-04-05 13:14 tiwai          Note Added: 0003503                          
+02-04-05 13:14 tiwai          Assigned To              tiwai =>            
+02-18-05 18:36 mutated        Issue Monitored: mutated                     
 05-31-05 18:04 perex          Status                   resolved => closed  
 ======================================================================
 
