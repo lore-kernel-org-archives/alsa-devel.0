@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000454]: cvs site is down
-Date: Tue, 31 May 2005 18:03:24 +0200
-Message-ID: <b391d31448d43137d554dc000a42696d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000864]: No Support for C-Media CMI9880
+Date: Tue, 31 May 2005 18:01:47 +0200
+Message-ID: <3b6f3b3e0945a3d4b1369560410c925b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 861F21AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:03:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 642E51AF
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=454> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=864> 
 ======================================================================
-Reported By:                ronis
-Assigned To:                
+Reported By:                neverread
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   454
-Category:                   OTHERS
+Issue ID:                   864
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-18-2004 16:26 CEST
-Last Modified:              05-31-2005 18:03 CEST
+Date Submitted:             01-31-2005 01:57 CET
+Last Modified:              05-31-2005 18:01 CEST
 ======================================================================
-Summary:                    cvs site is down
+Summary:                    No Support for C-Media CMI9880
 Description: 
-cvs -z3 update -dP now gives:
+A number of the new ASUS motherboards have HD sound using the C-Media
+cmi9880 chip.  I've looked through the list of supported devices and the
+CMI9880 is not listed.  I expect support for the chipset to become more
+common.
 
-cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
-M PserverBackend::PserverBackend() Connect (Connection refused)
+During the install (Through YaST) no sound device is detected at all. 
+When trying to use sensible alternates (ie cmipci module by selecting
+cmi87x support) the install fails.
 
-It started a few days ago, and had been working properly for months
-before.
+It would be great if we could add support.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- ronis - 08-23-04 21:26 
+ 1g0R - 01-31-05 09:30 
 ----------------------------------------------------------------------
-The site is back.  Close this one.
+Hi,
+
+Try with azx card support.
+./configure --with-card=azx
+
+Chher,
+1gR
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 15:30 
+ tiwai - 01-31-05 18:51 
 ----------------------------------------------------------------------
-This can be closed.
+The corresponding driver for your device is snd-azx (in ALSA 1.0.8), not
+cmipci driver.
+YaST can't detect the newly added drivers.  Use alsaconf instead.
+
+Note that in the CVS version, snd-azx is renamed to snd-hda-intel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 16:26 ronis          New Issue                                    
-08-18-04 16:35 pzad           Note Added: 0001587                          
-08-23-04 21:26 ronis          Note Added: 0001614                          
-03-19-05 15:30 jdthood        Note Added: 0004051                          
-03-19-05 16:04 perex          Status                   new => resolved     
-03-19-05 16:04 perex          Resolution               open => fixed       
-05-31-05 18:03 perex          Status                   resolved => closed  
+01-31-05 01:57 neverread      New Issue                                    
+01-31-05 09:30 1g0R           Note Added: 0003447                          
+01-31-05 18:51 tiwai          Status                   assigned => resolved
+01-31-05 18:51 tiwai          Resolution               open => not an issue
+01-31-05 18:51 tiwai          Note Added: 0003449                          
+05-31-05 18:01 perex          Status                   resolved => closed  
 ======================================================================
 
 
