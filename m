@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000864]: No Support for C-Media CMI9880
-Date: Tue, 31 May 2005 18:01:47 +0200
-Message-ID: <3b6f3b3e0945a3d4b1369560410c925b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000787]: Headphone == Master if plugged
+Date: Tue, 31 May 2005 18:01:59 +0200
+Message-ID: <60f8875c1dfcfe53bcccabe3bd0e642d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 642E51AF
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBA6D1B6
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=864> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=787> 
 ======================================================================
-Reported By:                neverread
-Assigned To:                tiwai
+Reported By:                Nafallo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   864
-Category:                   PCI - cmipci
+Issue ID:                   787
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
+Distribution:               Ubuntu Linux 5.10 (hoary)
+Kernel Version:             2.6.9
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-31-2005 01:57 CET
+Date Submitted:             01-06-2005 02:04 CET
 Last Modified:              05-31-2005 18:01 CEST
 ======================================================================
-Summary:                    No Support for C-Media CMI9880
+Summary:                    Headphone == Master if plugged
 Description: 
-A number of the new ASUS motherboards have HD sound using the C-Media
-cmi9880 chip.  I've looked through the list of supported devices and the
-CMI9880 is not listed.  I expect support for the chipset to become more
-common.
-
-During the install (Through YaST) no sound device is detected at all. 
-When trying to use sensible alternates (ie cmipci module by selecting
-cmi87x support) the install fails.
-
-It would be great if we could add support.
-
+When I'm using headphones the master volume meter changes to headphones
+volume meter, making me unable to use gnome-hotkeys to turn the volume
+up/down (i.e. they change master that's inactivated by headphones).
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-31-05 09:30 
+ tiwai - 01-12-05 15:11 
 ----------------------------------------------------------------------
-Hi,
-
-Try with azx card support.
-./configure --with-card=azx
-
-Chher,
-1gR
+Or better to try the second patch.  It changes the behavior of hp_only
+quir.  So, with this patch, pass ac97_quirk=hp_only.
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 18:51 
+ tiwai - 01-19-05 16:52 
 ----------------------------------------------------------------------
-The corresponding driver for your device is snd-azx (in ALSA 1.0.8), not
-cmipci driver.
-YaST can't detect the newly added drivers.  Use alsaconf instead.
-
-Note that in the CVS version, snd-azx is renamed to snd-hda-intel.
+The patch was applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 01:57 neverread      New Issue                                    
-01-31-05 09:30 1g0R           Note Added: 0003447                          
-01-31-05 18:51 tiwai          Status                   assigned => resolved
-01-31-05 18:51 tiwai          Resolution               open => not an issue
-01-31-05 18:51 tiwai          Note Added: 0003449                          
+01-06-05 02:04 Nafallo        New Issue                                    
+01-06-05 02:04 Nafallo        Distribution              => Ubuntu Linux 5.10
+(hoary)
+01-06-05 02:04 Nafallo        Kernel Version            => 2.6.9           
+01-06-05 02:13 Nafallo        Issue Monitored: Nafallo                     
+01-07-05 18:21 tiwai          Note Added: 0003109                          
+01-07-05 21:07 Nafallo        Note Added: 0003121                          
+01-11-05 16:21 tiwai          Note Added: 0003154                          
+01-11-05 16:21 tiwai          File Added: ac97-bind-hp.diff                    
+01-12-05 15:11 tiwai          Note Added: 0003169                          
+01-12-05 15:11 tiwai          File Added: ac97-bind-hp2.diff                    
+01-19-05 16:52 tiwai          Status                   new => resolved     
+01-19-05 16:52 tiwai          Resolution               open => fixed       
+01-19-05 16:52 tiwai          Assigned To               => tiwai           
+01-19-05 16:52 tiwai          Note Added: 0003294                          
+01-19-05 16:52 tiwai          Assigned To              tiwai =>            
 05-31-05 18:01 perex          Status                   resolved => closed  
 ======================================================================
 
