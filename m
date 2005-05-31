@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000607]: "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >= 0.8.6
-Date: Tue, 31 May 2005 18:01:53 +0200
-Message-ID: <42e08277c67fdd48733076b4f18a31b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000006]: Machine locks up hard on rmmod snd_es1968
+Date: Tue, 31 May 2005 18:02:15 +0200
+Message-ID: <8ed07d31b819993706adf7b4644fbe40@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D05A1C8
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:01:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E2221CC
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:02:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,129 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6> 
 ======================================================================
-Reported By:                karsten
-Assigned To:                karsten
+Reported By:                Hai
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   607
-Category:                   USB - usb-usx2y
-Reproducibility:            sometimes
-Severity:                   feature
+Issue ID:                   6
+Category:                   PCI - es1968
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Distribution:               SuSE 9.0
+Kernel Version:             2.6.1-4-default
+Resolution:                 suspended
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-26-2004 21:36 CEST
-Last Modified:              05-31-2005 18:01 CEST
+Date Submitted:             01-27-2004 21:49 CET
+Last Modified:              05-31-2005 18:02 CEST
 ======================================================================
-Summary:                    "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >=
-0.8.6
+Summary:                    Machine locks up hard on rmmod snd_es1968
 Description: 
-Its usb's unableness to atomically handle power of 2 period sized data
-chuncs,
-what led to: 
-This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for
-
-mmaped pcm transport.
-Advantage achieved:
-        The usb_hcd places reads/writes pcm data into dma-memory.
-        That memory is  mmaped by jack's usx2y driver.
-        Jack's usx2y driver is the first/last to read/write pcm data.
-        Read/write is a combination of power of 2 period shaping and
-        float/int conversation.
-        Compared to mainline alsa/jack we leave out power of 2 period
-shaping inside
-        snd-usb-* which needs memcpy() and additional buffers.
-        As a side effect possible unwanted pcm-data coruption resulting of
-        plain alsa's snd-usb-usx2y period shaping scheme falls away.
-        Result is sane jack operation at buffering schemes down to
-128frames,
-        2 periods.
-        plain usx2y alsa mode is able to achieve 64frames, 4periods, but
-only at the
-        cost of easier triggered i.e. aeolus xruns (128 or 256frames,
-        2periods works but is useless cause of crackling).
-
-New functionality would possibly be better integrated into mainlines at
-more 
-apropriate places.
-Target could be: jack mmaping power of 2 period sized float-pcm buffers
-and 
-letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period
-shaping 
-and float/int conversation.
-
+When my init scripts rmmod snd_es1968 on shutdown, the machine locks up
+completely. SysRq-[TPUS] all do not work, only SysRq-[OB] work. This means
+I get an hang on every shutdown/reboot
 ======================================================================
 
 ----------------------------------------------------------------------
- rncbc - 12-10-04 23:49 
+ tiwai - 01-28-04 15:23 
 ----------------------------------------------------------------------
-Just uploaded my own kernel patch
-    linux-2.6.10-rc2-mm3-usx2y-0.8.7.patch.gz
-as for convenience, which should apply against 2.6.10-rc2-mm3, and fit
-with latest Ingo's RT patch(es). It upgrades to the snd-usb-usx2y version
-0.8.7, as current of alsa-kernel CVS HEAD.
+the irq should be disabled in snd_es1968_reset(), which is called
+before synchronize_irq().
 
-My latest tests ran against my custom jack-0.99.28.3usx2y, that includes a
-proper jackd usx2y backend, and went just fine. 
-
-    (see http://www.rncbc.org/usx2y/)
-
-With that, I could reach a brand new low-latency "record" as with:
-
-    jackd -R -dusx2y -dhw:1,2 -r44100 -p64 -n2
-
-without crackling nor (much) xruns. Tested under
-2.6.10-rc2-mm-RT-V0.7.32-18 on a P4@2.5Ghz laptop. Never though this could
-happen with a USB audio device upon jackd, ever. Am I alone? Thanks
-Karsten, first you solved the ohci horror, now this... :)
-
-Two things to note about using this new interface:
-
-- hw:N,2 (N=0,1,... index of snd-usb-usx2y on the snd stack);
-- nrpacks=1 (e.g. modprobe snd-usb-usx2y nrpacks=1) is mandatory for this
-hwdep pcm interface being up and available.
-
-Take care.
+as mentioned, the purpose of the patch is to disable the docking
+station and the hw volume features, i suspect as the culprit.
 
 ----------------------------------------------------------------------
- tiwai - 01-20-05 19:16 
+ perex - 03-09-04 18:43 
 ----------------------------------------------------------------------
-The patch was already in ALSA 1.0.8.
+No input from user.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-26-04 21:36 karsten        New Issue                                    
-10-26-04 21:36 karsten        File Added:
-snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2                    
-10-26-04 21:39 karsten        Note Added: 0002265                          
-10-27-04 02:01 rncbc          File Added: linux-2.6.9-ohci-hcd.patch.gz         
-          
-10-27-04 02:01 rncbc          File Added: linux-2.6.9-usx2y-0.8.6.patch.gz      
-             
-10-27-04 02:02 rncbc          File Added:
-linux-2.6.9-usx2y-0.8.6-rawusb.patch.gz                    
-10-27-04 02:02 rncbc          File Added: linux-2.6.9-mm1_usx2y-0.8.6.patch.gz  
-                 
-10-27-04 02:03 rncbc          File Added:
-linux-2.6.9-mm1_usx2y-0.8.6-rawusb.patch.gz                    
-10-27-04 02:26 rncbc          Note Added: 0002269                          
-11-09-04 19:22 tiwai          Note Added: 0002346                          
-12-02-04 20:19 karsten        Note Added: 0002697                          
-12-03-04 14:06 tiwai          Note Added: 0002710                          
-12-10-04 23:22 rncbc          File Added:
-linux-2.6.10-rc2-mm3-usx2y-0.8.7.patch.gz                    
-12-10-04 23:49 rncbc          Note Added: 0002809                          
-01-20-05 19:16 tiwai          Status                   assigned => resolved
-01-20-05 19:16 tiwai          Resolution               open => fixed       
-01-20-05 19:16 tiwai          Note Added: 0003333                          
-05-31-05 18:01 perex          Status                   resolved => closed  
+01-27-04 21:49 Hai            New Issue                                    
+01-28-04 11:37 tiwai          Status                   new => assigned     
+01-28-04 11:37 tiwai          Assigned To               => tiwai           
+01-28-04 12:25 tiwai          Note Added: 0000015                          
+01-28-04 12:26 tiwai          File Added: es1968-no-hwvol.dif                   
+
+01-28-04 12:40 Hai            Note Added: 0000016                          
+01-28-04 15:23 tiwai          Note Added: 0000017                          
+03-09-04 18:43 perex          Status                   assigned => resolved
+03-09-04 18:43 perex          Resolution               open => suspended   
+03-09-04 18:43 perex          Assigned To              tiwai => perex      
+03-09-04 18:43 perex          Note Added: 0000553                          
+05-31-05 18:02 perex          Status                   resolved => closed  
 ======================================================================
 
 
