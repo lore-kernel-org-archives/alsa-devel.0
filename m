@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Tue, 31 May 2005 17:39:52 +0200
-Message-ID: <12bc33b8122121784da8f6d5f48f8b74@bugtrack.alsa-project.org>
+Date: Tue, 31 May 2005 17:44:03 +0200
+Message-ID: <e312ea4dad0cbac48450fa2ffcb9edbb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 197DB1AB
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:39:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A02741AB
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:44:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             vanilla 2.6.7
 ======================================================================
 Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-31-2005 17:39 CEST
+Last Modified:              05-31-2005 17:44 CEST
 ======================================================================
 Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
 situation
@@ -48,15 +48,6 @@ Description:
 When the first few writes to the oss emulation device are done in specific
 way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 05-31-05 17:18 
-----------------------------------------------------------------------
-Nice situation :-) Two patches in one moment....
-
-Takashi, I think that your patch  pcm-oss-ptr-fix4.diff is not correct,
-because info.blocks should count all buffered data from application (I may
-be wrong of course).
 
 ----------------------------------------------------------------------
  tiwai - 05-31-05 17:39 
@@ -75,6 +66,12 @@ So, it should be like
 fixup) / runtime->oss.period_bytes;
 
 for playback.
+
+----------------------------------------------------------------------
+ parente - 05-31-05 17:44 
+----------------------------------------------------------------------
+pcm-oss-ptr-fix4.diff appears to fix the problem. Speech is no longer
+clipped in gnopernicus or test-speech.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -120,6 +117,7 @@ Date Modified  Username       Field                    Change
 05-31-05 17:14 perex          Note Added: 0004841                          
 05-31-05 17:18 perex          Note Added: 0004842                          
 05-31-05 17:39 tiwai          Note Added: 0004843                          
+05-31-05 17:44 parente        Note Added: 0004844                          
 ======================================================================
 
 
