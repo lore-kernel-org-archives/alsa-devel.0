@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Tue, 31 May 2005 18:06:33 +0200
-Message-ID: <929afdcc7106894db7460799eb9096e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
+Date: Tue, 31 May 2005 19:10:41 +0200
+Message-ID: <9e13cb69599f0790b1dbb0ee6f12384d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6CCE154
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 18:06:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B880A16E
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 19:10:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,97 +22,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1132> 
 ======================================================================
-Reported By:                minmax
-Assigned To:                perex
+Reported By:                speedking
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
+Issue ID:                   1132
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
+Distribution:               RHEL 3 U5 gold
+Kernel Version:             2.4.21-32
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-31-2005 18:06 CEST
+Date Submitted:             05-28-2005 02:02 CEST
+Last Modified:              05-31-2005 19:10 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
+catastrophic CrAsH
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+system hangs when either 'alsaconf' runs or you attempt a 'modprobe
+snd-hda-intel'
+
+System is a HP xw4300 workstation, Intel based, running an Azalia
+compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-31-05 17:55 
+ tiwai - 05-31-05 12:58 
 ----------------------------------------------------------------------
-fix5 looks fine to me.  Let's commit it and close this issue.
+Fixed with 1.0.9-final.
 
 ----------------------------------------------------------------------
- perex - 05-31-05 18:06 
+ speedking - 05-31-05 19:10 
 ----------------------------------------------------------------------
-Ok, the problem seems to be resolved. Reopen if not....
+I have tried 1.0.9 final this morning and now 'alsaconf' gives me the
+following error:
+
+"No Supported PnP or PCI card found.  Would you like to probe Legacy ISA
+sound cards/chips"
+
+Saying 'yes' finds no supported chips while saying 'no' bails out.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
-05-16-05 16:08 gk4            Note Added: 0004676                          
-05-19-05 15:28 parente        Note Added: 0004693                          
-05-20-05 00:38 minmax         Note Added: 0004698                          
-05-26-05 17:27 Roger Mach     Note Added: 0004738                          
-05-27-05 10:56 perex          Note Added: 0004742                          
-05-27-05 11:03 perex          File Added: fix2.patch                       
-05-27-05 11:04 perex          Note Added: 0004743                          
-05-27-05 15:41 parente        Note Added: 0004752                          
-05-30-05 09:51 perex          Note Added: 0004798                          
-05-31-05 14:04 parente        Note Added: 0004831                          
-05-31-05 15:54 perex          Status                   new => assigned     
-05-31-05 15:54 perex          Assigned To               => perex           
-05-31-05 15:55 perex          Note Added: 0004833                          
-05-31-05 16:10 parente        Note Added: 0004834                          
-05-31-05 16:38 perex          File Added: oss-optr-fix3.patch                   
-
-05-31-05 16:41 perex          Note Added: 0004837                          
-05-31-05 16:55 tiwai          Note Added: 0004838                          
-05-31-05 16:56 parente        Note Added: 0004839                          
-05-31-05 17:02 parente        Note Edited: 0004839                         
-05-31-05 17:13 tiwai          Note Added: 0004840                          
-05-31-05 17:13 perex          File Added: oss-optr-fix4.patch                   
-
-05-31-05 17:13 tiwai          File Added: pcm-oss-ptr-fix4.diff                 
-  
-05-31-05 17:14 perex          Note Added: 0004841                          
-05-31-05 17:18 perex          Note Added: 0004842                          
-05-31-05 17:39 tiwai          Note Added: 0004843                          
-05-31-05 17:44 parente        Note Added: 0004844                          
-05-31-05 17:51 perex          File Added: oss-optr-fix5.patch                   
-
-05-31-05 17:52 perex          Note Added: 0004845                          
-05-31-05 17:55 tiwai          Note Added: 0004846                          
-05-31-05 18:06 perex          Status                   assigned => resolved
-05-31-05 18:06 perex          Resolution               open => fixed       
-05-31-05 18:06 perex          Note Added: 0004847                          
+05-28-05 02:02 speedking      New Issue                                    
+05-28-05 02:02 speedking      Distribution              => RHEL 3 U5 gold  
+05-28-05 02:02 speedking      Kernel Version            => 2.4.21-32       
+05-31-05 12:58 tiwai          Status                   assigned => resolved
+05-31-05 12:58 tiwai          Resolution               open => fixed       
+05-31-05 12:58 tiwai          Note Added: 0004825                          
+05-31-05 19:10 speedking      Status                   resolved => feedback
+05-31-05 19:10 speedking      Resolution               fixed => reopened   
+05-31-05 19:10 speedking      Note Added: 0004848                          
 ======================================================================
 
 
