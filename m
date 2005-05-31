@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001012]: TI AC97 volume bit 5 sets bits 0-4
-Date: Tue, 31 May 2005 17:56:52 +0200
-Message-ID: <0aa359320e7e7e5f3c62e71d08c48d6c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000118]: Soundcard doesn't produce any output
+Date: Tue, 31 May 2005 17:56:57 +0200
+Message-ID: <aee417e59fdc214e4d653b5031a07d75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20D1D1C6
-	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D0A01CE
+	for <alsa-devel@alsa-project.org>; Tue, 31 May 2005 17:56:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,16 +24,16 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1012> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=118> 
 ======================================================================
-Reported By:                Daniel
-Assigned To:                tiwai
+Reported By:                jordi
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1012
-Category:                   OTHERS
+Issue ID:                   118
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Distribution:               
@@ -41,43 +41,62 @@ Kernel Version:
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-24-2005 19:15 CET
+Date Submitted:             03-05-2004 11:53 CET
 Last Modified:              05-31-2005 17:56 CEST
 ======================================================================
-Summary:                    TI AC97 volume bit 5 sets bits 0-4
+Summary:                    Soundcard doesn't produce any output
 Description: 
-Since ALSA driver 1.0.8 the width of the volume controls is probed to be 6
-bits.
-The Texas Instruments datasheet contains a footnote for the 5th and 13th
-bit of register 2 and the 5th bif of register 6, 12 and 14 saying:
-"Special function volume settings. If bit is set, then the 5 volume bits
-implemented are set to all ones."
-check_volume_resolution in ac97_codec.c should check if setting bit 5 (13)
-results in bits 0-4 (8-12) set.
+This card had been working ok until 0.9.6 or 0.9.7. When I upgraded to
+0.9.8 and until now, the card hasn't been able to produce any output,
+although the driver gets loaded correctly.
+The OSS driver works correctly. It's not, I believe, a muted mixer
+problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- Daniel - 03-24-05 20:13 
+ jdthood - 03-28-05 04:13 
 ----------------------------------------------------------------------
-Yes, it does.
+Submitter: Has this problem been fixed in later versions of ALSA?
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 17:33 
+ mhdyousif - 03-29-05 15:32 
 ----------------------------------------------------------------------
-The patch was applied to CVS.
+I'm not the submitter but I had the same problem.
+
+I tried version 1.0.8 and found that the problem has been fixed and ALSA
+produces sound as expected (no silence anymore).
+
+Thanks for fixing this.
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 19:15 Daniel         New Issue                                    
-03-24-05 19:44 tiwai          Note Added: 0004196                          
-03-24-05 19:45 tiwai          File Added: ac97-res-check.diff                   
-
-03-24-05 20:13 Daniel         Note Added: 0004199                          
-03-29-05 17:33 tiwai          Status                   new => resolved     
-03-29-05 17:33 tiwai          Resolution               open => fixed       
-03-29-05 17:33 tiwai          Assigned To               => tiwai           
-03-29-05 17:33 tiwai          Note Added: 0004251                          
+03-05-04 11:53 jordi          New Issue                                    
+03-06-04 16:06 mhdyousif      Note Added: 0000519                          
+03-08-04 11:48 tiwai          Note Added: 0000529                          
+03-08-04 15:18 mhdyousif      File Added: asound.state                     
+03-08-04 15:22 mhdyousif      Note Added: 0000533                          
+03-08-04 15:27 tiwai          Note Added: 0000534                          
+03-08-04 18:12 mhdyousif      Note Added: 0000536                          
+03-08-04 19:30 jordi          Note Added: 0000537                          
+03-08-04 19:30 jordi          File Added: asound.state                     
+03-10-04 12:26 jordi          Note Added: 0000560                          
+03-10-04 17:44 tiwai          Note Added: 0000562                          
+03-12-04 12:58 bacsa81        File Added: ac97#0-0                         
+03-12-04 12:58 bacsa81        Issue Monitored: bacsa81                     
+03-12-04 12:58 bacsa81        File Added: ac97#0-0+regs                    
+03-12-04 13:00 bacsa81        Note Added: 0000574                          
+03-25-04 18:45 jordi          Note Added: 0000706                          
+05-31-04 18:33 pawlik         Note Added: 0001284                          
+05-31-04 18:34 pawlik         Note Added: 0001285                          
+05-31-04 18:35 pawlik         Note Deleted: 0001285                        
+03-28-05 04:13 jdthood        Note Added: 0004232                          
+03-29-05 15:31 mhdyousif      Note Added: 0004244                          
+03-29-05 15:32 mhdyousif      Note Edited: 0004244                         
+03-29-05 15:44 jdthood        Status                   new => resolved     
+03-29-05 15:44 jdthood        Resolution               open => fixed       
 05-31-05 17:56 perex          Status                   resolved => closed  
 ======================================================================
 
