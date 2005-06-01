@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001146]: Cannot compile alsa-utils
-Date: Wed, 1 Jun 2005 16:52:45 +0200
-Message-ID: <8cabdcd579f2952f78c816b6625f7d2d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Wed, 1 Jun 2005 16:53:31 +0200
+Message-ID: <a1ef0cd5bba786f3f9403ae7c7965818@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B58C14C
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 16:52:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C29117C
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 16:53:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,85 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1146> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                perex
+Reported By:                vedran
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1146
-Category:                   0_compilation problem_!!!
+Issue ID:                   1083
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 4 test3
-Kernel Version:             2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
 ======================================================================
-Date Submitted:             05-30-2005 15:06 CEST
-Last Modified:              06-01-2005 16:52 CEST
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              06-01-2005 16:53 CEST
 ======================================================================
-Summary:                    Cannot compile alsa-utils
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
 Description: 
-Compiling alsa-utils 1.0.9 with gcc 4.0.0 I've this error:
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
 
-Making all in alsactl
-make[1]: Entering directory
-`/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
-gcc  -g -O2   -o alsactl  alsactl.o state.o power.o names.o  -lasound -lm
--ldl -lpthread
-names.o(.text+0xdce): In function `probe_timers':
-/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425: undefined
-reference to `snd_timer_ginfo_sizeof'
-names.o(.text+0xdee):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:425:
-undefined reference to `snd_timer_ginfo_sizeof'
-names.o(.text+0xe4e):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:435:
-undefined reference to `snd_timer_ginfo_set_tid'
-names.o(.text+0xebf):/home/cimmo/updates/alsa-utils-1.0.9/alsactl/names.c:445:
-undefined reference to `snd_timer_ginfo_get_name'
-collect2: ld returned 1 exit status
-make[1]: *** [alsactl] Error 1
-make[1]: Leaving directory `/home/cimmo/updates/alsa-utils-1.0.9/alsactl'
-make: *** [all-recursive] Error 1
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
+
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
+
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
+
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
+
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 05-31-05 13:27 
+ vedran - 05-30-05 13:21 
 ----------------------------------------------------------------------
-Ok using --libdir=/lib64 it compiled well.
-Sorry for this bug-report.
-
-best regards
+Has anybody looked at this bug? What's the status?
 
 ----------------------------------------------------------------------
- tiwai - 06-01-05 16:52 
+ tiwai - 06-01-05 16:53 
 ----------------------------------------------------------------------
-OK, closing now.
+No progress.  We have no technical information.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-30-05 15:06 Cimmo          New Issue                                    
-05-30-05 15:06 Cimmo          Distribution              => Fedora Core 4 test3
-05-30-05 15:06 Cimmo          Kernel Version            =>
-2.6.11-1.1363_FC4-x86_64 (contains 2.6.12rc5)
-05-30-05 15:11 perex          Status                   assigned => resolved
-05-30-05 15:11 perex          Resolution               open => fixed       
-05-30-05 15:11 perex          Note Added: 0004818                          
-05-30-05 15:36 Cimmo          Status                   resolved => feedback
-05-30-05 15:36 Cimmo          Resolution               fixed => reopened   
-05-30-05 15:36 Cimmo          Note Added: 0004820                          
-05-31-05 12:52 tiwai          Note Added: 0004823                          
-05-31-05 13:03 Cimmo          Note Added: 0004826                          
-05-31-05 13:04 tiwai          Note Added: 0004828                          
-05-31-05 13:27 Cimmo          Note Added: 0004830                          
-06-01-05 16:52 tiwai          Status                   feedback => resolved
-06-01-05 16:52 tiwai          Resolution               reopened => not an issue
-06-01-05 16:52 tiwai          Note Added: 0004861                          
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+05-30-05 13:21 vedran         Note Added: 0004809                          
+06-01-05 16:53 tiwai          Note Added: 0004862                          
 ======================================================================
 
 
