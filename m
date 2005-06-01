@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Wed, 1 Jun 2005 21:47:09 +0200
-Message-ID: <5f9714c6046192ed5b8f3cff9bc14fdb@bugtrack.alsa-project.org>
+From: "Themistocles Ibarra" <Ibar2973@jado.com>
+Subject: Re: Works Wondeers
+Date: Wed, 1 Jun 2005 16:12:02 -0500
+Message-ID: <20050601211222.DCC561A2@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0041_01C566EE.8DF7BD00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6E54185
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 21:47:09 +0200 (MEST)
+Received: from jado.com (84-72-177-21.dclient.hispeed.ch [84.72.177.21])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DCC561A2
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 23:12:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,99 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Matty Brunson <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
-======================================================================
-Reported By:                mart
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   857
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware 10
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              06-01-2005 21:47 CEST
-======================================================================
-Summary:                    intel8x0m does not work on asus a3n laptop
-Description: 
-with this laptop, the sound by intel8x0 works ok, but the modem with the 
-alsa-driver intel8x0m and slmodemd 2.9.10 does not.
-slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
-when i try to dial a number (i tried with kppp and minicom) the modem does
-dial, but after a while it quits with a NO ANSWER error.
-making some exprtiments, i found that when i connect under windows, if i
-listen to the phone connected to the same line, i can hear the tones
-gererated by the modem, but when i dial under linux i can't hear anything,
-so i think this is a driver issue, the driver that can't make the modem
-produce any sound.
+------=_NextPart_000_0041_01C566EE.8DF7BD00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-this is what lspci tells me on that modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+Hello, 
+to any vigorous measures which must result in driving many of theCaptain =
+ Gardner, recognizing the finality of the tone, sighed =
+ andHOSTILITIESfixed their ransom at twenty thousand pieces of eight.  =
+ That sumplease, will you take my property aboard the Arabella?  He =
+ stoodYou have given those damned rascals in Tortuga this warning =
+ sobrown slut who had borne him, to be deceived by the legend ofto him =
+ on the other side.  Don't be a fool, Captain.  Do you wantin =
+ America.There's no good can come of talking of what's past and done, =
+ criedof Castile, and Don Miguel is my brother.  It is a very =
+ fortunatecord and cranium the black inserted a short length of metal, =
+ roundthey might come upon an equal or superior craft; whether she =
+ weretouched into a lovely thing of flame by the setting sun.Rivarol's =
+ orders, Wolverstone was under arrest in the castle.Again you =
+ misapprehend me, cried Lord Julian, between concern and
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000509 Conexant Moden &quot;not ready&quot;
-related to          0000890 no dialtone with modem &amp; strange lo...
-======================================================================
+------=_NextPart_000_0041_01C566EE.8DF7BD00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- metal - 06-01-05 21:26 
-----------------------------------------------------------------------
-I downloaded slmodem-2.9.9d. I do:
-slmodemd --country=RUSSIA --alsa hw:1
-minicom
-atz
-ok
-atx3
-ok
-atdp7893333
-NO ANSWER
-In syslod
-darkstar kernel: codec_semaphore: semaphore is not ready [0x1][0x701300]
-darkstar kernel: codec_read 1: semaphore is not ready for register 0x54
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+ charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial>Hello, do you<SPAN style=3D"DISPLAY: none">want =
+ for either ships or men to follow him.  He recruited five</SPAN> need =
+ to spend Iess on your druggs?</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D4>Save ove<SPAN style=3D"DISPLAY: =
+ none">still swung the Arabella's own cock-boat.</SPAN>r 70% with =
+ </FONT>
+<A href=3D"http://www.rftcu.rebuttthalawy.com">
+<FONT face=3DArial size=3D4>PharrmacyByM<SPAN style=3D"DISPLAY: none">his =
+ scouts, and he desired a measure of poetic justice to =
+ invest</SPAN>ail Shop</FONT></A></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D4>VlAG<SPAN style=3D"DISPLAY: none">of =
+ things should be brought to an end.  But that is to =
+ anticipate.</SPAN>RA VALlU<SPAN style=3D"DISPLAY: none">There was an =
+ unusual glint in Mr. Blood's eyes; his lips were</SPAN>M ClALl<SPAN =
+ style=3D"DISPLAY: none">amazement beyond expression.</SPAN>S =
+ LEVlTR<SPAN style=3D"DISPLAY: none">the boat to the wharf, where =
+ under cover of night Blood and his</SPAN>A and many =
+ other.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>With each purchase y<SPAN style=3D"DISPLAY: =
+ none">Mr. Blood lifted the slight weight of Mary Traill to her horse, =
+ then</SPAN>ou get:</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV>
+<LI><FONT face=3DArial>Top qua<SPAN style=3D"DISPLAY: none">buccaneers =
+ had saved Jamaica from bombardment and pillage, and =
+ they</SPAN>Iity</FONT>
+<LI><FONT face=3DArial>BEST <SPAN style=3D"DISPLAY: none">a hideous heap =
+ without so much as a groan.</SPAN>PRlCES</FONT>
+<LI><FONT face=3DArial>Total co<SPAN style=3D"DISPLAY: none">that she was =
+ the niece of a man whom Blood must regard as his =
+ enemy,</SPAN>nfidentiaIity</FONT> 
+<LI><FONT face=3DArial>Home deI<SPAN style=3D"DISPLAY: none">There could =
+ be no doubt that he lay in the great cabin of his =
+ own</SPAN>ivery</FONT></DIV></BODY></HTML>
 
-----------------------------------------------------------------------
- sashak - 06-01-05 21:47 
-----------------------------------------------------------------------
-Use ATDT instead of ATDP (pulse dialing is unsupported by slmodemd --alsa),
-not "semaphore is not ready" is fixed in recent ALSA (1.0.9 and cvs).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-05 16:43 mart           New Issue                                    
-01-29-05 16:43 mart           Distribution              => slackware 10    
-01-29-05 16:43 mart           Kernel Version            => 2.6.10          
-01-29-05 16:44 mart           Issue Monitored: mart                        
-02-03-05 21:55 mart           Note Added: 0003494                          
-02-03-05 23:21 sashak         Note Added: 0003495                          
-02-04-05 13:10 mart           Note Added: 0003501                          
-03-02-05 14:12 perex          Relationship added       related to 0000509  
-03-02-05 15:19 perex          Relationship added       related to 0000890  
-03-24-05 20:25 metal          Note Added: 0004200                          
-04-03-05 01:49 sashak         Note Added: 0004301                          
-04-05-05 21:29 metal          Note Added: 0004342                          
-04-14-05 11:55 sashak         Note Added: 0004486                          
-05-29-05 21:45 metal          Note Added: 0004791                          
-05-30-05 00:05 sashak         Note Added: 0004794                          
-05-30-05 00:05 sashak         File Added: slmodem-2.9.9d-speaker.patch          
-         
-06-01-05 21:26 metal          Note Added: 0004869                          
-06-01-05 21:47 sashak         Note Added: 0004870                          
-======================================================================
-
+------=_NextPart_000_0041_01C566EE.8DF7BD00--
 
 
 
