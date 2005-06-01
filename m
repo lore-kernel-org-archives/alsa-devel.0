@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
-Date: Wed, 1 Jun 2005 19:44:29 +0200
-Message-ID: <8731a42a1f1d92d3613178313b4337bc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001150]: Insufficient info in INSTALL file
+Date: Wed, 1 Jun 2005 20:57:30 +0200
+Message-ID: <00d86e2144af96caa1fb9c241f3570ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84D1D185
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 19:44:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2264817C
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 20:57:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,85 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1150> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
+Reported By:                davidramirez
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1053
-Category:                   PCI - ca0106
+Issue ID:                   1150
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   text
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 test 2
-Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-14-2005 19:27 CEST
-Last Modified:              06-01-2005 19:44 CEST
+Date Submitted:             06-01-2005 20:57 CEST
+Last Modified:              06-01-2005 20:57 CEST
 ======================================================================
-Summary:                    cannot change line-in volume on MSI K8N Platinum
-that has SBLive! 24 bit
+Summary:                    Insufficient info in INSTALL file
 Description: 
-I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack in the pci version of the sb live 24
-bit (see image).
+Lines 82+83 of the INSTALL file (in alsa-driver-1.0.9) state that one
+should "edit the kernel module config" but it doesn't say what to modify
+there...?
 
-The result is that I cannot use line-in for my soundcard becuase the
-volume is 0 and I cannot change it.
+Had same doubt with 1.0.8
 
-The "Capture feedback into playback" in the mixer change the mic's volume.
+I guess that for this reason I cant't get a working sound card.
 ======================================================================
-
-----------------------------------------------------------------------
- Cimmo - 05-30-05 14:57 
-----------------------------------------------------------------------
-Just done!
-Pressing M mute and unmute spdif out (in the screenshot n.2 was unmuted)
-still no line-in.
-
-I don't know if spdif-OUT is related to line-IN.
-There is also a SPDIF Unknown (last one in the screenshot) that is at 100%
-volume and unmuted...
-
-How can I help you to fix the bug?
-
-
-
-----------------------------------------------------------------------
- Cimmo - 06-01-05 19:44 
-----------------------------------------------------------------------
-x jcdutton:
-have you made specific changes to recognize two different jacks (line-in
-and mic) in MSI K8N?
-If there are some details I can provide just tell me...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-05 19:27 Cimmo          New Issue                                    
-04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
-04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
-04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
-FC4-x86_64 that contains 2.6.12rc2
-04-14-05 21:42 jcdutton       Note Added: 0004495                          
-04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
-05-11-05 15:05 Cimmo          Note Added: 0004636                          
-05-14-05 13:14 pelias         Note Added: 0004657                          
-05-14-05 15:48 jcdutton       Note Added: 0004659                          
-05-20-05 00:14 dwh            Note Added: 0004697                          
-05-28-05 12:16 jcdutton       Note Added: 0004764                          
-05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
-05-30-05 12:57 Cimmo          Note Added: 0004805                          
-05-30-05 12:58 Cimmo          File Added: alsamixer.jpg                    
-05-30-05 14:33 jcdutton       Note Added: 0004814                          
-05-30-05 14:56 Cimmo          Note Added: 0004816                          
-05-30-05 14:57 Cimmo          Note Edited: 0004816                         
-06-01-05 19:44 Cimmo          Note Added: 0004867                          
+06-01-05 20:57 davidramirez   New Issue                                    
 ======================================================================
 
 
