@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Wed, 1 Jun 2005 17:04:55 +0200
-Message-ID: <31d06b8d32efee693ec26074f6665273@bugtrack.alsa-project.org>
+Date: Wed, 1 Jun 2005 16:58:32 +0200
+Message-ID: <2d625eb4db542fc5230e7d7c87cdf29a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CC7919C
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 17:04:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1266193
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 16:58:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
@@ -31,7 +31,7 @@ Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1134
-Category:                   PCI - intel8x0
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              06-01-2005 17:04 CEST
+Last Modified:              06-01-2005 16:58 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -67,21 +67,6 @@ not, I will just wait for new alsa-driver.)
 
 thanks
 ======================================================================
-
-----------------------------------------------------------------------
- liangalei - 05-28-05 09:17 
-----------------------------------------------------------------------
-[root@room-1109 ~]# /sbin/lsmod | grep snd
-snd_intel8x0           34752  2
-snd_ac97_codec         78588  1 snd_intel8x0
-snd_mixer_oss          19072  1
-snd_pcm                99848  2 snd_intel8x0,snd_ac97_codec
-snd_timer              33668  1 snd_pcm
-snd                    59396  7
-snd_intel8x0,snd_ac97_codec,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10785  2 snd
-snd_page_alloc         10244  2 snd_intel8x0,snd_pcm
-[root@room-1109 ~]#
 
 ----------------------------------------------------------------------
  liangalei - 05-30-05 03:29 
@@ -142,8 +127,6 @@ Date Modified  Username       Field                    Change
 05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
 05-30-05 03:29 liangalei      Note Added: 0004795                          
 06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
 ======================================================================
 
 
