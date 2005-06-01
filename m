@@ -1,13 +1,14 @@
-From: =?ISO-8859-1?Q?Tobias_Rundstr=F6m?= <tobi@tobi.nu>
-Subject: Re: ALSA Plugin for XMMS2. Help wanted.
-Date: Thu, 02 Jun 2005 00:38:23 +0200
-Message-ID: <429E38DF.4020204@tobi.nu>
-References: <Pine.HPX.4.33n.0506010952460.6195-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
+Date: Thu, 2 Jun 2005 00:54:21 +0200
+Message-ID: <382be97e777e10b6adf7b29cc90180bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0506010952460.6195-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39AF81A4
+	for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2005 00:54:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: =?ISO-8859-1?Q?Tobias_Rundstr=F6m?= <tru@xmms.org>, alsa-devel@lists.sourceforge.net, andersg@xmms.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Tobias Rundstr=F6m wrote:
->=20
->>[...]
->=20
->=20
-> Some further remarks:
->=20
-> In the call to xmms_plugin_new, the string literal in the last
-> parameter includes several tab characters from the beginning of the
-> second line.
->=20
-> xmms_alsa_probe_modes should check the return value of snd_pcm_open,
-> and use SND_PCM_NONBLOCK, too.
->=20
-> xmms_alsa_buffer_bytes_get should check for return values other than
-> -EPIPE.
 
-Thanks for all help. We have started to work on ALSA again, some of the=20
-fixes you suggested was included in XMMS2 DR1.1 that was released earlier=
-.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1132> 
+======================================================================
+Reported By:                speedking
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1132
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     feedback
+Distribution:               RHEL 3 U5 gold
+Kernel Version:             2.4.21-32
+======================================================================
+Date Submitted:             05-28-2005 02:02 CEST
+Last Modified:              06-02-2005 00:54 CEST
+======================================================================
+Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
+catastrophic CrAsH
+Description: 
+system hangs when either 'alsaconf' runs or you attempt a 'modprobe
+snd-hda-intel'
 
-We realized that all our current plugins where blocking during=20
-open/probing. This will change to DR2. Thanks for noticing.
+System is a HP xw4300 workstation, Intel based, running an Azalia
+compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
 
-Visit http://git.xmms.se/?p=3Dxmms2.git;a=3Dsummary to track our progress=
-.
 
-Greetings
-Tobias
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ speedking - 06-02-05 00:27 
+----------------------------------------------------------------------
+I have now verified that RHEL 4 U1 beta 2 x86_64 bits along with ALSA 1.0.9
+final also do NOT play CD music, just like RHEL3 U5 x86_64 gold bits.  
+
+The CD player or audio player that is OEM to RHEL4/RHEL3 plays the CD, you
+can hear the CD player mechanically run, the 'read' light on the front of
+the CD player blinks, the CD player application counts the tracks but no
+music emenates from either the external speaker or the headphone jack.
+
+----------------------------------------------------------------------
+ speedking - 06-02-05 00:54 
+----------------------------------------------------------------------
+tiwai,
+
+I have a proposal for you.  How do I contact you in person?  Please send
+me an email to my account email address....should you have access to it.
+
+Thanks...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 02:02 speedking      New Issue                                    
+05-28-05 02:02 speedking      Distribution              => RHEL 3 U5 gold  
+05-28-05 02:02 speedking      Kernel Version            => 2.4.21-32       
+05-31-05 12:58 tiwai          Status                   assigned => resolved
+05-31-05 12:58 tiwai          Resolution               open => fixed       
+05-31-05 12:58 tiwai          Note Added: 0004825                          
+05-31-05 19:10 speedking      Status                   resolved => feedback
+05-31-05 19:10 speedking      Resolution               fixed => reopened   
+05-31-05 19:10 speedking      Note Added: 0004848                          
+05-31-05 19:11 speedking      Note Edited: 0004848                         
+05-31-05 19:14 speedking      Note Edited: 0004848                         
+05-31-05 19:15 tiwai          Note Added: 0004849                          
+05-31-05 19:23 speedking      Note Added: 0004850                          
+05-31-05 19:26 speedking      Note Edited: 0004850                         
+05-31-05 19:26 tiwai          Note Added: 0004851                          
+05-31-05 19:44 speedking      Note Added: 0004852                          
+05-31-05 19:51 tiwai          Note Added: 0004853                          
+05-31-05 20:11 speedking      Note Added: 0004854                          
+05-31-05 22:43 speedking      Note Added: 0004856                          
+05-31-05 22:46 speedking      Note Edited: 0004856                         
+06-02-05 00:27 speedking      Note Added: 0004872                          
+06-02-05 00:54 speedking      Note Added: 0004873                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
