@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Wed, 1 Jun 2005 16:58:32 +0200
-Message-ID: <2d625eb4db542fc5230e7d7c87cdf29a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
+Date: Wed, 1 Jun 2005 17:41:53 +0200
+Message-ID: <f4b834e34c922842b8b4f8671c900b1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1266193
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 16:58:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9538B15D
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 17:41:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,109 +24,145 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=373> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                perex
+Reported By:                damage
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   0_compilation problem_!!!
+Issue ID:                   373
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     acknowledged
+Distribution:               Suse Linux 9.1
+Kernel Version:             2.6.5-7.95-default
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              06-01-2005 16:58 CEST
+Date Submitted:             07-09-2004 21:37 CEST
+Last Modified:              06-01-2005 17:41 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    Sound in Quake 3 does not work
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+I already tried several things to get sound working in Quake 3. It doesn't
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+work. Sound in other applications, such as xmms, works without problems.
+My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
+1GB 
+RAM, VIA 8237 on board sound
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+I tried it with the ALSA version that comes with the Default Suse Kernel,
+then 
+with version 1.05a and at the moment I've installed a version from CVS two
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't 
+resolve the issue.
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
+Without changing anything in the ALSA configuration Quake 3 starts and the
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
+game runs without problems, but there is no sound. The following error 
+message is displayed when Quake 3 starts.
+------- sound initialization -------
+Could not mmap dma buffer PROT_WRITE|PROT_READ
+trying mmap PROT_WRITE (with associated better compatibility / less 
+performance code)
+/dev/dsp: Input/output error
+Could not mmap /dev/dsp
+------------------------------------
 
-thanks
+Enabling direct access to the OSS playback device and disabling the OSS 
+capture device with 
+echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
+echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
+I get sound in the Quake 3 menu, but as soon as I enter a map the game
+hangs 
+and the only way to get back to X is to kill the process.
+
+I also tried the user space ALSA OSS wrapper library. With this library I
+only 
+get some crackling noises in the menu and in the game.
+
+With xrun_debug 1 I get a few of the following messages (at least with the
+
+actually installed drivers from CVS) in the system log. These messages are
+
+also there when I run other applications than Quake 3.
+Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected 
+hw_pointer value [1] (stream = 0, delta: -1024, max jitter = 8192): wrong
+
+interrupt acknowledge?
+Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid 
+via82xx_cur_ptr, using last valid pointer
+Jul  8 19:08:00 mordor last message repeated 194 times
+
+I don't know whether that has something to do with the problem.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- liangalei - 05-30-05 03:29 
+ Xero - 05-29-05 08:07 
 ----------------------------------------------------------------------
-hinted by https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1078
-I have a look at my /proc/asound, it looks like following, ----- Is it
-strange? I see many "off" ---- but I cannot turn-ONs them, by either
-alsamixer or aumix, because in alsamixer jack-bars, them can not be seen
-!
+seems like this bug has been sitting open a little while. I have noticed
+similar myself and think I've tracked down just what is going on.
 
-[lal@lal ~]$ cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: Conexant id 31
+Basically, when quake3 converts to a rate that isn't a multiple of it's
+native rate of 22050, it freezes when it plays certain sounds. So, for
+example, quake3 +set sndspeed 44100 with a card that supports 44100 will
+work just fine. However, change that value to 48000 and it'll freeze on
+certain sounds. I've experimented a bit and found that even higher rates
+such as say, 88200, will work fine, and 96000 won't. So I actually believe
+this is a problem with quake3, not alsa.
 
-Revision         : 0x00
-Compat. Class    : 0x00
-Subsys. Vendor ID: 0x0000
-Subsys. ID       : 0x0000
+I believe the above mentioned via card only runs at 48000, or it did at
+one point, and thus this issue was probably unavoidable.
 
-Capabilities     :
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : No 3D Stereo Enhancement
+this patch dated 4/11/05 makes me think those with that card will probably
+be able to get this working fine now simply by running at a rate that's
+multiple of 22050:
+http://www.alsa-project.org/alsa/ftp/kernel-patches/mm/3111.patch
 
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 SPDIF
-Extended status  : PRL SPCV LDAC SDAC CDAC SPDIF=10/11
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-Extended modem ID: codec=0 LIN1
-Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
-PRF(DAC2) PRG(HADC) PRH(HDAC)
-Line1 rate       : 48000Hz
-[lal@lal ~]$
+
+I like to run my card at 96000 and that is how I noticed this problem...I
+just wish AOSS worked better with quake3 so I could avoid all of
+this...Also, that quake3.x86 0 0 direct thing that is always being used I
+find isn't necessary as long as you specify the appropriate sndspeed, at
+least in my case. For now I've settled at running my card at 88200...as
+this also fixes an issue with beep/xmms, dmix, and distortion, again
+related to rate conversion...
 
 ----------------------------------------------------------------------
- tiwai - 06-01-05 16:58 
+ tiwai - 06-01-05 17:41 
 ----------------------------------------------------------------------
-I suspect it's not a Conexant codec.  The driver seems to fail detection of
-the codec.
+Check the kernel message whether via82xx informs about dxs_support option. 
+If you don't see it, the proper dxs_support value is already defined in
+the driver.  Otherwise, you'll need to set it manually.
 
-This kind of problems is often related with ACPI.  Try to tune the ACPI
-boot setting.
+In most cases, dxs_support=4 (5 is better in 1.0.9 release) should work. 
+With the old boards, you might need to set 1, but this must be rare.
+
+Once you set dxs_support=1, 4, or 5, this sample rate problem won't happen
+any more.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
+07-09-04 21:37 damage         New Issue                                    
+07-09-04 21:37 damage         File Added: alsa_q3_debug.txt                    
+07-09-04 21:37 damage         Distribution              => Suse Linux 9.1  
+07-09-04 21:37 damage         Kernel Version            => 2.6.5-7.95-default
+07-09-04 21:41 damage         File Added: alsa_q3_debug.txt                    
+07-09-04 21:46 damage         Note Added: 0001396                          
+07-09-04 21:50 damage         Issue Monitored: damage                      
+07-11-04 00:04 tokugawa       Note Added: 0001406                          
+07-11-04 02:35 damage         Note Added: 0001407                          
+07-18-04 19:13 damage         Note Added: 0001459                          
+07-26-04 16:20 Deelight       Note Added: 0001474                          
+10-27-04 00:37 badbunny       Note Added: 0002268                          
+04-09-05 16:42 jdthood        Status                   new => acknowledged 
+04-09-05 16:42 jdthood        Description Updated                          
+04-09-05 16:42 jdthood        Additional Information Updated                    
+05-29-05 08:07 Xero           Note Added: 0004780                          
+06-01-05 17:41 tiwai          Note Added: 0004864                          
 ======================================================================
 
 
