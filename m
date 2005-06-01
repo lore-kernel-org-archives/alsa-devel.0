@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
-Date: Wed, 1 Jun 2005 17:41:53 +0200
-Message-ID: <f4b834e34c922842b8b4f8671c900b1a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001123]: No Sound on snd-via82xx
+Date: Wed, 1 Jun 2005 17:43:33 +0200
+Message-ID: <c8f2e1dd1a9ab8e58060959d0e3bd421@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9538B15D
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 17:41:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 143AF168
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 17:43:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,147 +22,174 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=373> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1123> 
 ======================================================================
-Reported By:                damage
-Assigned To:                
+Reported By:                fingolfin
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   373
+Issue ID:                   1123
 Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Suse Linux 9.1
-Kernel Version:             2.6.5-7.95-default
+Status:                     resolved
+Distribution:               Slackware 10.0
+Kernel Version:             2.6.10 and up
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-09-2004 21:37 CEST
-Last Modified:              06-01-2005 17:41 CEST
+Date Submitted:             05-24-2005 14:30 CEST
+Last Modified:              06-01-2005 17:43 CEST
 ======================================================================
-Summary:                    Sound in Quake 3 does not work
+Summary:                    No Sound on snd-via82xx
 Description: 
-I already tried several things to get sound working in Quake 3. It doesn't
+In the most recent kernel revisions, sound for a VIA sound card no
+longer works, except from the CD drive's direct connection to the sound
+card (i.e., no more ogg123, sox, xmms, etc.). I have tried the stock
+kernel 2.6.10 on OpenTLE 7.0.1 (Waghor Lite) and compiled 2.6.11.10 on
+Slackware. In neither case did sound on my VIA work. However, stock
+kernel on Ubuntu Warty (2.6.8.1) and compiled 2.6.7 on Slackware were
+effective.
 
-work. Sound in other applications, such as xmms, works without problems.
-My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
-1GB 
-RAM, VIA 8237 on board sound
+I have tried different options for ac97_quirk and dxs_support, all to no
+avail.
 
-I tried it with the ALSA version that comes with the Default Suse Kernel,
-then 
-with version 1.05a and at the moment I've installed a version from CVS two
+I understand that the alsa suite is going under major changes for new
+functionality and support coming up to the 1.1 release and I appreciate
+the tremendous effort going into it. I also understand that the via
+driver's development has been difficult. Nevertheless I am now forced to
+use the old OSS drivers. :)
 
-days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't 
-resolve the issue.
+Output of lspci -v on Slackware, 2.6.11.10
 
-Without changing anything in the ALSA configuration Quake 3 starts and the
+00:00.0 Host bridge: VIA Technologies, Inc. VT8378 [KM400] Chipset Host
+Bridge
+	Subsystem: VIA Technologies, Inc.: Unknown device 0000
+	Flags: bus master, 66Mhz, medium devsel, latency 8
+	Memory at e0000000 (32-bit, prefetchable) [size=64M]
+	Capabilities: [80] AGP version 3.5
+	Capabilities: [c0] Power Management version 2
 
-game runs without problems, but there is no sound. The following error 
-message is displayed when Quake 3 starts.
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less 
-performance code)
-/dev/dsp: Input/output error
-Could not mmap /dev/dsp
-------------------------------------
+00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge (prog-if 00
+[Normal decode])
+	Flags: bus master, 66Mhz, medium devsel, latency 0
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	Memory behind bridge: dde00000-dfefffff
+	Prefetchable memory behind bridge: d5d00000-ddcfffff
+	Capabilities: [80] Power Management version 2
 
-Enabling direct access to the OSS playback device and disabling the OSS 
-capture device with 
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
-I get sound in the Quake 3 menu, but as soon as I enter a map the game
-hangs 
-and the only way to get back to X is to kill the process.
+00:10.0 USB Controller: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
+(rev 80) (prog-if 00 [UHCI])
+	Subsystem: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
+	Flags: bus master, medium devsel, latency 32, IRQ 11
+	I/O ports at e400 [size=32]
+	Capabilities: [80] Power Management version 2
 
-I also tried the user space ALSA OSS wrapper library. With this library I
-only 
-get some crackling noises in the menu and in the game.
+00:10.1 USB Controller: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
+(rev 80) (prog-if 00 [UHCI])
+	Subsystem: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
+	Flags: bus master, medium devsel, latency 32, IRQ 5
+	I/O ports at e800 [size=32]
+	Capabilities: [80] Power Management version 2
 
-With xrun_debug 1 I get a few of the following messages (at least with the
+00:10.2 USB Controller: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
+(rev 80) (prog-if 00 [UHCI])
+	Subsystem: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
+	Flags: bus master, medium devsel, latency 32, IRQ 5
+	I/O ports at ec00 [size=32]
+	Capabilities: [80] Power Management version 2
 
-actually installed drivers from CVS) in the system log. These messages are
+00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82) (prog-if
+20 [EHCI])
+	Subsystem: VIA Technologies, Inc. USB 2.0
+	Flags: bus master, medium devsel, latency 32, IRQ 10
+	Memory at dfffff00 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [80] Power Management version 2
 
-also there when I run other applications than Quake 3.
-Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected 
-hw_pointer value [1] (stream = 0, delta: -1024, max jitter = 8192): wrong
+00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
+	Subsystem: VIA Technologies, Inc.: Unknown device 0000
+	Flags: bus master, stepping, medium devsel, latency 0
+	Capabilities: [c0] Power Management version 2
 
-interrupt acknowledge?
-Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid 
-via82xx_cur_ptr, using last valid pointer
-Jul  8 19:08:00 mordor last message repeated 194 times
+00:11.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C/VT8235 PIPC Bus Master IDE (rev 06)
+(prog-if 8a [Master SecP PriP])
+	Subsystem: VIA Technologies, Inc.
+VT82C586/B/VT82C686/A/B/VT8233/A/C/VT8235 PIPC Bus Master IDE
+	Flags: bus master, medium devsel, latency 32, IRQ 255
+	I/O ports at fc00 [size=16]
+	Capabilities: [c0] Power Management version 2
 
-I don't know whether that has something to do with the problem.
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+	Subsystem: Elitegroup Computer Systems: Unknown device a101
+	Flags: medium devsel, IRQ 5
+	I/O ports at dc00 [size=256]
+	Capabilities: [c0] Power Management version 2
+
+00:11.6 Communication controller: VIA Technologies, Inc. Intel 537 [AC97
+Modem] (rev 80)
+	Subsystem: SILICON Laboratories: Unknown device 4c21
+	Flags: medium devsel, IRQ 5
+	I/O ports at e000 [size=256]
+	Capabilities: [d0] Power Management version 2
+
+00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II] (rev
+74)
+	Subsystem: VIA Technologies, Inc. VT6102 [Rhine II] Embeded Ethernet
+Controller on VT8235
+	Flags: bus master, medium devsel, latency 32, IRQ 11
+	I/O ports at d800 [size=256]
+	Memory at dffffe00 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [40] Power Management version 2
+
+01:00.0 VGA compatible controller: VIA Technologies, Inc. VT8378 [S3
+UniChrome] Integrated Video (rev 01) (prog-if 00 [VGA])
+	Subsystem: VIA Technologies, Inc.: Unknown device 0000
+	Flags: bus master, 66Mhz, medium devsel, latency 32, IRQ 11
+	Memory at d8000000 (32-bit, prefetchable) [size=64M]
+	Memory at de000000 (32-bit, non-prefetchable) [size=16M]
+	Expansion ROM at dfef0000 [disabled] [size=64K]
+	Capabilities: [60] Power Management version 2
+	Capabilities: [70] AGP version 2.0
+
+There is no difference between that and lspci -v on 2.6.7 under
+Slackware, which leads me to believe nothing like the new ACPI IRQ
+routing or other low-level code is to blame. Instead (though I am not a
+kernel developer and submit my advice, well, humbly), I suggest
+examination of the differences between the earlier and later drivers 
+for the via series.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Xero - 05-29-05 08:07 
+ fingolfin - 05-25-05 14:29 
 ----------------------------------------------------------------------
-seems like this bug has been sitting open a little while. I have noticed
-similar myself and think I've tracked down just what is going on.
-
-Basically, when quake3 converts to a rate that isn't a multiple of it's
-native rate of 22050, it freezes when it plays certain sounds. So, for
-example, quake3 +set sndspeed 44100 with a card that supports 44100 will
-work just fine. However, change that value to 48000 and it'll freeze on
-certain sounds. I've experimented a bit and found that even higher rates
-such as say, 88200, will work fine, and 96000 won't. So I actually believe
-this is a problem with quake3, not alsa.
-
-I believe the above mentioned via card only runs at 48000, or it did at
-one point, and thus this issue was probably unavoidable.
-
-this patch dated 4/11/05 makes me think those with that card will probably
-be able to get this working fine now simply by running at a rate that's
-multiple of 22050:
-http://www.alsa-project.org/alsa/ftp/kernel-patches/mm/3111.patch
-
-
-I like to run my card at 96000 and that is how I noticed this problem...I
-just wish AOSS worked better with quake3 so I could avoid all of
-this...Also, that quake3.x86 0 0 direct thing that is always being used I
-find isn't necessary as long as you specify the appropriate sndspeed, at
-least in my case. For now I've settled at running my card at 88200...as
-this also fixes an issue with beep/xmms, dmix, and distortion, again
-related to rate conversion...
+My mistake. I compiled 1.0.9rc4 from tarballs and I succeeded. Perhaps I
+ineptly built from CVS...I remember the CVS build script as being a
+little imperfect (I'm not faulting you there, it /is/ a CVS build after
+all) and I tried to take over manually. I might have erred somewhere
+along the way.
 
 ----------------------------------------------------------------------
- tiwai - 06-01-05 17:41 
+ tiwai - 06-01-05 17:43 
 ----------------------------------------------------------------------
-Check the kernel message whether via82xx informs about dxs_support option. 
-If you don't see it, the proper dxs_support value is already defined in
-the driver.  Otherwise, you'll need to set it manually.
-
-In most cases, dxs_support=4 (5 is better in 1.0.9 release) should work. 
-With the old boards, you might need to set 1, but this must be rare.
-
-Once you set dxs_support=1, 4, or 5, this sample rate problem won't happen
-any more.
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 21:37 damage         New Issue                                    
-07-09-04 21:37 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:37 damage         Distribution              => Suse Linux 9.1  
-07-09-04 21:37 damage         Kernel Version            => 2.6.5-7.95-default
-07-09-04 21:41 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:46 damage         Note Added: 0001396                          
-07-09-04 21:50 damage         Issue Monitored: damage                      
-07-11-04 00:04 tokugawa       Note Added: 0001406                          
-07-11-04 02:35 damage         Note Added: 0001407                          
-07-18-04 19:13 damage         Note Added: 0001459                          
-07-26-04 16:20 Deelight       Note Added: 0001474                          
-10-27-04 00:37 badbunny       Note Added: 0002268                          
-04-09-05 16:42 jdthood        Status                   new => acknowledged 
-04-09-05 16:42 jdthood        Description Updated                          
-04-09-05 16:42 jdthood        Additional Information Updated                    
-05-29-05 08:07 Xero           Note Added: 0004780                          
-06-01-05 17:41 tiwai          Note Added: 0004864                          
+05-24-05 14:30 fingolfin      New Issue                                    
+05-24-05 14:30 fingolfin      Distribution              => Slackware 10.0  
+05-24-05 14:30 fingolfin      Kernel Version            => 2.6.10 and up   
+05-25-05 14:29 fingolfin      Note Added: 0004736                          
+06-01-05 17:43 tiwai          Status                   new => resolved     
+06-01-05 17:43 tiwai          Resolution               open => not an issue
+06-01-05 17:43 tiwai          Assigned To               => tiwai           
+06-01-05 17:43 tiwai          Note Added: 0004865                          
 ======================================================================
 
 
