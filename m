@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001148]: wrong CVS update instructions
-Date: Wed, 1 Jun 2005 13:08:40 +0200
-Message-ID: <d5d8a2dea9910bcdd14f645263621f93@bugtrack.alsa-project.org>
+From: Ferenc Wagner <wferi@tba.elte.hu>
+Subject: Re: Creative SB Live 24bit capture status
+Date: Wed, 01 Jun 2005 13:45:15 +0200
+Message-ID: <3o8y1ui9mc.fsf@tba.elte.hu>
+References: <ad2655cb0505270652272abfb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BAFE186
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 13:08:41 +0200 (MEST)
+In-Reply-To: <ad2655cb0505270652272abfb@mail.gmail.com> (James
+ Courtier-Dutton's message of "Fri, 27 May 2005 14:52:28 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,42 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+James Courtier-Dutton <james.dutton@gmail.com> writes:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1148> 
-======================================================================
-Reported By:                wferi
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1148
-Category:                   bad link
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-01-2005 13:08 CEST
-Last Modified:              06-01-2005 13:08 CEST
-======================================================================
-Summary:                    wrong CVS update instructions
-Description: 
-On http://alsa-project.org/download.php in the section about read-only
-anonymous CVS access the update command in garbled.  The repository
-needn't be given and the command should be up instead of co.
-======================================================================
+> I am pleased to announce that Creative have finally sent
+> me some information regarding how to enable capture on the
+> SB Live 24bit sound card.
+>
+> I will hopefully be adding support for it to alsa either
+> this weekend or next.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-01-05 13:08 wferi          New Issue                                    
-======================================================================
+Hi James,
 
+thanks for the work, I'm looking forward to exploiting one
+such card.  However, the comments in ca0106_main.c confused
+me somewhat.  Let me quote:
 
+,----
+| Notes on how to capture sound:
+| The AC97 is used in the PLAYBACK direction.
+|
+| The output from the AC97 chip, instead of reaching the
+| speakers, is fed into the Philips 1361T ADC.
+|
+| So, to record from the MIC, set the MIC Playback volume to
+| max, unmute the MIC and turn up the MASTER Playback
+| volume.
+|
+| So, to prevent feedback when capturing, minimise the
+| "Capture feedback into Playback" volume.
+'----
+
+First of all, the above sounds like this card wasn't full
+duplex, which probably isn't the case. (?)
+
+Apart from that, there are no MIC or MASTER controls, only
+ANALOG/SPDIF Front/Rear/Center/Unknown (without mute
+toggles), several recording source selectors (AC97, SPDIF,
+I2C, I2C Mixer, whatnot), the Capture feedback and a
+Mic/Line in selector.  How should I set all these up,
+especially what source should I set 'capture' on?
+-- 
+Thanks a lot,
+Feri.
 
 
 -------------------------------------------------------
