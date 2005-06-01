@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Wed, 1 Jun 2005 21:26:04 +0200
-Message-ID: <e2911bab6a45d5195c5d77bcca5a3a50@bugtrack.alsa-project.org>
+Date: Wed, 1 Jun 2005 21:47:09 +0200
+Message-ID: <5f9714c6046192ed5b8f3cff9bc14fdb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11E8D196
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 21:26:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6E54185
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 21:47:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               slackware 10
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              06-01-2005 21:26 CEST
+Last Modified:              06-01-2005 21:47 CEST
 ======================================================================
 Summary:                    intel8x0m does not work on asus a3n laptop
 Description: 
@@ -66,17 +66,6 @@ related to          0000890 no dialtone with modem &amp; strange lo...
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 05-30-05 00:05 
-----------------------------------------------------------------------
-There is new mixer stuff in linux-2.6.12-rc5, it is supported only by
-slmodem-2.9.9d from http://linmodems.technion.ac.il/packages/smartlink .
-Speaker support is added to alsa cvs today, but not supported yet by any
-slmodem-2.9.9x, if you would like to try there is the patch for
-slmodem-2.9.9d .
-
-BTW drop your /proc/asound/card1/codec97#97/mc97#1 .
-
-----------------------------------------------------------------------
  metal - 06-01-05 21:26 
 ----------------------------------------------------------------------
 I downloaded slmodem-2.9.9d. I do:
@@ -91,6 +80,12 @@ NO ANSWER
 In syslod
 darkstar kernel: codec_semaphore: semaphore is not ready [0x1][0x701300]
 darkstar kernel: codec_read 1: semaphore is not ready for register 0x54
+
+----------------------------------------------------------------------
+ sashak - 06-01-05 21:47 
+----------------------------------------------------------------------
+Use ATDT instead of ATDP (pulse dialing is unsupported by slmodemd --alsa),
+not "semaphore is not ready" is fixed in recent ALSA (1.0.9 and cvs).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +108,7 @@ Date Modified  Username       Field                    Change
 05-30-05 00:05 sashak         File Added: slmodem-2.9.9d-speaker.patch          
          
 06-01-05 21:26 metal          Note Added: 0004869                          
+06-01-05 21:47 sashak         Note Added: 0004870                          
 ======================================================================
 
 
