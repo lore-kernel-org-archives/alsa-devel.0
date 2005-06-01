@@ -1,20 +1,14 @@
-From: "Postbank DE" <support@postbank.de>
-Subject: Warnung der Banksicherheitsdienst hinsichtlich der Internet - Misstaeter
-Date: Wed, 1 Jun 2005 20:08:43 +0000
-Message-ID: <5166421117656523@fr-lim-C3-01-084119062084.chello.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
+Date: Wed, 1 Jun 2005 19:44:29 +0200
+Message-ID: <8731a42a1f1d92d3613178313b4337bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2B69514A
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 19:03:00 +0200 (MEST)
-Received: from fr-lim-C3-01-084119062084.chello.fr (unknown [84.119.62.84])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 60D0B75C35
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 19:02:58 +0200 (MEST)
-Received: from 110.39.195.163 (110.39.195.163[110.39.195.163])
-       by fr-lim-C3-01-084119062084.chello.fr (IMP) with HTTP
-       for <alsa-devel@alsa-project.org>; Wed, 1 Jun 2005 20:08:43 +0000
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84D1D185
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 19:44:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,121 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<HTML><html>
-<head>
-<title>Postbank</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows=
--1251">
-<style type=3D"text/css"><!--
-body, img {
-  border: 0px;
-  margin: 0px;
-}
 
-text, .text * td {
-	font-family:arial,geneva,helvetica,sans-serif;
-	font-size: 12px;
-	color: #000066;
-	font-weight: normal;
-}
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+======================================================================
+Reported By:                Cimmo
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1053
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 4 test 2
+Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+======================================================================
+Date Submitted:             04-14-2005 19:27 CEST
+Last Modified:              06-01-2005 19:44 CEST
+======================================================================
+Summary:                    cannot change line-in volume on MSI K8N Platinum
+that has SBLive! 24 bit
+Description: 
+I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack in the pci version of the sb live 24
+bit (see image).
 
-text a, .text * td a,
-text a:active, .text * td a:active,
-text a:visited, .text * td a:visited {=20
-	font-family: arial,geneva,helvetica,sans-serif;
-	font-weight: bold;
-	color: #000066;
-	text-decoration: underline;
-}
+The result is that I cannot use line-in for my soundcard becuase the
+volume is 0 and I cannot change it.
 
-text a:hover, .text * td a:hover {=20
-	font-family: arial,geneva,helvetica,sans-serif;
-	font-weight: bold;
-	color: #000066;
-	text-decoration: none;
-}
---></style>
-</head>
-<body bgcolor=3D"#ffffff">
-<table width=3D"100%" height=3D"100%" border=3D"0" cellpadding=3D"0" cell=
-spacing=3D"0" valign=3D"top">
-	<tr height=3D"100%">
-		<td width=3D"50%"></td>
-		<td width=3D"616" valign=3D"top">
-			<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" valign=3D"top"=
- width=3D"616" height=3D"100%">
-				<tr height=3D"10">
-					<td width=3D"616"><br><br></td>
-				</tr>
-				<tr height=3D"16">
-					<td width=3D"616" bgcolor=3D"#000066"></td>
-				</tr>
-				<tr height=3D"67">
-					<td width=3D"616"><img src=3D"http://203.72.48.39:8081/logo.jpg" wid=
-th=3D"616" height=3D"67" alt=3D""></td>
-				</tr>
-				<tr height=3D"16">
-					<td width=3D"616" bgcolor=3D"#cocceo"></td>
-				</tr>
-				<tr height=3D"360">
-					<td width=3D"616" valign=3D"top" class=3D"text">
-<br>
-Sehr geehrter Kunde!<br>
-Wir sind erfreut, Ihnen mitzuteilen, dass Internet - Ueberweisungen ueber=
- unsere Bank noch sicherer geworden sind!<br>=20
-Leider wurde von uns in der letzten Zeit, trotz der Anwendung von den TAN=
--Nummer, eine ganze Reihe der Mitteldiebstaehle von den Konten unserer Ku=
-nden durch den Internetzugriff festgestellt.<br>
-Zur Zeit kennen wir die Methodik nicht, die die Missetaeter fuer die Entw=
-endung der Angaben aus den TAN - Listen verwenden. Um die Missetaeter zu =
-ermitteln und die Geldmittel von unseren Kunden unversehrt zu erhalten, h=
-aben wir entschieden, aus den TAN - Tabellen von unseren Kunden zwei aufe=
-inanderfolgenden Codes zu entfernen.<br>=20
-Dafuer muessen Sie unsere Seite besuchen, wo Ihnen angeboten wird, eine s=
-pezielle Form auszufuellen. In dieser Form werden Sie ZWEI  FOLGENDE TAN =
-- CODEs, DIE SIE NOCH NICHT VERWENDET HABEN, EINTASTEN.<br>
-<br>
-<b>Achtung! Verwenden Sie diese zwei Codes in der Zukunft nicht mehr!</b>=
-<br>
-Wenn bei der Mittelueberweisung von Ihrem Konto gerade diese<br>
-TAN - Nummer verwendet werden, so wird es fuer uns bedeuten, dass von Ihr=
-em Konto eine nicht genehmigte Transitaktion ablaeuft und Ihr Konto wird =
-unverzueglich bis zur Klaerung der Zahlungsumstaende gesperrt.<br>   =20
-<br>
-<div align=3D"center"><a href=3D"http://203.64.237.96:8081/"><img src=3D"=
-http://203.72.48.39:8081/clickhere.gif" width=3D"150" height=3D"30" alt=3D=
-""></a></div>
-<br>
-Diese Massnahme dient Ihnen und Ihrem Geld zum Schutze! Wir bitten um Ent=
-schuldigung, wenn wir Ihnen die Unannehmlichkeiten bereitet haben.<br>=20
-<br>
-Mit freundlichen Gruessen,<br>
-Bankverwaltung
-<br><br>
-			=09
-					</td>
-				</tr>
-				<tr height=3D"16">
-					<td width=3D"616" bgcolor=3D"#cocceo"></td>
-				</tr>
-				<tr height=3D"16">
-					<td width=3D"616" align=3D"right" class=3D"text"><small>=A9 2005 Deu=
-tsche Postbank AG</small></td>
-				</tr>
-				<tr height=3D"100%">
-					<td width=3D"616"></td>
-				</tr>
-			</table>
-		</td>
-		<td width=3D"50%"></td>=09
-	</tr>
-</table>
-</body>
-</html>
-</HTML>
+The "Capture feedback into playback" in the mixer change the mic's volume.
+======================================================================
+
+----------------------------------------------------------------------
+ Cimmo - 05-30-05 14:57 
+----------------------------------------------------------------------
+Just done!
+Pressing M mute and unmute spdif out (in the screenshot n.2 was unmuted)
+still no line-in.
+
+I don't know if spdif-OUT is related to line-IN.
+There is also a SPDIF Unknown (last one in the screenshot) that is at 100%
+volume and unmuted...
+
+How can I help you to fix the bug?
+
+
+
+----------------------------------------------------------------------
+ Cimmo - 06-01-05 19:44 
+----------------------------------------------------------------------
+x jcdutton:
+have you made specific changes to recognize two different jacks (line-in
+and mic) in MSI K8N?
+If there are some details I can provide just tell me...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-14-05 19:27 Cimmo          New Issue                                    
+04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
+04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
+04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
+FC4-x86_64 that contains 2.6.12rc2
+04-14-05 21:42 jcdutton       Note Added: 0004495                          
+04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
+05-11-05 15:05 Cimmo          Note Added: 0004636                          
+05-14-05 13:14 pelias         Note Added: 0004657                          
+05-14-05 15:48 jcdutton       Note Added: 0004659                          
+05-20-05 00:14 dwh            Note Added: 0004697                          
+05-28-05 12:16 jcdutton       Note Added: 0004764                          
+05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
+05-30-05 12:57 Cimmo          Note Added: 0004805                          
+05-30-05 12:58 Cimmo          File Added: alsamixer.jpg                    
+05-30-05 14:33 jcdutton       Note Added: 0004814                          
+05-30-05 14:56 Cimmo          Note Added: 0004816                          
+05-30-05 14:57 Cimmo          Note Edited: 0004816                         
+06-01-05 19:44 Cimmo          Note Added: 0004867                          
+======================================================================
+
 
 
 
