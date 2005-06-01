@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Wed, 1 Jun 2005 16:53:31 +0200
-Message-ID: <a1ef0cd5bba786f3f9403ae7c7965818@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001149]: CPU overload error and arts exits
+Date: Wed, 1 Jun 2005 16:45:55 +0200
+Message-ID: <6888e59c7173f1c5e30c7e55147539ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C29117C
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 16:53:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FABF193
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 16:45:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1149> 
 ======================================================================
-Reported By:                vedran
+Reported By:                anandrajan
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Issue ID:                   1149
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
+Distribution:               SuSE 9.3 Pro x86-64 version
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              06-01-2005 16:53 CEST
+Date Submitted:             06-01-2005 16:35 CEST
+Last Modified:              06-01-2005 16:45 CEST
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    CPU overload error and arts exits
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
+Hardware: A7V Deluxe with onboard Realtek ALC 850 sound and Marvel gigabit
+ethernet, AMD Athlon 64 3000+, 1GB DDR 400, two IDE disks, NEC DVD RW,
+Plextor CD-RW, ELSA GLoria III nVidia Quadro2 Pro videocard, Soundblaster
+Live PCI soundcard
 
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
+Software: SuSE 9.3 Pro x86-64 version, KDE 3.4, alsa 1.0.8 drivers
 
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
-
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
-
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
+Originally I had configured both the onboard Realtek and the Soundblaster
+cards. Then I removed the Realtek from the configuration. Unfortunately
+and even when full duplex is not checked in KDE 3.4, I get a CPU overload
+error and then arts exits. If I monitor what's happening, I see the CPU
+usage in arts increasing until it maxes out the CPU after which I get this
+error. The arts page claims that this is a driver issue.
 ======================================================================
 
 ----------------------------------------------------------------------
- vedran - 05-30-05 13:21 
+ tiwai - 06-01-05 16:45 
 ----------------------------------------------------------------------
-Has anybody looked at this bug? What's the status?
-
-----------------------------------------------------------------------
- tiwai - 06-01-05 16:53 
-----------------------------------------------------------------------
-No progress.  We have no technical information.
+Try 1.0.9.  This should have been fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
+06-01-05 16:35 anandrajan     New Issue                                    
+06-01-05 16:35 anandrajan     Distribution              => SuSE 9.3 Pro x86-64
+version
+06-01-05 16:35 anandrajan     Kernel Version            => 2.6.11          
+06-01-05 16:45 tiwai          Note Added: 0004859                          
 ======================================================================
 
 
