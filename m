@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
-Date: Wed, 1 Jun 2005 20:38:33 +0200
-Message-ID: <fac1f4b23c2fc45389ab70a43d1e3f52@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
+Date: Wed, 1 Jun 2005 21:26:04 +0200
+Message-ID: <e2911bab6a45d5195c5d77bcca5a3a50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E07B17C
-	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 20:38:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11E8D196
+	for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2005 21:26:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,122 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=373> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
 ======================================================================
-Reported By:                damage
-Assigned To:                
+Reported By:                mart
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   373
-Category:                   PCI - via82xx
+Issue ID:                   857
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Suse Linux 9.1
-Kernel Version:             2.6.5-7.95-default
+Status:                     assigned
+Distribution:               slackware 10
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-09-2004 21:37 CEST
-Last Modified:              06-01-2005 20:38 CEST
+Date Submitted:             01-29-2005 16:43 CET
+Last Modified:              06-01-2005 21:26 CEST
 ======================================================================
-Summary:                    Sound in Quake 3 does not work
+Summary:                    intel8x0m does not work on asus a3n laptop
 Description: 
-I already tried several things to get sound working in Quake 3. It doesn't
+with this laptop, the sound by intel8x0 works ok, but the modem with the 
+alsa-driver intel8x0m and slmodemd 2.9.10 does not.
+slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
+when i try to dial a number (i tried with kppp and minicom) the modem does
+dial, but after a while it quits with a NO ANSWER error.
+making some exprtiments, i found that when i connect under windows, if i
+listen to the phone connected to the same line, i can hear the tones
+gererated by the modem, but when i dial under linux i can't hear anything,
+so i think this is a driver issue, the driver that can't make the modem
+produce any sound.
 
-work. Sound in other applications, such as xmms, works without problems.
-My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
-1GB 
-RAM, VIA 8237 on board sound
+this is what lspci tells me on that modem:
+00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
 
-I tried it with the ALSA version that comes with the Default Suse Kernel,
-then 
-with version 1.05a and at the moment I've installed a version from CVS two
-
-days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't 
-resolve the issue.
-
-Without changing anything in the ALSA configuration Quake 3 starts and the
-
-game runs without problems, but there is no sound. The following error 
-message is displayed when Quake 3 starts.
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less 
-performance code)
-/dev/dsp: Input/output error
-Could not mmap /dev/dsp
-------------------------------------
-
-Enabling direct access to the OSS playback device and disabling the OSS 
-capture device with 
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
-I get sound in the Quake 3 menu, but as soon as I enter a map the game
-hangs 
-and the only way to get back to X is to kill the process.
-
-I also tried the user space ALSA OSS wrapper library. With this library I
-only 
-get some crackling noises in the menu and in the game.
-
-With xrun_debug 1 I get a few of the following messages (at least with the
-
-actually installed drivers from CVS) in the system log. These messages are
-
-also there when I run other applications than Quake 3.
-Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected 
-hw_pointer value [1] (stream = 0, delta: -1024, max jitter = 8192): wrong
-
-interrupt acknowledge?
-Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid 
-via82xx_cur_ptr, using last valid pointer
-Jul  8 19:08:00 mordor last message repeated 194 times
-
-I don't know whether that has something to do with the problem.
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000509 Conexant Moden &quot;not ready&quot;
+related to          0000890 no dialtone with modem &amp; strange lo...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-01-05 17:41 
+ sashak - 05-30-05 00:05 
 ----------------------------------------------------------------------
-Check the kernel message whether via82xx informs about dxs_support option. 
-If you don't see it, the proper dxs_support value is already defined in
-the driver.  Otherwise, you'll need to set it manually.
+There is new mixer stuff in linux-2.6.12-rc5, it is supported only by
+slmodem-2.9.9d from http://linmodems.technion.ac.il/packages/smartlink .
+Speaker support is added to alsa cvs today, but not supported yet by any
+slmodem-2.9.9x, if you would like to try there is the patch for
+slmodem-2.9.9d .
 
-In most cases, dxs_support=4 (5 is better in 1.0.9 release) should work. 
-With the old boards, you might need to set 1, but this must be rare.
-
-Once you set dxs_support=1, 4, or 5, this sample rate problem won't happen
-any more.
+BTW drop your /proc/asound/card1/codec97#97/mc97#1 .
 
 ----------------------------------------------------------------------
- Xero - 06-01-05 20:38 
+ metal - 06-01-05 21:26 
 ----------------------------------------------------------------------
-I don't have a via card, that solution just lets via cards work with sample
-rates other than 48khz, thus working around this issue, but not actually
-fixing it, as it's an issue with quake's resampling...
+I downloaded slmodem-2.9.9d. I do:
+slmodemd --country=RUSSIA --alsa hw:1
+minicom
+atz
+ok
+atx3
+ok
+atdp7893333
+NO ANSWER
+In syslod
+darkstar kernel: codec_semaphore: semaphore is not ready [0x1][0x701300]
+darkstar kernel: codec_read 1: semaphore is not ready for register 0x54
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 21:37 damage         New Issue                                    
-07-09-04 21:37 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:37 damage         Distribution              => Suse Linux 9.1  
-07-09-04 21:37 damage         Kernel Version            => 2.6.5-7.95-default
-07-09-04 21:41 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:46 damage         Note Added: 0001396                          
-07-09-04 21:50 damage         Issue Monitored: damage                      
-07-11-04 00:04 tokugawa       Note Added: 0001406                          
-07-11-04 02:35 damage         Note Added: 0001407                          
-07-18-04 19:13 damage         Note Added: 0001459                          
-07-26-04 16:20 Deelight       Note Added: 0001474                          
-10-27-04 00:37 badbunny       Note Added: 0002268                          
-04-09-05 16:42 jdthood        Status                   new => acknowledged 
-04-09-05 16:42 jdthood        Description Updated                          
-04-09-05 16:42 jdthood        Additional Information Updated                    
-05-29-05 08:07 Xero           Note Added: 0004780                          
-06-01-05 17:41 tiwai          Note Added: 0004864                          
-06-01-05 20:38 Xero           Note Added: 0004868                          
+01-29-05 16:43 mart           New Issue                                    
+01-29-05 16:43 mart           Distribution              => slackware 10    
+01-29-05 16:43 mart           Kernel Version            => 2.6.10          
+01-29-05 16:44 mart           Issue Monitored: mart                        
+02-03-05 21:55 mart           Note Added: 0003494                          
+02-03-05 23:21 sashak         Note Added: 0003495                          
+02-04-05 13:10 mart           Note Added: 0003501                          
+03-02-05 14:12 perex          Relationship added       related to 0000509  
+03-02-05 15:19 perex          Relationship added       related to 0000890  
+03-24-05 20:25 metal          Note Added: 0004200                          
+04-03-05 01:49 sashak         Note Added: 0004301                          
+04-05-05 21:29 metal          Note Added: 0004342                          
+04-14-05 11:55 sashak         Note Added: 0004486                          
+05-29-05 21:45 metal          Note Added: 0004791                          
+05-30-05 00:05 sashak         Note Added: 0004794                          
+05-30-05 00:05 sashak         File Added: slmodem-2.9.9d-speaker.patch          
+         
+06-01-05 21:26 metal          Note Added: 0004869                          
 ======================================================================
 
 
