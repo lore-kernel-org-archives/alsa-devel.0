@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001149]: CPU overload error and arts exits
-Date: Thu, 2 Jun 2005 15:26:06 +0200
-Message-ID: <1185db2efb7f79235c8368624ecdabeb@bugtrack.alsa-project.org>
+Date: Thu, 2 Jun 2005 15:29:37 +0200
+Message-ID: <aaf1bab24336a93359650755d040fcc3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D43031A9
-	for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2005 15:26:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E97BA1A9
+	for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2005 15:29:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1149> 
 ======================================================================
 Reported By:                anandrajan
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1149
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               SuSE 9.3 Pro x86-64 version
 Kernel Version:             2.6.11
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
 Date Submitted:             06-01-2005 16:35 CEST
-Last Modified:              06-02-2005 15:26 CEST
+Last Modified:              06-02-2005 15:29 CEST
 ======================================================================
 Summary:                    CPU overload error and arts exits
 Description: 
@@ -58,11 +60,6 @@ error and then arts exits. If I monitor what's happening, I see the CPU
 usage in arts increasing until it maxes out the CPU after which I get this
 error. The arts page claims that this is a driver issue.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-01-05 16:45 
-----------------------------------------------------------------------
-Try 1.0.9.  This should have been fixed.
 
 ----------------------------------------------------------------------
  anandrajan - 06-02-05 15:26 
@@ -122,6 +119,12 @@ alsa-devel-1.0.9-5.1
 alsamixergui-0.9.0rc1-544
 alsa-tools-gui-1.0.9-0.pm.1
 
+----------------------------------------------------------------------
+ tiwai - 06-02-05 15:29 
+----------------------------------------------------------------------
+It's a known bug of arts, I believe.  Nothing can be done from alsa
+driver/lib side...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -131,6 +134,10 @@ version
 06-01-05 16:35 anandrajan     Kernel Version            => 2.6.11          
 06-01-05 16:45 tiwai          Note Added: 0004859                          
 06-02-05 15:26 anandrajan     Note Added: 0004877                          
+06-02-05 15:29 tiwai          Status                   new => resolved     
+06-02-05 15:29 tiwai          Resolution               open => won't fix   
+06-02-05 15:29 tiwai          Assigned To               => tiwai           
+06-02-05 15:29 tiwai          Note Added: 0004878                          
 ======================================================================
 
 
