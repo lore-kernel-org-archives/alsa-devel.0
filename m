@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001151]: Audigy sampling rate seems off
-Date: Fri, 3 Jun 2005 00:29:44 +0200
-Message-ID: <a56c1192643968371f454b665834f43e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Fri, 3 Jun 2005 00:31:48 +0200
+Message-ID: <a8f2abb9b4b49c9e9cb476667c99ff55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C6B81C8
-	for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2005 00:29:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 670A71C8
+	for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2005 00:31:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1151> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
 ======================================================================
-Reported By:                felix
+Reported By:                vedran
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1151
-Category:                   PCI - emu10k1
+Issue ID:                   1083
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Suse 9.1
-Kernel Version:             2.6.5-7.147-default
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
 ======================================================================
-Date Submitted:             06-02-2005 23:07 CEST
-Last Modified:              06-03-2005 00:29 CEST
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              06-03-2005 00:31 CEST
 ======================================================================
-Summary:                    Audigy sampling rate seems off
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
 Description: 
-I'm doing an experiment that involves generating a tone, sending it out
-the
-sound card and into a (passive) circuit, and recording from the circuit
-back
-into line in at the same time.
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
 
-When I play a sample: mono, 8kHz sample rate, containing a synthetic 1kHz
-sin signal, the recording I get is of a signal 1000.12Hz. If I send 100Hz,
-I get back 100.012Hz. I use 'snd' to do a 256K-point FFT across a 10
-second sample just to be sure. I've also verified this using FFTW and
-correlation-based programs of my own.
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
 
-I've also verified that the reference 1kHz and 100Hz signals are exact.
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
 
-As a sanity check, I tried the same experiment on the built-in sound card
-on that same PC. The signals come back correct.
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
 
-Note the seeming coincidence that the frequency of the signal coming back
-is 1/8000 higher than the signal output.
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
 
-I've never seen anything like it. Not that I've been looking before...
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001094 nforce4 - optical spdif out not working
 ======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 06-03-05 00:29 
+ tiwai - 06-01-05 16:53 
 ----------------------------------------------------------------------
-If it's rather off by 1/8192 (8192 is 2 to 13th power), then it'd look very
-much programmatic.
+No progress.  We have no technical information.
 
-Just an observation - I know nothing about "audigy".
+----------------------------------------------------------------------
+ Human - 06-03-05 00:31 
+----------------------------------------------------------------------
+Bug 1094, which discusses the nForce4 (CK804 chipset with ALC850) was
+marked as a dupe of this one, so I'll post here regarding the nForce4.
+
+What information/equipment is required to get the nForce4 S/PDIF working
+in ALSA?  Does the right ALSA developer have an nForce4 motherboard?  If
+not, maybe one of us can lend a spare board.  If there's anything any of
+us nForce4 users can do to help get support in ALSA, please let us know.
+
+I've tried the latest stable ALSA (1.0.9/1.0.9a as of this writing) and
+can only get analog sound working on my MSI K8N Neo4 Platinum.  I've also
+tried it on a Gigabyte GA-K8NF-9 board with the same results.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-02-05 23:07 felix          New Issue                                    
-06-02-05 23:07 felix          Distribution              => Suse 9.1        
-06-02-05 23:07 felix          Kernel Version            => 2.6.5-7.147-default
-06-03-05 00:29 sst4           Note Added: 0004879                          
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+05-30-05 13:21 vedran         Note Added: 0004809                          
+06-01-05 16:53 tiwai          Note Added: 0004862                          
+06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
+06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
+06-03-05 00:31 Human          Note Added: 0004880                          
 ======================================================================
 
 
