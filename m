@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001151]: Audigy sampling rate seems off
-Date: Thu, 2 Jun 2005 23:07:56 +0200
-Message-ID: <178630e19238fc6fc8800261ef7c3a10@bugtrack.alsa-project.org>
+Date: Fri, 3 Jun 2005 00:29:44 +0200
+Message-ID: <a56c1192643968371f454b665834f43e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C5F91CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2005 23:07:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C6B81C8
+	for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2005 00:29:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1151> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Suse 9.1
 Kernel Version:             2.6.5-7.147-default
 ======================================================================
 Date Submitted:             06-02-2005 23:07 CEST
-Last Modified:              06-02-2005 23:07 CEST
+Last Modified:              06-03-2005 00:29 CEST
 ======================================================================
 Summary:                    Audigy sampling rate seems off
 Description: 
@@ -67,12 +67,21 @@ is 1/8000 higher than the signal output.
 I've never seen anything like it. Not that I've been looking before...
 ======================================================================
 
+----------------------------------------------------------------------
+ sst4 - 06-03-05 00:29 
+----------------------------------------------------------------------
+If it's rather off by 1/8192 (8192 is 2 to 13th power), then it'd look very
+much programmatic.
+
+Just an observation - I know nothing about "audigy".
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-02-05 23:07 felix          New Issue                                    
 06-02-05 23:07 felix          Distribution              => Suse 9.1        
 06-02-05 23:07 felix          Kernel Version            => 2.6.5-7.147-default
+06-03-05 00:29 sst4           Note Added: 0004879                          
 ======================================================================
 
 
