@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Thu, 2 Jun 2005 10:42:33 +0200
-Message-ID: <24af61c77943c443d86799793a8342e3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001132]: Realtek ALC260, snd-hda-intel, 2.4.21-32, catastrophic CrAsH
+Date: Thu, 2 Jun 2005 12:03:47 +0200
+Message-ID: <766f502531fabb2641007476c4480432@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5069B19A
-	for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2005 10:42:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4B0C19A
+	for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2005 12:03:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1132> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                perex
+Reported By:                speedking
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1132
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     resolved
+Distribution:               RHEL 3 U5 gold
+Kernel Version:             2.4.21-32
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              06-02-2005 10:42 CEST
+Date Submitted:             05-28-2005 02:02 CEST
+Last Modified:              06-02-2005 12:03 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    Realtek ALC260, snd-hda-intel, 2.4.21-32,
+catastrophic CrAsH
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+system hangs when either 'alsaconf' runs or you attempt a 'modprobe
+snd-hda-intel'
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+System is a HP xw4300 workstation, Intel based, running an Azalia
+compliant" "Intel High definition Audio" Realtek ALC 260 chip onboard.
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-01-05 16:58 
+ speedking - 06-02-05 00:54 
 ----------------------------------------------------------------------
-I suspect it's not a Conexant codec.  The driver seems to fail detection of
-the codec.
+tiwai,
 
-This kind of problems is often related with ACPI.  Try to tune the ACPI
-boot setting.
+I have a proposal for you.  How do I contact you in person?  Please send
+me an email to my account email address....should you have access to it.
+
+Thanks...
 
 ----------------------------------------------------------------------
- liangalei - 06-02-05 10:42 
+ tiwai - 06-02-05 12:03 
 ----------------------------------------------------------------------
-Thanks for reply. Can you give more hints: about how to tune the ACPI boot
-? (I have no idea at all).
+You're reporting another problem.  Please open another bug.
 
-By way, I call Benq's tech-support. Because they don't support Linux for
-Benq S52, so no much valuable info from them, just they tell sound chip is
-Conexant CS20551 (maybe mis-hear, it should be CX20551). And when I ask
-him if it refers to modem chip, he don't know. --- I search this chip, but
-no result. Q: is it a AMC'97 chip?
+The silent CD is a known problem, and I have no idea yet.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
+05-28-05 02:02 speedking      New Issue                                    
+05-28-05 02:02 speedking      Distribution              => RHEL 3 U5 gold  
+05-28-05 02:02 speedking      Kernel Version            => 2.4.21-32       
+05-31-05 12:58 tiwai          Status                   assigned => resolved
+05-31-05 12:58 tiwai          Resolution               open => fixed       
+05-31-05 12:58 tiwai          Note Added: 0004825                          
+05-31-05 19:10 speedking      Status                   resolved => feedback
+05-31-05 19:10 speedking      Resolution               fixed => reopened   
+05-31-05 19:10 speedking      Note Added: 0004848                          
+05-31-05 19:11 speedking      Note Edited: 0004848                         
+05-31-05 19:14 speedking      Note Edited: 0004848                         
+05-31-05 19:15 tiwai          Note Added: 0004849                          
+05-31-05 19:23 speedking      Note Added: 0004850                          
+05-31-05 19:26 speedking      Note Edited: 0004850                         
+05-31-05 19:26 tiwai          Note Added: 0004851                          
+05-31-05 19:44 speedking      Note Added: 0004852                          
+05-31-05 19:51 tiwai          Note Added: 0004853                          
+05-31-05 20:11 speedking      Note Added: 0004854                          
+05-31-05 22:43 speedking      Note Added: 0004856                          
+05-31-05 22:46 speedking      Note Edited: 0004856                         
+06-02-05 00:27 speedking      Note Added: 0004872                          
+06-02-05 00:54 speedking      Note Added: 0004873                          
+06-02-05 12:03 tiwai          Status                   feedback => resolved
+06-02-05 12:03 tiwai          Resolution               reopened => fixed   
+06-02-05 12:03 tiwai          Note Added: 0004876                          
 ======================================================================
 
 
