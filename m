@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Fri, 3 Jun 2005 07:40:45 +0200
-Message-ID: <5bc273aa1babc015d11b5de8f23fdaa1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001151]: Audigy sampling rate seems off
+Date: Fri, 3 Jun 2005 10:59:19 +0200
+Message-ID: <965e9c83c8aa650cc2c20deb97b92877@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 819151BB
-	for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2005 07:40:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF02E1A7
+	for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2005 10:59:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1151> 
 ======================================================================
-Reported By:                yure
+Reported By:                felix
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   881
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1151
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Suse 9.1
+Kernel Version:             2.6.5-7.147-default
 ======================================================================
-Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              06-03-2005 07:40 CEST
+Date Submitted:             06-02-2005 23:07 CEST
+Last Modified:              06-03-2005 10:59 CEST
 ======================================================================
-Summary:                    Distorted sound with enabled dmix plugin
+Summary:                    Audigy sampling rate seems off
 Description: 
-After 10-20 minutes listening music with xmms or beep-media-player I hear
-distorted sound. Appear noise.
-This problem is appear when enabled dmix plugin through configuration file
-~/.asoundrc.
+I'm doing an experiment that involves generating a tone, sending it out
+the
+sound card and into a (passive) circuit, and recording from the circuit
+back
+into line in at the same time.
+
+When I play a sample: mono, 8kHz sample rate, containing a synthetic 1kHz
+sin signal, the recording I get is of a signal 1000.12Hz. If I send 100Hz,
+I get back 100.012Hz. I use 'snd' to do a 256K-point FFT across a 10
+second sample just to be sure. I've also verified this using FFTW and
+correlation-based programs of my own.
+
+I've also verified that the reference 1kHz and 100Hz signals are exact.
+
+As a sanity check, I tried the same experiment on the built-in sound card
+on that same PC. The signals come back correct.
+
+Note the seeming coincidence that the frequency of the signal coming back
+is 1/8000 higher than the signal output.
+
+I've never seen anything like it. Not that I've been looking before...
 ======================================================================
 
 ----------------------------------------------------------------------
- Xero - 05-29-05 08:29 
+ sst4 - 06-03-05 00:29 
 ----------------------------------------------------------------------
-hrm I should mention that I had upgraded to alsa 1.0.9 as well so that
-MIGHT have been what fixed it, I see there was some commits made on the
-19th. I was using 1.0.9rc3...I've switched back to 96000 and am going to
-see if this happens again...
+If it's rather off by 1/8192 (8192 is 2 to 13th power), then it'd look very
+much programmatic.
+
+Just an observation - I know nothing about "audigy".
 
 ----------------------------------------------------------------------
- Xero - 06-03-05 07:40 
+ perex - 06-03-05 10:59 
 ----------------------------------------------------------------------
-this doesn't happen as much with alsa 1.0.9 but still happens occasionally.
-I also would get random clicks and pops which was pretty annoying by
-itself. I still haven't had this issue when running at a sample rate that
-is a multiple of 44100...my card is an echo mia midi btw...
+Note that the routine which calculates "pitch" for playback is in
+alsa-kernel/pci/emu10k1/emupcm.c - emu10k1_calc_pitch_target(). It's quite
+simple, so you may do experiments with it.
+
+Also, upgrade to latest ALSA 1.0.9, there are some cleanups for the sample
+cache, and it might be also related.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 12:25 yure           New Issue                                    
-02-04-05 10:39 yure           Note Added: 0003497                          
-02-04-05 10:39 yure           Issue Monitored: yure                        
-02-04-05 14:53 tiwai          Note Added: 0003506                          
-02-04-05 15:30 yure           Note Added: 0003508                          
-02-04-05 15:36 yure           Note Added: 0003509                          
-02-23-05 13:35 yure           Note Added: 0003711                          
-02-23-05 19:23 tiwai          Note Added: 0003713                          
-02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
-
-02-23-05 19:24 tiwai          Note Added: 0003714                          
-02-23-05 19:33 tiwai          Note Added: 0003715                          
-02-24-05 22:09 tiwai          Note Added: 0003729                          
-02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
-       
-02-25-05 10:36 yure           Note Added: 0003732                          
-02-28-05 15:00 tvignaud       Note Added: 0003744                          
-02-28-05 15:22 yure           Note Added: 0003745                          
-02-28-05 15:26 warly          Note Added: 0003746                          
-03-11-05 13:06 tvignaud       Note Added: 0003887                          
-03-11-05 16:17 tiwai          Note Added: 0003891                          
-03-23-05 20:46 tiwai          Note Added: 0004187                          
-03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
-03-25-05 14:56 tvignaud       Note Added: 0004206                          
-03-29-05 16:21 tiwai          Note Added: 0004246                          
-04-04-05 16:15 yure           Note Added: 0004327                          
-04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
-05-29-05 08:23 Xero           Note Added: 0004781                          
-05-29-05 08:29 Xero           Note Added: 0004782                          
-06-03-05 07:40 Xero           Note Added: 0004882                          
+06-02-05 23:07 felix          New Issue                                    
+06-02-05 23:07 felix          Distribution              => Suse 9.1        
+06-02-05 23:07 felix          Kernel Version            => 2.6.5-7.147-default
+06-03-05 00:29 sst4           Note Added: 0004879                          
+06-03-05 10:59 perex          Note Added: 0004883                          
 ======================================================================
 
 
