@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001133]: openal gives no sound with alsa driver
-Date: Fri, 3 Jun 2005 05:29:34 +0200
-Message-ID: <9283ce3eb920ee9e07f900f615e4705e@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Fri, 3 Jun 2005 07:40:45 +0200
+Message-ID: <5bc273aa1babc015d11b5de8f23fdaa1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCFFF1BD
-	for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2005 05:29:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 819151BB
+	for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2005 07:40:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1133> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                qwer1234
+Reported By:                yure
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1133
-Category:                   PCI - via82xx
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               slackware-current
-Kernel Version:             2.6.12-rc5
 ======================================================================
-Date Submitted:             05-28-2005 07:22 CEST
-Last Modified:              06-03-2005 05:29 CEST
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              06-03-2005 07:40 CEST
 ======================================================================
-Summary:                    openal gives no sound with alsa driver
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-When I add this to ~/.openalrc
- (define devices '(alsa))
- (define alsa-device "default")
- (define speaker-num 2)
-I get no sound with openalrc.
-I use dmix plugin.
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- qwer1234 - 06-03-05 05:29 
+ Xero - 05-29-05 08:29 
 ----------------------------------------------------------------------
-I was warking with this bug and 
-I have manage to resolve it.
-I have wrote a patch for openal.
-This patch works just for my system 
-configuration, or similar. I don't
-know thow if it is alsa bug or openal.
+hrm I should mention that I had upgraded to alsa 1.0.9 as well so that
+MIGHT have been what fixed it, I see there was some commits made on the
+19th. I was using 1.0.9rc3...I've switched back to 96000 and am going to
+see if this happens again...
 
-Rather it's openal.
-I will try to figure out what is wrong.
+----------------------------------------------------------------------
+ Xero - 06-03-05 07:40 
+----------------------------------------------------------------------
+this doesn't happen as much with alsa 1.0.9 but still happens occasionally.
+I also would get random clicks and pops which was pretty annoying by
+itself. I still haven't had this issue when running at a sample rate that
+is a multiple of 44100...my card is an echo mia midi btw...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 07:22 qwer1234       New Issue                                    
-05-28-05 07:22 qwer1234       Distribution              => slackware-current
-05-28-05 07:22 qwer1234       Kernel Version            => 2.6.12-rc5      
-05-29-05 13:15 qwer1234       Issue Monitored: qwer1234                    
-06-03-05 05:29 qwer1234       Note Added: 0004881                          
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
+03-11-05 16:17 tiwai          Note Added: 0003891                          
+03-23-05 20:46 tiwai          Note Added: 0004187                          
+03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
+03-25-05 14:56 tvignaud       Note Added: 0004206                          
+03-29-05 16:21 tiwai          Note Added: 0004246                          
+04-04-05 16:15 yure           Note Added: 0004327                          
+04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
+05-29-05 08:23 Xero           Note Added: 0004781                          
+05-29-05 08:29 Xero           Note Added: 0004782                          
+06-03-05 07:40 Xero           Note Added: 0004882                          
 ======================================================================
 
 
