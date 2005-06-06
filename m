@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000960]: IBM T42p - 82801DB (ICH4) Not working properly
-Date: Mon, 6 Jun 2005 11:01:40 +0200
-Message-ID: <3ff01c67101c6932e45ccbf10e7daab5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001150]: Insufficient info in INSTALL file
+Date: Mon, 6 Jun 2005 11:09:52 +0200
+Message-ID: <1f7751f4e6eed940077dcf76b7d604f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A6ED189
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:01:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7F79189
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:09:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue is now in status NEW (again)
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=960> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1150> 
 ======================================================================
-Reported By:                marcusvfx
-Assigned To:                
+Reported By:                davidramirez
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   960
-Category:                   PCI - intel8x0
+Issue ID:                   1150
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware-Current
-Kernel Version:             2.6.11
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-03-2005 21:15 CET
-Last Modified:              06-06-2005 11:01 CEST
+Date Submitted:             06-01-2005 20:57 CEST
+Last Modified:              06-06-2005 11:09 CEST
 ======================================================================
-Summary:                    IBM T42p - 82801DB (ICH4) Not working properly
+Summary:                    Insufficient info in INSTALL file
 Description: 
-As in reference to the kernel discussion about the 8x0 driver, the above
-does not work when playing through the port replicator jack.  To get sound
-to work through the speakers, the "headphone jack sense" must be turned
-off.  If that is the case, the internal speakers on the T42p do work and
-so will the headphones, but the port replicator output jack will not.  In
-fact, there is no fix that I have uncovered under the 2.6.11 kernel to get
-the port replicator output jack to work.
+Lines 82+83 of the INSTALL file (in alsa-driver-1.0.9) state that one
+should "edit the kernel module config" but it doesn't say what to modify
+there...?
 
-The alsa-cvs (as of 3 March) driver was compiled into the 2.6.11 kernel
-but it did not resolve the issue above.
+Had same doubt with 1.0.8
 
-This was not the case in previous kernels and it was introduced somewhere
-after the 2.6.10-2.6.11 releases.  With 2.6.10 and earlier kernels, the
-headphone jack on the laptop, internal speakers, and port replicator
-output jack will work with the 'headphone jack sense' set to on.
+I guess that for this reason I cant't get a working sound card.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:39 
+ perex - 06-06-05 11:09 
 ----------------------------------------------------------------------
-Does ALSA 1.0.9a fix this problem?
+I added a note about alsaconf script (in the alsa-utils package) to
+alsa-driver/INSTALL now. Anyway, fixes / examples for documentation are
+always appreciated.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-03-05 21:15 marcusvfx      New Issue                                    
-03-03-05 21:15 marcusvfx      Distribution              => Slackware-Current
-03-03-05 21:15 marcusvfx      Kernel Version            => 2.6.11          
-06-06-05 10:39 perex          Note Added: 0004896                          
-06-06-05 10:39 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-06-05 11:01 perex          Assigned To              perex =>            
-06-06-05 11:01 perex          Status                   assigned => new     
+06-01-05 20:57 davidramirez   New Issue                                    
+06-06-05 11:09 perex          Status                   new => resolved     
+06-06-05 11:09 perex          Resolution               open => fixed       
+06-06-05 11:09 perex          Assigned To               => perex           
+06-06-05 11:09 perex          Note Added: 0004903                          
 ======================================================================
 
 
