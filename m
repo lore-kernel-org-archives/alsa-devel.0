@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000932]: locked at module probe
-Date: Mon, 6 Jun 2005 10:53:34 +0200
-Message-ID: <6b20a7fe71fc78744ca761282a28c3df@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
+Date: Mon, 6 Jun 2005 10:58:38 +0200
+Message-ID: <1be3bbe1d03045531bf14a0c53432440@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FCA3181
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:53:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F034214E
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:58:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=932> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
 ======================================================================
-Reported By:                jeanseb
+Reported By:                twinsen
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   932
+Issue ID:                   1014
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian
-Kernel Version:             2.6
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               custom: PXA255/uClibc
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             02-22-2005 11:03 CET
-Last Modified:              06-06-2005 10:53 CEST
+Date Submitted:             03-25-2005 00:04 CET
+Last Modified:              06-06-2005 10:58 CEST
 ======================================================================
-Summary:                    locked at module probe
+Summary:                    card detect function is never called in pxa2xx-ac97
 Description: 
-oprobing with fast spinlock an prempt anable smp kernel hang.
-This is a spin lock problem and I've fixed it in the isisalsa version.
+Hi there,
+I have a some problem with this driver. The environment:
+ALSA source: alsa-driver-1.0.9rc1
+Kernel source: linux-2.6.11.5 (stock)
 
+I cross compiled the kernel and the alsa source for arm target with a 
+toolchain from handhelds.org. I used the following configure command
+line:
 
+./configure --with-cards=pxa2xx-ac97 
+--with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
+
+config runs without problems, when running make gcc complains about
+"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
+orig: include/linux/pci.h), but compiles ok. 
+
+The problem:
+I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
+snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
+/proc/asound/cards.
+I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
+module init function registers the new driver:
+driver_register(&pxa2xx_ac97_driver);
+
+The driver struct contains a probe function:
+.probe          = pxa2xx_ac97_probe,
+but it's never called, so the driver doesn't even check the existance of
+the sound card. Why is that? Did I srcew up the cross compiling?
+Thanks:
+	George
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 21:50 
+ tiwai - 04-11-05 18:24 
 ----------------------------------------------------------------------
-Submitter: Was this fixed in the latest ALSA release?
+avail_min=0 is the culprit.  I don't know yet why it's set so...
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:53 
+ perex - 06-06-05 10:58 
 ----------------------------------------------------------------------
-No response from reporter.
+What prints the command 'aplay -v /tmp/music.wav' ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 11:03 jeanseb        New Issue                                    
-02-22-05 11:03 jeanseb        Distribution              => debian          
-02-22-05 11:03 jeanseb        Kernel Version            => 2.6             
-02-22-05 14:18 tiwai          Note Added: 0003697                          
-02-22-05 14:19 tiwai          Note Added: 0003698                          
-04-13-05 21:50 jdthood        Note Added: 0004477                          
-06-06-05 10:53 perex          Status                   assigned => resolved
-06-06-05 10:53 perex          Resolution               open => fixed       
-06-06-05 10:53 perex          Note Added: 0004899                          
+03-25-05 00:04 twinsen        New Issue                                    
+03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
+03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
+03-29-05 16:25 tiwai          Note Added: 0004247                          
+03-29-05 23:43 twinsen        Note Added: 0004259                          
+04-03-05 21:47 twinsen        Note Added: 0004321                          
+04-03-05 22:28 twinsen        Note Added: 0004322                          
+04-04-05 20:51 twinsen        Note Added: 0004330                          
+04-06-05 19:20 twinsen        Note Added: 0004351                          
+04-07-05 16:46 tiwai          Note Added: 0004359                          
+04-10-05 17:25 twinsen        Note Added: 0004439                          
+04-11-05 18:24 tiwai          Note Added: 0004443                          
+06-06-05 10:58 perex          Note Added: 0004900                          
 ======================================================================
 
 
