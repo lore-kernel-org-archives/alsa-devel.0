@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000908]: suport for ESI Juli@ - ICE1724
-Date: Mon, 6 Jun 2005 10:41:11 +0200
-Message-ID: <b8cf9014051ab2ad3d1ff929d09ef872@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000957]: When it can't find the kernel source, 1.0.8rc2's configure script complains about an "Unsupported soundcard"
+Date: Mon, 6 Jun 2005 10:45:05 +0200
+Message-ID: <eb6383787d5fa339a8978eb6a3f08d02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27DEB17A
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:41:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60B8517A
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:45:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=908> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=957> 
 ======================================================================
-Reported By:                arsen
+Reported By:                olivierg
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   908
-Category:                   PCI - ice1724
+Issue ID:                   957
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.11-rc4
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-14-2005 19:38 CET
-Last Modified:              06-06-2005 10:41 CEST
+Date Submitted:             03-02-2005 18:32 CET
+Last Modified:              06-06-2005 10:45 CEST
 ======================================================================
-Summary:                    suport for ESI Juli@ - ICE1724
+Summary:                    When it can't find the kernel source, 1.0.8rc2's
+configure script complains about an "Unsupported soundcard"
 Description: 
-Hello. I have soundcard ESI Juli@ on chipset ICE1724.
-I tried run her with alsa 1.0.8 on kernel 2.6.10 and 2.6.11.
-Unfortunely soundcard don't work. In my logs i found that:
+Hi,
 
-- ice1724: No matching model found for ID 0x31305345
-- ice1724: Invalid EEPROM (size = 120)
-- ICE1724: probe of 0000:00:0a.0 failed with error -5
-- ALSA device list:
-- No soundcards found
+I downloaded alsa-driver-1.0.8rc2, and, as explained in the soundcard
+Matrix for my Soundblaster 16, I ran :
 
-I know that other cards work correctly on this chipset and
-if it's necesarry i could help in tests of driver for this
-soundcard.
+./configure --with-cards=sb16 --with-sequencer=yes
+
+Which resulted in :
+
+checking for which soundcards to compile driver for... 
+configure: error: Unsupported soundcard sb16
+
+I then tried with 1.0.8 : same thing
+
+But, with 0.9.8, I got a meaningful message : 
+
+Please, install the package with full kernel sources for your
+distribution
+or use --with-kernel=dir option to specify another directory with kernel
+sources (default is /usr/src/linux).
+
+So, I assumed that 1.0.8rc2 was breaking for the same reason, and tried
+passing the actual location of my kernel source :
+
+./configure --with-cards=sb16 --with-sequencer=yes
+--with-kernel=/usr/src/linux-2.4.25_orpheus.1.3
+
+Which just worked fine.
+
+Please fix 1.0.8rc2's configure script so that it prints meaningful
+messages as 0.9.8.
+
+Cheers
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000930 Ego Sys <a href="mailto:Juli@ does" tar...
-======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:41 
+ perex - 06-06-05 10:45 
 ----------------------------------------------------------------------
-The driver is available now.
+Does this problem exist also in 1.0.9a?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-14-05 19:38 arsen          New Issue                                    
-02-14-05 19:38 arsen          Distribution              => Gentoo          
-02-14-05 19:38 arsen          Kernel Version            => 2.6.11-rc4      
-02-15-05 07:32 arsen          Issue Monitored: arsen                       
-02-22-05 10:07 perex          Status                   new => assigned     
-02-22-05 10:07 perex          Assigned To               => perex           
-02-22-05 10:07 perex          Relationship added       related to 0000930  
-06-06-05 10:41 perex          Status                   assigned => resolved
-06-06-05 10:41 perex          Resolution               open => fixed       
-06-06-05 10:41 perex          Note Added: 0004897                          
+03-02-05 18:32 olivierg       New Issue                                    
+06-06-05 10:45 perex          Note Added: 0004898                          
 ======================================================================
 
 
