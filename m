@@ -1,13 +1,13 @@
 From: Raymond <rayau@netvigator.com>
-Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Mon, 06 Jun 2005 10:09:26 +0800
-Message-ID: <42A3B056.30405@netvigator.com>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>
+Subject: Re: au88x0_synth
+Date: Mon, 06 Jun 2005 10:56:53 +0800
+Message-ID: <42A3BB75.9030006@netvigator.com>
+References: <423CCDAC.80401@netvigator.com> <200505131628.03297.alien999999999@users.sourceforge.net> <4285B2D4.8010506@netvigator.com> <200505151441.18029.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>
+In-Reply-To: <200505151441.18029.alien999999999@users.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,66 +20,59 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The au88x0 driver need patch to run on 64-bits platform.
+Alien wrote:
 
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+> 
+> I'd like to have other stuff fixed first, if you don't mind, my volume is 
+> randomly changing at certain points (the 32bit compile didn't have that) and 
+> sometimes the audio modules hang (since that patch, i haven't had that 
+> problem anymore).
+> 
+> furthermore, i notice that I can't choose between 41000 and 48000 Hz anymore 
+> in alsamixer, and that the equalizer sliders look odd (though i never used 
+> them). i can tell you only what changed versus the 32bit mode, and 
+> with/without the patch.
+> 
+
+The enumerated SPDIF sample rate (32000,44100,48000) control has been
+replaced by the IEC958 control.
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11102457
+
+The easy way is to use "vortexcontrol" to set the 10-bands 
+(31,63,124,250,500,1K,2K,4K,8K,16K Hz) stereo equalizer to Jazz, Pop, 
+Classical, Rock, Dance or user defined, otherwise you need to use 
+alsamixer to set the equalizer in bypass mode.
+
+Do "vortexcontrol" need any patch to work in 64-bits platform ?
 
 
-bugtrack@alsa-project.org wrote:
-> The following issue has been SUBMITTED.
-> ======================================================================
-> <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
-> ======================================================================
-> Reported By:                penguinparty
-> Assigned To:                mjander
-> ======================================================================
-> Project:                    ALSA - driver
-> Issue ID:                   1138
-> Category:                   PCI - au88x0
-> Reproducibility:            always
-> Severity:                   crash
-> Priority:                   normal
-> Status:                     assigned
-> Distribution:               ubuntu 5.04
-> Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
-> ======================================================================
-> Date Submitted:             05-28-2005 22:22 CEST
-> Last Modified:              05-28-2005 22:22 CEST
-> ======================================================================
-> Summary:                    errors when installing au8820 modules
-> Description: 
-> Please see the section additional information for a dump of my dmesg output
-> regarding the au8820 module.
-> 
-> I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
-> kernels. The shipping alsa support under each of these kerenls provies me
-> with the same result. I have also tried installing each of these kernels
-> without alsa support only CONFIG_SOUND and then installing the
-> alsa-drivers 1.0.9rc4a
-> 
-> I get the same result every time I do the modprobe snd-au8820
-> 
-> Using older versions of debian as well as the ubuntu live cd's I am able
-> to get this sound card working.
-> ======================================================================
-> 
-> Issue History
-> Date Modified  Username       Field                    Change              
-> ======================================================================
-> 05-28-05 22:22 penguinparty   New Issue                                    
-> 05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
-> 05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
-> and 2.6.10
-> ======================================================================
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by Yahoo.
-> Introducing Yahoo! Search Developer Network - Create apps using Yahoo!
-> Search APIs Find out how you can build Yahoo! directly into your own
-> Applications - visit http://developer.yahoo.net/?fr=offad-ysdn-ostg-q22005
+>>Would you post the content of /etc/modprobe.conf ?
+>
+>
+> I'm not using that right now:
+>
+> if i want to use sound after bootup (which doesn't happen often at 
+all), I do:
+>
+> modprobe snd-au8810
+> modprobe snd-emu10k1
+> modprobe snd-pcm-oss
+> alsactl restore -f /data/path/mixer
+
+Why do you use dmix when both cards support hardware mixing ?
+
+http://sourceforge.net/mailarchive/message.php?msg_id=9585516
+
+
+
+
+
+
+
+
+
+
 
 
 
