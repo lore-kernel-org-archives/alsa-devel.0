@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000055]: Midi in does not work for Hoontech/STAudio DSP2000 C-Port
-Date: Mon, 6 Jun 2005 10:59:41 +0200
-Message-ID: <fffca75deac17e3ee8bc44484f5f9ae4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000151]: Lockup on Envy24ht/ice1724 when recording with some format/rate combos
+Date: Mon, 6 Jun 2005 11:00:52 +0200
+Message-ID: <5dd96bb9a9499681ffb8018be5d660d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62BE0189
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:59:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33C04189
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:00:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=55> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151> 
 ======================================================================
-Reported By:                lukas
+Reported By:                patricklang
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   55
-Category:                   PCI - ice1712
+Issue ID:                   151
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian testing
-Kernel Version:             linux-2.4.22-debian-preempt-lowlat
+Distribution:               Slackware 9.1
+Kernel Version:             2.6.4
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-12-2004 22:13 CET
-Last Modified:              06-06-2005 10:59 CEST
+Date Submitted:             03-23-2004 06:05 CET
+Last Modified:              06-06-2005 11:00 CEST
 ======================================================================
-Summary:                    Midi in does not work for Hoontech/STAudio DSP2000
-C-Port
+Summary:                    Lockup on Envy24ht/ice1724 when recording with some
+format/rate combos
 Description: 
-aconnect -o says:
- client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
-[type=kernel]
-    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
-   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
+arecord -f S32_LE -r 48000 -c 2 file.wav
+(also other rates like 96000)
+records just fine, but crashes after a while.  S16_LE/44100 and S32_LE
+lock or crash (with stack trace) almost immediately.  S32_LE/48k and
+S32_LE/96k seem stable (at least for the 20-30 seconds I recorded)
 
-aconnect -i says:
-client 0: 'System' [type=kernel]
-    0 'Timer           '
-    1 'Announce        '
-client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
-[type=kernel]
-    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
-   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
-
-Midi out does not work, midi in does.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 04-07-05 17:37 
+ tiwai - 05-24-05 12:29 
 ----------------------------------------------------------------------
-I changed something in ALSA 1.0.5.
-I don't know if it fixes this bug, please test.
+The version reported here is way too old...
+Try 1.0.9rc4.
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:59 
+ perex - 06-06-05 11:00 
 ----------------------------------------------------------------------
-No response from reporter.
+No response from reporter. It might be a system specific PCI bus related
+problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-04 22:13 lukas          New Issue                                    
-02-12-04 22:14 lukas          Issue Monitored: lukas                       
-02-21-04 15:36 perex          Status                   new => assigned     
-02-21-04 15:36 perex          Assigned To               => perex           
-04-07-05 17:05 lukas          Note Added: 0004360                          
-04-07-05 17:37 Clemens LadischNote Added: 0004361                          
-06-06-05 10:59 perex          Status                   assigned => resolved
-06-06-05 10:59 perex          Resolution               open => fixed       
-06-06-05 10:59 perex          Note Added: 0004901                          
+03-23-04 06:05 patricklang    New Issue                                    
+03-23-04 06:05 patricklang    Distribution              => Slackware 9.1   
+03-23-04 06:05 patricklang    Kernel Version            => 2.6.4           
+03-23-04 19:02 perex          Status                   new => assigned     
+03-23-04 19:02 perex          Assigned To               => perex           
+05-08-05 14:24 ungod          Note Added: 0004609                          
+05-24-05 12:29 tiwai          Note Added: 0004719                          
+06-06-05 11:00 perex          Status                   assigned => resolved
+06-06-05 11:00 perex          Resolution               open => fixed       
+06-06-05 11:00 perex          Note Added: 0004902                          
 ======================================================================
 
 
