@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001155]: New snddevices script
-Date: Mon, 6 Jun 2005 10:36:30 +0200
-Message-ID: <2626ff8abe3bfec53cd625f7fdc4d2e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
+Date: Mon, 6 Jun 2005 10:38:02 +0200
+Message-ID: <4aa0cdc1f4e3f4a415322b1b417e8a1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEE8317A
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:36:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2491E17A
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:38:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1155> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                lingis
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1155
-Category:                   0_compilation problem_!!!
+Issue ID:                   930
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu 4.10
+Kernel Version:             2.6.8.1-3-386
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-04-2005 17:31 CEST
-Last Modified:              06-06-2005 10:36 CEST
+Date Submitted:             02-22-2005 00:32 CET
+Last Modified:              06-06-2005 10:38 CEST
 ======================================================================
-Summary:                    New snddevices script
+Summary:                    Ego Sys Juli@ does not work at all
 Description: 
-In Debian we need to create static devices in /dev/.static/dev/ if /dev/ is
-controlled by udev.  Also, we don't want the script to wipe away sound
-devices that are already present.  I have therefore adapted the existing
-snddevices script so that it optionally does what Debian wants.  The
-default behavior of the new script is the same as that of the old script. 
-However, the new script has some additional options:
+When trying to load ice1724 driver, nothing happens:
 
-  [-h|--help] [max] [--no-wipe] [--dev-dir=PATHNAME] [--owner=USER:GROUP]
+sudo modprobe snd-ice1724
+dmesg | tail -n 20
+bt878: Bt878 AUDIO function found (0).
+ACPI: PCI interrupt 0000:00:0d.1[A] -> GSI 11 (level, low) -> IRQ 11
+bt878(0): Bt878 (rev 2) at 00:0d.1, irq: 11, latency: 32, memory:
+0xe3000000
+8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
+8139cp: pci dev 0000:00:0f.0 (id 10ec:8139 rev 10) is not an 8139C+
+compatible
+chip
+8139cp: Try the "8139too" driver instead.
+8139too Fast Ethernet driver 0.9.27
+ACPI: PCI interrupt 0000:00:0f.0[A] -> GSI 11 (level, low) -> IRQ 11
+eth0: RealTek RTL8139 at 0xe400, 00:50:fc:44:75:5d, IRQ 11
+eth0:  Identified 8139 chip type 'RTL-8139C'
+eth0: link up, 100Mbps, full-duplex, lpa 0x41E1
+NET: Registered protocol family 10
+Disabled Privacy Extensions on device c02cc0c0(lo)
+IPv6 over IPv4 tunneling driver
+ACPI: Power Button (FF) [PWRF]
+ACPI: Sleep Button (CM) [SLPB]
+eth0: no IPv6 routers present
+bttv0: timeout: drop=58 irq=7964/193355, risc=16103024, bits: HSYNC OFLOW
+FDSR
+bttv0: reset, reinitialize
+bttv0: PLL: 28636363 => 35468950 . ok
 
-The new script is attached to this report.
+cat /proc/asound/cards
+--- no soundcards ---
+
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000908 suport for ESI <a href="mailto:Juli@ -"...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:36 
+ perex - 03-11-05 08:56 
 ----------------------------------------------------------------------
-Thanks. The updated script is in CVS now.
+You may try to change queue_delayed_work(chip->workqueue, &chip->work, 1);
+to queue_delayed_work(chip->workqueue, &chip->work, 2); (or highter
+value)
+in alsa-kernel/i2c/other/ak4114.c .
+
+It seems that i2c takes too much time. Or it might be, that the scheduler
+
+code for task statistics is somewhat broken.
+
+----------------------------------------------------------------------
+ perex - 06-06-05 10:38 
+----------------------------------------------------------------------
+Please, reopen another bug in case of problems. The original issue was
+resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-04-05 17:31 jdthood        New Issue                                    
-06-04-05 17:31 jdthood        File Added: snddevices                       
-06-06-05 10:36 perex          Status                   assigned => resolved
-06-06-05 10:36 perex          Resolution               open => fixed       
-06-06-05 10:36 perex          Note Added: 0004894                          
+02-22-05 00:32 lingis         New Issue                                    
+02-22-05 00:32 lingis         Distribution              => Ubuntu 4.10     
+02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
+02-22-05 00:45 lingis         Issue Monitored: lingis                      
+02-22-05 09:26 perex          Note Added: 0003685                          
+02-22-05 09:26 perex          Status                   new => assigned     
+02-22-05 09:26 perex          Assigned To               => perex           
+02-22-05 09:29 perex          View Status              private => public   
+02-22-05 10:07 perex          Relationship added       related to 0000908  
+02-24-05 21:27 bennoA         Note Added: 0003724                          
+03-11-05 08:56 perex          Note Added: 0003881                          
+06-06-05 10:38 perex          Status                   assigned => resolved
+06-06-05 10:38 perex          Resolution               open => fixed       
+06-06-05 10:38 perex          Note Added: 0004895                          
 ======================================================================
 
 
