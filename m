@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000997]: no sound at all
-Date: Mon, 6 Jun 2005 10:25:59 +0200
-Message-ID: <0a68d2374f57c3ebd14fc6d7122d4bdc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000587]: Error compiling
+Date: Mon, 6 Jun 2005 10:27:36 +0200
+Message-ID: <fc5d3e603631e23a87003fbf39537412@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5424179
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:25:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96BBD17A
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:27:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,194 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=997> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=587> 
 ======================================================================
-Reported By:                HawkHunter
-Assigned To:                
+Reported By:                nightbreed
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   997
-Category:                   PCI - cmipci
+Issue ID:                   587
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Linux S0106002078b04ca8 2.6.9-5.0.3.ELsmp
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Sat Feb 19 19:38:02
-CST 2005 i686 i686 i386 GNU/Linux
-Kernel Version:             kernel-2.6.9-5.0.3.EL
+Status:                     resolved
+Distribution:               Linux
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-17-2005 05:17 CET
-Last Modified:              06-06-2005 10:25 CEST
+Date Submitted:             10-19-2004 19:12 CEST
+Last Modified:              06-06-2005 10:27 CEST
 ======================================================================
-Summary:                    no sound at all
+Summary:                    Error compiling
 Description: 
-I cant get any sound - someone suggested that this would help you:
-
-[root@S0106002078b04ca8 ~]# lspci -vv
-00:01.0 VGA compatible controller: ATI Technologies Inc Radeon RV100 QY
-[Radeon 7000/VE] (prog-if 00 [VGA])
-        Subsystem: ATI Technologies Inc Radeon 7000
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping+ SERR+ FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (2000ns min), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 3
-        Region 0: Memory at b8000000 (32-bit, prefetchable) [size=128M]
-        Region 1: I/O ports at 4000 [size=256]
-        Region 2: Memory at c6ef0000 (32-bit, non-prefetchable)
-[size=64K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-00:02.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev
-10)
-        Subsystem: C-Media Electronics Inc CMI8738/C3DX PCI Audio Device
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR+ FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (500ns min, 6000ns max)
-        Interrupt: pin A routed to IRQ 4
-        Region 0: I/O ports at 4400 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-00:03.0 Ethernet controller: Macronix, Inc. [MXIC] MX987x5 (rev 20)
-        Subsystem: Unknown device 2078:0540
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping+ SERR+ FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (2000ns min, 14000ns max), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 15
-        Region 0: I/O ports at 4800 [size=256]
-        Region 1: Memory at c6ee0000 (32-bit, non-prefetchable)
-[size=256]
-        Capabilities: [44] Power Management version 1
-                Flags: PMEClk- DSI- D1+ D2- AuxCurrent=0mA
-PME(D0-,D1+,D2-,D3hot-,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-00:0c.0 System peripheral: Compaq Computer Corporation System Management
-Controller (rev 01)
-        Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Region 0: I/O ports at 4c00 [size=256]
-        Region 1: Memory at c6ed0000 (32-bit, non-prefetchable)
-[size=256]
-
-00:0e.0 VGA compatible controller: Cirrus Logic GD 5430/40 [Alpine] (rev
-22) (prog-if 00 [VGA])
-        Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 0
-        Region 0: Memory at b7000000 (32-bit, prefetchable) [disabled]
-[size=16M]
-
-00:0f.0 EISA bridge: Intel Corp. 82375EB/SB PCI to EISA Bridge (rev 15)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping- SERR- FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 248
-
-00:14.0 RAM memory: Intel Corp. 450KX/GX [Orion] - 82453KX/GX Memory
-controller (rev 05)
-        Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-
-00:19.0 Host bridge: Intel Corp. 450KX/GX [Orion] - 82454KX/GX PCI bridge
-(rev 06)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort+ >SERR- <PERR+
-        Latency: 32, Cache Line Size 08
-
-00:1a.0 Host bridge: Intel Corp. 450KX/GX [Orion] - 82454KX/GX PCI bridge
-(rev 06)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort+ >SERR- <PERR-
-        Latency: 32, Cache Line Size 08
-
-01:08.0 Class ff00: Compaq Computer Corporation PCI Hotplug Controller
-(rev 02)
-        Subsystem: Compaq Computer Corporation: Unknown device a2f7
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at c6ff0000 (32-bit, non-prefetchable)
-[size=256]
-
-01:0a.0 SCSI storage controller: LSI Logic / Symbios Logic 53c875 (rev
-03)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 255 (4250ns min, 16000ns max), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 11
-        Region 0: I/O ports at 5000 [size=256]
-        Region 1: Memory at c6fe0000 (32-bit, non-prefetchable)
-[size=256]
-        Region 2: Memory at c6fd0000 (32-bit, non-prefetchable) [size=4K]
-
-01:0b.0 SCSI storage controller: LSI Logic / Symbios Logic 53c875 (rev
-03)
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr+ Stepping- SERR+ FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 255 (4250ns min, 16000ns max), Cache Line Size 08
-        Interrupt: pin A routed to IRQ 11
-        Region 0: I/O ports at 5400 [size=256]
-        Region 1: Memory at c6fc0000 (32-bit, non-prefetchable)
-[size=256]
-        Region 2: Memory at c6fb0000 (32-bit, non-prefetchable) [size=4K]
-
-[root@S0106002078b04ca8 ~]#
-
-Cheers, and thanks in advance for the help
-Trev
+Alsa drivers are reporting a 'modpost -m' error when trying to compile the
+drivers.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:25 
+ perex - 02-22-05 09:44 
 ----------------------------------------------------------------------
-Could you be more specific? Do you have installed and configured the
-snd-cmipci driver?
+Does the problem exist with 1.0.8, too?
+
+----------------------------------------------------------------------
+ perex - 06-06-05 10:27 
+----------------------------------------------------------------------
+No response from reporter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-05 05:17 HawkHunter     New Issue                                    
-03-17-05 05:17 HawkHunter     Distribution              => Linux
-S0106002078b04ca8 2.6.9-5.0.3.ELsmp
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Sat Feb 19 19:38:02
-CST 2005 i686 i686 i386 GNU/Linux
-03-17-05 05:17 HawkHunter     Kernel Version            => kernel-2.6.9-5.0.3.EL
-06-06-05 10:25 perex          Note Added: 0004892                          
-06-06-05 10:25 perex          Assigned To              perex =>            
-06-06-05 10:25 perex          Category                 0_compilation problem_!!!
-=> PCI - cmipci
+10-19-04 19:12 nightbreed     New Issue                                    
+10-19-04 19:12 nightbreed     Distribution              => Linux           
+10-19-04 19:12 nightbreed     Kernel Version            => 2.6.9           
+02-22-05 09:44 perex          Note Added: 0003691                          
+06-06-05 10:27 perex          Status                   assigned => resolved
+06-06-05 10:27 perex          Resolution               open => fixed       
+06-06-05 10:27 perex          Note Added: 0004893                          
 ======================================================================
 
 
