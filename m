@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000587]: Error compiling
-Date: Mon, 6 Jun 2005 10:27:36 +0200
-Message-ID: <fc5d3e603631e23a87003fbf39537412@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001155]: New snddevices script
+Date: Mon, 6 Jun 2005 10:36:30 +0200
+Message-ID: <2626ff8abe3bfec53cd625f7fdc4d2e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96BBD17A
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:27:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEE8317A
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:36:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=587> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1155> 
 ======================================================================
-Reported By:                nightbreed
+Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   587
+Issue ID:                   1155
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               Linux
-Kernel Version:             2.6.9
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-19-2004 19:12 CEST
-Last Modified:              06-06-2005 10:27 CEST
+Date Submitted:             06-04-2005 17:31 CEST
+Last Modified:              06-06-2005 10:36 CEST
 ======================================================================
-Summary:                    Error compiling
+Summary:                    New snddevices script
 Description: 
-Alsa drivers are reporting a 'modpost -m' error when trying to compile the
-drivers.
+In Debian we need to create static devices in /dev/.static/dev/ if /dev/ is
+controlled by udev.  Also, we don't want the script to wipe away sound
+devices that are already present.  I have therefore adapted the existing
+snddevices script so that it optionally does what Debian wants.  The
+default behavior of the new script is the same as that of the old script. 
+However, the new script has some additional options:
+
+  [-h|--help] [max] [--no-wipe] [--dev-dir=PATHNAME] [--owner=USER:GROUP]
+
+The new script is attached to this report.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:44 
+ perex - 06-06-05 10:36 
 ----------------------------------------------------------------------
-Does the problem exist with 1.0.8, too?
-
-----------------------------------------------------------------------
- perex - 06-06-05 10:27 
-----------------------------------------------------------------------
-No response from reporter.
+Thanks. The updated script is in CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-19-04 19:12 nightbreed     New Issue                                    
-10-19-04 19:12 nightbreed     Distribution              => Linux           
-10-19-04 19:12 nightbreed     Kernel Version            => 2.6.9           
-02-22-05 09:44 perex          Note Added: 0003691                          
-06-06-05 10:27 perex          Status                   assigned => resolved
-06-06-05 10:27 perex          Resolution               open => fixed       
-06-06-05 10:27 perex          Note Added: 0004893                          
+06-04-05 17:31 jdthood        New Issue                                    
+06-04-05 17:31 jdthood        File Added: snddevices                       
+06-06-05 10:36 perex          Status                   assigned => resolved
+06-06-05 10:36 perex          Resolution               open => fixed       
+06-06-05 10:36 perex          Note Added: 0004894                          
 ======================================================================
 
 
