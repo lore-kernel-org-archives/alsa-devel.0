@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Mon, 6 Jun 2005 10:51:17 +0200
-Message-ID: <6e6e914b70998cd6301f72a480143cf3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000932]: locked at module probe
+Date: Mon, 6 Jun 2005 10:53:34 +0200
+Message-ID: <6b20a7fe71fc78744ca761282a28c3df@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 422F91C9
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:51:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FCA3181
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:53:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=932> 
 ======================================================================
-Reported By:                JKnife
-Assigned To:                
+Reported By:                jeanseb
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   OTHERS
+Issue ID:                   932
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               debian
+Kernel Version:             2.6
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-06-2005 10:51 CEST
+Date Submitted:             02-22-2005 11:03 CET
+Last Modified:              06-06-2005 10:53 CEST
 ======================================================================
-Summary:                    Riptide/Context Audio Drivers
+Summary:                    locked at module probe
 Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
+oprobing with fast spinlock an prempt anable smp kernel hang.
+This is a spin lock problem and I've fixed it in the isisalsa version.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- JKnife - 04-13-05 22:01 
+ jdthood - 04-13-05 21:50 
 ----------------------------------------------------------------------
-opps i for got to set cat.. srry
+Submitter: Was this fixed in the latest ALSA release?
+
+----------------------------------------------------------------------
+ perex - 06-06-05 10:53 
+----------------------------------------------------------------------
+No response from reporter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
+02-22-05 11:03 jeanseb        New Issue                                    
+02-22-05 11:03 jeanseb        Distribution              => debian          
+02-22-05 11:03 jeanseb        Kernel Version            => 2.6             
+02-22-05 14:18 tiwai          Note Added: 0003697                          
+02-22-05 14:19 tiwai          Note Added: 0003698                          
+04-13-05 21:50 jdthood        Note Added: 0004477                          
+06-06-05 10:53 perex          Status                   assigned => resolved
+06-06-05 10:53 perex          Resolution               open => fixed       
+06-06-05 10:53 perex          Note Added: 0004899                          
 ======================================================================
 
 
