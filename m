@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000928]: Something missing in the Soundcard-Matrix?
-Date: Mon, 6 Jun 2005 11:30:28 +0200
-Message-ID: <d2ff514ed89628b9111ef654aa84eaa3@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000341]: missing m-audio mobilepre status in soundcard matrix
+Date: Mon, 6 Jun 2005 11:38:25 +0200
+Message-ID: <5503165955e6b3c3c7e7956a4d4f12da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCB5B10A
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:30:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAB9715C
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:38:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=928> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=341> 
 ======================================================================
-Reported By:                gflash
+Reported By:                donfede
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   928
+Issue ID:                   341
 Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   text
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-21-2005 05:43 CET
-Last Modified:              06-06-2005 11:30 CEST
+Date Submitted:             06-21-2004 06:53 CEST
+Last Modified:              06-06-2005 11:38 CEST
 ======================================================================
-Summary:                    Something missing in the Soundcard-Matrix?
+Summary:                    missing m-audio mobilepre status in soundcard matrix
 Description: 
-In my old Box i had a Sounblaster Live, or a Soundblaster Live Value... I'm
-not sure because the card was called by the vendor "Soundblaster Live
-Player! 1024" but a card with this name doesn't seem to exist.
-It ran with the emu10k1 driver, and it had no problems playing sounds from
-many applications at the same time. I could use Teamspeak with games, and
-hear mp3s at the same time, and for my understanding this is
-hardwaremixing.
-In the Soundcard Matrix is said, that the Soubblaster Lives doesn't
-support hardwaremixing. Is this a mistake? Or have i misunderstood
-"hardwaremixing"?
+Hello,
+
+I don't see a reference to the M-Audio MobilePre sound card.
+
+Here is a vendor reference to the device:
+http://www.musiciansfriend.com/srs7/sid=040619165438066093100179014367/g=rec/s=computer/search/detail/base_pid/701368/
+
+Here is a manufacturer reference to the device:
+http://www.m-audio.com/index.php?do=products.main&ID=8eb1a9920df341303f81bca7ff458be3
+
+I'm considering buying the device, but am still trying to verify that it
+will work under linux.  A reference in the matrix (even with unknown
+status) would be greatly appreciated.
+
+thanks,
+donfede
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- gflash - 02-24-05 20:48 
+ Clemens Ladisch - 06-21-04 09:25 
 ----------------------------------------------------------------------
-So what? This can't be so hard to answer!
+The MobilePre does not work with Linux.
 
 ----------------------------------------------------------------------
- perex - 06-06-05 11:30 
+ perex - 06-06-05 11:38 
 ----------------------------------------------------------------------
-Your hardware supports hardware mixing and the current matrix is correct.
+Added to matrix.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-21-05 05:43 gflash         New Issue                                    
-02-22-05 09:52 perex          Project                  ALSA - driver => ALSA -
-WWW server
-02-24-05 20:48 gflash         Note Added: 0003723                          
-06-06-05 11:25 perex          Category                 PCI - emu10k1 =>
-soundcard matrix
-06-06-05 11:30 perex          Status                   new => resolved     
-06-06-05 11:30 perex          Resolution               open => fixed       
-06-06-05 11:30 perex          Assigned To               => perex           
-06-06-05 11:30 perex          Note Added: 0004905                          
+06-21-04 06:53 donfede        New Issue                                    
+06-21-04 09:25 Clemens LadischNote Added: 0001325                          
+06-06-05 11:38 perex          Status                   new => resolved     
+06-06-05 11:38 perex          Resolution               open => fixed       
+06-06-05 11:38 perex          Assigned To               => perex           
+06-06-05 11:38 perex          Note Added: 0004906                          
 ======================================================================
 
 
