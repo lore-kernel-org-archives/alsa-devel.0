@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000341]: missing m-audio mobilepre status in soundcard matrix
-Date: Mon, 6 Jun 2005 11:38:25 +0200
-Message-ID: <5503165955e6b3c3c7e7956a4d4f12da@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000357]: SiS 745 uses SiS 7012 driver
+Date: Mon, 6 Jun 2005 11:40:12 +0200
+Message-ID: <25e12d1e157b5f345b9643fc666dfbc4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAB9715C
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:38:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C1A915C
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:40:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=341> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=357> 
 ======================================================================
-Reported By:                donfede
+Reported By:                pdaoust
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   341
+Issue ID:                   357
 Category:                   soundcard matrix
-Reproducibility:            always
-Severity:                   feature
+Reproducibility:            N/A
+Severity:                   text
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-21-2004 06:53 CEST
-Last Modified:              06-06-2005 11:38 CEST
+Date Submitted:             06-30-2004 23:06 CEST
+Last Modified:              06-06-2005 11:40 CEST
 ======================================================================
-Summary:                    missing m-audio mobilepre status in soundcard matrix
+Summary:                    SiS 745 uses SiS 7012 driver
 Description: 
-Hello,
-
-I don't see a reference to the M-Audio MobilePre sound card.
-
-Here is a vendor reference to the device:
-http://www.musiciansfriend.com/srs7/sid=040619165438066093100179014367/g=rec/s=computer/search/detail/base_pid/701368/
-
-Here is a manufacturer reference to the device:
-http://www.m-audio.com/index.php?do=products.main&ID=8eb1a9920df341303f81bca7ff458be3
-
-I'm considering buying the device, but am still trying to verify that it
-will work under linux.  A reference in the matrix (even with unknown
-status) would be greatly appreciated.
-
-thanks,
-donfede
-
-
+The sound circuitry on my SiS 745-based motherboard reports itself as a SiS
+7012, and is quite happily supported using ALSA's sis7012 driver. Just
+thought you might want to change the soundcard matrix to reflect that.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 06-21-04 09:25 
+ perex - 06-06-05 11:40 
 ----------------------------------------------------------------------
-The MobilePre does not work with Linux.
-
-----------------------------------------------------------------------
- perex - 06-06-05 11:38 
-----------------------------------------------------------------------
-Added to matrix.
+Updated, thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-21-04 06:53 donfede        New Issue                                    
-06-21-04 09:25 Clemens LadischNote Added: 0001325                          
-06-06-05 11:38 perex          Status                   new => resolved     
-06-06-05 11:38 perex          Resolution               open => fixed       
-06-06-05 11:38 perex          Assigned To               => perex           
-06-06-05 11:38 perex          Note Added: 0004906                          
+06-30-04 23:06 pdaoust        New Issue                                    
+06-06-05 11:40 perex          Status                   new => resolved     
+06-06-05 11:40 perex          Resolution               open => fixed       
+06-06-05 11:40 perex          Assigned To               => perex           
+06-06-05 11:40 perex          Note Added: 0004907                          
 ======================================================================
 
 
