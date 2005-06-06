@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Mon, 6 Jun 2005 18:54:42 +0200
-Message-ID: <c8563a23cc618d67afd8e8bb16fec301@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001163]: Two modprobe calls lack path
+Date: Mon, 6 Jun 2005 19:50:42 +0200
+Message-ID: <a58bd478a905a0427dfc22c4d4f96814@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5E5B1C0
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 18:54:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78DEF10F
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 19:50:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1163> 
 ======================================================================
-Reported By:                Gildoniel
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1162
-Category:                   PCI - atiixp
+Project:                    ALSA - utils
+Issue ID:                   1163
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSe Linux 9.3 Professional
-Kernel Version:             2.6.11.4.20a
+Status:                     new
 ======================================================================
-Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-06-2005 18:54 CEST
+Date Submitted:             06-06-2005 19:50 CEST
+Last Modified:              06-06-2005 19:50 CEST
 ======================================================================
-Summary:                    no sound on speakers, low volume on the headphones
+Summary:                    Two modprobe calls lack path
 Description: 
-Problem diagnosis:
- 
-* Sound card is detected and automatically configured, but no sound can be
-heard.
-* It is possible to hear _faint_ sound (very low volume) through
-headphones.
-* Headphone volume is 0 and I can still hear low volume sound (maybe
-master/headphone switched?)
-* It seems to be possible to record voice on the microphone (I see the
-amplitude when talking into the mic)
- 
-Solution attempts so far:
- 
-* used alsamixer to turn up and unmute all channels (failed: no sound on
-speakers, very low volume on headphones)
-* use the "quirk" option of the driver -1 through 7 (failed - no bettering
-and error messages with certain settings)
-* tried other sounddrivers (intel, via and others - didn't try them all)
-(failed - error loading modules on those I tried)
+All but two calls to modprobe in alsaconf call it with the full path.  For
+consistency the remaining two calls should also use the full path.
+
+--- alsaconf.in_ORIG    2005-06-06 19:49:00.000000000 +0200
++++ alsaconf.in 2005-06-06 19:50:06.000000000 +0200
+@@ -753,7 +753,7 @@
+     if $lsmod | grep -q -E '^(snd-|snd_)'$1' '; then
+        : ;
+     else
+-       modprobe -r snd-$1 >/dev/null 2>&1
++       /sbin/modprobe -r snd-$1 >/dev/null 2>&1
+        return 1
+     fi
+
+@@ -792,7 +792,7 @@
+     if $lsmod | grep -q -E '^(snd-|snd_)'$1' '; then
+        : ;
+     else
+-       modprobe -r snd-$1 >/dev/null 2>&1
++       /sbin/modprobe -r snd-$1 >/dev/null 2>&1
+        return 1
+     fi
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 18:54 Gildoniel      New Issue                                    
-06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
-06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
-Professional
-06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-06-05 19:50 jdthood        New Issue                                    
 ======================================================================
 
 
