@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000357]: SiS 745 uses SiS 7012 driver
-Date: Mon, 6 Jun 2005 11:40:12 +0200
-Message-ID: <25e12d1e157b5f345b9643fc666dfbc4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001160]: Compilation hangs on hda_codec.c and ak4114.c
+Date: Mon, 6 Jun 2005 12:02:36 +0200
+Message-ID: <af15e4ede2b884ecbf165482b24165e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C1A915C
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:40:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED7F010F
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 12:02:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=357> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1160> 
 ======================================================================
-Reported By:                pdaoust
+Reported By:                Henne
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   357
-Category:                   soundcard matrix
-Reproducibility:            N/A
-Severity:                   text
+Project:                    ALSA - driver
+Issue ID:                   1160
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Aurox 10.0
+Kernel Version:             2.6.7-aurox
 ======================================================================
-Date Submitted:             06-30-2004 23:06 CEST
-Last Modified:              06-06-2005 11:40 CEST
+Date Submitted:             06-06-2005 12:02 CEST
+Last Modified:              06-06-2005 12:02 CEST
 ======================================================================
-Summary:                    SiS 745 uses SiS 7012 driver
+Summary:                    Compilation hangs on hda_codec.c and ak4114.c
 Description: 
-The sound circuitry on my SiS 745-based motherboard reports itself as a SiS
-7012, and is quite happily supported using ALSA's sis7012 driver. Just
-thought you might want to change the soundcard matrix to reflect that.
-======================================================================
+I tried to compile the driver package with cvscompile, and it hung at:
+alsa-kernel/i2c/other/ak4114.c
+alsa-kernel/pci/hda/hda_codec.c
+with the message, that the macro create_workqueue needs 2 arguments, not
+one.
+I browsed the code and found out, that that macro is defined for kernels
+lower than 2.6 in the alsa-driver, but I have a greater one. So the macro
+wasn't defined and another marco from the kernel source was taken, which
+needs 2 arguments.
+I've added a zero as a second arg and the compilation worked, but that
+imho couldn't be the right solution.
 
-----------------------------------------------------------------------
- perex - 06-06-05 11:40 
-----------------------------------------------------------------------
-Updated, thanks.
+
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 23:06 pdaoust        New Issue                                    
-06-06-05 11:40 perex          Status                   new => resolved     
-06-06-05 11:40 perex          Resolution               open => fixed       
-06-06-05 11:40 perex          Assigned To               => perex           
-06-06-05 11:40 perex          Note Added: 0004907                          
+06-06-05 12:02 Henne          New Issue                                    
+06-06-05 12:02 Henne          Distribution              => Aurox 10.0      
+06-06-05 12:02 Henne          Kernel Version            => 2.6.7-aurox     
 ======================================================================
 
 
