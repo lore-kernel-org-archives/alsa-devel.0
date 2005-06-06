@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001150]: Insufficient info in INSTALL file
-Date: Mon, 6 Jun 2005 11:09:52 +0200
-Message-ID: <1f7751f4e6eed940077dcf76b7d604f6@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001108]: There is no ISA module ad1816 (not ad1816a)
+Date: Mon, 6 Jun 2005 11:23:25 +0200
+Message-ID: <2e87ecc2be38b47a1d4de8e287ba6f9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7F79189
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:09:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C485B1CD
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:23:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1150> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1108> 
 ======================================================================
-Reported By:                davidramirez
+Reported By:                sonne000ca
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1150
-Category:                   1_OTHERS
+Project:                    ALSA - WWW server
+Issue ID:                   1108
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   text
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-01-2005 20:57 CEST
-Last Modified:              06-06-2005 11:09 CEST
+Date Submitted:             05-14-2005 06:58 CEST
+Last Modified:              06-06-2005 11:23 CEST
 ======================================================================
-Summary:                    Insufficient info in INSTALL file
+Summary:                    There is no ISA module ad1816 (not ad1816a)
 Description: 
-Lines 82+83 of the INSTALL file (in alsa-driver-1.0.9) state that one
-should "edit the kernel module config" but it doesn't say what to modify
-there...?
+This webpage describes the installation of the module ad1816:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Shark+Multimedia&card=Shark+Predator+3D+%28ISA%29.&chip=AD1816A&module=ad1816
 
-Had same doubt with 1.0.8
-
-I guess that for this reason I cant't get a working sound card.
+However, this card is not available in alsa-drivers, only ad1816a is
+available.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 11:09 
+ tiwai - 05-24-05 12:43 
 ----------------------------------------------------------------------
-I added a note about alsaconf script (in the alsa-utils package) to
-alsa-driver/INSTALL now. Anyway, fixes / examples for documentation are
-always appreciated.
+I think it's available now on the latest 1.0.9rc4, right?
+
+----------------------------------------------------------------------
+ perex - 06-06-05 11:23 
+----------------------------------------------------------------------
+Just fixed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-01-05 20:57 davidramirez   New Issue                                    
-06-06-05 11:09 perex          Status                   new => resolved     
-06-06-05 11:09 perex          Resolution               open => fixed       
-06-06-05 11:09 perex          Assigned To               => perex           
-06-06-05 11:09 perex          Note Added: 0004903                          
+05-14-05 06:58 sonne000ca     New Issue                                    
+05-24-05 12:43 tiwai          Note Added: 0004724                          
+06-06-05 11:22 perex          Project                  ALSA - driver => ALSA -
+WWW server
+06-06-05 11:22 perex          Category                 1_OTHERS => soundcard
+matrix
+06-06-05 11:23 perex          Status                   new => resolved     
+06-06-05 11:23 perex          Resolution               open => fixed       
+06-06-05 11:23 perex          Assigned To               => perex           
+06-06-05 11:23 perex          Note Added: 0004904                          
 ======================================================================
 
 
