@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
-Date: Mon, 6 Jun 2005 10:58:38 +0200
-Message-ID: <1be3bbe1d03045531bf14a0c53432440@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000055]: Midi in does not work for Hoontech/STAudio DSP2000 C-Port
+Date: Mon, 6 Jun 2005 10:59:41 +0200
+Message-ID: <fffca75deac17e3ee8bc44484f5f9ae4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F034214E
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:58:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62BE0189
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:59:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=55> 
 ======================================================================
-Reported By:                twinsen
+Reported By:                lukas
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1014
-Category:                   0_compilation problem_!!!
+Issue ID:                   55
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               custom: PXA255/uClibc
-Kernel Version:             2.6.11.5
+Status:                     resolved
+Distribution:               Debian testing
+Kernel Version:             linux-2.4.22-debian-preempt-lowlat
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-25-2005 00:04 CET
-Last Modified:              06-06-2005 10:58 CEST
+Date Submitted:             02-12-2004 22:13 CET
+Last Modified:              06-06-2005 10:59 CEST
 ======================================================================
-Summary:                    card detect function is never called in pxa2xx-ac97
+Summary:                    Midi in does not work for Hoontech/STAudio DSP2000
+C-Port
 Description: 
-Hi there,
-I have a some problem with this driver. The environment:
-ALSA source: alsa-driver-1.0.9rc1
-Kernel source: linux-2.6.11.5 (stock)
+aconnect -o says:
+ client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
+[type=kernel]
+    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
+   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
 
-I cross compiled the kernel and the alsa source for arm target with a 
-toolchain from handhelds.org. I used the following configure command
-line:
+aconnect -i says:
+client 0: 'System' [type=kernel]
+    0 'Timer           '
+    1 'Announce        '
+client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
+[type=kernel]
+    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
+   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
 
-./configure --with-cards=pxa2xx-ac97 
---with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
-
-config runs without problems, when running make gcc complains about
-"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
-orig: include/linux/pci.h), but compiles ok. 
-
-The problem:
-I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
-snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
-/proc/asound/cards.
-I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
-module init function registers the new driver:
-driver_register(&pxa2xx_ac97_driver);
-
-The driver struct contains a probe function:
-.probe          = pxa2xx_ac97_probe,
-but it's never called, so the driver doesn't even check the existance of
-the sound card. Why is that? Did I srcew up the cross compiling?
-Thanks:
-	George
+Midi out does not work, midi in does.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-11-05 18:24 
+ Clemens Ladisch - 04-07-05 17:37 
 ----------------------------------------------------------------------
-avail_min=0 is the culprit.  I don't know yet why it's set so...
+I changed something in ALSA 1.0.5.
+I don't know if it fixes this bug, please test.
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:58 
+ perex - 06-06-05 10:59 
 ----------------------------------------------------------------------
-What prints the command 'aplay -v /tmp/music.wav' ?
+No response from reporter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 00:04 twinsen        New Issue                                    
-03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
-03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
-03-29-05 16:25 tiwai          Note Added: 0004247                          
-03-29-05 23:43 twinsen        Note Added: 0004259                          
-04-03-05 21:47 twinsen        Note Added: 0004321                          
-04-03-05 22:28 twinsen        Note Added: 0004322                          
-04-04-05 20:51 twinsen        Note Added: 0004330                          
-04-06-05 19:20 twinsen        Note Added: 0004351                          
-04-07-05 16:46 tiwai          Note Added: 0004359                          
-04-10-05 17:25 twinsen        Note Added: 0004439                          
-04-11-05 18:24 tiwai          Note Added: 0004443                          
-06-06-05 10:58 perex          Note Added: 0004900                          
+02-12-04 22:13 lukas          New Issue                                    
+02-12-04 22:14 lukas          Issue Monitored: lukas                       
+02-21-04 15:36 perex          Status                   new => assigned     
+02-21-04 15:36 perex          Assigned To               => perex           
+04-07-05 17:05 lukas          Note Added: 0004360                          
+04-07-05 17:37 Clemens LadischNote Added: 0004361                          
+06-06-05 10:59 perex          Status                   assigned => resolved
+06-06-05 10:59 perex          Resolution               open => fixed       
+06-06-05 10:59 perex          Note Added: 0004901                          
 ======================================================================
 
 
