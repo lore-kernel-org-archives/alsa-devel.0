@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001108]: There is no ISA module ad1816 (not ad1816a)
-Date: Mon, 6 Jun 2005 11:22:58 +0200
-Message-ID: <bb24fe0ac044ca6b19a1deb61a2b4825@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000928]: Something missing in the Soundcard-Matrix?
+Date: Mon, 6 Jun 2005 11:25:13 +0200
+Message-ID: <b6b80993e4ba8a6a8b1b0f060dbdbb56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 773271CD
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:22:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A58791CD
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:25:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1108> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=928> 
 ======================================================================
-Reported By:                sonne000ca
+Reported By:                gflash
 Assigned To:                
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   1108
+Issue ID:                   928
 Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   feature
+Severity:                   text
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-14-2005 06:58 CEST
-Last Modified:              06-06-2005 11:22 CEST
+Date Submitted:             02-21-2005 05:43 CET
+Last Modified:              06-06-2005 11:25 CEST
 ======================================================================
-Summary:                    There is no ISA module ad1816 (not ad1816a)
+Summary:                    Something missing in the Soundcard-Matrix?
 Description: 
-This webpage describes the installation of the module ad1816:
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Shark+Multimedia&card=Shark+Predator+3D+%28ISA%29.&chip=AD1816A&module=ad1816
-
-However, this card is not available in alsa-drivers, only ad1816a is
-available.
+In my old Box i had a Sounblaster Live, or a Soundblaster Live Value... I'm
+not sure because the card was called by the vendor "Soundblaster Live
+Player! 1024" but a card with this name doesn't seem to exist.
+It ran with the emu10k1 driver, and it had no problems playing sounds from
+many applications at the same time. I could use Teamspeak with games, and
+hear mp3s at the same time, and for my understanding this is
+hardwaremixing.
+In the Soundcard Matrix is said, that the Soubblaster Lives doesn't
+support hardwaremixing. Is this a mistake? Or have i misunderstood
+"hardwaremixing"?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-24-05 12:43 
+ gflash - 02-24-05 20:48 
 ----------------------------------------------------------------------
-I think it's available now on the latest 1.0.9rc4, right?
+So what? This can't be so hard to answer!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-05 06:58 sonne000ca     New Issue                                    
-05-24-05 12:43 tiwai          Note Added: 0004724                          
-06-06-05 11:22 perex          Project                  ALSA - driver => ALSA -
+02-21-05 05:43 gflash         New Issue                                    
+02-22-05 09:52 perex          Project                  ALSA - driver => ALSA -
 WWW server
-06-06-05 11:22 perex          Category                 1_OTHERS => soundcard
-matrix
+02-24-05 20:48 gflash         Note Added: 0003723                          
+06-06-05 11:25 perex          Category                 PCI - emu10k1 =>
+soundcard matrix
 ======================================================================
 
 
