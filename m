@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000960]: IBM T42p - 82801DB (ICH4) Not working properly
-Date: Mon, 6 Jun 2005 10:39:28 +0200
-Message-ID: <e8f87e439fe3cc03901949e6c22f0dfa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000908]: suport for ESI Juli@ - ICE1724
+Date: Mon, 6 Jun 2005 10:41:11 +0200
+Message-ID: <b8cf9014051ab2ad3d1ff929d09ef872@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A16A910F
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:39:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27DEB17A
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 10:41:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=960> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=908> 
 ======================================================================
-Reported By:                marcusvfx
+Reported By:                arsen
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   960
-Category:                   PCI - intel8x0
+Issue ID:                   908
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware-Current
-Kernel Version:             2.6.11
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.11-rc4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-03-2005 21:15 CET
-Last Modified:              06-06-2005 10:39 CEST
+Date Submitted:             02-14-2005 19:38 CET
+Last Modified:              06-06-2005 10:41 CEST
 ======================================================================
-Summary:                    IBM T42p - 82801DB (ICH4) Not working properly
+Summary:                    suport for ESI Juli@ - ICE1724
 Description: 
-As in reference to the kernel discussion about the 8x0 driver, the above
-does not work when playing through the port replicator jack.  To get sound
-to work through the speakers, the "headphone jack sense" must be turned
-off.  If that is the case, the internal speakers on the T42p do work and
-so will the headphones, but the port replicator output jack will not.  In
-fact, there is no fix that I have uncovered under the 2.6.11 kernel to get
-the port replicator output jack to work.
+Hello. I have soundcard ESI Juli@ on chipset ICE1724.
+I tried run her with alsa 1.0.8 on kernel 2.6.10 and 2.6.11.
+Unfortunely soundcard don't work. In my logs i found that:
 
-The alsa-cvs (as of 3 March) driver was compiled into the 2.6.11 kernel
-but it did not resolve the issue above.
+- ice1724: No matching model found for ID 0x31305345
+- ice1724: Invalid EEPROM (size = 120)
+- ICE1724: probe of 0000:00:0a.0 failed with error -5
+- ALSA device list:
+- No soundcards found
 
-This was not the case in previous kernels and it was introduced somewhere
-after the 2.6.10-2.6.11 releases.  With 2.6.10 and earlier kernels, the
-headphone jack on the laptop, internal speakers, and port replicator
-output jack will work with the 'headphone jack sense' set to on.
+I know that other cards work correctly on this chipset and
+if it's necesarry i could help in tests of driver for this
+soundcard.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000930 Ego Sys <a href="mailto:Juli@ does" tar...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:39 
+ perex - 06-06-05 10:41 
 ----------------------------------------------------------------------
-Does ALSA 1.0.9a fix this problem?
+The driver is available now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-03-05 21:15 marcusvfx      New Issue                                    
-03-03-05 21:15 marcusvfx      Distribution              => Slackware-Current
-03-03-05 21:15 marcusvfx      Kernel Version            => 2.6.11          
-06-06-05 10:39 perex          Note Added: 0004896                          
-06-06-05 10:39 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
+02-14-05 19:38 arsen          New Issue                                    
+02-14-05 19:38 arsen          Distribution              => Gentoo          
+02-14-05 19:38 arsen          Kernel Version            => 2.6.11-rc4      
+02-15-05 07:32 arsen          Issue Monitored: arsen                       
+02-22-05 10:07 perex          Status                   new => assigned     
+02-22-05 10:07 perex          Assigned To               => perex           
+02-22-05 10:07 perex          Relationship added       related to 0000930  
+06-06-05 10:41 perex          Status                   assigned => resolved
+06-06-05 10:41 perex          Resolution               open => fixed       
+06-06-05 10:41 perex          Note Added: 0004897                          
 ======================================================================
 
 
