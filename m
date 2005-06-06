@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001163]: Two modprobe calls lack path
-Date: Mon, 6 Jun 2005 19:50:42 +0200
-Message-ID: <a58bd478a905a0427dfc22c4d4f96814@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001133]: openal gives no sound with alsa driver
+Date: Mon, 6 Jun 2005 22:32:06 +0200
+Message-ID: <5c2b3f20ad8422b74e816ed8fd1e60f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78DEF10F
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 19:50:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F85A1CA
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 22:32:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1163> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1133> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                qwer1234
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1163
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   1133
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               slackware-current
+Kernel Version:             2.6.12-rc5
 ======================================================================
-Date Submitted:             06-06-2005 19:50 CEST
-Last Modified:              06-06-2005 19:50 CEST
+Date Submitted:             05-28-2005 07:22 CEST
+Last Modified:              06-06-2005 22:32 CEST
 ======================================================================
-Summary:                    Two modprobe calls lack path
+Summary:                    openal gives no sound with alsa driver
 Description: 
-All but two calls to modprobe in alsaconf call it with the full path.  For
-consistency the remaining two calls should also use the full path.
-
---- alsaconf.in_ORIG    2005-06-06 19:49:00.000000000 +0200
-+++ alsaconf.in 2005-06-06 19:50:06.000000000 +0200
-@@ -753,7 +753,7 @@
-     if $lsmod | grep -q -E '^(snd-|snd_)'$1' '; then
-        : ;
-     else
--       modprobe -r snd-$1 >/dev/null 2>&1
-+       /sbin/modprobe -r snd-$1 >/dev/null 2>&1
-        return 1
-     fi
-
-@@ -792,7 +792,7 @@
-     if $lsmod | grep -q -E '^(snd-|snd_)'$1' '; then
-        : ;
-     else
--       modprobe -r snd-$1 >/dev/null 2>&1
-+       /sbin/modprobe -r snd-$1 >/dev/null 2>&1
-        return 1
-     fi
-
+When I add this to ~/.openalrc
+ (define devices '(alsa))
+ (define alsa-device "default")
+ (define speaker-num 2)
+I get no sound with openalrc.
+I use dmix plugin.
 ======================================================================
+
+----------------------------------------------------------------------
+ qwer1234 - 06-03-05 05:29 
+----------------------------------------------------------------------
+I was warking with this bug and 
+I have manage to resolve it.
+I have wrote a patch for openal.
+This patch works just for my system 
+configuration, or similar. I don't
+know thow if it is alsa bug or openal.
+
+Rather it's openal.
+I will try to figure out what is wrong.
+
+----------------------------------------------------------------------
+ qwer1234 - 06-06-05 22:32 
+----------------------------------------------------------------------
+I have manage the problem.
+The problem was witch openal.
+It couldn't rekognize my sound card properly.
+With a patch my sound works fine.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 19:50 jdthood        New Issue                                    
+05-28-05 07:22 qwer1234       New Issue                                    
+05-28-05 07:22 qwer1234       Distribution              => slackware-current
+05-28-05 07:22 qwer1234       Kernel Version            => 2.6.12-rc5      
+05-29-05 13:15 qwer1234       Issue Monitored: qwer1234                    
+06-03-05 05:29 qwer1234       Note Added: 0004881                          
+06-03-05 21:55 qwer1234       Issue End Monitor: qwer1234                    
+06-03-05 21:58 qwer1234       Issue Monitored: qwer1234                    
+06-03-05 21:58 qwer1234       Issue End Monitor: qwer1234                    
+06-06-05 22:32 qwer1234       Note Added: 0004909                          
 ======================================================================
 
 
