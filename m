@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001160]: Compilation hangs on hda_codec.c and ak4114.c
-Date: Mon, 6 Jun 2005 12:02:36 +0200
-Message-ID: <af15e4ede2b884ecbf165482b24165e1@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0_synth
+Date: Mon, 06 Jun 2005 19:03:28 +0800
+Message-ID: <42A42D80.2020505@netvigator.com>
+References: <423CCDAC.80401@netvigator.com> <200505151441.18029.alien999999999@users.sourceforge.net> <42A3BB75.9030006@netvigator.com> <200506061049.40902.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED7F010F
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 12:02:36 +0200 (MEST)
+In-Reply-To: <200506061049.40902.alien999999999@users.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +17,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+What do you mean when you say "the equalizer sliders look odd" ?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1160> 
-======================================================================
-Reported By:                Henne
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1160
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Aurox 10.0
-Kernel Version:             2.6.7-aurox
-======================================================================
-Date Submitted:             06-06-2005 12:02 CEST
-Last Modified:              06-06-2005 12:02 CEST
-======================================================================
-Summary:                    Compilation hangs on hda_codec.c and ak4114.c
-Description: 
-I tried to compile the driver package with cvscompile, and it hung at:
-alsa-kernel/i2c/other/ak4114.c
-alsa-kernel/pci/hda/hda_codec.c
-with the message, that the macro create_workqueue needs 2 arguments, not
-one.
-I browsed the code and found out, that that macro is defined for kernels
-lower than 2.6 in the alsa-driver, but I have a greater one. So the macro
-wasn't defined and another marco from the kernel source was taken, which
-needs 2 arguments.
-I've added a zero as a second arg and the compilation worked, but that
-imho couldn't be the right solution.
+Would you post the settings of the equalizer from "/data/path/mixer" or 
+/etc/asound.state ?
 
 
-======================================================================
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-06-05 12:02 Henne          New Issue                                    
-06-06-05 12:02 Henne          Distribution              => Aurox 10.0      
-06-06-05 12:02 Henne          Kernel Version            => 2.6.7-aurox     
-======================================================================
-
+Alien wrote:
+> 
+>>Alien wrote:
+>>
+>>>I'd like to have other stuff fixed first, if you don't mind, my volume is
+>>>randomly changing at certain points (the 32bit compile didn't have that)
+>>>and sometimes the audio modules hang (since that patch, i haven't had
+>>>that problem anymore).
+>>>
+>>>furthermore, i notice that I can't choose between 41000 and 48000 Hz
+>>>anymore in alsamixer, and that the equalizer sliders look odd (though i
+>>>never used them). i can tell you only what changed versus the 32bit mode,
+>>>and with/without the patch.
+>>
+>>The enumerated SPDIF sample rate (32000,44100,48000) control has been
+>>replaced by the IEC958 control.
+>>
+>>http://sourceforge.net/mailarchive/message.php?msg_id=11102457
+>>
+>>The easy way is to use "vortexcontrol" to set the 10-bands
+>>(31,63,124,250,500,1K,2K,4K,8K,16K Hz) stereo equalizer to Jazz, Pop,
+>>Classical, Rock, Dance or user defined, otherwise you need to use
+>>alsamixer to set the equalizer in bypass mode.
+>>
+>>Do "vortexcontrol" need any patch to work in 64-bits platform ?
+> 
+> 
+> i have no idea, i never used it.
+> 
+> 
+>>>>Would you post the content of /etc/modprobe.conf ?
+>>>
+>>>I'm not using that right now:
+>>>
+>>>if i want to use sound after bootup (which doesn't happen often at
+>>
+>>all), I do:
+>>
+>>>modprobe snd-au8810
+>>>modprobe snd-emu10k1
+>>>modprobe snd-pcm-oss
+>>>alsactl restore -f /data/path/mixer
+>>
 
 
 
