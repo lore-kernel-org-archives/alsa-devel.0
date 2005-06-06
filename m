@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001108]: There is no ISA module ad1816 (not ad1816a)
-Date: Mon, 6 Jun 2005 11:23:25 +0200
-Message-ID: <2e87ecc2be38b47a1d4de8e287ba6f9f@bugtrack.alsa-project.org>
+Date: Mon, 6 Jun 2005 11:22:58 +0200
+Message-ID: <bb24fe0ac044ca6b19a1deb61a2b4825@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C485B1CD
-	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:23:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 773271CD
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2005 11:22:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1108> 
 ======================================================================
 Reported By:                sonne000ca
-Assigned To:                perex
+Assigned To:                
 ======================================================================
 Project:                    ALSA - WWW server
 Issue ID:                   1108
@@ -35,12 +35,10 @@ Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
 Date Submitted:             05-14-2005 06:58 CEST
-Last Modified:              06-06-2005 11:23 CEST
+Last Modified:              06-06-2005 11:22 CEST
 ======================================================================
 Summary:                    There is no ISA module ad1816 (not ad1816a)
 Description: 
@@ -56,11 +54,6 @@ available.
 ----------------------------------------------------------------------
 I think it's available now on the latest 1.0.9rc4, right?
 
-----------------------------------------------------------------------
- perex - 06-06-05 11:23 
-----------------------------------------------------------------------
-Just fixed now.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -70,10 +63,6 @@ Date Modified  Username       Field                    Change
 WWW server
 06-06-05 11:22 perex          Category                 1_OTHERS => soundcard
 matrix
-06-06-05 11:23 perex          Status                   new => resolved     
-06-06-05 11:23 perex          Resolution               open => fixed       
-06-06-05 11:23 perex          Assigned To               => perex           
-06-06-05 11:23 perex          Note Added: 0004904                          
 ======================================================================
 
 
