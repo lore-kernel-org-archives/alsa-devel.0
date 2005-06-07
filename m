@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000055]: Midi in does not work for Hoontech/STAudio DSP2000 C-Port
-Date: Tue, 7 Jun 2005 08:24:28 +0200
-Message-ID: <0984cc0ed636c8e9f647a7cd5c6317de@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001163]: Two modprobe calls lack path
+Date: Tue, 7 Jun 2005 09:04:19 +0200
+Message-ID: <c60be01aa76f80eecf2fad80f1f88052@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBD8918D
-	for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2005 08:24:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18625142
+	for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2005 09:04:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001161.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=55> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1163> 
 ======================================================================
-Reported By:                lukas
+Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   55
-Category:                   PCI - ice1712
+Project:                    ALSA - utils
+Issue ID:                   1163
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian testing
-Kernel Version:             linux-2.4.22-debian-preempt-lowlat
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-12-2004 22:13 CET
-Last Modified:              06-06-2005 10:59 CEST
+Date Submitted:             06-06-2005 19:50 CEST
+Last Modified:              06-07-2005 09:04 CEST
 ======================================================================
-Summary:                    Midi in does not work for Hoontech/STAudio DSP2000
-C-Port
+Summary:                    Two modprobe calls lack path
 Description: 
-aconnect -o says:
- client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
-[type=kernel]
-    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
-   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
+All but two calls to modprobe in alsaconf call it with the full path.  For
+consistency the remaining two calls should also use the full path.
 
-aconnect -i says:
-client 0: 'System' [type=kernel]
-    0 'Timer           '
-    1 'Announce        '
-client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
-[type=kernel]
-    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
-   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
+--- alsaconf.in_ORIG    2005-06-06 19:49:00.000000000 +0200
++++ alsaconf.in 2005-06-06 19:50:06.000000000 +0200
+@@ -753,7 +753,7 @@
+     if $lsmod | grep -q -E '^(snd-|snd_)'$1' '; then
+        : ;
+     else
+-       modprobe -r snd-$1 >/dev/null 2>&1
++       /sbin/modprobe -r snd-$1 >/dev/null 2>&1
+        return 1
+     fi
 
-Midi out does not work, midi in does.
+@@ -792,7 +792,7 @@
+     if $lsmod | grep -q -E '^(snd-|snd_)'$1' '; then
+        : ;
+     else
+-       modprobe -r snd-$1 >/dev/null 2>&1
++       /sbin/modprobe -r snd-$1 >/dev/null 2>&1
+        return 1
+     fi
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001161 Midi in still does not work for Hoontec...
-======================================================================
 
 ----------------------------------------------------------------------
- lukas - 04-07-05 17:05 
+ perex - 06-07-05 09:04 
 ----------------------------------------------------------------------
-Just curious... Anything new on this one?
-
-btw, some links on this issue:
-http://sourceforge.net/mailarchive/message.php?msg_id=7156168
-http://lalists.stanford.edu/lau/2003/06/0031.html
-http://music.columbia.edu/pipermail/linux-audio-dev/2004-April/thread.html#7671
-
-I posted a link to this issue on the sta support forum
-http://qa.staudio.de/show.asp?db=sta&t=sta2&mode=0&msg=1878
-
-Regards,
---lu
-
-----------------------------------------------------------------------
- Clemens Ladisch - 04-07-05 17:37 
-----------------------------------------------------------------------
-I changed something in ALSA 1.0.5.
-I don't know if it fixes this bug, please test.
-
-----------------------------------------------------------------------
- perex - 06-06-05 10:59 
-----------------------------------------------------------------------
-No response from reporter.
+Fixed in CVS. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-04 22:13 lukas          New Issue                                    
-02-12-04 22:14 lukas          Issue Monitored: lukas                       
-02-21-04 15:36 perex          Status                   new => assigned     
-02-21-04 15:36 perex          Assigned To               => perex           
-04-07-05 17:05 lukas          Note Added: 0004360                          
-04-07-05 17:37 Clemens LadischNote Added: 0004361                          
-06-06-05 10:59 perex          Status                   assigned => resolved
-06-06-05 10:59 perex          Resolution               open => fixed       
-06-06-05 10:59 perex          Note Added: 0004901                          
-06-07-05 08:24 perex          Relationship added       related to 0001161  
+06-06-05 19:50 jdthood        New Issue                                    
+06-07-05 09:04 perex          Status                   new => resolved     
+06-07-05 09:04 perex          Resolution               open => fixed       
+06-07-05 09:04 perex          Assigned To               => perex           
+06-07-05 09:04 perex          Note Added: 0004911                          
 ======================================================================
 
 
