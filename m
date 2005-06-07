@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Tue, 7 Jun 2005 00:33:25 +0200
-Message-ID: <d932b7515b706748bbdd51ddde208abe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001165]: compilation of alsa-utils-1.0.9a fails
+Date: Tue, 7 Jun 2005 05:03:54 +0200
+Message-ID: <50ca8b0db6eddd23e7f0a6357479773f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DF671B1
-	for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2005 00:33:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3CDA1DC
+	for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2005 05:03:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1165> 
 ======================================================================
-Reported By:                sst4
-Assigned To:                
+Reported By:                mab
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1165
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-07-2005 00:33 CEST
+Date Submitted:             06-07-2005 05:03 CEST
+Last Modified:              06-07-2005 05:03 CEST
 ======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
+Summary:                    compilation of alsa-utils-1.0.9a fails
 Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
-
-Soon (probably in a second) after this command line:
-
-aoss skype &
-
-the terminal window gets filled with
-
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
-
+compilation of alsa-utils-1.0.9a fails with an error 1 on
+alsactl
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-05 00:33 sst4           New Issue                                    
+06-07-05 05:03 mab            New Issue                                    
+06-07-05 05:03 mab            File Added: config.log                       
 ======================================================================
 
 
