@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001165]: compilation of alsa-utils-1.0.9a fails
-Date: Tue, 7 Jun 2005 08:22:29 +0200
-Message-ID: <fcd70ac9d97e3e25a8b81e289244e67e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001161]: Midi in still does not work for Hoontech/STAudio DSP2000 C-Port
+Date: Tue, 7 Jun 2005 08:24:28 +0200
+Message-ID: <f50518b2e55604cf5261e25a5ab4473e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A611216D
-	for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2005 08:22:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2356718A
+	for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2005 08:24:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been set as RELATED TO issue 0000055.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1165> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1161> 
 ======================================================================
-Reported By:                mab
-Assigned To:                perex
+Reported By:                vandongen2
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1165
-Category:                   alsactl
+Project:                    ALSA - driver
+Issue ID:                   1161
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               linux from scratch
+Kernel Version:             2.6.12-rc4-RT-V0.7.47-03
 ======================================================================
-Date Submitted:             06-07-2005 05:03 CEST
-Last Modified:              06-07-2005 08:22 CEST
+Date Submitted:             06-06-2005 15:29 CEST
+Last Modified:              06-07-2005 08:24 CEST
 ======================================================================
-Summary:                    compilation of alsa-utils-1.0.9a fails
+Summary:                    Midi in still does not work for Hoontech/STAudio
+DSP2000 C-Port
 Description: 
-compilation of alsa-utils-1.0.9a fails with an error 1 on
-alsactl
+As reported before in bug 000055 that is now marked resolved.
+It has not been resolved.
+The problem seems to be related to hardware specific registers on the card
+that need to be set.
+
+I will be happy to spend a couple of days trying different flags/bits with
+the initialisation code, if somebody gives me an idea of where to start.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001146 Cannot compile alsa-utils
+related to          0000055 Midi in does not work for Hoontech/STAu...
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-05 05:03 mab            New Issue                                    
-06-07-05 05:03 mab            File Added: config.log                       
-06-07-05 08:18 perex          Project                  ALSA - driver => ALSA -
-utils
-06-07-05 08:18 perex          Category                 0_compilation problem_!!!
-=> alsactl
-06-07-05 08:22 perex          Relationship added       duplicate of 0001146
-06-07-05 08:22 perex          Duplicate ID             0 => 1146           
-06-07-05 08:22 perex          Status                   assigned => resolved
-06-07-05 08:22 perex          Resolution               open => fixed       
+06-06-05 15:29 vandongen2     New Issue                                    
+06-06-05 15:29 vandongen2     Distribution              => linux from scratch
+06-06-05 15:29 vandongen2     Kernel Version            =>
+2.6.12-rc4-RT-V0.7.47-03
+06-07-05 08:24 perex          Relationship added       related to 0000055  
 ======================================================================
 
 
