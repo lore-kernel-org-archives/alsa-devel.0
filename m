@@ -1,14 +1,10 @@
-From: "Djamila Burgdorf" <burgdorf@sabu.de>
-Subject: Re: Bohuslav Really Works Great
-Date: Sat, 5 Nov 2005 04:40:26 -0500
-Message-ID: <004d01c5e1ec$f3476100$7d8fa8c0@crenellated>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004A_01C5E1C3.0A715900"
+From: =?GB2312?B?1cXDwLrn?= <dfjh@atom.com>
+Subject: =?GB2312?B?us/X9w==?=
+Date: Tue, 7 Jun 2005 20:21:10 +0800
+Message-ID: <E1EYN4E-0006U2-O8@mail.sourceforge.net>
+Reply-To: hltkh3@tom.com
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sabu.de (220x151x139x202.ap220.ftth.ucom.ne.jp [220.151.139.202])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 85DFC198
-	for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2005 10:40:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +14,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Yaromira Schilke <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+先生/小姐：
 
-------=_NextPart_000_004A_01C5E1C3.0A715900
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   您好！很高兴认识您。我司有意与您们合作:可长久给您们带来
+巨大的效益,另因合作项目的高度自动化，您们每天只需工作几分钟，
+对您们现有的工作没有影响！若有意，请电邮/电话给我,或请把您的
+联系电话/QQ告诉我，以便更好地与您交流,进一步商谈合作事宜，谢谢！
 
-Good day fo
-overpa
-ur Meddi
-t our Pha
-s S
-r you, Quit 
-ying for yo
-cations - visi
-rmaExpres
-hop.
-Look through for more info - http://indubitablebwl.takeseam.com
-
-------=_NextPart_000_004A_01C5E1C3.0A715900
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 style=3D"BORDER-RIGHT-WIDTH: 0px;">
-  <TR style=3D"WHITE-SPACE: normal;">
-    <TD rowSpan=3D2 style=3D"PADDING-RIGHT: 0px;" vAlign=3Dbottom><FONT =
-size=3D3>Good day fo</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 style=3D"PADDING-RIGHT: 0px;" vAlign=3Dbottom><FONT =
-size=3D3>overpa</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 style=3D"PADDING-RIGHT: 0px;" vAlign=3Dbottom><FONT =
-size=3D3>ur Meddi</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 style=3D"PADDING-RIGHT: 0px;" vAlign=3Dbottom><FONT =
-size=3D3>t our Pha</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 style=3D"PADDING-RIGHT: 0px;" vAlign=3Dbottom><FONT =
-size=3D3>s S</FONT></TD><TD></TD>
-  </TR>
-  <TR style=3D"WHITE-SPACE: normal;">
-    <TD style=3D"BORDER-WIDTH: 0px;" vAlign=3Dbottom><FONT size=3D3>r you, =
-Quit&nbsp;</FONT></TD>
-    <TD style=3D"BORDER-WIDTH: 0px;" vAlign=3Dbottom><FONT size=3D3>ying for =
-yo</FONT></TD>
-    <TD style=3D"BORDER-WIDTH: 0px;" vAlign=3Dbottom><FONT size=3D3>cations - =
-visi</FONT></TD>
-    <TD style=3D"BORDER-WIDTH: 0px;" vAlign=3Dbottom><FONT size=3D3>=
-rmaExpres</FONT></TD>
-    <TD style=3D"BORDER-WIDTH: 0px;" vAlign=3Dbottom><FONT size=3D3>hop=
-</FONT></TD>
-  </TR></TABLE>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D3>Look through for more info - <A href=3D"http://indubi=
-tablebwl.takeseam.com"><FONT face=3DArial size=3D3>http://indubitablebwl.t=
-akeseam.com</FONT></A></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_004A_01C5E1C3.0A715900--
+深圳市公司发展部  张美虹
+网址：http://www.cnhlt.com
+Email: hltzmh@tom.com
+QQ:569691796
+电话：0755-88829928,81519553
 
 
 
