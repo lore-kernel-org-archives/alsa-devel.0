@@ -1,12 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Jeremy White <jwhite@codeweavers.com>
 Subject: Re: RFC:  Appropriate device detection for Wine
-Date: Tue, 7 Jun 2005 09:32:54 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506070930180.1752@pnote.perex-int.cz>
-References: <42A519E9.2000103@codeweavers.com>
+Date: Tue, 07 Jun 2005 07:27:38 -0500
+Message-ID: <42A592BA.7050505@codeweavers.com>
+References: <42A519E9.2000103@codeweavers.com> <Pine.LNX.4.58.0506070930180.1752@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42A519E9.2000103@codeweavers.com>
+In-Reply-To: <Pine.LNX.4.58.0506070930180.1752@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jeremy White <jwhite@codeweavers.com>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net, Robert Reif <reif@earthlink.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 6 Jun 2005, Jeremy White wrote:
+Jaroslav Kysela wrote:
+> On Mon, 6 Jun 2005, Jeremy White wrote:
+> 
+> 
+>>Thoughts?  Comments?  Tactfully worded puncturing of
+>>my delusions <grin>?
+> 
+> 
+> The right way is to use snd_names_list() and snd_names_list_free()
+> functions (available from 1.0.9). Simply look for words like Playback
+> Capture and Duplex in the comment member to determine the stream direction.
 
-> Thoughts?  Comments?  Tactfully worded puncturing of
-> my delusions <grin>?
+I don't think we can mandate 1.0.9 of Alsalib; that's more
+modern than what most users have.
 
-The right way is to use snd_names_list() and snd_names_list_free()
-functions (available from 1.0.9). Simply look for words like Playback
-Capture and Duplex in the comment member to determine the stream direction.
+Further, given that I have yet to run into a system
+with a properly set up alsa.conf, I find it highly
+unlikely that people will have well configured asound.names
+files any time soon.
 
-						Jaroslav
+Cheers,
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Jeremy
 
 
 -------------------------------------------------------
