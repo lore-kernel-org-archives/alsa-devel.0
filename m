@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001166]: Controls
-Date: Wed, 8 Jun 2005 00:27:39 +0200
-Message-ID: <2e8854e3e59ea5121cf84ff8ec4a273d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001167]: Can't capture anymore
+Date: Wed, 8 Jun 2005 01:57:51 +0200
+Message-ID: <abaf2b184d1237bbce7bb6bca7b58df4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03F3A1DF
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 00:27:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F3091DF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 01:57:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,33 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1166> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1167> 
 ======================================================================
-Reported By:                stigfjel
+Reported By:                Skinkie
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1166
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   1167
+Category:                   PCI - via82xx
+Reproducibility:            unable to duplicate
+Severity:                   block
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11-r10
 ======================================================================
-Date Submitted:             06-08-2005 00:27 CEST
-Last Modified:              06-08-2005 00:27 CEST
+Date Submitted:             06-08-2005 01:57 CEST
+Last Modified:              06-08-2005 01:57 CEST
 ======================================================================
-Summary:                    Controls
+Summary:                    Can't capture anymore
 Description: 
-Doesn't support two-channel mixing. I can't adjust volume on separate
-channels with Audigy 2 Platinum. Mute is also missing on master volume,
-PCM and other controls.
+Afther upgrading my system audio worked perfectly, my only concern was the
+alsamixer F4 bug, which also crashed the program.
+
+I upgraded tot 1.0.9a and then hell came loose recording was impossible
+from /dev/sound/dsp or natively via the alsa drivers. The strangest thing
+happened too, because I removed (unmerged) all previous drivers including
+previous libraries and headers and then installed 1.0.9a again.
+
+Still I can't record. Audacity's recorder bar stays blinking at the same
+position and ices (a production thing I'm using everyday with this laptop)
+results in an pcm error too.
+
+I must mention all 'normal' sound is working. But even downgrading(!) to
+in kernel versions don't fix my issues. So I'm wondering what I have
+broken.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 00:27 stigfjel       New Issue                                    
+06-08-05 01:57 Skinkie        New Issue                                    
+06-08-05 01:57 Skinkie        Distribution              => Gentoo          
+06-08-05 01:57 Skinkie        Kernel Version            => 2.6.11-r10      
 ======================================================================
 
 
