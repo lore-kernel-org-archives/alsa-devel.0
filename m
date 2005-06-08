@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Wed, 8 Jun 2005 16:52:05 +0200
-Message-ID: <7facade6eefc31a6ec0be70391f5f6e2@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 16:57:59 +0200
+Message-ID: <f7920080db886f2ba73999c4384b4be7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FFF21BD
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:52:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78BAE1BD
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:57:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSe Linux 9.3 Professional
 Kernel Version:             2.6.11.4.20a
 ======================================================================
 Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-08-2005 16:52 CEST
+Last Modified:              06-08-2005 16:57 CEST
 ======================================================================
 Summary:                    no sound on speakers, low volume on the headphones
 Description: 
@@ -66,15 +66,27 @@ and error messages with certain settings)
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-08-05 16:45 
-----------------------------------------------------------------------
-It will not load, but simply probing modem driver can kill audio part.
-
-----------------------------------------------------------------------
  Gildoniel - 06-08-05 16:52 
 ----------------------------------------------------------------------
 snd-atiixp-modem is not loaded (and I didn't touch the modem in any way so
 far)
+
+----------------------------------------------------------------------
+ pzad - 06-08-05 16:57 
+----------------------------------------------------------------------
+_err:
+       /* clear the cold-reset bit for the next chance */
+       if (chip->device_type != DEVICE_ALI)
+              iputdword(chip, ICHREG(GLOB_CNT), igetdword(chip,
+ICHREG(GLOB_CNT)) & ~ICH_AC97COLD);
+       return err;
+
+Maybe this is not related to this bug. But these few rows from intel modem
+driver made audio part not working for me, and I think, they are still
+there.
+
+What I would try is to remove snd-atiixp-modem module completly (pysically
+from disk) and try to reboot.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +115,7 @@ Professional
 06-08-05 16:43 tiwai          Note Added: 0004957                          
 06-08-05 16:45 pzad           Note Added: 0004958                          
 06-08-05 16:52 Gildoniel      Note Added: 0004959                          
+06-08-05 16:57 pzad           Note Added: 0004960                          
 ======================================================================
 
 
