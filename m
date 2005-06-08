@@ -1,14 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [Openvortex-dev] Re: Re: [ALSA - driver 0001138]: errors when
- installing au8820 modules
-Date: Wed, 08 Jun 2005 19:40:38 +0800
-Message-ID: <42A6D936.8040101@netvigator.com>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<200506071917.42953.alien999999999@users.sourceforge.net>	<42A5DB84.2030407@mail.ru>	<200506072002.49600.alien999999999@users.sourceforge.net> <s5hacm1kv7f.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001171]: via8235 alc650f - miss "Line-In As Surround" "Mic As Center/LFE"
+Date: Wed, 8 Jun 2005 14:10:37 +0200
+Message-ID: <25da72ff5788473392d519bcf35407a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hacm1kv7f.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 900561E7
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 14:10:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-typedef struct {
-	unsigned int *this00;	/*CAsp4HwIO */
-	long this04;		/* How many filters for each side (default = 10) */
-	long this08;		/* inited to cero. Stereo flag? */
-} eqhw_t;
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1171> 
+======================================================================
+Reported By:                norbert
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1171
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-08-2005 14:10 CEST
+Last Modified:              06-08-2005 14:10 CEST
+======================================================================
+Summary:                    via8235 alc650f - miss "Line-In As Surround" "Mic As
+Center/LFE"
+Description: 
+I miss the 
 
-static void vortex_EqHw_SetLevels(vortex_t * vortex, u16 peaks[])
-{
-	eqhw_t *eqhw = &(vortex->eq.this04);
-	int i;
+"Line-In As Surround"
 
-	/* set left peaks */
-	for (i = 0; i < eqhw->this04; i++) {
-		hwwrite(vortex->mmio, 0x2b024 + i * VORTEX_BAND_COEFF_SIZE, peaks[i]);
-	}
+"Mic As Center/LFE"
 
-	hwwrite(vortex->mmio, 0x2b3cc, peaks[eqhw->this04]);
-	hwwrite(vortex->mmio, 0x2b3d8, peaks[eqhw->this04 + 1]);
+buttons.
 
-	/* set right peaks */
-	for (i = 0; i < eqhw->this04; i++) {
-		hwwrite(vortex->mmio, 0x2b204 + i * VORTEX_BAND_COEFF_SIZE,
-			peaks[i + (eqhw->this04 + 2)]);
-	}
+It worked before, see bug 0000043.
+(kernel 2.6.11.11 / alsa 1.0.9a)
 
-	hwwrite(vortex->mmio, 0x2b3e4, peaks[2 + (eqhw->this04 * 2)]);
-	hwwrite(vortex->mmio, 0x2b3f0, peaks[3 + (eqhw->this04 * 2)]);
-}
+I'll give more info if needed.
+Norbert
+======================================================================
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-08-05 14:10 norbert        New Issue                                    
+======================================================================
 
-	vortex_EqHw_SetLevels(vortex, (u16 *) eq_levels);
-
-
-
-
-What is the reason to increase the size of the array eq_levels from 32 
-to 64 ?  ( eqhw->this04 seem to be 10 )
-
-
-Takashi Iwai wrote:
-
-> 
-> 
->>Index: alsa-kernel/pci/au88x0/au88x0_eqdata.c
->>===================================================================
->>RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_eqdata.c,v
->>retrieving revision 1.1
->>diff -u -r1.1 au88x0_eqdata.c
->>--- alsa-kernel/pci/au88x0/au88x0_eqdata.c	9 Mar 2004 11:52:13 -0000	1.1
->>+++ alsa-kernel/pci/au88x0/au88x0_eqdata.c	7 Jun 2005 17:56:37 -0000
->>@@ -104,7 +104,11 @@
->> };
->> 
->> /*_rodataba0:*/
->>-static long eq_levels[32] = {
->>+static u16 eq_levels[64] = {
->>+	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
->>+	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
->>+	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
->>+	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
->> 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
->> 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
->> 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-> 
-> 
-> You don't need to define values if the static array is initialize to
-> zero.  In this case,
-> 
-> 	static u16 eq_levels[64];
-> 
-> would be better.
-> 
 
 
 
