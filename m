@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000419]: ALSA verified working on Apple Powerbook Lombard
-Date: Wed, 8 Jun 2005 16:02:22 +0200
-Message-ID: <781cfd9b0fa8afcdb4dbc7c2edfdb8c6@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000485]: Two additions to the matrix: M-Audio Sonica and Turtle Beach Audio Advantage
+Date: Wed, 8 Jun 2005 16:07:50 +0200
+Message-ID: <068624a10e175c0e4f0684292b33a7b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E32331E8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:02:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B5D91F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:07:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=419> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=485> 
 ======================================================================
-Reported By:                sammon
-Assigned To:                perex
+Reported By:                noduck
+Assigned To:                
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   419
+Issue ID:                   485
 Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   text
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Resolution:                 fixed
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-03-2004 02:35 CEST
-Last Modified:              06-08-2005 16:02 CEST
+Date Submitted:             09-07-2004 04:21 CEST
+Last Modified:              06-08-2005 16:07 CEST
 ======================================================================
-Summary:                    ALSA verified working on Apple Powerbook Lombard
+Summary:                    Two additions to the matrix: M-Audio Sonica and
+Turtle Beach Audio Advantage
 Description: 
-I have verified that the ALSA drivers build and work (with aplay) for the
-built-in audio on my Apple Powerbook Lombard.
-I didn't notice any entries listing "Apple" as the vendor/manufacturer.
+M-Audio Sonica will work with the latest 2.6.8 kernel. After the firmware
+upload, the kernel will recognize the new firmware and load the USB audio
+driver.
 
+The Audio Advantage works without problem with the USB audio driver, it
+doesn't need any firmware upload. This is a nice dongle type audio device,
+but it is very loud.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-08-05 16:02 
+ perex - 06-08-05 16:07 
 ----------------------------------------------------------------------
 Added to matrix. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-04 02:35 sammon         New Issue                                    
-06-08-05 16:02 perex          Status                   new => resolved     
-06-08-05 16:02 perex          Resolution               open => fixed       
-06-08-05 16:02 perex          Assigned To               => perex           
-06-08-05 16:02 perex          Note Added: 0004942                          
+09-07-04 04:21 noduck         New Issue                                    
+06-08-05 16:07 perex          Note Added: 0004943                          
+06-08-05 16:07 perex          Status                   new => resolved     
 ======================================================================
 
 
