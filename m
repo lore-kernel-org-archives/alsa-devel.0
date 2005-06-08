@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Wed, 8 Jun 2005 16:39:17 +0200
-Message-ID: <7fe15ce7ddf6daad8a75d35f88292055@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 16:41:38 +0200
+Message-ID: <1d211afe6d08554234a1e41e89c03f5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE4981C8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:39:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 360A31C8
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:41:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSe Linux 9.3 Professional
 Kernel Version:             2.6.11.4.20a
 ======================================================================
 Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-08-2005 16:39 CEST
+Last Modified:              06-08-2005 16:41 CEST
 ======================================================================
 Summary:                    no sound on speakers, low volume on the headphones
 Description: 
@@ -66,18 +66,16 @@ and error messages with certain settings)
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-08-05 16:21 
-----------------------------------------------------------------------
-Would be posible to add (to all alsa modem drivers - intel, via, ati) check
-for this codec and if detected this chip failed to load driver without
-touching  anything (not reseting) ? This modem will not work anyway.
-
-----------------------------------------------------------------------
  Gildoniel - 06-08-05 16:39 
 ----------------------------------------------------------------------
 pzad, I am afraid I don't know what you mean
 
 What exactly should I try?
+
+----------------------------------------------------------------------
+ tiwai - 06-08-05 16:41 
+----------------------------------------------------------------------
+Is snd-atiixp-modem driver loaded?  This may conflict with the audio part.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +99,7 @@ Professional
 06-08-05 16:13 Gildoniel      Note Added: 0004948                          
 06-08-05 16:21 pzad           Note Added: 0004949                          
 06-08-05 16:39 Gildoniel      Note Added: 0004954                          
+06-08-05 16:41 tiwai          Note Added: 0004955                          
 ======================================================================
 
 
