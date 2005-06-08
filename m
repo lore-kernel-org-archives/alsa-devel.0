@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000485]: Two additions to the matrix: M-Audio Sonica and Turtle Beach Audio Advantage
-Date: Wed, 8 Jun 2005 16:08:28 +0200
-Message-ID: <289d198246599c0ce7eceb06bc801cc6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000964]: "Swap surround slot" does not affect "Duplicate Front"
+Date: Wed, 8 Jun 2005 16:10:24 +0200
+Message-ID: <6367e436d17655575bd9df8fb6fca308@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FB321F2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:08:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 315F31F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:10:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=485> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=964> 
 ======================================================================
-Reported By:                noduck
-Assigned To:                perex
+Reported By:                slammer
+Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   485
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   964
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-07-2004 04:21 CEST
-Last Modified:              06-08-2005 16:08 CEST
+Date Submitted:             03-04-2005 20:20 CET
+Last Modified:              06-08-2005 16:10 CEST
 ======================================================================
-Summary:                    Two additions to the matrix: M-Audio Sonica and
-Turtle Beach Audio Advantage
+Summary:                    "Swap surround slot" does not affect "Duplicate
+Front"
 Description: 
-M-Audio Sonica will work with the latest 2.6.8 kernel. After the firmware
-upload, the kernel will recognize the new firmware and load the USB audio
-driver.
-
-The Audio Advantage works without problem with the USB audio driver, it
-doesn't need any firmware upload. This is a nice dongle type audio device,
-but it is very loud.
+When i turn the "Swap surround slot" option "on" and physically do the
+swap, the "Duplicate Front" option duplicates front channels still to the
+Unswapped plug i.e. it sends them to the Center/LFE channels. I think that
+the "Duplicate front" switch should be affected by the "Swap surround"
+switch. Don't You think so?
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-08-05 16:07 
+ tiwai - 06-08-05 16:10 
 ----------------------------------------------------------------------
-Added to matrix. Thanks.
+If it doesn't affect, it's really so - I mean, these switches are
+straightforward implementation of the ac97 registers.  The behavior is
+exactly what the hardware provides.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-07-04 04:21 noduck         New Issue                                    
-06-08-05 16:07 perex          Note Added: 0004943                          
-06-08-05 16:07 perex          Status                   new => resolved     
-06-08-05 16:08 perex          Status                   resolved => assigned
-06-08-05 16:08 perex          Assigned To               => perex           
+03-04-05 20:20 slammer        New Issue                                    
+03-05-05 22:50 slammer        Issue Monitored: slammer                     
+05-30-05 12:57 perex          Project                  ALSA - lib => ALSA -
+driver
+05-30-05 12:58 perex          Category                 control / hcontrol => PCI
+- intel8x0
+06-08-05 16:10 tiwai          Note Added: 0004945                          
 ======================================================================
 
 
