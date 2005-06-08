@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001152]: aoss manual typo: "SYNOPSYS"
-Date: Wed, 8 Jun 2005 15:52:11 +0200
-Message-ID: <fff4acf901ddac973b8e35e4664bf36a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001156]: ALSA bugtracker doesn't have a "Plugins" Category
+Date: Wed, 8 Jun 2005 15:58:14 +0200
+Message-ID: <ce4bdf601604a69e9dc898f41f2716bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C77D51F2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:52:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1083F1F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:58:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1152> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1156> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                jordi
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1152
-Category:                   
+Project:                    ALSA - lib
+Issue ID:                   1156
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
-Priority:                   low
+Severity:                   major
+Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-03-2005 13:45 CEST
-Last Modified:              06-08-2005 15:52 CEST
+Date Submitted:             06-06-2005 01:33 CEST
+Last Modified:              06-08-2005 15:58 CEST
 ======================================================================
-Summary:                    aoss manual typo: "SYNOPSYS"
+Summary:                    ALSA bugtracker doesn't have a "Plugins" Category
 Description: 
---- -   2005-05-31 13:41:26.747806000 -0400
-+++ /tmp/aoss1.gz.8681  2005-05-31 13:41:26.000000000 -0400
-@@ -2,7 +2,7 @@
- .SH NAME
- aoss \- Wrapper script to facilitate use of the ALSA OSS compatibility
- library.
--.SH SYNOPSYS
-+.SH SYNOPSIS
- \fBaoss\fP \fIosscommand\fP [arguments]
- 
- .SH DESCRIPTION
+Summary says all; despite the introduction of the new alsa-plugins package,
+mantis still lacks a dedicated category for this.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-08-05 15:52 
+ tiwai - 06-08-05 15:58 
 ----------------------------------------------------------------------
-Fixed in CVS. Thanks.
+Added now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-03-05 13:45 jdthood        New Issue                                    
-06-08-05 15:52 perex          Status                   new => resolved     
-06-08-05 15:52 perex          Resolution               open => fixed       
-06-08-05 15:52 perex          Assigned To               => perex           
-06-08-05 15:52 perex          Note Added: 0004937                          
+06-06-05 01:33 jordi          New Issue                                    
+06-08-05 15:58 tiwai          Status                   new => resolved     
+06-08-05 15:58 tiwai          Resolution               open => fixed       
+06-08-05 15:58 tiwai          Assigned To               => tiwai           
+06-08-05 15:58 tiwai          Note Added: 0004940                          
 ======================================================================
 
 
