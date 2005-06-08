@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
-Date: Wed, 8 Jun 2005 20:40:58 +0200
-Message-ID: <77e0059e00e2a150945e3e480af200b0@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Wed, 8 Jun 2005 21:13:58 +0200
+Message-ID: <dd89f51174c0c10e058ad3d5bb65f7ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 107401E9
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 20:40:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED5DA1FB
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 21:13:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=332> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                Johan Gorter
+Reported By:                yure
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   332
-Category:                   alsamixer
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-11-2004 09:12 CEST
-Last Modified:              06-08-2005 20:40 CEST
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              06-08-2005 21:13 CEST
 ======================================================================
-Summary:                    Unable to enable 'Mic as Center/LFE'
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable to
-enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
-cannot change its value from 0 and record / mute is also disabled. I
-tracked the problem by using alsactl to store the settings. This results
-in a file where this option (nr 47 on my system) is an Integer with the
-comment that the value may be from 0 to 0. On other systems I found out
-that this is supposed to be a Boolean which can be switched on and off.
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 05-02-05 11:10 
+ tiwai - 06-08-05 16:08 
 ----------------------------------------------------------------------
-In Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307087 it
-was reported:
+I guess it's rather a problem with a specific driver.  The dmix is very
+sensitive to the accuracy of DMA pointer.  If the driver returns a wrong
+DMA pointer, it may result in noises.
 
-I'm unable to record the Mic input with this sound card and this
-alsa-utils version : under alsamixer there is no possibility to
-select the Mic for recording as I could with older versions of
-alsa-utils that I used to install on a Woody.
-(I launch with "alsamixer -V all")
-
-Using an OSS mixer (aumix-gtk) or an other Alsa Mixer (gamix)
-fixes the problem.
-
-I'm using debian GNU/Linux testing, Linux 2.6.8-2-686 and
-libc6 2.3.2.ds1-20
+Also, for 96kHz, you'd need much bigger buffer and period sizes than 48k. 
+Otherwise usual xruns can happen.  I suspect xruns rather the existing
+dmix bugs...
 
 ----------------------------------------------------------------------
- jdthood - 06-08-05 20:40 
+ Xero - 06-08-05 21:13 
 ----------------------------------------------------------------------
-I asked the submitter of Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307087 to test alsa-utils
-version 1.0.9a.  He says:
-
-The bug seems to be half fixed: in [All] mode of alsamixer it is still
-[not] present (no control to select Mic for recording), while in [Capture]
-mode the control is present.  Also the recording volume is very low, even
-at 100%, but this might be because of the sound card (though I don't now
-how to check that).
+how much bigger is much bigger? I'm running at the standard 1024/8192 for
+period/buffer size. If that really is the problem then it's still odd that
+this would happen at 96000 but not 88200, which is why I think it's more
+related to sample rate conversion...I've attached my config file at 96000
+for reference.  When in 88200 the only change is just that, 88200 instead
+of 96000 in the rate section.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-04 09:12 Johan Gorter   New Issue                                    
-01-22-05 03:26 rhal           Issue Monitored: rhal                        
-03-20-05 15:45 jdthood        Note Added: 0004093                          
-03-31-05 20:23 jdthood        Note Added: 0004284                          
-05-02-05 11:10 jdthood        Note Added: 0004584                          
-06-08-05 20:40 jdthood        Note Added: 0004972                          
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
+03-11-05 16:17 tiwai          Note Added: 0003891                          
+03-23-05 20:46 tiwai          Note Added: 0004187                          
+03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
+03-25-05 14:56 tvignaud       Note Added: 0004206                          
+03-29-05 16:21 tiwai          Note Added: 0004246                          
+04-04-05 16:15 yure           Note Added: 0004327                          
+04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
+05-29-05 08:23 Xero           Note Added: 0004781                          
+05-29-05 08:29 Xero           Note Added: 0004782                          
+06-03-05 07:40 Xero           Note Added: 0004882                          
+06-08-05 16:08 tiwai          Note Added: 0004944                          
+06-08-05 21:13 Xero           Note Added: 0004973                          
 ======================================================================
 
 
