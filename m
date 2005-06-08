@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Wed, 8 Jun 2005 04:43:20 +0200
-Message-ID: <ec5d64407fb3bbd21c713a0e5cf9b520@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001168]: No sound using Yamaha YMF740C on Intel SE440BX-2 motherboard
+Date: Wed, 8 Jun 2005 04:57:13 +0200
+Message-ID: <81a9ec8c770d5dd88e2c0d46f94ad110@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CFD41DF
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 04:43:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D50A51DF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 04:57:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1168> 
 ======================================================================
-Reported By:                penguinparty
-Assigned To:                mjander
+Reported By:                mtl
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1138
-Category:                   PCI - au88x0
+Issue ID:                   1168
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               ubuntu 5.04
-Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
+Status:                     new
+Distribution:               slackware-current
+Kernel Version:             2.4.31, as well as 2.4.29 & 2.4.30
 ======================================================================
-Date Submitted:             05-28-2005 22:22 CEST
-Last Modified:              06-08-2005 04:43 CEST
+Date Submitted:             06-08-2005 02:04 CEST
+Last Modified:              06-08-2005 04:57 CEST
 ======================================================================
-Summary:                    errors when installing au8820 modules
+Summary:                    No sound using Yamaha YMF740C on Intel SE440BX-2
+motherboard
 Description: 
-Please see the section additional information for a dump of my dmesg output
-regarding the au8820 module.
+I'm using a system with an Intel SE440BX-2 motherboard, which has the
+Yamaha YMF740C sound system built in.
 
-I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
-kernels. The shipping alsa support under each of these kerenls provies me
-with the same result. I have also tried installing each of these kernels
-without alsa support only CONFIG_SOUND and then installing the
-alsa-drivers 1.0.9rc4a
+I've taken the alsa-driver source from disc 4 of the Slackware-10.0 CD
+set, and after editing the alsa-driver.SlackBuild script to reflect the
+current kernel version, rebuilt the alsa-driver-1.0.5a-i486-2.tgz package,
+and after installing my own package, all works as it should, so far as I
+can tell.  I've done this with kernel versions 2.4.29, 2.4.30, and 2.4.31,
+all with the same results.
 
-I get the same result every time I do the modprobe snd-au8820
 
-Using older versions of debian as well as the ubuntu live cd's I am able
-to get this sound card working.
 ======================================================================
 
 ----------------------------------------------------------------------
- penguinparty - 06-08-05 04:43 
+ mtl - 06-08-05 04:57 
 ----------------------------------------------------------------------
-See attached typescript for information on my system
+Resolved with alsa-driver-1.0.9b.tar.bz2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 22:22 penguinparty   New Issue                                    
-05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
-05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
-and 2.6.10
-05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
-06-08-05 04:41 penguinparty   File Added: typescript                       
-06-08-05 04:43 penguinparty   Note Added: 0004914                          
+06-08-05 02:04 mtl            New Issue                                    
+06-08-05 02:04 mtl            Distribution              => slackware-current
+06-08-05 02:04 mtl            Kernel Version            => 2.4.31, as well as
+2.4.29 & 2.4.30
+06-08-05 04:57 mtl            Note Added: 0004915                          
 ======================================================================
 
 
