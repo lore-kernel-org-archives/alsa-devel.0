@@ -1,12 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: [PATCH] echomixer - display fix
-Date: Wed, 8 Jun 2005 17:27:45 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506081707100.20166@denise.shiny.it>
-References: <20050607232312.35bfc2a8.pochini@shiny.it> <s5hvf4pj5ly.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
+Date: Wed, 8 Jun 2005 17:31:29 +0200
+Message-ID: <5b497d6f918864220406550cc67ed5f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hvf4pj5ly.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D69A1DE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:31:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,29 +18,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
+======================================================================
+Reported By:                Gildoniel
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1162
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               SuSe Linux 9.3 Professional
+Kernel Version:             2.6.11.4.20a
+======================================================================
+Date Submitted:             06-06-2005 18:54 CEST
+Last Modified:              06-08-2005 17:31 CEST
+======================================================================
+Summary:                    no sound on speakers, low volume on the headphones
+Description: 
+Problem diagnosis:
+ 
+* Sound card is detected and automatically configured, but no sound can be
+heard.
+* It is possible to hear _faint_ sound (very low volume) through
+headphones.
+* Headphone volume is 0 and I can still hear low volume sound (maybe
+master/headphone switched?)
+* It seems to be possible to record voice on the microphone (I see the
+amplitude when talking into the mic)
+ 
+Solution attempts so far:
+ 
+* used alsamixer to turn up and unmute all channels (failed: no sound on
+speakers, very low volume on headphones)
+* use the "quirk" option of the driver -1 through 7 (failed - no bettering
+and error messages with certain settings)
+* tried other sounddrivers (intel, via and others - didn't try them all)
+(failed - error loading modules on those I tried)
+======================================================================
 
-On Wed, 8 Jun 2005, Takashi Iwai wrote:
+----------------------------------------------------------------------
+ Gildoniel - 06-08-05 17:13 
+----------------------------------------------------------------------
+For me is, very low volume through headphones, dead speakers and working
+mic. The "headphones" volume control is not affecting the volume of the
+headphones. Only PCM/Master does.
 
-> > - Fix a display bug in the vmixer part of the graphic mixer that was
-> > introduced recently.
-> >
-> >
-> > Signed-off-by: Giuliano Pochini <pochini@shiny.it>
->
-> Applied.  Thanks.
+----------------------------------------------------------------------
+ Gildoniel - 06-08-05 17:31 
+----------------------------------------------------------------------
+I renamed the snd-atiixp-modem.ko to snd-atiixp-modem.old (which "removes"
+it from the system) and rebooted my machine.
 
-Tnx to you. I forgot to say that that patch fixes the bug reported here:
+Brought no bettering though.
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1143
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-06-05 18:54 Gildoniel      New Issue                                    
+06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
+06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
+Professional
+06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-07-05 17:52 Gildoniel      Note Added: 0004913                          
+06-08-05 14:35 tiwai          Note Added: 0004922                          
+06-08-05 14:43 Gildoniel      File Added: asound.state                     
+06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+         
+06-08-05 14:52 Gildoniel      Note Added: 0004924                          
+06-08-05 14:59 Gildoniel      Note Added: 0004927                          
+06-08-05 15:08 tiwai          Note Added: 0004929                          
+06-08-05 15:29 Gildoniel      Note Added: 0004933                          
+06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+06-08-05 15:36 pzad           Note Added: 0004935                          
+06-08-05 16:13 Gildoniel      Note Added: 0004948                          
+06-08-05 16:21 pzad           Note Added: 0004949                          
+06-08-05 16:39 Gildoniel      Note Added: 0004954                          
+06-08-05 16:41 tiwai          Note Added: 0004955                          
+06-08-05 16:42 pzad           Note Added: 0004956                          
+06-08-05 16:43 tiwai          Note Added: 0004957                          
+06-08-05 16:45 pzad           Note Added: 0004958                          
+06-08-05 16:52 Gildoniel      Note Added: 0004959                          
+06-08-05 16:57 pzad           Note Added: 0004960                          
+06-08-05 17:03 tiwai          Note Added: 0004961                          
+06-08-05 17:13 Gildoniel      Note Added: 0004963                          
+06-08-05 17:31 Gildoniel      Note Added: 0004964                          
+======================================================================
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
