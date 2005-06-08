@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Wed, 8 Jun 2005 17:35:18 +0200
-Message-ID: <d8a41b7aaec5fe40c134132273c76784@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001143]: echomixer shows vu meters in grmix wrong
+Date: Wed, 8 Jun 2005 17:36:16 +0200
+Message-ID: <89d878372c80e3da1ced551b5f5312c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D20A71DE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:35:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBB6C1DE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:36:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,97 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1143> 
 ======================================================================
-Reported By:                Gildoniel
+Reported By:                Xero
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1162
-Category:                   PCI - atiixp
+Project:                    ALSA - tools
+Issue ID:                   1143
+Category:                   envy24control
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSe Linux 9.3 Professional
-Kernel Version:             2.6.11.4.20a
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-08-2005 17:35 CEST
+Date Submitted:             05-29-2005 14:58 CEST
+Last Modified:              06-08-2005 17:36 CEST
 ======================================================================
-Summary:                    no sound on speakers, low volume on the headphones
+Summary:                    echomixer shows vu meters in grmix wrong
 Description: 
-Problem diagnosis:
- 
-* Sound card is detected and automatically configured, but no sound can be
-heard.
-* It is possible to hear _faint_ sound (very low volume) through
-headphones.
-* Headphone volume is 0 and I can still hear low volume sound (maybe
-master/headphone switched?)
-* It seems to be possible to record voice on the microphone (I see the
-amplitude when talking into the mic)
- 
-Solution attempts so far:
- 
-* used alsamixer to turn up and unmute all channels (failed: no sound on
-speakers, very low volume on headphones)
-* use the "quirk" option of the driver -1 through 7 (failed - no bettering
-and error messages with certain settings)
-* tried other sounddrivers (intel, via and others - didn't try them all)
-(failed - error loading modules on those I tried)
+this happens with alsa 1.0.9, and the change that causes it is revision 1.2
+in cvs, so this problem has been around for a bit. Essentially, the vu
+meters show each channel outputting the same level across all outputs, not
+just the ones where it's actually outputting to. It's basically as if the
+vu meters are not acknowleding the volume levels that are set. I've
+attached a screen shot showing the issue, as it's sort of hard to
+describe. You can clearly see the little yellow volume bars for V4 and V5
+are bottomed out on all the outputs except for 2, but vu meters show up on
+all of them.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gildoniel - 06-08-05 17:31 
+ tiwai - 06-08-05 17:36 
 ----------------------------------------------------------------------
-I renamed the snd-atiixp-modem.ko to snd-atiixp-modem.old (which "removes"
-it from the system) and rebooted my machine.
-
-Brought no bettering though.
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 17:35 
-----------------------------------------------------------------------
-Could you do the following as root? (suppose you compiled the driver with
---with-debug=full option).
-
-   # echo 5c 0000 > /proc/asound/card0/codec97#0/ac97#0-0+regs
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 18:54 Gildoniel      New Issue                                    
-06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
-06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
-Professional
-06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
-06-07-05 17:52 Gildoniel      Note Added: 0004913                          
-06-08-05 14:35 tiwai          Note Added: 0004922                          
-06-08-05 14:43 Gildoniel      File Added: asound.state                     
-06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
-         
-06-08-05 14:52 Gildoniel      Note Added: 0004924                          
-06-08-05 14:59 Gildoniel      Note Added: 0004927                          
-06-08-05 15:08 tiwai          Note Added: 0004929                          
-06-08-05 15:29 Gildoniel      Note Added: 0004933                          
-06-08-05 15:31 Gildoniel      Note Added: 0004934                          
-06-08-05 15:36 pzad           Note Added: 0004935                          
-06-08-05 16:13 Gildoniel      Note Added: 0004948                          
-06-08-05 16:21 pzad           Note Added: 0004949                          
-06-08-05 16:39 Gildoniel      Note Added: 0004954                          
-06-08-05 16:41 tiwai          Note Added: 0004955                          
-06-08-05 16:42 pzad           Note Added: 0004956                          
-06-08-05 16:43 tiwai          Note Added: 0004957                          
-06-08-05 16:45 pzad           Note Added: 0004958                          
-06-08-05 16:52 Gildoniel      Note Added: 0004959                          
-06-08-05 16:57 pzad           Note Added: 0004960                          
-06-08-05 17:03 tiwai          Note Added: 0004961                          
-06-08-05 17:13 Gildoniel      Note Added: 0004963                          
-06-08-05 17:31 Gildoniel      Note Added: 0004964                          
-06-08-05 17:35 tiwai          Note Added: 0004965                          
+05-29-05 14:58 Xero           New Issue                                    
+05-29-05 14:58 Xero           File Added: window.jpg                       
+06-08-05 17:36 tiwai          Status                   new => resolved     
+06-08-05 17:36 tiwai          Resolution               open => fixed       
+06-08-05 17:36 tiwai          Assigned To               => tiwai           
+06-08-05 17:36 tiwai          Note Added: 0004966                          
 ======================================================================
 
 
