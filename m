@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
-Date: Wed, 8 Jun 2005 14:27:44 +0200
-Message-ID: <6307c057ee9ec653ef13512b5e6c09ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001167]: Can't capture anymore
+Date: Wed, 8 Jun 2005 14:33:25 +0200
+Message-ID: <8ab1d23802f4bb4ae5705d8593c949a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5DF2197
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 14:27:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5097F197
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 14:33:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1167> 
 ======================================================================
-Reported By:                dpinte
+Reported By:                Skinkie
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1170
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1167
+Category:                   PCI - via82xx
+Reproducibility:            unable to duplicate
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11-5
+Distribution:               Gentoo
+Kernel Version:             2.6.11-r10
 ======================================================================
-Date Submitted:             06-08-2005 10:09 CEST
-Last Modified:              06-08-2005 14:27 CEST
+Date Submitted:             06-08-2005 01:57 CEST
+Last Modified:              06-08-2005 14:33 CEST
 ======================================================================
-Summary:                    since update to 1.0.9 sound is not clear but noisy
+Summary:                    Can't capture anymore
 Description: 
-Hi,
+Afther upgrading my system audio worked perfectly, my only concern was the
+alsamixer F4 bug, which also crashed the program.
 
-On my Debian/Sid, everything was ok since update to 1.0.9 (and 1.0.8 in
-the same upgrade). There were no other changes than alsa updates. 
+I upgraded tot 1.0.9a and then hell came loose recording was impossible
+from /dev/sound/dsp or natively via the alsa drivers. The strangest thing
+happened too, because I removed (unmerged) all previous drivers including
+previous libraries and headers and then installed 1.0.9a again.
 
-I'm running the Debian kernel-image-2.6.11-1-686.
+Still I can't record. Audacity's recorder bar stays blinking at the same
+position and ices (a production thing I'm using everyday with this laptop)
+results in an pcm error too.
 
-I've tested aplay without success, sound is noisy. I've also tested to
-reboot without my snd_intel8x0m module without changes.
-
-Here are the modules loaded :
-
-did@geru-itea:~$ lsmod | grep snd
-snd_intel8x0           33216  2
-snd_ac97_codec         78360  1 snd_intel8x0
-snd_pcm_oss            53344  0
-snd_mixer_oss          19872  2 snd_pcm_oss
-snd_pcm                92712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              24644  1 snd_pcm
-snd                    55300  8
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9664  2 snd
-snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
-
+I must mention all 'normal' sound is working. But even downgrading(!) to
+in kernel versions don't fix my issues. So I'm wondering what I have
+broken.
 ======================================================================
 
 ----------------------------------------------------------------------
- dpinte - 06-08-05 14:20 
+ tiwai - 06-08-05 14:33 
 ----------------------------------------------------------------------
-The test with the latest esd packages (from Ubuntu) is not positive. The
-problem seems alsa related
-
-Didrik
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 14:27 
-----------------------------------------------------------------------
-It's likely a bug of esound rather than ALSA.  esd + dmix work fine if
-esound is fixed with a patch.
+Make sure that you turned on "Capture SwitcH" and choose "Input1" as "Input
+Source".  Attach /etc/asound.state for further checks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 10:09 dpinte         New Issue                                    
-06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
-06-08-05 10:21 dpinte         Note Added: 0004916                          
-06-08-05 14:20 dpinte         Note Added: 0004918                          
-06-08-05 14:27 tiwai          Note Added: 0004920                          
+06-08-05 01:57 Skinkie        New Issue                                    
+06-08-05 01:57 Skinkie        Distribution              => Gentoo          
+06-08-05 01:57 Skinkie        Kernel Version            => 2.6.11-r10      
+06-08-05 14:33 tiwai          Note Added: 0004921                          
 ======================================================================
 
 
