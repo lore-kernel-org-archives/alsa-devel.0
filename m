@@ -1,14 +1,14 @@
 From: Igor Kovalenko <garrison@mail.ru>
-Subject: Re: [Openvortex-dev] Re: Re: [ALSA - driver 0001138]:
+Subject: Re: Re: [Openvortex-dev] Re: Re: [ALSA - driver	0001138]:
  errors when installing au8820 modules
-Date: Wed, 08 Jun 2005 22:09:05 +0400
-Message-ID: <42A73441.503@mail.ru>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<200506081313.48981.alien999999999@users.sourceforge.net>	<s5h4qc9kpyl.wl@alsa2.suse.de>	<200506081529.53532.alien999999999@users.sourceforge.net> <s5hwtp5j79m.wl@alsa2.suse.de>
+Date: Wed, 08 Jun 2005 22:12:58 +0400
+Message-ID: <42A7352A.2070502@mail.ru>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<200506071917.42953.alien999999999@users.sourceforge.net>	<42A5DB84.2030407@mail.ru>	<200506072002.49600.alien999999999@users.sourceforge.net>	<s5hacm1kv7f.wl@alsa2.suse.de> <42A6D936.8040101@netvigator.com> <s5h3brtkplx.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwtp5j79m.wl@alsa2.suse.de>
+In-Reply-To: <s5h3brtkplx.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,52 +19,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alien <alien999999999@users.sourceforge.net>, openvortex-dev@nongnu.org, Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net
+Cc: Raymond <rayau@netvigator.com>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Wed, 8 Jun 2005 15:29:50 +0200,
-> Alien wrote:
+> At Wed, 08 Jun 2005 19:40:38 +0800,
+> Raymond wrote:
 > 
->>Op woensdag 8 juni 2005 14:12, schreef Takashi Iwai:
 >>
->>>At Wed, 8 Jun 2005 13:13:46 +0200,
->>>
->>>Alien wrote:
->>>
->>>>>You don't need to define values if the static array is initialize to
->>>>>zero.  In this case,
->>>>>
->>>>>	static u16 eq_levels[64];
->>>>>
->>>>>would be better.
->>>>>
->>>>>
->>>>>Takashi
->>>>
->>>>you sure that this will initialize to 0 ? i seem to remember that C
->>>>doesn't init arrays to 0... unless there's a memset somewhere, of course,
->>>>i never wrote kernel stuff...
->>>
->>>It's sure.  Remeber that I mentioned "static" arrray.
->>>
->>>
->>>Takashi
+>>typedef struct {
+>>	unsigned int *this00;	/*CAsp4HwIO */
+>>	long this04;		/* How many filters for each side (default = 10) */
+>>	long this08;		/* inited to cero. Stereo flag? */
+>>} eqhw_t;
 >>
->>hmm, i never knew static arrays were initialized to 0...
+>>static void vortex_EqHw_SetLevels(vortex_t * vortex, u16 peaks[])
+>>{
+>>	eqhw_t *eqhw = &(vortex->eq.this04);
+>>	int i;
+>>
+>>	/* set left peaks */
+>>	for (i = 0; i < eqhw->this04; i++) {
+>>		hwwrite(vortex->mmio, 0x2b024 + i * VORTEX_BAND_COEFF_SIZE, peaks[i]);
+>>	}
+>>
+>>	hwwrite(vortex->mmio, 0x2b3cc, peaks[eqhw->this04]);
+>>	hwwrite(vortex->mmio, 0x2b3d8, peaks[eqhw->this04 + 1]);
+>>
+>>	/* set right peaks */
+>>	for (i = 0; i < eqhw->this04; i++) {
+>>		hwwrite(vortex->mmio, 0x2b204 + i * VORTEX_BAND_COEFF_SIZE,
+>>			peaks[i + (eqhw->this04 + 2)]);
+>>	}
+>>
+>>	hwwrite(vortex->mmio, 0x2b3e4, peaks[2 + (eqhw->this04 * 2)]);
+>>	hwwrite(vortex->mmio, 0x2b3f0, peaks[3 + (eqhw->this04 * 2)]);
+>>}
+>>
+>>
+>>	vortex_EqHw_SetLevels(vortex, (u16 *) eq_levels);
+>>
+>>
+>>
+>>
+>>What is the reason to increase the size of the array eq_levels from 32 
+>>to 64 ?  ( eqhw->this04 seem to be 10 )
 > 
 > 
-> Always good to learn something new ;)
+> I guess he wants to keep the total array size just to be sure.
+> But it seems not necessary.
+
+Exactly for that purpose. I do not know if other (au8810 or au8830) use more
+than au8820 in that array.
+
+> (Oh, and the cast above is evil.  Let's remove it.)
 > 
-> In practice, kernel hackers prefers to get rid of unnecessary zero
-> initialization from the kernel code since it reduces the resultant
-> binary size, too.
+> Above all, any chance to rename the mysterious this* fields to more
+> understandable ones?
 > 
-> 
-> Takashi
-> 
-> 
-Actualy this is the result of kernel loader - it maps zeroed pages for static data section.
+I believe original author can tell us more :) Actually that this04 seems to
+be not needed at all (I preferred to keep all struct sizes the same in 64bit
+to not bother with hardware formats etc.)
 
 -- 
 Kind regards,
