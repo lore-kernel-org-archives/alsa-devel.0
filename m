@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001167]: Can't capture anymore
-Date: Wed, 8 Jun 2005 17:06:59 +0200
-Message-ID: <1eb5a985ce54448126a89c5860e7a610@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 17:06:13 +0200
+Message-ID: <99f186999cc46cc7a8d4b7e910ff3b82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AE9D159
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:06:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1021F110
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:06:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1167> 
 ======================================================================
 Reported By:                Skinkie
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1167
@@ -35,11 +35,9 @@ Category:                   PCI - via82xx
 Reproducibility:            unable to duplicate
 Severity:                   block
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               Gentoo
 Kernel Version:             2.6.11-r10
-Resolution:                 not an issue
-Fixed in Version:           
 ======================================================================
 Date Submitted:             06-08-2005 01:57 CEST
 Last Modified:              06-08-2005 17:06 CEST
@@ -85,9 +83,6 @@ Date Modified  Username       Field                    Change
 06-08-05 01:57 Skinkie        Kernel Version            => 2.6.11-r10      
 06-08-05 14:33 tiwai          Note Added: 0004921                          
 06-08-05 17:06 Skinkie        Note Added: 0004962                          
-06-08-05 17:06 tiwai          Status                   new => resolved     
-06-08-05 17:06 tiwai          Resolution               open => not an issue
-06-08-05 17:06 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
