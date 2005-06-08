@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Wed, 8 Jun 2005 18:39:51 +0200
-Message-ID: <8427b484284bb948f9f526b26908a11b@bugtrack.alsa-project.org>
+From: Sebastian Stein <seb_stein@gmx.de>
+Subject: Re: Compilation alsa-driver-1.0.9b still broken
+Date: Wed, 8 Jun 2005 18:42:35 +0200
+Message-ID: <20050608164235.GC467@hpfsc.de>
+References: <20050608151459.GA1492@hpfsc.de> <s5hoeagkh0q.wl@alsa2.suse.de> <20050608154929.GA467@hpfsc.de> <s5hmzq0kf5f.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DB501DE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 18:39:51 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hmzq0kf5f.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,113 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai <tiwai@suse.de> [050608 18:38]:
+> > > > reported only once
+> > > > ../alsa-kernel/pci/ens1370.c:852: error: for each function it appears in.)
+> > > > ../alsa-kernel/pci/ens1370.c:852: error: parse error before "se"
+> > > > make[1]: *** [ens1371.o] Error 1
+> > > > make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.9b/pci'
+> > > > make: *** [compile] Error 1
+> > > 
+> > > I guess your alsa-kernel/pci/ens1370.c file is broken.
+> > 
+> > Maybe, but I just used the files provided in the tar on alsa-project.org.
+> > The md5sum of the file is on my system:
+> > 
+> > e2a085f4ea1f0098a0b8ba1bff5e9bae  ens1370.c
+> 
+> Hmm, md5sum looks OK.  But I don't find any obvious failure in the
+> code at all.  I still suspect it's something wrong in your system.
+> (The word "else" seems to be split to e and something and se... by
+> some reason)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
-======================================================================
-Reported By:                Gildoniel
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1162
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               SuSe Linux 9.3 Professional
-Kernel Version:             2.6.11.4.20a
-======================================================================
-Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-08-2005 18:39 CEST
-======================================================================
-Summary:                    no sound on speakers, low volume on the headphones
-Description: 
-Problem diagnosis:
- 
-* Sound card is detected and automatically configured, but no sound can be
-heard.
-* It is possible to hear _faint_ sound (very low volume) through
-headphones.
-* Headphone volume is 0 and I can still hear low volume sound (maybe
-master/headphone switched?)
-* It seems to be possible to record voice on the microphone (I see the
-amplitude when talking into the mic)
- 
-Solution attempts so far:
- 
-* used alsamixer to turn up and unmute all channels (failed: no sound on
-speakers, very low volume on headphones)
-* use the "quirk" option of the driver -1 through 7 (failed - no bettering
-and error messages with certain settings)
-* tried other sounddrivers (intel, via and others - didn't try them all)
-(failed - error loading modules on those I tried)
-======================================================================
+Indeed, it is. I don't understand it, but yes it is. I fixed it, very
+strange.
 
-----------------------------------------------------------------------
- Gildoniel - 06-08-05 18:03 
-----------------------------------------------------------------------
-I'll compile the driver with that option and try.
-
-tiwai, your hint with the power management rang a bell - I disabled it
-completely  and rebooted my system ...
-
-The soundsystem seems to work in that mode! (It just requests I'd start
-the demon for power management for better system performance)
-
-Does that mean my system is broken or the power management feature of the
-codec is having trouble?
-
-----------------------------------------------------------------------
- Gildoniel - 06-08-05 18:39 
-----------------------------------------------------------------------
-I've recompiled the alsa-driver package 1.0.9rc4 and done:
-
-echo 5c 0000 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-I could notice no changes though.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-06-05 18:54 Gildoniel      New Issue                                    
-06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
-06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
-Professional
-06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
-06-07-05 17:52 Gildoniel      Note Added: 0004913                          
-06-08-05 14:35 tiwai          Note Added: 0004922                          
-06-08-05 14:43 Gildoniel      File Added: asound.state                     
-06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
-         
-06-08-05 14:52 Gildoniel      Note Added: 0004924                          
-06-08-05 14:59 Gildoniel      Note Added: 0004927                          
-06-08-05 15:08 tiwai          Note Added: 0004929                          
-06-08-05 15:29 Gildoniel      Note Added: 0004933                          
-06-08-05 15:31 Gildoniel      Note Added: 0004934                          
-06-08-05 15:36 pzad           Note Added: 0004935                          
-06-08-05 16:13 Gildoniel      Note Added: 0004948                          
-06-08-05 16:21 pzad           Note Added: 0004949                          
-06-08-05 16:39 Gildoniel      Note Added: 0004954                          
-06-08-05 16:41 tiwai          Note Added: 0004955                          
-06-08-05 16:42 pzad           Note Added: 0004956                          
-06-08-05 16:43 tiwai          Note Added: 0004957                          
-06-08-05 16:45 pzad           Note Added: 0004958                          
-06-08-05 16:52 Gildoniel      Note Added: 0004959                          
-06-08-05 16:57 pzad           Note Added: 0004960                          
-06-08-05 17:03 tiwai          Note Added: 0004961                          
-06-08-05 17:13 Gildoniel      Note Added: 0004963                          
-06-08-05 17:31 Gildoniel      Note Added: 0004964                          
-06-08-05 17:35 tiwai          Note Added: 0004965                          
-06-08-05 18:03 Gildoniel      Note Added: 0004967                          
-06-08-05 18:39 Gildoniel      Note Added: 0004970                          
-======================================================================
+Thanks for your help,
 
 
+Sebastian
+-- 
+http://www.halle-ist-schoen.de/
+Bilddokumentation der schoensten Saalestadt
 
 
 -------------------------------------------------------
