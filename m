@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001172]: speaker-test:option -p and -f ignored
-Date: Wed, 8 Jun 2005 15:40:29 +0200
-Message-ID: <94b2d68e1a040692364c67b0f6631af2@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 15:47:24 +0200
+Message-ID: <4359d879a4a8381a8f20b553522ff491@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5745D1F2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:40:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 573B01F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:47:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1172> 
 ======================================================================
@@ -31,14 +31,14 @@ Assigned To:
 ======================================================================
 Project:                    ALSA - utils
 Issue ID:                   1172
-Category:                   aplay/arecord
+Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-08-2005 15:40 CEST
-Last Modified:              06-08-2005 15:40 CEST
+Last Modified:              06-08-2005 15:47 CEST
 ======================================================================
 Summary:                    speaker-test:option -p and -f ignored
 Description: 
@@ -70,6 +70,8 @@ Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-08-05 15:40 norbert        New Issue                                    
+06-08-05 15:47 perex          Category                 aplay/arecord =>
+speakertest
 ======================================================================
 
 
