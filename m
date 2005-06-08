@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001169]: route plugin: unneeded ttable levels propagation
-Date: Wed, 8 Jun 2005 07:51:41 +0200
-Message-ID: <d5bc6b8fc667f162d632b2dab47c7e21@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001168]: No sound using Yamaha YMF740C on Intel SE440BX-2 motherboard
+Date: Wed, 8 Jun 2005 09:10:57 +0200
+Message-ID: <8635843d3d2aab37ecc7f4e88980bdae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CEC81E8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 07:51:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3AC711E8
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 09:10:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1169> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1168> 
 ======================================================================
-Reported By:                Andrew
-Assigned To:                
+Reported By:                mtl
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1169
-Category:                   PCI - ice1724
+Issue ID:                   1168
+Category:                   PCI - ymfpci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               slackware-current
+Kernel Version:             2.4.31, as well as 2.4.29 & 2.4.30
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-08-2005 07:51 CEST
-Last Modified:              06-08-2005 07:51 CEST
+Date Submitted:             06-08-2005 02:04 CEST
+Last Modified:              06-08-2005 09:10 CEST
 ======================================================================
-Summary:                    route plugin: unneeded ttable levels propagation
+Summary:                    No sound using Yamaha YMF740C on Intel SE440BX-2
+motherboard
 Description: 
-v.1.0.9a is in use. All 1.0.9rcX have the same effect.
+I'm using a system with an Intel SE440BX-2 motherboard, which has the
+Yamaha YMF740C sound system built in.
 
-To replicate stereo to all eight channles I use this fragment in my
-.asoundrc file:
+I've taken the alsa-driver source from disc 4 of the Slackware-10.0 CD
+set, and after editing the alsa-driver.SlackBuild script to reflect the
+current kernel version, rebuilt the alsa-driver-1.0.5a-i486-2.tgz package,
+and after installing my own package, all works as it should, so far as I
+can tell.  I've done this with kernel versions 2.4.29, 2.4.30, and 2.4.31,
+all with the same results.
 
-pcm.!default {
-        type plug
-        slave {
-                pcm "2x4"
-                format S32_LE
-        }
-}
 
-pcm.2x4 {
-    type route
-    slave.pcm surround71
-    slave.channels 8
-    ttable.0.0 0.03
-    ttable.1.1 0.03
-    ttable.0.2 1
-    ttable.1.3 1
-    ttable.0.4 1
-    ttable.1.5 1
-    ttable.0.6 1
-    ttable.1.7 1
-} 
-
-All works fine except for levels are reduced for ALL channles rather
-channels 0 and 1 only (the aim is to balance headphone output channels 0-1
-with external amplifier(s) channels 2-7 levels).
-
-Terratec Aureon 7.1 Space is in use.
-
-I have selected "major" level as such situation is very error-prone:
-unexpected high level output is possible which is danger for ears.
 ======================================================================
+
+----------------------------------------------------------------------
+ mtl - 06-08-05 04:57 
+----------------------------------------------------------------------
+Resolved with alsa-driver-1.0.9b.tar.bz2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 07:51 Andrew         New Issue                                    
+06-08-05 02:04 mtl            New Issue                                    
+06-08-05 02:04 mtl            Distribution              => slackware-current
+06-08-05 02:04 mtl            Kernel Version            => 2.4.31, as well as
+2.4.29 & 2.4.30
+06-08-05 04:57 mtl            Note Added: 0004915                          
+06-08-05 04:57 mtl            Issue Monitored: mtl                         
+06-08-05 09:10 perex          Status                   new => resolved     
+06-08-05 09:10 perex          Resolution               open => fixed       
+06-08-05 09:10 perex          Assigned To               => perex           
 ======================================================================
 
 
