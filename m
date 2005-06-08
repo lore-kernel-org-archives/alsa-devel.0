@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Wed, 8 Jun 2005 21:27:34 +0200
-Message-ID: <04c60004f988112af298349896a71e52@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 22:13:23 +0200
+Message-ID: <fd07ccd9fc76c423d17e17e140615396@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 284A9196
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 21:27:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 670AE1E9
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 22:13:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              06-08-2005 21:27 CEST
+Last Modified:              06-08-2005 22:13 CEST
 ======================================================================
 Summary:                    Distorted sound with enabled dmix plugin
 Description: 
@@ -47,16 +47,6 @@ distorted sound. Appear noise.
 This problem is appear when enabled dmix plugin through configuration file
 ~/.asoundrc.
 ======================================================================
-
-----------------------------------------------------------------------
- Xero - 06-08-05 21:13 
-----------------------------------------------------------------------
-how much bigger is much bigger? I'm running at the standard 1024/8192 for
-period/buffer size. If that really is the problem then it's still odd that
-this would happen at 96000 but not 88200, which is why I think it's more
-related to sample rate conversion...I've attached my config file at 96000
-for reference.  When in 88200 the only change is just that, 88200 instead
-of 96000 in the rate section.
 
 ----------------------------------------------------------------------
  tiwai - 06-08-05 21:27 
@@ -73,6 +63,14 @@ conflict.  This result in the irregular period updates.
 
 Unfortunately, the problem of rate plugin above is _very_ hard to fix
 (because of the principal definition of ALSA PCM).
+
+----------------------------------------------------------------------
+ Xero - 06-08-05 22:13 
+----------------------------------------------------------------------
+As per advice from the bug on xmms I'm going to try the crossfade plugin to
+do some resampling. It only supports 44100 and 48000 but I'm guessing that
+with 48000 and 96000 set on dmix this wont happen...only time will tell
+however.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +108,7 @@ Date Modified  Username       Field                    Change
 06-08-05 16:08 tiwai          Note Added: 0004944                          
 06-08-05 21:13 Xero           Note Added: 0004973                          
 06-08-05 21:27 tiwai          Note Added: 0004974                          
+06-08-05 22:13 Xero           Note Added: 0004975                          
 ======================================================================
 
 
