@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001157]: alsa-plugins depends on alsa-lib 1.0.9
-Date: Wed, 8 Jun 2005 16:00:30 +0200
-Message-ID: <0f0c359328b8a5b73c1b69c385c75d62@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000485]: Two additions to the matrix: M-Audio Sonica and Turtle Beach Audio Advantage
+Date: Wed, 8 Jun 2005 16:08:28 +0200
+Message-ID: <289d198246599c0ce7eceb06bc801cc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A15E1C5
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:00:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FB321F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:08:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1157> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=485> 
 ======================================================================
-Reported By:                jordi
-Assigned To:                tiwai
+Reported By:                noduck
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1157
-Category:                   0_general
+Project:                    ALSA - WWW server
+Issue ID:                   485
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
 ======================================================================
-Date Submitted:             06-06-2005 01:35 CEST
-Last Modified:              06-08-2005 16:00 CEST
+Date Submitted:             09-07-2004 04:21 CEST
+Last Modified:              06-08-2005 16:08 CEST
 ======================================================================
-Summary:                    alsa-plugins depends on alsa-lib 1.0.9
+Summary:                    Two additions to the matrix: M-Audio Sonica and
+Turtle Beach Audio Advantage
 Description: 
-configure.in needs to update the libasound2 requirement to 1.0.9, or else
--plugins fails to build because it lacks snd_pcm_ioplug_create().
+M-Audio Sonica will work with the latest 2.6.8 kernel. After the firmware
+upload, the kernel will recognize the new firmware and load the USB audio
+driver.
 
-This report should be moved to the alsa-plugins category when it's
-created, I'm filing it under lib because it's where the plugins lived
-before.
+The Audio Advantage works without problem with the USB audio driver, it
+doesn't need any firmware upload. This is a nice dongle type audio device,
+but it is very loud.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-08-05 16:00 
+ perex - 06-08-05 16:07 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Added to matrix. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 01:35 jordi          New Issue                                    
-06-08-05 16:00 tiwai          Status                   new => resolved     
-06-08-05 16:00 tiwai          Resolution               open => fixed       
-06-08-05 16:00 tiwai          Assigned To               => tiwai           
-06-08-05 16:00 tiwai          Note Added: 0004941                          
+09-07-04 04:21 noduck         New Issue                                    
+06-08-05 16:07 perex          Note Added: 0004943                          
+06-08-05 16:07 perex          Status                   new => resolved     
+06-08-05 16:08 perex          Status                   resolved => assigned
+06-08-05 16:08 perex          Assigned To               => perex           
 ======================================================================
 
 
