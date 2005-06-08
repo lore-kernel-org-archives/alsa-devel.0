@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
-Date: Wed, 8 Jun 2005 14:20:37 +0200
-Message-ID: <0e8be8635db0a1c1746479189a85af24@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001171]: via8235 alc650f - miss "Line-In As Surround" "Mic As Center/LFE"
+Date: Wed, 8 Jun 2005 14:26:07 +0200
+Message-ID: <ee6cecbf9c07c3dd9d99ef39ace01f55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3D0A146
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 14:20:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3500197
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 14:26:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1171> 
 ======================================================================
-Reported By:                dpinte
-Assigned To:                
+Reported By:                norbert
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1170
-Category:                   1_OTHERS
+Issue ID:                   1171
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
-Kernel Version:             2.6.11-5
+Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-08-2005 10:09 CEST
-Last Modified:              06-08-2005 14:20 CEST
+Date Submitted:             06-08-2005 14:10 CEST
+Last Modified:              06-08-2005 14:26 CEST
 ======================================================================
-Summary:                    since update to 1.0.9 sound is not clear but noisy
+Summary:                    via8235 alc650f - miss "Line-In As Surround" "Mic As
+Center/LFE"
 Description: 
-Hi,
+I miss the 
 
-On my Debian/Sid, everything was ok since update to 1.0.9 (and 1.0.8 in
-the same upgrade). There were no other changes than alsa updates. 
+"Line-In As Surround"
 
-I'm running the Debian kernel-image-2.6.11-1-686.
+"Mic As Center/LFE"
 
-I've tested aplay without success, sound is noisy. I've also tested to
-reboot without my snd_intel8x0m module without changes.
+buttons.
 
-Here are the modules loaded :
+It worked before, see bug 0000043.
+(kernel 2.6.11.11 / alsa 1.0.9a)
 
-did@geru-itea:~$ lsmod | grep snd
-snd_intel8x0           33216  2
-snd_ac97_codec         78360  1 snd_intel8x0
-snd_pcm_oss            53344  0
-snd_mixer_oss          19872  2 snd_pcm_oss
-snd_pcm                92712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              24644  1 snd_pcm
-snd                    55300  8
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9664  2 snd
-snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
-
+I'll give more info if needed.
+Norbert
 ======================================================================
 
 ----------------------------------------------------------------------
- dpinte - 06-08-05 10:21 
+ norbert - 06-08-05 14:13 
 ----------------------------------------------------------------------
-! Sounds that it may be not related to alsa but to link between alsa and
-esd.
+I'm not sure if this is related, but dmesg gives me lot of this:
 
-For more information see :
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=312299 
-
-I will keep the link between the two BTS up to date.
-
-Didrik
+ALSA
+/hdb3/tmp/DL/i386/my/manual/alsa/alsa-driver-1.0.9a/alsa-kernel/pci/via82xx.c:796:
+zero position is read
 
 ----------------------------------------------------------------------
- dpinte - 06-08-05 14:20 
+ tiwai - 06-08-05 14:26 
 ----------------------------------------------------------------------
-The test with the latest esd packages (from Ubuntu) is not positive. The
-problem seems alsa related
+The line-in and mic jacks are controlled via "Channel Mode" and "Surround
+Jacks Mode".  Change the former to "4ch" or "6ch" if you want the outputs
+with line/mic jacks.
 
-Didrik
+Note that you don't have to tune these switches usually unless doing a
+special thing like spreading the front output to surrounds.  Using
+surround40 or surround51 PCM will adjust the channel mode automatically.
+
+The kernel message is irrelevant with this issue.  It's often related with
+ACPI.  Can't fix in the driver side.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 10:09 dpinte         New Issue                                    
-06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
-06-08-05 10:21 dpinte         Note Added: 0004916                          
-06-08-05 14:20 dpinte         Note Added: 0004918                          
+06-08-05 14:10 norbert        New Issue                                    
+06-08-05 14:13 norbert        Note Added: 0004917                          
+06-08-05 14:26 tiwai          Status                   new => resolved     
+06-08-05 14:26 tiwai          Resolution               open => not an issue
+06-08-05 14:26 tiwai          Assigned To               => tiwai           
+06-08-05 14:26 tiwai          Note Added: 0004919                          
 ======================================================================
 
 
