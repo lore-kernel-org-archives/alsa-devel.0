@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000774]: add (3) to Trident cards
-Date: Wed, 8 Jun 2005 16:11:12 +0200
-Message-ID: <04be7402ad37625e84f90f6191b56067@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
+Date: Wed, 8 Jun 2005 16:13:31 +0200
+Message-ID: <73172ae9f65be9fb0dd999488f85bc78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B06791F2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:11:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 279011F4
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:13:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=774> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
 ======================================================================
-Reported By:                dfries
-Assigned To:                perex
+Reported By:                Gildoniel
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   774
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   1162
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               SuSe Linux 9.3 Professional
+Kernel Version:             2.6.11.4.20a
 ======================================================================
-Date Submitted:             01-02-2005 00:40 CET
-Last Modified:              06-08-2005 16:11 CEST
+Date Submitted:             06-06-2005 18:54 CEST
+Last Modified:              06-08-2005 16:13 CEST
 ======================================================================
-Summary:                    add (3) to Trident cards
+Summary:                    no sound on speakers, low volume on the headphones
 Description: 
-I really like the hardware mixing support for my Trident card and was
-looking to make sure my next card would also spport hardware mixing for
-multiple opens.  I was disterbed to find that the sound card matrix didn't
-list hardware mixing for the Trident cards (I have 4D-Wave DX, and as I
-understand it the NX would also).  I can say for sure that my Trident
-4D-Wave DX definitely lets multiple programs open the sound card at the
-same time and play from all of them at the same time.
+Problem diagnosis:
+ 
+* Sound card is detected and automatically configured, but no sound can be
+heard.
+* It is possible to hear _faint_ sound (very low volume) through
+headphones.
+* Headphone volume is 0 and I can still hear low volume sound (maybe
+master/headphone switched?)
+* It seems to be possible to record voice on the microphone (I see the
+amplitude when talking into the mic)
+ 
+Solution attempts so far:
+ 
+* used alsamixer to turn up and unmute all channels (failed: no sound on
+speakers, very low volume on headphones)
+* use the "quirk" option of the driver -1 through 7 (failed - no bettering
+and error messages with certain settings)
+* tried other sounddrivers (intel, via and others - didn't try them all)
+(failed - error loading modules on those I tried)
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-08-05 16:11 
+ pzad - 06-08-05 15:36 
 ----------------------------------------------------------------------
-Fixed. Thanks.
+This is AMC97 codec - this means audio + modem in single chip. Many users
+have same problem with it (intel or ati chipset), but only in alsa >
+1.0.8. I think, this has something to do with modem (and alsa don't like
+AMC97 codecs). First think what modem does is reset codec and probably
+mess audio part.
+
+Try:
+/sbin/modprobe -r snd-atiixp
+/sbin/modprobe snd-atiixp
+
+----------------------------------------------------------------------
+ Gildoniel - 06-08-05 16:13 
+----------------------------------------------------------------------
+I tried your suggestion:
+/sbin/modprobe -r snd-atiixp (didn't work because driver was in use)
+/sbin/modprobe snd-atiixp
+
+I used: 
+rmmod -f snd-atiixp
+modprobe snd-atiixp
+
+This did not help though.
+
+I'll try and switch back to a stable version of alsa before 1.0.8 - if you
+are right, this may help and solve the problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-05 00:40 dfries         New Issue                                    
-06-08-05 16:11 perex          Status                   new => resolved     
-06-08-05 16:11 perex          Resolution               open => fixed       
-06-08-05 16:11 perex          Assigned To               => perex           
-06-08-05 16:11 perex          Note Added: 0004946                          
+06-06-05 18:54 Gildoniel      New Issue                                    
+06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
+06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
+Professional
+06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-07-05 17:52 Gildoniel      Note Added: 0004913                          
+06-08-05 14:35 tiwai          Note Added: 0004922                          
+06-08-05 14:43 Gildoniel      File Added: asound.state                     
+06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+         
+06-08-05 14:52 Gildoniel      Note Added: 0004924                          
+06-08-05 14:59 Gildoniel      Note Added: 0004927                          
+06-08-05 15:08 tiwai          Note Added: 0004929                          
+06-08-05 15:29 Gildoniel      Note Added: 0004933                          
+06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+06-08-05 15:36 pzad           Note Added: 0004935                          
+06-08-05 16:13 Gildoniel      Note Added: 0004948                          
 ======================================================================
 
 
