@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000808]: No more archives for the mailing list
-Date: Wed, 8 Jun 2005 16:23:54 +0200
-Message-ID: <d0d710c30677bdb90d53aad49ea6eeda@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
+Date: Wed, 8 Jun 2005 16:21:58 +0200
+Message-ID: <7ebc73d6eedc2e3f2d0812e1ac3a3933@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C8771F4
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:23:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BCE91F4
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:21:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=808> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
 ======================================================================
-Reported By:                croiset
-Assigned To:                perex
+Reported By:                Gildoniel
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   808
-Category:                   bad link
+Project:                    ALSA - driver
+Issue ID:                   1162
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               SuSe Linux 9.3 Professional
+Kernel Version:             2.6.11.4.20a
 ======================================================================
-Date Submitted:             01-11-2005 18:46 CET
-Last Modified:              06-08-2005 16:23 CEST
+Date Submitted:             06-06-2005 18:54 CEST
+Last Modified:              06-08-2005 16:21 CEST
 ======================================================================
-Summary:                    No more archives for the mailing list
+Summary:                    no sound on speakers, low volume on the headphones
 Description: 
-There is no more archives for all alsa mailing list. The major one
-(mail-archive.com) does not have anymore archive since june 2004.
-
-
+Problem diagnosis:
+ 
+* Sound card is detected and automatically configured, but no sound can be
+heard.
+* It is possible to hear _faint_ sound (very low volume) through
+headphones.
+* Headphone volume is 0 and I can still hear low volume sound (maybe
+master/headphone switched?)
+* It seems to be possible to record voice on the microphone (I see the
+amplitude when talking into the mic)
+ 
+Solution attempts so far:
+ 
+* used alsamixer to turn up and unmute all channels (failed: no sound on
+speakers, very low volume on headphones)
+* use the "quirk" option of the driver -1 through 7 (failed - no bettering
+and error messages with certain settings)
+* tried other sounddrivers (intel, via and others - didn't try them all)
+(failed - error loading modules on those I tried)
 ======================================================================
 
 ----------------------------------------------------------------------
- crimsun - 01-11-05 20:17 
+ Gildoniel - 06-08-05 16:13 
 ----------------------------------------------------------------------
-Please use Gmane for alsa-user and alsa-devel archives:
-http://news.gmane.org/gmane.linux.alsa.user
-http://news.gmane.org/gmane.linux.alsa.devel
+I tried your suggestion:
+/sbin/modprobe -r snd-atiixp (didn't work because driver was in use)
+/sbin/modprobe snd-atiixp
 
-Mail-archive continues to maintain an archive of -announce:
-http://www.mail-archive.com/alsa-announce@lists.sourceforge.net/
+I used: 
+rmmod -f snd-atiixp
+modprobe snd-atiixp
+
+This did not help though.
+
+I'll try and switch back to a stable version of alsa before 1.0.8 - if you
+are right, this may help and solve the problem.
 
 ----------------------------------------------------------------------
- perex - 06-08-05 16:23 
+ pzad - 06-08-05 16:21 
 ----------------------------------------------------------------------
-Added links to web page.
+Would be posible to add (to all alsa modem drivers - intel, via, ati) check
+for this codec and if detected this chip failed to load driver without
+touching  anything (not reseting) ? This modem will not work anyway.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-05 18:46 croiset        New Issue                                    
-01-11-05 20:17 crimsun        Note Added: 0003157                          
-06-08-05 16:23 perex          Status                   new => resolved     
-06-08-05 16:23 perex          Resolution               open => fixed       
-06-08-05 16:23 perex          Assigned To               => perex           
-06-08-05 16:23 perex          Note Added: 0004950                          
+06-06-05 18:54 Gildoniel      New Issue                                    
+06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
+06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
+Professional
+06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-07-05 17:52 Gildoniel      Note Added: 0004913                          
+06-08-05 14:35 tiwai          Note Added: 0004922                          
+06-08-05 14:43 Gildoniel      File Added: asound.state                     
+06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+         
+06-08-05 14:52 Gildoniel      Note Added: 0004924                          
+06-08-05 14:59 Gildoniel      Note Added: 0004927                          
+06-08-05 15:08 tiwai          Note Added: 0004929                          
+06-08-05 15:29 Gildoniel      Note Added: 0004933                          
+06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+06-08-05 15:36 pzad           Note Added: 0004935                          
+06-08-05 16:13 Gildoniel      Note Added: 0004948                          
+06-08-05 16:21 pzad           Note Added: 0004949                          
 ======================================================================
 
 
