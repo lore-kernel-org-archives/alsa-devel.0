@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Wed, 8 Jun 2005 15:31:36 +0200
-Message-ID: <bf6ef12f23f9344e8c38b167a6e35a46@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 15:36:50 +0200
+Message-ID: <50ef76d3c5227860e647e736a25b3de4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 985191F2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:31:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F3271F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:36:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSe Linux 9.3 Professional
 Kernel Version:             2.6.11.4.20a
 ======================================================================
 Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-08-2005 15:31 CEST
+Last Modified:              06-08-2005 15:36 CEST
 ======================================================================
 Summary:                    no sound on speakers, low volume on the headphones
 Description: 
@@ -66,17 +66,23 @@ and error messages with certain settings)
 ======================================================================
 
 ----------------------------------------------------------------------
- Gildoniel - 06-08-05 15:29 
-----------------------------------------------------------------------
-I've just received an email from Alsa User Mailinglist, that someone else
-with a different brand of notebook (also AMD 64 Turion CPU) has the same
-problem. No sound on the speakers, only headphones - atiixp driver.
-
-----------------------------------------------------------------------
  Gildoniel - 06-08-05 15:31 
 ----------------------------------------------------------------------
 Here is the link to the mentioned simmilar problem. (maybe it helps?)
 http://sourceforge.net/mailarchive/forum.php?thread_id=7463195&forum_id=1751
+
+----------------------------------------------------------------------
+ pzad - 06-08-05 15:36 
+----------------------------------------------------------------------
+This is AMC97 codec - this means audio + modem in single chip. Many users
+have same problem with it (intel or ati chipset), but only in alsa >
+1.0.8. I think, this has something to do with modem (and alsa don't like
+AMC97 codecs). First think what modem does is reset codec and probably
+mess audio part.
+
+Try:
+/sbin/modprobe -r snd-atiixp
+/sbin/modprobe snd-atiixp
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +102,7 @@ Professional
 06-08-05 15:08 tiwai          Note Added: 0004929                          
 06-08-05 15:29 Gildoniel      Note Added: 0004933                          
 06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+06-08-05 15:36 pzad           Note Added: 0004935                          
 ======================================================================
 
 
