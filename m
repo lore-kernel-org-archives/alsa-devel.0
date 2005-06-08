@@ -1,16 +1,14 @@
-From: Alien <alien999999999@users.sourceforge.net>
-Subject: Re: [Openvortex-dev] Re: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Wed, 8 Jun 2005 15:29:50 +0200
-Message-ID: <200506081529.53532.alien999999999@users.sourceforge.net>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org> <200506081313.48981.alien999999999@users.sourceforge.net> <s5h4qc9kpyl.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
+Date: Wed, 8 Jun 2005 15:31:36 +0200
+Message-ID: <bf6ef12f23f9344e8c38b167a6e35a46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1359121.th7pfgTYAU";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4qc9kpyl.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 985191F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:31:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,53 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1359121.th7pfgTYAU
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-Op woensdag 8 juni 2005 14:12, schreef Takashi Iwai:
-> At Wed, 8 Jun 2005 13:13:46 +0200,
->
-> Alien wrote:
-> > > You don't need to define values if the static array is initialize to
-> > > zero.  In this case,
-> > >
-> > > 	static u16 eq_levels[64];
-> > >
-> > > would be better.
-> > >
-> > >
-> > > Takashi
-> >
-> > you sure that this will initialize to 0 ? i seem to remember that C
-> > doesn't init arrays to 0... unless there's a memset somewhere, of course,
-> > i never wrote kernel stuff...
->
-> It's sure.  Remeber that I mentioned "static" arrray.
->
->
-> Takashi
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
+======================================================================
+Reported By:                Gildoniel
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1162
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               SuSe Linux 9.3 Professional
+Kernel Version:             2.6.11.4.20a
+======================================================================
+Date Submitted:             06-06-2005 18:54 CEST
+Last Modified:              06-08-2005 15:31 CEST
+======================================================================
+Summary:                    no sound on speakers, low volume on the headphones
+Description: 
+Problem diagnosis:
+ 
+* Sound card is detected and automatically configured, but no sound can be
+heard.
+* It is possible to hear _faint_ sound (very low volume) through
+headphones.
+* Headphone volume is 0 and I can still hear low volume sound (maybe
+master/headphone switched?)
+* It seems to be possible to record voice on the microphone (I see the
+amplitude when talking into the mic)
+ 
+Solution attempts so far:
+ 
+* used alsamixer to turn up and unmute all channels (failed: no sound on
+speakers, very low volume on headphones)
+* use the "quirk" option of the driver -1 through 7 (failed - no bettering
+and error messages with certain settings)
+* tried other sounddrivers (intel, via and others - didn't try them all)
+(failed - error loading modules on those I tried)
+======================================================================
 
-hmm, i never knew static arrays were initialized to 0...
+----------------------------------------------------------------------
+ Gildoniel - 06-08-05 15:29 
+----------------------------------------------------------------------
+I've just received an email from Alsa User Mailinglist, that someone else
+with a different brand of notebook (also AMD 64 Turion CPU) has the same
+problem. No sound on the speakers, only headphones - atiixp driver.
 
---nextPart1359121.th7pfgTYAU
-Content-Type: application/pgp-signature
+----------------------------------------------------------------------
+ Gildoniel - 06-08-05 15:31 
+----------------------------------------------------------------------
+Here is the link to the mentioned simmilar problem. (maybe it helps?)
+http://sourceforge.net/mailarchive/forum.php?thread_id=7463195&forum_id=1751
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-06-05 18:54 Gildoniel      New Issue                                    
+06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
+06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
+Professional
+06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-07-05 17:52 Gildoniel      Note Added: 0004913                          
+06-08-05 14:35 tiwai          Note Added: 0004922                          
+06-08-05 14:43 Gildoniel      File Added: asound.state                     
+06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+         
+06-08-05 14:52 Gildoniel      Note Added: 0004924                          
+06-08-05 14:59 Gildoniel      Note Added: 0004927                          
+06-08-05 15:08 tiwai          Note Added: 0004929                          
+06-08-05 15:29 Gildoniel      Note Added: 0004933                          
+06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+======================================================================
 
-iD8DBQBCpvLRuBWKXETrtdcRAhMkAJ0YEyonC1ZlSe7oRONvZnnOpYr+ewCdErve
-NrYn0RbqkE+nCoFwg4vsdmQ=
-=2K8v
------END PGP SIGNATURE-----
 
---nextPart1359121.th7pfgTYAU--
 
 
 -------------------------------------------------------
