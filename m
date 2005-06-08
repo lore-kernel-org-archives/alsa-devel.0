@@ -1,14 +1,14 @@
-From: Igor Kovalenko <garrison@mail.ru>
-Subject: Re: Re: [Openvortex-dev] Re: Re: [ALSA - driver	0001138]:
- errors when installing au8820 modules
-Date: Wed, 08 Jun 2005 22:12:58 +0400
-Message-ID: <42A7352A.2070502@mail.ru>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<200506071917.42953.alien999999999@users.sourceforge.net>	<42A5DB84.2030407@mail.ru>	<200506072002.49600.alien999999999@users.sourceforge.net>	<s5hacm1kv7f.wl@alsa2.suse.de> <42A6D936.8040101@netvigator.com> <s5h3brtkplx.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
+Date: Wed, 8 Jun 2005 20:40:58 +0200
+Message-ID: <77e0059e00e2a150945e3e480af200b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3brtkplx.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 107401E9
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 20:40:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond <rayau@netvigator.com>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 08 Jun 2005 19:40:38 +0800,
-> Raymond wrote:
-> 
->>
->>typedef struct {
->>	unsigned int *this00;	/*CAsp4HwIO */
->>	long this04;		/* How many filters for each side (default = 10) */
->>	long this08;		/* inited to cero. Stereo flag? */
->>} eqhw_t;
->>
->>static void vortex_EqHw_SetLevels(vortex_t * vortex, u16 peaks[])
->>{
->>	eqhw_t *eqhw = &(vortex->eq.this04);
->>	int i;
->>
->>	/* set left peaks */
->>	for (i = 0; i < eqhw->this04; i++) {
->>		hwwrite(vortex->mmio, 0x2b024 + i * VORTEX_BAND_COEFF_SIZE, peaks[i]);
->>	}
->>
->>	hwwrite(vortex->mmio, 0x2b3cc, peaks[eqhw->this04]);
->>	hwwrite(vortex->mmio, 0x2b3d8, peaks[eqhw->this04 + 1]);
->>
->>	/* set right peaks */
->>	for (i = 0; i < eqhw->this04; i++) {
->>		hwwrite(vortex->mmio, 0x2b204 + i * VORTEX_BAND_COEFF_SIZE,
->>			peaks[i + (eqhw->this04 + 2)]);
->>	}
->>
->>	hwwrite(vortex->mmio, 0x2b3e4, peaks[2 + (eqhw->this04 * 2)]);
->>	hwwrite(vortex->mmio, 0x2b3f0, peaks[3 + (eqhw->this04 * 2)]);
->>}
->>
->>
->>	vortex_EqHw_SetLevels(vortex, (u16 *) eq_levels);
->>
->>
->>
->>
->>What is the reason to increase the size of the array eq_levels from 32 
->>to 64 ?  ( eqhw->this04 seem to be 10 )
-> 
-> 
-> I guess he wants to keep the total array size just to be sure.
-> But it seems not necessary.
 
-Exactly for that purpose. I do not know if other (au8810 or au8830) use more
-than au8820 in that array.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=332> 
+======================================================================
+Reported By:                Johan Gorter
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   332
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-11-2004 09:12 CEST
+Last Modified:              06-08-2005 20:40 CEST
+======================================================================
+Summary:                    Unable to enable 'Mic as Center/LFE'
+Description: 
+In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable to
+enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
+cannot change its value from 0 and record / mute is also disabled. I
+tracked the problem by using alsactl to store the settings. This results
+in a file where this option (nr 47 on my system) is an Integer with the
+comment that the value may be from 0 to 0. On other systems I found out
+that this is supposed to be a Boolean which can be switched on and off.
+======================================================================
 
-> (Oh, and the cast above is evil.  Let's remove it.)
-> 
-> Above all, any chance to rename the mysterious this* fields to more
-> understandable ones?
-> 
-I believe original author can tell us more :) Actually that this04 seems to
-be not needed at all (I preferred to keep all struct sizes the same in 64bit
-to not bother with hardware formats etc.)
+----------------------------------------------------------------------
+ jdthood - 05-02-05 11:10 
+----------------------------------------------------------------------
+In Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307087 it
+was reported:
 
--- 
-Kind regards,
-Igor V. Kovalenko
+I'm unable to record the Mic input with this sound card and this
+alsa-utils version : under alsamixer there is no possibility to
+select the Mic for recording as I could with older versions of
+alsa-utils that I used to install on a Woody.
+(I launch with "alsamixer -V all")
+
+Using an OSS mixer (aumix-gtk) or an other Alsa Mixer (gamix)
+fixes the problem.
+
+I'm using debian GNU/Linux testing, Linux 2.6.8-2-686 and
+libc6 2.3.2.ds1-20
+
+----------------------------------------------------------------------
+ jdthood - 06-08-05 20:40 
+----------------------------------------------------------------------
+I asked the submitter of Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307087 to test alsa-utils
+version 1.0.9a.  He says:
+
+The bug seems to be half fixed: in [All] mode of alsamixer it is still
+[not] present (no control to select Mic for recording), while in [Capture]
+mode the control is present.  Also the recording volume is very low, even
+at 100%, but this might be because of the sound card (though I don't now
+how to check that).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-11-04 09:12 Johan Gorter   New Issue                                    
+01-22-05 03:26 rhal           Issue Monitored: rhal                        
+03-20-05 15:45 jdthood        Note Added: 0004093                          
+03-31-05 20:23 jdthood        Note Added: 0004284                          
+05-02-05 11:10 jdthood        Note Added: 0004584                          
+06-08-05 20:40 jdthood        Note Added: 0004972                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
