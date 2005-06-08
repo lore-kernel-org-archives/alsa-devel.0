@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000058]: Amixer will not recognize SB Extigy
-Date: Wed, 8 Jun 2005 18:09:13 +0200
-Message-ID: <a499a87a15d31f359847198a031578d8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
+Date: Wed, 8 Jun 2005 18:39:51 +0200
+Message-ID: <8427b484284bb948f9f526b26908a11b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 982B71DE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 18:09:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DB501DE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 18:39:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,123 +24,104 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=58> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
 ======================================================================
-Reported By:                shraps
+Reported By:                Gildoniel
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   58
-Category:                   USB - usb-audio
+Issue ID:                   1162
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.1
+Distribution:               SuSe Linux 9.3 Professional
+Kernel Version:             2.6.11.4.20a
 ======================================================================
-Date Submitted:             02-13-2004 04:53 CET
-Last Modified:              06-08-2005 18:09 CEST
+Date Submitted:             06-06-2005 18:54 CEST
+Last Modified:              06-08-2005 18:39 CEST
 ======================================================================
-Summary:                    Amixer will not recognize SB Extigy
+Summary:                    no sound on speakers, low volume on the headphones
 Description: 
-No matter what I do, amixer/alsamixer cannot load the extigy card. 
-However, other volume control programs can unmute and control the volume.
-
-Errorcode:
-amixer: Mixer load error: hw:1
+Problem diagnosis:
+ 
+* Sound card is detected and automatically configured, but no sound can be
+heard.
+* It is possible to hear _faint_ sound (very low volume) through
+headphones.
+* Headphone volume is 0 and I can still hear low volume sound (maybe
+master/headphone switched?)
+* It seems to be possible to record voice on the microphone (I see the
+amplitude when talking into the mic)
+ 
+Solution attempts so far:
+ 
+* used alsamixer to turn up and unmute all channels (failed: no sound on
+speakers, very low volume on headphones)
+* use the "quirk" option of the driver -1 through 7 (failed - no bettering
+and error messages with certain settings)
+* tried other sounddrivers (intel, via and others - didn't try them all)
+(failed - error loading modules on those I tried)
 ======================================================================
 
 ----------------------------------------------------------------------
- shraps - 03-11-04 17:07 
+ Gildoniel - 06-08-05 18:03 
 ----------------------------------------------------------------------
-Stream0:
+I'll compile the driver with that option and try.
 
-Playback:
-  Status: Running
-    Interface = 1
-    Altset = 1
-    URBs = 5 [ 4 4 4 4 4 ]
-    Packet Size = 200
-    Momentary freq = 48,000 Hz
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 2 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 12
-    Format: S16_LE
-    Channels: 3
-    Endpoint: 2 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 13
-    Format: S16_LE
-    Channels: 5
-    Endpoint: 2 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 14
-    Format: S16_LE
-    Channels: 5
-    Endpoint: 2 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 15
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 2 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 16
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 2 OUT (ASYNC)
-    Rates: 48000
+tiwai, your hint with the power management rang a bell - I disabled it
+completely  and rebooted my system ...
 
+The soundsystem seems to work in that mode! (It just requests I'd start
+the demon for power management for better system performance)
 
-
-
-
-That is the output for the stream that is running.  
-
-However,  this is what amixer -c1 outputs for Master:
-Simple mixer control 'Master',1
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 200
-  Mono: Playback 144 [72%]
+Does that mean my system is broken or the power management feature of the
+codec is having trouble?
 
 ----------------------------------------------------------------------
- perex - 06-08-05 18:09 
+ Gildoniel - 06-08-05 18:39 
 ----------------------------------------------------------------------
-Does this problem still exists in the current ALSA driver?
+I've recompiled the alsa-driver package 1.0.9rc4 and done:
+
+echo 5c 0000 > /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+I could notice no changes though.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-04 04:53 shraps         New Issue                                    
-02-20-04 18:40 Clemens LadischNote Added: 0000277                          
-02-20-04 22:59 shraps         Note Added: 0000278                          
-02-24-04 08:46 Clemens LadischNote Added: 0000301                          
-02-24-04 22:50 shraps         Note Added: 0000306                          
-02-25-04 10:10 Clemens LadischIssue Monitored: Clemens Ladisch                  
- 
-02-25-04 10:11 Clemens LadischNote Added: 0000312                          
-02-25-04 22:33 shraps         Note Added: 0000326                          
-02-26-04 16:18 Clemens LadischNote Added: 0000353                          
-02-27-04 01:00 shraps         Note Added: 0000378                          
-03-01-04 18:49 Clemens LadischNote Added: 0000414                          
-03-01-04 18:49 Clemens LadischAssigned To              Clemens Ladisch => tiwai
-03-02-04 04:38 shraps         Note Added: 0000430                          
-03-04-04 18:47 tiwai          Note Added: 0000490                          
-03-04-04 22:56 shraps         Note Added: 0000493                          
-03-07-04 02:27 shraps         Note Added: 0000522                          
-03-10-04 17:51 tiwai          Note Added: 0000564                          
-03-11-04 17:07 shraps         Note Added: 0000572                          
-06-08-05 18:09 perex          Note Added: 0004969                          
+06-06-05 18:54 Gildoniel      New Issue                                    
+06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
+06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
+Professional
+06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-07-05 17:52 Gildoniel      Note Added: 0004913                          
+06-08-05 14:35 tiwai          Note Added: 0004922                          
+06-08-05 14:43 Gildoniel      File Added: asound.state                     
+06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+         
+06-08-05 14:52 Gildoniel      Note Added: 0004924                          
+06-08-05 14:59 Gildoniel      Note Added: 0004927                          
+06-08-05 15:08 tiwai          Note Added: 0004929                          
+06-08-05 15:29 Gildoniel      Note Added: 0004933                          
+06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+06-08-05 15:36 pzad           Note Added: 0004935                          
+06-08-05 16:13 Gildoniel      Note Added: 0004948                          
+06-08-05 16:21 pzad           Note Added: 0004949                          
+06-08-05 16:39 Gildoniel      Note Added: 0004954                          
+06-08-05 16:41 tiwai          Note Added: 0004955                          
+06-08-05 16:42 pzad           Note Added: 0004956                          
+06-08-05 16:43 tiwai          Note Added: 0004957                          
+06-08-05 16:45 pzad           Note Added: 0004958                          
+06-08-05 16:52 Gildoniel      Note Added: 0004959                          
+06-08-05 16:57 pzad           Note Added: 0004960                          
+06-08-05 17:03 tiwai          Note Added: 0004961                          
+06-08-05 17:13 Gildoniel      Note Added: 0004963                          
+06-08-05 17:31 Gildoniel      Note Added: 0004964                          
+06-08-05 17:35 tiwai          Note Added: 0004965                          
+06-08-05 18:03 Gildoniel      Note Added: 0004967                          
+06-08-05 18:39 Gildoniel      Note Added: 0004970                          
 ======================================================================
 
 
