@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001168]: No sound using Yamaha YMF740C on Intel SE440BX-2 motherboard
-Date: Wed, 8 Jun 2005 09:10:57 +0200
-Message-ID: <8635843d3d2aab37ecc7f4e88980bdae@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: unresolved symbol class_device_destroy,   class_device_create
+ - alsa-driver-1.0.9a on kernel 2.4
+Date: Wed, 08 Jun 2005 16:03:06 +0800
+Message-ID: <42A6A63A.2010300@netvigator.com>
+References: <42A2E466.3080507@netvigator.com> <Pine.HPX.4.33n.0506060858380.4802-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3AC711E8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 09:10:57 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0506060858380.4802-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +18,153 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thanks
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1168> 
-======================================================================
-Reported By:                mtl
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1168
-Category:                   PCI - ymfpci
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               slackware-current
-Kernel Version:             2.4.31, as well as 2.4.29 & 2.4.30
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             06-08-2005 02:04 CEST
-Last Modified:              06-08-2005 09:10 CEST
-======================================================================
-Summary:                    No sound using Yamaha YMF740C on Intel SE440BX-2
-motherboard
-Description: 
-I'm using a system with an Intel SE440BX-2 motherboard, which has the
-Yamaha YMF740C sound system built in.
+http://sourceforge.net/mailarchive/forum.php?thread_id=7430161&forum_id=33141
 
-I've taken the alsa-driver source from disc 4 of the Slackware-10.0 CD
-set, and after editing the alsa-driver.SlackBuild script to reflect the
-current kernel version, rebuilt the alsa-driver-1.0.5a-i486-2.tgz package,
-and after installing my own package, all works as it should, so far as I
-can tell.  I've done this with kernel versions 2.4.29, 2.4.30, and 2.4.31,
-all with the same results.
+alsa-utils-1.0.9a
+
+There seem to be an inconsistency in amixer ( Those 10-bands stereo
+equalizer control of au8830 should be stereo instead of mono - simple 
+mixer control )
+
+amixer contents
+
+numid=16,iface=MIXER,name='Master Playback Volume'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
+   : values=22,22
 
 
-======================================================================
+numid=2,iface=MIXER,name='EQ0 31Hz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=32767,16022
+numid=3,iface=MIXER,name='EQ1 63Hz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=4,iface=MIXER,name='EQ2 125Hz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=5,iface=MIXER,name='EQ3 250Hz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=6,iface=MIXER,name='EQ4 500Hz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=7,iface=MIXER,name='EQ5 1KHz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=8,iface=MIXER,name='EQ6 2KHz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=9,iface=MIXER,name='EQ7 4KHz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=10,iface=MIXER,name='EQ8 8KHz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,16022
+numid=11,iface=MIXER,name='EQ9 16KHz'
+   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
+   : values=16022,32767
 
-----------------------------------------------------------------------
- mtl - 06-08-05 04:57 
-----------------------------------------------------------------------
-Resolved with alsa-driver-1.0.9b.tar.bz2
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-08-05 02:04 mtl            New Issue                                    
-06-08-05 02:04 mtl            Distribution              => slackware-current
-06-08-05 02:04 mtl            Kernel Version            => 2.4.31, as well as
-2.4.29 & 2.4.30
-06-08-05 04:57 mtl            Note Added: 0004915                          
-06-08-05 04:57 mtl            Issue Monitored: mtl                         
-06-08-05 09:10 perex          Status                   new => resolved     
-06-08-05 09:10 perex          Resolution               open => fixed       
-06-08-05 09:10 perex          Assigned To               => perex           
-======================================================================
+amixer
+
+Simple mixer control 'Master',0
+   Capabilities: pvolume pswitch pswitch-joined
+   Playback channels: Front Left - Front Right
+   Limits: Playback 0 - 31
+   Front Left: Playback 22 [71%] [on]
+   Front Right: Playback 22 [71%] [on]
+
+
+Simple mixer control 'EQ0 31Hz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 32767 [100%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ1 63Hz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ2 125Hz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ3 250Hz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ4 500Hz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ5 1KHz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ6 2KHz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ7 4KHz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ8 8KHz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+Simple mixer control 'EQ9 16KHz',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right
+   Limits: 0 - 32767
+   Mono: 16022 [49%]
+   Front Left:
+   Front Right:
+
+
+
+
+Clemens Ladisch wrote:
+> Raymond wrote:
+> 
+>>Are there any patch to fix the unresolved symbol ?
+>>
+>>snd.o: unresolved symbol class_device_destroy
+>>snd.o: unresolved symbol class_device_create
+> 
+> 
+> Fixed in CVS since Friday.
+> 
 
 
 
