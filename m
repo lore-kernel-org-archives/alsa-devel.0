@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Wed, 8 Jun 2005 14:53:52 +0200
-Message-ID: <d6527ffd75dfcc8e71905a1c4f6129d9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
+Date: Wed, 8 Jun 2005 14:53:36 +0200
+Message-ID: <9e146fda94aaf78a782d4ca12ce60bb1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D83C9129
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 14:53:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22B11129
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 14:53:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
 ======================================================================
-Reported By:                sst4
+Reported By:                dpinte
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1170
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.11-5
 ======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
+Date Submitted:             06-08-2005 10:09 CEST
 Last Modified:              06-08-2005 14:53 CEST
 ======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
+Summary:                    since update to 1.0.9 sound is not clear but noisy
 Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
+Hi,
 
-Soon (probably in a second) after this command line:
+On my Debian/Sid, everything was ok since update to 1.0.9 (and 1.0.8 in
+the same upgrade). There were no other changes than alsa updates. 
 
-aoss skype &
+I'm running the Debian kernel-image-2.6.11-1-686.
 
-the terminal window gets filled with
+I've tested aplay without success, sound is noisy. I've also tested to
+reboot without my snd_intel8x0m module without changes.
 
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
+Here are the modules loaded :
 
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
+did@geru-itea:~$ lsmod | grep snd
+snd_intel8x0           33216  2
+snd_ac97_codec         78360  1 snd_intel8x0
+snd_pcm_oss            53344  0
+snd_mixer_oss          19872  2 snd_pcm_oss
+snd_pcm                92712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              24644  1 snd_pcm
+snd                    55300  8
+snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9664  2 snd
+snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-08-05 14:50 
+ tiwai - 06-08-05 14:27 
 ----------------------------------------------------------------------
-Could you try the attached patch?
+It's likely a bug of esound rather than ALSA.  esd + dmix work fine if
+esound is fixed with a patch.
 
 ----------------------------------------------------------------------
- tiwai - 06-08-05 14:53 
+ dpinte - 06-08-05 14:53 
 ----------------------------------------------------------------------
-With revo 7.1, this might not work, too, since revo has really no "Capture
-Volume" (corresponding to IGAIN in OSS).
+you're right, i've just tested the sound with blackbox using direct output
+to ALSA and it works fine !
 
-If so, it must be a bug of Skype.  Skype must check DEVMASK before reading
-IGAIN.
+We can close this "bug" ...
+
+Didrik
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-05 00:33 sst4           New Issue                                    
-06-08-05 14:50 tiwai          Note Added: 0004923                          
-06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
-
-06-08-05 14:53 tiwai          Note Added: 0004926                          
+06-08-05 10:09 dpinte         New Issue                                    
+06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
+06-08-05 10:21 dpinte         Note Added: 0004916                          
+06-08-05 14:20 dpinte         Note Added: 0004918                          
+06-08-05 14:27 tiwai          Note Added: 0004920                          
+06-08-05 14:53 dpinte         Note Added: 0004925                          
 ======================================================================
 
 
