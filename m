@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
-Date: Wed, 8 Jun 2005 16:11:29 +0200
-Message-ID: <9999d60ab272683a4abea3bd79d1a82f@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000774]: add (3) to Trident cards
+Date: Wed, 8 Jun 2005 16:11:12 +0200
+Message-ID: <04be7402ad37625e84f90f6191b56067@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 518841F3
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:11:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B06791F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:11:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=774> 
 ======================================================================
-Reported By:                abonilla
-Assigned To:                
+Reported By:                dfries
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   800
-Category:                   PCI - azx
+Project:                    ALSA - WWW server
+Issue ID:                   774
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-10-2005 03:20 CET
+Date Submitted:             01-02-2005 00:40 CET
 Last Modified:              06-08-2005 16:11 CEST
 ======================================================================
-Summary:                    Sound is Corrupted or terribe quality.
+Summary:                    add (3) to Trident cards
 Description: 
-Sound goes out just like if the jack was not propperly plugged. bad Sound
-Quality.
+I really like the hardware mixing support for my Trident card and was
+looking to make sure my next card would also spport hardware mixing for
+multiple opens.  I was disterbed to find that the sound card matrix didn't
+list hardware mixing for the Trident cards (I have 4D-Wave DX, and as I
+understand it the NX would also).  I can say for sure that my Trident
+4D-Wave DX definitely lets multiple programs open the sound card at the
+same time and play from all of them at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- pforai - 05-31-05 16:28 
+ perex - 06-08-05 16:11 
 ----------------------------------------------------------------------
-i can confirm that, same hw, same problem. it seems a little bit odd
-because tiwai fixed a problem with the playback buffer a long time ago -
-it was in alsa 1.12 cvs afair. now  i'm using 1.0.9 release(switched to
-that because of distro packet mgmnt sys) and the playback quality ist bad
-again (but not as bad as it was in 1.0.7).
-
-
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 16:11 
-----------------------------------------------------------------------
-And what about position_fix option?  No influence?
+Fixed. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-10-05 03:20 abonilla       New Issue                                    
-01-10-05 03:20 abonilla       Distribution              => Debian          
-01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
-01-10-05 14:56 tiwai          Note Added: 0003134                          
-03-16-05 13:27 jdthood        Note Added: 0003956                          
-03-18-05 18:23 tiwai          Note Added: 0004003                          
-03-18-05 23:35 allefant       Issue Monitored: allefant                    
-03-18-05 23:36 allefant       Issue End Monitor: allefant                    
-03-19-05 12:42 jdthood        Note Added: 0004036                          
-05-24-05 13:37 jdthood        Note Added: 0004725                          
-05-24-05 13:37 jdthood        Note Edited: 0004725                         
-05-24-05 14:12 tiwai          Note Added: 0004728                          
-05-24-05 14:15 jdthood        Note Edited: 0004725                         
-05-31-05 16:27 pforai         Note Added: 0004836                          
-05-31-05 16:28 pforai         Note Edited: 0004836                         
-06-08-05 16:11 tiwai          Note Added: 0004947                          
+01-02-05 00:40 dfries         New Issue                                    
+06-08-05 16:11 perex          Status                   new => resolved     
+06-08-05 16:11 perex          Resolution               open => fixed       
+06-08-05 16:11 perex          Assigned To               => perex           
+06-08-05 16:11 perex          Note Added: 0004946                          
 ======================================================================
 
 
