@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001143]: echomixer shows vu meters in grmix wrong
-Date: Wed, 8 Jun 2005 17:36:16 +0200
-Message-ID: <89d878372c80e3da1ced551b5f5312c5@bugtrack.alsa-project.org>
+From: Sebastian Stein <seb_stein@gmx.de>
+Subject: Re: Compilation alsa-driver-1.0.9b still broken
+Date: Wed, 8 Jun 2005 17:49:29 +0200
+Message-ID: <20050608154929.GA467@hpfsc.de>
+References: <20050608151459.GA1492@hpfsc.de> <s5hoeagkh0q.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBB6C1DE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:36:16 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hoeagkh0q.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai <tiwai@suse.de> [050608 17:47]:
+> > ../alsa-kernel/pci/ens1370.c: In function `snd_ensoniq_playback1_prepare':
+> > ../alsa-kernel/pci/ens1370.c:852: error: `e' undeclared (first use in this
+> > function)
+> > ../alsa-kernel/pci/ens1370.c:852: error: (Each undeclared identifier is
+> > reported only once
+> > ../alsa-kernel/pci/ens1370.c:852: error: for each function it appears in.)
+> > ../alsa-kernel/pci/ens1370.c:852: error: parse error before "se"
+> > make[1]: *** [ens1371.o] Error 1
+> > make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.9b/pci'
+> > make: *** [compile] Error 1
+> 
+> I guess your alsa-kernel/pci/ens1370.c file is broken.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1143> 
-======================================================================
-Reported By:                Xero
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1143
-Category:                   envy24control
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-29-2005 14:58 CEST
-Last Modified:              06-08-2005 17:36 CEST
-======================================================================
-Summary:                    echomixer shows vu meters in grmix wrong
-Description: 
-this happens with alsa 1.0.9, and the change that causes it is revision 1.2
-in cvs, so this problem has been around for a bit. Essentially, the vu
-meters show each channel outputting the same level across all outputs, not
-just the ones where it's actually outputting to. It's basically as if the
-vu meters are not acknowleding the volume levels that are set. I've
-attached a screen shot showing the issue, as it's sort of hard to
-describe. You can clearly see the little yellow volume bars for V4 and V5
-are bottomed out on all the outputs except for 2, but vu meters show up on
-all of them.
-======================================================================
+Maybe, but I just used the files provided in the tar on alsa-project.org.
+The md5sum of the file is on my system:
 
-----------------------------------------------------------------------
- tiwai - 06-08-05 17:36 
-----------------------------------------------------------------------
-Fixed on CVS.
+e2a085f4ea1f0098a0b8ba1bff5e9bae  ens1370.c
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-29-05 14:58 Xero           New Issue                                    
-05-29-05 14:58 Xero           File Added: window.jpg                       
-06-08-05 17:36 tiwai          Status                   new => resolved     
-06-08-05 17:36 tiwai          Resolution               open => fixed       
-06-08-05 17:36 tiwai          Assigned To               => tiwai           
-06-08-05 17:36 tiwai          Note Added: 0004966                          
-======================================================================
-
-
+Sebastian
 
 
 -------------------------------------------------------
