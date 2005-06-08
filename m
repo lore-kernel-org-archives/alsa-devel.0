@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Wed, 8 Jun 2005 17:31:29 +0200
-Message-ID: <5b497d6f918864220406550cc67ed5f1@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 17:35:18 +0200
+Message-ID: <d8a41b7aaec5fe40c134132273c76784@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D69A1DE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:31:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D20A71DE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 17:35:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSe Linux 9.3 Professional
 Kernel Version:             2.6.11.4.20a
 ======================================================================
 Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-08-2005 17:31 CEST
+Last Modified:              06-08-2005 17:35 CEST
 ======================================================================
 Summary:                    no sound on speakers, low volume on the headphones
 Description: 
@@ -66,19 +66,20 @@ and error messages with certain settings)
 ======================================================================
 
 ----------------------------------------------------------------------
- Gildoniel - 06-08-05 17:13 
-----------------------------------------------------------------------
-For me is, very low volume through headphones, dead speakers and working
-mic. The "headphones" volume control is not affecting the volume of the
-headphones. Only PCM/Master does.
-
-----------------------------------------------------------------------
  Gildoniel - 06-08-05 17:31 
 ----------------------------------------------------------------------
 I renamed the snd-atiixp-modem.ko to snd-atiixp-modem.old (which "removes"
 it from the system) and rebooted my machine.
 
 Brought no bettering though.
+
+----------------------------------------------------------------------
+ tiwai - 06-08-05 17:35 
+----------------------------------------------------------------------
+Could you do the following as root? (suppose you compiled the driver with
+--with-debug=full option).
+
+   # echo 5c 0000 > /proc/asound/card0/codec97#0/ac97#0-0+regs
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -111,6 +112,7 @@ Professional
 06-08-05 17:03 tiwai          Note Added: 0004961                          
 06-08-05 17:13 Gildoniel      Note Added: 0004963                          
 06-08-05 17:31 Gildoniel      Note Added: 0004964                          
+06-08-05 17:35 tiwai          Note Added: 0004965                          
 ======================================================================
 
 
