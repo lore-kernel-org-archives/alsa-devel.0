@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Wed, 8 Jun 2005 23:25:51 +0200
-Message-ID: <4dc02a0c2dd00969c8bfec8240fa3e8c@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
+Date: Thu, 9 Jun 2005 00:42:54 +0200
+Message-ID: <324c36df3e75827c0a8d5fc63576f52f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D3E71DC
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 23:25:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CDEE81CC
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 00:42:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
 ======================================================================
-Reported By:                JKnife
+Reported By:                herby
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   1_OTHERS
+Project:                    ALSA - utils
+Issue ID:                   1174
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-08-2005 23:25 CEST
+Date Submitted:             06-09-2005 00:42 CEST
+Last Modified:              06-09-2005 00:42 CEST
 ======================================================================
-Summary:                    Riptide/Context Audio Drivers
+Summary:                    Speaker Test fails with error message(s) from alsa
+lib.  "problem for start_threshold"
 Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
+Running speaker test gets me:
+>>>
+speaker-test 0.0.8
+
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
+params->avail_min problem for start_threshold
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+<<<
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 15:15 
-----------------------------------------------------------------------
-It looks like binary only...
-
-----------------------------------------------------------------------
- JKnife - 06-08-05 23:25 
-----------------------------------------------------------------------
-http://www.linuxant.com/drivers/riptide/downloads.php
-bottom packages have source
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
-06-08-05 15:15 tiwai          Note Added: 0004932                          
-06-08-05 23:25 JKnife         Note Added: 0004976                          
+06-09-05 00:42 herby          New Issue                                    
 ======================================================================
 
 
