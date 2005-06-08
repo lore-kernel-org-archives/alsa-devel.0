@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000905]: Creative Labs SB Audigy LS  uses snd-ca0106 driver
-Date: Wed, 8 Jun 2005 16:25:02 +0200
-Message-ID: <dfdbb34de51612c2c527e8ccea7e78d5@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000808]: No more archives for the mailing list
+Date: Wed, 8 Jun 2005 16:23:54 +0200
+Message-ID: <d0d710c30677bdb90d53aad49ea6eeda@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E6241F4
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:25:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C8771F4
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:23:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=905> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=808> 
 ======================================================================
-Reported By:                adaviel
+Reported By:                croiset
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   905
-Category:                   soundcard matrix
+Issue ID:                   808
+Category:                   bad link
 Reproducibility:            always
-Severity:                   feature
+Severity:                   tweak
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-12-2005 23:46 CET
-Last Modified:              06-08-2005 16:25 CEST
+Date Submitted:             01-11-2005 18:46 CET
+Last Modified:              06-08-2005 16:23 CEST
 ======================================================================
-Summary:                    Creative Labs SB Audigy LS  uses snd-ca0106 driver
+Summary:                    No more archives for the mailing list
 Description: 
-The Creative Labs SB card identified by
-PCI Class 0401: 1102:0007
-is supported by the 
-snd-ca0106 driver (not audigyls as implied by the current matrix)
+There is no more archives for all alsa mailing list. The major one
+(mail-archive.com) does not have anymore archive since june 2004.
 
-My current system (FCI) says it's an unknown device. The user said it 
-was an SB Live. But 
-http://pciids.sourceforge.net/iii/?i=1102
-says it's an SB Audigy LS, so I guess that's what it is ...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-08-05 16:25 
+ crimsun - 01-11-05 20:17 
 ----------------------------------------------------------------------
-It's correct now.
+Please use Gmane for alsa-user and alsa-devel archives:
+http://news.gmane.org/gmane.linux.alsa.user
+http://news.gmane.org/gmane.linux.alsa.devel
+
+Mail-archive continues to maintain an archive of -announce:
+http://www.mail-archive.com/alsa-announce@lists.sourceforge.net/
+
+----------------------------------------------------------------------
+ perex - 06-08-05 16:23 
+----------------------------------------------------------------------
+Added links to web page.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-05 23:46 adaviel        New Issue                                    
-06-08-05 16:25 perex          Status                   new => resolved     
-06-08-05 16:25 perex          Resolution               open => fixed       
-06-08-05 16:25 perex          Assigned To               => perex           
-06-08-05 16:25 perex          Note Added: 0004951                          
+01-11-05 18:46 croiset        New Issue                                    
+01-11-05 20:17 crimsun        Note Added: 0003157                          
+06-08-05 16:23 perex          Status                   new => resolved     
+06-08-05 16:23 perex          Resolution               open => fixed       
+06-08-05 16:23 perex          Assigned To               => perex           
+06-08-05 16:23 perex          Note Added: 0004950                          
 ======================================================================
 
 
