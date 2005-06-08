@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001153]: Unresolved class_device_* symbols with Linux 2.4.27
-Date: Wed, 8 Jun 2005 15:09:32 +0200
-Message-ID: <e88c7143301dcd2e0b8696639fec436b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001160]: Compilation hangs on hda_codec.c and ak4114.c
+Date: Wed, 8 Jun 2005 15:10:39 +0200
+Message-ID: <89e2276c091465f61e86cd31b36b63a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F704172
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:09:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 339ED1DE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:10:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1153> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1160> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                Henne
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1153
+Issue ID:                   1160
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Aurox 10.0
+Kernel Version:             2.6.7-aurox
 ======================================================================
-Date Submitted:             06-04-2005 16:06 CEST
-Last Modified:              06-08-2005 15:09 CEST
+Date Submitted:             06-06-2005 12:02 CEST
+Last Modified:              06-08-2005 15:10 CEST
 ======================================================================
-Summary:                    Unresolved class_device_* symbols with Linux 2.4.27
+Summary:                    Compilation hangs on hda_codec.c and ak4114.c
 Description: 
-I built 1.0.9a --with-cards=all against Debian's latest 2.4.27 kernel
-headers and got unresolved symbols:
+I tried to compile the driver package with cvscompile, and it hung at:
+alsa-kernel/i2c/other/ak4114.c
+alsa-kernel/pci/hda/hda_codec.c
+with the message, that the macro create_workqueue needs 2 arguments, not
+one.
+I browsed the code and found out, that that macro is defined for kernels
+lower than 2.6 in the alsa-driver, but I have a greater one. So the macro
+wasn't defined and another marco from the kernel source was taken, which
+needs 2 arguments.
+I've added a zero as a second arg and the compilation worked, but that
+imho couldn't be the right solution.
 
-# depmod -e -a -F /boot/System.map-2.4.27-2-686 2.4.27-2-686depmod: ***
-Unresolved symbols in /lib/modules/2.4.27-2-686/updates/alsa/snd.o
-depmod:         class_device_destroy
-depmod:         class_device_create
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 06-06-05 14:11 
+ tiwai - 06-08-05 15:10 
 ----------------------------------------------------------------------
-I attached a patch that fixes the problem well enough to allow modules to
-be loaded on Linux 2.4.  The patch suppresses the apparently unused (under
-Linux 2.4) declarations of class_device_create() and
-class_device_destroy().   I don't know whether or not the patch solves the
-problem in a kosher way and I don't know whether sensible arguments for
-KERNEL_VERSION() have been used.
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 15:09 
-----------------------------------------------------------------------
-Fixed on 1.0.9b.
+Grrr, an old 2.6 kernel...  Need a patch in alsa-driver...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-04-05 16:06 jdthood        New Issue                                    
-06-04-05 23:24 jdthood        Note Added: 0004888                          
-06-04-05 23:25 jdthood        Description Updated                          
-06-06-05 14:07 jdthood        File Added: 17_class_device_fix.dpatch            
-       
-06-06-05 14:11 jdthood        Note Added: 0004908                          
-06-08-05 15:09 tiwai          Status                   assigned => resolved
-06-08-05 15:09 tiwai          Resolution               open => fixed       
-06-08-05 15:09 tiwai          Note Added: 0004930                          
+06-06-05 12:02 Henne          New Issue                                    
+06-06-05 12:02 Henne          Distribution              => Aurox 10.0      
+06-06-05 12:02 Henne          Kernel Version            => 2.6.7-aurox     
+06-08-05 15:10 tiwai          Note Added: 0004931                          
 ======================================================================
 
 
