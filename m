@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0000485]: Two additions to the matrix: M-Audio Sonica and Turtle Beach Audio Advantage
-Date: Wed, 8 Jun 2005 16:08:56 +0200
-Message-ID: <f28ee3a65cadc5abc4c2b7cafe5cb74c@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 16:07:32 +0200
+Message-ID: <91842e718bcfe7508d876465f49903c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C1191F2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:08:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60D681F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:07:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=485> 
 ======================================================================
 Reported By:                noduck
-Assigned To:                perex
+Assigned To:                
 ======================================================================
 Project:                    ALSA - WWW server
 Issue ID:                   485
@@ -35,12 +35,10 @@ Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
 Date Submitted:             09-07-2004 04:21 CEST
-Last Modified:              06-08-2005 16:08 CEST
+Last Modified:              06-08-2005 16:07 CEST
 ======================================================================
 Summary:                    Two additions to the matrix: M-Audio Sonica and
 Turtle Beach Audio Advantage
@@ -64,10 +62,6 @@ Date Modified  Username       Field                    Change
 ======================================================================
 09-07-04 04:21 noduck         New Issue                                    
 06-08-05 16:07 perex          Note Added: 0004943                          
-06-08-05 16:07 perex          Status                   new => resolved     
-06-08-05 16:08 perex          Status                   resolved => assigned
-06-08-05 16:08 perex          Assigned To               => perex           
-06-08-05 16:08 perex          Status                   assigned => resolved
 ======================================================================
 
 
