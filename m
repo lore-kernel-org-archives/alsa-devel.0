@@ -1,14 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: unresolved symbol class_device_destroy,   class_device_create
- - alsa-driver-1.0.9a on kernel 2.4
-Date: Wed, 08 Jun 2005 16:03:06 +0800
-Message-ID: <42A6A63A.2010300@netvigator.com>
-References: <42A2E466.3080507@netvigator.com> <Pine.HPX.4.33n.0506060858380.4802-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
+Date: Wed, 8 Jun 2005 10:09:03 +0200
+Message-ID: <2ac5720d02b7d3789d66be0c3a2bec0e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0506060858380.4802-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 629871E7
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 10:09:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,153 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks
 
-http://sourceforge.net/mailarchive/forum.php?thread_id=7430161&forum_id=33141
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
+======================================================================
+Reported By:                dpinte
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1170
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11-5
+======================================================================
+Date Submitted:             06-08-2005 10:09 CEST
+Last Modified:              06-08-2005 10:09 CEST
+======================================================================
+Summary:                    since update to 1.0.9 sound is not clear but noisy
+Description: 
+Hi,
 
-alsa-utils-1.0.9a
+On my Debian/Sid, everything was ok since update to 1.0.9 (and 1.0.8 in
+the same upgrade). There were no other changes than alsa updates. 
 
-There seem to be an inconsistency in amixer ( Those 10-bands stereo
-equalizer control of au8830 should be stereo instead of mono - simple 
-mixer control )
+I'm running the Debian kernel-image-2.6.11-1-686.
 
-amixer contents
+I've tested aplay without success, sound is noisy. I've also tested to
+reboot without my snd_intel8x0m module without changes.
 
-numid=16,iface=MIXER,name='Master Playback Volume'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-   : values=22,22
+Here are the modules loaded :
 
+did@geru-itea:~$ lsmod | grep snd
+snd_intel8x0           33216  2
+snd_ac97_codec         78360  1 snd_intel8x0
+snd_pcm_oss            53344  0
+snd_mixer_oss          19872  2 snd_pcm_oss
+snd_pcm                92712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              24644  1 snd_pcm
+snd                    55300  8
+snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9664  2 snd
+snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
 
-numid=2,iface=MIXER,name='EQ0 31Hz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=32767,16022
-numid=3,iface=MIXER,name='EQ1 63Hz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=4,iface=MIXER,name='EQ2 125Hz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=5,iface=MIXER,name='EQ3 250Hz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=6,iface=MIXER,name='EQ4 500Hz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=7,iface=MIXER,name='EQ5 1KHz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=8,iface=MIXER,name='EQ6 2KHz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=9,iface=MIXER,name='EQ7 4KHz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=10,iface=MIXER,name='EQ8 8KHz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,16022
-numid=11,iface=MIXER,name='EQ9 16KHz'
-   ; type=INTEGER,access=rw---,values=2,min=0,max=32767,step=0
-   : values=16022,32767
+======================================================================
 
-
-amixer
-
-Simple mixer control 'Master',0
-   Capabilities: pvolume pswitch pswitch-joined
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 22 [71%] [on]
-   Front Right: Playback 22 [71%] [on]
-
-
-Simple mixer control 'EQ0 31Hz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 32767 [100%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ1 63Hz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ2 125Hz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ3 250Hz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ4 500Hz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ5 1KHz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ6 2KHz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ7 4KHz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ8 8KHz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-Simple mixer control 'EQ9 16KHz',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Limits: 0 - 32767
-   Mono: 16022 [49%]
-   Front Left:
-   Front Right:
-
-
-
-
-Clemens Ladisch wrote:
-> Raymond wrote:
-> 
->>Are there any patch to fix the unresolved symbol ?
->>
->>snd.o: unresolved symbol class_device_destroy
->>snd.o: unresolved symbol class_device_create
-> 
-> 
-> Fixed in CVS since Friday.
-> 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-08-05 10:09 dpinte         New Issue                                    
+06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
+======================================================================
 
 
 
