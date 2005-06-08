@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001160]: Compilation hangs on hda_codec.c and ak4114.c
-Date: Wed, 8 Jun 2005 15:10:39 +0200
-Message-ID: <89e2276c091465f61e86cd31b36b63a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
+Date: Wed, 8 Jun 2005 15:15:02 +0200
+Message-ID: <1cb8cac7173fbd52eb2c84a5e166f1e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 339ED1DE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:10:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EE661F2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 15:15:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1160> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
 ======================================================================
-Reported By:                Henne
-Assigned To:                perex
+Reported By:                JKnife
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1160
-Category:                   0_compilation problem_!!!
+Issue ID:                   1052
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Aurox 10.0
-Kernel Version:             2.6.7-aurox
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-06-2005 12:02 CEST
-Last Modified:              06-08-2005 15:10 CEST
+Date Submitted:             04-13-2005 21:59 CEST
+Last Modified:              06-08-2005 15:15 CEST
 ======================================================================
-Summary:                    Compilation hangs on hda_codec.c and ak4114.c
+Summary:                    Riptide/Context Audio Drivers
 Description: 
-I tried to compile the driver package with cvscompile, and it hung at:
-alsa-kernel/i2c/other/ak4114.c
-alsa-kernel/pci/hda/hda_codec.c
-with the message, that the macro create_workqueue needs 2 arguments, not
-one.
-I browsed the code and found out, that that macro is defined for kernels
-lower than 2.6 in the alsa-driver, but I have a greater one. So the macro
-wasn't defined and another marco from the kernel source was taken, which
-needs 2 arguments.
-I've added a zero as a second arg and the compilation worked, but that
-imho couldn't be the right solution.
-
-
+there is a set but its only for the 2.4 kernel.
+i would like you toinclude them in alsa.
+the 2.4 drivers can be found here
+http://www.linuxant.com/drivers/
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-08-05 15:10 
+ JKnife - 04-13-05 22:01 
 ----------------------------------------------------------------------
-Grrr, an old 2.6 kernel...  Need a patch in alsa-driver...
+opps i for got to set cat.. srry
+
+----------------------------------------------------------------------
+ tiwai - 06-08-05 15:15 
+----------------------------------------------------------------------
+It looks like binary only...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 12:02 Henne          New Issue                                    
-06-06-05 12:02 Henne          Distribution              => Aurox 10.0      
-06-06-05 12:02 Henne          Kernel Version            => 2.6.7-aurox     
-06-08-05 15:10 tiwai          Note Added: 0004931                          
+04-13-05 21:59 JKnife         New Issue                                    
+04-13-05 22:01 JKnife         Note Added: 0004479                          
+06-06-05 10:51 perex          Assigned To              perex =>            
+06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
+extreme, interwave) => OTHERS
+06-08-05 15:15 tiwai          Note Added: 0004932                          
 ======================================================================
 
 
