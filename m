@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Wed, 8 Jun 2005 16:43:26 +0200
-Message-ID: <6f416cd79764eeaa1de3e46cd8841a75@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 16:45:38 +0200
+Message-ID: <87f8840f85b1d1801683489dfd9cccd6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE74B1C8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:43:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E89061C8
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 16:45:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSe Linux 9.3 Professional
 Kernel Version:             2.6.11.4.20a
 ======================================================================
 Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-08-2005 16:43 CEST
+Last Modified:              06-08-2005 16:45 CEST
 ======================================================================
 Summary:                    no sound on speakers, low volume on the headphones
 Description: 
@@ -66,17 +66,17 @@ and error messages with certain settings)
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-08-05 16:42 
-----------------------------------------------------------------------
-Sorry. This wasn't mean to you, this was for alsa driver developers.
-
-----------------------------------------------------------------------
  tiwai - 06-08-05 16:43 
 ----------------------------------------------------------------------
 The current code actually tries _not_ to touch modem registers.  Namely,
 atiixp.c and intel8x0.c sets AC97_SCAP_SKIP_MODEM flag, so the modem
 detection/initialization should be skipped.
 If it doesn't behave as expected, it must be a bug...
+
+----------------------------------------------------------------------
+ pzad - 06-08-05 16:45 
+----------------------------------------------------------------------
+It will not load, but simply probing modem driver can kill audio part.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +103,7 @@ Professional
 06-08-05 16:41 tiwai          Note Added: 0004955                          
 06-08-05 16:42 pzad           Note Added: 0004956                          
 06-08-05 16:43 tiwai          Note Added: 0004957                          
+06-08-05 16:45 pzad           Note Added: 0004958                          
 ======================================================================
 
 
