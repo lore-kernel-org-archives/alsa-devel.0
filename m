@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
-Date: Wed, 8 Jun 2005 10:09:03 +0200
-Message-ID: <2ac5720d02b7d3789d66be0c3a2bec0e@bugtrack.alsa-project.org>
+Date: Wed, 8 Jun 2005 10:21:07 +0200
+Message-ID: <73a2b63768de9308933d8129e198754b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 629871E7
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 10:09:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D47401E7
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 10:21:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11-5
 ======================================================================
 Date Submitted:             06-08-2005 10:09 CEST
-Last Modified:              06-08-2005 10:09 CEST
+Last Modified:              06-08-2005 10:21 CEST
 ======================================================================
 Summary:                    since update to 1.0.9 sound is not clear but noisy
 Description: 
@@ -70,11 +70,25 @@ snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
 
 ======================================================================
 
+----------------------------------------------------------------------
+ dpinte - 06-08-05 10:21 
+----------------------------------------------------------------------
+! Sounds that it may be not related to alsa but to link between alsa and
+esd.
+
+For more information see :
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=312299 
+
+I will keep the link between the two BTS up to date.
+
+Didrik
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-08-05 10:09 dpinte         New Issue                                    
 06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
+06-08-05 10:21 dpinte         Note Added: 0004916                          
 ======================================================================
 
 
