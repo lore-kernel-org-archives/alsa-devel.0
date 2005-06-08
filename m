@@ -1,16 +1,10 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: about the alsa i2c interface
-Date: Thu, 9 Jun 2005 10:59:41 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506091057280.1827@pnote.perex-int.cz>
-References: <9AEDBAA573BBD346BCF9637D80097D9119E60A@greysvr02.GreyInnovation.com>
- <1118299677.14638.1.camel@mindpipe> <42A7ECA9.5020108@avantwave.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: =?GB2312?B?ye7b2srQ0PGzv8q10rXT0M/euavLvg==?= <szxc866@sina.com>
+Subject: =?GB2312?B?u/ot0/Y=?=
+Date: Wed, 8 Jun 2005 18:32:56 +0800
+Message-ID: <E1DgKIR-0008Ev-Iw@sc8-sf-mx2.sourceforge.net>
+Reply-To: szxc866@sina.com
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60F931CB
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 10:59:42 +0200 (MEST)
-In-Reply-To: <42A7ECA9.5020108@avantwave.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,51 +14,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tomko <tomko@avantwave.com>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Jun 2005, Tomko wrote:
+ 致财务：
 
-> Lee Revell wrote:
-> 
-> >On Thu, 2005-06-09 at 13:09 +1000, Tehn-Yit Chin wrote:
-> >  
-> >
-> >>Hi,
-> >>
-> >>We are trying to provide support for the CS43L43 device under the ALSA
-> >>architecture on an embedded platform.
-> >>
-> >>During my early investigation, I noticed that ALSA has its own i2c code.
-> >>What is this required, and why doesn't it use the mainline i2c support?
-> >>On our platform, there are one other devices on the i2c bus, so I would
-> >>like to use the mainline i2c code.
-> >>    
-> >>
-> >
-> >This is explained in "Writing an ALSA Driver"  (you did read it,
-> >right?).  Basically the kernel's i2c layer is overly complex, and ALSA
-> >only needs a small subset of it, so ALSA implements its own minimal i2c
-> >layer.
-> >
-> >  
-> >
-> So will this cause losing control on the I2c device ? for example i have 
-> 4 device on the i2c bus , 3 of them are under the kernel's i2c which the 
-> the sequence control that they can't access the bus at the same time and 
-> one of them are under alsa's i2c , what will happen if the alsa's i2c 
-> device and the kernel's i2c device access the bus together ?
+     你好！现我公司可提供代开以下发票服务，点数优惠，
 
-Use the kernel's i2c implementation in this case (see in ppc drivers for 
-example). There must be only one arbiter code.
+ 所开发票贵公司可在税务局或网上验证后付款。欢迎来电咨询，谢谢！
 
-						Jaroslav
+     {深.圳.市.旭.晨.实.业.有.限.公.司}
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+    1、增值税发票
+    
+    2、商品销售发票
+    
+    3、广告发票
+     
+    4、运输发票
+    
+    5、工业发票
+    
+    6、建筑安装发票
+     
+    7、海关缴款书
+
+    联系人：刘建军
+    
+    联系电话：13928496919
+    
+    电子信箱：szxq6919@sina.com
 
 
 -------------------------------------------------------
