@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001167]: Can't capture anymore
-Date: Wed, 8 Jun 2005 01:57:51 +0200
-Message-ID: <abaf2b184d1237bbce7bb6bca7b58df4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001168]: No sound using Yamaha YMF740C on Intel SE440BX-2 motherboard
+Date: Wed, 8 Jun 2005 02:04:42 +0200
+Message-ID: <2f4636688d4663c7eade44ec7d4f9cbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F3091DF
-	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 01:57:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFAFC1DF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2005 02:04:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1168> 
 ======================================================================
-Reported By:                Skinkie
+Reported By:                mtl
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1167
-Category:                   PCI - via82xx
-Reproducibility:            unable to duplicate
-Severity:                   block
+Issue ID:                   1168
+Category:                   PCI - ymfpci
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11-r10
+Distribution:               slackware-current
+Kernel Version:             2.4.31, as well as 2.4.29 & 2.4.30
 ======================================================================
-Date Submitted:             06-08-2005 01:57 CEST
-Last Modified:              06-08-2005 01:57 CEST
+Date Submitted:             06-08-2005 02:04 CEST
+Last Modified:              06-08-2005 02:04 CEST
 ======================================================================
-Summary:                    Can't capture anymore
+Summary:                    No sound using Yamaha YMF740C on Intel SE440BX-2
+motherboard
 Description: 
-Afther upgrading my system audio worked perfectly, my only concern was the
-alsamixer F4 bug, which also crashed the program.
+I'm using a system with an Intel SE440BX-2 motherboard, which has the
+Yamaha YMF740C sound system built in.
 
-I upgraded tot 1.0.9a and then hell came loose recording was impossible
-from /dev/sound/dsp or natively via the alsa drivers. The strangest thing
-happened too, because I removed (unmerged) all previous drivers including
-previous libraries and headers and then installed 1.0.9a again.
+I've taken the alsa-driver source from disc 4 of the Slackware-10.0 CD
+set, and after editing the alsa-driver.SlackBuild script to reflect the
+current kernel version, rebuilt the alsa-driver-1.0.5a-i486-2.tgz package,
+and after installing my own package, all works as it should, so far as I
+can tell.  I've done this with kernel versions 2.4.29, 2.4.30, and 2.4.31,
+all with the same results.
 
-Still I can't record. Audacity's recorder bar stays blinking at the same
-position and ices (a production thing I'm using everyday with this laptop)
-results in an pcm error too.
 
-I must mention all 'normal' sound is working. But even downgrading(!) to
-in kernel versions don't fix my issues. So I'm wondering what I have
-broken.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 01:57 Skinkie        New Issue                                    
-06-08-05 01:57 Skinkie        Distribution              => Gentoo          
-06-08-05 01:57 Skinkie        Kernel Version            => 2.6.11-r10      
+06-08-05 02:04 mtl            New Issue                                    
+06-08-05 02:04 mtl            Distribution              => slackware-current
+06-08-05 02:04 mtl            Kernel Version            => 2.4.31, as well as
+2.4.29 & 2.4.30
 ======================================================================
 
 
