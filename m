@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Thu, 9 Jun 2005 04:57:38 +0200
-Message-ID: <57cecc9164d3e3860ac7dbd28057dc9b@bugtrack.alsa-project.org>
+From: "Tehn-Yit Chin" <Tehn-Yit.Chin@greyinnovation.com>
+Subject: about the alsa i2c interface
+Date: Thu, 9 Jun 2005 13:09:47 +1000
+Message-ID: <9AEDBAA573BBD346BCF9637D80097D9119E60A@greysvr02.GreyInnovation.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BBC21FB
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 04:57:38 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9140E1FB
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 05:12:22 +0200 (MEST)
+Received: from greyinnovation.com (246.063.dsl.mel.iprimus.net.au [211.27.107.246])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 34E3777289
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 05:12:21 +0200 (MEST)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,92 +26,46 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
-======================================================================
-Reported By:                yure
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   881
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              06-09-2005 04:57 CEST
-======================================================================
-Summary:                    Distorted sound with enabled dmix plugin
-Description: 
-After 10-20 minutes listening music with xmms or beep-media-player I hear
-distorted sound. Appear noise.
-This problem is appear when enabled dmix plugin through configuration file
-~/.asoundrc.
-======================================================================
+We are trying to provide support for the CS43L43 device under the ALSA
+architecture on an embedded platform.
 
-----------------------------------------------------------------------
- Xero - 06-08-05 22:13 
-----------------------------------------------------------------------
-As per advice from the bug on xmms I'm going to try the crossfade plugin to
-do some resampling. It only supports 44100 and 48000 but I'm guessing that
-with 48000 and 96000 set on dmix this wont happen...only time will tell
-however.
+During my early investigation, I noticed that ALSA has its own i2c code.
+What is this required, and why doesn't it use the mainline i2c support?
+On our platform, there are one other devices on the i2c bus, so I would
+like to use the mainline i2c code.
 
-----------------------------------------------------------------------
- Xero - 06-09-05 04:57 
-----------------------------------------------------------------------
-ok using crossfade and running at 48000 with dmix at 96000 still causes
-distortion. Also, I tried 48000 at 88200 and distortion as well. So far
-only 44100 and dmix at 88200 has no distortion. I'm guessing it might have
-to do with buffer size but I'm unsure as to what value would be a large
-enough increase to properly test this out. I don't want to add too much
-latency...
+Any pointers would be appreciated.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-05 12:25 yure           New Issue                                    
-02-04-05 10:39 yure           Note Added: 0003497                          
-02-04-05 10:39 yure           Issue Monitored: yure                        
-02-04-05 14:53 tiwai          Note Added: 0003506                          
-02-04-05 15:30 yure           Note Added: 0003508                          
-02-04-05 15:36 yure           Note Added: 0003509                          
-02-23-05 13:35 yure           Note Added: 0003711                          
-02-23-05 19:23 tiwai          Note Added: 0003713                          
-02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
-
-02-23-05 19:24 tiwai          Note Added: 0003714                          
-02-23-05 19:33 tiwai          Note Added: 0003715                          
-02-24-05 22:09 tiwai          Note Added: 0003729                          
-02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
-       
-02-25-05 10:36 yure           Note Added: 0003732                          
-02-28-05 15:00 tvignaud       Note Added: 0003744                          
-02-28-05 15:22 yure           Note Added: 0003745                          
-02-28-05 15:26 warly          Note Added: 0003746                          
-03-11-05 13:06 tvignaud       Note Added: 0003887                          
-03-11-05 16:17 tiwai          Note Added: 0003891                          
-03-23-05 20:46 tiwai          Note Added: 0004187                          
-03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
-03-25-05 14:56 tvignaud       Note Added: 0004206                          
-03-29-05 16:21 tiwai          Note Added: 0004246                          
-04-04-05 16:15 yure           Note Added: 0004327                          
-04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
-05-29-05 08:23 Xero           Note Added: 0004781                          
-05-29-05 08:29 Xero           Note Added: 0004782                          
-06-03-05 07:40 Xero           Note Added: 0004882                          
-06-08-05 16:08 tiwai          Note Added: 0004944                          
-06-08-05 21:13 Xero           Note Added: 0004973                          
-06-08-05 21:27 tiwai          Note Added: 0004974                          
-06-08-05 22:13 Xero           Note Added: 0004975                          
-06-09-05 04:57 Xero           Note Added: 0004977                          
-======================================================================
+Tehn Yit Chin
+Software Engineer, Grey Innovation Pty. Ltd.
 
 
+-------------------------------------------------------------
+Tehn Yit Chin     Software Engineer
+-------------------------------------------------------------
+Grey Innovation Pty. Ltd.           Dir +613 9692 6909
+42 Charles Street                   Ph  +613 9692 6999
+Prahran                             Fx  +613 9692 6998
+Victoria 3181                       Mail: PO Box 452
+Australia                           Prahran 3181
+
+mailto:tehn-yit.chin@greyinnovation.com
+http://www.greyinnovation.com
+-------------------------------------------------------------
+This e-mail and any attachments to it is confidential and is=20
+for the use only of the intended recipient. It may contain=20
+copyright material of Grey Innovation Pty Ltd or any of its=20
+related entities or of third parties. If you are not the=20
+intended recipient, please notify the sender immediately by
+return e-mail, delete the email and any attachments, and do
+not read, copy, print, retransmit store or act in reliance
+on the contents. Any views expressed are those of the
+individual sender only, unless expressly stated to be those=20
+of Grey Innovation Pty Ltd. Grey Innovation Pty Ltd does not=20
+guarantee the integrity of the contents, or that it is free=20
+from errors, viruses or interference.
 
 
 -------------------------------------------------------
