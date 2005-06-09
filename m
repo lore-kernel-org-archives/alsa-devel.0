@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
-Date: Thu, 9 Jun 2005 16:00:35 +0200
-Message-ID: <4f74a3694d28f40312067b10b29aabef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
+Date: Thu, 9 Jun 2005 16:09:57 +0200
+Message-ID: <3a189eac33eb35cee7f12b71cc5eb789@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76DA3201
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 16:00:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF3FA1CC
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 16:09:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
 ======================================================================
 Reported By:                sgoodall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1177
+Issue ID:                   1178
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
@@ -39,25 +39,28 @@ Status:                     new
 Distribution:               Fedora Core 3
 Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             06-09-2005 16:00 CEST
-Last Modified:              06-09-2005 16:00 CEST
+Date Submitted:             06-09-2005 16:09 CEST
+Last Modified:              06-09-2005 16:09 CEST
 ======================================================================
-Summary:                    Dell Inspiron 8500  + port replicator issues.
+Summary:                    Headphone and Speaker volume control
 Description: 
-I have a dell inspiron 8500 and the port replicator. The has an additional
-headphone socket, however the only mixer control that affects it is the
-IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
-sound completely, or plays sound at full volume.
-All other controls have no affect and, even if muted. The headphone socket
-on the laptop itself still works however.
+The master contol on this device does not affect the headphone speaker
+socket volume. This is a problem for assigning keyboard shortcuts (using
+gnome) to the voume controls as these get mapped to the master control. So
+when using headphones (which I usually do) i cannot control the volume.
+Ideally the master control can also affect the headphone volume, and have
+a separate control for the main speakers. (I would like to be able to keep
+these muted so sounds does not play should headphones not be plugged in
+unless I explicitly enable them).
+I am running fc3 on a dell inspiron 8500.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:00 sgoodall       New Issue                                    
-06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:00 sgoodall       Kernel Version            =>
+06-09-05 16:09 sgoodall       New Issue                                    
+06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:09 sgoodall       Kernel Version            =>
 kernel-2.6.11-1.27_FC3
 ======================================================================
 
