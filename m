@@ -1,11 +1,14 @@
-From: Mario Lang <mlang@delysid.org>
-Subject: alsa-tools small handle leak
-Date: Thu, 09 Jun 2005 14:21:01 +0200
-Message-ID: <873brrzpoy.fsf@lexx.delysid.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
+Date: Thu, 9 Jun 2005 16:00:35 +0200
+Message-ID: <4f74a3694d28f40312067b10b29aabef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76DA3201
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 16:00:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,54 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
-Content-Transfer-Encoding: quoted-printable
 
-Hi.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
+======================================================================
+Reported By:                sgoodall
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1177
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             kernel-2.6.11-1.27_FC3
+======================================================================
+Date Submitted:             06-09-2005 16:00 CEST
+Last Modified:              06-09-2005 16:00 CEST
+======================================================================
+Summary:                    Dell Inspiron 8500  + port replicator issues.
+Description: 
+I have a dell inspiron 8500 and the port replicator. The has an additional
+headphone socket, however the only mixer control that affects it is the
+IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
+sound completely, or plays sound at full volume.
+All other controls have no affect and, even if muted. The headphone socket
+on the laptop itself still works however.
+======================================================================
 
-WHile reading hdspmixer sources, I found a potential
-handler leak:
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-09-05 16:00 sgoodall       New Issue                                    
+06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:00 sgoodall       Kernel Version            =>
+kernel-2.6.11-1.27_FC3
+======================================================================
 
-Index: hdspmixer/src/HDSPMixerWindow.cxx
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/alsa/alsa-tools/hdspmixer/src/HDSPMixerWindow.cxx,v
-retrieving revision 1.5
-diff -u -r1.5 HDSPMixerWindow.cxx
-=2D-- hdspmixer/src/HDSPMixerWindow.cxx	27 Nov 2003 10:42:40 -0000	1.5
-+++ hdspmixer/src/HDSPMixerWindow.cxx	9 Jun 2005 11:42:18 -0000
-@@ -935,6 +935,7 @@
-     snd_ctl_elem_value_set_integer(ctl, 2, value);
-     if ((err =3D snd_ctl_elem_write(handle, ctl)) < 0) {
-         fprintf(stderr, "Alsa error: %s\n", snd_strerror(err));
-+        snd_ctl_close(handle);
-         return;
-     }
-=20=20=20=20=20
 
-=2D-=20
-CYa,
-  Mario | Debian Developer <URL:http://debian.org/>
-  .''`. | Get my public key via finger mlang@db.debian.org
- : :' : | 1024D/7FC1A0854909BCCDBE6C102DDFFC022A6B113E44
- `. `'=20
-   `-
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBCqDQ53/wCKmsRPkQRApYGAKCKxeF3yrX8O7Ql7oCHoyaFFRYp2QCfRe9F
-V6hQLPS6/YzJnlv2ZPhxTZM=
-=hunj
------END PGP SIGNATURE-----
---=-=-=--
 
 
 -------------------------------------------------------
