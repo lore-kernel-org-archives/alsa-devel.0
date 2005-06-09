@@ -1,14 +1,14 @@
-From: Igor Kovalenko <garrison@mail.ru>
-Subject: Re: [Openvortex-dev] Re: [ALSA - driver 0001138]: errors when	installing
- au8820 modules
-Date: Thu, 09 Jun 2005 14:17:05 +0400
-Message-ID: <42A81721.80702@mail.ru>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de>	<42A6B51F.20405@netvigator.com>	<s5h8y1lkv1c.wl@alsa2.suse.de> <42A7FF2D.7050801@netvigator.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001176]: problem with alsa-driver and asus m5a notebook
+Date: Thu, 9 Jun 2005 13:44:28 +0200
+Message-ID: <97bc09974e450f56529900ed3c8835e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42A7FF2D.7050801@netvigator.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B6341FF
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 13:44:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>
-Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Raymond wrote:
-> Takashi Iwai wrote:
-> 
->> At Wed, 08 Jun 2005 17:06:39 +0800,
->> Raymond wrote:
->>
-> 
->>
->>> Is there any reason to make this change ?
->>>
->>> alsa-kernel/pci/au88x0/au88x0.c
->>> @@ -144,15 +144,18 @@
->>>         // check PCI availability (DMA).
->>>         if ((err = pci_enable_device(pci)) < 0)
->>>                 return err;
->>> -       if (!pci_dma_supported(pci, VORTEX_DMA_MASK)) {
->>> +        if (pci_set_dma_mask(pci, VORTEX_DMA_MASK) < 0 ||
->>> +               pci_set_consistent_dma_mask(pci, VORTEX_DMA_MASK) < 0) {
->>>                 printk(KERN_ERR "error to set DMA mask\n");
->>> +               pci_disable_device(pci);
->>>                 return -ENXIO;
->>>         }
->>> -       pci_set_dma_mask(pci, VORTEX_DMA_MASK);
->>
->>
->>
->> This is clean up.
->>
->>
->>>         chip = kcalloc(1, sizeof(*chip), GFP_KERNEL);
->>> -       if (chip == NULL)
->>> +       if (chip == NULL) {
->>> +               pci_disable_device(pci);
->>>                 return -ENOMEM;
->>> +       }
->>
->>
->>
->> This fixes the PCI state in the error path.
->>
->>
->>>         chip->card = card;
->>>
->>> @@ -202,6 +205,8 @@
->>>                 goto alloc_out;
->>>         }
->>>
->>> +       snd_card_set_dev(card, &pci->dev);
->>> +
->>>         *rchip = chip;
->>
->>
->>
->> And this sets up the missing sysfs stuff.
->>
->>
-> 
-> So these changes are not neccesary(critical) for
-> au88x0_64_bits_compatible.patch  (AMD64 and X86_64 ) , just normal ALSA
-> cleanup.
-> 
 
-Actually without snd_card_set_dev() you will get oops shortly because device
-pointer won't be available to driver.
-DMA mask cleanup is to follow general guidelines about consistent mapping.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176> 
+======================================================================
+Reported By:                Ballbreaker
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1176
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.12-rc5
+======================================================================
+Date Submitted:             06-09-2005 13:44 CEST
+Last Modified:              06-09-2005 13:44 CEST
+======================================================================
+Summary:                    problem with alsa-driver and asus m5a notebook
+Description: 
+I use gentoo-linux on an asus m5a notebook. Installation of alsa-driver
+works without any error messages. xmms, aplay etc. play files, but i can't
+hear anything. alsa-mixer shows me all the mixer-controls. I didn't forget
+to unmute, and with windows sound is working fine - so i think there is a
+problem with the alsa-driver and this notebook (on other notebooks with
+the same sound-chip alsa is working).
 
--- 
-Kind regards,
-Igor V. Kovalenko
+I tried the following, always with the same results:
+- compile alsa in the kernel
+- compile alsa as kernel modules
+- emerge alsa-driver (version 1.0.9-rc3 - 1.0.9-rc4 is not in portage
+yet)
+- compile alsa-driver manually (version 1.0.9-rc4)
+
+Everything seems to work fine, but i can't hear anything, so maybe this is
+a bug in the alsa-driver.
+Would be great if somebody could tell me how i get alsa working on my
+notebook  ;-)
+
+Greetz,
+thomas
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-09-05 13:44 Ballbreaker    New Issue                                    
+06-09-05 13:44 Ballbreaker    Distribution              => gentoo          
+06-09-05 13:44 Ballbreaker    Kernel Version            => 2.6.12-rc5      
+======================================================================
+
+
 
 
 -------------------------------------------------------
