@@ -1,10 +1,14 @@
-From: =?GB2312?B?ye7b2srQ0PGzv8q10rXT0M/euavLvg==?= <szxc866@sina.com>
-Subject: =?GB2312?B?u/ot0/Y=?=
-Date: Wed, 8 Jun 2005 18:32:56 +0800
-Message-ID: <E1DgKIR-0008Ev-Iw@sc8-sf-mx2.sourceforge.net>
-Reply-To: szxc866@sina.com
-Content-Type: text/plain;charset="GB2312"
+From: Igor Kovalenko <garrison@mail.ru>
+Subject: Re: [Openvortex-dev] Re: [ALSA - driver 0001138]: errors when	installing
+ au8820 modules
+Date: Thu, 09 Jun 2005 14:17:05 +0400
+Message-ID: <42A81721.80702@mail.ru>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de>	<42A6B51F.20405@netvigator.com>	<s5h8y1lkv1c.wl@alsa2.suse.de> <42A7FF2D.7050801@netvigator.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <42A7FF2D.7050801@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,36 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
- 致财务：
+Raymond wrote:
+> Takashi Iwai wrote:
+> 
+>> At Wed, 08 Jun 2005 17:06:39 +0800,
+>> Raymond wrote:
+>>
+> 
+>>
+>>> Is there any reason to make this change ?
+>>>
+>>> alsa-kernel/pci/au88x0/au88x0.c
+>>> @@ -144,15 +144,18 @@
+>>>         // check PCI availability (DMA).
+>>>         if ((err = pci_enable_device(pci)) < 0)
+>>>                 return err;
+>>> -       if (!pci_dma_supported(pci, VORTEX_DMA_MASK)) {
+>>> +        if (pci_set_dma_mask(pci, VORTEX_DMA_MASK) < 0 ||
+>>> +               pci_set_consistent_dma_mask(pci, VORTEX_DMA_MASK) < 0) {
+>>>                 printk(KERN_ERR "error to set DMA mask\n");
+>>> +               pci_disable_device(pci);
+>>>                 return -ENXIO;
+>>>         }
+>>> -       pci_set_dma_mask(pci, VORTEX_DMA_MASK);
+>>
+>>
+>>
+>> This is clean up.
+>>
+>>
+>>>         chip = kcalloc(1, sizeof(*chip), GFP_KERNEL);
+>>> -       if (chip == NULL)
+>>> +       if (chip == NULL) {
+>>> +               pci_disable_device(pci);
+>>>                 return -ENOMEM;
+>>> +       }
+>>
+>>
+>>
+>> This fixes the PCI state in the error path.
+>>
+>>
+>>>         chip->card = card;
+>>>
+>>> @@ -202,6 +205,8 @@
+>>>                 goto alloc_out;
+>>>         }
+>>>
+>>> +       snd_card_set_dev(card, &pci->dev);
+>>> +
+>>>         *rchip = chip;
+>>
+>>
+>>
+>> And this sets up the missing sysfs stuff.
+>>
+>>
+> 
+> So these changes are not neccesary(critical) for
+> au88x0_64_bits_compatible.patch  (AMD64 and X86_64 ) , just normal ALSA
+> cleanup.
+> 
 
-     你好！现我公司可提供代开以下发票服务，点数优惠，
+Actually without snd_card_set_dev() you will get oops shortly because device
+pointer won't be available to driver.
+DMA mask cleanup is to follow general guidelines about consistent mapping.
 
- 所开发票贵公司可在税务局或网上验证后付款。欢迎来电咨询，谢谢！
-
-     {深.圳.市.旭.晨.实.业.有.限.公.司}
-
-    1、增值税发票
-    
-    2、商品销售发票
-    
-    3、广告发票
-     
-    4、运输发票
-    
-    5、工业发票
-    
-    6、建筑安装发票
-     
-    7、海关缴款书
-
-    联系人：刘建军
-    
-    联系电话：13928496919
-    
-    电子信箱：szxq6919@sina.com
+-- 
+Kind regards,
+Igor V. Kovalenko
 
 
 -------------------------------------------------------
