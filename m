@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001176]: problem with alsa-driver and asus m5a notebook
-Date: Thu, 9 Jun 2005 13:44:28 +0200
-Message-ID: <97bc09974e450f56529900ed3c8835e0@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
+Date: Thu, 9 Jun 2005 14:04:47 +0200
+Message-ID: <ff90b2e58b5225c7fc7f3c9b773cc203@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B6341FF
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 13:44:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72EAE202
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 14:04:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1101> 
 ======================================================================
-Reported By:                Ballbreaker
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1176
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   1101
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.12-rc5
+Status:                     new
 ======================================================================
-Date Submitted:             06-09-2005 13:44 CEST
-Last Modified:              06-09-2005 13:44 CEST
+Date Submitted:             05-11-2005 22:15 CEST
+Last Modified:              06-09-2005 14:04 CEST
 ======================================================================
-Summary:                    problem with alsa-driver and asus m5a notebook
+Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
+default device does not work but with "device=hw:0" it does
 Description: 
-I use gentoo-linux on an asus m5a notebook. Installation of alsa-driver
-works without any error messages. xmms, aplay etc. play files, but i can't
-hear anything. alsa-mixer shows me all the mixer-controls. I didn't forget
-to unmute, and with windows sound is working fine - so i think there is a
-problem with the alsa-driver and this notebook (on other notebooks with
-the same sound-chip alsa is working).
+The submitter of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305189
+and an interlocutor have discovered that
+gstreaming to "alsasink" does not work but the same to "alsasink
+device=hw:0" does work.
 
-I tried the following, always with the same results:
-- compile alsa in the kernel
-- compile alsa as kernel modules
-- emerge alsa-driver (version 1.0.9-rc3 - 1.0.9-rc4 is not in portage
-yet)
-- compile alsa-driver manually (version 1.0.9-rc4)
-
-Everything seems to work fine, but i can't hear anything, so maybe this is
-a bug in the alsa-driver.
-Would be great if somebody could tell me how i get alsa working on my
-notebook  ;-)
-
-Greetz,
-thomas
-
-
+Please see http://bugs.debian.org/305189 for the discussion which includes
+lots more detail.
 ======================================================================
+
+----------------------------------------------------------------------
+ lool - 05-15-05 22:59 
+----------------------------------------------------------------------
+A second bug, with different hardware was submitted as
+<http://bugs.debian.org/309006> by Jon Dowland with:
+Azalia - Intel HDA
+Intel HDA at 0xd8100000 irq 
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+
+----------------------------------------------------------------------
+ GhePeU - 06-09-05 14:04 
+----------------------------------------------------------------------
+I'm experiencing the same problem with gstreamer, alsa-driver 1.0.9,
+alsa-lib 1.0.9 and Sound Blaster Live! 5.1 (emu10k1). With alsa-lib 1.0.9
+rc3 everything works flawlessy, and I can confirm that specifying
+device=hw:0 fixes this on 1.0.9.
+
+bug opened in gstremer bugzilla:
+http://bugzilla.gnome.org/show_bug.cgi?id=306934
+
+output:
+ghepeu@KazeNoTani ~ $ LC_ALL="C" gst-launch-0.8 filesrc
+location="lugradio-s2e12-280305.ogg" ! spider ! alsasink
+RUNNING pipeline ...
+ERROR: from element /pipeline0/alsasink0: Could not get/set settings
+from/on resource.
+ERROR: from element /pipeline0/spider0/vorbisdec0: Internal GStreamer
+error: pad problem.  File a bug.
+Additional debug info:
+gstpad.c(2562): gst_pad_set_explicit_caps: /pipeline0/spider0/vorbisdec0:
+failed to negotiate (try_set_caps with "audio/x-raw-float,
+rate=(int)22000, channels=(int)1, endianness=(int)1234, width=(int)32,
+buffer-frames=(int)0" returned REFUSED)
+Execution ended after 15 iterations (sum 272120000 ns, average 18141333
+ns, min 33000 ns, max 137303000 ns).
+
+ghepeu@KazeNoTani ~ $ LC_ALL="C" gst-launch-0.8 filesrc
+location="lugradio-s2e12-280305.ogg" ! spider ! alsasink device=hw:0
+RUNNING pipeline ...
+Execution ended after 126 iterations (sum 1858311000 ns, average 14748500
+ns, min 27000 ns, max 372437000 ns).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 13:44 Ballbreaker    New Issue                                    
-06-09-05 13:44 Ballbreaker    Distribution              => gentoo          
-06-09-05 13:44 Ballbreaker    Kernel Version            => 2.6.12-rc5      
+05-11-05 22:15 jdthood        New Issue                                    
+05-13-05 14:17 tiwai          Note Added: 0004645                          
+05-13-05 15:38 jdthood        Note Added: 0004650                          
+05-15-05 22:58 lool           Issue Monitored: lool                        
+05-15-05 22:59 lool           Note Added: 0004674                          
+06-09-05 14:04 GhePeU         Note Added: 0004980                          
 ======================================================================
 
 
