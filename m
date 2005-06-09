@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000364]: Driver for VIRTUAL/DUMMY card(s) that forward/mix to real cards
-Date: Thu, 9 Jun 2005 18:14:53 +0200
-Message-ID: <0d11dea769a251cb4c7e612ff6883804@bugtrack.alsa-project.org>
+Date: Thu, 9 Jun 2005 18:29:46 +0200
+Message-ID: <7e1e639035c3cd72f88a1183c09059dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABB0F209
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 18:14:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 242F51FF
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 18:29:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-04-2004 13:33 CEST
-Last Modified:              06-09-2005 18:14 CEST
+Last Modified:              06-09-2005 18:29 CEST
 ======================================================================
 Summary:                    Driver for VIRTUAL/DUMMY card(s) that forward/mix to
 real cards
@@ -53,18 +53,6 @@ real one(s)?
 ======================================================================
 
 ----------------------------------------------------------------------
- bonbons - 01-08-05 11:05 
-----------------------------------------------------------------------
-Is there no interest for such a driver?
-
-This would allow to use closed-source apps that just support old-style OSS
-and don't work (correctly) over wrappers (some browser plugins, VMWare and
-others). In addition it could be used to get rid of sound-daemons, using
-dmix plugin and routing non-alsa apps through that virtual-pcm driver!
-
-Use: same as for virtualmidi, but for PCMs!
-
-----------------------------------------------------------------------
  ikonst - 06-09-05 18:14 
 ----------------------------------------------------------------------
 I'm certainly interested in such a driver and would really love, when I'll
@@ -75,12 +63,25 @@ BTW, Charles Samuels (of Noatun fame) once tried writing something like
 this (a driver that forwards sound to a user-space application which then
 can do whatever it wants with it) but I don't know how well he fared.
 
+----------------------------------------------------------------------
+ bonbons - 06-09-05 18:29 
+----------------------------------------------------------------------
+I have recently seen another project that goes into the same direction,
+this time using jack (jackit.sf.net) as a backend. Currently it only
+supports basic OSS IOCTLs and just playback.
+
+To get the device it uses fusd. But fusd does not support mmap.
+
+http://fort.xdas.com/~kor/oss2jack/
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-04-04 13:33 bonbons        New Issue                                    
 01-08-05 11:05 bonbons        Note Added: 0003128                          
 06-09-05 18:14 ikonst         Note Added: 0004981                          
+06-09-05 18:15 ikonst         Issue Monitored: ikonst                      
+06-09-05 18:29 bonbons        Note Added: 0004982                          
 ======================================================================
 
 
