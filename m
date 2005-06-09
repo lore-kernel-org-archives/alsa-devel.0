@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001175]: Netscape 7.1 displays small fonts for Bug tracking system
-Date: Thu, 9 Jun 2005 00:59:37 +0200
-Message-ID: <84aa228e9c892c22ba9be547774800aa@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Thu, 9 Jun 2005 04:57:38 +0200
+Message-ID: <57cecc9164d3e3860ac7dbd28057dc9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E10C1E7
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 00:59:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BBC21FB
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 04:57:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,38 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1175> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                herby
+Reported By:                yure
 Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1175
-Category:                   wrong html/css syntax
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-09-2005 00:59 CEST
-Last Modified:              06-09-2005 00:59 CEST
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              06-09-2005 04:57 CEST
 ======================================================================
-Summary:                    Netscape 7.1 displays small fonts for Bug tracking
-system
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-On one machine I've got Netscape 7.1, on another I've got Firefox 1.0.2. 
-For the most part everything works well.  The problem is in using the bug
-tracking system the fonts are small and unreadable to a degree.  What is
-different?  Beats me!  I think I have them setup as the same, but maybe
-not.  I just want to know the secret!
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
+
+----------------------------------------------------------------------
+ Xero - 06-08-05 22:13 
+----------------------------------------------------------------------
+As per advice from the bug on xmms I'm going to try the crossfade plugin to
+do some resampling. It only supports 44100 and 48000 but I'm guessing that
+with 48000 and 96000 set on dmix this wont happen...only time will tell
+however.
+
+----------------------------------------------------------------------
+ Xero - 06-09-05 04:57 
+----------------------------------------------------------------------
+ok using crossfade and running at 48000 with dmix at 96000 still causes
+distortion. Also, I tried 48000 at 88200 and distortion as well. So far
+only 44100 and dmix at 88200 has no distortion. I'm guessing it might have
+to do with buffer size but I'm unsure as to what value would be a large
+enough increase to properly test this out. I don't want to add too much
+latency...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 00:59 herby          New Issue                                    
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
+03-11-05 16:17 tiwai          Note Added: 0003891                          
+03-23-05 20:46 tiwai          Note Added: 0004187                          
+03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
+03-25-05 14:56 tvignaud       Note Added: 0004206                          
+03-29-05 16:21 tiwai          Note Added: 0004246                          
+04-04-05 16:15 yure           Note Added: 0004327                          
+04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
+05-29-05 08:23 Xero           Note Added: 0004781                          
+05-29-05 08:29 Xero           Note Added: 0004782                          
+06-03-05 07:40 Xero           Note Added: 0004882                          
+06-08-05 16:08 tiwai          Note Added: 0004944                          
+06-08-05 21:13 Xero           Note Added: 0004973                          
+06-08-05 21:27 tiwai          Note Added: 0004974                          
+06-08-05 22:13 Xero           Note Added: 0004975                          
+06-09-05 04:57 Xero           Note Added: 0004977                          
 ======================================================================
 
 
