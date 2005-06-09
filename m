@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
-Date: Thu, 9 Jun 2005 16:09:57 +0200
-Message-ID: <3a189eac33eb35cee7f12b71cc5eb789@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000364]: Driver for VIRTUAL/DUMMY card(s) that forward/mix to real cards
+Date: Thu, 9 Jun 2005 18:14:53 +0200
+Message-ID: <0d11dea769a251cb4c7e612ff6883804@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF3FA1CC
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 16:09:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABB0F209
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2005 18:14:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=364> 
 ======================================================================
-Reported By:                sgoodall
+Reported By:                bonbons
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1178
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   364
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-09-2005 16:09 CEST
-Last Modified:              06-09-2005 16:09 CEST
+Date Submitted:             07-04-2004 13:33 CEST
+Last Modified:              06-09-2005 18:14 CEST
 ======================================================================
-Summary:                    Headphone and Speaker volume control
+Summary:                    Driver for VIRTUAL/DUMMY card(s) that forward/mix to
+real cards
 Description: 
-The master contol on this device does not affect the headphone speaker
-socket volume. This is a problem for assigning keyboard shortcuts (using
-gnome) to the voume controls as these get mapped to the master control. So
-when using headphones (which I usually do) i cannot control the volume.
-Ideally the master control can also affect the headphone volume, and have
-a separate control for the main speakers. (I would like to be able to keep
-these muted so sounds does not play should headphones not be plugged in
-unless I explicitly enable them).
-I am running fc3 on a dell inspiron 8500.
+As all sound devices can only be opened with exclusive access, and there
+are quite a few close-source programs that interact with "/dev/dspX"
+(OSS), would it be possible to have virtual cards that would mix to the
+real one(s)?
+
 ======================================================================
+
+----------------------------------------------------------------------
+ bonbons - 01-08-05 11:05 
+----------------------------------------------------------------------
+Is there no interest for such a driver?
+
+This would allow to use closed-source apps that just support old-style OSS
+and don't work (correctly) over wrappers (some browser plugins, VMWare and
+others). In addition it could be used to get rid of sound-daemons, using
+dmix plugin and routing non-alsa apps through that virtual-pcm driver!
+
+Use: same as for virtualmidi, but for PCMs!
+
+----------------------------------------------------------------------
+ ikonst - 06-09-05 18:14 
+----------------------------------------------------------------------
+I'm certainly interested in such a driver and would really love, when I'll
+have some more free time, to go into the kernel programming neceesary for
+it.
+
+BTW, Charles Samuels (of Noatun fame) once tried writing something like
+this (a driver that forwards sound to a user-space application which then
+can do whatever it wants with it) but I don't know how well he fared.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:09 sgoodall       New Issue                                    
-06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:09 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
+07-04-04 13:33 bonbons        New Issue                                    
+01-08-05 11:05 bonbons        Note Added: 0003128                          
+06-09-05 18:14 ikonst         Note Added: 0004981                          
 ======================================================================
 
 
