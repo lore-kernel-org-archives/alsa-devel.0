@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
-Date: Fri, 10 Jun 2005 19:08:11 +0200
-Message-ID: <f9cfc7d6488f81a8b7115774b6868389@bugtrack.alsa-project.org>
+From: Mail Delivery Service <postmaster@pne.skanova.net>
+Subject: Delivery Status Notification
+Date: Fri, 10 Jun 2005 19:29:05 +0200
+Message-ID: <4284CF9B00A561C4@pne-smtpin3-sn2.hy.skanova.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Report; report-type=delivery-status; boundary="========/4284CF9B00A561C3/pne-smtpin3-sn2.hy.skanova.net"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADB481B0
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 19:08:11 +0200 (MEST)
+Received: from pne-smtpout2-sn1.fre.skanova.net (pne-smtpout2-sn1.fre.skanova.net [81.228.11.159])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31848F8
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 19:29:06 +0200 (MEST)
+Received: from pne-smtpin3-sn2.hy.skanova.net (81.228.8.85) by pne-smtpout2-sn1.fre.skanova.net (7.2.059.6)
+        id 42930AA9003FD26B for alsa-devel@alsa-project.org; Fri, 10 Jun 2005 19:29:05 +0200
+Received: by pne-smtpin3-sn2.hy.skanova.net (7.1.026.6) id 4284CF9B00A561C5 for alsa-devel@alsa-project.org; Fri, 10 Jun 2005 19:29:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,88 +23,58 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This multi-part MIME message contains a Delivery Status Notification.
+If you can see this text, your mail client may not be able to understand MIME
+formatted messages or DSNs (see RFC 2045 through 2049 for general MIME
+information and RFC 1891 through 1894 for DSN specific information).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
-======================================================================
-Reported By:                theoneandonlysm
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1179
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-10-2005 19:08 CEST
-Last Modified:              06-10-2005 19:08 CEST
-======================================================================
-Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
-Description: 
-I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
-package update and noticed that aRts in kde did not produce any sound even
-though no errors in arts was reported.
+--========/4284CF9B00A561C3/pne-smtpin3-sn2.hy.skanova.net
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
-sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
-Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
-functioning.
+ - These recipients of your message have been processed by the mail serve=
+r:
+customer@homeshop.se; Failed; 5.2.2 (mailbox full)
 
-dmesg gives me no errors, and I am not certain where else to look. The
-only clue I get is from mplayer while playing an audio file, where I get
-continual output of:
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
+    Remote MTA pne-ms5.vip.skanova.net: SMTP diagnostic: 552 RCPT TO:<u32=
+004939@pne.telia.com> Mailbox disk quota exceeded
 
-my lsmod:
-vmnet                  27812  2
-parport_pc             22980  1
-vmmon                 105260  0
-snd_pcm_oss            49312  0
-snd_mixer_oss          18304  1 snd_pcm_oss
-snd_hda_intel          14336  1
-snd_hda_codec          69248  1 snd_hda_intel
-snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              22276  1 snd_pcm
-snd                    50532  8
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
-lp                      8836  0
-parport                21440  2 parport_pc,lp
-nfsd                   91464  8
-exportfs                5120  1 nfsd
-nfs                    96044  1
-lockd                  61992  3 nfsd,nfs
-sunrpc                130500  5 nfsd,nfs,lockd
-vfat                   11648  1
-fat                    36252  1 vfat
-i915                   18176  1
-drm                    61204  2 i915
-intel_agp              20380  1
-agpgart                29488  3 drm,intel_agp
-hw_random               4884  0
-rtc                    10828  0
-ehci_hcd               29576  0
-usblp                  11648  0
-uhci_hcd               30480  0
-usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
 
-======================================================================
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-10-05 19:08 theoneandonlysmNew Issue                                    
-======================================================================
+--========/4284CF9B00A561C3/pne-smtpin3-sn2.hy.skanova.net
+Content-Type: Message/Delivery-Status
 
+Reporting-MTA: dns; pne-smtpin3-sn2.hy.skanova.net
+Received-from-MTA: dns; homeshop.se (83.250.147.103)
+Arrival-Date: Fri, 10 Jun 2005 19:29:05 +0200
+
+Original-Recipient: rfc822;customer@homeshop.se
+Final-Recipient: rfc822; u32004939@pne.telia.com
+Action: Failed
+Status: 5.2.2 (mailbox full)
+Remote-MTA: dns; pne-ms5.vip.skanova.net
+Diagnostic-Code: smtp; 552 RCPT TO:<u32004939@pne.telia.com> Mailbox disk quota exceeded
+
+--========/4284CF9B00A561C3/pne-smtpin3-sn2.hy.skanova.net
+Content-Type: Text/RFC822-headers
+
+Return-Path: <alsa-devel@alsa-project.org>
+Received: from homeshop.se (83.250.147.103) by pne-smtpin3-sn2.hy.skanova.net (7.1.026.6)
+        id 4284CF9B00A561C3 for u32004939@pne.telia.com; Fri, 10 Jun 2005 19:29:05 +0200
+Message-ID: <4284CF9B00A561C3@pne-smtpin3-sn2.hy.skanova.net> (added by postmaster@pne.skanova.net)
+From: alsa-devel@alsa-project.org
+To: customer@homeshop.se
+Subject: Mail Delivery (failure customer@homeshop.se)
+Date: Fri, 10 Jun 2005 19:26:59 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_001B_01C0CA80.6B015D10"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+
+--========/4284CF9B00A561C3/pne-smtpin3-sn2.hy.skanova.net--
 
 
 
