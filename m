@@ -1,14 +1,22 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: Re: [alsa-cvslog] CVS: alsa-lib/src Versions,1.29,1.30
-Date: Fri, 10 Jun 2005 15:42:44 +0400
-Message-ID: <20050610114244.GB21681@master.mivlgu.local>
-References: <E1DgQZf-0005jT-6u@sc8-pr-cvs1.sourceforge.net> <20050609190523.GA16131@procyon.home> <Pine.LNX.4.58.0506100900410.1834@pnote.perex-int.cz>
+From: Gregor Jasny <jasny@vidsoft.de>
+Subject: How to get CardId for pseudo soundcards like dmix and dsnoop
+Date: Fri, 10 Jun 2005 16:02:04 +0200
+Message-ID: <42A99D5C.5080002@vidsoft.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
+Content-Type: multipart/mixed;
+ boundary="------------080507010804080602030707"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0506100900410.1834@pnote.perex-int.cz>
+Received: from baldur.vidconference.de (venus.vidconference.de [212.227.158.183])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31541217
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 16:02:06 +0200 (MEST)
+Received: from [62.206.249.2] (helo=orca)
+	by baldur.vidconference.de with esmtp (Exim 3.35 #1 (Debian))
+	id 1Dgk5F-0003yE-00
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 16:02:05 +0200
+Received: from dell1 ([192.168.1.62])
+	by orca with esmtp (Exim 3.35 #1 (Debian))
+	id 1Dgk5F-00036V-00
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 16:02:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +26,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@users.sourceforge.net>, alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------080507010804080602030707
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
---gj572EiMnwbLXET9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Fri, Jun 10, 2005 at 09:03:39AM +0200, Jaroslav Kysela wrote:
-> On Thu, 9 Jun 2005, Sergey Vlasov wrote:
->=20
-> > On Thu, Jun 09, 2005 at 10:12:11AM -0700, Takashi Iwai wrote:
-> > > --- Versions	3 Jun 2005 13:35:39 -0000	1.29
-> > > +++ Versions	9 Jun 2005 17:12:09 -0000	1.30
-> > > @@ -254,4 +254,7 @@
-> > >      snd_mixer_selem_set_capture_dB_all;
-> > >      snd_mixer_selem_compare;
-> > > =20
-> > > +    snd_ctl_ext_create;
-> > > +    snd_ctl_ext_delete;
-> > > +
-> > >  } ALSA_1.0.9;
-> >=20
-> > This looks wrong - alsa-1.0.9 was released, therefore its ABI is
-> > fixed, and nothing can be added to the corresponding version.  With
-> > this change you could link a program which uses snd_ctl_ext_create
-> > with the new libraries, and the version dependencies will appear to be
-> > satisfied with the libraries from the 1.0.9 release - but the program
-> > run with alsa-lib-1.0.9 will fail when it tries to use the new
-> > symbols.
-> >=20
-> > New symbols should go into the new version - ALSA_1.0.10, which would
-> > clearly show that the program which uses these symbols will not work
-> > with alsa-lib-1.0.9.
->=20
-> Please, look to WHOLE file before complaining.... It is not as is looks=
-=20
-> for the first glance.... The bottom version string specifies PARENT not=
-=20
-> current version.
+In my application the user can specify the pcm devices as a string (i.e. 
+hw:0,0, plughw:1, dmix, default).
 
-Oops... probably I was too tired yesterday...
+Now I want to open the corresponding mixer device. At the moment I fetch 
+the cardid via snd_pcm_info_get_card. Then I build a string hw:<cardid> 
+and attach to that string. This works fine for hw and plughw devices. 
+Doing this for dmix or dsnoop devices fails because the cardid is -1.
 
-Sorry to bother you.
+Another way I tried is to attach to the user supplied pcm string 
+directly. But this does not work for dmix and dsnoop.
 
---gj572EiMnwbLXET9
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+How do I get the right mixer for a opened pcm device?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+Thank you for answering.
 
-iD8DBQFCqXy0W82GfkQfsqIRAlAYAJ99AnEkUJs6H1R0RBW5Yla+XqLvqgCfZZd1
-LDA7cjfvmwUAL1RemkANV0s=
-=3b6J
------END PGP SIGNATURE-----
+Gregor
 
---gj572EiMnwbLXET9--
+PS: I've attached a small test case
+
+--------------080507010804080602030707
+Content-Type: text/x-csrc;
+ name="mixer.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mixer.c"
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <alsa/asoundlib.h>
+
+
+
+int main (int argc, char *argv[])
+{
+	snd_pcm_t *pcm;
+	snd_mixer_t *mixer;
+	int err;
+	int incoming = 1;
+	snd_pcm_info_t *pcm_info;
+	int cardid;
+	char dev[64];
+
+	if (argc < 2)
+		exit (EXIT_FAILURE);
+	
+	if ((err = snd_pcm_open (&pcm,
+	                         argv[1],
+	                         (incoming?SND_PCM_STREAM_CAPTURE:SND_PCM_STREAM_PLAYBACK),
+	                         SND_PCM_NONBLOCK)) < 0) {
+		fprintf (stderr, "Can not determine card id: %s (%s)\n", argv[1], snd_strerror (err));
+		return EXIT_FAILURE;
+	}
+
+	snd_pcm_info_alloca(&pcm_info);
+	if ((err = snd_pcm_info( pcm, pcm_info )) < 0) {
+        	fprintf (stderr, "Can not get pcm info: %s (%s)\n", argv[1], snd_strerror (err));
+		snd_pcm_close(pcm);
+		return EXIT_FAILURE;
+	}
+
+	cardid = snd_pcm_info_get_card( pcm_info );
+
+	printf ("CardId: %i\n", cardid);
+
+	sprintf(dev, "hw:%i", cardid); /* Option 1 */
+//	strcpy (dev, argv[1]); /* Option 2 */
+
+	if ((err = snd_mixer_open(&mixer, 0)) < 0) {
+		fprintf (stderr, "snd_open_mixer(): %s\n", snd_strerror(-err));
+		return EXIT_FAILURE;
+	}
+	if ((err = snd_mixer_attach(mixer, dev)) < 0) {
+		fprintf (stderr, "snd_mixer_attach(%s): %s\n", dev, snd_strerror(-err));
+		return EXIT_FAILURE;
+	}
+	printf("Attached to mixer: %s\n", dev);
+	
+	return EXIT_SUCCESS;
+}
+
+--------------080507010804080602030707--
 
 
 -------------------------------------------------------
