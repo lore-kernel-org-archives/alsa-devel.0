@@ -1,13 +1,26 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Fri, 10 Jun 2005 15:35:41 +0800
-Message-ID: <42A942CD.7030900@netvigator.com>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de>	<42A6B51F.20405@netvigator.com> <s5h8y1lkv1c.wl@alsa2.suse.de>
+From: Joachim Deguara <dga@idmt.fraunhofer.de>
+Subject: [PATCH] Madi multi madness
+Date: Fri, 10 Jun 2005 11:17:51 +0200
+Message-ID: <42A95ABF.8050707@idmt.fraunhofer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------060402070008080208070703"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8y1lkv1c.wl@alsa2.suse.de>
+Received: from mailgw12.fraunhofer.de (mailgw12.fraunhofer.de [153.96.1.61])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 490BF206
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 11:17:54 +0200 (MEST)
+Received: from mailgw12.fraunhofer.de (localhost [127.0.0.1])
+	by mailgw12.fraunhofer.de (8.13.3+/8.13.3) with ESMTP id j5A9HrkJ011668
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 11:17:53 +0200 (CEST)
+Received: from kso.emt.iis.fhg.de (dhcp-192-102-160-2.emt.iis.fhg.de [192.102.160.2])
+	by mailgw12.fraunhofer.de (8.13.3+/8.13.3) with ESMTP id j5A9HqA5011648
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 11:17:53 +0200 (CEST)
+Received: from emt.iis.fhg.de (ksi.emt.iis.fhg.de [10.128.1.2])
+	by kso.emt.iis.fhg.de (8.11.1/8.11.1) with ESMTP id j5A9Hql04602
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 11:17:52 +0200 (MEST)
+Received: from idserv01.emt.iis.fhg.de (localhost [127.0.0.1])
+	by emt.iis.fhg.de (8.11.1/8.11.1) with ESMTP id j5A9HqP19946
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 11:17:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,82 +30,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------060402070008080208070703
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Do the au88x0 driver need to free those kcontrols for EQ peak and 
-10-bands EQ gain kcontrol  ?
+A problem exists with a virtual multi card that has a HDSP Madi card in 
+it and uses more than 32 of its channels. I increased the number of 
+channels a real card could have for the virtual card from 32 to 64.
 
-Any method to detect memory leak ? ( THere are other kcontrol such as 
-HRTF,ITD,ILD,...)
+-joachim
+-- 
+Joachim Deguara				Email: dga@idmt.fraunhofer.de
+Fraunhofer IDMT, Langewiesener St. 22, 98693 Ilmenau, Germany
+Phone: +49 3677/69-4851 		Fax:   +49 3677/69-4399
 
+--------------060402070008080208070703
+Content-Type: text/x-patch;
+ name="pcm_multi_madi.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="pcm_multi_madi.patch"
 
-/* ALSA driver entry points. Init and exit. */
-static int vortex_eq_init(vortex_t * vortex)
-{
-	snd_kcontrol_t *kcontrol;
-	int err, i;
+--- pcm_multi.c	2005-05-23 11:03:20.000000000 +0200
++++ pcm_multi.c_madi_fix	2005-06-10 11:14:53.890937000 +0200
+@@ -764,7 +764,7 @@
+ 	snd_pcm_multi_t *multi;
+ 	unsigned int i;
+ 	snd_pcm_stream_t stream;
+-	char slave_map[32][32] = { { 0 } };
++	char slave_map[64][64] = { { 0 } };
+ 	int err;
+ 
+ 	assert(pcmp);
 
-	vortex_Eqlzr_init(vortex);
-
-	if ((kcontrol =
-	     snd_ctl_new1(&vortex_eqtoggle_kcontrol, vortex)) == NULL)
-		return -ENOMEM;
-	kcontrol->private_value = 0;
-	if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
-		return err;
-
-	/* EQ gain controls */
-	for (i = 0; i < 10; i++) {
-		if ((kcontrol =
-		     snd_ctl_new1(&vortex_eq_kcontrol, vortex)) == NULL)
-			return -ENOMEM;
-		strcpy(kcontrol->id.name, EqBandLabels[i]);
-		kcontrol->private_value = i;
-		if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
-			return err;
-		//vortex->eqctrl[i] = kcontrol;
-	}
-	/* EQ band levels */
-	if ((kcontrol = snd_ctl_new1(&vortex_levels_kcontrol, vortex)) == NULL)
-		return -ENOMEM;
-	if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
-		return err;
-
-	return 0;
-}
-
-static int vortex_eq_free(vortex_t * vortex)
-{
-	/*
-	   //FIXME: segfault because vortex->eqctrl[i] == 4
-	   int i;
-	   for (i=0; i<10; i++) {
-	   if (vortex->eqctrl[i])
-	   snd_ctl_remove(vortex->card, vortex->eqctrl[i]);
-	   }
-	 */
-	vortex_Eqlzr_shutdown(vortex);
-	return 0;
-}
-
-
-Takashi Iwai wrote:
-> At Wed, 08 Jun 2005 17:06:39 +0800,
-> Raymond wrote:
-> 
->>au8830 can be loaded after I change "unsigned long __iomem *mmio" to
->>"void __iomem *mmio" on my 32 bits machine.
->>
->>How can I obtain the disassembly of snd-au8830.o to prove that it run 
->>faster than before ( without bitshift ) ?
-> 
-> 
-> Faster?  Not measurable at all :)
-> 
-> 
-
+--------------060402070008080208070703--
 
 
 -------------------------------------------------------
