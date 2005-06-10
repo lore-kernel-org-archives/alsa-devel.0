@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Fri, 10 Jun 2005 18:58:36 +0200
-Message-ID: <54851677d62ea2adde6a58e7d4016afc@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
+Date: Fri, 10 Jun 2005 19:08:11 +0200
+Message-ID: <f9cfc7d6488f81a8b7115774b6868389@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F07CF1B0
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 18:58:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADB481B0
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 19:08:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,102 +22,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
 ======================================================================
-Reported By:                sjberryman
-Assigned To:                jcdutton
+Reported By:                theoneandonlysm
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   724
-Category:                   1_OTHERS
+Project:                    ALSA - lib
+Issue ID:                   1179
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core1, Core2 and Suse 9.2
-Kernel Version:             2.6.9 2.4.28 2.6.8
+Status:                     new
 ======================================================================
-Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              06-10-2005 18:58 CEST
+Date Submitted:             06-10-2005 19:08 CEST
+Last Modified:              06-10-2005 19:08 CEST
 ======================================================================
-Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
 Description: 
-No apparent support for Creative Sounblaster 24 bit.
+I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
+package update and noticed that aRts in kde did not produce any sound even
+though no errors in arts was reported.
 
-Fedora does not find any sound device.
+I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
+sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
+Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
+functioning.
 
-Susi finds a device but can't activate it.
+dmesg gives me no errors, and I am not certain where else to look. The
+only clue I get is from mplayer while playing an audio file, where I get
+continual output of:
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+
+my lsmod:
+vmnet                  27812  2
+parport_pc             22980  1
+vmmon                 105260  0
+snd_pcm_oss            49312  0
+snd_mixer_oss          18304  1 snd_pcm_oss
+snd_hda_intel          14336  1
+snd_hda_codec          69248  1 snd_hda_intel
+snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              22276  1 snd_pcm
+snd                    50532  8
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
+lp                      8836  0
+parport                21440  2 parport_pc,lp
+nfsd                   91464  8
+exportfs                5120  1 nfsd
+nfs                    96044  1
+lockd                  61992  3 nfsd,nfs
+sunrpc                130500  5 nfsd,nfs,lockd
+vfat                   11648  1
+fat                    36252  1 vfat
+i915                   18176  1
+drm                    61204  2 i915
+intel_agp              20380  1
+agpgart                29488  3 drm,intel_agp
+hw_random               4884  0
+rtc                    10828  0
+ehci_hcd               29576  0
+usblp                  11648  0
+uhci_hcd               30480  0
+usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
+
 ======================================================================
-
-----------------------------------------------------------------------
- sjberryman - 06-10-05 13:28 
-----------------------------------------------------------------------
-I am still getting no sound on my Dell 8400.
-
-The card works on my windows 2000 partition so it is not a hardware
-problem.
-
-Why is it so difficult to get this card to work? Every other machine I
-have set up has automatically found the soundcard and made it work on
-Redhat Suse and Fedora with NO MANUAL CONFIGURATION required.
-
-This card is a common one.
-Dell is a common make of PC.
-Fedora is a common distribution.
-Surely I do not have a strange or unique configuration?
-
-
-How do I "use the alsa device "plug:front" so that alsa does the
-resampling for you" ? Please give some detailed instructions, I am not an
-alsa expert and I've found no comprehensible alsa documentation on this.
-
-I repeat. Is there anything I can do to help diagnose the problem?
-
-----------------------------------------------------------------------
- jcdutton - 06-10-05 18:58 
-----------------------------------------------------------------------
-Have you looked at the trouble shooter on alsa.opensrc.org.
-http://alsa.opensrc.org/index.php?page=TroubleShooting
-
-For me to help you, I would need the output from items 2,3,4 in the
-Trouble Shooter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-04 09:21 sjberryman     New Issue                                    
-12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
-and Suse 9.2
-12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
-12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
-12-13-04 10:07 pzad           Note Added: 0002821                          
-12-16-04 18:28 tiwai          Status                   new => resolved     
-12-16-04 18:28 tiwai          Resolution               open => not an issue
-12-16-04 18:28 tiwai          Assigned To               => tiwai           
-12-16-04 18:28 tiwai          Assigned To              tiwai =>            
-01-19-05 09:08 sjberryman     Status                   resolved => feedback
-01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
-01-19-05 09:08 sjberryman     Note Added: 0003263                          
-01-19-05 14:27 tiwai          Note Added: 0003266                          
-01-22-05 22:15 nadavkav       Note Added: 0003379                          
-01-22-05 23:20 fmoraes        Note Added: 0003381                          
-01-25-05 22:39 Kane32         Note Added: 0003411                          
-01-26-05 13:18 nadavkav       Note Added: 0003416                          
-02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
-02-08-05 23:32 sHINOBI        Note Added: 0003534                          
-02-09-05 07:25 pzad           Note Added: 0003535                          
-02-09-05 08:57 sHINOBI        Note Added: 0003536                          
-02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
-02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
-05-28-05 16:06 sjberryman     Note Added: 0004774                          
-05-28-05 20:02 jcdutton       Status                   feedback => assigned
-05-28-05 20:02 jcdutton       Assigned To               => jcdutton        
-05-28-05 20:07 jcdutton       Note Added: 0004775                          
-05-28-05 20:07 jcdutton       Status                   assigned => feedback
-06-10-05 13:28 sjberryman     Note Added: 0004983                          
-06-10-05 18:58 jcdutton       Note Added: 0004985                          
+06-10-05 19:08 theoneandonlysmNew Issue                                    
 ======================================================================
 
 
