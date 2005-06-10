@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [alsa-cvslog] CVS: alsa-lib/src Versions,1.29,1.30
-Date: Fri, 10 Jun 2005 09:03:39 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0506100900410.1834@pnote.perex-int.cz>
-References: <E1DgQZf-0005jT-6u@sc8-pr-cvs1.sourceforge.net>
- <20050609190523.GA16131@procyon.home>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Fri, 10 Jun 2005 15:35:41 +0800
+Message-ID: <42A942CD.7030900@netvigator.com>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de>	<42A6B51F.20405@netvigator.com> <s5h8y1lkv1c.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050609190523.GA16131@procyon.home>
+In-Reply-To: <s5h8y1lkv1c.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,46 +17,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sergey Vlasov <vsu@altlinux.ru>
-Cc: Takashi Iwai <tiwai@users.sourceforge.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Jun 2005, Sergey Vlasov wrote:
 
-> On Thu, Jun 09, 2005 at 10:12:11AM -0700, Takashi Iwai wrote:
-> > --- Versions	3 Jun 2005 13:35:39 -0000	1.29
-> > +++ Versions	9 Jun 2005 17:12:09 -0000	1.30
-> > @@ -254,4 +254,7 @@
-> >      snd_mixer_selem_set_capture_dB_all;
-> >      snd_mixer_selem_compare;
-> >  
-> > +    snd_ctl_ext_create;
-> > +    snd_ctl_ext_delete;
-> > +
-> >  } ALSA_1.0.9;
+Do the au88x0 driver need to free those kcontrols for EQ peak and 
+10-bands EQ gain kcontrol  ?
+
+Any method to detect memory leak ? ( THere are other kcontrol such as 
+HRTF,ITD,ILD,...)
+
+
+/* ALSA driver entry points. Init and exit. */
+static int vortex_eq_init(vortex_t * vortex)
+{
+	snd_kcontrol_t *kcontrol;
+	int err, i;
+
+	vortex_Eqlzr_init(vortex);
+
+	if ((kcontrol =
+	     snd_ctl_new1(&vortex_eqtoggle_kcontrol, vortex)) == NULL)
+		return -ENOMEM;
+	kcontrol->private_value = 0;
+	if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
+		return err;
+
+	/* EQ gain controls */
+	for (i = 0; i < 10; i++) {
+		if ((kcontrol =
+		     snd_ctl_new1(&vortex_eq_kcontrol, vortex)) == NULL)
+			return -ENOMEM;
+		strcpy(kcontrol->id.name, EqBandLabels[i]);
+		kcontrol->private_value = i;
+		if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
+			return err;
+		//vortex->eqctrl[i] = kcontrol;
+	}
+	/* EQ band levels */
+	if ((kcontrol = snd_ctl_new1(&vortex_levels_kcontrol, vortex)) == NULL)
+		return -ENOMEM;
+	if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
+		return err;
+
+	return 0;
+}
+
+static int vortex_eq_free(vortex_t * vortex)
+{
+	/*
+	   //FIXME: segfault because vortex->eqctrl[i] == 4
+	   int i;
+	   for (i=0; i<10; i++) {
+	   if (vortex->eqctrl[i])
+	   snd_ctl_remove(vortex->card, vortex->eqctrl[i]);
+	   }
+	 */
+	vortex_Eqlzr_shutdown(vortex);
+	return 0;
+}
+
+
+Takashi Iwai wrote:
+> At Wed, 08 Jun 2005 17:06:39 +0800,
+> Raymond wrote:
 > 
-> This looks wrong - alsa-1.0.9 was released, therefore its ABI is
-> fixed, and nothing can be added to the corresponding version.  With
-> this change you could link a program which uses snd_ctl_ext_create
-> with the new libraries, and the version dependencies will appear to be
-> satisfied with the libraries from the 1.0.9 release - but the program
-> run with alsa-lib-1.0.9 will fail when it tries to use the new
-> symbols.
+>>au8830 can be loaded after I change "unsigned long __iomem *mmio" to
+>>"void __iomem *mmio" on my 32 bits machine.
+>>
+>>How can I obtain the disassembly of snd-au8830.o to prove that it run 
+>>faster than before ( without bitshift ) ?
 > 
-> New symbols should go into the new version - ALSA_1.0.10, which would
-> clearly show that the program which uses these symbols will not work
-> with alsa-lib-1.0.9.
+> 
+> Faster?  Not measurable at all :)
+> 
+> 
 
-Please, look to WHOLE file before complaining.... It is not as is looks 
-for the first glance.... The bottom version string specifies PARENT not 
-current version.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
