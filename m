@@ -1,14 +1,10 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: [alsa-cvslog] CVS: alsa-lib/src Versions,1.29,1.30
-Date: Thu, 9 Jun 2005 23:05:23 +0400
-Message-ID: <20050609190523.GA16131@procyon.home>
-References: <E1DgQZf-0005jT-6u@sc8-pr-cvs1.sourceforge.net>
+From: edoardo <edoardo@lastorina.it>
+Subject: emu10k1 vs. ic1724
+Date: Fri, 10 Jun 2005 02:23:09 +0200 (CEST)
+Message-ID: <Pine.LNX.4.63.0506100212320.4654@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E1DgQZf-0005jT-6u@sc8-pr-cvs1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +14,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@users.sourceforge.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa developers' list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---y0ulUmNC+osPPQO6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+hi gals, hi dudes : )
 
-On Thu, Jun 09, 2005 at 10:12:11AM -0700, Takashi Iwai wrote:
-> --- Versions	3 Jun 2005 13:35:39 -0000	1.29
-> +++ Versions	9 Jun 2005 17:12:09 -0000	1.30
-> @@ -254,4 +254,7 @@
->      snd_mixer_selem_set_capture_dB_all;
->      snd_mixer_selem_compare;
-> =20
-> +    snd_ctl_ext_create;
-> +    snd_ctl_ext_delete;
-> +
->  } ALSA_1.0.9;
+i'm new to this list and hope i am postin' in the right section. also, i'm 
+not sure whether this question's been asked before, but i checked the 
+archives and got a little lost. here it goes.
 
-This looks wrong - alsa-1.0.9 was released, therefore its ABI is
-fixed, and nothing can be added to the corresponding version.  With
-this change you could link a program which uses snd_ctl_ext_create
-with the new libraries, and the version dependencies will appear to be
-satisfied with the libraries from the 1.0.9 release - but the program
-run with alsa-lib-1.0.9 will fail when it tries to use the new
-symbols.
+soon i'm either goin' to buy a sound blaster audigy two zs, or a terratec 
+aureon seven point one space. i think i read in the alsa-project.org that 
+with the emu10k1 driver for the audigy two zs only fourtyeight khz twenty 
+four bit output is not supported, and the digital output doesn't work. did 
+i read correctly? in that case i wouldn't buy it, since i'm mainly buyin' 
+it to use its digital output with my creative amp.
 
-New symbols should go into the new version - ALSA_1.0.10, which would
-clearly show that the program which uses these symbols will not work
-with alsa-lib-1.0.9.
+about the terratec aureon seven point one space, the site isn't very 
+specific. i understood that both digital output and ninetysix khz 
+twentyfour bit are supported. is that true?
 
---y0ulUmNC+osPPQO6
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+in that case, i would buy the terratec.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+please reply cause this is very important to me as i'm goin' to buy the 
+card in one or two days, and maybe in the future i could even try and 
+hack the drivers if they don't work. but please, reply and type if my 
+conclusions make sense.
 
-iD8DBQFCqJLzW82GfkQfsqIRAlmFAJ9LAr25VRRSAdlIGrn21A9fxLfG5ACfZWyb
-WsOFfhX5I8aUJ95VzOuuAZM=
-=BX/t
------END PGP SIGNATURE-----
+thankyou! : )
 
---y0ulUmNC+osPPQO6--
+ciao! : )
+
+edoardo
 
 
 -------------------------------------------------------
