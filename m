@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Fri, 10 Jun 2005 18:07:23 +0200
-Message-ID: <e0d6cca0b3afa3293240a96b0be9e4bf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
+Date: Fri, 10 Jun 2005 18:58:36 +0200
+Message-ID: <54851677d62ea2adde6a58e7d4016afc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D40EB14B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 18:07:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F07CF1B0
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 18:58:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,136 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
 ======================================================================
-Reported By:                vedran
-Assigned To:                
+Reported By:                sjberryman
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Issue ID:                   724
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
+Status:                     feedback
+Distribution:               Fedora Core1, Core2 and Suse 9.2
+Kernel Version:             2.6.9 2.4.28 2.6.8
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              06-10-2005 18:07 CEST
+Date Submitted:             12-13-2004 09:21 CET
+Last Modified:              06-10-2005 18:58 CEST
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    No apparent support for Creative Sounblaster 24 bit.
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
+No apparent support for Creative Sounblaster 24 bit.
 
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
+Fedora does not find any sound device.
 
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
-
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
-
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001094 nforce4 - optical spdif out not working
+Susi finds a device but can't activate it.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-08-05 15:01 
+ sjberryman - 06-10-05 13:28 
 ----------------------------------------------------------------------
-Interesting.  First of all, the SPDIF support on nForce is partial, AFAIK. 
-Since the SPDIF status bits are not set up correctly on nForce, many
-digital receivers can't accept the AC3 signals.  But the PCM over SPDIF
-seems working.  This was the last state I tested (quite ago).
+I am still getting no sound on my Dell 8400.
 
-Now, you reported that there is a regression in another point.  OK, this
-has to be fixed.  Could you elaborate what did you downgrade?  The
-combination of 1.0.6 driver + 1.0.9 lib works, or vice versa?
+The card works on my windows 2000 partition so it is not a hardware
+problem.
 
-For checking, use ac3dec (with -C option) in alsa-utils to reduce other
-unknown factors.
+Why is it so difficult to get this card to work? Every other machine I
+have set up has automatically found the soundcard and made it work on
+Redhat Suse and Fedora with NO MANUAL CONFIGURATION required.
 
-If the above combinations don't work, get /proc/asound/card0/codec97#0/*
-(might be a different directory name in 1.0.6) _during_ ac3 playback on
-1.0.6 and 1.0.9 environment to compare.
+This card is a common one.
+Dell is a common make of PC.
+Fedora is a common distribution.
+Surely I do not have a strange or unique configuration?
+
+
+How do I "use the alsa device "plug:front" so that alsa does the
+resampling for you" ? Please give some detailed instructions, I am not an
+alsa expert and I've found no comprehensible alsa documentation on this.
+
+I repeat. Is there anything I can do to help diagnose the problem?
 
 ----------------------------------------------------------------------
- Human - 06-10-05 18:07 
+ jcdutton - 06-10-05 18:58 
 ----------------------------------------------------------------------
-Thanks very much for responding, Tiwai.  I accept that S/PDIF with nForce
-is only partially covered, but if the latest driver worked as well as the
-one from R5A12, it would benefit a lot of people.
+Have you looked at the trouble shooter on alsa.opensrc.org.
+http://alsa.opensrc.org/index.php?page=TroubleShooting
 
-I need to amend the version of ALSA I said was used in R5A12.  It looks
-like the utilities are from 1.0.6, but I took a close look at the
-intel8x0.c kernel module - it's actually CVS version 1.160 with 7 lines of
-patches applied.  (If you want to see the diffs, please specify the diff
-parameters you prefer so that I format them correctly.)  In order to
-provide you with the details on where exactly the regression happens, I
-was going to try building different versions of the intel8x0.c kernel
-module from 1.160 up and seeing if they made S/PDIF stop working.
-
-Technically, I didn't downgrade anything in R5A12, since R5A12 uses an
-older version of ALSA.  By contrast, R5A16 uses (I think) ALSA 1.0.8.
-
-You ask about the version of alsa-lib.  KnoppMyth R5A12 uses Debian, and
-the distro's maintainer installed the non-driver parts of ALSA as binaries
-via apt-get.  Here's the result of a query:
-
-ii  alsa-base      1.0.6a-11      ALSA driver configuration files
-ii  alsa-headers   1.0.6a-11      transitional package that can be safely
-remo
-rc  alsa-modules-2 1.0.5a-1+10.00 Advanced Linux Sound Architecture
-(drivers)
-ii  alsa-source    1.0.6a-11      ALSA driver sources
-ii  alsa-utils     1.0.6-4        ALSA utilities
-
-I wanted to point out that there are additional steps in my previous list
-on getting digital audio working.  I had automated these steps and
-forgotten about them:
-3.5) Go here http://www.mythtv.info/moin.cgi/DigitalSoundHowTo and copy
-the text under "The (I hope it's the definitive) .asoundrc for nForce2 and
-nForce4" into /etc/asound.conf
-3.6) Edit /etc/modprobe.d/alsa-base to add this line:
-      options snd-pcm-oss adsp_map=2
-
-I'll try to gather more data points for you.  I'll have to set up a
-separate installation of R5A16, which uses newer versions of everything,
-and try more combinations of things as well as getting you that data
-during AC3 playback.
+For me to help you, I would need the output from items 2,3,4 in the
+Trouble Shooter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
-06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
-06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
-06-03-05 00:31 Human          Note Added: 0004880                          
-06-03-05 00:32 Human          Issue Monitored: Human                       
-06-06-05 23:30 Human          Note Added: 0004910                          
-06-08-05 15:01 tiwai          Note Added: 0004928                          
-06-10-05 18:07 Human          Note Added: 0004984                          
+12-13-04 09:21 sjberryman     New Issue                                    
+12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
+and Suse 9.2
+12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
+12-16-04 18:28 tiwai          Status                   new => resolved     
+12-16-04 18:28 tiwai          Resolution               open => not an issue
+12-16-04 18:28 tiwai          Assigned To               => tiwai           
+12-16-04 18:28 tiwai          Assigned To              tiwai =>            
+01-19-05 09:08 sjberryman     Status                   resolved => feedback
+01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
+01-19-05 09:08 sjberryman     Note Added: 0003263                          
+01-19-05 14:27 tiwai          Note Added: 0003266                          
+01-22-05 22:15 nadavkav       Note Added: 0003379                          
+01-22-05 23:20 fmoraes        Note Added: 0003381                          
+01-25-05 22:39 Kane32         Note Added: 0003411                          
+01-26-05 13:18 nadavkav       Note Added: 0003416                          
+02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
+02-08-05 23:32 sHINOBI        Note Added: 0003534                          
+02-09-05 07:25 pzad           Note Added: 0003535                          
+02-09-05 08:57 sHINOBI        Note Added: 0003536                          
+02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
+02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
+05-28-05 16:06 sjberryman     Note Added: 0004774                          
+05-28-05 20:02 jcdutton       Status                   feedback => assigned
+05-28-05 20:02 jcdutton       Assigned To               => jcdutton        
+05-28-05 20:07 jcdutton       Note Added: 0004775                          
+05-28-05 20:07 jcdutton       Status                   assigned => feedback
+06-10-05 13:28 sjberryman     Note Added: 0004983                          
+06-10-05 18:58 jcdutton       Note Added: 0004985                          
 ======================================================================
 
 
