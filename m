@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001180]: Use of MIDI with SIS7018 (Trident driver) causes instant freeze
-Date: Fri, 10 Jun 2005 21:49:41 +0200
-Message-ID: <2153a56ee8eab4edee333d534fcc2200@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
+Date: Fri, 10 Jun 2005 22:28:57 +0200
+Message-ID: <cf025f237f3b75cc256beb9ef0b84640@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 746CC1A2
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 21:49:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4CDD1FF
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2005 22:28:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1180> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
 ======================================================================
-Reported By:                jindo
+Reported By:                bjl667
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1180
-Category:                   GENERIC - mpu401
+Issue ID:                   1181
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.11 (stock from kernel.org)
+Distribution:               Gentoo 2005.0
+Kernel Version:             2.6.12-rc4-love2
 ======================================================================
-Date Submitted:             06-10-2005 21:49 CEST
-Last Modified:              06-10-2005 21:49 CEST
+Date Submitted:             06-10-2005 22:28 CEST
+Last Modified:              06-10-2005 22:28 CEST
 ======================================================================
-Summary:                    Use of MIDI with SIS7018 (Trident driver) causes
-instant freeze
+Summary:                    ice1724: Invalid EEPROM version 1
 Description: 
-When using any kind of app which accesses port 64:0 (eg pmidi) or any
-generic MIDI type app (eg Rosegarden), the machine hangs.  No response to
-X, Magic SySRq or Ctrl-Alt-Del.  If a wave file is playing it enters a
-constant 0.25s loop and the only option is to do a hardware reset.
+ Upon starting alsa, in dmesg I get:
+ EcX / # dmesg | grep ice
+ ice1724: Invalid EEPROM version 1
 
-I think that this is similar to bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001116, although I get
-different
-error messages.  Initially, no messages appeared onscreen or in the logs,
-but after switching on debug mode and running in a non-X terminal I got
-this before the machine hung:
+ EcX / # cat /proc/asound/cards
+ 0 [AV710          ]: ICE1724 - Chaintech AV-710
+                      Chaintech AV-710 at 0xa000, irq 16
 
-mpu401_uart.c: 206: cmd: tx timeout (status = 0xd0)
-mpu401_uart.c: 226: cmd: 0xff failed at 0x20 (status = 0xff, data =0x1)
-mpu401_uart.c: 206: cmd: tx timeout (status = 0xff)
-mpu401_uart.c: 226: cmd: 0x3f failed at 0x20 (status = 0x3f, data =0x1)
+ I can play music in XMMS.. Then close it after that my sound stops
+working I gotta restart alsasound to make it work again. I dunno wtf it is
+my card is a Chaintech AV-710 (ENVY24HT-S)
+
+ From what it seems this is another version of the Chaintech card..
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-05 21:49 jindo          New Issue                                    
-06-10-05 21:49 jindo          Distribution              => Debian Sarge    
-06-10-05 21:49 jindo          Kernel Version            => 2.6.11 (stock from
-kernel.org)
+06-10-05 22:28 bjl667         New Issue                                    
+06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
+06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
 ======================================================================
 
 
