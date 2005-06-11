@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Sat, 11 Jun 2005 21:14:06 +0200
-Message-ID: <c20f539a4ed359a11834277a9fde204d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001185]: unable to control Center/LFE
+Date: Sat, 11 Jun 2005 22:00:37 +0200
+Message-ID: <837ddc3f2491ef6348ea15eab8dea8b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCD501FC
-	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 21:14:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A046D1FC
+	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 22:00:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1185> 
 ======================================================================
-Reported By:                Xero
-Assigned To:                
+Reported By:                weyer
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   1185
+Category:                   PCI - cmipci
+Reproducibility:            N/A
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-11-2005 21:14 CEST
+Date Submitted:             06-11-2005 22:00 CEST
+Last Modified:              06-11-2005 22:00 CEST
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    unable to control Center/LFE
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+I use the Hercules Gamesurround 5.1 dvd card, with the cmipci driver
+(manual says it has a cmi-8738-chipset).  The driver compiled fine, and
+the 5.1 works under mplayer using the -channels 6 option.  The problem is
+that in amixer, alsamixer or any such problem, there is no slider for
+center/LFE volume, and their volume is not under control of any
+slider/switch
 
-This starts showing up when I start pressing play again:
+MASTER: just front 
+PCM: Front and rear
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+the button mic as lfe  is for an extra sub i guess (doesn't influence the
+sub if switched on or off, it keeps working)
+the button line-in as rear is for an extra pair of speakers (i have my
+hifi attached to it as extra line-out)
 
+(the card has: front, rear, center/lfe, mic and line-in jacks on the
+back)
 
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
+It is not a real problem, but it's quite annoying to reach under my desk
+to adjust the volume of the woofer/center while watching a movie...
 
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
+if hope it can be solved
+greetings
+geert
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
+06-11-05 22:00 weyer          New Issue                                    
+06-11-05 22:00 weyer          Distribution              => gentoo          
+06-11-05 22:00 weyer          Kernel Version            => 2.6.11          
 ======================================================================
 
 
