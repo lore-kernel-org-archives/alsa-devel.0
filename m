@@ -1,13 +1,13 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Digital Audio Labs CardDeluxe
-Date: Sat, 11 Jun 2005 23:50:30 +0100
-Message-ID: <42AB6AB6.9090707@superbug.co.uk>
-References: <20050611214303.GB20022@positivism.org>
+Subject: Re: audgiy two zs and emu10k1
+Date: Sun, 12 Jun 2005 00:07:40 +0100
+Message-ID: <42AB6EBC.5080201@superbug.co.uk>
+References: <Pine.LNX.4.63.0506110156090.19442@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050611214303.GB20022@positivism.org>
+In-Reply-To: <Pine.LNX.4.63.0506110156090.19442@localhost>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,55 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Seth Alan Woolley <seth@tautology.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: edoardo <edoardo@lastorina.it>
+Cc: alsa developers' list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Seth Alan Woolley wrote:
-> I have asked the DAL people how we could get a Linux driver and they 
-> replied that they've already had NDAs with a couple people to build a 
-> Linux driver to no success.  They said they had to explain basic 
-> concepts to them and it wasted too much of their time.  They are 
-> reluctant to provide me with details as well because of this.
+edoardo wrote:
 > 
-> Secondly, they desire to release a BSD-driver, not a GPL driver as a 
-> condition of an NDA.  I personally just wanted to make an ALSA driver, 
-> but ALSA is GPL'd, which creates a problem.
+> hi gals, hi dudes. i thought this would be the right place to post this
+> question. i bought an audigy two zs card, and got it to work with
+> emu10k1. i've got a problem though. analogic output works fine, whereas
+> digital output don't seem to work at all. no sound comes out. also, i've
+> plugged in an optical cable and looked into the other side of it, and no
+> red beam is comin' out.
 > 
-> I have no driver writing experience personally and am really quite busy 
-> to learn everything to write it myself.  I'm wondering if anybody on 
-> this list has already talked to DAL about it and if so, why there was no 
-> success.  Depending on what has already happened, I might drop some 
-> secondary projects to add time to work on this directly myself, but I 
-> want to know if it's worth it.
+> i thought a developer who worked on the driver might be able to answer
+> this question. is this a missing feature? need i trigger any special
+> parameter?
 > 
-> It's the only hardware I own that doesn't work on Linux or any other 
-> free OS yet, and I would like to use it in Linux because the sound 
-> quality is literally unparalleled to any other card out there that I 
-> know of.
+> two final notes. i've tried togglin' 'audigy analog/digital output
+> jack'. when it's on analogic output works, when it's off it don't.
+> digital output never works. also, i ran alsaconf and it prints 'no
+> supported pnp or pci card found.', although my card is detected at boot
+> as an audigy two and, as i typed before, analogic output works fine.
 > 
-> Does anybody have any information, advice, suggestions on what I could 
-> do to facilitate the process of getting a Linux driver for the 
-> CardDeluxe?  Their website is at http://www.digitalaudio.com for the 
-> interested.
+> how can i enable digital output? maybe i'm usin' the wrong cable?help! : )
 > 
-> Seth
+> thankyou! : )
+> 
+> ciao! : )
+> 
+> edoardo
 > 
 
-If someone donates a sound card to me, I could probably write a driver.
-I have done so for some of the Creative Sound cards. They would
-certainly not need to explain basic concepts to me. I would only need a
-half decent datasheet.
-The NDA should not restrict the license I wish to place on the driver.
-If I write the driver, I choose the license.
-DAL specifing the license sounds to me like FUD from DAL. I don't
-believe for a second that they have signed any NDAs in order to aid open
-source driver development.
-One other thing I would need is external devices it might plug into. I
-obviously have speakers and spdif devices, but I don't have MIDI or AES
-8-channel devices.
+Post the output of:
+lspci -vn | grep -1 0401
 
-James
+also the output of:
+cat /proc/asound/cards
+
+
 
 
 -------------------------------------------------------
