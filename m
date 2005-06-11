@@ -1,13 +1,11 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: audgiy two zs and emu10k1
-Date: Sun, 12 Jun 2005 00:07:40 +0100
-Message-ID: <42AB6EBC.5080201@superbug.co.uk>
-References: <Pine.LNX.4.63.0506110156090.19442@localhost>
+From: r_zaca <r_zaca@ig.com.br>
+Subject: What can I do?
+Date: Sat, 11 Jun 2005 20:52:33 -0300
+Message-ID: <20050611_235233_010170.r_zaca@ig.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="Message-Boundary-by-Mail-Sender-1118533953"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.63.0506110156090.19442@localhost>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +15,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: edoardo <edoardo@lastorina.it>
-Cc: alsa developers' list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-edoardo wrote:
-> 
-> hi gals, hi dudes. i thought this would be the right place to post this
-> question. i bought an audigy two zs card, and got it to work with
-> emu10k1. i've got a problem though. analogic output works fine, whereas
-> digital output don't seem to work at all. no sound comes out. also, i've
-> plugged in an optical cable and looked into the other side of it, and no
-> red beam is comin' out.
-> 
-> i thought a developer who worked on the driver might be able to answer
-> this question. is this a missing feature? need i trigger any special
-> parameter?
-> 
-> two final notes. i've tried togglin' 'audigy analog/digital output
-> jack'. when it's on analogic output works, when it's off it don't.
-> digital output never works. also, i ran alsaconf and it prints 'no
-> supported pnp or pci card found.', although my card is detected at boot
-> as an audigy two and, as i typed before, analogic output works fine.
-> 
-> how can i enable digital output? maybe i'm usin' the wrong cable?help! : )
-> 
-> thankyou! : )
-> 
-> ciao! : )
-> 
-> edoardo
-> 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Post the output of:
-lspci -vn | grep -1 0401
+--Message-Boundary-by-Mail-Sender-1118533953
+Content-type: text/plain; charset=ISO-8859-1
+Content-description: Mail message body
+Content-disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-also the output of:
-cat /proc/asound/cards
+  Hello everybody,=20
 
+  I just started to learn about Linux device drivers and I was looking fo=
+r=20
+some project to become part of. Searching in the Internet I realized that=
+=20
+ALSA is needing some programmers to work on low level drivers. I'd like t=
+o=20
+help doing somethink. So what can I do and what should I do to help in=20
+somethink?=20
+  Thanks.=20
+
+--Message-Boundary-by-Mail-Sender-1118533953--
 
 
 
