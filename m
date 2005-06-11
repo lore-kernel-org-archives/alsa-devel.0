@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000728]: periodic noise in audio output
-Date: Sat, 11 Jun 2005 10:12:18 +0200
-Message-ID: <016238d7c35479d1437ff3fac798476f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
+Date: Sat, 11 Jun 2005 13:34:38 +0200
+Message-ID: <feea1ab54cc08eab7e134a686af99aa2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 626EA141
-	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 10:12:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1112A1CD
+	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 13:34:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,188 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=728> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
 ======================================================================
-Reported By:                virtualman
-Assigned To:                
+Reported By:                sjberryman
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   728
-Category:                   SPARC - cs4231
+Issue ID:                   724
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     feedback
+Distribution:               Fedora Core1, Core2 and Suse 9.2
+Kernel Version:             2.6.9 2.4.28 2.6.8
 ======================================================================
-Date Submitted:             12-16-2004 23:12 CET
-Last Modified:              06-11-2005 10:12 CEST
+Date Submitted:             12-13-2004 09:21 CET
+Last Modified:              06-11-2005 13:34 CEST
 ======================================================================
-Summary:                    periodic noise in audio output
+Summary:                    No apparent support for Creative Sounblaster 24 bit.
 Description: 
-I am having a periodic crackling noise in my audio output. I sounds like
-the audio signal was not continuous at block boundaries.
+No apparent support for Creative Sounblaster 24 bit.
 
-I installed alsa-drivers (1.0.7) on a gentoo system. Therefore a number of
-patches have been applied.
+Fedora does not find any sound device.
 
-My audio hardware is a CS4231 on a Sun Ultra 10, the driver module
-therefore is snd-sun-cs4231.
-
+Susi finds a device but can't activate it.
 ======================================================================
 
 ----------------------------------------------------------------------
- virtualman - 12-21-04 20:09 
+ jcdutton - 06-10-05 18:58 
 ----------------------------------------------------------------------
-The problem as described applied to using ALSA directly. Using the OSS
-emulation results in even weirder sound output: It is played too fast
-(about two times). But it is not high pitched, but rather whole blocks are
-skipped.
+Have you looked at the trouble shooter on alsa.opensrc.org.
+http://alsa.opensrc.org/index.php?page=TroubleShooting
 
-I just tried an USB audio device. It works well, both directly and through
-OSS emulation. So it must be a problem with the sun-cs4231 driver.
+For me to help you, I would need the output from items 2,3,4 in the
+Trouble Shooter.
 
 ----------------------------------------------------------------------
- subdino - 06-11-05 10:12 
+ sjberryman - 06-11-05 13:34 
 ----------------------------------------------------------------------
-Same problem here (U10, debian sid, same with kernel.org kernel).
-Loaded modules : snd_sun_cs4231, snd_ioctl32 (and dependencies)
-Alsa version : alsa-base 1.0.9b-1, alsa-utils 1.0.8-4  (debian packages)
+Thanks
 
-With xmms, playing a sound file, the glitches aren't critical (periodic
-noise, but play speed is normal). Here is my xmms config (as in output
-plugin configuration window) :
-***
-Soundcard :
-Buffer size = 500ms
-Period length = 500ms
-XMMS :
-Buffer size = 1000ms
-Multithread mode & mmap mode enabled
-***
-The most important part is, as far as I tried, that both soundcard buffer
-must have the same size.
+These are the results
 
-With scummvm, the sound is first almost correct, but goes worse and worse
-as time goes. Pausing the game & resuming doesn't work, while exitting it
-& launching it again works. At a certain point the CPU use goes crazy,
-like 50% system time & 50% user time. But kernel doesn't crash, when
-program is stopped the cpu usage goes back to normal. As far as I've
-tested, it doesn't happens with xmms.
+2)
+$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9.
+Compiled on May 31 2005 for kernel 2.6.11-1.27_FC3.
 
-Alsaplayer is also really convenient to test different buffer sizes.
+3)
+$ grep VERSION_STR /usr/include/alsa/version.h
+#define SND_LIB_VERSION_STR     "1.0.9"
 
-I used to get more sound corruptions when intensively using the mixer
-settings while playing, but it hasn't happened recently (since I switched
-to 2.6.11 maybe).
+4)
+$ cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0413] at 0xc8e0 irq 3
+
+# lspci | egrep audio
+04:02.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+
+#cat /proc/asound/oss/sndstat
+
+Sound Driver:3.8.1a-980706 (ALSA v1.0.9 emulation code)
+Kernel: Linux p3000.local 2.6.11-1.27_FC3
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue May 17 20:27:37 EDT
+2005
+i686
+Config options: 0
+
+Installed drivers: 
+Type 10: ALSA emulation
+
+Card config: 
+Live! 7.1 24bit [SB0413] at 0xc8e0 irq 3
+
+Audio devices:
+0: CA0106 (DUPLEX)
+
+Synth devices: NOT ENABLED IN CONFIG
+
+Midi devices: NOT ENABLED IN CONFIG
+
+Timers:
+7: system timer
+
+Mixers:
+0: mixer00
+
+
+
+# lsmod
+Module                  Size  Used by
+fglrx                 234044  7
+nfsd                  212097  9
+exportfs                8641  1 nfsd
+lockd                  63593  2 nfsd
+md5                     4161  1
+ipv6                  259201  10
+parport_pc             28421  1
+lp                     12489  0
+parport                40201  2 parport_pc,lp
+autofs4                26181  0
+sunrpc                164485  19 nfsd,lockd
+ipt_REJECT              7105  1
+ipt_state               1857  1
+ip_conntrack           40601  1 ipt_state
+iptable_filter          2881  1
+ip_tables              19777  3 ipt_REJECT,ipt_state,iptable_filter
+vfat                   13505  1
+fat                    43229  1 vfat
+nls_utf8                2113  1
+ntfs                  107760  1
+dm_mod                 59221  0
+video                  15813  0
+button                  6609  0
+battery                 9285  0
+ac                      4805  0
+pl2303                 23621  0
+usbserial              28713  1 pl2303
+uhci_hcd               33497  0
+ehci_hcd               39501  0
+i2c_i801                8653  0
+i2c_core               21953  1 i2c_i801
+snd_ca0106             28324  3
+snd_ac97_codec         76924  1 snd_ca0106
+snd_pcm_oss            50080  0
+snd_mixer_oss          17536  2 snd_pcm_oss
+snd_pcm                96392  3 snd_ca0106,snd_ac97_codec,snd_pcm_oss
+snd_timer              30852  1 snd_pcm
+snd                    54404  10
+snd_ca0106,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              10785  2 snd
+snd_page_alloc          7940  2 snd_ca0106,snd_pcm
+tg3                    97733  0
+8139too                29505  0
+mii                     4929  1 8139too
+ext3                  131145  5
+jbd                    82777  1 ext3
+ata_piix                9285  8
+libata                 46789  1 ata_piix
+sd_mod                 19265  9
+scsi_mod              139945  2 libata,sd_mod
+
+
+alsamixer starts ok for non-root user.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-16-04 23:12 virtualman     New Issue                                    
-12-21-04 19:01 tiwai          Note Added: 0002905                          
-12-21-04 20:09 virtualman     Note Added: 0002906                          
-06-11-05 10:12 subdino        Note Added: 0004987                          
+12-13-04 09:21 sjberryman     New Issue                                    
+12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
+and Suse 9.2
+12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
+12-16-04 18:28 tiwai          Status                   new => resolved     
+12-16-04 18:28 tiwai          Resolution               open => not an issue
+12-16-04 18:28 tiwai          Assigned To               => tiwai           
+12-16-04 18:28 tiwai          Assigned To              tiwai =>            
+01-19-05 09:08 sjberryman     Status                   resolved => feedback
+01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
+01-19-05 09:08 sjberryman     Note Added: 0003263                          
+01-19-05 14:27 tiwai          Note Added: 0003266                          
+01-22-05 22:15 nadavkav       Note Added: 0003379                          
+01-22-05 23:20 fmoraes        Note Added: 0003381                          
+01-25-05 22:39 Kane32         Note Added: 0003411                          
+01-26-05 13:18 nadavkav       Note Added: 0003416                          
+02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
+02-08-05 23:32 sHINOBI        Note Added: 0003534                          
+02-09-05 07:25 pzad           Note Added: 0003535                          
+02-09-05 08:57 sHINOBI        Note Added: 0003536                          
+02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
+02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
+05-28-05 16:06 sjberryman     Note Added: 0004774                          
+05-28-05 20:02 jcdutton       Status                   feedback => assigned
+05-28-05 20:02 jcdutton       Assigned To               => jcdutton        
+05-28-05 20:07 jcdutton       Note Added: 0004775                          
+05-28-05 20:07 jcdutton       Status                   assigned => feedback
+06-10-05 13:28 sjberryman     Note Added: 0004983                          
+06-10-05 18:58 jcdutton       Note Added: 0004985                          
+06-11-05 13:34 sjberryman     Note Added: 0004988                          
 ======================================================================
 
 
