@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Sat, 11 Jun 2005 15:11:28 +0200
-Message-ID: <9c42228367f052c4bb0b66fe463644ce@bugtrack.alsa-project.org>
+Date: Sat, 11 Jun 2005 15:13:55 +0200
+Message-ID: <e9ec0ad6e7e63a5d84b828ab355bddd1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17CF31D2
-	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 15:11:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB3C21D2
+	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 15:13:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core1, Core2 and Suse 9.2
 Kernel Version:             2.6.9 2.4.28 2.6.8
 ======================================================================
 Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              06-11-2005 15:11 CEST
+Last Modified:              06-11-2005 15:13 CEST
 ======================================================================
 Summary:                    No apparent support for Creative Sounblaster 24 bit.
 Description: 
@@ -50,117 +50,6 @@ Fedora does not find any sound device.
 
 Susi finds a device but can't activate it.
 ======================================================================
-
-----------------------------------------------------------------------
- sjberryman - 06-11-05 13:34 
-----------------------------------------------------------------------
-Thanks
-
-These are the results
-
-2)
-$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9.
-Compiled on May 31 2005 for kernel 2.6.11-1.27_FC3.
-
-3)
-$ grep VERSION_STR /usr/include/alsa/version.h
-#define SND_LIB_VERSION_STR     "1.0.9"
-
-4)
-$ cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0413] at 0xc8e0 irq 3
-
-# lspci | egrep audio
-04:02.0 Multimedia audio controller: Creative Labs SB Audigy LS
-
-
-#cat /proc/asound/oss/sndstat
-
-Sound Driver:3.8.1a-980706 (ALSA v1.0.9 emulation code)
-Kernel: Linux p3000.local 2.6.11-1.27_FC3
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue May 17 20:27:37 EDT
-2005
-i686
-Config options: 0
-
-Installed drivers: 
-Type 10: ALSA emulation
-
-Card config: 
-Live! 7.1 24bit [SB0413] at 0xc8e0 irq 3
-
-Audio devices:
-0: CA0106 (DUPLEX)
-
-Synth devices: NOT ENABLED IN CONFIG
-
-Midi devices: NOT ENABLED IN CONFIG
-
-Timers:
-7: system timer
-
-Mixers:
-0: mixer00
-
-
-
-# lsmod
-Module                  Size  Used by
-fglrx                 234044  7
-nfsd                  212097  9
-exportfs                8641  1 nfsd
-lockd                  63593  2 nfsd
-md5                     4161  1
-ipv6                  259201  10
-parport_pc             28421  1
-lp                     12489  0
-parport                40201  2 parport_pc,lp
-autofs4                26181  0
-sunrpc                164485  19 nfsd,lockd
-ipt_REJECT              7105  1
-ipt_state               1857  1
-ip_conntrack           40601  1 ipt_state
-iptable_filter          2881  1
-ip_tables              19777  3 ipt_REJECT,ipt_state,iptable_filter
-vfat                   13505  1
-fat                    43229  1 vfat
-nls_utf8                2113  1
-ntfs                  107760  1
-dm_mod                 59221  0
-video                  15813  0
-button                  6609  0
-battery                 9285  0
-ac                      4805  0
-pl2303                 23621  0
-usbserial              28713  1 pl2303
-uhci_hcd               33497  0
-ehci_hcd               39501  0
-i2c_i801                8653  0
-i2c_core               21953  1 i2c_i801
-snd_ca0106             28324  3
-snd_ac97_codec         76924  1 snd_ca0106
-snd_pcm_oss            50080  0
-snd_mixer_oss          17536  2 snd_pcm_oss
-snd_pcm                96392  3 snd_ca0106,snd_ac97_codec,snd_pcm_oss
-snd_timer              30852  1 snd_pcm
-snd                    54404  10
-snd_ca0106,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10785  2 snd
-snd_page_alloc          7940  2 snd_ca0106,snd_pcm
-tg3                    97733  0
-8139too                29505  0
-mii                     4929  1 8139too
-ext3                  131145  5
-jbd                    82777  1 ext3
-ata_piix                9285  8
-libata                 46789  1 ata_piix
-sd_mod                 19265  9
-scsi_mod              139945  2 libata,sd_mod
-
-
-alsamixer starts ok for non-root user.
 
 ----------------------------------------------------------------------
  jcdutton - 06-11-05 15:11 
@@ -180,6 +69,11 @@ alsa-driver 1.0.9b
 
 I am assuming you are connecting your speakers via the analog socket and
 not the spdif.
+
+----------------------------------------------------------------------
+ jcdutton - 06-11-05 15:13 
+----------------------------------------------------------------------
+You can find me on irc.freenode.net #alsa as nick jcdutton  sometimes.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -217,6 +111,7 @@ and Suse 9.2
 06-10-05 18:58 jcdutton       Note Added: 0004985                          
 06-11-05 13:34 sjberryman     Note Added: 0004988                          
 06-11-05 15:11 jcdutton       Note Added: 0004991                          
+06-11-05 15:13 jcdutton       Note Added: 0004992                          
 ======================================================================
 
 
