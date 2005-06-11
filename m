@@ -1,12 +1,14 @@
-From: Seth Alan Woolley <seth@tautology.org>
-Subject: Digital Audio Labs CardDeluxe
-Date: Sat, 11 Jun 2005 14:43:03 -0700
-Message-ID: <20050611214303.GB20022@positivism.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
+Date: Sat, 11 Jun 2005 23:46:01 +0200
+Message-ID: <ac3639589db1c74028521fe7befdd7a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A6N2fC+uXW/VQSAv"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 567D01CF
+	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 23:46:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,65 +18,650 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---A6N2fC+uXW/VQSAv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
+======================================================================
+Reported By:                aisotton
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   943
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian Sid (Unstable)
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-25-2005 16:06 CET
+Last Modified:              06-11-2005 23:46 CEST
+======================================================================
+Summary:                    cmipci freezes the whole system
+Description: 
+Hi,
 
-I have asked the DAL people how we could get a Linux driver and they=20
-replied that they've already had NDAs with a couple people to build a=20
-Linux driver to no success.  They said they had to explain basic=20
-concepts to them and it wasted too much of their time.  They are=20
-reluctant to provide me with details as well because of this.
+I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
+gigabit ethernet controller (the board is an Asus A7V600). The sound
+card uses the cmipci module, and the ethernet card the sk98lin module.
 
-Secondly, they desire to release a BSD-driver, not a GPL driver as a=20
-condition of an NDA.  I personally just wanted to make an ALSA driver,=20
-but ALSA is GPL'd, which creates a problem.
+Playing sound and using the network at the same time freezes the sytem
+after a short time (generally 15-30 seconds); nothing is logged or
+displayed (I checked syslog, kern.log and /var/log/messages), it just
+freezes everything, forcing a reset of the machine (and after the
+subsequent reboot my mouse isn't recognized any more, but I don't think
+that matters).
 
-I have no driver writing experience personally and am really quite busy=20
-to learn everything to write it myself.  I'm wondering if anybody on=20
-this list has already talked to DAL about it and if so, why there was no=20
-success.  Depending on what has already happened, I might drop some=20
-secondary projects to add time to work on this directly myself, but I=20
-want to know if it's worth it.
+I am using that network card since more than a year, and it never gave a
+problem; thus I think the bug is in the cmipci driver (the system never
+froze before I installed the sound card).
 
-It's the only hardware I own that doesn't work on Linux or any other=20
-free OS yet, and I would like to use it in Linux because the sound=20
-quality is literally unparalleled to any other card out there that I=20
-know of.
+I did a memtest, but my memory seems to be ok.
 
-Does anybody have any information, advice, suggestions on what I could=20
-do to facilitate the process of getting a Linux driver for the=20
-CardDeluxe?  Their website is at http://www.digitalaudio.com for the=20
-interested.
+This happens with all kernels I tested, specifically:
 
-Seth
+Debian kernel-image-2.6.10-1-k7-4
+Debian kernel-image-2.6.9-2-k7-5
+Debian kernel-image-2.6.8-2-k7-13
+Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
+Vanilla kernel 2.6.10, compiled with the same options as Debian
+kernel-image-2.6.10-1-k7-4.
 
---=20
-Seth Alan Woolley [seth at positivism.org], SPAM/UCE is unauthorized
-Key id 00BA3AF3 =3D 8BE0 A72E A47E A92A 0737  F2FF 7A3F 6D3C 00BA 3AF3
-Quality Assurance Team Leader; Security Team Member, Leader Emeritus
-Linux so advanced, it may as well be magic http://www.sourcemage.org
-Elected Coordinating Committee Member, Secretary, and Finances Chair
-Pacific Green Party of Oregon - Peace - http://www.pacificgreens.org
 
---A6N2fC+uXW/VQSAv
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+======================================================================
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+----------------------------------------------------------------------
+ aisotton - 02-26-05 02:33 
+----------------------------------------------------------------------
+I tried booting with:
 
-iD8DBQFCq1rnej9tPAC6OvMRArd6AJwLeYacb4BUxR4Jwm3kzAo3jOfsMgCcCM/g
-DpA5/Blwy9jW2ssf34eRhWM=
-=X7oS
------END PGP SIGNATURE-----
+acpi=off
+pci=noacpi
+pci=nolapic
 
---A6N2fC+uXW/VQSAv--
+and with all the three together. The system freezes anyway.
+
+I can't boot with noapic or pci=noapic, because the kernel hangs while
+booting up.
+
+I tried all of these options both with "Plug and Play OS" turned off and
+on in the BIOS; the interrupts distribution is different, but the freeze
+is there anyway.
+
+/proc/interrupts (Plug and Play OS enabled):
+
+           CPU0
+  0:    5877164          XT-PIC  timer
+  1:      15400          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  7:       6788          XT-PIC  parport0
+  8:          1          XT-PIC  rtc
+  9:      57433          XT-PIC  acpi, SysKonnect SK-98xx, ehci_hcd
+ 10:      96769          XT-PIC  libata, uhci_hcd, uhci_hcd, CMI8738-MC6
+ 11:     513614          XT-PIC  uhci_hcd, uhci_hcd, nvidia
+ 12:     139376          XT-PIC  i8042
+ 14:     105028          XT-PIC  ide0
+NMI:          0
+LOC:    5877300
+ERR:         55
+MIS:          0
+
+
+lspci -vvv:
+
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8377 [KT400/KT600 AGP]
+Host Bridge (rev 80)
+        Subsystem: Asustek Computer, Inc. A7V8X motherboard
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort+ >SERR- <PERR-
+        Latency: 0
+        Region 0: Memory at f0000000 (32-bit, prefetchable) [size=128M]
+        Capabilities: [80] AGP version 3.5
+                Status: RQ=32 Iso- ArqSz=0 Cal=2 SBA+ ITACoh- GART64-
+HTrans- 64bit- FW+ AGP3- Rate=x1,x2,x4
+                Command: RQ=1 ArqSz=0 Cal=0 SBA- AGP+ GART64- 64bit- FW-
+Rate=x4
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge (prog-if
+00 [Normal decode])
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort+ >SERR- <PERR-
+        Latency: 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        I/O behind bridge: 0000e000-0000dfff
+        Memory behind bridge: ea000000-eb6fffff
+        Prefetchable memory behind bridge: eb700000-efffffff
+        BridgeCtl: Parity- SERR- NoISA- VGA+ MAbort- >Reset- FastB2B-
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:09.0 Ethernet controller: 3Com Corporation 3c940 10/100/1000Base-T
+[Marvell] (rev 12)
+        Subsystem: Asustek Computer, Inc. P4P800 Mainboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (5750ns min, 7750ns max), Cache Line Size: 0x08 (32
+bytes)
+        Interrupt: pin A routed to IRQ 9
+        Region 0: Memory at e9800000 (32-bit, non-prefetchable)
+[size=16K]
+        Region 1: I/O ports at d800 [size=256]
+        Capabilities: [48] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0+,D1+,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=1 PME-
+        Capabilities: [50] Vital Product Data
+
+0000:00:0e.0 Multimedia audio controller: C-Media Electronics Inc CM8738
+(rev 10)
+        Subsystem: TERRATEC Electronic GmbH: Unknown device 1144
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping+ SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (500ns min, 6000ns max)
+        Interrupt: pin A routed to IRQ 10
+        Region 0: I/O ports at d400 [size=256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:0f.0 RAID bus controller: VIA Technologies, Inc. VIA VT6420 SATA
+RAID Controller (rev 80)
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Interrupt: pin B routed to IRQ 10
+        Region 0: I/O ports at d000 [size=8]
+        Region 1: I/O ports at b800 [size=4]
+        Region 2: I/O ports at b400 [size=8]
+        Region 3: I/O ports at b000 [size=4]
+        Region 4: I/O ports at a800 [size=16]
+        Region 5: I/O ports at a400 [size=256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:0f.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06) (prog-if
+8a [Master SecP PriP])
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Interrupt: pin A routed to IRQ 14
+        Region 4: I/O ports at a000 [size=16]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81) (prog-if 00 [UHCI])
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32, Cache Line Size: 0x08 (32 bytes)
+        Interrupt: pin A routed to IRQ 11
+        Region 4: I/O ports at 9800 [size=32]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA
+PME(D0+,D1+,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81) (prog-if 00 [UHCI])
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32, Cache Line Size: 0x08 (32 bytes)
+        Interrupt: pin A routed to IRQ 11
+        Region 4: I/O ports at 9400 [size=32]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA
+PME(D0+,D1+,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81) (prog-if 00 [UHCI])
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32, Cache Line Size: 0x08 (32 bytes)
+        Interrupt: pin B routed to IRQ 10
+        Region 4: I/O ports at 9000 [size=32]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA
+PME(D0+,D1+,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81) (prog-if 00 [UHCI])
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32, Cache Line Size: 0x08 (32 bytes)
+        Interrupt: pin B routed to IRQ 10
+        Region 4: I/O ports at 8800 [size=32]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA
+PME(D0+,D1+,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 86)
+(prog-if 20 [EHCI])
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32, Cache Line Size: 0x10 (64 bytes)
+        Interrupt: pin C routed to IRQ 9
+        Region 0: Memory at e9000000 (32-bit, non-prefetchable)
+[size=256]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA
+PME(D0+,D1+,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8237 ISA bridge [K8T800
+South]
+        Subsystem: Asustek Computer, Inc. A7V600 motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping+ SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:01:00.0 VGA compatible controller: nVidia Corporation NV20 [GeForce3
+Ti 200] (rev a3) (prog-if 00 [VGA])
+        Subsystem: Asustek Computer, Inc.: Unknown device 4057
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 248 (1250ns min, 250ns max)
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at ea000000 (32-bit, non-prefetchable)
+[size=16M]
+        Region 1: Memory at ec000000 (32-bit, prefetchable) [size=64M]
+        Region 2: Memory at eb800000 (32-bit, prefetchable) [size=512K]
+        Expansion ROM at eb7f0000 [disabled] [size=64K]
+        Capabilities: [60] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [44] AGP version 2.0
+                Status: RQ=32 Iso- ArqSz=0 Cal=0 SBA- ITACoh- GART64-
+HTrans- 64bit- FW- AGP3- Rate=x1,x2,x4
+                Command: RQ=32 ArqSz=0 Cal=0 SBA- AGP+ GART64- 64bit- FW-
+Rate=x4
+
+----------------------------------------------------------------------
+ sbambach - 06-11-05 23:46 
+----------------------------------------------------------------------
+Same soundcard. Same problem. Some seconds sound, then system freeze. 
+
+settopbox with optical spdif out that doesn't play sound :-( Have to
+switch to analog output or buy another card ? which ?
+
+Some information missing ? Ask about it. I'll try to help of course.
+
+Interesting bug about that problem found:
+http://bugme.osdl.org/show_bug.cgi?id=1421
+
+My system:
+- Athlon XP
+- kernel 2.6.11
+- Distribution gentoo
+
+/proc/version
+Linux version 2.6.11-gentoo-r9 (root@mythtv) (gcc version 3.3.5-20050130
+(Gentoo Linux 3.3.5.20050130-r1, ssp-3.3.5.20050130-1, pie-8.7.7.1))
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Sat May 21 22:46:32 CEST 2005
+
+/proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.8 (Thu Jan 13
+09:39:32 2005 UTC).
+
+/proc/cpuinfo
+processor       : 0
+vendor_id       : AuthenticAMD
+cpu family      : 6
+model           : 6
+model name      : AMD Athlon(tm) XP 1700+
+stepping        : 2
+cpu MHz         : 1466.575
+cache size      : 256 KB
+fdiv_bug        : no
+hlt_bug         : no
+f00f_bug        : no
+coma_bug        : no
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 1
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
+cmov pat pse36 mmx fxsr sse pni syscall mp mmxext 3dnowext 3dnow
+bogomips        : 2899.96
+
+/proc/interrupts (Plug and Play OS enabled):
+
+           CPU0
+
+
+  0:    7245938          XT-PIC  timer
+  2:          0          XT-PIC  cascade
+  5:          0          XT-PIC  uhci_hcd, uhci_hcd, uhci_hcd
+  8:          2          XT-PIC  rtc
+  9:          2          XT-PIC  acpi
+ 10:          0          XT-PIC  ohci_hcd
+ 11:     366481          XT-PIC  ohci_hcd, eth0, nvidia
+ 12:          3          XT-PIC  ehci_hcd, CMI8738-MC6
+ 14:      39396          XT-PIC  ide0
+ 15:      64630          XT-PIC  ide1
+NMI:          0
+LOC:    7239853
+ERR:      43277
+
+lspci -vvv:
+
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333]
+        Subsystem: VIA Technologies, Inc.: Unknown device 0000
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort+ >SERR- <PERR-
+        Latency: 0
+        Region 0: Memory at e0000000 (32-bit, prefetchable)
+        Capabilities: [a0] AGP version 2.0
+                Status: RQ=32 Iso- ArqSz=0 Cal=0 SBA+ ITACoh- GART64-
+HTrans- 64bit- FW- AGP3- Rate=x1,x2,x4
+                Command: RQ=1 ArqSz=0 Cal=0 SBA- AGP+ GART64- 64bit- FW-
+Rate=x4
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333 AGP] (prog-if 00 [Normal decode])
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz+ UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort+ >SERR- <PERR+
+        Latency: 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        I/O behind bridge: 0000f000-00000fff
+        Memory behind bridge: dde00000-dfefffff
+        Prefetchable memory behind bridge: d1c00000-d5cfffff
+        BridgeCtl: Parity- SERR- NoISA+ VGA+ MAbort- >Reset- FastB2B-
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:05.0 Ethernet controller: Intel Corporation 82541GI/PI Gigabit
+Ethernet Controller
+        Subsystem: Intel Corporation: Unknown device 1113
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz+ UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (63750ns min), cache line size 08
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at dffa0000 (32-bit, non-prefetchable)
+[size=dff60000]
+        Region 1: Memory at dff80000 (32-bit, non-prefetchable)
+[size=128K]
+        Region 2: I/O ports at ec00 [size=64]
+        Expansion ROM at 00020000 [disabled]
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1- D2- AuxCurrent=0mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=1 PME-
+        Capabilities: [e4] PCI-X non-bridge device.
+                Command: DPERE- ERO+ RBC=0 OST=0
+                Status: Bus=0 Dev=0 Func=0 64bit- 133MHz- SCD- USC-,
+DC=simple, DMMRBC=0, DMOST=0, DMCRS=0, RSCEM-      Capabilities: [f0]
+Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
+
+0000:00:06.0 Multimedia video controller: Internext Compression Inc iTVC15
+MPEG-2 Encoder (rev 01)
+        Subsystem: Hauppauge computer works Inc. WinTV PVR-350
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (32000ns min, 2000ns max), cache line size 08
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at d8000000 (32-bit, prefetchable)
+        Capabilities: [44] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:07.0 Multimedia audio controller: C-Media Electronics Inc CM8738
+(rev 10)
+        Subsystem: TERRATEC Electronic GmbH: Unknown device 1144
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (500ns min, 6000ns max)
+        Interrupt: pin A routed to IRQ 12
+        Region 0: I/O ports at e800
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:08.0 Multimedia controller: Philips Semiconductors SAA7146 (rev
+01)
+        Subsystem: Technotrend Systemtechnik GmbH Technotrend-Budget /
+Hauppauge WinTV-NOVA-T DVB card
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (3750ns min, 9500ns max)
+        Interrupt: pin A routed to IRQ 5
+        Region 0: Memory at dffffe00 (32-bit, non-prefetchable)
+
+0000:00:0b.0 USB Controller: NEC Corporation USB (rev 41) (prog-if 10
+[OHCI])
+        Subsystem: NEC Corporation USB
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (250ns min, 10500ns max), cache line size 08
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at dfffd000 (32-bit, non-prefetchable)
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0+,D1+,D2+,D3hot+,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:0b.1 USB Controller: NEC Corporation USB (rev 41) (prog-if 10
+[OHCI])
+        Subsystem: NEC Corporation USB
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (250ns min, 10500ns max), cache line size 08
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at dfffe000 (32-bit, non-prefetchable)
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0+,D1+,D2+,D3hot+,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:0b.2 USB Controller: NEC Corporation USB 2.0 (rev 02) (prog-if 20
+[EHCI])
+        Subsystem: Micro-Star International Co., Ltd.: Unknown device
+3504
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (4000ns min, 8500ns max), cache line size 10
+        Interrupt: pin C routed to IRQ 12
+        Region 0: Memory at dffffd00 (32-bit, non-prefetchable)
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0+,D1+,D2+,D3hot+,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8233 PCI to ISA Bridge
+        Subsystem: VIA Technologies, Inc.: Unknown device 0000
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping+ SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:11.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06) (prog-if
+8a [Master SecP PriP])
+        Subsystem: VIA Technologies, Inc.
+VT82C586/B/VT82C686/A/B/VT8233/A/C/VT8235 PIPC Bus Master IDE
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Region 4: I/O ports at fc00 [size=16]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:11.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1b) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, cache line size 08
+        Interrupt: pin D routed to IRQ 5
+        Region 4: I/O ports at dc00 [size=32]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:11.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1b) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, cache line size 08
+        Interrupt: pin D routed to IRQ 5
+        Region 4: I/O ports at e000 [size=32]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:11.4 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1b) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, cache line size 08
+        Interrupt: pin D routed to IRQ 5
+        Region 4: I/O ports at e400 [size=32]
+        Capabilities: [80] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:01:00.0 VGA compatible controller: nVidia Corporation NV5M64 [RIVA
+TNT2 Model 64/Model 64 Pro] (rev 15) (prog-if 00 [VGA])
+        Subsystem: Elsa AG Erazor III LT
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 248 (1250ns min, 250ns max)
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at de000000 (32-bit, non-prefetchable)
+[size=dfef0000]
+        Region 1: Memory at d2000000 (32-bit, prefetchable) [size=32M]
+        Expansion ROM at 00010000 [disabled]
+        Capabilities: [60] Power Management version 1
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [44] AGP version 2.0
+                Status: RQ=32 Iso- ArqSz=0 Cal=0 SBA- ITACoh- GART64-
+HTrans- 64bit- FW- AGP3- Rate=x1,x2,x4
+                Command: RQ=32 ArqSz=0 Cal=0 SBA- AGP+ GART64- 64bit- FW-
+Rate=x4
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-25-05 16:06 aisotton       New Issue                                    
+02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
+02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
+02-25-05 16:07 aisotton       Note Added: 0003734                          
+02-25-05 21:57 runderwo       Note Added: 0003736                          
+02-26-05 02:33 aisotton       Note Added: 0003737                          
+06-11-05 23:46 sbambach       Note Added: 0004996                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
