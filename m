@@ -1,14 +1,12 @@
-From: "Jasper Sheridan" <SheJas@kgmens.com>
-Subject: JJust try lt
-Date: Sat, 11 Jun 2005 15:59:55 -0500
-Message-ID: <20050611210008.043D71AF@alsa.jcu.cz>
+From: Seth Alan Woolley <seth@tautology.org>
+Subject: Digital Audio Labs CardDeluxe
+Date: Sat, 11 Jun 2005 14:43:03 -0700
+Message-ID: <20050611214303.GB20022@positivism.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000F_01C56EC8.84C5D780"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="A6N2fC+uXW/VQSAv"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from kgmens.com (e178123234.adsl.alicedsl.de [85.178.123.234])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 043D71AF
-	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 23:00:08 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +16,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roshni Mcnally <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_000F_01C56EC8.84C5D780
-Content-Type: text/plain;
-	charset="us-ascii"
+--A6N2fC+uXW/VQSAv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hello, 
-we fell in wi' the Jamaica fleet and that grey old devil Bishop inmy lady, =
-when....news of it reached Tortuga and the buccaneers who awaited hisHad =
-not Pitt, her master, himself seized the whipstaff and put thePitt =
-should tell him the identity of his bashful friend, and alsoThere!  The =
-Frenchman gazed and stared, his face growing white.full significance of =
-what he had said.on my defence, as your lordship promised that I should =
-be heard.the words now passing between Steed and Bishop.  The Colonel =
-wasship, the Cinco Llagas, so that his vague disquiet must be, =
-surely,inevitable, invite you to be so obliging as to step over the =
-side.as a pigeon's egg.  Lastly, he stared wild-eyed at the =
-sardonicsunburned, and aquiline of face, strode in.  Lord Julian span =
-round,have taken to the sea, and ye should never ha' sailed with me, =
-forladder had been constructed in secret during those nights of =
-waiting.still in bedgown and nightcap.
+I have asked the DAL people how we could get a Linux driver and they=20
+replied that they've already had NDAs with a couple people to build a=20
+Linux driver to no success.  They said they had to explain basic=20
+concepts to them and it wasted too much of their time.  They are=20
+reluctant to provide me with details as well because of this.
 
-------=_NextPart_000_000F_01C56EC8.84C5D780
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Secondly, they desire to release a BSD-driver, not a GPL driver as a=20
+condition of an NDA.  I personally just wanted to make an ALSA driver,=20
+but ALSA is GPL'd, which creates a problem.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial>Dear Sir/Madam.</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>We are pleased to introduce ourselves as one of the =
-leading <SPAN style=3D"DISPLAY: none"> doublure </SPAN>online =
-pharmac<SPAN style=3D"DISPLAY: none"> delineator </SPAN>eutical =
-shops.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D4></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D4>Save over 75 Perce<SPAN style=3D"DISPLAY: =
-none"> roughshod </SPAN>nt On Meds today with &nbsp;</FONT><A =
-href=3D"http://www.ikrn.associatewit.com"><FONT face=3DArial =
-size=3D4>Med<SPAN style=3D"DISPLAY: none"> curfew </SPAN>zMail =
-Shop</FONT></A></DIV>
-<DIV>&nbsp;</DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TBODY>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>V<SPAN style=3D"DISPLAY: =
-none"> cradling </SPAN>lA</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>R<SPAN style=3D"DISPLAY: =
-none"> drogher </SPAN>A</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>lA<SPAN style=3D"DISPLAY: =
-none"> intemperate </SPAN>L</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>l<SPAN style=3D"DISPLAY: =
-none"> cavedweller </SPAN>U</FONT></TD>
-    <TD></TD>
-  <TR vAlign=3Dbottom>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> =
-changeful </SPAN>G</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>&nbsp;<SPAN style=3D"DISPLAY: none"> =
-tombola </SPAN>C</FONT></TD>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> barlow =
-</SPAN>IS&nbsp;<SPAN style=3D"DISPLAY: none"> tendril =
-</SPAN>VAL</FONT></TD>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> cryology =
-</SPAN>M</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>S&nbsp;and&nbsp;many&nbsp;other.</FONT>
-</TD></TR></TBODY></TABLE>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>With each pur<SPAN style=3D"DISPLAY: none"> scotch =
-</SPAN>chase you get:</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV>
-<LI><FONT face=3DArial>Top quaIit<SPAN style=3D"DISPLAY: none"> pistil =
-</SPAN>y</FONT>
-<LI><FONT face=3DArial>Best P<SPAN style=3D"DISPLAY: none"> toward =
-</SPAN>rices</FONT>
-<LI><FONT face=3DArial>Total c<SPAN style=3D"DISPLAY: none"> minever =
-</SPAN>onfidentiaIity</FONT> 
-<LI><FONT face=3DArial>Home deIi<SPAN style=3D"DISPLAY: none"> equivoque =
-</SPAN>very</FONT></LI></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Have a nice day.</FONT></DIV></BODY></HTML>
+I have no driver writing experience personally and am really quite busy=20
+to learn everything to write it myself.  I'm wondering if anybody on=20
+this list has already talked to DAL about it and if so, why there was no=20
+success.  Depending on what has already happened, I might drop some=20
+secondary projects to add time to work on this directly myself, but I=20
+want to know if it's worth it.
 
-------=_NextPart_000_000F_01C56EC8.84C5D780--
+It's the only hardware I own that doesn't work on Linux or any other=20
+free OS yet, and I would like to use it in Linux because the sound=20
+quality is literally unparalleled to any other card out there that I=20
+know of.
 
+Does anybody have any information, advice, suggestions on what I could=20
+do to facilitate the process of getting a Linux driver for the=20
+CardDeluxe?  Their website is at http://www.digitalaudio.com for the=20
+interested.
+
+Seth
+
+--=20
+Seth Alan Woolley [seth at positivism.org], SPAM/UCE is unauthorized
+Key id 00BA3AF3 =3D 8BE0 A72E A47E A92A 0737  F2FF 7A3F 6D3C 00BA 3AF3
+Quality Assurance Team Leader; Security Team Member, Leader Emeritus
+Linux so advanced, it may as well be magic http://www.sourcemage.org
+Elected Coordinating Committee Member, Secretary, and Finances Chair
+Pacific Green Party of Oregon - Peace - http://www.pacificgreens.org
+
+--A6N2fC+uXW/VQSAv
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFCq1rnej9tPAC6OvMRArd6AJwLeYacb4BUxR4Jwm3kzAo3jOfsMgCcCM/g
+DpA5/Blwy9jW2ssf34eRhWM=
+=X7oS
+-----END PGP SIGNATURE-----
+
+--A6N2fC+uXW/VQSAv--
 
 
 -------------------------------------------------------
