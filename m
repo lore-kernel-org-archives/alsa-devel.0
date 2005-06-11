@@ -1,10 +1,14 @@
-From: edoardo <edoardo@lastorina.it>
-Subject: audgiy two zs and emu10k1
-Date: Sat, 11 Jun 2005 02:01:56 +0200 (CEST)
-Message-ID: <Pine.LNX.4.63.0506110156090.19442@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001182]: Audigy Recording has crackles/distortion
+Date: Sat, 11 Jun 2005 07:14:32 +0200
+Message-ID: <e5d1b8e33b928b84fc23971319658294@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 203C8201
+	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 07:14:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,34 +18,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa developers' list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-hi gals, hi dudes. i thought this would be the right place to post this 
-question. i bought an audigy two zs card, and got it to work with emu10k1. 
-i've got a problem though. analogic output works fine, whereas digital 
-output don't seem to work at all. no sound comes out. also, i've plugged 
-in an optical cable and looked into the other side of it, and no red beam 
-is comin' out.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1182> 
+======================================================================
+Reported By:                netslayer
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1182
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             06-11-2005 07:14 CEST
+Last Modified:              06-11-2005 07:14 CEST
+======================================================================
+Summary:                    Audigy Recording has crackles/distortion
+Description: 
+I have several audigy (emu10k1) cards that I use for recording tv with
+mythtv. They worked perfectly in kernel 2.6.7 love sources and most likely
+any with that alsa version. As soon as I upgraded to newer kernels such as
+2.6.11 and I think 2.6.9 had the problem as well I get this problem. While
+recording through the line in connector I get crackling/distortion
+occurring on both left and right channels. This is not an audio cable or
+ground problem, as now it has happened on all boxes I have after upgrading
+kernels. 
 
-i thought a developer who worked on the driver might be able to answer 
-this question. is this a missing feature? need i trigger any special 
-parameter?
+I actually found it to be so bad that I switched audio cards on one of my
+boxes and now that I did a network wide update for kernels I realized it
+was a alsa bug.
 
-two final notes. i've tried togglin' 'audigy analog/digital output jack'. 
-when it's on analogic output works, when it's off it don't. digital output 
-never works. also, i ran alsaconf and it prints 'no supported pnp or pci 
-card found.', although my card is detected at boot as an audigy two and, 
-as i typed before, analogic output works fine.
+I'm currently running 2.6.11 gentoo sources (previously called gentoo dev
+sources) on all my boxes.
 
-how can i enable digital output? maybe i'm usin' the wrong cable?help! : )
+0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy (rev
+03)
+        Subsystem: Creative Labs SB0090 Audigy Player/OEM
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        I/O ports at a400
+        Capabilities: [dc] Power Management version 2
 
-thankyou! : )
+Alsa history:
+     Mon Jun  7 12:52:46 2004 >>> media-libs/alsa-lib-1.0.3b-r2
+     Sun Jun 13 00:14:49 2004 >>> media-libs/alsa-oss-1.0.3a
+     Sun Jun 13 00:15:28 2004 >>> media-sound/alsa-utils-1.0.3
+     Sun Jun 13 15:08:34 2004 >>> media-sound/alsa-driver-1.0.5
+     Sun Jun 13 17:18:23 2004 >>> media-sound/alsa-utils-1.0.5
+     Sun Jun 13 17:21:12 2004 >>> media-libs/alsa-lib-1.0.5
+     Sun Jun 13 17:23:14 2004 >>> media-libs/alsa-oss-1.0.5
+     Sun Jun 13 21:15:59 2004 >>> media-sound/alsa-driver-1.0.5
+     Mon May 30 21:27:33 2005 >>> media-sound/alsa-headers-1.0.8
+     Mon May 30 21:30:57 2005 >>> media-libs/alsa-lib-1.0.8
+     Mon May 30 21:31:42 2005 >>> media-sound/alsa-utils-1.0.8
+     Mon May 30 21:38:14 2005 >>> media-libs/alsa-oss-1.0.8-r1
 
-ciao! : )
+kernel history:
+lrwxrwxrwx   1 root root   31 Jun  1 22:21 linux ->
+/usr/src/linux-2.6.11-gentoo-r9
+drwxr-xr-x  19 root root 1312 Jun  2 00:05 linux-2.6.11-gentoo-r9
+drwxr-xr-x  19 root root 1216 Jun  1 22:30 linux-2.6.7-rc2-love2
 
-edoardo
+2.6.7 worked perfectly!
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-11-05 07:14 netslayer      New Issue                                    
+06-11-05 07:14 netslayer      File Added: Dateline NBC.mp3                    
+06-11-05 07:14 netslayer      Distribution              => Gentoo          
+06-11-05 07:14 netslayer      Kernel Version            => 2.6.11          
+======================================================================
+
+
 
 
 -------------------------------------------------------
