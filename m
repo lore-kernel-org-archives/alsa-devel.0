@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Sat, 11 Jun 2005 21:14:52 +0200
-Message-ID: <da9883a2131627939bb721283bab3770@bugtrack.alsa-project.org>
+Date: Sat, 11 Jun 2005 21:14:06 +0200
+Message-ID: <c20f539a4ed359a11834277a9fde204d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDBAF1FC
-	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 21:14:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCD501FC
+	for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2005 21:14:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
 ======================================================================
@@ -86,17 +86,11 @@ again. It seems to do it sporadically so it's somewhat hard to test for.
 Attached is my asoundrc.
 ======================================================================
 
-----------------------------------------------------------------------
- Xero - 06-11-05 21:14 
-----------------------------------------------------------------------
-Oh, I forgot to mention, my card is an echo mia midi...if that matters.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-11-05 21:14 Xero           New Issue                                    
 06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
 ======================================================================
 
 
