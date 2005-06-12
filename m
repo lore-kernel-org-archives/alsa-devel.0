@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001182]: Audigy Recording has crackles/distortion
-Date: Sun, 12 Jun 2005 20:29:33 +0200
-Message-ID: <eaa291bde11b550538786abdaea1c2b6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
+Date: Sun, 12 Jun 2005 20:52:41 +0200
+Message-ID: <b571c8aa3a19cfe74a1d91d2ca8091ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E4601B4
-	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 20:29:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65DC01BA
+	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 20:52:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1182> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
 ======================================================================
-Reported By:                netslayer
+Reported By:                jwiegley
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1182
-Category:                   PCI - emu10k1
+Issue ID:                   1064
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11
+Distribution:               Debian-pure64
+Kernel Version:             2.6.12-rc2
 ======================================================================
-Date Submitted:             06-11-2005 07:14 CEST
-Last Modified:              06-12-2005 20:29 CEST
+Date Submitted:             04-18-2005 20:42 CEST
+Last Modified:              06-12-2005 20:52 CEST
 ======================================================================
-Summary:                    Audigy Recording has crackles/distortion
+Summary:                    snd_hda_intel does not recognize acl880 sound chip
 Description: 
-I have several audigy (emu10k1) cards that I use for recording tv with
-mythtv. They worked perfectly in kernel 2.6.7 love sources and most likely
-any with that alsa version. As soon as I upgraded to newer kernels such as
-2.6.11 and I think 2.6.9 had the problem as well I get this problem. While
-recording through the line in connector I get crackling/distortion
-occurring on both left and right channels. This is not an audio cable or
-ground problem, as now it has happened on all boxes I have after upgrading
-kernels. 
+I bought a Shuttle ST20G5 box. Sound doesn't get detected or
+seem to work with manual load.
 
-I actually found it to be so bad that I switched audio cards on one of my
-boxes and now that I did a network wide update for kernels I realized it
-was a alsa bug.
+chipset:
+  ATI Xpress 200 northbridge
+  ULI 1573 southbridge
 
-I'm currently running 2.6.11 gentoo sources (previously called gentoo dev
-sources) on all my boxes.
+The documentation says the sound is:
+  Realtek ALC880
 
-0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy (rev
-03)
-        Subsystem: Creative Labs SB0090 Audigy Player/OEM
-        Flags: bus master, medium devsel, latency 32, IRQ 11
-        I/O ports at a400
-        Capabilities: [dc] Power Management version 2
-
-Alsa history:
-     Mon Jun  7 12:52:46 2004 >>> media-libs/alsa-lib-1.0.3b-r2
-     Sun Jun 13 00:14:49 2004 >>> media-libs/alsa-oss-1.0.3a
-     Sun Jun 13 00:15:28 2004 >>> media-sound/alsa-utils-1.0.3
-     Sun Jun 13 15:08:34 2004 >>> media-sound/alsa-driver-1.0.5
-     Sun Jun 13 17:18:23 2004 >>> media-sound/alsa-utils-1.0.5
-     Sun Jun 13 17:21:12 2004 >>> media-libs/alsa-lib-1.0.5
-     Sun Jun 13 17:23:14 2004 >>> media-libs/alsa-oss-1.0.5
-     Sun Jun 13 21:15:59 2004 >>> media-sound/alsa-driver-1.0.5
-     Mon May 30 21:27:33 2005 >>> media-sound/alsa-headers-1.0.8
-     Mon May 30 21:30:57 2005 >>> media-libs/alsa-lib-1.0.8
-     Mon May 30 21:31:42 2005 >>> media-sound/alsa-utils-1.0.8
-     Mon May 30 21:38:14 2005 >>> media-libs/alsa-oss-1.0.8-r1
-
-kernel history:
-lrwxrwxrwx   1 root root   31 Jun  1 22:21 linux ->
-/usr/src/linux-2.6.11-gentoo-r9
-drwxr-xr-x  19 root root 1312 Jun  2 00:05 linux-2.6.11-gentoo-r9
-drwxr-xr-x  19 root root 1216 Jun  1 22:30 linux-2.6.7-rc2-love2
-
-2.6.7 worked perfectly!
+alsaconf detects nothing
+manually loading snd_hda_intel also doesn't print anything in the
+log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-11-05 08:37 
+ tiwai - 04-19-05 17:38 
 ----------------------------------------------------------------------
-Did you mute "CD" and "Aux" ?
+It seems that the device has an unknown controller by ALI.
+
+Try to add the corresponding PCI IDs (10b9:5461) to azx_ids[] in
+pci/hda_intel.c, in case the chipset is compatible with Intel ICH6/7.
 
 ----------------------------------------------------------------------
- netslayer - 06-12-05 20:29 
+ jwiegley - 06-12-05 20:52 
 ----------------------------------------------------------------------
-Yes, CD and Aux are both muted. 
+I did as you requested and added the PCI ID.
 
-I capture on: Analog Mix, all others are at 0
-Playback: Master, Bass, Treble, PCM, PCM Center, PCM Front, PCM LFE, PCM
-Surr, Fron, Surround, Line and Audigy Analog/Digital Output Jack are all
-on, the rest are muted or at 0.
+When the driver loads during boot all I get is
+tons of "azx_get_response timeout" lines on my
+console and I have to sysrq-b to reboot to a
+different kernel.
 
-Playback shouldn't make a difference though as it's the recorded content
-that has the crackles.
+I also got the 1.0.9rc4a source after trolling
+the web and it does the exact same thing.
+
+Any ideas on how to get this chip supported?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 07:14 netslayer      New Issue                                    
-06-11-05 07:14 netslayer      File Added: Dateline NBC.mp3                    
-06-11-05 07:14 netslayer      Distribution              => Gentoo          
-06-11-05 07:14 netslayer      Kernel Version            => 2.6.11          
-06-11-05 08:37 pzad           Note Added: 0004986                          
-06-12-05 20:29 netslayer      Note Added: 0005000                          
+04-18-05 20:42 jwiegley       New Issue                                    
+04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
+04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
+04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
+04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 17:38 tiwai          Note Added: 0004523                          
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-12-05 20:52 jwiegley       Note Added: 0005001                          
 ======================================================================
 
 
