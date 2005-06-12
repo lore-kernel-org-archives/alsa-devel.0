@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001186]: SIS7012: the speakers can sound, but not the headphones.
-Date: Sun, 12 Jun 2005 11:30:14 +0200
-Message-ID: <2929794c6da7562b3d44714f00e43d0c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
+Date: Sun, 12 Jun 2005 15:43:22 +0200
+Message-ID: <95e63d636d6333b3a8bd88fdf3931e9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B268B1AF
-	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 11:30:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 441281D1
+	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 15:43:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1186> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
 ======================================================================
-Reported By:                shiyutang
-Assigned To:                
+Reported By:                sjberryman
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1186
-Category:                   PCI - intel8x0
+Issue ID:                   724
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Mandriva Linux 2005
-Kernel Version:             2.6.11
+Status:                     feedback
+Distribution:               Fedora Core1, Core2 and Suse 9.2
+Kernel Version:             2.6.9 2.4.28 2.6.8
 ======================================================================
-Date Submitted:             06-12-2005 11:30 CEST
-Last Modified:              06-12-2005 11:30 CEST
+Date Submitted:             12-13-2004 09:21 CET
+Last Modified:              06-12-2005 15:43 CEST
 ======================================================================
-Summary:                    SIS7012: the speakers can sound, but not the
-headphones.
+Summary:                    No apparent support for Creative Sounblaster 24 bit.
 Description: 
-The model of my laptop PC is Acer TravelMate 273xv. I install Mandriva
-Linux 2005 in it and find a strange problem, that is I can have sound from
-the speakers, but not the headphones.
+No apparent support for Creative Sounblaster 24 bit.
 
-The machine I bought has the following specs:
-Processor	1.7Ghz Pentium 4 (Mobile)
-RAM	256 MB DDR
-HDD	30GB
-CD	DVD
-Motherboard chipset: SIS 650
-FDD	Built in
-USB	3 Ports, USB 1.1
-Firewire IEEE 1394 small 4 pin socket
-PCMCIA	Two sockets
-Modem	SoftModem, Lucent
-LAN	Built in 10/100, RTL8139 compatible
-Video	built-in GPU, 1024x768, Monitor out, S-Video Out
-Legacy	Both serial and Parallel ports
-Mouse	Touchpad. I have added a Logitech mouse
-Supplied OS	Windows XP
+Fedora does not find any sound device.
 
-A strange status may help you:
-If you are using Windows XP, and using SIS 7012 driver downloaded from
-SIS, you will meet the same problem as ALSA, speakers sound but headphones
-not sound. But if you are using Realtek ALC 650 driver downloaded from
-Realtek(http://152.104.125.9/pc/ac97/alc650/wdm_a373.exe), both speakers
-and headphones will sound. So I think this model of Acer laptop doesn't
-use the common SIS 7012.
-
-Not only I meet the problem, another Debian user also meet it and post it
-on linux-laptop.net, see
-http://www.martinjones.net/acerlinux/linuxsound.html
+Susi finds a device but can't activate it.
 ======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 06-11-05 15:13 
+----------------------------------------------------------------------
+You can find me on irc.freenode.net #alsa as nick jcdutton  sometimes.
+
+----------------------------------------------------------------------
+ zubir - 06-12-05 15:43 
+----------------------------------------------------------------------
+[ed@localhost ~]$ cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     MSI K8N Diamond MB [SB0438] at 0xee00 irq 16
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-05 11:30 shiyutang      New Issue                                    
-06-12-05 11:30 shiyutang      Distribution              => Mandriva Linux 2005
-06-12-05 11:30 shiyutang      Kernel Version            => 2.6.11          
+12-13-04 09:21 sjberryman     New Issue                                    
+12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
+and Suse 9.2
+12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
+12-16-04 18:28 tiwai          Status                   new => resolved     
+12-16-04 18:28 tiwai          Resolution               open => not an issue
+12-16-04 18:28 tiwai          Assigned To               => tiwai           
+12-16-04 18:28 tiwai          Assigned To              tiwai =>            
+01-19-05 09:08 sjberryman     Status                   resolved => feedback
+01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
+01-19-05 09:08 sjberryman     Note Added: 0003263                          
+01-19-05 14:27 tiwai          Note Added: 0003266                          
+01-22-05 22:15 nadavkav       Note Added: 0003379                          
+01-22-05 23:20 fmoraes        Note Added: 0003381                          
+01-25-05 22:39 Kane32         Note Added: 0003411                          
+01-26-05 13:18 nadavkav       Note Added: 0003416                          
+02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
+02-08-05 23:32 sHINOBI        Note Added: 0003534                          
+02-09-05 07:25 pzad           Note Added: 0003535                          
+02-09-05 08:57 sHINOBI        Note Added: 0003536                          
+02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
+02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
+05-28-05 16:06 sjberryman     Note Added: 0004774                          
+05-28-05 20:02 jcdutton       Status                   feedback => assigned
+05-28-05 20:02 jcdutton       Assigned To               => jcdutton        
+05-28-05 20:07 jcdutton       Note Added: 0004775                          
+05-28-05 20:07 jcdutton       Status                   assigned => feedback
+06-10-05 13:28 sjberryman     Note Added: 0004983                          
+06-10-05 18:58 jcdutton       Note Added: 0004985                          
+06-11-05 13:34 sjberryman     Note Added: 0004988                          
+06-11-05 15:11 jcdutton       Note Added: 0004991                          
+06-11-05 15:13 jcdutton       Note Added: 0004992                          
+06-12-05 10:43 nadavkav       Note Deleted: 0003379                        
+06-12-05 10:43 nadavkav       Note Deleted: 0003416                        
+06-12-05 15:43 zubir          Note Added: 0004998                          
 ======================================================================
 
 
