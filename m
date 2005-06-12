@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Sun, 12 Jun 2005 15:43:22 +0200
-Message-ID: <95e63d636d6333b3a8bd88fdf3931e9c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001187]: Gain control for M-Audio Revolution (and other ice1724 cards) needed
+Date: Sun, 12 Jun 2005 15:51:33 +0200
+Message-ID: <d54fc707e8a3ff52322dffc629b755fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 441281D1
-	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 15:43:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0312E1D1
+	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 15:51:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,194 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187> 
 ======================================================================
-Reported By:                sjberryman
-Assigned To:                jcdutton
+Reported By:                sst4
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   724
-Category:                   1_OTHERS
+Issue ID:                   1187
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core1, Core2 and Suse 9.2
-Kernel Version:             2.6.9 2.4.28 2.6.8
+Status:                     new
+Distribution:               Mandriva
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              06-12-2005 15:43 CEST
+Date Submitted:             06-12-2005 15:51 CEST
+Last Modified:              06-12-2005 15:51 CEST
 ======================================================================
-Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Summary:                    Gain control for M-Audio Revolution (and other
+ice1724 cards) needed
 Description: 
-No apparent support for Creative Sounblaster 24 bit.
+Hello,
 
-Fedora does not find any sound device.
+this is in a sense continuation of
 
-Susi finds a device but can't activate it.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164
+.
+
+Yes, I remember Takashi's statement that the ADC chip on the card does
+not
+have gain control, and I checked the ADC specs and it's indeed so.
+
+However, this doesn't mean the functionality can not be implemented.
+
+I believe it should be implemented for at least two reasons:
+
+1) Windows driver has it;
+2) Applications like "Skype" need it to implement AGC (automatic gain
+control)
+in software.
+
+Regarding 2) - I clearly hear while talking through "Skype" that gain on
+the other party's side increases (room noise pickup is becoming more and
+more
+evident) when the other party makes a pause in conversation.
+
+
+Regarding 1) - in
+
+http://m-audio.com/images/en/manuals/Revo71-Manual-EN.pdf
+
+file on page number 14, under "Line and Mic In" one can read:
+
+"
+You can set the INPUT LEVEL of the Line and Mic inputs on the Input/Other
+tab of th
+Revolution 7.1 control panel. See the Control Panel section for more
+details.
+"
+(capitalization by me).
+
+
+On page number 22 of the same file, under "Input/Other Tab":
+
+"
+The Input/Other tab controls the INPUT LEVELS and sampling frequency of
+the
+Revolution. You don't need to worry about the settings on this page unless
+you're
+recording audio with the Revolution.
+Link Stereo Input Levels - The Input/Other tab controls the INPUT LEVELS
+and
+sampling frequency of the Revolution. You don't need to worry about the
+settings
+on this page unless you're recording audio with the Revolution.
+"
+(capitalization by me).
+
+
+On page number 25 under "Recording":
+
+"
+The Revolution 7.1 includes a pair of audio inputs for recording. You can
+set the
+INPUT LEVEL of the inputs by launching the Revolution 7.1 control panel,
+selecting
+the Input/Other tab, and changing the level on that screen. If your
+recording
+application doesn't see audio from the Revolution's inputs, check that
+program's
+audio preferences, check your cable connections, or review the Software
+Setup
+chapter for potential problems. Go to the Windows Control panel and open
+Sounds and Multimedia icon. The Revolution 7.1 features both Line and Mic
+inputs for the best performance with your input source. The Revolution
+7.1
+records at sampling rates up to and including 96kHz.
+"
+(capitalization by me).
+
+
+The "Input/Other" tab in its non-selected form can be seen on the picture
+on page 20 - to see it more clearly I had to choose 400% zoom in 'xpdf'.
+
+
+
+Regarding feasibility.
+
+First of all, gain can be changed by multiplying the code by the gain
+value.
+
+If I remember correctly, in ALSA the card outputs audio data in 32 bit
+format,
+of the 32 bits only 24 bits are significant because that's what the ADC
+produces, so we have 8 spare bits, which means 256 times, or about 48dB
+gain
+control without even losing precision.
+
+
+General note on priority of implementing the feature.
+
+Though I believe the feature is needed, and not only for Revolution 7.1,
+but
+also for other ICE1724-based cards, please understand the following:
+
+*** I still have no capture with my Revolution 7.1 (issue
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001096) ***
+.
+
+Since I'm not getting it work, I've been trying to use ALSA utilities
+('amixer',
+'alsamixer', 'aoss') - "trial and error" approach -  to make it work, and
+have
+found other problems on the way.
+
+Resolution of these other problem, including introduction of gain
+control,
+will not solve my main problem - lack of capture.
+
+
+I would appreciate getting an answer to the question in
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 :
+
+"
+Maybe my previous question does not contain enough details.
+
+Here is the rephrased question:
+
+Running 'amixer' with this command line
+
+amixer cget numid=<number>
+
+, where <number is in 5..12 range, I see output like this:
+
+"
+  ; type=ENUMERATED,access=rw---,values=1,items=5
+  ; Item 0 'PCM Out'
+  ; Item 0000001 'H/W In 0'
+  ; Item 0000002 'H/W In 1'
+  ; Item 0000003 'IEC958 In L'
+  ; Item 0000004 'IEC958 In R'
+  : values=0
+".
+
+Can any of these controls be related to enabling capture ?
+
+Thanks,
+  Sergei.
+".
+
+Or, to be more precise, getting an answer to the question in general:
+"How
+to enable capture in M-Audio Revolution 7.1 ?".
+
+Thanks,
+  Sergei.
+
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 06-11-05 15:13 
-----------------------------------------------------------------------
-You can find me on irc.freenode.net #alsa as nick jcdutton  sometimes.
-
-----------------------------------------------------------------------
- zubir - 06-12-05 15:43 
-----------------------------------------------------------------------
-[ed@localhost ~]$ cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     MSI K8N Diamond MB [SB0438] at 0xee00 irq 16
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-04 09:21 sjberryman     New Issue                                    
-12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
-and Suse 9.2
-12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
-12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
-12-13-04 10:07 pzad           Note Added: 0002821                          
-12-16-04 18:28 tiwai          Status                   new => resolved     
-12-16-04 18:28 tiwai          Resolution               open => not an issue
-12-16-04 18:28 tiwai          Assigned To               => tiwai           
-12-16-04 18:28 tiwai          Assigned To              tiwai =>            
-01-19-05 09:08 sjberryman     Status                   resolved => feedback
-01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
-01-19-05 09:08 sjberryman     Note Added: 0003263                          
-01-19-05 14:27 tiwai          Note Added: 0003266                          
-01-22-05 22:15 nadavkav       Note Added: 0003379                          
-01-22-05 23:20 fmoraes        Note Added: 0003381                          
-01-25-05 22:39 Kane32         Note Added: 0003411                          
-01-26-05 13:18 nadavkav       Note Added: 0003416                          
-02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
-02-08-05 23:32 sHINOBI        Note Added: 0003534                          
-02-09-05 07:25 pzad           Note Added: 0003535                          
-02-09-05 08:57 sHINOBI        Note Added: 0003536                          
-02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
-02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
-05-28-05 16:06 sjberryman     Note Added: 0004774                          
-05-28-05 20:02 jcdutton       Status                   feedback => assigned
-05-28-05 20:02 jcdutton       Assigned To               => jcdutton        
-05-28-05 20:07 jcdutton       Note Added: 0004775                          
-05-28-05 20:07 jcdutton       Status                   assigned => feedback
-06-10-05 13:28 sjberryman     Note Added: 0004983                          
-06-10-05 18:58 jcdutton       Note Added: 0004985                          
-06-11-05 13:34 sjberryman     Note Added: 0004988                          
-06-11-05 15:11 jcdutton       Note Added: 0004991                          
-06-11-05 15:13 jcdutton       Note Added: 0004992                          
-06-12-05 10:43 nadavkav       Note Deleted: 0003379                        
-06-12-05 10:43 nadavkav       Note Deleted: 0003416                        
-06-12-05 15:43 zubir          Note Added: 0004998                          
+06-12-05 15:51 sst4           New Issue                                    
+06-12-05 15:51 sst4           Distribution              => Mandriva        
+06-12-05 15:51 sst4           Kernel Version            => 2.6.11          
 ======================================================================
 
 
