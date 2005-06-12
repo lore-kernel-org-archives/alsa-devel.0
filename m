@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001187]: Gain control for M-Audio Revolution (and other ice1724 cards) needed
-Date: Sun, 12 Jun 2005 15:51:33 +0200
-Message-ID: <d54fc707e8a3ff52322dffc629b755fe@bugtrack.alsa-project.org>
+From: Matt <matt@embeddedalley.com>
+Subject: [PATCH] SigmaTel HDA SPDIF and input mux updates
+Date: Sun, 12 Jun 2005 07:41:51 -0700
+Message-ID: <20050612074151.A29512@cox.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0312E1D1
-	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 15:51:33 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,201 +15,334 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Adds SPDIF in/out support to the SigmaTel HDA codecs. Now builds
+the input mux control element names from the defcfg regs.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187> 
-======================================================================
-Reported By:                sst4
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1187
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Mandriva
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             06-12-2005 15:51 CEST
-Last Modified:              06-12-2005 15:51 CEST
-======================================================================
-Summary:                    Gain control for M-Audio Revolution (and other
-ice1724 cards) needed
-Description: 
-Hello,
+Please apply.
 
-this is in a sense continuation of
+Signed-off-by: Matt <matt@embeddedalley.com>
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164
-.
-
-Yes, I remember Takashi's statement that the ADC chip on the card does
-not
-have gain control, and I checked the ADC specs and it's indeed so.
-
-However, this doesn't mean the functionality can not be implemented.
-
-I believe it should be implemented for at least two reasons:
-
-1) Windows driver has it;
-2) Applications like "Skype" need it to implement AGC (automatic gain
-control)
-in software.
-
-Regarding 2) - I clearly hear while talking through "Skype" that gain on
-the other party's side increases (room noise pickup is becoming more and
-more
-evident) when the other party makes a pause in conversation.
-
-
-Regarding 1) - in
-
-http://m-audio.com/images/en/manuals/Revo71-Manual-EN.pdf
-
-file on page number 14, under "Line and Mic In" one can read:
-
-"
-You can set the INPUT LEVEL of the Line and Mic inputs on the Input/Other
-tab of th
-Revolution 7.1 control panel. See the Control Panel section for more
-details.
-"
-(capitalization by me).
-
-
-On page number 22 of the same file, under "Input/Other Tab":
-
-"
-The Input/Other tab controls the INPUT LEVELS and sampling frequency of
-the
-Revolution. You don't need to worry about the settings on this page unless
-you're
-recording audio with the Revolution.
-Link Stereo Input Levels - The Input/Other tab controls the INPUT LEVELS
-and
-sampling frequency of the Revolution. You don't need to worry about the
-settings
-on this page unless you're recording audio with the Revolution.
-"
-(capitalization by me).
-
-
-On page number 25 under "Recording":
-
-"
-The Revolution 7.1 includes a pair of audio inputs for recording. You can
-set the
-INPUT LEVEL of the inputs by launching the Revolution 7.1 control panel,
-selecting
-the Input/Other tab, and changing the level on that screen. If your
-recording
-application doesn't see audio from the Revolution's inputs, check that
-program's
-audio preferences, check your cable connections, or review the Software
-Setup
-chapter for potential problems. Go to the Windows Control panel and open
-Sounds and Multimedia icon. The Revolution 7.1 features both Line and Mic
-inputs for the best performance with your input source. The Revolution
-7.1
-records at sampling rates up to and including 96kHz.
-"
-(capitalization by me).
-
-
-The "Input/Other" tab in its non-selected form can be seen on the picture
-on page 20 - to see it more clearly I had to choose 400% zoom in 'xpdf'.
-
-
-
-Regarding feasibility.
-
-First of all, gain can be changed by multiplying the code by the gain
-value.
-
-If I remember correctly, in ALSA the card outputs audio data in 32 bit
-format,
-of the 32 bits only 24 bits are significant because that's what the ADC
-produces, so we have 8 spare bits, which means 256 times, or about 48dB
-gain
-control without even losing precision.
-
-
-General note on priority of implementing the feature.
-
-Though I believe the feature is needed, and not only for Revolution 7.1,
-but
-also for other ICE1724-based cards, please understand the following:
-
-*** I still have no capture with my Revolution 7.1 (issue
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001096) ***
-.
-
-Since I'm not getting it work, I've been trying to use ALSA utilities
-('amixer',
-'alsamixer', 'aoss') - "trial and error" approach -  to make it work, and
-have
-found other problems on the way.
-
-Resolution of these other problem, including introduction of gain
-control,
-will not solve my main problem - lack of capture.
-
-
-I would appreciate getting an answer to the question in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 :
-
-"
-Maybe my previous question does not contain enough details.
-
-Here is the rephrased question:
-
-Running 'amixer' with this command line
-
-amixer cget numid=<number>
-
-, where <number is in 5..12 range, I see output like this:
-
-"
-  ; type=ENUMERATED,access=rw---,values=1,items=5
-  ; Item 0 'PCM Out'
-  ; Item 0000001 'H/W In 0'
-  ; Item 0000002 'H/W In 1'
-  ; Item 0000003 'IEC958 In L'
-  ; Item 0000004 'IEC958 In R'
-  : values=0
-".
-
-Can any of these controls be related to enabling capture ?
-
-Thanks,
-  Sergei.
-".
-
-Or, to be more precise, getting an answer to the question in general:
-"How
-to enable capture in M-Audio Revolution 7.1 ?".
-
-Thanks,
-  Sergei.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-12-05 15:51 sst4           New Issue                                    
-06-12-05 15:51 sst4           Distribution              => Mandriva        
-06-12-05 15:51 sst4           Kernel Version            => 2.6.11          
-======================================================================
-
-
+Index: alsa-kernel/pci/hda/patch_sigmatel.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/patch_sigmatel.c,v
+retrieving revision 1.1
+diff -u -r1.1 patch_sigmatel.c
+--- alsa-kernel/pci/hda/patch_sigmatel.c	13 Apr 2005 13:45:31 -0000	1.1
++++ alsa-kernel/pci/hda/patch_sigmatel.c	12 Jun 2005 14:32:50 -0000
+@@ -45,6 +45,7 @@
+ 	hda_nid_t *mux_nids;
+ 	unsigned int num_adcs;
+ 	hda_nid_t capture_nid;
++	hda_nid_t dig_in_nid;
+ 
+ 	/* power management*/
+ 	hda_nid_t *pstate_nids;
+@@ -62,7 +63,8 @@
+ 	snd_kcontrol_new_t *mixer;
+ 
+ 	/* capture source */
+-	const struct hda_input_mux *input_mux;
++	struct hda_input_mux input_mux;
++	char input_labels[HDA_MAX_NUM_INPUTS][16];
+ 	unsigned int cur_mux[2];
+ 
+ 	/* channel mode */
+@@ -105,8 +107,8 @@
+         0x02, 0x03, 0x04, 0x05,
+ };
+ 
+-static hda_nid_t stac922x_pstate_nids[7] = {
+-	0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
++static hda_nid_t stac922x_pstate_nids[8] = {
++	0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x11,
+ };
+ 
+ static hda_nid_t stac922x_pin_nids[10] = {
+@@ -118,7 +120,7 @@
+ {
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	struct sigmatel_spec *spec = codec->spec;
+-	return snd_hda_input_mux_info(spec->input_mux, uinfo);
++	return snd_hda_input_mux_info(&spec->input_mux, uinfo);
+ }
+ 
+ static int stac92xx_mux_enum_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol)
+@@ -137,7 +139,7 @@
+ 	struct sigmatel_spec *spec = codec->spec;
+ 	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+ 
+-	return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
++	return snd_hda_input_mux_put(codec, &spec->input_mux, ucontrol,
+ 				     spec->mux_nids[adc_idx], &spec->cur_mux[adc_idx]);
+ }
+ 
+@@ -192,30 +194,6 @@
+ 	{ } /* end */
+ };
+ 
+-static struct hda_input_mux stac9200_input_mux = {
+-	.num_items = 5,
+-	.items = {
+-		{ "Port B", 0x0 },
+-		{ "Port C", 0x1 },
+-		{ "Port D", 0x2 },
+-		{ "Port A", 0x3 },
+-		{ "CD", 0x4 },
+-	}
+-};
+-
+-static struct hda_input_mux stac922x_input_mux = {
+-	.num_items = 7,
+-	.items = {
+-		{ "Port E", 0x0 },
+-		{ "CD", 0x1 },
+-		{ "Port F", 0x2 },
+-		{ "Port B", 0x3 },
+-		{ "Port C", 0x4 },
+-		{ "Port D", 0x5 },
+-		{ "Port A", 0x6 },
+-	}
+-};
+-
+ static int stac92xx_build_controls(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+@@ -224,19 +202,28 @@
+ 	err = snd_hda_add_new_ctls(codec, spec->mixer);
+ 	if (err < 0)
+ 		return err;
+-
+-	return 0;
++	if (spec->multiout.dig_out_nid) {
++		err = snd_hda_create_spdif_out_ctls(codec, spec->multiout.dig_out_nid);
++		if (err < 0)
++			return err;
++	}
++	if (spec->dig_in_nid) {
++		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in_nid);
++		if (err < 0)
++			return err;
++	}
++	return 0;	
+ }
+ 
+ #ifdef STAC_TEST
+ static unsigned int stac9200_pin_configs[8] = {
+-	0x40000100, 0x40000100, 0x0221401f, 0x01114010,
++	0x01c47010, 0x01447010, 0x0221401f, 0x01114010,
+ 	0x02a19020, 0x01a19021, 0x90100140, 0x01813122,
+ };
+ 
+ static unsigned int stac922x_pin_configs[14] = {
+ 	0x40000100, 0x40000100, 0x40000100, 0x01114010,
+-	0x01813122, 0x40000100, 0x40000100, 0x40000100,
++	0x01813122, 0x40000100, 0x01447010, 0x01c47010,
+ 	0x40000100, 0x40000100,
+ };
+ 
+@@ -299,36 +286,78 @@
+ 	return 0;
+ }
+ 
+-static int stac92xx_config_pin(struct hda_codec *codec, hda_nid_t nid, unsigned int pin_cfg)
++/*
++ * retrieve the default device type from the default config value
++ */
++#define get_defcfg_type(cfg) ((cfg & AC_DEFCFG_DEVICE) >> AC_DEFCFG_DEVICE_SHIFT)
++#define get_defcfg_location(cfg) ((cfg & AC_DEFCFG_LOCATION) >> AC_DEFCFG_LOCATION_SHIFT)
++
++static int stac92xx_config_pin(struct hda_codec *codec, hda_nid_t nid, unsigned int pin_cfg, int input)
+ {
+-	switch((pin_cfg & AC_DEFCFG_DEVICE) >> AC_DEFCFG_DEVICE_SHIFT) {
++	struct sigmatel_spec *spec = codec->spec;
++	u32 location = get_defcfg_location(pin_cfg);
++	char *label;
++	const char *type = NULL;
++
++	switch(get_defcfg_type(pin_cfg)) {
+ 		case AC_JACK_HP_OUT:
+ 			/* Enable HP amp */
+ 			stac92xx_set_pinctl(codec, nid, AC_PINCTL_HP_EN);
+ 			/* Fall through */
++		case AC_JACK_SPDIF_OUT:
+ 		case AC_JACK_LINE_OUT:
+ 		case AC_JACK_SPEAKER:
+ 			/* Enable output */
+ 			stac92xx_set_pinctl(codec, nid, AC_PINCTL_OUT_EN);
+ 			break;
++		case AC_JACK_SPDIF_IN:
++			stac92xx_set_pinctl(codec, nid, AC_PINCTL_IN_EN);
++			break;
+ 		case AC_JACK_MIC_IN:
++			if ((location & 0x0f) == AC_JACK_LOC_FRONT)
++				type = "Front Mic";
++			else
++				type = "Mic";
+ 			/* Set vref */
+ 			stac92xx_set_vref(codec, nid);
++			stac92xx_set_pinctl(codec, nid, AC_PINCTL_IN_EN);
++			break;
+ 		case AC_JACK_CD:
++			type = "CD";
++			stac92xx_set_pinctl(codec, nid, AC_PINCTL_IN_EN);
++			break;
+ 		case AC_JACK_LINE_IN:
++			if ((location & 0x0f) == AC_JACK_LOC_FRONT)
++				type = "Front Line";
++			else
++				type = "Line";
++			stac92xx_set_pinctl(codec, nid, AC_PINCTL_IN_EN);
++			break;
+ 		case AC_JACK_AUX:
+-			/* Enable input */
++			if ((location & 0x0f) == AC_JACK_LOC_FRONT)
++				type = "Front Aux";
++			else
++				type = "Aux";
+ 			stac92xx_set_pinctl(codec, nid, AC_PINCTL_IN_EN);
+ 			break;
+ 	}
+ 
++	if (input) {
++		if (!type)
++			type = "Input";
++		label = spec->input_labels[spec->input_mux.num_items];
++		strcpy(label, type);
++		spec->input_mux.items[spec->input_mux.num_items].label = label;
++		spec->input_mux.num_items++;
++	}
++
+ 	return 0;
+ }
+ 
+ static int stac92xx_config_pins(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+-	int i;
++	int i, input;
+ 	unsigned int pin_cfg;
+ 
+ 	for (i=0; i < spec->num_pins; i++) {
+@@ -343,7 +372,13 @@
+ 		if (((pin_cfg & AC_DEFCFG_PORT_CONN) >> AC_DEFCFG_PORT_CONN_SHIFT) == AC_JACK_PORT_NONE)
+ 			continue;	/* Move on */
+ 
+-		stac92xx_config_pin(codec, spec->pin_nids[i], pin_cfg);
++		if (snd_hda_param_read(codec,
++					spec->pin_nids[i],
++					AC_PAR_PIN_CAP) & AC_PINCAP_IN)
++				input = 1;
++		else
++				input = 0;
++			stac92xx_config_pin(codec, spec->pin_nids[i], pin_cfg, input);
+ 	}
+ 
+ 	return 0;
+@@ -402,6 +437,26 @@
+ }
+ 
+ /*
++ * Digital playback callbacks
++ */
++static int stac92xx_dig_playback_pcm_open(struct hda_pcm_stream *hinfo,
++					  struct hda_codec *codec,
++					  snd_pcm_substream_t *substream)
++{
++	struct sigmatel_spec *spec = codec->spec;
++	return snd_hda_multi_out_dig_open(codec, &spec->multiout);
++}
++
++static int stac92xx_dig_playback_pcm_close(struct hda_pcm_stream *hinfo,
++					   struct hda_codec *codec,
++					   snd_pcm_substream_t *substream)
++{
++	struct sigmatel_spec *spec = codec->spec;
++	return snd_hda_multi_out_dig_close(codec, &spec->multiout);
++}
++
++
++/*
+  * Analog capture callbacks
+  */
+ static int stac92xx_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
+@@ -427,6 +482,24 @@
+ 	return 0;
+ }
+ 
++static struct hda_pcm_stream stac92xx_pcm_digital_playback = {
++	.substreams = 1,
++	.channels_min = 2,
++	.channels_max = 2,
++	/* NID is set in stac92xx_build_pcms */
++	.ops = {
++		.open = stac92xx_dig_playback_pcm_open,
++		.close = stac92xx_dig_playback_pcm_close
++	},
++};
++
++static struct hda_pcm_stream stac92xx_pcm_digital_capture = {
++	.substreams = 1,
++	.channels_min = 2,
++	.channels_max = 2,
++	/* NID is set in stac92xx_build_pcms */
++};
++
+ static struct hda_pcm_stream stac92xx_pcm_analog_playback = {
+ 	.substreams = 1,
+ 	.channels_min = 2,
+@@ -464,6 +537,20 @@
+ 	info->stream[SNDRV_PCM_STREAM_CAPTURE] = stac92xx_pcm_analog_capture;
+ 	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->capture_nid;
+ 
++	if (spec->multiout.dig_out_nid || spec->dig_in_nid) {
++		codec->num_pcms++;
++		info++;
++		info->name = "STAC92xx Digital";
++		if (spec->multiout.dig_out_nid) {
++			info->stream[SNDRV_PCM_STREAM_PLAYBACK] = stac92xx_pcm_digital_playback;
++			info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid = spec->multiout.dig_out_nid;
++		}
++		if (spec->dig_in_nid) {
++			info->stream[SNDRV_PCM_STREAM_CAPTURE] = stac92xx_pcm_digital_capture;
++			info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->dig_in_nid;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -492,9 +579,11 @@
+ 	spec->multiout.max_channels = 2;
+ 	spec->multiout.num_dacs = 1;
+ 	spec->multiout.dac_nids = stac9200_dac_nids;
++	spec->multiout.dig_out_nid = 0x05;
++	spec->dig_in_nid = 0x04;
+ 	spec->adc_nids = stac9200_adc_nids;
+ 	spec->mux_nids = stac9200_mux_nids;
+-	spec->input_mux = &stac9200_input_mux;
++	spec->input_mux.num_items = 0;
+ 	spec->pstate_nids = stac9200_pstate_nids;
+ 	spec->num_pstates = 3;
+ 	spec->pin_nids = stac9200_pin_nids;
+@@ -525,11 +614,13 @@
+ 	spec->multiout.max_channels = 2;
+ 	spec->multiout.num_dacs = 4;
+ 	spec->multiout.dac_nids = stac922x_dac_nids;
++	spec->multiout.dig_out_nid = 0x08;
++	spec->dig_in_nid = 0x09;
+ 	spec->adc_nids = stac922x_adc_nids;
+ 	spec->mux_nids = stac922x_mux_nids;
+-	spec->input_mux = &stac922x_input_mux;
++	spec->input_mux.num_items = 0;
+ 	spec->pstate_nids = stac922x_pstate_nids;
+-	spec->num_pstates = 7;
++	spec->num_pstates = 8;
+ 	spec->pin_nids = stac922x_pin_nids;
+ #ifdef STAC_TEST
+ 	spec->pin_configs = stac922x_pin_configs;
 
 
 -------------------------------------------------------
