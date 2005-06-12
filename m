@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Sun, 12 Jun 2005 19:35:22 +0200
-Message-ID: <0d44d0c9935f2a9e3fc3e209fb21f762@bugtrack.alsa-project.org>
+From: fab <fab@gnux.info>
+Subject: Re: Medion Laptop + alc880
+Date: Sun, 12 Jun 2005 20:22:15 +0200
+Message-ID: <20050612182215.GA4060@blackmilk.localzone.fr>
+References: <20050609172631.GA26714@blackmilk.localzone.fr> <m2hdg74blq.fsf@vador.mandriva.com> <s5hvf4m1171.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 314CC1A3
-	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 19:35:23 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hvf4m1171.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,156 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Thierry Vignaud <tvignaud@mandriva.com>, fab <fab@gnux.info>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On 10/06/05 21:06 +0200, Takashi Iwai wrote:
+> At Thu, 09 Jun 2005 20:41:05 +0200,
+> Thierry Vignaud wrote:
+> > 
+> > fab <fab@gnux.info> writes:
+> > 
+> > > I already said the intel-hda driver is badly working with latest
+> > > (cvs) alsa, I had no speaker out and most outputs were mangled
+> > > . realtek released a new driver:
+> > > 
+> > > ftp://152.104.238.194/pc/hda/alc880d/linux_r32.zip
+> > > 
+> > > Not perfect, but makes the internal speaker working and most outputs
+> > > are working as expected, I havn't tried it much but it's by far the
+> > > best working driver for this card.
+> > 
+> > this is a patched alsa-driver-1.0.9rc4a (just checked against the
+> > official tarball):
+> 
+> Yes, I merged it and rewrote many codes on CVS.  Give it a try.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
-======================================================================
-Reported By:                sst4
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-12-2005 19:35 CEST
-======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
-Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
+Ok, I checked out alsa today and it looked weired, the card= was
+uneffective and I always got something looking like card=test. The
+internal speakers were always off too...
+Are all the changes from realtek applied ?
+My computer was out for repairing and I got it 3 days ago, I havn't read
+the ML for long, am I missing some insmod parameters ?
 
-Soon (probably in a second) after this command line:
-
-aoss skype &
-
-the terminal window gets filled with
-
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 14:53 
-----------------------------------------------------------------------
-With revo 7.1, this might not work, too, since revo has really no "Capture
-Volume" (corresponding to IGAIN in OSS).
-
-If so, it must be a bug of Skype.  Skype must check DEVMASK before reading
-IGAIN.
-
-----------------------------------------------------------------------
- sst4 - 06-12-05 19:35 
-----------------------------------------------------------------------
-Takashi,
-
-thanks for you reply.
-
-I do not think it's that much of a bug in Skype.
-
-I think it's hard to find a soundcard which doesn't have input gain
-control
-under Windows.
-
-And I believe that the card should have, and it's possible to do, input
-gain control - please see
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187
-.
-
-Aslo, I'm repeating what I've said in the issue above:
-
-"
-*** I still have no capture with my Revolution 7.1 (issue 0001096) ***
-.
-
-Since I'm not getting it work, I've been trying to use ALSA utilities
-('amixer',
-'alsamixer', 'aoss') - "trial and error" approach - to make it work, and
-have
-found other problems on the way.
-
-Resolution of these other problem, including introduction of gain
-control,
-will not solve my main problem - lack of capture.
-
-
-I would appreciate getting an answer to the question in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php [^]?id=1096 :
-
-"
-Maybe my previous question does not contain enough details.
-
-Here is the rephrased question:
-
-Running 'amixer' with this command line
-
-amixer cget numid=<number>
-
-, where <number is in 5..12 range, I see output like this:
-
-"
-  ; type=ENUMERATED,access=rw---,values=1,items=5
-  ; Item 0 'PCM Out'
-  ; Item 0000001 'H/W In 0'
-  ; Item 0000002 'H/W In 1'
-  ; Item 0000003 'IEC958 In L'
-  ; Item 0000004 'IEC958 In R'
-  : values=0
-".
-
-Can any of these controls be related to enabling capture ?
-
-Thanks,
-  Sergei.
-".
-
-Or, to be more precise, getting an answer to the question in general:
-"How
-to enable capture in M-Audio Revolution 7.1 ?".
-".
-
-Thanks,
-  Sergei.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-07-05 00:33 sst4           New Issue                                    
-06-08-05 14:50 tiwai          Note Added: 0004923                          
-06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
-
-06-08-05 14:53 tiwai          Note Added: 0004926                          
-06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
- 
-06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
-  
-06-12-05 19:35 sst4           Note Added: 0004999                          
-======================================================================
-
-
+Regards.
+Fabien Devaux.
 
 
 -------------------------------------------------------
