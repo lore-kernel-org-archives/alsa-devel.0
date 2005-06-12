@@ -1,11 +1,14 @@
-From: r_zaca <r_zaca@ig.com.br>
-Subject: What can I do?
-Date: Sat, 11 Jun 2005 20:52:33 -0300
-Message-ID: <20050611_235233_010170.r_zaca@ig.com.br>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001186]: SIS7012: the speakers can sound, but not the headphones.
+Date: Sun, 12 Jun 2005 11:30:14 +0200
+Message-ID: <2929794c6da7562b3d44714f00e43d0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="Message-Boundary-by-Mail-Sender-1118533953"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B268B1AF
+	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 11:30:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,31 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
 
---Message-Boundary-by-Mail-Sender-1118533953
-Content-type: text/plain; charset=ISO-8859-1
-Content-description: Mail message body
-Content-disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1186> 
+======================================================================
+Reported By:                shiyutang
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1186
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Mandriva Linux 2005
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             06-12-2005 11:30 CEST
+Last Modified:              06-12-2005 11:30 CEST
+======================================================================
+Summary:                    SIS7012: the speakers can sound, but not the
+headphones.
+Description: 
+The model of my laptop PC is Acer TravelMate 273xv. I install Mandriva
+Linux 2005 in it and find a strange problem, that is I can have sound from
+the speakers, but not the headphones.
 
-  Hello everybody,=20
+The machine I bought has the following specs:
+Processor	1.7Ghz Pentium 4 (Mobile)
+RAM	256 MB DDR
+HDD	30GB
+CD	DVD
+Motherboard chipset: SIS 650
+FDD	Built in
+USB	3 Ports, USB 1.1
+Firewire IEEE 1394 small 4 pin socket
+PCMCIA	Two sockets
+Modem	SoftModem, Lucent
+LAN	Built in 10/100, RTL8139 compatible
+Video	built-in GPU, 1024x768, Monitor out, S-Video Out
+Legacy	Both serial and Parallel ports
+Mouse	Touchpad. I have added a Logitech mouse
+Supplied OS	Windows XP
 
-  I just started to learn about Linux device drivers and I was looking fo=
-r=20
-some project to become part of. Searching in the Internet I realized that=
-=20
-ALSA is needing some programmers to work on low level drivers. I'd like t=
-o=20
-help doing somethink. So what can I do and what should I do to help in=20
-somethink?=20
-  Thanks.=20
+A strange status may help you:
+If you are using Windows XP, and using SIS 7012 driver downloaded from
+SIS, you will meet the same problem as ALSA, speakers sound but headphones
+not sound. But if you are using Realtek ALC 650 driver downloaded from
+Realtek(http://152.104.125.9/pc/ac97/alc650/wdm_a373.exe), both speakers
+and headphones will sound. So I think this model of Acer laptop doesn't
+use the common SIS 7012.
 
---Message-Boundary-by-Mail-Sender-1118533953--
+Not only I meet the problem, another Debian user also meet it and post it
+on linux-laptop.net, see
+http://www.martinjones.net/acerlinux/linuxsound.html
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-12-05 11:30 shiyutang      New Issue                                    
+06-12-05 11:30 shiyutang      Distribution              => Mandriva Linux 2005
+06-12-05 11:30 shiyutang      Kernel Version            => 2.6.11          
+======================================================================
+
 
 
 
