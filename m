@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001183]: Details about known bug "Capture doesn't work"
-Date: Mon, 13 Jun 2005 13:07:26 +0200
-Message-ID: <0d9b693822775adc722aa1965dadd323@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000915]: When compiled with SND_HWDEP enabled, the intel8x0 driver is no longer able to share an IRQ with other devices
+Date: Mon, 13 Jun 2005 13:07:59 +0200
+Message-ID: <0e8ef902781db9d85075462580e9e821@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4607A1C1
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 13:07:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E17F1C1
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 13:07:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=915> 
 ======================================================================
 Reported By:                Jochen
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1183
-Category:                   PCI - es1968
+Issue ID:                   915
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.10-gentoo-r7
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-11-2005 20:34 CEST
+Date Submitted:             02-17-2005 10:17 CET
 Last Modified:              06-13-2005 13:07 CEST
 ======================================================================
-Summary:                    Details about known bug "Capture doesn't work"
+Summary:                    When compiled with SND_HWDEP enabled, the intel8x0
+driver is no longer able to share an IRQ with other devices
 Description: 
-I'm experiencing the problem with es1968 not supporting capture described
-in various places. This bug keeps me from using skype: the second it tries
-to read from the OSS compatibility device it receives and EINVAL
+On my System an intel8x0 card and a Intel PRO Wireless 2200BG card share
+irq5 which works perfectly with SND_HWDEP.
 
-using the old OSS maestro driver works thou.
+I recently enabled SND_HWDEP for another audio driver. since then all
+commands the ipw2200 driver issues to the wlan card time out, the audio
+driver however is still working.
 
-apparently this is the known bug "capture doesn't work"
-
-I'd like to ask for a little more information on this bug, and whether
-it's possible to contribute here.
+Since I didn't change the ipw2200 driver but only an alsa related option,
+I guess it's an alsa bug
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-13-05 13:07 
+ tiwai - 02-17-05 18:39 
 ----------------------------------------------------------------------
-Could you describe more "details" about the bug?
-What exactly skype tells?
+Then correct your driver's Kconfig file to select SND_HWDEP.
+
+Anyway, this sounds like a false positive.
+hwdep module can't influence on intel8x0 or any other drivers.  It's a
+core module and have no h/w access by itself.
+Check whether any other drivers are loaded casually and conflict.
+
+----------------------------------------------------------------------
+ Jochen - 06-11-05 15:49 
+----------------------------------------------------------------------
+yes, true. this was a false positive. could somebody please close the bug?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 20:34 Jochen         New Issue                                    
-06-13-05 13:07 tiwai          Note Added: 0005007                          
+02-17-05 10:17 Jochen         New Issue                                    
+02-17-05 10:17 Jochen         Distribution              => Gentoo          
+02-17-05 10:17 Jochen         Kernel Version            => 2.6.10-gentoo-r7
+02-17-05 10:56 Jochen         Note Added: 0003627                          
+02-17-05 18:18 tiwai          Note Added: 0003629                          
+02-17-05 18:33 Jochen         Note Added: 0003633                          
+02-17-05 18:39 tiwai          Note Added: 0003634                          
+06-11-05 15:49 Jochen         Note Added: 0004993                          
+06-13-05 13:07 tiwai          Status                   new => resolved     
+06-13-05 13:07 tiwai          Resolution               open => not an issue
+06-13-05 13:07 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
