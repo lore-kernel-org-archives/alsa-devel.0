@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Mon, 13 Jun 2005 09:33:11 +0200
-Message-ID: <161eaa3cf08f58366af527ca0f7cf15a@bugtrack.alsa-project.org>
+Date: Mon, 13 Jun 2005 10:25:55 +0200
+Message-ID: <8a136d80ffa2dfc20a8878a2926ace46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F14E01A4
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 09:33:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA8F61AB
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 10:25:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core1, Core2 and Suse 9.2
 Kernel Version:             2.6.9 2.4.28 2.6.8
 ======================================================================
 Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              06-13-2005 09:33 CEST
+Last Modified:              06-13-2005 10:25 CEST
 ======================================================================
 Summary:                    No apparent support for Creative Sounblaster 24 bit.
 Description: 
@@ -50,13 +50,6 @@ Fedora does not find any sound device.
 
 Susi finds a device but can't activate it.
 ======================================================================
-
-----------------------------------------------------------------------
- zubir - 06-12-05 15:43 
-----------------------------------------------------------------------
-[ed@localhost ~]$ cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     MSI K8N Diamond MB [SB0438] at 0xee00 irq 16
 
 ----------------------------------------------------------------------
  sjberryman - 06-13-05 09:33 
@@ -70,6 +63,13 @@ alsamixer.
 
 Is there a way to make the volume come up on boot or remember the value
 set before the last shutdown or be settable by the gnome desktop controls?
+
+----------------------------------------------------------------------
+ jcdutton - 06-13-05 10:25 
+----------------------------------------------------------------------
+Use the alsasound startup script.
+It is a standard /etc/init.d script that runs at start up and shutdown.
+At shutdown is stores the mixer settings, and start up is restores them.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +112,7 @@ and Suse 9.2
 06-12-05 10:43 nadavkav       Note Deleted: 0003416                        
 06-12-05 15:43 zubir          Note Added: 0004998                          
 06-13-05 09:33 sjberryman     Note Added: 0005002                          
+06-13-05 10:25 jcdutton       Note Added: 0005003                          
 ======================================================================
 
 
