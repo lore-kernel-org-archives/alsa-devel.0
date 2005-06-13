@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001188]: quake3 crashes, capture not working
-Date: Mon, 13 Jun 2005 19:41:25 +0200
-Message-ID: <9d96bf4a687940641263fe737934b4e5@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
+Date: Mon, 13 Jun 2005 19:55:18 +0200
+Message-ID: <d156d3a8a2f88cf32f1781e1e623fec4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A234E1CE
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 19:41:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0DCA1CE
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 19:55:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
 ======================================================================
-Reported By:                gnarlie
-Assigned To:                jcdutton
+Reported By:                herby
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1188
-Category:                   PCI - ca0106
+Project:                    ALSA - utils
+Issue ID:                   1174
+Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.8.1 with the voluntary preempt patch
+Status:                     new
 ======================================================================
-Date Submitted:             06-13-2005 19:41 CEST
-Last Modified:              06-13-2005 19:41 CEST
+Date Submitted:             06-09-2005 00:42 CEST
+Last Modified:              06-13-2005 19:55 CEST
 ======================================================================
-Summary:                    quake3 crashes, capture not working
+Summary:                    Speaker Test fails with error message(s) from alsa
+lib.  "problem for start_threshold"
 Description: 
-The card is a sb live 24bit pci.
-quake3 crashes me after a map has loaded, oddly one map works but crashes
-everytime when I finish the map. The sounds in the menus work. Tried my
-mic
-with the mic-in and all possible mixer settings, no dice.
+Running speaker test gets me:
+>>>
+speaker-test 0.0.8
+
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
+params->avail_min problem for start_threshold
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+<<<
 ======================================================================
+
+----------------------------------------------------------------------
+ herby - 06-13-05 19:55 
+----------------------------------------------------------------------
+Is this a problem with the library, My interface card (Revolution 7.1), my
+(simple) /etc/asound.conf, or with (I doubt) speaker-test?  Perhaps it
+should be in a different catagory.  I have working speaker tests in older
+versions, and (I assume) the current versions of others.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-13-05 19:41 gnarlie        New Issue                                    
-06-13-05 19:41 gnarlie        Distribution              => gentoo          
-06-13-05 19:41 gnarlie        Kernel Version            => 2.6.8.1 with the
-voluntary preempt patch
+06-09-05 00:42 herby          New Issue                                    
+06-13-05 19:49 herby          Issue Monitored: herby                       
+06-13-05 19:55 herby          Note Added: 0005013                          
 ======================================================================
 
 
