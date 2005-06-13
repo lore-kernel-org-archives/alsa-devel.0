@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
-Date: Sun, 12 Jun 2005 20:52:41 +0200
-Message-ID: <b571c8aa3a19cfe74a1d91d2ca8091ca@bugtrack.alsa-project.org>
+From: Jeremy White <jwhite@codeweavers.com>
+Subject: Re: RFC:  Appropriate device detection for Wine  (more
+ advice needed)
+Date: Sun, 12 Jun 2005 21:43:11 -0500
+Message-ID: <42ACF2BF.5050603@codeweavers.com>
+References: <42A519E9.2000103@codeweavers.com> <Pine.LNX.4.58.0506070930180.1752@pnote.perex-int.cz> <42A592BA.7050505@codeweavers.com> <Pine.LNX.4.58.0506071445070.1752@pnote.perex-int.cz> <42A5AE6A.2070204@codeweavers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65DC01BA
-	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2005 20:52:41 +0200 (MEST)
+In-Reply-To: <42A5AE6A.2070204@codeweavers.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Okay,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
-======================================================================
-Reported By:                jwiegley
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1064
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian-pure64
-Kernel Version:             2.6.12-rc2
-======================================================================
-Date Submitted:             04-18-2005 20:42 CEST
-Last Modified:              06-12-2005 20:52 CEST
-======================================================================
-Summary:                    snd_hda_intel does not recognize acl880 sound chip
-Description: 
-I bought a Shuttle ST20G5 box. Sound doesn't get detected or
-seem to work with manual load.
+So now I have a patch for Wine that very nicely
+has Wine scanning for all cards and devices.  It
+even probes for devices that behave badly
+(e.g. my winmodem) and strips them out.
 
-chipset:
-  ATI Xpress 200 northbridge
-  ULI 1573 southbridge
+But I still have one device on my laptop;
+card 0, device 4, that simply does not work
+(see details below).
 
-The documentation says the sound is:
-  Realtek ALC880
+It seems to 'smell' right, but when data is
+written to it, the buffer is never emptied.
+Writing a sound file to it with aplay hangs
+indefinitely; using pcm fills the sound buffer
+and then blocks indefinitely.
 
-alsaconf detects nothing
-manually loading snd_hda_intel also doesn't print anything in the
-log files; though it does seem to load all the snd stuff just fine.
-======================================================================
+So I'd like some advice:  Have I just been utterly
+unrealistic in trying to scan for all PCM devices
+on all cards?  Should I only report device 0 on each
+card by default, and require the user to explicitly
+request alternate devices?  Is there some way I can
+detect that this device is psycho and automatically
+strip it out?  What the heck is device 4 on my card?
 
-----------------------------------------------------------------------
- tiwai - 04-19-05 17:38 
-----------------------------------------------------------------------
-It seems that the device has an unknown controller by ALI.
+Any/all advice appreciated.
 
-Try to add the corresponding PCI IDs (10b9:5461) to azx_ids[] in
-pci/hda_intel.c, in case the chipset is compatible with Intel ICH6/7.
+Thanks,
 
-----------------------------------------------------------------------
- jwiegley - 06-12-05 20:52 
-----------------------------------------------------------------------
-I did as you requested and added the PCI ID.
+Jeremy
 
-When the driver loads during boot all I get is
-tons of "azx_get_response timeout" lines on my
-console and I have to sysrq-b to reboot to a
-different kernel.
+p.s. Some details on sound card, let me know if more
+is relevant:
 
-I also got the 1.0.9rc4a source after trolling
-the web and it does the exact same thing.
-
-Any ideas on how to get this chip supported?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-05 20:42 jwiegley       New Issue                                    
-04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
-04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
-04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
-04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
-hda-intel
-04-19-05 17:38 tiwai          Note Added: 0004523                          
-06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
-06-12-05 20:52 jwiegley       Note Added: 0005001                          
-======================================================================
+releveant lspc -v snippet:
 
 
+00000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 01)
+         Subsystem: Dell: Unknown device 011d
+         Flags: bus master, medium devsel, latency 0, IRQ 7
+         I/O ports at b800 [size=256]
+         I/O ports at bc40 [size=64]
+         Memory at f4fff800 (32-bit, non-prefetchable) [size=512]
+         Memory at f4fff400 (32-bit, non-prefetchable) [size=256]
+         Capabilities: [50] Power Management version 2
+
+
+jertop:/proc/asound/card0/pcm4p# cat /proc/asound/card0/pcm4p/info
+card: 0
+device: 4
+subdevice: 0
+stream: PLAYBACK
+id: Intel ICH - IEC958
+name: Intel 82801DB-ICH4 - IEC958
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+
+
+cat /proc/asound/devices
+jertop:/# cat /proc/asound/devices
+   0: [0- 0]: ctl
+  20: [0- 4]: digital audio playback
+  27: [0- 3]: digital audio capture
+  26: [0- 2]: digital audio capture
+  25: [0- 1]: digital audio capture
+  16: [0- 0]: digital audio playback
+  24: [0- 0]: digital audio capture
+  33:       : timer
+  32: [1- 0]: ctl
+  48: [1- 0]: digital audio playback
+  56: [1- 0]: digital audio capture
 
 
 -------------------------------------------------------
