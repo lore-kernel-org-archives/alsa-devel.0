@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
-Date: Mon, 13 Jun 2005 12:23:33 +0200
-Message-ID: <46f1c4df93656d62bb4794800777bb7d@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
+Date: Mon, 13 Jun 2005 13:03:22 +0200
+Message-ID: <2a0dc433d4e72ca291ff053c286cc4ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5CF21B4
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 12:23:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B1181BA
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 13:03:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,146 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
 ======================================================================
-Reported By:                dpinte
+Reported By:                sst4
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1170
-Category:                   1_OTHERS
+Project:                    ALSA - liboss
+Issue ID:                   1164
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11-5
 ======================================================================
-Date Submitted:             06-08-2005 10:09 CEST
-Last Modified:              06-13-2005 12:23 CEST
+Date Submitted:             06-07-2005 00:33 CEST
+Last Modified:              06-13-2005 13:03 CEST
 ======================================================================
-Summary:                    since update to 1.0.9 sound is not clear but noisy
+Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
+failed: Invalid argument
 Description: 
-Hi,
+I've tried 'skype' with my M-Audio Revolution 7.1.
 
-On my Debian/Sid, everything was ok since update to 1.0.9 (and 1.0.8 in
-the same upgrade). There were no other changes than alsa updates. 
+Soon (probably in a second) after this command line:
 
-I'm running the Debian kernel-image-2.6.11-1-686.
+aoss skype &
 
-I've tested aplay without success, sound is noisy. I've also tested to
-reboot without my snd_intel8x0m module without changes.
+the terminal window gets filled with
 
-Here are the modules loaded :
+volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
 
-did@geru-itea:~$ lsmod | grep snd
-snd_intel8x0           33216  2
-snd_ac97_codec         78360  1 snd_intel8x0
-snd_pcm_oss            53344  0
-snd_mixer_oss          19872  2 snd_pcm_oss
-snd_pcm                92712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              24644  1 snd_pcm
-snd                    55300  8
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9664  2 snd
-snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
+messages, and I do not hear anything in 'skype' connecting to their
+automated 'echo123' service.
+
+The message is not quite clear, and I believe it shouldn't flood the
+screen.
+
+I mean, the code should first check capabilities of the card and its
+configuration and
+issue the message once.
+
+
+What is IGAIN in the message above ? Input gain ? That is, capture gain ?
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 06-13-05 10:27 
+ sst4 - 06-12-05 19:35 
 ----------------------------------------------------------------------
-> We can close this
+Takashi,
 
-Are we sure that there is no bug in alsa-lib?  After all, esound
-worked until the 1.0.9 release.
+thanks for you reply.
+
+I do not think it's that much of a bug in Skype.
+
+I think it's hard to find a soundcard which doesn't have input gain
+control
+under Windows.
+
+And I believe that the card should have, and it's possible to do, input
+gain control - please see
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187
+.
+
+Aslo, I'm repeating what I've said in the issue above:
+
+"
+*** I still have no capture with my Revolution 7.1 (issue 0001096) ***
+.
+
+Since I'm not getting it work, I've been trying to use ALSA utilities
+('amixer',
+'alsamixer', 'aoss') - "trial and error" approach - to make it work, and
+have
+found other problems on the way.
+
+Resolution of these other problem, including introduction of gain
+control,
+will not solve my main problem - lack of capture.
+
+
+I would appreciate getting an answer to the question in
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php [^]?id=1096 :
+
+"
+Maybe my previous question does not contain enough details.
+
+Here is the rephrased question:
+
+Running 'amixer' with this command line
+
+amixer cget numid=<number>
+
+, where <number is in 5..12 range, I see output like this:
+
+"
+  ; type=ENUMERATED,access=rw---,values=1,items=5
+  ; Item 0 'PCM Out'
+  ; Item 0000001 'H/W In 0'
+  ; Item 0000002 'H/W In 1'
+  ; Item 0000003 'IEC958 In L'
+  ; Item 0000004 'IEC958 In R'
+  : values=0
+".
+
+Can any of these controls be related to enabling capture ?
+
+Thanks,
+  Sergei.
+".
+
+Or, to be more precise, getting an answer to the question in general:
+"How
+to enable capture in M-Audio Revolution 7.1 ?".
+".
+
+Thanks,
+  Sergei.
 
 ----------------------------------------------------------------------
- tiwai - 06-13-05 12:23 
+ tiwai - 06-13-05 13:03 
 ----------------------------------------------------------------------
-esound doesn't check the return value of snd_pcm_writei().
-That's why it doesn't work with plug:dmix properly.
+This card (codec chip) has really no input level support _on hardware_.
+
+Can't you choose the capture source via alsamixer instead of amixer?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 10:09 dpinte         New Issue                                    
-06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
-06-08-05 10:21 dpinte         Note Added: 0004916                          
-06-08-05 14:20 dpinte         Note Added: 0004918                          
-06-08-05 14:27 tiwai          Note Added: 0004920                          
-06-08-05 14:53 dpinte         Note Added: 0004925                          
-06-13-05 10:27 jdthood        Note Added: 0005004                          
-06-13-05 12:23 tiwai          Note Added: 0005005                          
+06-07-05 00:33 sst4           New Issue                                    
+06-08-05 14:50 tiwai          Note Added: 0004923                          
+06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
+
+06-08-05 14:53 tiwai          Note Added: 0004926                          
+06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
+ 
+06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
+  
+06-12-05 19:35 sst4           Note Added: 0004999                          
+06-13-05 13:03 tiwai          Note Added: 0005006                          
 ======================================================================
 
 
