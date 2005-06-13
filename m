@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: RFC:  Appropriate device detection for Wine  (more
- advice needed)
-Date: Mon, 13 Jun 2005 09:24:40 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0506130919470.20036-100000@studcom.urz.uni-halle.de>
-References: <42ACF2BF.5050603@codeweavers.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
+Date: Mon, 13 Jun 2005 09:33:11 +0200
+Message-ID: <161eaa3cf08f58366af527ca0f7cf15a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42ACF2BF.5050603@codeweavers.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F14E01A4
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 09:33:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,36 +18,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jeremy White <jwhite@codeweavers.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jeremy White wrote:
-> But I still have one device on my laptop;
-> card 0, device 4, that simply does not work
-> (see details below).
-> name: Intel 82801DB-ICH4 - IEC958
 
-This is the SPDIF output.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+======================================================================
+Reported By:                sjberryman
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   724
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core1, Core2 and Suse 9.2
+Kernel Version:             2.6.9 2.4.28 2.6.8
+======================================================================
+Date Submitted:             12-13-2004 09:21 CET
+Last Modified:              06-13-2005 09:33 CEST
+======================================================================
+Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Description: 
+No apparent support for Creative Sounblaster 24 bit.
 
-I don't know what the problem is, especially if the PCM output _does_
-work.  Does your machine actually have an SPDIF output?
+Fedora does not find any sound device.
 
-> So I'd like some advice:  Have I just been utterly
-> unrealistic in trying to scan for all PCM devices
-> on all cards?
+Susi finds a device but can't activate it.
+======================================================================
 
-No, you cannot do more.  The user has to decide which device to use.
+----------------------------------------------------------------------
+ zubir - 06-12-05 15:43 
+----------------------------------------------------------------------
+[ed@localhost ~]$ cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     MSI K8N Diamond MB [SB0438] at 0xee00 irq 16
 
-> Is there some way I can detect that this device is psycho and
-> automatically strip it out?
+----------------------------------------------------------------------
+ sjberryman - 06-13-05 09:33 
+----------------------------------------------------------------------
+At last some sound from my speakers!!!
 
-There are many reason why a device could be temporarily unavailable,
-so Wine shouldn't try to be too intelligent. :-)
+Thank you very much jcdutton!
 
+I only had to adjust the volume of the Analog Front control from
+alsamixer.
 
-HTH
-Clemens
+Is there a way to make the volume come up on boot or remember the value
+set before the last shutdown or be settable by the gnome desktop controls?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-13-04 09:21 sjberryman     New Issue                                    
+12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
+and Suse 9.2
+12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
+12-16-04 18:28 tiwai          Status                   new => resolved     
+12-16-04 18:28 tiwai          Resolution               open => not an issue
+12-16-04 18:28 tiwai          Assigned To               => tiwai           
+12-16-04 18:28 tiwai          Assigned To              tiwai =>            
+01-19-05 09:08 sjberryman     Status                   resolved => feedback
+01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
+01-19-05 09:08 sjberryman     Note Added: 0003263                          
+01-19-05 14:27 tiwai          Note Added: 0003266                          
+01-22-05 22:15 nadavkav       Note Added: 0003379                          
+01-22-05 23:20 fmoraes        Note Added: 0003381                          
+01-25-05 22:39 Kane32         Note Added: 0003411                          
+01-26-05 13:18 nadavkav       Note Added: 0003416                          
+02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
+02-08-05 23:32 sHINOBI        Note Added: 0003534                          
+02-09-05 07:25 pzad           Note Added: 0003535                          
+02-09-05 08:57 sHINOBI        Note Added: 0003536                          
+02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
+02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
+05-28-05 16:06 sjberryman     Note Added: 0004774                          
+05-28-05 20:02 jcdutton       Status                   feedback => assigned
+05-28-05 20:02 jcdutton       Assigned To               => jcdutton        
+05-28-05 20:07 jcdutton       Note Added: 0004775                          
+05-28-05 20:07 jcdutton       Status                   assigned => feedback
+06-10-05 13:28 sjberryman     Note Added: 0004983                          
+06-10-05 18:58 jcdutton       Note Added: 0004985                          
+06-11-05 13:34 sjberryman     Note Added: 0004988                          
+06-11-05 15:11 jcdutton       Note Added: 0004991                          
+06-11-05 15:13 jcdutton       Note Added: 0004992                          
+06-12-05 10:43 nadavkav       Note Deleted: 0003379                        
+06-12-05 10:43 nadavkav       Note Deleted: 0003416                        
+06-12-05 15:43 zubir          Note Added: 0004998                          
+06-13-05 09:33 sjberryman     Note Added: 0005002                          
+======================================================================
+
 
 
 
