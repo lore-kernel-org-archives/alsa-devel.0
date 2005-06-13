@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000915]: When compiled with SND_HWDEP enabled, the intel8x0 driver is no longer able to share an IRQ with other devices
-Date: Mon, 13 Jun 2005 13:07:59 +0200
-Message-ID: <0e8ef902781db9d85075462580e9e821@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
+Date: Mon, 13 Jun 2005 13:09:38 +0200
+Message-ID: <9382b72bd426f8e93d164b55b9e7b657@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E17F1C1
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 13:07:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6FB41C1
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 13:09:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=915> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
 ======================================================================
-Reported By:                Jochen
-Assigned To:                tiwai
+Reported By:                theoneandonlysm
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   915
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1179
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.10-gentoo-r7
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             02-17-2005 10:17 CET
-Last Modified:              06-13-2005 13:07 CEST
+Date Submitted:             06-10-2005 19:08 CEST
+Last Modified:              06-13-2005 13:09 CEST
 ======================================================================
-Summary:                    When compiled with SND_HWDEP enabled, the intel8x0
-driver is no longer able to share an IRQ with other devices
+Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
 Description: 
-On my System an intel8x0 card and a Intel PRO Wireless 2200BG card share
-irq5 which works perfectly with SND_HWDEP.
+I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
+package update and noticed that aRts in kde did not produce any sound even
+though no errors in arts was reported.
 
-I recently enabled SND_HWDEP for another audio driver. since then all
-commands the ipw2200 driver issues to the wlan card time out, the audio
-driver however is still working.
+I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
+sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
+Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
+functioning.
 
-Since I didn't change the ipw2200 driver but only an alsa related option,
-I guess it's an alsa bug
+dmesg gives me no errors, and I am not certain where else to look. The
+only clue I get is from mplayer while playing an audio file, where I get
+continual output of:
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+
+my lsmod:
+vmnet                  27812  2
+parport_pc             22980  1
+vmmon                 105260  0
+snd_pcm_oss            49312  0
+snd_mixer_oss          18304  1 snd_pcm_oss
+snd_hda_intel          14336  1
+snd_hda_codec          69248  1 snd_hda_intel
+snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              22276  1 snd_pcm
+snd                    50532  8
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
+lp                      8836  0
+parport                21440  2 parport_pc,lp
+nfsd                   91464  8
+exportfs                5120  1 nfsd
+nfs                    96044  1
+lockd                  61992  3 nfsd,nfs
+sunrpc                130500  5 nfsd,nfs,lockd
+vfat                   11648  1
+fat                    36252  1 vfat
+i915                   18176  1
+drm                    61204  2 i915
+intel_agp              20380  1
+agpgart                29488  3 drm,intel_agp
+hw_random               4884  0
+rtc                    10828  0
+ehci_hcd               29576  0
+usblp                  11648  0
+uhci_hcd               30480  0
+usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-17-05 18:39 
+ tiwai - 06-13-05 13:09 
 ----------------------------------------------------------------------
-Then correct your driver's Kconfig file to select SND_HWDEP.
-
-Anyway, this sounds like a false positive.
-hwdep module can't influence on intel8x0 or any other drivers.  It's a
-core module and have no h/w access by itself.
-Check whether any other drivers are loaded casually and conflict.
-
-----------------------------------------------------------------------
- Jochen - 06-11-05 15:49 
-----------------------------------------------------------------------
-yes, true. this was a false positive. could somebody please close the bug?
+It's likely a problem arts with dmix plugin.
+A known workaround is to set the sample rate on arts to 48000.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-05 10:17 Jochen         New Issue                                    
-02-17-05 10:17 Jochen         Distribution              => Gentoo          
-02-17-05 10:17 Jochen         Kernel Version            => 2.6.10-gentoo-r7
-02-17-05 10:56 Jochen         Note Added: 0003627                          
-02-17-05 18:18 tiwai          Note Added: 0003629                          
-02-17-05 18:33 Jochen         Note Added: 0003633                          
-02-17-05 18:39 tiwai          Note Added: 0003634                          
-06-11-05 15:49 Jochen         Note Added: 0004993                          
-06-13-05 13:07 tiwai          Status                   new => resolved     
-06-13-05 13:07 tiwai          Resolution               open => not an issue
-06-13-05 13:07 tiwai          Assigned To               => tiwai           
+06-10-05 19:08 theoneandonlysmNew Issue                                    
+06-13-05 13:09 tiwai          Note Added: 0005008                          
 ======================================================================
 
 
