@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
-Date: Mon, 13 Jun 2005 19:55:18 +0200
-Message-ID: <d156d3a8a2f88cf32f1781e1e623fec4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001189]: Aureon 7.1 Universe needs manual rate in .asoundrc when changing internal clock
+Date: Mon, 13 Jun 2005 22:33:47 +0200
+Message-ID: <668c449c5a2c69ad752c5707784212d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0DCA1CE
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 19:55:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64A261BB
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 22:33:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1189> 
 ======================================================================
-Reported By:                herby
+Reported By:                BrianMeidell
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1174
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1189
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11-gentoo-r3
 ======================================================================
-Date Submitted:             06-09-2005 00:42 CEST
-Last Modified:              06-13-2005 19:55 CEST
+Date Submitted:             06-13-2005 22:33 CEST
+Last Modified:              06-13-2005 22:33 CEST
 ======================================================================
-Summary:                    Speaker Test fails with error message(s) from alsa
-lib.  "problem for start_threshold"
+Summary:                    Aureon 7.1 Universe needs manual rate in .asoundrc
+when changing internal clock
 Description: 
-Running speaker test gets me:
->>>
-speaker-test 0.0.8
-
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 32768
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3764
-was set buffer_size = 15052
-ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
-params->avail_min problem for start_threshold
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
-<<<
+When changing the master internal clock rate on my aureon 7.1 universe, I
+also need to manually set the rate in .asoundrc for the device and match
+it to the alsamixer setting, otherwise it defaults to what sounds like
+44.1 KHz.
 ======================================================================
-
-----------------------------------------------------------------------
- herby - 06-13-05 19:55 
-----------------------------------------------------------------------
-Is this a problem with the library, My interface card (Revolution 7.1), my
-(simple) /etc/asound.conf, or with (I doubt) speaker-test?  Perhaps it
-should be in a different catagory.  I have working speaker tests in older
-versions, and (I assume) the current versions of others.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 00:42 herby          New Issue                                    
-06-13-05 19:49 herby          Issue Monitored: herby                       
-06-13-05 19:55 herby          Note Added: 0005013                          
+06-13-05 22:33 BrianMeidell   New Issue                                    
+06-13-05 22:33 BrianMeidell   Distribution              => Gentoo          
+06-13-05 22:33 BrianMeidell   Kernel Version            => 2.6.11-gentoo-r3
 ======================================================================
 
 
