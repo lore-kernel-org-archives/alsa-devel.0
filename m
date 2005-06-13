@@ -1,12 +1,14 @@
-From: edoardo <edoardo@lastorina.it>
-Subject: Re: audgiy two zs and emu10k1
-Date: Mon, 13 Jun 2005 18:05:19 +0200 (CEST)
-Message-ID: <Pine.LNX.4.63.0506131801150.29136@localhost>
-References: <Pine.LNX.4.63.0506110156090.19442@localhost> <42AB6EBC.5080201@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001188]: quake3 crashes, capture not working
+Date: Mon, 13 Jun 2005 19:41:25 +0200
+Message-ID: <9d96bf4a687940641263fe737934b4e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42AB6EBC.5080201@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A234E1CE
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2005 19:41:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,43 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa developers' list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1188> 
+======================================================================
+Reported By:                gnarlie
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1188
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.8.1 with the voluntary preempt patch
+======================================================================
+Date Submitted:             06-13-2005 19:41 CEST
+Last Modified:              06-13-2005 19:41 CEST
+======================================================================
+Summary:                    quake3 crashes, capture not working
+Description: 
+The card is a sb live 24bit pci.
+quake3 crashes me after a map has loaded, oddly one map works but crashes
+everytime when I finish the map. The sounds in the menus work. Tried my
+mic
+with the mic-in and all possible mixer settings, no dice.
+======================================================================
 
-On Sun, 12 Jun 2005, James Courtier-Dutton wrote:
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-13-05 19:41 gnarlie        New Issue                                    
+06-13-05 19:41 gnarlie        Distribution              => gentoo          
+06-13-05 19:41 gnarlie        Kernel Version            => 2.6.8.1 with the
+voluntary preempt patch
+======================================================================
 
->
-> Post the output of:
-> lspci -vn | grep -1 0401
 
-the output is:
-
-0000:00:06.0 Class 0401: 10de:006a (rev a1)
-         Subsystem: 1043:8095
---
-
-0000:01:06.0 Class 0401: 1102:0004 (rev 04)
-         Subsystem: 1102:2002
-
-> also the output of:
-> cat /proc/asound/cards
-
-the output is:
-
-0 [Audigy2        ]: Audigy2 - Sound Blaster Audigy2
-                      Sound Blaster Audigy2 (rev.4, serial:0x20021102) at 
-0xc000, irq 16
-
-for peter: i confirm, it's player.
-
-help? please, thankyou : )
-
-ciao! : )
-
-edoardo
 
 
 -------------------------------------------------------
