@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001190]: amixer non-linearity (causes unwanted panning) for Soundblaster mp3+
-Date: Tue, 14 Jun 2005 04:05:48 +0200
-Message-ID: <5581fc2d2ecf7b1fb32017ce16a0f251@bugtrack.alsa-project.org>
+Date: Tue, 14 Jun 2005 04:13:43 +0200
+Message-ID: <c1f8e8759fd4fa4ad7448693b1a3c93a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C99F1C1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 04:05:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8735A1C1
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 04:13:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1190> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Mandrake
 Kernel Version:             2.6.11-6
 ======================================================================
 Date Submitted:             06-14-2005 04:05 CEST
-Last Modified:              06-14-2005 04:05 CEST
+Last Modified:              06-14-2005 04:13 CEST
 ======================================================================
 Summary:                    amixer non-linearity (causes unwanted panning) for
 Soundblaster mp3+
@@ -54,12 +54,22 @@ occur when I am increasing the volume.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ RichardNeill - 06-14-05 04:13 
+----------------------------------------------------------------------
+Ugly hack to workaround this:
+
+VOL=$(amixer -c 1 sget Speaker,1  | grep 'Front Right: Playback' | awk
+'{print 
+$4}'); amixer -c 1 sset Speaker,1 $(($VOL-1)),$(($VOL-1)) unmute
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-14-05 04:05 RichardNeill   New Issue                                    
 06-14-05 04:05 RichardNeill   Distribution              => Mandrake        
 06-14-05 04:05 RichardNeill   Kernel Version            => 2.6.11-6        
+06-14-05 04:13 RichardNeill   Note Added: 0005015                          
 ======================================================================
 
 
