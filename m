@@ -1,8 +1,8 @@
 From: edoardo <edoardo@lastorina.it>
 Subject: Re: Re: emu10k1, sound blaster audigy two zs and digital
  output
-Date: Wed, 15 Jun 2005 01:50:02 +0200 (CEST)
-Message-ID: <Pine.LNX.4.63.0506150149001.8908@localhost>
+Date: Wed, 15 Jun 2005 01:59:54 +0200 (CEST)
+Message-ID: <Pine.LNX.4.63.0506150156050.9025@localhost>
 References: <Pine.LNX.4.63.0506141947300.17981@localhost> <42AF208B.3020908@superbug.co.uk>
  <Pine.LNX.4.63.0506150013020.8393@localhost> <42AF5D6C.4060502@superbug.co.uk>
 Mime-Version: 1.0
@@ -23,17 +23,12 @@ Cc: alsa users list <alsa-user@lists.sourceforge.net>, alsa developers' list <al
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On Tue, 14 Jun 2005, James Courtier-Dutton wrote:
-
-> Set speaker-arrangement to Pass Through instead of Surround 5.1
->
-> 5.1 is for 6 channel analog outputs, pass through is for toslink or
-> spdif digital output.
-
-i did, and both while playin' the test vob file and a dvd i hear a crack 
-when sound is supposed to start, and after that nothin' at all : ( help? 
-thankyou! : )
+also, i noticed that when i run xine with pass through option set and i 
+keep alsamixer open, 'iec958 optical raw' and 'audigy analog/digital 
+output jack' get checked if they were unchecked. the optical raw thing, 
+when it's checked, don't let me hear any audio from the digital output, 
+and i have to uncheck it to hear anythin'. but with pass through turned 
+on, optical raw is forced on. how come? help! thankyou! : )
 
 ciao! : )
 
