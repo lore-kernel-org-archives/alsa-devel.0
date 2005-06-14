@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Tue, 14 Jun 2005 16:02:23 +0200
-Message-ID: <eec4d49ac8b220f8436844a4acf9c385@bugtrack.alsa-project.org>
+Date: Tue, 14 Jun 2005 18:30:29 +0200
+Message-ID: <bcd1c1e646d510f1d4f2bce5890309e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB3DD1A7
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 16:02:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0AD331E0
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 18:30:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              06-14-2005 16:02 CEST
+Last Modified:              06-14-2005 18:30 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,24 +66,29 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-14-05 20:24 
-----------------------------------------------------------------------
-ungod I don't know where you have gone, but is there anything more that can
-be done.
-
-Or is there anyone else out there who might be able to help?
-
-(Edit: According to the Audiotrak guy on their support forums all the
-information needed has been made available in one form or another)
-
-
-
-----------------------------------------------------------------------
  baesyspem - 06-14-05 16:02 
 ----------------------------------------------------------------------
 Demosthenes,  I have been trying to get this card to work for several weeks
 as well. Did you make any additional progress?  Can we work together to
 fix issue.
+
+----------------------------------------------------------------------
+ Demosthenes - 06-14-05 18:30 
+----------------------------------------------------------------------
+Unfortunately due to the fact that I have had exams I haven't much tried to
+get any further with the card, however since I have finished today I am
+ready to start anew my efforts.
+
+ESI apparently are working with ALSA to provide support for their cards,
+currently they are working on the Juli@ driver, we need to somehow get
+someone to start on the LT, as I've posted before hopefully it won't be
+too hard.  
+
+I have no experience in these things (drivers) though I am definately
+willing to do anything to help.  I am glad to see that it is not just me
+wanting support for this card perhaps the two of us together will have
+better luck (I am sure there must be more people also, it has all the
+makings of a very good card for small form factor, HTPC etc.).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,13 +123,16 @@ Hedgehog)
 05-14-05 15:18 Demosthenes    Note Added: 0004658                          
 05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
 06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: NEC IT Guy Games.  How far can you shotput
-a projector? How fast can you ride your desk chair down the office luge track?
-If you want to score the big prize, get to know the little guy.  
-Play to win an NEC 61" plasma display: http://www.necitguy.com/?r=20
+SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
+from IBM. Find simple to follow Roadmaps, straightforward articles,
+informative Webcasts and more! Get everything you need to get up to
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
