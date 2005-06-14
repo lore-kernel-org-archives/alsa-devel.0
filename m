@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
-Date: Tue, 14 Jun 2005 11:45:57 +0200
-Message-ID: <2673873d972ee169a128bc1e92e74b9d@bugtrack.alsa-project.org>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: [PATCH] latencytest for PPC (and maybe others)
+Date: Tue, 14 Jun 2005 11:34:36 +0100
+Message-ID: <20050614103436.GA24115@palantir8>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBF6A1A7
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 11:45:57 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +15,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
-======================================================================
-Reported By:                robert
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1191
-Category:                   hw specific configuration
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-14-2005 11:45 CEST
-Last Modified:              06-14-2005 11:45 CEST
-======================================================================
-Summary:                    Center channel and 32-bit emulation broken when
-upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
-Description: 
-I'm running AMD64 gentoo on an nforce4 system, audio is nVidia CK804 with
-ALC850. I can emerge the newest alsa-driver package (1.0.9b), but when I
-upgrade alsa-lib to 1.0.9, three things happen.  First, my 32 bit sound
-applications, like mplayer32, don't work with alsa anymore.  Second, the
-center channel on all 5.1 sound goes out.  Third, the a/v synchonization
-on mplayer gets hosed using alsa (oss emulation still ok.)
-======================================================================
+It was great talking to you again during LAC'05. As we discussed I'm
+resending this mail regarding a patch against latencytest.0.5.5.
+Patch is at:
+    http://www.mph.eclipse.co.uk/pub/linux/patches/latencytest.patch
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-14-05 11:45 robert         New Issue                                    
-======================================================================
+With USE_GENERIC_TIMER selected in the makefile, this should work on
+any platform. For PPC I'd recommend setting USE_PPC_VEA_TIMEBASE in the
+Makefile.
+
+Would you be willing to include this patch? I've appended my original
+mail which has more code & testing results.
+
+Thanks,
+	Martin Habets
+
+----- Forwarded message from Martin Habets <errandir_news@mph.eclipse.co.uk> -----
+
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+To: alsa-devel@lists.sourceforge.net
+User-Agent: Mutt/1.5.6+20040907i
+Subject: [Alsa-devel] [PATCH] latencytest for PPC (and maybe others)
+Date: Fri, 8 Apr 2005 16:49:58 +0100
+
+I have been able to do some latency testing on my powerbook using
+2.6.11 and a number of patches:
+
+[1] A patch for the genrtc kernel driver
+    http://www.mph.eclipse.co.uk/pub/linux/patches/2.6.11/genrtc.c.patch
+The ioctls added can be tested using
+    http://www.mph.eclipse.co.uk/pub/linux/patches/rtctest2.c
+It is important to run to this to find out the accuracy of the clock on
+your platform. On PPC 1024Hz is probably the highest accurate frequency.
+Any machine using genrtc should be able to use these ioctls, not just PPC.
+
+[2] A patch against latencytest.0.5.5
+    http://www.mph.eclipse.co.uk/pub/linux/patches/latencytest.patch
+With USE_GENERIC_TIMER selected in the makefile, this should work on
+any platform. For PPC I'd recommend setting USE_PPC_VEA_TIMEBASE in the
+Makefile.
+Takashi, would you be willing to include this patch?
+
+Results: Initial testing showed serious latency from the X11 tests, but
+the rest looks okay.
+[3] http://www.mph.eclipse.co.uk/pub/linux/latency/test3/index.html
+With a (questionable) DRM patch for the Radeon driver the results become:
+[4] http://www.mph.eclipse.co.uk/pub/linux/latency/test7/index.html
+Jack shows 11.6msec latency with -r44100 -p128 -n4.
+
+I hope this will be of use to other machines using genrtc.
+-- 
+Martin
 
 
+-------------------------------------------------------
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+----- End forwarded message -----
 
 
 -------------------------------------------------------
