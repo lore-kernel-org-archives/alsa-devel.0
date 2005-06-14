@@ -1,11 +1,14 @@
-From: =?utf-8?b?ancsTGVl?= <jwstyle@gmail.com>
-Subject: time stamp and dmix
-Date: Tue, 14 Jun 2005 02:30:08 +0000 (UTC)
-Message-ID: <loom.20050614T040426-721@post.gmane.org>
+From: Jeremy White <jwhite@codeweavers.com>
+Subject: Re: RFC:  Appropriate device detection for Wine  (more
+ advice needed)
+Date: Mon, 13 Jun 2005 22:22:40 -0500
+Message-ID: <42AE4D80.70608@codeweavers.com>
+References: <Pine.HPX.4.33n.0506130919470.20036-100000@studcom.urz.uni-halle.de>	<42AD7ADC.8090102@codeweavers.com>	<s5hpsuqe8p1.wl@alsa2.suse.de>	<42AD9176.10004@codeweavers.com>	<s5hhdg2e3ou.wl@alsa2.suse.de>	<42AD9FAF.6050501@codeweavers.com> <s5hekb6e1fp.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hekb6e1fp.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,31 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I use ALSA lib v1.0.6 
-and I got some question about time stamp and dmix in ALSA lib.
+>>So it sounds like the right approach is to try default:X,
+>>and if that fails, to fallback to plug:hw:X.
+>>
+>>Does that sound rational?
+> 
+> 
+> Yes.  That'll be good for both old and new versions.
 
-1>I want to make application that use dmix like mplayer with dmix option
-(one or more application play sound concurrently->this is what I want).
-then, I must use snd_pcm_dmix_open instead snd_pcm_open?
-I tried to find function related snd_pcm_dmix_* in mplayer source, 
-but I cannot find. How can I make it?
+Okay...next odd question.  Why does default:0
+work, but default:0,0 not work?
 
-2>How can I get the currnt time stamp? I coded like this
-    snd_pcm_status_alloca(&alsa_status);
-    snd_pcm_status_get_tstamp(alsa_status, &aud_time_stamp);
-But I get the answer '0'.
+Alsa lib 1.0.8-3 (debian), which seems like a recent
+enough version to do base line testing on.
 
-Please give me some advice.
+I appreciate any insight.
 
-Thanx in advance.
+Thanks,
 
-Best Regards.
+Jeremy
 
-
+------
+  ~/xfer/pcm -D default:0,0
+Playback device is default:0,0
+Stream parameters are 44100Hz, S16_LE, 1 channels
+Sine wave rate is 440.0000Hz
+Using transfer method: write
+ALSA lib conf.c:3792:(parse_args) Unknown parameter 1
+ALSA lib conf.c:3914:(snd_config_expand) Parse arguments error: No such file or directory
+ALSA lib pcm.c:2068:(snd_pcm_open_noupdate) Unknown PCM default:0,0
+Playback open error: No such file or directory
 
 
 -------------------------------------------------------
