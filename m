@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
-Date: Tue, 14 Jun 2005 01:56:41 +0200
-Message-ID: <296a1f7749bea7019846345f0bb8a40e@bugtrack.alsa-project.org>
+From: "Tehn-Yit Chin" <Tehn-Yit.Chin@greyinnovation.com>
+Subject: RE: about the alsa i2c interface
+Date: Tue, 14 Jun 2005 10:33:10 +1000
+Message-ID: <9AEDBAA573BBD346BCF9637D80097D9119E83F@greysvr02.GreyInnovation.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98F021C1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 01:56:41 +0200 (MEST)
+Received: from greyinnovation.com (246.063.dsl.mel.iprimus.net.au [211.27.107.246])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 834491A4
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 02:35:46 +0200 (MEST)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +20,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+=20
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
-======================================================================
-Reported By:                bjl667
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1181
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo 2005.0
-Kernel Version:             2.6.12-rc4-love2
-======================================================================
-Date Submitted:             06-10-2005 22:28 CEST
-Last Modified:              06-14-2005 01:56 CEST
-======================================================================
-Summary:                    ice1724: Invalid EEPROM version 1
-Description: 
- Upon starting alsa, in dmesg I get:
- EcX / # dmesg | grep ice
- ice1724: Invalid EEPROM version 1
+> -----Original Message-----
+> From: Lee Revell [mailto:rlrevell@joe-job.com]=20
+> Sent: Thursday, 9 June 2005 4:48 PM
+> To: Tehn-Yit Chin
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [Alsa-devel] about the alsa i2c interface
+>=20
+> On Thu, 2005-06-09 at 13:09 +1000, Tehn-Yit Chin wrote:
+> > Hi,
+> >=20
+> > We are trying to provide support for the CS43L43 device=20
+> under the ALSA=20
+> > architecture on an embedded platform.
+> >=20
+> > During my early investigation, I noticed that ALSA has its=20
+> own i2c code.
+> > What is this required, and why doesn't it use the mainline=20
+> i2c support?
+> > On our platform, there are one other devices on the i2c bus, so I=20
+> > would like to use the mainline i2c code.
+>=20
+> This is explained in "Writing an ALSA Driver"  (you did read=20
+> it, right?).  Basically the kernel's i2c layer is overly=20
+> complex, and ALSA only needs a small subset of it, so ALSA=20
+> implements its own minimal i2c layer.
+>=20
+> Lee
+>=20
+>=20
 
- EcX / # cat /proc/asound/cards
- 0 [AV710          ]: ICE1724 - Chaintech AV-710
-                      Chaintech AV-710 at 0xa000, irq 16
+Many thanks for all the answers and comments.
 
- I can play music in XMMS.. Then close it after that my sound stops
-working I gotta restart alsasound to make it work again. I dunno wtf it is
-my card is a Chaintech AV-710 (ENVY24HT-S)
+Yep, I did read "Writing an ALSA Driver" and I also read the bit where
+it said that the kernel's I2C is too complex for ALSA. My concern is
+that we will have several devices on the I2C bus and acces to it will
+need to be controlled, so for our project, it will need to use the
+kernel's I2C code.
 
- From what it seems this is another version of the Chaintech card..
-======================================================================
+cheers,
 
-----------------------------------------------------------------------
- bjl667 - 06-14-05 01:56 
-----------------------------------------------------------------------
-EcX / # lspci -v | grep audio
-0000:01:0a.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-10-05 22:28 bjl667         New Issue                                    
-06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
-06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
-06-14-05 01:56 bjl667         Note Added: 0005014                          
-======================================================================
-
-
+Tehn Yit Chin=20
+Software Engineer, Grey Innovation Pty. Ltd.
 
 
 -------------------------------------------------------
