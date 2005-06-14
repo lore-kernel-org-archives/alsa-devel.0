@@ -1,13 +1,16 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Alsa timer: ioctl problem/bug
-Date: Tue, 14 Jun 2005 10:50:05 +0930 (CST)
-Message-ID: <200506140120.j5E1K51n010124@auster.physics.adelaide.edu.au>
-References: <20050613174846.6CE911224B@sc8-sf-spam2.sourceforge.net>
+From: Tomko <tomko@avantwave.com>
+Subject: Re: question : crash between kernel i2c and alsa i2c
+Date: Tue, 14 Jun 2005 09:34:09 +0800
+Message-ID: <42AE3411.9040709@avantwave.com>
+References: <42AD5670.6070900@avantwave.com> <s5hslzme9sk.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050613174846.6CE911224B@sc8-sf-spam2.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Jun 13, 2005 10:44:55 AM
+Received: from mail.avantwave.com (mail.avantwave.com [210.17.210.210])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48FA71C1
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 03:34:11 +0200 (MEST)
+In-Reply-To: <s5hslzme9sk.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,52 +20,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all
+Takashi Iwai wrote:
 
-I think I have discovered a problem with the alsa timer - in particular, the
-alsalib snd_timer_stop() call.  In short, it doesn't work - a running timer
-isn't stopped and the call often (but not always) returns an error of -14
-(-EFAULT).
+>At Mon, 13 Jun 2005 17:48:32 +0800,
+>Tomko wrote:
+>  
+>
+>>Hi everyone,
+>>
+>>I know that there is a tiny i2c subsystem inside alsa , i would like to 
+>>know is there any control betwen the kernel i2c subsystem and the alsa 
+>>i2c ?  Will there any crashes if two i2c access the bus togethre ?
+>>    
+>>
+>
+>No, they have no relevence between them at all.
+>If you try to access the same hardware, of course it would be a
+>problem.  But ALSA's i2c usually accesses only the chip-connection in
+>the sound card, which is quite unlikely accessed from kernel i2c.
+>
+>  
+>
+No, what i mean is what if they are accessing different device ? for 
+example kernel access it's own i2c device but alsa access it's i2c audio 
+device , but there is only ONE pair of i2c bus in hardware, just like 
+when the alsa's i2c just initiate a "START" and throw out the hardware 
+address but kernel's i2c want to initiate a "START" also and throw out 
+another hardware address . How's this situation be avoided if there is 
+no control between two i2c subsystem?
 
-The reason for this turns out to be the definition of the
-SNDRV_TIMER_IOCTL_STOP ioctl request in asound.h from alsa-driver.  This
-is currently defined as
+TOM
 
-  #define SNDRV_TIMER_IOCTL_STOP _IO('T',0x21)
+>Takashi
+>  
+>
 
-which resolves to 0x5421.  The problem is that this is exactly the same as
-the FIONBIO request used by the vfs kernel layer to control non-blocking
-behaviour.  When a program calls alsalib's snd_timer_stop(), the
-SNDRV_TIMER_IOCTL_STOP ioctl is invoked.  However, the alsa-driver never
-sees this because the vfs layer sees it as a FIONBIO request first and tries
-to set the file's non-blocking behaviour according to the parameter FIONBIO
-expects.  Of course in the case of a SNDRV_TIMER_IOCTL_STOP request we don't
-pass any parameter, so the vfs FIONBIO handler accesses whatever happens to
-be on the stack at the time.  Sometimes it's a valid address and sometimes
-it's not.  When it is, the non-blocking behaviour of the alsa timer handler
-is set to whatever the random stack data happens to indicate; when it's not
-we get the EFAULT return from snd_timer_stop().  In both cases the alsa
-timer is not stopped.
-
-The fix is conceptually simple: just change the magic 'T' in the
-SNDRV_TIMER_IOCTL_STOP define in alsa-driver's asound.h to something else to
-avoid the clash (and note that the SNDRV_TIMER_IOCTL_STOP_OLD define in
-alsa-lib's timer/timer_hw.c also needs to be updated to match).  As a proof
-concept I tried 'U' and I was then able to stop the timer successfully.
- 
-However, I don't know what the ALSA developers want to do here.  Do we just
-change the SNDRV_TIMER_IOCTL_STOP define, or should all SNDRV_TIMER_IOCTL_*
-defines be changed to keep them consistent?  My own thought is to change all
-SNDRV_TIMER_IOCTL_* defines to avoid clashes with the "standard" ioctl
-requests defined in asm/ioctls.h to remove the chances of this kind of
-thing cropping up again in future.
-
-Regards
-  jonathan
 
 
 -------------------------------------------------------
