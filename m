@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
-Date: Tue, 14 Jun 2005 15:03:36 +0200
-Message-ID: <68254c37a1493439cde7fdf73c0ee81e@bugtrack.alsa-project.org>
+Date: Tue, 14 Jun 2005 15:07:16 +0200
+Message-ID: <20a8370b244e745f6ef745b6bc58a30d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3715E1C1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 15:03:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 913321DD
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 15:07:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
 ======================================================================
@@ -31,7 +31,7 @@ Assigned To:
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1170
-Category:                   1_OTHERS
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11-5
 ======================================================================
 Date Submitted:             06-08-2005 10:09 CEST
-Last Modified:              06-14-2005 15:03 CEST
+Last Modified:              06-14-2005 15:07 CEST
 ======================================================================
 Summary:                    since update to 1.0.9 sound is not clear but noisy
 Description: 
@@ -71,6 +71,51 @@ snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
+ dpinte - 06-08-05 10:21 
+----------------------------------------------------------------------
+! Sounds that it may be not related to alsa but to link between alsa and
+esd.
+
+For more information see :
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=312299 
+
+I will keep the link between the two BTS up to date.
+
+Didrik
+
+----------------------------------------------------------------------
+ dpinte - 06-08-05 14:20 
+----------------------------------------------------------------------
+The test with the latest esd packages (from Ubuntu) is not positive. The
+problem seems alsa related
+
+Didrik
+
+----------------------------------------------------------------------
+ tiwai - 06-08-05 14:27 
+----------------------------------------------------------------------
+It's likely a bug of esound rather than ALSA.  esd + dmix work fine if
+esound is fixed with a patch.
+
+----------------------------------------------------------------------
+ dpinte - 06-08-05 14:53 
+----------------------------------------------------------------------
+you're right, i've just tested the sound with blackbox using direct output
+to ALSA and it works fine !
+
+We can close this "bug" ...
+
+Didrik
+
+----------------------------------------------------------------------
+ jdthood - 06-13-05 10:27 
+----------------------------------------------------------------------
+> We can close this
+
+Are we sure that there is no bug in alsa-lib?  After all, esound
+worked until the 1.0.9 release.
+
+----------------------------------------------------------------------
  tiwai - 06-13-05 12:23 
 ----------------------------------------------------------------------
 esound doesn't check the return value of snd_pcm_writei().
@@ -99,6 +144,8 @@ Date Modified  Username       Field                    Change
 06-13-05 10:27 jdthood        Note Added: 0005004                          
 06-13-05 12:23 tiwai          Note Added: 0005005                          
 06-14-05 15:03 jdthood        Note Added: 0005017                          
+06-14-05 15:07 jdthood        Category                 1_OTHERS => PCI -
+intel8x0
 ======================================================================
 
 
