@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
-Date: Tue, 14 Jun 2005 15:07:16 +0200
-Message-ID: <20a8370b244e745f6ef745b6bc58a30d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Tue, 14 Jun 2005 16:02:23 +0200
+Message-ID: <eec4d49ac8b220f8436844a4acf9c385@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 913321DD
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 15:07:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB3DD1A7
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 16:02:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,130 +22,102 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                dpinte
+Reported By:                Demosthenes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1170
-Category:                   PCI - intel8x0
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11-5
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             06-08-2005 10:09 CEST
-Last Modified:              06-14-2005 15:07 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              06-14-2005 16:02 CEST
 ======================================================================
-Summary:                    since update to 1.0.9 sound is not clear but noisy
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-Hi,
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-On my Debian/Sid, everything was ok since update to 1.0.9 (and 1.0.8 in
-the same upgrade). There were no other changes than alsa updates. 
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
 
-I'm running the Debian kernel-image-2.6.11-1-686.
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
 
-I've tested aplay without success, sound is noisy. I've also tested to
-reboot without my snd_intel8x0m module without changes.
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
 
-Here are the modules loaded :
-
-did@geru-itea:~$ lsmod | grep snd
-snd_intel8x0           33216  2
-snd_ac97_codec         78360  1 snd_intel8x0
-snd_pcm_oss            53344  0
-snd_mixer_oss          19872  2 snd_pcm_oss
-snd_pcm                92712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              24644  1 snd_pcm
-snd                    55300  8
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9664  2 snd
-snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
-
+I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- dpinte - 06-08-05 10:21 
+ Demosthenes - 05-14-05 20:24 
 ----------------------------------------------------------------------
-! Sounds that it may be not related to alsa but to link between alsa and
-esd.
+ungod I don't know where you have gone, but is there anything more that can
+be done.
 
-For more information see :
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=312299 
+Or is there anyone else out there who might be able to help?
 
-I will keep the link between the two BTS up to date.
+(Edit: According to the Audiotrak guy on their support forums all the
+information needed has been made available in one form or another)
 
-Didrik
 
-----------------------------------------------------------------------
- dpinte - 06-08-05 14:20 
-----------------------------------------------------------------------
-The test with the latest esd packages (from Ubuntu) is not positive. The
-problem seems alsa related
-
-Didrik
 
 ----------------------------------------------------------------------
- tiwai - 06-08-05 14:27 
+ baesyspem - 06-14-05 16:02 
 ----------------------------------------------------------------------
-It's likely a bug of esound rather than ALSA.  esd + dmix work fine if
-esound is fixed with a patch.
-
-----------------------------------------------------------------------
- dpinte - 06-08-05 14:53 
-----------------------------------------------------------------------
-you're right, i've just tested the sound with blackbox using direct output
-to ALSA and it works fine !
-
-We can close this "bug" ...
-
-Didrik
-
-----------------------------------------------------------------------
- jdthood - 06-13-05 10:27 
-----------------------------------------------------------------------
-> We can close this
-
-Are we sure that there is no bug in alsa-lib?  After all, esound
-worked until the 1.0.9 release.
-
-----------------------------------------------------------------------
- tiwai - 06-13-05 12:23 
-----------------------------------------------------------------------
-esound doesn't check the return value of snd_pcm_writei().
-That's why it doesn't work with plug:dmix properly.
-
-----------------------------------------------------------------------
- jdthood - 06-14-05 15:03 
-----------------------------------------------------------------------
->  esound doesn't check the return value of snd_pcm_writei().
-> That's why it doesn't work with plug:dmix properly.
-
-Thanks for the explanation.
-
-I have contacted the people who reported the problem and I will try to
-find out whether fixing esd suffices to eliminate it.
+Demosthenes,  I have been trying to get this card to work for several weeks
+as well. Did you make any additional progress?  Can we work together to
+fix issue.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 10:09 dpinte         New Issue                                    
-06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
-06-08-05 10:21 dpinte         Note Added: 0004916                          
-06-08-05 14:20 dpinte         Note Added: 0004918                          
-06-08-05 14:27 tiwai          Note Added: 0004920                          
-06-08-05 14:53 dpinte         Note Added: 0004925                          
-06-13-05 10:27 jdthood        Note Added: 0005004                          
-06-13-05 12:23 tiwai          Note Added: 0005005                          
-06-14-05 15:03 jdthood        Note Added: 0005017                          
-06-14-05 15:07 jdthood        Category                 1_OTHERS => PCI -
-intel8x0
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
 ======================================================================
 
 
