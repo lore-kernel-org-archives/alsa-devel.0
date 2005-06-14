@@ -1,16 +1,14 @@
-From: Tomko <tomko@avantwave.com>
-Subject: Re: question : crash between kernel i2c and alsa i2c
-Date: Tue, 14 Jun 2005 09:34:09 +0800
-Message-ID: <42AE3411.9040709@avantwave.com>
-References: <42AD5670.6070900@avantwave.com> <s5hslzme9sk.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001190]: amixer non-linearity (causes unwanted panning) for Soundblaster mp3+
+Date: Tue, 14 Jun 2005 04:05:48 +0200
+Message-ID: <5581fc2d2ecf7b1fb32017ce16a0f251@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.avantwave.com (mail.avantwave.com [210.17.210.210])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48FA71C1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 03:34:11 +0200 (MEST)
-In-Reply-To: <s5hslzme9sk.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C99F1C1
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 04:05:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,43 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
->At Mon, 13 Jun 2005 17:48:32 +0800,
->Tomko wrote:
->  
->
->>Hi everyone,
->>
->>I know that there is a tiny i2c subsystem inside alsa , i would like to 
->>know is there any control betwen the kernel i2c subsystem and the alsa 
->>i2c ?  Will there any crashes if two i2c access the bus togethre ?
->>    
->>
->
->No, they have no relevence between them at all.
->If you try to access the same hardware, of course it would be a
->problem.  But ALSA's i2c usually accesses only the chip-connection in
->the sound card, which is quite unlikely accessed from kernel i2c.
->
->  
->
-No, what i mean is what if they are accessing different device ? for 
-example kernel access it's own i2c device but alsa access it's i2c audio 
-device , but there is only ONE pair of i2c bus in hardware, just like 
-when the alsa's i2c just initiate a "START" and throw out the hardware 
-address but kernel's i2c want to initiate a "START" also and throw out 
-another hardware address . How's this situation be avoided if there is 
-no control between two i2c subsystem?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1190> 
+======================================================================
+Reported By:                RichardNeill
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1190
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.11-6
+======================================================================
+Date Submitted:             06-14-2005 04:05 CEST
+Last Modified:              06-14-2005 04:05 CEST
+======================================================================
+Summary:                    amixer non-linearity (causes unwanted panning) for
+Soundblaster mp3+
+Description: 
+I have a Soundblaster mp3+ USB-audio device. 
 
-TOM
+I find that when using amixer to control it, the card pans to the right
+when the volume is decreased. This unwanted panning does not occur when I
+use the same command, but for the motherboard's inbuilt sound, nor does it
+occur when I am increasing the volume.
 
->Takashi
->  
->
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-14-05 04:05 RichardNeill   New Issue                                    
+06-14-05 04:05 RichardNeill   Distribution              => Mandrake        
+06-14-05 04:05 RichardNeill   Kernel Version            => 2.6.11-6        
+======================================================================
+
 
 
 
