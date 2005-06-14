@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
-Date: Tue, 14 Jun 2005 14:15:50 +0200
-Message-ID: <9accfa666919821b3afba9a0d857dc9a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001170]: since update to 1.0.9 sound is not clear but noisy
+Date: Tue, 14 Jun 2005 15:03:36 +0200
+Message-ID: <68254c37a1493439cde7fdf73c0ee81e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E23681DC
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 14:15:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3715E1C1
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 15:03:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,98 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1170> 
 ======================================================================
-Reported By:                twinsen
-Assigned To:                perex
+Reported By:                dpinte
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1014
-Category:                   0_compilation problem_!!!
+Issue ID:                   1170
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               custom: PXA255/uClibc
-Kernel Version:             2.6.11.5
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11-5
 ======================================================================
-Date Submitted:             03-25-2005 00:04 CET
-Last Modified:              06-14-2005 14:15 CEST
+Date Submitted:             06-08-2005 10:09 CEST
+Last Modified:              06-14-2005 15:03 CEST
 ======================================================================
-Summary:                    card detect function is never called in pxa2xx-ac97
+Summary:                    since update to 1.0.9 sound is not clear but noisy
 Description: 
-Hi there,
-I have a some problem with this driver. The environment:
-ALSA source: alsa-driver-1.0.9rc1
-Kernel source: linux-2.6.11.5 (stock)
+Hi,
 
-I cross compiled the kernel and the alsa source for arm target with a 
-toolchain from handhelds.org. I used the following configure command
-line:
+On my Debian/Sid, everything was ok since update to 1.0.9 (and 1.0.8 in
+the same upgrade). There were no other changes than alsa updates. 
 
-./configure --with-cards=pxa2xx-ac97 
---with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
+I'm running the Debian kernel-image-2.6.11-1-686.
 
-config runs without problems, when running make gcc complains about
-"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
-orig: include/linux/pci.h), but compiles ok. 
+I've tested aplay without success, sound is noisy. I've also tested to
+reboot without my snd_intel8x0m module without changes.
 
-The problem:
-I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
-snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
-/proc/asound/cards.
-I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
-module init function registers the new driver:
-driver_register(&pxa2xx_ac97_driver);
+Here are the modules loaded :
 
-The driver struct contains a probe function:
-.probe          = pxa2xx_ac97_probe,
-but it's never called, so the driver doesn't even check the existance of
-the sound card. Why is that? Did I srcew up the cross compiling?
-Thanks:
-	George
+did@geru-itea:~$ lsmod | grep snd
+snd_intel8x0           33216  2
+snd_ac97_codec         78360  1 snd_intel8x0
+snd_pcm_oss            53344  0
+snd_mixer_oss          19872  2 snd_pcm_oss
+snd_pcm                92712  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              24644  1 snd_pcm
+snd                    55300  8
+snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9664  2 snd
+snd_page_alloc         10020  2 snd_intel8x0,snd_pcm
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:58 
+ tiwai - 06-13-05 12:23 
 ----------------------------------------------------------------------
-What prints the command 'aplay -v /tmp/music.wav' ?
+esound doesn't check the return value of snd_pcm_writei().
+That's why it doesn't work with plug:dmix properly.
 
 ----------------------------------------------------------------------
- twinsen - 06-14-05 14:15 
+ jdthood - 06-14-05 15:03 
 ----------------------------------------------------------------------
-Unfortunately I can't do further testing, the project's over, and I had to
-give eval board back to the school. I contacted an other developer using
-the same board, same kernel, same environment, and he had success using
-alsa. He recommended  adding the following 4 lines in pxa2xx-ac97:
-               pxa2xx_ac97_write(pxa2xx_ac97_ac97,
-AC97_EXTENDED_STATUS,1);
-               pxa2xx_ac97_write(pxa2xx_ac97_ac97, 0x6a,0x1ff7);
-               pxa2xx_ac97_write(pxa2xx_ac97_ac97, 0x6a,0x0050);
-               pxa2xx_ac97_write(pxa2xx_ac97_ac97, 0x6c,0x0030); 
-He told me that this hack will solve the problem, i haven't checked it
-though. OSS emulation was fine for finishing the project.
-Thanks for all your help!
+>  esound doesn't check the return value of snd_pcm_writei().
+> That's why it doesn't work with plug:dmix properly.
+
+Thanks for the explanation.
+
+I have contacted the people who reported the problem and I will try to
+find out whether fixing esd suffices to eliminate it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 00:04 twinsen        New Issue                                    
-03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
-03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
-03-29-05 16:25 tiwai          Note Added: 0004247                          
-03-29-05 23:43 twinsen        Note Added: 0004259                          
-04-03-05 21:47 twinsen        Note Added: 0004321                          
-04-03-05 22:28 twinsen        Note Added: 0004322                          
-04-04-05 20:51 twinsen        Note Added: 0004330                          
-04-06-05 19:20 twinsen        Note Added: 0004351                          
-04-07-05 16:46 tiwai          Note Added: 0004359                          
-04-10-05 17:25 twinsen        Note Added: 0004439                          
-04-11-05 18:24 tiwai          Note Added: 0004443                          
-06-06-05 10:58 perex          Note Added: 0004900                          
-06-14-05 14:15 twinsen        Note Added: 0005016                          
+06-08-05 10:09 dpinte         New Issue                                    
+06-08-05 10:09 dpinte         Kernel Version            => 2.6.11-5        
+06-08-05 10:21 dpinte         Note Added: 0004916                          
+06-08-05 14:20 dpinte         Note Added: 0004918                          
+06-08-05 14:27 tiwai          Note Added: 0004920                          
+06-08-05 14:53 dpinte         Note Added: 0004925                          
+06-13-05 10:27 jdthood        Note Added: 0005004                          
+06-13-05 12:23 tiwai          Note Added: 0005005                          
+06-14-05 15:03 jdthood        Note Added: 0005017                          
 ======================================================================
 
 
