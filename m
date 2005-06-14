@@ -1,16 +1,13 @@
-From: "Tehn-Yit Chin" <Tehn-Yit.Chin@greyinnovation.com>
-Subject: RE: about the alsa i2c interface
-Date: Tue, 14 Jun 2005 10:33:10 +1000
-Message-ID: <9AEDBAA573BBD346BCF9637D80097D9119E83F@greysvr02.GreyInnovation.com>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Alsa timer: ioctl problem/bug
+Date: Tue, 14 Jun 2005 10:50:05 +0930 (CST)
+Message-ID: <200506140120.j5E1K51n010124@auster.physics.adelaide.edu.au>
+References: <20050613174846.6CE911224B@sc8-sf-spam2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from greyinnovation.com (246.063.dsl.mel.iprimus.net.au [211.27.107.246])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 834491A4
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2005 02:35:46 +0200 (MEST)
-Content-class: urn:content-classes:message
+In-Reply-To: <20050613174846.6CE911224B@sc8-sf-spam2.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Jun 13, 2005 10:44:55 AM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,54 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-=20
+Hi all
 
-> -----Original Message-----
-> From: Lee Revell [mailto:rlrevell@joe-job.com]=20
-> Sent: Thursday, 9 June 2005 4:48 PM
-> To: Tehn-Yit Chin
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [Alsa-devel] about the alsa i2c interface
->=20
-> On Thu, 2005-06-09 at 13:09 +1000, Tehn-Yit Chin wrote:
-> > Hi,
-> >=20
-> > We are trying to provide support for the CS43L43 device=20
-> under the ALSA=20
-> > architecture on an embedded platform.
-> >=20
-> > During my early investigation, I noticed that ALSA has its=20
-> own i2c code.
-> > What is this required, and why doesn't it use the mainline=20
-> i2c support?
-> > On our platform, there are one other devices on the i2c bus, so I=20
-> > would like to use the mainline i2c code.
->=20
-> This is explained in "Writing an ALSA Driver"  (you did read=20
-> it, right?).  Basically the kernel's i2c layer is overly=20
-> complex, and ALSA only needs a small subset of it, so ALSA=20
-> implements its own minimal i2c layer.
->=20
-> Lee
->=20
->=20
+I think I have discovered a problem with the alsa timer - in particular, the
+alsalib snd_timer_stop() call.  In short, it doesn't work - a running timer
+isn't stopped and the call often (but not always) returns an error of -14
+(-EFAULT).
 
-Many thanks for all the answers and comments.
+The reason for this turns out to be the definition of the
+SNDRV_TIMER_IOCTL_STOP ioctl request in asound.h from alsa-driver.  This
+is currently defined as
 
-Yep, I did read "Writing an ALSA Driver" and I also read the bit where
-it said that the kernel's I2C is too complex for ALSA. My concern is
-that we will have several devices on the I2C bus and acces to it will
-need to be controlled, so for our project, it will need to use the
-kernel's I2C code.
+  #define SNDRV_TIMER_IOCTL_STOP _IO('T',0x21)
 
-cheers,
+which resolves to 0x5421.  The problem is that this is exactly the same as
+the FIONBIO request used by the vfs kernel layer to control non-blocking
+behaviour.  When a program calls alsalib's snd_timer_stop(), the
+SNDRV_TIMER_IOCTL_STOP ioctl is invoked.  However, the alsa-driver never
+sees this because the vfs layer sees it as a FIONBIO request first and tries
+to set the file's non-blocking behaviour according to the parameter FIONBIO
+expects.  Of course in the case of a SNDRV_TIMER_IOCTL_STOP request we don't
+pass any parameter, so the vfs FIONBIO handler accesses whatever happens to
+be on the stack at the time.  Sometimes it's a valid address and sometimes
+it's not.  When it is, the non-blocking behaviour of the alsa timer handler
+is set to whatever the random stack data happens to indicate; when it's not
+we get the EFAULT return from snd_timer_stop().  In both cases the alsa
+timer is not stopped.
 
-Tehn Yit Chin=20
-Software Engineer, Grey Innovation Pty. Ltd.
+The fix is conceptually simple: just change the magic 'T' in the
+SNDRV_TIMER_IOCTL_STOP define in alsa-driver's asound.h to something else to
+avoid the clash (and note that the SNDRV_TIMER_IOCTL_STOP_OLD define in
+alsa-lib's timer/timer_hw.c also needs to be updated to match).  As a proof
+concept I tried 'U' and I was then able to stop the timer successfully.
+ 
+However, I don't know what the ALSA developers want to do here.  Do we just
+change the SNDRV_TIMER_IOCTL_STOP define, or should all SNDRV_TIMER_IOCTL_*
+defines be changed to keep them consistent?  My own thought is to change all
+SNDRV_TIMER_IOCTL_* defines to avoid clashes with the "standard" ioctl
+requests defined in asm/ioctls.h to remove the chances of this kind of
+thing cropping up again in future.
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
