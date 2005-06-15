@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
-Date: Wed, 15 Jun 2005 14:39:38 +0200
-Message-ID: <c9fe650606e33199e793f9679a828817@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001189]: Aureon 7.1 Universe needs manual rate in .asoundrc when changing internal clock
+Date: Wed, 15 Jun 2005 14:39:02 +0200
+Message-ID: <c58470af8d85b5f20e2ecfbc69abce1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3097D17E
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 14:39:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1425F17E
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 14:39:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1189> 
 ======================================================================
-Reported By:                jwiegley
+Reported By:                BrianMeidell
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1064
-Category:                   PCI - hda-intel
+Issue ID:                   1189
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian-pure64
-Kernel Version:             2.6.12-rc2
+Distribution:               Gentoo
+Kernel Version:             2.6.11-gentoo-r3
 ======================================================================
-Date Submitted:             04-18-2005 20:42 CEST
+Date Submitted:             06-13-2005 22:33 CEST
 Last Modified:              06-15-2005 14:39 CEST
 ======================================================================
-Summary:                    snd_hda_intel does not recognize acl880 sound chip
+Summary:                    Aureon 7.1 Universe needs manual rate in .asoundrc
+when changing internal clock
 Description: 
-I bought a Shuttle ST20G5 box. Sound doesn't get detected or
-seem to work with manual load.
-
-chipset:
-  ATI Xpress 200 northbridge
-  ULI 1573 southbridge
-
-The documentation says the sound is:
-  Realtek ALC880
-
-alsaconf detects nothing
-manually loading snd_hda_intel also doesn't print anything in the
-log files; though it does seem to load all the snd stuff just fine.
+When changing the master internal clock rate on my aureon 7.1 universe, I
+also need to manually set the rate in .asoundrc for the device and match
+it to the alsamixer setting, otherwise it defaults to what sounds like
+44.1 KHz.
 ======================================================================
-
-----------------------------------------------------------------------
- jwiegley - 06-12-05 20:52 
-----------------------------------------------------------------------
-I did as you requested and added the PCI ID.
-
-When the driver loads during boot all I get is
-tons of "azx_get_response timeout" lines on my
-console and I have to sysrq-b to reboot to a
-different kernel.
-
-I also got the 1.0.9rc4a source after trolling
-the web and it does the exact same thing.
-
-Any ideas on how to get this chip supported?
 
 ----------------------------------------------------------------------
  tiwai - 06-15-05 14:39 
 ----------------------------------------------------------------------
-Try the latest CVS version.
+Turn off "Multi Track Rate Locking" switch if it's on?  Otherwise the
+hardware won't follow the sample rate the app sets.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-05 20:42 jwiegley       New Issue                                    
-04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
-04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
-04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
-04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
-hda-intel
-04-19-05 17:38 tiwai          Note Added: 0004523                          
-06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
-06-12-05 20:52 jwiegley       Note Added: 0005001                          
-06-15-05 14:39 tiwai          Note Added: 0005026                          
+06-13-05 22:33 BrianMeidell   New Issue                                    
+06-13-05 22:33 BrianMeidell   Distribution              => Gentoo          
+06-13-05 22:33 BrianMeidell   Kernel Version            => 2.6.11-gentoo-r3
+06-13-05 22:35 BrianMeidell   Issue Monitored: BrianMeidell                    
+06-15-05 14:39 tiwai          Note Added: 0005025                          
 ======================================================================
 
 
