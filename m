@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001100]: Driver loaded, no sound card detected
-Date: Wed, 15 Jun 2005 20:36:35 +0200
-Message-ID: <8c1999ebb646ce2698717704814f8727@bugtrack.alsa-project.org>
+Date: Wed, 15 Jun 2005 20:35:11 +0200
+Message-ID: <930a575b4e17c3d1e2a85e0db57617aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 809031FA
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 20:36:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BEF41FA
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 20:35:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSE Linux 9.2
 Kernel Version:             2.6.8-14.24
 ======================================================================
 Date Submitted:             05-11-2005 15:51 CEST
-Last Modified:              06-15-2005 20:36 CEST
+Last Modified:              06-15-2005 20:35 CEST
 ======================================================================
 Summary:                    Driver loaded, no sound card detected
 Description: 
@@ -55,6 +55,11 @@ error -5
 
 
 ======================================================================
+
+----------------------------------------------------------------------
+ dwatters - 05-11-05 15:53 
+----------------------------------------------------------------------
+Mainboard is Shuttle FN25, Via Envz 24PT 7.1
 
 ----------------------------------------------------------------------
  kaasgaard - 06-15-05 20:35 
@@ -81,24 +86,6 @@ thx
 
 // Kaasgaard
 
-----------------------------------------------------------------------
- kaasgaard - 06-15-05 20:36 
-----------------------------------------------------------------------
-forgot to mention:
-
-lspci -d 1412:1724 -nvx:
-
-05:06.0 Class 0401: 1412:1724 (rev 01)
-        Subsystem: 1297:5036
-        Flags: medium devsel, IRQ 50
-        I/O ports at a000 [size=32]
-        I/O ports at a400 [size=128]
-        Capabilities: [80] Power Management version 1
-00: 12 14 24 17 01 00 10 02 01 00 01 04 00 20 00 00
-10: 01 a0 00 00 01 a4 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 97 12 36 50
-30: 00 00 00 00 80 00 00 00 00 00 00 00 0c 01 00 00
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -107,7 +94,6 @@ Date Modified  Username       Field                    Change
 05-11-05 15:51 dwatters       Kernel Version            => 2.6.8-14.24     
 05-11-05 15:53 dwatters       Note Added: 0004637                          
 06-15-05 20:35 kaasgaard      Note Added: 0005043                          
-06-15-05 20:36 kaasgaard      Note Added: 0005044                          
 ======================================================================
 
 
