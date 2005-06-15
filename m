@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Wed, 15 Jun 2005 22:31:32 +0200
-Message-ID: <ecd1c0ec777a4d388097b0d4b00fcfb6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
+Date: Wed, 15 Jun 2005 22:35:48 +0200
+Message-ID: <66ab640b9db43797705c6279b107cbb8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51C4C1FC
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 22:31:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 354071FC
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 22:35:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
 ======================================================================
-Reported By:                Xero
+Reported By:                bjl667
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1181
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo 2005.0
+Kernel Version:             2.6.12-rc4-love2
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-15-2005 22:31 CEST
+Date Submitted:             06-10-2005 22:28 CEST
+Last Modified:              06-15-2005 22:35 CEST
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    ice1724: Invalid EEPROM version 1
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+ Upon starting alsa, in dmesg I get:
+ EcX / # dmesg | grep ice
+ ice1724: Invalid EEPROM version 1
 
-This starts showing up when I start pressing play again:
+ EcX / # cat /proc/asound/cards
+ 0 [AV710          ]: ICE1724 - Chaintech AV-710
+                      Chaintech AV-710 at 0xa000, irq 16
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ I can play music in XMMS.. Then close it after that my sound stops
+working I gotta restart alsasound to make it work again. I dunno wtf it is
+my card is a Chaintech AV-710 (ENVY24HT-S)
 
-
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
-
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
+ From what it seems this is another version of the Chaintech card..
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-15-05 15:03 
+ bjl667 - 06-14-05 01:56 
 ----------------------------------------------------------------------
-Try the CVS version.  This might be fixed because of the recent change of
-the default dmix config option.
+EcX / # lspci -v | grep audio
+0000:01:0a.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
 
 ----------------------------------------------------------------------
- Xero - 06-15-05 22:31 
+ bjl667 - 06-15-05 22:35 
 ----------------------------------------------------------------------
-I made a CVS alsa-lib ebuild and am now running cvs alsa-lib with the
-ipc_gid audio option in the dmix.conf. However, since my local config file
-overrides the default dmix config with !dmix I've added it to my .asoundrc
-as well just in case. I will report back whether or not the problem still
-occurs. It happens somewhat randomly, so it's not the easiest thing to
-test for.
+Well it seems my card isn't fully supported atm, I'll just switch back to
+my old SB-Live! 5.1 16bit card for now..
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
+06-10-05 22:28 bjl667         New Issue                                    
+06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
+06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
+06-14-05 01:56 bjl667         Note Added: 0005014                          
+06-15-05 22:35 bjl667         Note Added: 0005047                          
 ======================================================================
 
 
