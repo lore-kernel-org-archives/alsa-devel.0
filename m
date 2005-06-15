@@ -1,71 +1,74 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Re: emu10k1, sound blaster audigy two zs and digital
- output
-Date: Wed, 15 Jun 2005 21:33:59 +0200
-Message-ID: <42B082A7.2030706@pobox.sk>
-References: <Pine.LNX.4.63.0506141947300.17981@localhost> <42AF208B.3020908@superbug.co.uk> <Pine.LNX.4.63.0506150013020.8393@localhost> <42AF5D6C.4060502@superbug.co.uk> <Pine.LNX.4.63.0506150156050.9025@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Date: Wed, 15 Jun 2005 22:00:57 +0200
+Message-ID: <54a53e69d005ae3382b058f77323b8fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.63.0506150156050.9025@localhost>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: edoardo <edoardo@lastorina.it>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa users list <alsa-user@lists.sourceforge.net>, alsa developers' list <alsa-devel@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD3341FC
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 22:00:57 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-"iec958 optical raw" - is switched on, because ac3 data have to pass 
-through DSP unchanged.
 
-try to play normal stereo wav file with aplay ("iec958 optical raw" will 
-be turned on and you will be not able to change volume - set lower 
-volume on your receiver, because otherways it will be high)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
+======================================================================
+Reported By:                robert
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1191
+Category:                   hw specific configuration
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-14-2005 11:45 CEST
+Last Modified:              06-15-2005 22:00 CEST
+======================================================================
+Summary:                    Center channel and 32-bit emulation broken when
+upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Description: 
+I'm running AMD64 gentoo on an nforce4 system, audio is nVidia CK804 with
+ALC850. I can emerge the newest alsa-driver package (1.0.9b), but when I
+upgrade alsa-lib to 1.0.9, three things happen.  First, my 32 bit sound
+applications, like mplayer32, don't work with alsa anymore.  Second, the
+center channel on all 5.1 sound goes out.  Third, the a/v synchonization
+on mplayer gets hosed using alsa (oss emulation still ok.)
+======================================================================
 
-aplay -D spdif some.wav
+----------------------------------------------------------------------
+ jdthood - 06-15-05 14:01 
+----------------------------------------------------------------------
+Do the problems go away if you disable the dmix plugin?
 
-You should be able to hear sound. If this works then problem can be, 
-your audigy is not correctly identified (some have bug in ac3 passtrough).
+----------------------------------------------------------------------
+ robert - 06-15-05 22:00 
+----------------------------------------------------------------------
+How does one do that?
 
-What alsa version do you use (cat /proc/asound/version)?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-14-05 11:45 robert         New Issue                                    
+06-15-05 14:01 jdthood        Note Added: 0005023                          
+06-15-05 22:00 robert         Note Added: 0005045                          
+======================================================================
 
-Peter Zubaj
-
-
-edoardo wrote:
-
->
-> also, i noticed that when i run xine with pass through option set and 
-> i keep alsamixer open, 'iec958 optical raw' and 'audigy analog/digital 
-> output jack' get checked if they were unchecked. the optical raw 
-> thing, when it's checked, don't let me hear any audio from the digital 
-> output, and i have to uncheck it to hear anythin'. but with pass 
-> through turned on, optical raw is forced on. how come? help! thankyou! 
-> : )
->
-> ciao! : )
->
-> edoardo
->
->
-> -------------------------------------------------------
-> SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-> from IBM. Find simple to follow Roadmaps, straightforward articles,
-> informative Webcasts and more! Get everything you need to get up to
-> speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-> _______________________________________________
-> Alsa-user mailing list
-> Alsa-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-user
->
->
 
 
 
