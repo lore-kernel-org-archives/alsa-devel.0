@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
-Date: Wed, 15 Jun 2005 14:27:23 +0200
-Message-ID: <6692f6b3e1fd35976a3fbe1d06e44784@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
+Date: Wed, 15 Jun 2005 14:39:38 +0200
+Message-ID: <c9fe650606e33199e793f9679a828817@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 787271ED
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 14:27:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3097D17E
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 14:39:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,142 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
 ======================================================================
-Reported By:                herby
+Reported By:                jwiegley
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1174
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1064
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian-pure64
+Kernel Version:             2.6.12-rc2
 ======================================================================
-Date Submitted:             06-09-2005 00:42 CEST
-Last Modified:              06-15-2005 14:27 CEST
+Date Submitted:             04-18-2005 20:42 CEST
+Last Modified:              06-15-2005 14:39 CEST
 ======================================================================
-Summary:                    Speaker Test fails with error message(s) from alsa
-lib.  "problem for start_threshold"
+Summary:                    snd_hda_intel does not recognize acl880 sound chip
 Description: 
-Running speaker test gets me:
->>>
-speaker-test 0.0.8
+I bought a Shuttle ST20G5 box. Sound doesn't get detected or
+seem to work with manual load.
 
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 32768
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3764
-was set buffer_size = 15052
-ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
-params->avail_min problem for start_threshold
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
-<<<
+chipset:
+  ATI Xpress 200 northbridge
+  ULI 1573 southbridge
+
+The documentation says the sound is:
+  Realtek ALC880
+
+alsaconf detects nothing
+manually loading snd_hda_intel also doesn't print anything in the
+log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- herby - 06-13-05 19:55 
+ jwiegley - 06-12-05 20:52 
 ----------------------------------------------------------------------
-Is this a problem with the library, My interface card (Revolution 7.1), my
-(simple) /etc/asound.conf, or with (I doubt) speaker-test?  Perhaps it
-should be in a different catagory.  I have working speaker tests in older
-versions, and (I assume) the current versions of others.
+I did as you requested and added the PCI ID.
+
+When the driver loads during boot all I get is
+tons of "azx_get_response timeout" lines on my
+console and I have to sysrq-b to reboot to a
+different kernel.
+
+I also got the 1.0.9rc4a source after trolling
+the web and it does the exact same thing.
+
+Any ideas on how to get this chip supported?
 
 ----------------------------------------------------------------------
- jdthood - 06-15-05 14:27 
+ tiwai - 06-15-05 14:39 
 ----------------------------------------------------------------------
-I have this problem too.  1.0.8 worked fine.  1.0.9 prints an error
-message
-
-    Setting of swparams failed: Invalid argument
-
-and cycles back to "Rate set to 48000Hz (requested 48000Hz)" in an
-infinite loop, without ever producing any sound.
-
-Note too that speaker-test 1.0.9 prints its version number as "0.0.8".
-
---------------------
-Test with ALSA 1.0.8
---------------------
-
-$ speaker-test
-
-speaker-test 1.0.8
-
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Sine wave rate is 440.0000Hz
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 32768
-Period size range from 16 to 1024
-Buffer time size 2525
-To choose buffer_size = 2520
-To choose period_size = 315
-was set period_size = 256
-was set buffer_size = 2520
-  - Front Left
-... with tones playing
-
-
---------------------
-Test with ALSA 1.0.9
---------------------
-
-$ speaker-test
-
-speaker-test 0.0.8
-
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 32768
-Period size range from 16 to 1024
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 1024
-was set buffer_size = 15052
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 32768
-Period size range from 16 to 1024
-Periods = 4
-... ad infinitum
-
-
-jdthood@thanatos:~$ dpkg -l alsa-\* libasound\* | grep ^ii
-ii  alsa-base      1.0.9b-2~5     ALSA driver configuration files
-ii  alsa-modules-2 1.0.9+1        ALSA modules for kernel 2.4.27-2-686
-ii  alsa-source    1.0.9b-2~5     ALSA driver sources
-ii  alsa-utils     1.0.9a-2       ALSA utilities
-ii  libasound2     1.0.9-2        ALSA library
-ii  libasound2-doc 1.0.9-2        ALSA library developer documentation
-jdthood@thanatos:~$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun 15 2005 for kernel 2.6.11.
-jdthood@thanatos:~$ cat /proc/asound/cards
-0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
-                     Sound Fusion CS46xx at 0x50100000/0x50000000, irq 11
+Try the latest CVS version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 00:42 herby          New Issue                                    
-06-13-05 19:49 herby          Issue Monitored: herby                       
-06-13-05 19:55 herby          Note Added: 0005013                          
-06-15-05 14:27 jdthood        Note Added: 0005024                          
+04-18-05 20:42 jwiegley       New Issue                                    
+04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
+04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
+04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
+04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 17:38 tiwai          Note Added: 0004523                          
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-12-05 20:52 jwiegley       Note Added: 0005001                          
+06-15-05 14:39 tiwai          Note Added: 0005026                          
 ======================================================================
 
 
