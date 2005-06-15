@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: time stamp and dmix
-Date: Wed, 15 Jun 2005 14:19:12 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0506151404430.24998-100000@studcom.urz.uni-halle.de>
-References: <loom.20050614T040426-721@post.gmane.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
+Date: Wed, 15 Jun 2005 14:27:23 +0200
+Message-ID: <6692f6b3e1fd35976a3fbe1d06e44784@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <loom.20050614T040426-721@post.gmane.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 787271ED
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 14:27:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,36 +18,150 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?utf-8?b?ancsTGVl?= <jwstyle@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-jw,Lee wrote:
-> I use ALSA lib v1.0.6
-> and I got some question about time stamp and dmix in ALSA lib.
->
-> 1>I want to make application that use dmix like mplayer with dmix option
-> (one or more application play sound concurrently->this is what I want).
-> then, I must use snd_pcm_dmix_open instead snd_pcm_open?
 
-Use snd_pcm_open with an appropriate device name.  For dmix, this
-would be something like "dmix:plughw:X".
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
+======================================================================
+Reported By:                herby
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1174
+Category:                   speakertest
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-09-2005 00:42 CEST
+Last Modified:              06-15-2005 14:27 CEST
+======================================================================
+Summary:                    Speaker Test fails with error message(s) from alsa
+lib.  "problem for start_threshold"
+Description: 
+Running speaker test gets me:
+>>>
+speaker-test 0.0.8
 
-In later ALSA versions, sound cards that cannot do hardware mixing
-automatically use dmix when being accessed with the "default" device
-name.
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
+params->avail_min problem for start_threshold
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+<<<
+======================================================================
 
-> 2>How can I get the currnt time stamp?
+----------------------------------------------------------------------
+ herby - 06-13-05 19:55 
+----------------------------------------------------------------------
+Is this a problem with the library, My interface card (Revolution 7.1), my
+(simple) /etc/asound.conf, or with (I doubt) speaker-test?  Perhaps it
+should be in a different catagory.  I have working speaker tests in older
+versions, and (I assume) the current versions of others.
 
-With gettimeofday().  ;-)
+----------------------------------------------------------------------
+ jdthood - 06-15-05 14:27 
+----------------------------------------------------------------------
+I have this problem too.  1.0.8 worked fine.  1.0.9 prints an error
+message
 
-What do you mean with "current time"?  Real time elapsed since
-playback started?  Number of samples sent to the hardware, or played
-by the hardware?
+    Setting of swparams failed: Invalid argument
+
+and cycles back to "Rate set to 48000Hz (requested 48000Hz)" in an
+infinite loop, without ever producing any sound.
+
+Note too that speaker-test 1.0.9 prints its version number as "0.0.8".
+
+--------------------
+Test with ALSA 1.0.8
+--------------------
+
+$ speaker-test
+
+speaker-test 1.0.8
+
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Sine wave rate is 440.0000Hz
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 32 to 32768
+Period size range from 16 to 1024
+Buffer time size 2525
+To choose buffer_size = 2520
+To choose period_size = 315
+was set period_size = 256
+was set buffer_size = 2520
+  - Front Left
+... with tones playing
 
 
-Regards,
-Clemens
+--------------------
+Test with ALSA 1.0.9
+--------------------
+
+$ speaker-test
+
+speaker-test 0.0.8
+
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 32 to 32768
+Period size range from 16 to 1024
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 1024
+was set buffer_size = 15052
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 32 to 32768
+Period size range from 16 to 1024
+Periods = 4
+... ad infinitum
+
+
+jdthood@thanatos:~$ dpkg -l alsa-\* libasound\* | grep ^ii
+ii  alsa-base      1.0.9b-2~5     ALSA driver configuration files
+ii  alsa-modules-2 1.0.9+1        ALSA modules for kernel 2.4.27-2-686
+ii  alsa-source    1.0.9b-2~5     ALSA driver sources
+ii  alsa-utils     1.0.9a-2       ALSA utilities
+ii  libasound2     1.0.9-2        ALSA library
+ii  libasound2-doc 1.0.9-2        ALSA library developer documentation
+jdthood@thanatos:~$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Jun 15 2005 for kernel 2.6.11.
+jdthood@thanatos:~$ cat /proc/asound/cards
+0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
+                     Sound Fusion CS46xx at 0x50100000/0x50000000, irq 11
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-09-05 00:42 herby          New Issue                                    
+06-13-05 19:49 herby          Issue Monitored: herby                       
+06-13-05 19:55 herby          Note Added: 0005013                          
+06-15-05 14:27 jdthood        Note Added: 0005024                          
+======================================================================
+
 
 
 
