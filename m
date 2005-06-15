@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001193]: no sound through speakers but sound in headphones
-Date: Wed, 15 Jun 2005 13:10:49 +0200
-Message-ID: <c5c879d9383114726df3ea2c26058975@bugtrack.alsa-project.org>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: Re: Tascam US-X2Y MIDI  is AWOL?
+Date: Wed, 15 Jun 2005 12:29:55 +0100 (WEST)
+Message-ID: <40221.192.168.1.5.1118834995.squirrel@www.rncbc.org>
+References: <40505.192.168.1.5.1118793043.squirrel@www.rncbc.org>
+    <200506150232.29912.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A78F1EB
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 13:10:49 +0200 (MEST)
+In-Reply-To: <200506150232.29912.annabellesgarden@yahoo.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> Am Mittwoch, 15. Juni 2005 01:50 schrieb Rui Nuno Capela:
+>>
+>> I've tested and re-tested all over again that somehow, somewhen I've
+>> lost the MIDI I/O capability on my US-224. PCM audio is working neatly=
+,
+>> and the jackd usx2y "rawusb" backend is doing just fine, ever since
+>> using alsa 1.0.8+ and/or 2.6.11+ kernels.
+>>
+>> Problem is, a few days ago, I've came to try again the MIDI I/O, like
+>> plugging a hardware synth keyboard, and to my horror it didn't work at
+>> all. Also tried to send something out via the ALSA sequencer client
+>> port "TASCAM US-X2Y MIDI 1", and nothing happens. MIDI I/O LEDs remain
+>> dark, dead. Nada.
+>>
+>
+> Hi Rui
+>
+> its most possibly a bug that has been fixed in cvs some weeks ago.
+> Please retry with alsa cvs.
+> If that doesn't help, wake me up again immediately ;-)
+>
+> best regards,
+> Karsten
+>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1193> 
-======================================================================
-Reported By:                gadget
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1193
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               debian-pure64 sid
-Kernel Version:             2.6.11.11
-======================================================================
-Date Submitted:             06-15-2005 13:03 CEST
-Last Modified:              06-15-2005 13:10 CEST
-======================================================================
-Summary:                    no sound through speakers but sound in headphones
-Description: 
-I can't hear anything through the internel speakers of my notebook. The
-sound is anyway hear through the headphones. I can change the volume
-correctly, nothing is muted.
-I tried the ac97_quirk option through modprobe or direct insmod.
-I also tried other drivers without success (no card found).
-======================================================================
+OK. Just updated to alsa-driver-1.0.9b and things started to work out.
 
-----------------------------------------------------------------------
- gadget - 06-15-05 13:10 
-----------------------------------------------------------------------
-the card is recongnized as
-x Card: ATI IXP                                                           
-                                                                          
-                                                  
-x Chip: Realtek ALC658 rev 0   
-by alsamixer
-
-it appears as Realtek AC'97 under windows
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-15-05 13:03 gadget         New Issue                                    
-06-15-05 13:03 gadget         Distribution              => debian-pure64 sid
-06-15-05 13:03 gadget         Kernel Version            => 2.6.11.11       
-06-15-05 13:09 gadget         Issue Monitored: gadget                      
-06-15-05 13:10 gadget         Note Added: 0005022                          
-======================================================================
-
+Thanks for your time.
+--=20
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 
@@ -80,4 +60,5 @@ Date Modified  Username       Field                    Change
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+speed, fast. http://ads.osdn.com/?ad_id=3D7477&alloc_id=3D16492&op=3Dclic=
+k
