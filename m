@@ -1,40 +1,78 @@
-From: edoardo <edoardo@lastorina.it>
-Subject: Re: [Alsa-devel] Re: Re: emu10k1, sound blaster audigy
- two zs and digital output
-Date: Wed, 15 Jun 2005 23:15:03 +0200 (CEST)
-Message-ID: <Pine.LNX.4.63.0506152311440.20549@localhost>
-References: <Pine.LNX.4.63.0506141947300.17981@localhost> <42AF208B.3020908@superbug.co.uk>
- <Pine.LNX.4.63.0506150013020.8393@localhost> <42AF5D6C.4060502@superbug.co.uk>
- <Pine.LNX.4.63.0506150156050.9025@localhost> <42B082A7.2030706@pobox.sk>
- <Pine.LNX.4.63.0506152227060.15735@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Date: Wed, 15 Jun 2005 23:42:50 +0200
+Message-ID: <e61f9f640725804597d854cc76edc11f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.63.0506152227060.15735@localhost>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: edoardo <edoardo@lastorina.it>
-Cc: Peter Zubaj <pzad@pobox.sk>, James Courtier-Dutton <James@superbug.co.uk>, alsa users list <alsa-user@lists.sourceforge.net>, alsa developers' list <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 833021F5
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 23:42:50 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-dolby digital works fine now, with the new 1.0.9 modules : ) i hadn't 
-thought about havin' an old alsa version, since i was usin' the kernel 
-builtin modules, and all the alsa packages were 1.0.9 already... really 
-had forgotten about alsa-driver : ) the dolby digital led even gets 
-turned on on my dolby digital external decoder! thankyou very much for 
-all the assistance, i'll post again if i have any problems! thankyou! : )
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
+======================================================================
+Reported By:                robert
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1191
+Category:                   hw specific configuration
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-14-2005 11:45 CEST
+Last Modified:              06-15-2005 23:42 CEST
+======================================================================
+Summary:                    Center channel and 32-bit emulation broken when
+upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Description: 
+I'm running AMD64 gentoo on an nforce4 system, audio is nVidia CK804 with
+ALC850. I can emerge the newest alsa-driver package (1.0.9b), but when I
+upgrade alsa-lib to 1.0.9, three things happen.  First, my 32 bit sound
+applications, like mplayer32, don't work with alsa anymore.  Second, the
+center channel on all 5.1 sound goes out.  Third, the a/v synchonization
+on mplayer gets hosed using alsa (oss emulation still ok.)
+======================================================================
 
-ciao! : )
+----------------------------------------------------------------------
+ robert - 06-15-05 22:00 
+----------------------------------------------------------------------
+How does one do that?
 
-edoardo
+----------------------------------------------------------------------
+ jdthood - 06-15-05 23:42 
+----------------------------------------------------------------------
+mplayer -ao alsa:device=hw=0
+
+should do it
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-14-05 11:45 robert         New Issue                                    
+06-15-05 14:01 jdthood        Note Added: 0005023                          
+06-15-05 22:00 robert         Note Added: 0005045                          
+06-15-05 23:42 jdthood        Note Added: 0005048                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
