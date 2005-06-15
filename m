@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001194]: hda-intel driver fails to initialize codecs (realtek)
-Date: Wed, 15 Jun 2005 16:47:00 +0200
-Message-ID: <b72f608e6cc2f18b5a7e419a4f281608@bugtrack.alsa-project.org>
+Date: Wed, 15 Jun 2005 16:53:51 +0200
+Message-ID: <bd00b342c1059ba59085e40994280d08@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3A611EF
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 16:47:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BBA91D9
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 16:53:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1194> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               fedora core 3 smp kernel
 Kernel Version:             2.6.11.something-smp
 ======================================================================
 Date Submitted:             06-15-2005 16:47 CEST
-Last Modified:              06-15-2005 16:47 CEST
+Last Modified:              06-15-2005 16:53 CEST
 ======================================================================
 Summary:                    hda-intel driver fails to initialize codecs
 (realtek)
@@ -56,6 +56,16 @@ properly again.
 (Well, at least I get sound)
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 06-15-05 16:53 
+----------------------------------------------------------------------
+It's likely a hardware or BIOS problem.  Try to tune pci and acpi boot
+parameters.
+
+The method on 1.0.8 is not a recommended way and it can't handle
+unsolicited events, too.  The same style can be achieved by simply
+undefining USE_CORB_RIRB in hda_intel.c.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -63,6 +73,7 @@ Date Modified  Username       Field                    Change
 06-15-05 16:47 ericmoors      Distribution              => fedora core 3 smp
 kernel
 06-15-05 16:47 ericmoors      Kernel Version            => 2.6.11.something-smp
+06-15-05 16:53 tiwai          Note Added: 0005036                          
 ======================================================================
 
 
