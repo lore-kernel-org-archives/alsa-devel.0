@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Wed, 15 Jun 2005 15:03:39 +0200
-Message-ID: <bdc3e345985d5f226a550b7658151bd4@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001107]: amixer crashes with M-Audio Revolution 7.1 when value is given to numid=0
+Date: Wed, 15 Jun 2005 15:18:42 +0200
+Message-ID: <397c4871e92940318ff3423b4ea4d05f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A1721EF
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 15:03:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E6D31EF
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 15:18:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1107> 
 ======================================================================
-Reported By:                Xero
-Assigned To:                
+Reported By:                sst4
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   0_general
+Project:                    ALSA - utils
+Issue ID:                   1107
+Category:                   amixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-15-2005 15:03 CEST
+Date Submitted:             05-14-2005 02:50 CEST
+Last Modified:              06-15-2005 15:18 CEST
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    amixer crashes with M-Audio Revolution 7.1 when
+value is given to numid=0
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+The following says it all:
 
-This starts showing up when I start pressing play again:
+"
+[root@athlon ~]# cat /proc/asound/pcm
+00-00: ICE1724 : ICE1724 : playback 1 : capture 1
+00-01: IEC1724 IEC958 : IEC1724 IEC958 : playback 1
+00-02: ICE1724 Surrounds : ICE1724 Surround PCM : playback 3
+[root@athlon ~]# amixer  cset numid=0 50%
+amixer: control.c:251: snd_ctl_elem_info: Assertion `ctl && info &&
+(info->id.name[0] || info->id.numid)'failed.
+Aborted (core dumped)
+[root@athlon ~]#
+".
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+The same configuration as in
 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1106
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 ,
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1095 .
 
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
+Thanks in advance,
+  Sergei.
 
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- Xero - 06-11-05 21:14 
+ sst4 - 05-27-05 12:26 
 ----------------------------------------------------------------------
-Oh, I forgot to mention, my card is an echo mia midi...if that matters.
+By the way, this command line: 'amixer cget numid=0'
+
+produces this:
+"
+amixer: control.c:251: snd_ctl_elem_info: Assertion `ctl && info &&
+(info->id.name[0] || info->id.numid)' failed.
+Abort
+"
+Probably useful for developers, but not for end users. Could you please
+implement a more
+useful error message explaining what's wrong ?
+
+Thanks,
+  Sergei.
 
 ----------------------------------------------------------------------
- tiwai - 06-15-05 15:03 
+ tiwai - 06-15-05 15:18 
 ----------------------------------------------------------------------
-Try the CVS version.  This might be fixed because of the recent change of
-the default dmix config option.
+The error is because you pass an invalid value numid=0.  It must be a
+positive integer.
+Will improve the error message, though.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
+05-14-05 02:50 sst4           New Issue                                    
+05-24-05 12:03 tiwai          Note Added: 0004713                          
+05-24-05 21:41 sst4           Note Added: 0004730                          
+05-27-05 12:26 sst4           Note Added: 0004747                          
+06-15-05 15:18 tiwai          Status                   new => resolved     
+06-15-05 15:18 tiwai          Resolution               open => not an issue
+06-15-05 15:18 tiwai          Assigned To               => tiwai           
+06-15-05 15:18 tiwai          Note Added: 0005031                          
 ======================================================================
 
 
