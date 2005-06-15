@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001194]: hda-intel driver fails to initialize codecs (realtek)
-Date: Wed, 15 Jun 2005 16:53:51 +0200
-Message-ID: <bd00b342c1059ba59085e40994280d08@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000983]: amixer can't control "Capture Volume" and "Capture Switch" on azx, whereas gamix can
+Date: Wed, 15 Jun 2005 16:55:56 +0200
+Message-ID: <bacf7dbe98b424dfcce3a43265db4974@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BBA91D9
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 16:53:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB54C1E0
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 16:55:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1194> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=983> 
 ======================================================================
-Reported By:                ericmoors
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1194
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   983
+Category:                   amixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               fedora core 3 smp kernel
-Kernel Version:             2.6.11.something-smp
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-15-2005 16:47 CEST
-Last Modified:              06-15-2005 16:53 CEST
+Date Submitted:             03-12-2005 12:54 CET
+Last Modified:              06-15-2005 16:55 CEST
 ======================================================================
-Summary:                    hda-intel driver fails to initialize codecs
-(realtek)
+Summary:                    amixer can't control "Capture Volume" and "Capture
+Switch" on azx, whereas gamix can
 Description: 
-the 1.0.9 version fails to recognize the realtek codec on my motherboard.
-I traced the problem to the azx_get_response function. The version I
-downloaded from the intel website (a 1.0.8 version) detected the codec
-properly.
-If I replace the azx_get_response function with the 1.0.8 version (It was
-still named azx.c instead of hda-intel.c then) the codec is initialised
-properly (although I do get a timeout) and everything appears to function
-properly again.
-(Well, at least I get sound)
+This bug was reported at http://bugs.debian.org/297624 and has been
+discussed there at some length.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-15-05 16:53 
+ tiwai - 06-15-05 15:00 
 ----------------------------------------------------------------------
-It's likely a hardware or BIOS problem.  Try to tune pci and acpi boot
-parameters.
+amixer should be possible to handle capture on/off and volume.
+But it can't handle the "Input Source" enum control with "sset".  You'd
+need to use "cset" to change a proper control.
 
-The method on 1.0.8 is not a recommended way and it can't handle
-unsolicited events, too.  The same style can be achieved by simply
-undefining USE_CORB_RIRB in hda_intel.c.
+----------------------------------------------------------------------
+ tiwai - 06-15-05 16:55 
+----------------------------------------------------------------------
+I added the enum control to amixer on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 16:47 ericmoors      New Issue                                    
-06-15-05 16:47 ericmoors      Distribution              => fedora core 3 smp
-kernel
-06-15-05 16:47 ericmoors      Kernel Version            => 2.6.11.something-smp
-06-15-05 16:53 tiwai          Note Added: 0005036                          
+03-12-05 12:54 jdthood        New Issue                                    
+03-16-05 12:59 tiwai          Status                   new => resolved     
+03-16-05 12:59 tiwai          Resolution               open => fixed       
+03-16-05 12:59 tiwai          Assigned To               => tiwai           
+03-16-05 12:59 tiwai          Note Added: 0003951                          
+03-16-05 12:59 tiwai          Assigned To              tiwai =>            
+03-16-05 13:09 jdthood        Status                   resolved => feedback
+03-16-05 13:09 jdthood        Resolution               fixed => reopened   
+03-16-05 13:09 jdthood        Note Added: 0003954                          
+03-28-05 04:04 jdthood        Status                   feedback => resolved
+03-28-05 04:04 jdthood        Resolution               reopened => fixed   
+06-04-05 17:00 jdthood        Status                   resolved => feedback
+06-04-05 17:00 jdthood        Resolution               fixed => reopened   
+06-04-05 17:00 jdthood        Note Added: 0004887                          
+06-04-05 17:02 jdthood        Severity                 major => minor      
+06-04-05 17:02 jdthood        Status                   feedback => new     
+06-04-05 17:02 jdthood        Category                 alsamixer => amixer 
+06-04-05 17:02 jdthood        version                  1.0.8 => 1.0.9      
+06-08-05 19:50 jdthood        Summary                  alsamixer and amixer
+can't control "Capture Volume" and "Capture Switch" on azx, whereas gamix can =>
+amixer can't control "Capture Volume" and "Capture Switch" on azx, whereas gamix
+can
+06-15-05 15:00 tiwai          Note Added: 0005029                          
+06-15-05 16:55 tiwai          Status                   new => resolved     
+06-15-05 16:55 tiwai          Resolution               reopened => fixed   
+06-15-05 16:55 tiwai          Assigned To               => tiwai           
+06-15-05 16:55 tiwai          Note Added: 0005037                          
 ======================================================================
 
 
