@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001195]: alsa-lib 1.0.9 crashes artsd
-Date: Wed, 15 Jun 2005 17:52:22 +0200
-Message-ID: <aa9628f8a0ecc6e09d5380d9c4ecfd6c@bugtrack.alsa-project.org>
+Date: Wed, 15 Jun 2005 17:58:49 +0200
+Message-ID: <d1bc394227c9cc672370fab7572b3043@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAA3E1F7
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 17:52:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0FCA15C
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 17:58:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-15-2005 17:21 CEST
-Last Modified:              06-15-2005 17:52 CEST
+Last Modified:              06-15-2005 17:58 CEST
 ======================================================================
 Summary:                    alsa-lib 1.0.9 crashes artsd
 Description: 
@@ -56,12 +56,19 @@ The submitter provided a backtrace which I attach (artsd.crash).
 It's likely a problem with dmix + artsd.  Using 48000 sample rate in arts
 may solve the problem.
 
+----------------------------------------------------------------------
+ pzad - 06-15-05 17:58 
+----------------------------------------------------------------------
+OT: (6 * 60 + 15) * 60 * 48000 * 2 = 2160000000 and this is nearly 2^31
+(2147483648)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-15-05 17:21 jdthood        New Issue                                    
 06-15-05 17:21 jdthood        File Added: artsd.crash                      
 06-15-05 17:52 tiwai          Note Added: 0005038                          
+06-15-05 17:58 pzad           Note Added: 0005039                          
 ======================================================================
 
 
