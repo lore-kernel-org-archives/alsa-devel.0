@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001195]: alsa-lib 1.0.9 crashes artsd
-Date: Wed, 15 Jun 2005 17:21:14 +0200
-Message-ID: <0a45e673be196fc60f4941ce9d5a0122@bugtrack.alsa-project.org>
+Date: Wed, 15 Jun 2005 17:52:22 +0200
+Message-ID: <aa9628f8a0ecc6e09d5380d9c4ecfd6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B454F1F1
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 17:21:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAA3E1F7
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2005 17:52:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1195> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-15-2005 17:21 CEST
-Last Modified:              06-15-2005 17:21 CEST
+Last Modified:              06-15-2005 17:52 CEST
 ======================================================================
 Summary:                    alsa-lib 1.0.9 crashes artsd
 Description: 
@@ -50,11 +50,18 @@ ALSA library to 1.0.9 his artsd process crashes after a number of hours.
 The submitter provided a backtrace which I attach (artsd.crash).
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 06-15-05 17:52 
+----------------------------------------------------------------------
+It's likely a problem with dmix + artsd.  Using 48000 sample rate in arts
+may solve the problem.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-15-05 17:21 jdthood        New Issue                                    
 06-15-05 17:21 jdthood        File Added: artsd.crash                      
+06-15-05 17:52 tiwai          Note Added: 0005038                          
 ======================================================================
 
 
