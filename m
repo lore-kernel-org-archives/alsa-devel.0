@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000957]: When it can't find the kernel source, 1.0.8rc2's configure script complains about an "Unsupported soundcard"
-Date: Thu, 16 Jun 2005 14:37:02 +0200
-Message-ID: <d03dbb331295564b045cc09ce99b4358@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000973]: Errors in headers
+Date: Thu, 16 Jun 2005 14:42:02 +0200
+Message-ID: <f0c4ed97788874e6dccb0d53a3e14d86@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A7DF191
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:37:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C0FD191
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:42:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=957> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
 ======================================================================
-Reported By:                olivierg
+Reported By:                subbia
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   957
+Issue ID:                   973
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-02-2005 18:32 CET
-Last Modified:              06-16-2005 14:37 CEST
+Date Submitted:             03-08-2005 03:08 CET
+Last Modified:              06-16-2005 14:42 CEST
 ======================================================================
-Summary:                    When it can't find the kernel source, 1.0.8rc2's
-configure script complains about an "Unsupported soundcard"
+Summary:                    Errors in headers
 Description: 
-Hi,
+I've tried to make alsa driver, but errors during compiling comes out.
 
-I downloaded alsa-driver-1.0.8rc2, and, as explained in the soundcard
-Matrix for my Soundblaster 16, I ran :
+1)on file core.h (sound_core)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
+incomplete
+statemente 
 
-./configure --with-cards=sb16 --with-sequencer=yes
+2)on file aio.h (kernel/include/linux)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
 
-Which resulted in :
-
-checking for which soundcards to compile driver for... 
-configure: error: Unsupported soundcard sb16
-
-I then tried with 1.0.8 : same thing
-
-But, with 0.9.8, I got a meaningful message : 
-
-Please, install the package with full kernel sources for your
-distribution
-or use --with-kernel=dir option to specify another directory with kernel
-sources (default is /usr/src/linux).
-
-So, I assumed that 1.0.8rc2 was breaking for the same reason, and tried
-passing the actual location of my kernel source :
-
-./configure --with-cards=sb16 --with-sequencer=yes
---with-kernel=/usr/src/linux-2.4.25_orpheus.1.3
-
-Which just worked fine.
-
-Please fix 1.0.8rc2's configure script so that it prints meaningful
-messages as 0.9.8.
-
-Cheers
+p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
+pointer, but in the second error don't goes this solution, so.....I don't
+know
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:45 
+ perex - 06-06-05 10:06 
 ----------------------------------------------------------------------
-Does this problem exist also in 1.0.9a?
+Does 1.0.9a solve this problem?
 
 ----------------------------------------------------------------------
- perex - 06-16-05 14:37 
+ perex - 06-16-05 14:42 
 ----------------------------------------------------------------------
-No response from user.
+No response from reporter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-05 18:32 olivierg       New Issue                                    
-06-06-05 10:45 perex          Note Added: 0004898                          
-06-16-05 14:37 perex          Status                   assigned => resolved
-06-16-05 14:37 perex          Resolution               open => fixed       
-06-16-05 14:37 perex          Note Added: 0005053                          
+03-08-05 03:08 subbia         New Issue                                    
+03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
+03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
+03-09-05 18:40 tiwai          Note Added: 0003833                          
+03-10-05 14:49 subbia         Note Added: 0003854                          
+03-10-05 14:52 tiwai          Note Added: 0003855                          
+03-11-05 01:11 subbia         Note Added: 0003878                          
+03-16-05 14:47 tiwai          Note Added: 0003957                          
+03-16-05 18:36 subbia         Note Added: 0003963                          
+03-16-05 18:37 subbia         Note Edited: 0003963                         
+06-06-05 10:06 perex          Note Added: 0004891                          
+06-16-05 14:42 perex          Status                   assigned => resolved
+06-16-05 14:42 perex          Resolution               open => fixed       
+06-16-05 14:42 perex          Note Added: 0005054                          
 ======================================================================
 
 
