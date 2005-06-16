@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 16 Jun 2005 15:19:00 +0200
-Message-ID: <b4733e17814d74db1f85fc087e087b09@bugtrack.alsa-project.org>
+Date: Thu, 16 Jun 2005 15:22:00 +0200
+Message-ID: <6e3cf5dac835333d43b2955fbe2a405f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E15AE19D
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 15:19:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A572147
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 15:22:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-16-2005 15:19 CEST
+Last Modified:              06-16-2005 15:21 CEST
 ======================================================================
 Summary:                    Realtek ALC650 output problem
 Description: 
@@ -53,17 +53,15 @@ I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-16-05 15:13 
-----------------------------------------------------------------------
-Try run alsamixer
-
-find item with name "Line In as Surround" - mute it (with M key)
-
-----------------------------------------------------------------------
  willits - 06-16-05 15:19 
 ----------------------------------------------------------------------
 I have mute "Line In as Surround", I have put the subwoofer connector to
 the black connector, and he doesn't work.
+
+----------------------------------------------------------------------
+ pzad - 06-16-05 15:21 
+----------------------------------------------------------------------
+Try mute "Mic in as Center/LFE" too.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -72,6 +70,7 @@ Date Modified  Username       Field                    Change
 06-16-05 15:07 willits        Kernel Version            => 2.6.11          
 06-16-05 15:13 pzad           Note Added: 0005056                          
 06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
 ======================================================================
 
 
