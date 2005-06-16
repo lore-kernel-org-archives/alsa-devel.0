@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001169]: route plugin: unneeded ttable levels propagation
-Date: Thu, 16 Jun 2005 15:04:33 +0200
-Message-ID: <5c7cd55a72913f8cfc701071b38a078b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Thu, 16 Jun 2005 15:07:26 +0200
+Message-ID: <c7261b4a3730aa911952adbfe0d4d79c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7166219D
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 15:04:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90AA4142
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 15:07:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1169> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                Andrew
-Assigned To:                perex
+Reported By:                willits
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1169
-Category:                   PCI - ice1724
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-08-2005 07:51 CEST
-Last Modified:              06-16-2005 15:04 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-16-2005 15:07 CEST
 ======================================================================
-Summary:                    route plugin: unneeded ttable levels propagation
+Summary:                    Realtek ALC650 output problem
 Description: 
-v.1.0.9a is in use. All 1.0.9rcX have the same effect.
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-To replicate stereo to all eight channles I use this fragment in my
-.asoundrc file:
-
-pcm.!default {
-        type plug
-        slave {
-                pcm "2x4"
-                format S32_LE
-        }
-}
-
-pcm.2x4 {
-    type route
-    slave.pcm surround71
-    slave.channels 8
-    ttable.0.0 0.03
-    ttable.1.1 0.03
-    ttable.0.2 1
-    ttable.1.3 1
-    ttable.0.4 1
-    ttable.1.5 1
-    ttable.0.6 1
-    ttable.1.7 1
-} 
-
-All works fine except for levels are reduced for ALL channles rather
-channels 0 and 1 only (the aim is to balance headphone output channels 0-1
-with external amplifier(s) channels 2-7 levels).
-
-Terratec Aureon 7.1 Space is in use.
-
-I have selected "major" level as such situation is very error-prone:
-unexpected high level output is possible which is danger for ears.
+I haven't got this problem with Windows.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 07:51 Andrew         New Issue                                    
-06-16-05 15:04 perex          Status                   new => assigned     
-06-16-05 15:04 perex          Assigned To               => perex           
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
 ======================================================================
 
 
