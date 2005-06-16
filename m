@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001196]: my soundcard is not detected and irritating me
-Date: Thu, 16 Jun 2005 14:35:53 +0200
-Message-ID: <c5fe59b8690982f58ba80d94412eef68@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000957]: When it can't find the kernel source, 1.0.8rc2's configure script complains about an "Unsupported soundcard"
+Date: Thu, 16 Jun 2005 14:37:02 +0200
+Message-ID: <d03dbb331295564b045cc09ce99b4358@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 153DE191
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:35:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A7DF191
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:37:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1196> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=957> 
 ======================================================================
-Reported By:                sai prasad
-Assigned To:                
+Reported By:                olivierg
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1196
+Issue ID:                   957
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
-Kernel Version:             kernel-2.6.5-1.358smp
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-16-2005 12:52 CEST
-Last Modified:              06-16-2005 14:35 CEST
+Date Submitted:             03-02-2005 18:32 CET
+Last Modified:              06-16-2005 14:37 CEST
 ======================================================================
-Summary:                    my soundcard is not detected and irritating me
+Summary:                    When it can't find the kernel source, 1.0.8rc2's
+configure script complains about an "Unsupported soundcard"
 Description: 
-I have downloaded alsa-1.0.9rc4a.
-I followed the following steps:
-1: bunzip2 alsa-1.0.9rc4a.tar.bz2
-2: tar xvf alsa-1.0.9rc4a.tar
-3: cd alsa-1.0.9rc4a
-4: 1.
+Hi,
 
-      The driver: "./configure --with-oss=yes --with-cards=hda-intel",
-then "make", and "sudo make install".
-   2.
+I downloaded alsa-driver-1.0.8rc2, and, as explained in the soundcard
+Matrix for my Soundblaster 16, I ran :
 
-      The library, oss-lib, and utils - simply "./configure" "make" "sudo
-make install"
-   3.
+./configure --with-cards=sb16 --with-sequencer=yes
 
-      Run "sudo alsaconf" and configure the sound card.
-   4.
+Which resulted in :
 
-      Reboot.
-Some of the above are failed
-Still  i have not succeeded
-I get vexed
-Please help me
+checking for which soundcards to compile driver for... 
+configure: error: Unsupported soundcard sb16
+
+I then tried with 1.0.8 : same thing
+
+But, with 0.9.8, I got a meaningful message : 
+
+Please, install the package with full kernel sources for your
+distribution
+or use --with-kernel=dir option to specify another directory with kernel
+sources (default is /usr/src/linux).
+
+So, I assumed that 1.0.8rc2 was breaking for the same reason, and tried
+passing the actual location of my kernel source :
+
+./configure --with-cards=sb16 --with-sequencer=yes
+--with-kernel=/usr/src/linux-2.4.25_orpheus.1.3
+
+Which just worked fine.
+
+Please fix 1.0.8rc2's configure script so that it prints meaningful
+messages as 0.9.8.
+
+Cheers
 ======================================================================
 
 ----------------------------------------------------------------------
- sai prasad - 06-16-05 12:58 
+ perex - 06-06-05 10:45 
 ----------------------------------------------------------------------
-my distribution is fedora
+Does this problem exist also in 1.0.9a?
 
 ----------------------------------------------------------------------
- pzad - 06-16-05 13:05 
+ perex - 06-16-05 14:37 
 ----------------------------------------------------------------------
-cat /proc/asound/version
+No response from user.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-05 12:52 sai prasad     New Issue                                    
-06-16-05 12:52 sai prasad     Kernel Version            => kernel-2.6.5-1.358smp
-06-16-05 12:58 sai prasad     Note Added: 0005051                          
-06-16-05 13:05 pzad           Note Added: 0005052                          
-06-16-05 14:35 perex          Assigned To              perex =>            
+03-02-05 18:32 olivierg       New Issue                                    
+06-06-05 10:45 perex          Note Added: 0004898                          
+06-16-05 14:37 perex          Status                   assigned => resolved
+06-16-05 14:37 perex          Resolution               open => fixed       
+06-16-05 14:37 perex          Note Added: 0005053                          
 ======================================================================
 
 
