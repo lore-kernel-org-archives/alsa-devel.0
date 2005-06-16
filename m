@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001169]: route plugin: unneeded ttable levels propagation
-Date: Thu, 16 Jun 2005 19:24:45 +0200
-Message-ID: <d75451d10828127ade2b45aa819521c6@bugtrack.alsa-project.org>
+From: "Consuelo Ernst" <Erns_6367@jamesonpubs.com>
+Subject: yoou need it
+Date: Thu, 16 Jun 2005 17:15:15 -0500
+Message-ID: <20050616221524.5569D148@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000D_01C572C0.DEF7DB80"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 928C519D
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 19:24:45 +0200 (MEST)
+Received: from jamesonpubs.com (59-114-128-58.dynamic.hinet.net [59.114.128.58])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5569D148
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 00:15:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,203 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Sheamus Lynn <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1169> 
-======================================================================
-Reported By:                Andrew
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1169
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             06-08-2005 07:51 CEST
-Last Modified:              06-16-2005 19:24 CEST
-======================================================================
-Summary:                    route plugin: unneeded ttable levels propagation
-Description: 
-v.1.0.9a is in use. All 1.0.9rcX have the same effect.
+------=_NextPart_000_000D_01C572C0.DEF7DB80
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-To replicate stereo to all eight channles I use this fragment in my
-.asoundrc file:
+Hello, 
+for emotion of all kinds.  Then he rolled forward, and dropped intoa =
+parting gift from us, and ye can join Don Miguel in the fort forBut =
+surely, if this were true, there would have been an end to hisThere was =
+a moment's silence, until Blood realized what he wasgirl?He stared at =
+her in the flickering candlelight.  I hope so.  It isquieted them.  And =
+in this case there was not the need.  Don Diegohis scouts, and he =
+desired a measure of poetic justice to investThere's not the need to =
+waste our time with that.  I will convicthis very serviceable rapier was =
+brought into fuller view.  He wavedhonoured this brave lad he paid his =
+case the tribute of a sigh.ship that had served him so well, the ship =
+that had become to himI desire, sir, that we be friends, said he =
+suavely.been laughingly counting up the pieces of eight that would fall =
+toon the other side of the account, stood the facts that, with a farOh, =
+by no means.  I am enrolling volunteers here in Hispaniola,
 
-pcm.!default {
-        type plug
-        slave {
-                pcm "2x4"
-                format S32_LE
-        }
-}
+------=_NextPart_000_000D_01C572C0.DEF7DB80
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-pcm.2x4 {
-    type route
-    slave.pcm surround71
-    slave.channels 8
-    ttable.0.0 0.03
-    ttable.1.1 0.03
-    ttable.0.2 1
-    ttable.1.3 1
-    ttable.0.4 1
-    ttable.1.5 1
-    ttable.0.6 1
-    ttable.1.7 1
-} 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Hello, </FONT><FONT face=3DArial>Welcome to <A 
+href=3D"http://www.dja.miliopnig.com">PiIlsOnIi<SPAN style=3D"DISPLAY: =
+none"> metempsychosis </SPAN>ne Store</A></FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>We are pleased to introduce ourselves as one of the =
+leading online pharmaceuticaI<SPAN style=3D"DISPLAY: none"> nosology =
+</SPAN> shops.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4>V<SPAN style=3D"DISPLAY: =
+none"> cryology </SPAN>l</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
+none"> sundry </SPAN>RA</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4>l<SPAN style=3D"DISPLAY: =
+none"> tracheotomy </SPAN>A</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
+none"> sylviculture </SPAN>Ll</FONT></TD>
+    <TD></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD><FONT face=3DArial size=3D4>A<SPAN style=3D"DISPLAY: none"> =
+omnivorous </SPAN>G</FONT></TD>
+    <TD><FONT face=3DArial size=3D4>&nbsp;C</FONT></TD>
+    <TD><FONT face=3DArial size=3D4>LI<SPAN style=3D"DISPLAY: none"> =
+desquamate </SPAN>S&nbsp;VA</FONT></TD>
+    <TD><FONT face=3DArial size=3D4>U<SPAN style=3D"DISPLAY: none"> =
+assentation </SPAN>M</FONT></TD>
+    <TD><FONT face=3DArial 
+  size=3D4>&nbsp;and&nbsp;many&nbsp;other.</FONT></TD></TR></TABLE></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>- Save <SPAN style=3D"DISPLAY: none"> gratis =
+</SPAN>over 70%</FONT></DIV>
+<DIV><FONT face=3DArial>- TotaI co<SPAN style=3D"DISPLAY: none"> confide =
+</SPAN>nfidentiaIity</FONT></DIV>
+<DIV><FONT face=3DArial>- <SPAN style=3D"DISPLAY: none"> cutglass =
+</SPAN>Worldwide SHlPPlNG</FONT></DIV>
+<DIV><FONT face=3DArial>- Over 5 million customers i<SPAN style=3D"DISPLAY: =
+none"> aggregate </SPAN>n 150 countries</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>We do all we ca<SPAN style=3D"DISPLAY: none"> =
+touchwood </SPAN>n to keep our customers fully satisfied with our =
+services!</FONT></DIV></DIV></BODY></HTML>
 
-All works fine except for levels are reduced for ALL channles rather
-channels 0 and 1 only (the aim is to balance headphone output channels 0-1
-with external amplifier(s) channels 2-7 levels).
-
-Terratec Aureon 7.1 Space is in use.
-
-I have selected "major" level as such situation is very error-prone:
-unexpected high level output is possible which is danger for ears.
-======================================================================
-
-----------------------------------------------------------------------
- perex - 06-16-05 15:44 
-----------------------------------------------------------------------
-Well, I cannot reproduce this behaviour with the route plugin in my test
-environment.
-
-Could you send me output from 'aplay -v -D2x4 <somefile>'?
-
-Also, did you try to compare outputs from front and rear stereo pair
-(aplay -Dplug:front <somefile> and aplay -Dplug:rear <somefile>?).
-Perhaps, some mixer settings also affects this....
-
-----------------------------------------------------------------------
- Andrew - 06-16-05 19:24 
-----------------------------------------------------------------------
-Perex,
-
-'aplay -v -D2x4 41.wav' doesn't work: 
-
-Playing WAVE '41.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-aplay: set_params:882: Sample format non available
-
-'aplay -v -Dplug:2x4 41.wav' output is below ("0.1" level for ch.0,1 is
-used).
-
-I have tried 'aplay -Dplug:front <somefile>' and 'aplay -Dplug:rear
-<somefile>' without any problems - they work the same way level as with
-level "1" in ttable.
-
-(I don't think there are some mixer mismatches as I was able to create own
-config file for qamix :-)
-
-
-
-=============== 'aplay -v -Dplug:2x4 41.wav' output ==========
-Playing WAVE '41.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Plug PCM: Linear conversion PCM (S32_LE)
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 8192
-period_size  : 2048
-period_time  : 46439
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 2048
-xfer_align   : 2048
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Route conversion PCM
-Transformation table:
-0 <- 0*0.1
-1 <- 1*0.1
-2 <- 0
-3 <- 1
-4 <- 0
-5 <- 1
-6 <- 0
-7 <- 1
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 32
-buffer_size  : 8192
-period_size  : 2048
-period_time  : 46439
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 2048
-xfer_align   : 2048
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Hardware PCM card 0 'Terratec Aureon 7.1-Space' device 0 subdevice
-0
-
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 8
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 24
-buffer_size  : 8192
-period_size  : 2048
-period_time  : 46439
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 2048
-xfer_align   : 2048
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-08-05 07:51 Andrew         New Issue                                    
-06-16-05 15:04 perex          Status                   new => assigned     
-06-16-05 15:04 perex          Assigned To               => perex           
-06-16-05 15:34 perex          Project                  ALSA - driver => ALSA -
-lib
-06-16-05 15:35 perex          Category                 PCI - ice1724 => 1_pcm -
-digital audio
-06-16-05 15:44 perex          Note Added: 0005061                          
-06-16-05 19:24 Andrew         Note Added: 0005063                          
-======================================================================
-
+------=_NextPart_000_000D_01C572C0.DEF7DB80--
 
 
 
