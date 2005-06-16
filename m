@@ -1,11 +1,9 @@
-From: =?utf-8?b?ancsTGVl?= <jwstyle@gmail.com>
-Subject: Re: time stamp and dmix
-Date: Thu, 16 Jun 2005 01:15:54 +0000 (UTC)
-Message-ID: <loom.20050616T025514-907@post.gmane.org>
-References: <loom.20050614T040426-721@post.gmane.org> <Pine.HPX.4.33n.0506151404430.24998-100000@studcom.urz.uni-halle.de>
+From: Thomas Mintel <tmintel@gmail.com>
+Subject: Audigy ZS
+Date: Thu, 16 Jun 2005 02:27:16 -0400
+Message-ID: <1118903236.7312.3.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=-XwbTYwfYs9aUk/Rsueu0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,65 +17,42 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens <at> ladisch.de> writes:
 
-> 
-> jw,Lee wrote:
-> > I use ALSA lib v1.0.6
-> > and I got some question about time stamp and dmix in ALSA lib.
-> >
-> > 1>I want to make application that use dmix like mplayer with dmix option
-> > (one or more application play sound concurrently->this is what I want).
-> > then, I must use snd_pcm_dmix_open instead snd_pcm_open?
-> 
-> Use snd_pcm_open with an appropriate device name.  For dmix, this
-> would be something like "dmix:plughw:X".
-> 
-> In later ALSA versions, sound cards that cannot do hardware mixing
-> automatically use dmix when being accessed with the "default" device
-> name.
+--=-XwbTYwfYs9aUk/Rsueu0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Thanks Clemens.
+Hey.  I just got a new dell laptop which included the Creative Audigy ZS
+pcmcia card.  I was wondering if there is any way I can get the card to
+work now, or a roundabout estimate for when the card will work.  Thanks
+in advance.  
+-- 
+Thomas Mintel <tmintel@unioncatholic.org>
 
-I figured it out playing sound. 
-As your comment, I just open "plug:dmixer" with snd_pcm_open.
-But I still have some problem.
+--=-XwbTYwfYs9aUk/Rsueu0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-1. somethig different sound output compare with "plughw:0,0" .  
-when I use "plughw:0,0", I get the clean sound. 
-But I uss "plug:dmixer", there is some noise..:)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.6.2">
+</HEAD>
+<BODY>
+Hey.&nbsp; I just got a new dell laptop which included the Creative Audigy ZS pcmcia card.&nbsp; I was wondering if there is any way I can get the card to work now, or a roundabout estimate for when the card will work.&nbsp; Thanks in advance.&nbsp; <BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Thomas Mintel &lt;<A HREF="mailto:tmintel@unioncatholic.org">tmintel@unioncatholic.org</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
 
-2. This is something related with playing speed. 
-when I use "plughw:0,0", my app play sound profectly with 
-various mp3 file. but If I use "plug:dmixer" some mp3 file
-play fast.
-
-Please give me some advice.
-
-Thanx in advance.
-Regard, jw
-
-
-> > 2>How can I get the currnt time stamp?
-> 
-> With gettimeofday().  
-> 
-> What do you mean with "current time"?  Real time elapsed since
-> playback started?  Number of samples sent to the hardware, or played
-> by the hardware?
-> 
-> Regards,
-> Clemens
-> 
-> -------------------------------------------------------
-> SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-> from IBM. Find simple to follow Roadmaps, straightforward articles,
-> informative Webcasts and more! Get everything you need to get up to
-> speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-> 
-
-
-
+--=-XwbTYwfYs9aUk/Rsueu0--
 
 
 
