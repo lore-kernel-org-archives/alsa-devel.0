@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 16 Jun 2005 15:25:05 +0200
-Message-ID: <2f065cf8f6aae212b4d9aea536e2527d@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001169]: route plugin: unneeded ttable levels propagation
+Date: Thu, 16 Jun 2005 15:35:24 +0200
+Message-ID: <867a470d5365ea235ad91856030876d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E873619D
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 15:25:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90AD719D
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 15:35:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1169> 
 ======================================================================
-Reported By:                willits
-Assigned To:                
+Reported By:                Andrew
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1169
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
+Status:                     assigned
 ======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-16-2005 15:25 CEST
+Date Submitted:             06-08-2005 07:51 CEST
+Last Modified:              06-16-2005 15:35 CEST
 ======================================================================
-Summary:                    Realtek ALC650 output problem
+Summary:                    route plugin: unneeded ttable levels propagation
 Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+v.1.0.9a is in use. All 1.0.9rcX have the same effect.
 
-I haven't got this problem with Windows.
+To replicate stereo to all eight channles I use this fragment in my
+.asoundrc file:
+
+pcm.!default {
+        type plug
+        slave {
+                pcm "2x4"
+                format S32_LE
+        }
+}
+
+pcm.2x4 {
+    type route
+    slave.pcm surround71
+    slave.channels 8
+    ttable.0.0 0.03
+    ttable.1.1 0.03
+    ttable.0.2 1
+    ttable.1.3 1
+    ttable.0.4 1
+    ttable.1.5 1
+    ttable.0.6 1
+    ttable.1.7 1
+} 
+
+All works fine except for levels are reduced for ALL channles rather
+channels 0 and 1 only (the aim is to balance headphone output channels 0-1
+with external amplifier(s) channels 2-7 levels).
+
+Terratec Aureon 7.1 Space is in use.
+
+I have selected "major" level as such situation is very error-prone:
+unexpected high level output is possible which is danger for ears.
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 06-16-05 15:21 
-----------------------------------------------------------------------
-Try mute "Mic in as Center/LFE" too.
-
-----------------------------------------------------------------------
- willits - 06-16-05 15:25 
-----------------------------------------------------------------------
-He was already mutted, and no subwoofer.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
+06-08-05 07:51 Andrew         New Issue                                    
+06-16-05 15:04 perex          Status                   new => assigned     
+06-16-05 15:04 perex          Assigned To               => perex           
+06-16-05 15:34 perex          Project                  ALSA - driver => ALSA -
+lib
+06-16-05 15:35 perex          Category                 PCI - ice1724 => 1_pcm -
+digital audio
 ======================================================================
 
 
