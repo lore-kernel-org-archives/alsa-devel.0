@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000973]: Errors in headers
-Date: Thu, 16 Jun 2005 14:42:02 +0200
-Message-ID: <f0c4ed97788874e6dccb0d53a3e14d86@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001161]: Midi in still does not work for Hoontech/STAudio DSP2000 C-Port
+Date: Thu, 16 Jun 2005 14:54:53 +0200
+Message-ID: <cff190a0555c7145b2aa6ff346f285ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C0FD191
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:42:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29F2419D
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:54:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1161> 
 ======================================================================
-Reported By:                subbia
-Assigned To:                perex
+Reported By:                vandongen2
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   973
-Category:                   0_compilation problem_!!!
+Issue ID:                   1161
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               linux from scratch
+Kernel Version:             2.6.12-rc4-RT-V0.7.47-03
 ======================================================================
-Date Submitted:             03-08-2005 03:08 CET
-Last Modified:              06-16-2005 14:42 CEST
+Date Submitted:             06-06-2005 15:29 CEST
+Last Modified:              06-16-2005 14:54 CEST
 ======================================================================
-Summary:                    Errors in headers
+Summary:                    Midi in still does not work for Hoontech/STAudio
+DSP2000 C-Port
 Description: 
-I've tried to make alsa driver, but errors during compiling comes out.
+As reported before in bug 000055 that is now marked resolved.
+It has not been resolved.
+The problem seems to be related to hardware specific registers on the card
+that need to be set.
 
-1)on file core.h (sound_core)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
-incomplete
-statemente 
-
-2)on file aio.h (kernel/include/linux)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
-
-p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
-pointer, but in the second error don't goes this solution, so.....I don't
-know
+I will be happy to spend a couple of days trying different flags/bits with
+the initialisation code, if somebody gives me an idea of where to start.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000055 Midi in does not work for Hoontech/STAu...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-06-05 10:06 
+ perex - 06-16-05 14:54 
 ----------------------------------------------------------------------
-Does 1.0.9a solve this problem?
+Could you try this patch?
 
-----------------------------------------------------------------------
- perex - 06-16-05 14:42 
-----------------------------------------------------------------------
-No response from reporter.
+Index: hoontech.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ice1712/hoontech.c,v
+retrieving revision 1.8
+diff -u -r1.8 hoontech.c
+--- hoontech.c  27 Sep 2004 14:44:14 -0000      1.8
++++ hoontech.c  16 Jun 2005 12:53:44 -0000
+@@ -188,7 +188,7 @@
+        ICE1712_STDSP24_3_INSEL(ice->spec.hoontech.boxbits, 0);
+ 
+        /* let's go - activate only functions in first box */
+-       ice->spec.hoontech.config = 0;
++       ice->spec.hoontech.config = ICE1712_STDSP24_INSEL;
+                            /* ICE1712_STDSP24_MUTE |
+                               ICE1712_STDSP24_INSEL |
+                               ICE1712_STDSP24_DAREAR; */
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 03:08 subbia         New Issue                                    
-03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
-03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
-03-09-05 18:40 tiwai          Note Added: 0003833                          
-03-10-05 14:49 subbia         Note Added: 0003854                          
-03-10-05 14:52 tiwai          Note Added: 0003855                          
-03-11-05 01:11 subbia         Note Added: 0003878                          
-03-16-05 14:47 tiwai          Note Added: 0003957                          
-03-16-05 18:36 subbia         Note Added: 0003963                          
-03-16-05 18:37 subbia         Note Edited: 0003963                         
-06-06-05 10:06 perex          Note Added: 0004891                          
-06-16-05 14:42 perex          Status                   assigned => resolved
-06-16-05 14:42 perex          Resolution               open => fixed       
-06-16-05 14:42 perex          Note Added: 0005054                          
+06-06-05 15:29 vandongen2     New Issue                                    
+06-06-05 15:29 vandongen2     Distribution              => linux from scratch
+06-06-05 15:29 vandongen2     Kernel Version            =>
+2.6.12-rc4-RT-V0.7.47-03
+06-07-05 08:24 perex          Relationship added       related to 0000055  
+06-16-05 14:54 perex          Note Added: 0005055                          
 ======================================================================
 
 
