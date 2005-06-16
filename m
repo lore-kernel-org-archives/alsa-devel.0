@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001196]: my soundcard is not detected and irritating me
-Date: Thu, 16 Jun 2005 14:36:13 +0200
-Message-ID: <d833cd7781523cdd8dc81ecda8a96bb1@bugtrack.alsa-project.org>
+Date: Thu, 16 Jun 2005 14:35:53 +0200
+Message-ID: <c5fe59b8690982f58ba80d94412eef68@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12926191
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:36:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 153DE191
+	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 14:35:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue is now in status NEW (again)
+The following issue has been ASSIGNED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1196> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             kernel-2.6.5-1.358smp
 ======================================================================
 Date Submitted:             06-16-2005 12:52 CEST
-Last Modified:              06-16-2005 14:36 CEST
+Last Modified:              06-16-2005 14:35 CEST
 ======================================================================
 Summary:                    my soundcard is not detected and irritating me
 Description: 
@@ -87,7 +87,6 @@ Date Modified  Username       Field                    Change
 06-16-05 12:58 sai prasad     Note Added: 0005051                          
 06-16-05 13:05 pzad           Note Added: 0005052                          
 06-16-05 14:35 perex          Assigned To              perex =>            
-06-16-05 14:36 perex          Status                   assigned => new     
 ======================================================================
 
 
