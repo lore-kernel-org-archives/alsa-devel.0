@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 16 Jun 2005 16:10:54 +0200
-Message-ID: <3c8136321f6a5a92e55bedcf12e26671@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Audigy ZS
+Date: Thu, 16 Jun 2005 15:31:06 +0100
+Message-ID: <42B18D2A.5030602@superbug.co.uk>
+References: <200506160635.j5G6ZXfw028094@www4.pobox.sk> <42B17835.7090807@superbug.co.uk> <Pine.LNX.4.58.0506161508260.2025@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B963619D
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2005 16:10:54 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0506161508260.2025@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Jaroslav Kysela wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
-======================================================================
-Reported By:                willits
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-16-2005 16:10 CEST
-======================================================================
-Summary:                    Realtek ALC650 output problem
-Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+>On Thu, 16 Jun 2005, James Courtier-Dutton wrote:
+>
+>  
+>
+>>If you are interested, the bug is in regard of the PCMCIA Cardbus 
+>>section of the kernel involved in assigning IOPORT resources to the PCI bus.
+>>In effect, although the Audigy 2 NZ Notebook appears in "lspci", and it 
+>>contains valid IOPORT resources, if the driver code makes an "outb()" 
+>>instruction to any address in the IOPORT range, the PC hangs.
+>>    
+>>
+>
+>Did you try to contact pcmcia people? Maybe they will have some 
+>suggestions.
+>
+>						Jaroslav
+>
+>  
+>
 
-I haven't got this problem with Windows.
-======================================================================
+Yes, I sent several emails to: linux-pcmcia@lists.infradead.org
+With no useful feedback.
+I suppose I could try the lkml next.
 
-----------------------------------------------------------------------
- pzad - 06-16-05 15:43 
-----------------------------------------------------------------------
-Do
-alsactl -f test.state store
-
-and attach test.state file
-
-----------------------------------------------------------------------
- willits - 06-16-05 16:10 
-----------------------------------------------------------------------
-I have done alsactl -f test.state store command and I have attached the
-file.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-======================================================================
-
+James
 
 
 
