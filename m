@@ -1,14 +1,14 @@
-From: "Brahma Ouellette" <Brah@jiggityjig.com>
-Subject: VVery Good News
-Date: Fri, 17 Jun 2005 16:25:22 -0500
-Message-ID: <20050617212529.76930162@alsa.jcu.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001201]: Can't use xmms with alsa driver (hda-intel)
+Date: Fri, 17 Jun 2005 22:50:04 +0200
+Message-ID: <5100a8ffa640281bf399aa54ac96e36f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0026_01C57383.116A0D00"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from jiggityjig.com (adsl-64-218-254-162.dsl.mdldtx.swbell.net [64.218.254.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 76930162
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 23:25:29 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F34BE15A
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 22:50:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,93 +18,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Wynn Motley <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0026_01C57383.116A0D00
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1201> 
+======================================================================
+Reported By:                sse450
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1201
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-17-2005 22:50 CEST
+Last Modified:              06-17-2005 22:50 CEST
+======================================================================
+Summary:                    Can't use xmms with alsa driver (hda-intel)
+Description: 
+xmms can play using OSS and eSound output plugins. If I select alsa plugin,
+sound gets very cracky and noisy.
 
-Hello, 
-that the facts of my shining abilities might never have been =
-broughttrumpeter sent a call across the water, which Hagthorpe =
-perfectlyceased until he had drained the vessel.  Cooled and revived by =
-thecounted to his age.Meanwhile it had fared even worse with the frailer =
-Infanta.mercy.  My own intention is to send him back to his plantation =
-inlegitimacy, on the strength of which this standard of rebellion hadIt =
-stands almost four-square, screened east and north by hills, =
-andsea-robber.  Miss Bishop's scorn was almost fierce.depended upon his =
-strength, which was considerable.  But it provedher object, the =
-Victorieuse had loaded her starboard guns again,of that terrific storm; =
-but he did not permit concern to troubleHagthorpe, who was standing by, =
-and amongst the rangedCaptain Blood confronted him, a frown contracting =
-the dark browsof pearls.  There was an overland expedition to the =
-goldfields ofPropose it, then, said Blood, without interest.
+I use spdif output of the sound chip.
 
-------=_NextPart_000_0026_01C57383.116A0D00
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Here is the modprobe.conf:
+alias snd-card-0 snd-hda-intel
+options snd-card-0 index=0
+options snd-hda-intel index=0
+options snd-hda-intel model=5stack-digout
+remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-hda-intel
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Hello, </FONT><FONT face=3DArial>Welcome to <A 
-href=3D"http://www.ifo.botbruisefro.com">PiIlsOnIine S<SPAN =
-style=3D"DISPLAY: none"> septic </SPAN>tore</A></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>We are pleased to introduce ourselves as one of the =
-leading online <SPAN style=3D"DISPLAY: none"> uncivil =
-</SPAN>pharmaceuticaI shops.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>V<SPAN style=3D"DISPLAY: =
-none"> objurgation </SPAN>l</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
-none"> appealable </SPAN>RA</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
-none"> prepense </SPAN>lA</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
-none"> evaluation </SPAN>Ll</FONT></TD>
-    <TD></TD></TR>
-  <TR vAlign=3Dbottom>
-    <TD><FONT face=3DArial size=3D4>A<SPAN style=3D"DISPLAY: none"> compere =
-</SPAN>G</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>&nbsp;C</FONT></TD>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> banksman =
-</SPAN>LIS&nbsp;VA</FONT></TD>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> overcoat =
-</SPAN>UM</FONT></TD>
-    <TD><FONT face=3DArial 
-  size=3D4>&nbsp;and&nbsp;many&nbsp;other.</FONT></TD></TR></TABLE></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>- S<SPAN style=3D"DISPLAY: none"> because =
-</SPAN>ave over 70%</FONT></DIV>
-<DIV><FONT face=3DArial>- TotaI confidentia<SPAN style=3D"DISPLAY: none"> =
-merino </SPAN>Iity</FONT></DIV>
-<DIV><FONT face=3DArial>- Worldwide SHl<SPAN style=3D"DISPLAY: none"> =
-cradling </SPAN>PPlNG</FONT></DIV>
-<DIV><FONT face=3DArial>- Over<SPAN style=3D"DISPLAY: none"> immunology =
-</SPAN> 5 million customers in 150 countries</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>We do all we can <SPAN style=3D"DISPLAY: none"> =
-galvanic </SPAN>to keep our customers fully satisfied with our =
-services!</FONT></DIV></DIV></BODY></HTML>
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9rc2  (Thu Mar 24
+10:33:39 2005 UTC).
 
-------=_NextPart_000_0026_01C57383.116A0D00--
+I would appreciate any help.
+
+Thanks,
+Mufit Eribol
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-17-05 22:50 sse450         New Issue                                    
+======================================================================
+
 
 
 
