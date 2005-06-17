@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 17 Jun 2005 20:32:51 +0200
-Message-ID: <03b4eeae9595ace4a7b40985be1cd2ec@bugtrack.alsa-project.org>
+Date: Fri, 17 Jun 2005 20:34:26 +0200
+Message-ID: <aa18d1f7144dac8c737f3d0b9ccd8b31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88DEA14A
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 20:32:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A77C116A
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 20:34:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-17-2005 20:32 CEST
+Last Modified:              06-17-2005 20:34 CEST
 ======================================================================
 Summary:                    Realtek ALC650 output problem
 Description: 
@@ -53,18 +53,16 @@ I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-17-05 15:10 
-----------------------------------------------------------------------
-Why don't use ALSA drivers 1.0.9b?  The drivers on 2.6.11.x kernel are old.
- (And note that the surround-related controls were changed on 1.0.9. 
-Please attach /etc/asound.state again after update.)
-
-----------------------------------------------------------------------
  willits - 06-17-05 20:32 
 ----------------------------------------------------------------------
 I have got Alsa 1.0.9 (distributed by Suse), I can try with 1.0.9b but I
 didn't think that this correct the problem (I have got this bug since my
 first linux (Mandrake 9 and Alsa 0.9))
+
+----------------------------------------------------------------------
+ willits - 06-17-05 20:34 
+----------------------------------------------------------------------
+I use the intel8x0 driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -80,6 +78,7 @@ Date Modified  Username       Field                    Change
 06-16-05 16:11 willits        File Added: test.state                       
 06-17-05 15:10 tiwai          Note Added: 0005075                          
 06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
 ======================================================================
 
 
