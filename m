@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001198]: powermac driver missing 'macio_find' symbol
-Date: Fri, 17 Jun 2005 02:41:26 +0200
-Message-ID: <a502039e74a867989a809e871099c3d4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001199]: oops with pdaudiocf after data stream abort
+Date: Fri, 17 Jun 2005 02:50:32 +0200
+Message-ID: <58b9ad52642085e751070a5eec86ee2b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FC3814E
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 02:41:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8583C162
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 02:50:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,41 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1198> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1199> 
 ======================================================================
 Reported By:                zwelch
-Assigned To:                tiwai
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1198
-Category:                   PPC - powermac
+Issue ID:                   1199
+Category:                   PCMCIA - pdaudiocf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
 Distribution:               Gentoo
 Kernel Version:             2.6.11.12
 ======================================================================
-Date Submitted:             06-17-2005 02:41 CEST
-Last Modified:              06-17-2005 02:41 CEST
+Date Submitted:             06-17-2005 02:50 CEST
+Last Modified:              06-17-2005 02:50 CEST
 ======================================================================
-Summary:                    powermac driver missing 'macio_find' symbol
+Summary:                    oops with pdaudiocf after data stream abort
 Description: 
-After building alsa-driver-1.0.9a, depmod/modprobe fails with the following
-error:
+The following oops report was generated while using `arecord | aplay` from
+the 1.0.9 alsa-utils release.  It was triggered by unplugging the pre-amp
+while recording, thus causing the optical signal to disappear
+unexpectedly.
 
-WARNING: //lib/modules/2.6.11.12-fs7/alsa-driver/ppc/snd-powermac.ko needs
-unknown symbol macio_find
+As it is, I need both the pdaudiocf and powermac drivers working, or I
+would be using the out-of-kernel alsa-driver package.  The powermac driver
+in 1.0.9a can't find the symbol 'macio_find', which I have reported
+separately (bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1198). 
+Once that bug is fixed, I can retest this issue
+with the most current release, but I hope patches might be applied to
+2.6.11.12 to fix this problem.
 
-I'll try to do more digging myself, but this is where I'm starting.
+I can provide additional information about the kernel configuration,
+installed package versions, run further tests, or try possible patches.
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-17-05 02:41 zwelch         New Issue                                    
-06-17-05 02:41 zwelch         Distribution              => Gentoo          
-06-17-05 02:41 zwelch         Kernel Version            => 2.6.11.12       
+06-17-05 02:50 zwelch         New Issue                                    
+06-17-05 02:50 zwelch         Distribution              => Gentoo          
+06-17-05 02:50 zwelch         Kernel Version            => 2.6.11.12       
 ======================================================================
 
 
