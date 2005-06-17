@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001169]: route plugin: unneeded ttable levels propagation
-Date: Fri, 17 Jun 2005 17:48:04 +0200
-Message-ID: <3e3e0dc4bdc374e17ecd565629fff168@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001200]: rmedigicontrol error: Assertion `obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed
+Date: Fri, 17 Jun 2005 19:17:21 +0200
+Message-ID: <096c5eedd382a316b3f6df4a21ab9343@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9873156
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 17:48:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7602815E
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 19:17:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1169> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1200> 
 ======================================================================
-Reported By:                Andrew
-Assigned To:                perex
+Reported By:                dmaley
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1169
-Category:                   1_pcm - digital audio
+Issue ID:                   1200
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 ======================================================================
-Date Submitted:             06-08-2005 07:51 CEST
-Last Modified:              06-17-2005 17:48 CEST
+Date Submitted:             06-17-2005 19:17 CEST
+Last Modified:              06-17-2005 19:17 CEST
 ======================================================================
-Summary:                    route plugin: unneeded ttable levels propagation
+Summary:                    rmedigicontrol error: Assertion `obj->type ==
+SND_CTL_ELEM_TYPE_ENUMERATED' failed
 Description: 
-v.1.0.9a is in use. All 1.0.9rcX have the same effect.
+I'm running into a problem w/ the latest FC3 kernel (2.6.11-1.27_FC3).  The
+problem occurs when I try to run rmedigicontol from alsa-tools.  This was
+working just fine w/ the 2.6.9 and 2.6.10 based FC3 kernels, however now
+with 2.6.11-1.14_FC3 I'm getting the following error:
 
-To replicate stereo to all eight channles I use this fragment in my
-.asoundrc file:
+[dave@homer tunes]$ rmedigicontrol
+rmedigicontrol: control.c:1686: snd_ctl_elem_info_get_items: Assertion
+`obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed.
+Aborted
+[dave@homer tunes]
 
-pcm.!default {
-        type plug
-        slave {
-                pcm "2x4"
-                format S32_LE
-        }
-}
 
-pcm.2x4 {
-    type route
-    slave.pcm surround71
-    slave.channels 8
-    ttable.0.0 0.03
-    ttable.1.1 0.03
-    ttable.0.2 1
-    ttable.1.3 1
-    ttable.0.4 1
-    ttable.1.5 1
-    ttable.0.6 1
-    ttable.1.7 1
-} 
+In looking at the attached strace output it appears that it's unable to
+find some needed ioctls:
 
-All works fine except for levels are reduced for ALL channles rather
-channels 0 and 1 only (the aim is to balance headphone output channels 0-1
-with external amplifier(s) channels 2-7 levels).
+ioctl(3, USBDEVFS_CONNECTINFO, 0x807daf8) = -1 ENOENT (No such file or
+directory)
+ioctl(3, USBDEVFS_IOCTL, 0x807dc10)     = -1 ENOENT (No such file or
+directory)
+write(2, "rmedigicontrol: control.c:1686: "..., 123) = 123
+rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) = 0
+tgkill(4714, 4714, SIGABRT)             = 0
+--- SIGABRT (Aborted) @ 0 (0) ---
++++ killed by SIGABRT +++
 
-Terratec Aureon 7.1 Space is in use.
 
-I have selected "major" level as such situation is very error-prone:
-unexpected high level output is possible which is danger for ears.
+Any thoughts as to what's changed that could be causing this problem?
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-17-05 14:58 
-----------------------------------------------------------------------
-The ttable output looks OK to me.  But you stillget the same volumes
-(multiplied with 0.1) on all channels, right?
-
-----------------------------------------------------------------------
- Andrew - 06-17-05 17:48 
-----------------------------------------------------------------------
-Tiwai, exactly.
-
-I'm ready to play with different ttable level combinations. Only point me
-which tests may be useful.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 07:51 Andrew         New Issue                                    
-06-16-05 15:04 perex          Status                   new => assigned     
-06-16-05 15:04 perex          Assigned To               => perex           
-06-16-05 15:34 perex          Project                  ALSA - driver => ALSA -
-lib
-06-16-05 15:35 perex          Category                 PCI - ice1724 => 1_pcm -
-digital audio
-06-16-05 15:44 perex          Note Added: 0005061                          
-06-16-05 19:24 Andrew         Note Added: 0005063                          
-06-17-05 14:58 tiwai          Note Added: 0005074                          
-06-17-05 17:48 Andrew         Note Added: 0005076                          
+06-17-05 19:17 dmaley         New Issue                                    
+06-17-05 19:17 dmaley         File Added: rmedigicontrol.bad.trace              
+     
 ======================================================================
 
 
