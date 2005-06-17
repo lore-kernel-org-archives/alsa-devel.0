@@ -1,11 +1,14 @@
-From: Anssi Hannula <anssi.hannula@mbnet.fi>
-Subject: [PATCH] Change the freq limit of speaker-test
-Date: Fri, 17 Jun 2005 21:14:48 +0300
-Message-ID: <42B31318.1020705@mbnet.fi>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Fri, 17 Jun 2005 20:32:51 +0200
+Message-ID: <03b4eeae9595ace4a7b40985be1cd2ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080402040205000408060208"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88DEA14A
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 20:32:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,53 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080402040205000408060208
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi!
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+======================================================================
+Reported By:                willits
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1197
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-17-2005 20:32 CEST
+======================================================================
+Summary:                    Realtek ALC650 output problem
+Description: 
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-I noticed that the speaker-test has limited sine wave frequency to 
-50-5000 Hz. Attached patch changes that to 0-24575Hz (that's the limit 
-at least here (x86-64) after which the freq would roll over to 0 Hz).
+I haven't got this problem with Windows.
+======================================================================
 
-ps. I'm not subscribed, CC me when replying.
+----------------------------------------------------------------------
+ tiwai - 06-17-05 15:10 
+----------------------------------------------------------------------
+Why don't use ALSA drivers 1.0.9b?  The drivers on 2.6.11.x kernel are old.
+ (And note that the surround-related controls were changed on 1.0.9. 
+Please attach /etc/asound.state again after update.)
 
--- 
-Anssi Hannula
+----------------------------------------------------------------------
+ willits - 06-17-05 20:32 
+----------------------------------------------------------------------
+I have got Alsa 1.0.9 (distributed by Suse), I can try with 1.0.9b but I
+didn't think that this correct the problem (I have got this bug since my
+first linux (Mandrake 9 and Alsa 0.9))
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+======================================================================
 
 
---------------080402040205000408060208
-Content-Type: text/x-patch;
- name="speaker-test_changelimits.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="speaker-test_changelimits.diff"
-
-Index: alsa-utils/speaker-test/speaker-test.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/speaker-test/speaker-test.c,v
-retrieving revision 1.8
-diff -u -r1.8 speaker-test.c
---- alsa-utils/speaker-test/speaker-test.c	3 May 2005 18:36:08 -0000	1.8
-+++ alsa-utils/speaker-test/speaker-test.c	17 Jun 2005 18:07:34 -0000
-@@ -532,8 +532,8 @@
-       break;
-     case 'f':
-       freq = atoi(optarg);
--      freq = freq < 50 ? 50 : freq;
--      freq = freq > 5000 ? 5000 : freq;
-+      freq = freq < 0 ? 0 : freq;
-+      freq = freq > 24575 ? 24575 : freq;
-       break;
-     case 'b':
-       buffer_time = atoi(optarg);
-
---------------080402040205000408060208--
 
 
 -------------------------------------------------------
