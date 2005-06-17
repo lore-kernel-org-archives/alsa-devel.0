@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001198]: powermac driver missing 'macio_find' symbol
-Date: Fri, 17 Jun 2005 14:35:10 +0200
-Message-ID: <52fb096172d0e7c317271aee02998dc5@bugtrack.alsa-project.org>
+Date: Fri, 17 Jun 2005 14:40:13 +0200
+Message-ID: <fc2ad97f8b873818beb61066ab0da363@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 30AD117A
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 14:35:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 420EF17A
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 14:40:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.11.12
 ======================================================================
 Date Submitted:             06-17-2005 02:41 CEST
-Last Modified:              06-17-2005 14:35 CEST
+Last Modified:              06-17-2005 14:40 CEST
 ======================================================================
 Summary:                    powermac driver missing 'macio_find' symbol
 Description: 
@@ -59,6 +59,12 @@ I'll try to do more digging myself, but this is where I'm starting.
 It looks like a bug of kernel.  macio_find isn't exported indeed.
 Does the attached patch to the kernel fix the problem?
 
+----------------------------------------------------------------------
+ tiwai - 06-17-05 14:40 
+----------------------------------------------------------------------
+Found that this is fixed (the right patch merged) in 2.6.12-rc but not in
+2.6.11.x.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -66,6 +72,9 @@ Date Modified  Username       Field                    Change
 06-17-05 02:41 zwelch         Distribution              => Gentoo          
 06-17-05 02:41 zwelch         Kernel Version            => 2.6.11.12       
 06-17-05 14:35 tiwai          Note Added: 0005071                          
+06-17-05 14:35 tiwai          File Added: macio_find_export.diff                
+   
+06-17-05 14:40 tiwai          Note Added: 0005072                          
 ======================================================================
 
 
