@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 17 Jun 2005 15:10:07 +0200
-Message-ID: <274340cdd5c6828a8d491f53e96b8aa8@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001169]: route plugin: unneeded ttable levels propagation
+Date: Fri, 17 Jun 2005 17:48:04 +0200
+Message-ID: <3e3e0dc4bdc374e17ecd565629fff168@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 040C917B
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 15:10:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9873156
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 17:48:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1169> 
 ======================================================================
-Reported By:                willits
-Assigned To:                
+Reported By:                Andrew
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1169
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
+Status:                     assigned
 ======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-17-2005 15:10 CEST
+Date Submitted:             06-08-2005 07:51 CEST
+Last Modified:              06-17-2005 17:48 CEST
 ======================================================================
-Summary:                    Realtek ALC650 output problem
+Summary:                    route plugin: unneeded ttable levels propagation
 Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+v.1.0.9a is in use. All 1.0.9rcX have the same effect.
 
-I haven't got this problem with Windows.
+To replicate stereo to all eight channles I use this fragment in my
+.asoundrc file:
+
+pcm.!default {
+        type plug
+        slave {
+                pcm "2x4"
+                format S32_LE
+        }
+}
+
+pcm.2x4 {
+    type route
+    slave.pcm surround71
+    slave.channels 8
+    ttable.0.0 0.03
+    ttable.1.1 0.03
+    ttable.0.2 1
+    ttable.1.3 1
+    ttable.0.4 1
+    ttable.1.5 1
+    ttable.0.6 1
+    ttable.1.7 1
+} 
+
+All works fine except for levels are reduced for ALL channles rather
+channels 0 and 1 only (the aim is to balance headphone output channels 0-1
+with external amplifier(s) channels 2-7 levels).
+
+Terratec Aureon 7.1 Space is in use.
+
+I have selected "major" level as such situation is very error-prone:
+unexpected high level output is possible which is danger for ears.
 ======================================================================
 
 ----------------------------------------------------------------------
- willits - 06-16-05 16:10 
+ tiwai - 06-17-05 14:58 
 ----------------------------------------------------------------------
-I have done alsactl -f test.state store command and I have attached the
-file.
+The ttable output looks OK to me.  But you stillget the same volumes
+(multiplied with 0.1) on all channels, right?
 
 ----------------------------------------------------------------------
- tiwai - 06-17-05 15:10 
+ Andrew - 06-17-05 17:48 
 ----------------------------------------------------------------------
-Why don't use ALSA drivers 1.0.9b?  The drivers on 2.6.11.x kernel are old.
- (And note that the surround-related controls were changed on 1.0.9. 
-Please attach /etc/asound.state again after update.)
+Tiwai, exactly.
+
+I'm ready to play with different ttable level combinations. Only point me
+which tests may be useful.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-08-05 07:51 Andrew         New Issue                                    
+06-16-05 15:04 perex          Status                   new => assigned     
+06-16-05 15:04 perex          Assigned To               => perex           
+06-16-05 15:34 perex          Project                  ALSA - driver => ALSA -
+lib
+06-16-05 15:35 perex          Category                 PCI - ice1724 => 1_pcm -
+digital audio
+06-16-05 15:44 perex          Note Added: 0005061                          
+06-16-05 19:24 Andrew         Note Added: 0005063                          
+06-17-05 14:58 tiwai          Note Added: 0005074                          
+06-17-05 17:48 Andrew         Note Added: 0005076                          
 ======================================================================
 
 
