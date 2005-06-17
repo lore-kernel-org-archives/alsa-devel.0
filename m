@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001200]: rmedigicontrol error: Assertion `obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed
-Date: Fri, 17 Jun 2005 19:20:11 +0200
-Message-ID: <f72a4927d148de4c59bd668203ad26d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000043]: Rear Left - Rear Right - Center - LFE  are not loud enough
+Date: Fri, 17 Jun 2005 19:41:40 +0200
+Message-ID: <82867fd85ec6e03fc8645a25f825dd5a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D332615E
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 19:20:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E11B143
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 19:41:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,323 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1200> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=43> 
 ======================================================================
-Reported By:                dmaley
-Assigned To:                
+Reported By:                norbert
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1200
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   43
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               suse 9.0
+Kernel Version:             2.4.23
 ======================================================================
-Date Submitted:             06-17-2005 19:17 CEST
-Last Modified:              06-17-2005 19:20 CEST
+Date Submitted:             02-05-2004 17:42 CET
+Last Modified:              06-17-2005 19:41 CEST
 ======================================================================
-Summary:                    rmedigicontrol error: Assertion `obj->type ==
-SND_CTL_ELEM_TYPE_ENUMERATED' failed
+Summary:                    Rear Left - Rear Right - Center - LFE  are not loud
+enough
 Description: 
-I'm running into a problem w/ the latest FC3 kernel (2.6.11-1.27_FC3).  The
-problem occurs when I try to run rmedigicontol from alsa-tools.  This was
-working just fine w/ the 2.6.9 and 2.6.10 based FC3 kernels, however now
-with 2.6.11-1.14_FC3 I'm getting the following error:
+lspci
+Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235 AC97
+Audio Controller (rev 50)
 
-[dave@homer tunes]$ rmedigicontrol
-rmedigicontrol: control.c:1686: snd_ctl_elem_info_get_items: Assertion
-`obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed.
-Aborted
-[dave@homer tunes]
+modules.conf:
+alias char-major-116 snd
+alias sound-slot-0 snd-card-0   
+alias sound-service-0-0 snd-mixer-oss
+alias snd-card-0 snd-via82xx 
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-11 snd-mixer-oss
+alias sound-service-0-12 snd-pcm-oss
+options snd-via82xx ac97_clock=48000 enable=1 index=0 mpu_port=0x330
+options snd cards_limit=1 major=116
+
+running speaker-test:
+./speaker-test -Dsurround51 -c 6
+
+Playback device is surround51
+Stream parameters are 44100Hz, S16_LE, 6 channels
+Sine wave rate is 440.0000Hz
+period_size=1200, buffer_size=4800 
+  - Front Left
+  - Front Right
+  - Rear Left
+  - Rear Right
+  - Center
+  - LFE
 
 
-In looking at the attached strace output it appears that it's unable to
-find some needed ioctls:
+Front sounds fine, all others sound too quiet, I have to put my ear in
+front of the passive speakers to hear that it comes from the right one.
 
-ioctl(3, USBDEVFS_CONNECTINFO, 0x807daf8) = -1 ENOENT (No such file or
-directory)
-ioctl(3, USBDEVFS_IOCTL, 0x807dc10)     = -1 ENOENT (No such file or
-directory)
-write(2, "rmedigicontrol: control.c:1686: "..., 123) = 123
-rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) = 0
-tgkill(4714, 4714, SIGABRT)             = 0
---- SIGABRT (Aborted) @ 0 (0) ---
-+++ killed by SIGABRT +++
+amixer:
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 5 [16%] [on]
+  Front Right: Playback 5 [16%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 15 [100%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 15 [100%]
+Simple mixer control '3D Control - Switch',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Surround Down Mix',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [on]
+Simple mixer control 'Center/LFE Down Mix',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Line-In As Surround',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [on]
+  Front Right: Capture [on]
+Simple mixer control 'Mic As Center/LFE',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Video',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Mono: Playback [off] Capture [off]
+Simple mixer control 'IEC958 Input Monitor',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'IEC958 Playback AC97-SPSA',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 3
+  Mono: 3 [100%]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 15
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Analog to IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Duplicate Front',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Exchange Center/LFE',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'External Amplifier Power Down',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Input Source Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Input Source Select',1
+  Capabilities:
+  Mono:
+Simple mixer control 'Swap Surround Slot',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'VIA DXS',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',1
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',2
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',3
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
 
-
-Any thoughts as to what's changed that could be causing this problem?
+thanks,
+norbert
 ======================================================================
 
 ----------------------------------------------------------------------
- dmaley - 06-17-05 19:20 
+ norbert - 06-09-05 10:38 
 ----------------------------------------------------------------------
-I've done some searching through the 2.6.10 and 2.6.11 kernel sources and
-haven't been able to find any changes that appeared relevant to this.  The
-only thing that's changed on this system is the kernel being upgraded to
-2.6.11-1.14_FC3.  When booted into the older 2.6.10-1.770_FC3 kernel
-rmedigicontrol works just fine.
+Due to a test of this issue with the native driver:
+
+This bug can be closed.
+Output of rear, center and lfe are weaker than output of front (by
+hardware).
+
+No problem if you use amplified speaker.
+
+(the not working right-rear (reported by imac) seems to be another
+construction site)
+Thanks.
+
+----------------------------------------------------------------------
+ imac - 06-17-05 19:41 
+----------------------------------------------------------------------
+As stated by tiwai, all my issues have been resolved.  ALSA rox
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-17-05 19:17 dmaley         New Issue                                    
-06-17-05 19:17 dmaley         File Added: rmedigicontrol.bad.trace              
-     
-06-17-05 19:17 dmaley         File Added: rmedigicontrol.good.trace             
-      
-06-17-05 19:20 dmaley         Note Added: 0005077                          
+02-05-04 17:42 norbert        New Issue                                    
+02-06-04 18:19 tiwai          Note Added: 0000196                          
+02-06-04 18:19 tiwai          Status                   new => assigned     
+02-06-04 18:19 tiwai          Assigned To               => tiwai           
+02-09-04 08:30 norbert        Note Added: 0000207                          
+03-01-04 19:20 tiwai          Note Added: 0000418                          
+03-03-04 08:04 norbert        Note Added: 0000453                          
+02-20-05 20:48 imac           Note Added: 0003676                          
+02-20-05 20:48 imac           Issue Monitored: imac                        
+02-20-05 20:57 imac           Note Added: 0003677                          
+06-09-05 10:38 norbert        Note Added: 0004978                          
+06-17-05 19:41 imac           Note Added: 0005078                          
 ======================================================================
 
 
