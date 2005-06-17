@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001169]: route plugin: unneeded ttable levels propagation
-Date: Fri, 17 Jun 2005 14:58:24 +0200
-Message-ID: <324ca92aa6454fc8f6cc0086ffd41097@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Fri, 17 Jun 2005 15:10:07 +0200
+Message-ID: <274340cdd5c6828a8d491f53e96b8aa8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 099F317A
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 14:58:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 040C917B
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 15:10:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,190 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1169> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                Andrew
-Assigned To:                perex
+Reported By:                willits
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1169
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-08-2005 07:51 CEST
-Last Modified:              06-17-2005 14:58 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-17-2005 15:10 CEST
 ======================================================================
-Summary:                    route plugin: unneeded ttable levels propagation
+Summary:                    Realtek ALC650 output problem
 Description: 
-v.1.0.9a is in use. All 1.0.9rcX have the same effect.
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-To replicate stereo to all eight channles I use this fragment in my
-.asoundrc file:
-
-pcm.!default {
-        type plug
-        slave {
-                pcm "2x4"
-                format S32_LE
-        }
-}
-
-pcm.2x4 {
-    type route
-    slave.pcm surround71
-    slave.channels 8
-    ttable.0.0 0.03
-    ttable.1.1 0.03
-    ttable.0.2 1
-    ttable.1.3 1
-    ttable.0.4 1
-    ttable.1.5 1
-    ttable.0.6 1
-    ttable.1.7 1
-} 
-
-All works fine except for levels are reduced for ALL channles rather
-channels 0 and 1 only (the aim is to balance headphone output channels 0-1
-with external amplifier(s) channels 2-7 levels).
-
-Terratec Aureon 7.1 Space is in use.
-
-I have selected "major" level as such situation is very error-prone:
-unexpected high level output is possible which is danger for ears.
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- Andrew - 06-16-05 19:24 
+ willits - 06-16-05 16:10 
 ----------------------------------------------------------------------
-Perex,
-
-'aplay -v -D2x4 41.wav' doesn't work: 
-
-Playing WAVE '41.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-aplay: set_params:882: Sample format non available
-
-'aplay -v -Dplug:2x4 41.wav' output is below ("0.1" level for ch.0,1 is
-used).
-
-I have tried 'aplay -Dplug:front <somefile>' and 'aplay -Dplug:rear
-<somefile>' without any problems - they work the same way level as with
-level "1" in ttable.
-
-(I don't think there are some mixer mismatches as I was able to create own
-config file for qamix :-)
-
-
-
-=============== 'aplay -v -Dplug:2x4 41.wav' output ==========
-Playing WAVE '41.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Plug PCM: Linear conversion PCM (S32_LE)
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 8192
-period_size  : 2048
-period_time  : 46439
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 2048
-xfer_align   : 2048
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Route conversion PCM
-Transformation table:
-0 <- 0*0.1
-1 <- 1*0.1
-2 <- 0
-3 <- 1
-4 <- 0
-5 <- 1
-6 <- 0
-7 <- 1
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 32
-buffer_size  : 8192
-period_size  : 2048
-period_time  : 46439
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 2048
-xfer_align   : 2048
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Hardware PCM card 0 'Terratec Aureon 7.1-Space' device 0 subdevice
-0
-
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 8
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 24
-buffer_size  : 8192
-period_size  : 2048
-period_time  : 46439
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 2048
-xfer_align   : 2048
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
+I have done alsactl -f test.state store command and I have attached the
+file.
 
 ----------------------------------------------------------------------
- tiwai - 06-17-05 14:58 
+ tiwai - 06-17-05 15:10 
 ----------------------------------------------------------------------
-The ttable output looks OK to me.  But you stillget the same volumes
-(multiplied with 0.1) on all channels, right?
+Why don't use ALSA drivers 1.0.9b?  The drivers on 2.6.11.x kernel are old.
+ (And note that the surround-related controls were changed on 1.0.9. 
+Please attach /etc/asound.state again after update.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 07:51 Andrew         New Issue                                    
-06-16-05 15:04 perex          Status                   new => assigned     
-06-16-05 15:04 perex          Assigned To               => perex           
-06-16-05 15:34 perex          Project                  ALSA - driver => ALSA -
-lib
-06-16-05 15:35 perex          Category                 PCI - ice1724 => 1_pcm -
-digital audio
-06-16-05 15:44 perex          Note Added: 0005061                          
-06-16-05 19:24 Andrew         Note Added: 0005063                          
-06-17-05 14:58 tiwai          Note Added: 0005074                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
 ======================================================================
 
 
