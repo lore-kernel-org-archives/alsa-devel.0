@@ -1,16 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Re: rmedigicontrol error w/ 2.6.11 based kernels
-Date: Fri, 17 Jun 2005 23:25:03 +0200
-Message-ID: <20050617212503.GA3272@tuba>
-References: <1118985708.4845.7.camel@homer> <20050617185440.GA3067@tuba> <1119035061.19620.42.camel@kodos.rdu.redhat.com>
+From: "Brahma Ouellette" <Brah@jiggityjig.com>
+Subject: VVery Good News
+Date: Fri, 17 Jun 2005 16:25:22 -0500
+Message-ID: <20050617212529.76930162@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Qxx1br4bt0+wmkIi"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0026_01C57383.116A0D00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0254215E
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 23:23:29 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <1119035061.19620.42.camel@kodos.rdu.redhat.com>
+Received: from jiggityjig.com (adsl-64-218-254-162.dsl.mdldtx.swbell.net [64.218.254.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 76930162
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 23:25:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,82 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dave Maley <dmaley@nc.rr.com>
-Cc: postmaster@robertvetter.com, alsa-devel@alsa-project.org
+To: Wynn Motley <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_NextPart_000_0026_01C57383.116A0D00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 17, 2005 at 03:04:21PM -0400, Dave Maley wrote:
-> On Fri, 2005-06-17 at 20:54 +0200, Martin Langer wrote:
-> > On Fri, Jun 17, 2005 at 01:21:48AM -0400, Dave Maley wrote:
-> > > Hello.  I've been happily using rmedigicontrol for a while now (thanks
-> > > for the great app) but have run into a problem when running 2.6.11 based
-> > > kernels.  My audio workstation runs Fedora Core 3 and w/ the 2.6.9 and
-> > > 2.6.10 based kernels rmedigicontrol works great.  However when I run 1
-> > > of the 2.6.11 based kernels I get this error:
-> > > 
-> > > [dave@homer DOWNLOADS]$ rmedigicontrol
-> > > rmedigicontrol: control.c:1686: snd_ctl_elem_info_get_items: Assertion
-> > > `obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed.
-> > > Aborted
-> > 
-> > There was a change in the mixer (enumerates) and I forgot to change
-> > rmedigicontrol, too. But this patch removes 
-> > "snd_ctl_elem_value_get_enumerated()" for the rme32/rme96 cards now.
-> > The patch is only tested with a rme32 card here.
-> 
-> Thanks much for the quick response.  I'll test this patch w/ my digi96/8
-> PST card and let you know how things go.
+Hello, 
+that the facts of my shining abilities might never have been =
+broughttrumpeter sent a call across the water, which Hagthorpe =
+perfectlyceased until he had drained the vessel.  Cooled and revived by =
+thecounted to his age.Meanwhile it had fared even worse with the frailer =
+Infanta.mercy.  My own intention is to send him back to his plantation =
+inlegitimacy, on the strength of which this standard of rebellion hadIt =
+stands almost four-square, screened east and north by hills, =
+andsea-robber.  Miss Bishop's scorn was almost fierce.depended upon his =
+strength, which was considerable.  But it provedher object, the =
+Victorieuse had loaded her starboard guns again,of that terrific storm; =
+but he did not permit concern to troubleHagthorpe, who was standing by, =
+and amongst the rangedCaptain Blood confronted him, a frown contracting =
+the dark browsof pearls.  There was an overland expedition to the =
+goldfields ofPropose it, then, said Blood, without interest.
 
-Please try this patch instead. The former one is wrong. Sorry.
+------=_NextPart_000_0026_01C57383.116A0D00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Hello, </FONT><FONT face=3DArial>Welcome to <A 
+href=3D"http://www.ifo.botbruisefro.com">PiIlsOnIine S<SPAN =
+style=3D"DISPLAY: none"> septic </SPAN>tore</A></FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>We are pleased to introduce ourselves as one of the =
+leading online <SPAN style=3D"DISPLAY: none"> uncivil =
+</SPAN>pharmaceuticaI shops.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4>V<SPAN style=3D"DISPLAY: =
+none"> objurgation </SPAN>l</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
+none"> appealable </SPAN>RA</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
+none"> prepense </SPAN>lA</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
+none"> evaluation </SPAN>Ll</FONT></TD>
+    <TD></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD><FONT face=3DArial size=3D4>A<SPAN style=3D"DISPLAY: none"> compere =
+</SPAN>G</FONT></TD>
+    <TD><FONT face=3DArial size=3D4>&nbsp;C</FONT></TD>
+    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> banksman =
+</SPAN>LIS&nbsp;VA</FONT></TD>
+    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> overcoat =
+</SPAN>UM</FONT></TD>
+    <TD><FONT face=3DArial 
+  size=3D4>&nbsp;and&nbsp;many&nbsp;other.</FONT></TD></TR></TABLE></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>- S<SPAN style=3D"DISPLAY: none"> because =
+</SPAN>ave over 70%</FONT></DIV>
+<DIV><FONT face=3DArial>- TotaI confidentia<SPAN style=3D"DISPLAY: none"> =
+merino </SPAN>Iity</FONT></DIV>
+<DIV><FONT face=3DArial>- Worldwide SHl<SPAN style=3D"DISPLAY: none"> =
+cradling </SPAN>PPlNG</FONT></DIV>
+<DIV><FONT face=3DArial>- Over<SPAN style=3D"DISPLAY: none"> immunology =
+</SPAN> 5 million customers in 150 countries</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>We do all we can <SPAN style=3D"DISPLAY: none"> =
+galvanic </SPAN>to keep our customers fully satisfied with our =
+services!</FONT></DIV></DIV></BODY></HTML>
 
-martin
+------=_NextPart_000_0026_01C57383.116A0D00--
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="rmedigicontrol.patch"
-
-Index: rmedigicontrol.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/rmedigicontrol/rmedigicontrol.c,v
-retrieving revision 1.3
-diff -u -r1.3 rmedigicontrol.c
---- rmedigicontrol.c	29 Nov 2004 15:09:16 -0000	1.3
-+++ rmedigicontrol.c	17 Jun 2005 21:11:47 -0000
-@@ -100,7 +100,7 @@
- 	loopback_box=create_loopback_toggle();
- 	gtk_box_pack_start(GTK_BOX(col1_box),loopback_box,TRUE,FALSE,0);
- 
--       	clock_box=create_enum_elem_radio("Sample Clock Source",&clock_iv);
-+	clock_box=create_enum_elem_radio("Sample Clock Source",&clock_iv);
- 	gtk_box_pack_start(GTK_BOX(col1_box),clock_box,TRUE,FALSE,0);
- 
- 	gtk_box_pack_start(GTK_BOX(main_box),col1_box,TRUE,FALSE,8);
-@@ -172,14 +172,15 @@
- 		r=gtk_radio_button_new_with_label(group,snd_ctl_elem_info_get_item_name(iv->info));
- 		group=gtk_radio_button_group(GTK_RADIO_BUTTON(r));
- 		gtk_signal_connect(GTK_OBJECT(r),"toggled",GTK_SIGNAL_FUNC(elem_radio_toggled),(gpointer)iv);
--		if(i==snd_ctl_elem_value_get_enumerated(iv->val,0))
-+		if(i==snd_ctl_elem_value_get_integer(iv->val,0))
- 			active=r;
- 		gtk_box_pack_start(GTK_BOX(box),r,TRUE,FALSE,0);
- 	}
--	if(active)	
-+	if(active)
- 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(active),TRUE);
- 	frame=gtk_frame_new(elem_name);
- 	gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_IN);
- 	gtk_container_add(GTK_CONTAINER(frame),box);
- 	return frame;
- }
-+
-
---Qxx1br4bt0+wmkIi--
 
 
 -------------------------------------------------------
