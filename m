@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001161]: Midi in still does not work for Hoontech/STAudio DSP2000 C-Port
-Date: Fri, 17 Jun 2005 11:13:53 +0200
-Message-ID: <bc56a1b3ec40ce59bc276f5d6d6b1760@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Fri, 17 Jun 2005 11:45:54 +0200
+Message-ID: <a7d4f24769c1c706cb8db191d0fd2b49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB8AC15A
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 11:13:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C355B173
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 11:45:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1161> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                vandongen2
+Reported By:                yafrank
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1161
-Category:                   PCI - ice1712
+Issue ID:                   1023
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               linux from scratch
-Kernel Version:             2.6.12-rc4-RT-V0.7.47-03
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             06-06-2005 15:29 CEST
-Last Modified:              06-17-2005 11:13 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              06-17-2005 11:45 CEST
 ======================================================================
-Summary:                    Midi in still does not work for Hoontech/STAudio
-DSP2000 C-Port
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-As reported before in bug 000055 that is now marked resolved.
-It has not been resolved.
-The problem seems to be related to hardware specific registers on the card
-that need to be set.
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-I will be happy to spend a couple of days trying different flags/bits with
-the initialisation code, if somebody gives me an idea of where to start.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
+
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000055 Midi in does not work for Hoontech/STAu...
-======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-16-05 14:54 
+ yafrank - 06-17-05 09:55 
 ----------------------------------------------------------------------
-Could you try this patch?
-
-Index: hoontech.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ice1712/hoontech.c,v
-retrieving revision 1.8
-diff -u -r1.8 hoontech.c
---- hoontech.c  27 Sep 2004 14:44:14 -0000      1.8
-+++ hoontech.c  16 Jun 2005 12:53:44 -0000
-@@ -188,7 +188,7 @@
-        ICE1712_STDSP24_3_INSEL(ice->spec.hoontech.boxbits, 0);
- 
-        /* let's go - activate only functions in first box */
--       ice->spec.hoontech.config = 0;
-+       ice->spec.hoontech.config = ICE1712_STDSP24_INSEL;
-                            /* ICE1712_STDSP24_MUTE |
-                               ICE1712_STDSP24_INSEL |
-                               ICE1712_STDSP24_DAREAR; */
+Just test the latest driver 1.0.9b with offical kernel 2.6.12-rc6-git8 in
+my FC3 with no help. There is still no pcm option in alsamixer.
 
 ----------------------------------------------------------------------
- vandongen2 - 06-17-05 11:13 
+ yafrank - 06-17-05 11:45 
 ----------------------------------------------------------------------
-The patch doesn't change anything as far as I can tell.
+Tired of waiting, I've tested downgrading alsa to 1.0.7 in kernel
+2.6.12-rc6-git8 with success in my fc3. First build a customized kernel
+without any alsa or oss option enabled in config, but only enable sound
+support. Then goto extracted alsa-1.0.7 source directory, execute
+following:
+./configure --with-kernel=</path/to/kernel/source>
+--with-build=</path/to/kernel/source> --with-cards=ens1371
+--with-sequencer=yes; make; make install-modules
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 15:29 vandongen2     New Issue                                    
-06-06-05 15:29 vandongen2     Distribution              => linux from scratch
-06-06-05 15:29 vandongen2     Kernel Version            =>
-2.6.12-rc4-RT-V0.7.47-03
-06-07-05 08:24 perex          Relationship added       related to 0000055  
-06-16-05 14:54 perex          Note Added: 0005055                          
-06-17-05 11:13 vandongen2     Note Added: 0005066                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
 ======================================================================
 
 
