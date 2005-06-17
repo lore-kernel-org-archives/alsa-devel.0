@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 17 Jun 2005 20:34:26 +0200
-Message-ID: <aa18d1f7144dac8c737f3d0b9ccd8b31@bugtrack.alsa-project.org>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: rmedigicontrol error w/ 2.6.11 based kernels
+Date: Fri, 17 Jun 2005 20:54:40 +0200
+Message-ID: <20050617185440.GA3067@tuba>
+References: <1118985708.4845.7.camel@homer>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A77C116A
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 20:34:26 +0200 (MEST)
+Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 77701138
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 20:53:09 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1118985708.4845.7.camel@homer>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +20,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dave Maley <dmaley@nc.rr.com>
+Cc: postmaster@robertvetter.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
-======================================================================
-Reported By:                willits
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-17-2005 20:34 CEST
-======================================================================
-Summary:                    Realtek ALC650 output problem
-Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I haven't got this problem with Windows.
-======================================================================
+On Fri, Jun 17, 2005 at 01:21:48AM -0400, Dave Maley wrote:
+> Hello.  I've been happily using rmedigicontrol for a while now (thanks
+> for the great app) but have run into a problem when running 2.6.11 based
+> kernels.  My audio workstation runs Fedora Core 3 and w/ the 2.6.9 and
+> 2.6.10 based kernels rmedigicontrol works great.  However when I run 1
+> of the 2.6.11 based kernels I get this error:
+> 
+> [dave@homer DOWNLOADS]$ rmedigicontrol
+> rmedigicontrol: control.c:1686: snd_ctl_elem_info_get_items: Assertion
+> `obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed.
+> Aborted
 
-----------------------------------------------------------------------
- willits - 06-17-05 20:32 
-----------------------------------------------------------------------
-I have got Alsa 1.0.9 (distributed by Suse), I can try with 1.0.9b but I
-didn't think that this correct the problem (I have got this bug since my
-first linux (Mandrake 9 and Alsa 0.9))
+There was a change in the mixer (enumerates) and I forgot to change
+rmedigicontrol, too. But this patch removes 
+"snd_ctl_elem_value_get_enumerated()" for the rme32/rme96 cards now.
+The patch is only tested with a rme32 card here.
 
-----------------------------------------------------------------------
- willits - 06-17-05 20:34 
-----------------------------------------------------------------------
-I use the intel8x0 driver.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
-06-17-05 20:32 willits        Note Added: 0005079                          
-06-17-05 20:34 willits        Note Added: 0005080                          
-======================================================================
+Signed-off-by: Martin Langer <martin-langer@gmx.de>
 
 
+martin
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="rmedigicontrol.patch"
+
+Index: rmedigicontrol.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/rmedigicontrol/rmedigicontrol.c,v
+retrieving revision 1.3
+diff -u -r1.3 rmedigicontrol.c
+--- rmedigicontrol.c	29 Nov 2004 15:09:16 -0000	1.3
++++ rmedigicontrol.c	17 Jun 2005 18:33:34 -0000
+@@ -100,7 +100,7 @@
+ 	loopback_box=create_loopback_toggle();
+ 	gtk_box_pack_start(GTK_BOX(col1_box),loopback_box,TRUE,FALSE,0);
+ 
+-       	clock_box=create_enum_elem_radio("Sample Clock Source",&clock_iv);
++	clock_box=create_enum_elem_radio("Sample Clock Source",&clock_iv);
+ 	gtk_box_pack_start(GTK_BOX(col1_box),clock_box,TRUE,FALSE,0);
+ 
+ 	gtk_box_pack_start(GTK_BOX(main_box),col1_box,TRUE,FALSE,8);
+@@ -172,8 +172,6 @@
+ 		r=gtk_radio_button_new_with_label(group,snd_ctl_elem_info_get_item_name(iv->info));
+ 		group=gtk_radio_button_group(GTK_RADIO_BUTTON(r));
+ 		gtk_signal_connect(GTK_OBJECT(r),"toggled",GTK_SIGNAL_FUNC(elem_radio_toggled),(gpointer)iv);
+-		if(i==snd_ctl_elem_value_get_enumerated(iv->val,0))
+-			active=r;
+ 		gtk_box_pack_start(GTK_BOX(box),r,TRUE,FALSE,0);
+ 	}
+ 	if(active)	
+
+--OXfL5xGRrasGEqWY--
 
 
 -------------------------------------------------------
