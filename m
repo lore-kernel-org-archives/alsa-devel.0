@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Fri, 17 Jun 2005 14:20:03 +0200
-Message-ID: <4f689f20d3d1af49a4a68c0976e56269@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001195]: alsa-lib 1.0.9 crashes artsd
+Date: Fri, 17 Jun 2005 14:24:51 +0200
+Message-ID: <b2c1a7b7464bb0691f1b8bfb1863ff8a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A96FE177
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 14:20:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 038A9177
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 14:24:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1195> 
 ======================================================================
-Reported By:                Gildoniel
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1162
-Category:                   PCI - atiixp
-Reproducibility:            always
+Project:                    ALSA - lib
+Issue ID:                   1195
+Category:                   0_general
+Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSe Linux 9.3 Professional
-Kernel Version:             2.6.11.4.20a
+Status:                     new
 ======================================================================
-Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-17-2005 14:20 CEST
+Date Submitted:             06-15-2005 17:21 CEST
+Last Modified:              06-17-2005 14:24 CEST
 ======================================================================
-Summary:                    no sound on speakers, low volume on the headphones
+Summary:                    alsa-lib 1.0.9 crashes artsd
 Description: 
-Problem diagnosis:
- 
-* Sound card is detected and automatically configured, but no sound can be
-heard.
-* It is possible to hear _faint_ sound (very low volume) through
-headphones.
-* Headphone volume is 0 and I can still hear low volume sound (maybe
-master/headphone switched?)
-* It seems to be possible to record voice on the microphone (I see the
-amplitude when talking into the mic)
- 
-Solution attempts so far:
- 
-* used alsamixer to turn up and unmute all channels (failed: no sound on
-speakers, very low volume on headphones)
-* use the "quirk" option of the driver -1 through 7 (failed - no bettering
-and error messages with certain settings)
-* tried other sounddrivers (intel, via and others - didn't try them all)
-(failed - error loading modules on those I tried)
+The submitter of Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=312577 says that after
+upgrading his
+ALSA library to 1.0.9 his artsd process crashes after a number of hours.
+
+The submitter provided a backtrace which I attach (artsd.crash).
 ======================================================================
 
 ----------------------------------------------------------------------
- Gildoniel - 06-17-05 11:54 
+ jdthood - 06-17-05 08:54 
 ----------------------------------------------------------------------
-Problem is with my system: Turning ACPI off crashes the system when running
-in 64bit mode (so I have to do without sound). In 32bit mode I'm able to
-boot the system and have sound with ACPI disabled, but that's no real fix
-for the problem, as without ACPI many important functions for notebook
-mobility won't work.
-If there is any chance to get this fixed I'd very much appreciate it.
+-------- Forwarded Message --------
+From: Andreas Pakulat <apaku@gmx.de>
+To: Thomas Hood <jdthood@aglu.demon.nl>, 312577-quiet@bugs.debian.org
+Subject: Re: Bug#312577: Try this patch
+Date: Thu, 16 Jun 2005 23:08:08 +0200
+
+On 15.Jun 2005 - 23:45:18, Thomas Hood wrote:
+> Upstream provides the attached patch for you to try.
+
+Ok, applied it to the alsa-libs package from unstable. artsd doesn't
+crash, at least I don't get a drkonqi window and I still see the
+process(es), but the player "hangs" and I don't hear any music. Wait,
+after some time I get a second of music and then nothing, then again I
+get to hear a second or so.. There is no high load or something.
+
+Oh and yesterday I tried the workaround of setting the frequency to
+48KHz, after about 6:30 hours artsd still did not crash, so I guess that
+workaround is working better than the patch.
+
+Andreas
 
 ----------------------------------------------------------------------
- tiwai - 06-17-05 14:20 
+ tiwai - 06-17-05 14:24 
 ----------------------------------------------------------------------
-Since the APCI looks like the cause of this trouble, I'm afraid that this
-isn't solvable in the ALSA driver itself.  Could you report this to ACPI
-guys or kernel bugzilla?
+The patch is maybe not enough since it fixes only the dmix.  The rest
+problem is in rate plugin.  Will check rate plugin later.
+
+The workaround fixes the problem because it skips the rate plugin and it
+avoids the mismatch of source/destination period sizes.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 18:54 Gildoniel      New Issue                                    
-06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
-06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
-Professional
-06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
-06-07-05 17:52 Gildoniel      Note Added: 0004913                          
-06-08-05 14:35 tiwai          Note Added: 0004922                          
-06-08-05 14:43 Gildoniel      File Added: asound.state                     
-06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
-         
-06-08-05 14:52 Gildoniel      Note Added: 0004924                          
-06-08-05 14:59 Gildoniel      Note Added: 0004927                          
-06-08-05 15:08 tiwai          Note Added: 0004929                          
-06-08-05 15:29 Gildoniel      Note Added: 0004933                          
-06-08-05 15:31 Gildoniel      Note Added: 0004934                          
-06-08-05 15:36 pzad           Note Added: 0004935                          
-06-08-05 16:13 Gildoniel      Note Added: 0004948                          
-06-08-05 16:21 pzad           Note Added: 0004949                          
-06-08-05 16:39 Gildoniel      Note Added: 0004954                          
-06-08-05 16:41 tiwai          Note Added: 0004955                          
-06-08-05 16:42 pzad           Note Added: 0004956                          
-06-08-05 16:43 tiwai          Note Added: 0004957                          
-06-08-05 16:45 pzad           Note Added: 0004958                          
-06-08-05 16:52 Gildoniel      Note Added: 0004959                          
-06-08-05 16:57 pzad           Note Added: 0004960                          
-06-08-05 17:03 tiwai          Note Added: 0004961                          
-06-08-05 17:13 Gildoniel      Note Added: 0004963                          
-06-08-05 17:31 Gildoniel      Note Added: 0004964                          
-06-08-05 17:35 tiwai          Note Added: 0004965                          
-06-08-05 18:03 Gildoniel      Note Added: 0004967                          
-06-08-05 18:39 Gildoniel      Note Added: 0004970                          
-06-17-05 11:54 Gildoniel      Note Added: 0005068                          
-06-17-05 14:20 tiwai          Note Added: 0005069                          
+06-15-05 17:21 jdthood        New Issue                                    
+06-15-05 17:21 jdthood        File Added: artsd.crash                      
+06-15-05 17:52 tiwai          Note Added: 0005038                          
+06-15-05 17:58 pzad           Note Added: 0005039                          
+06-15-05 18:17 tiwai          Note Added: 0005040                          
+06-15-05 18:24 jdthood        Note Added: 0005041                          
+06-15-05 19:47 tiwai          Note Added: 0005042                          
+06-15-05 19:47 tiwai          File Added: dmix-boundary-fix.diff                
+   
+06-17-05 08:54 jdthood        Note Added: 0005064                          
+06-17-05 14:24 tiwai          Note Added: 0005070                          
 ======================================================================
 
 
