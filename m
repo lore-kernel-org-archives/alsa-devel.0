@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001195]: alsa-lib 1.0.9 crashes artsd
-Date: Fri, 17 Jun 2005 08:54:45 +0200
-Message-ID: <8710083c4eb865d13d83ea6964a937d6@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: time stamp and dmix
+Date: Fri, 17 Jun 2005 08:56:46 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0506170853040.24910-100000@studcom.urz.uni-halle.de>
+References: <loom.20050617T020400-431@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2EE416B
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 08:54:46 +0200 (MEST)
+In-Reply-To: <loom.20050617T020400-431@post.gmane.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +16,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+jw,Lee wrote:
+> Clemens Ladisch <clemens <at> ladisch.de> writes:
+>
+> > jw,Lee wrote:
+> > > when I use "plughw:0,0", my app play sound profectly with
+> > > various mp3 file. but If I use "plug:dmixer" some mp3 file
+> > > play fast.
+> >
+> > The "plug:" should automatically convert sample rates.  Which
+> > application is this?
+>
+> --> The application is what I'm making now.. :)
+>
+> exact_rate = snd_pcm_hw_params_set_rate_near(hPlayback, hw_params,
+>                  &frequency_near, &dir);
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1195> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1195
-Category:                   0_general
-Reproducibility:            sometimes
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-15-2005 17:21 CEST
-Last Modified:              06-17-2005 08:54 CEST
-======================================================================
-Summary:                    alsa-lib 1.0.9 crashes artsd
-Description: 
-The submitter of Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=312577 says that after
-upgrading his
-ALSA library to 1.0.9 his artsd process crashes after a number of hours.
+_set_rate_near() might select another frequency (although this
+shouldn't happen with the plug plugin).  What is the value of
+frequency_near after the call?
 
-The submitter provided a backtrace which I attach (artsd.crash).
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 06-15-05 19:47 
-----------------------------------------------------------------------
-The backtrace looks inperfect, so can't trust 100%.
-Anyway, please try the attached patch.
-
-----------------------------------------------------------------------
- jdthood - 06-17-05 08:54 
-----------------------------------------------------------------------
--------- Forwarded Message --------
-From: Andreas Pakulat <apaku@gmx.de>
-To: Thomas Hood <jdthood@aglu.demon.nl>, 312577-quiet@bugs.debian.org
-Subject: Re: Bug#312577: Try this patch
-Date: Thu, 16 Jun 2005 23:08:08 +0200
-
-On 15.Jun 2005 - 23:45:18, Thomas Hood wrote:
-> Upstream provides the attached patch for you to try.
-
-Ok, applied it to the alsa-libs package from unstable. artsd doesn't
-crash, at least I don't get a drkonqi window and I still see the
-process(es), but the player "hangs" and I don't hear any music. Wait,
-after some time I get a second of music and then nothing, then again I
-get to hear a second or so.. There is no high load or something.
-
-Oh and yesterday I tried the workaround of setting the frequency to
-48KHz, after about 6:30 hours artsd still did not crash, so I guess that
-workaround is working better than the patch.
-
-Andreas
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-15-05 17:21 jdthood        New Issue                                    
-06-15-05 17:21 jdthood        File Added: artsd.crash                      
-06-15-05 17:52 tiwai          Note Added: 0005038                          
-06-15-05 17:58 pzad           Note Added: 0005039                          
-06-15-05 18:17 tiwai          Note Added: 0005040                          
-06-15-05 18:24 jdthood        Note Added: 0005041                          
-06-15-05 19:47 tiwai          Note Added: 0005042                          
-06-15-05 19:47 tiwai          File Added: dmix-boundary-fix.diff                
-   
-06-17-05 08:54 jdthood        Note Added: 0005064                          
-======================================================================
-
+Regards,
+Clemens
 
 
 
