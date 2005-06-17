@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Fri, 17 Jun 2005 11:54:46 +0200
-Message-ID: <fd9a41a86218cf3b5f2ea170890de765@bugtrack.alsa-project.org>
+Date: Fri, 17 Jun 2005 14:20:03 +0200
+Message-ID: <4f689f20d3d1af49a4a68c0976e56269@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 202CF173
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 11:54:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A96FE177
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 14:20:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSe Linux 9.3 Professional
 Kernel Version:             2.6.11.4.20a
 ======================================================================
 Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              06-17-2005 11:54 CEST
+Last Modified:              06-17-2005 14:20 CEST
 ======================================================================
 Summary:                    no sound on speakers, low volume on the headphones
 Description: 
@@ -66,15 +66,6 @@ and error messages with certain settings)
 ======================================================================
 
 ----------------------------------------------------------------------
- Gildoniel - 06-08-05 18:39 
-----------------------------------------------------------------------
-I've recompiled the alsa-driver package 1.0.9rc4 and done:
-
-echo 5c 0000 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-I could notice no changes though.
-
-----------------------------------------------------------------------
  Gildoniel - 06-17-05 11:54 
 ----------------------------------------------------------------------
 Problem is with my system: Turning ACPI off crashes the system when running
@@ -83,6 +74,13 @@ boot the system and have sound with ACPI disabled, but that's no real fix
 for the problem, as without ACPI many important functions for notebook
 mobility won't work.
 If there is any chance to get this fixed I'd very much appreciate it.
+
+----------------------------------------------------------------------
+ tiwai - 06-17-05 14:20 
+----------------------------------------------------------------------
+Since the APCI looks like the cause of this trouble, I'm afraid that this
+isn't solvable in the ALSA driver itself.  Could you report this to ACPI
+guys or kernel bugzilla?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,6 +117,7 @@ Professional
 06-08-05 18:03 Gildoniel      Note Added: 0004967                          
 06-08-05 18:39 Gildoniel      Note Added: 0004970                          
 06-17-05 11:54 Gildoniel      Note Added: 0005068                          
+06-17-05 14:20 tiwai          Note Added: 0005069                          
 ======================================================================
 
 
