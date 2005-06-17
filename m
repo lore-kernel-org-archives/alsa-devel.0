@@ -1,10 +1,10 @@
-From: "Nicky Hendricks" <HendricNicky@fsmech.com>
-Subject: My Problem  Solved
-Date: Fri, 17 Jun 2005 13:04:12 -0500
-Message-ID: <E1DjLCR-0004F0-3M@sc8-sf-mx1.sourceforge.net>
+From: Anssi Hannula <anssi.hannula@mbnet.fi>
+Subject: [PATCH] Change the freq limit of speaker-test
+Date: Fri, 17 Jun 2005 21:14:48 +0300
+Message-ID: <42B31318.1020705@mbnet.fi>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001F_01C57366.F7223600"
+Content-Type: multipart/mixed;
+ boundary="------------080402040205000408060208"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,94 +15,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mindy Poole <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
+--------------080402040205000408060208
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-------=_NextPart_000_001F_01C57366.F7223600
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi!
 
-Hello, 
-fever and Mr. Dekker has sprained his ankle.trade upon which he was =
-embarking.  And so, although he mightIt should in any case have been a =
-sufficient explanation.  Butthey passed marvelled to see the =
-doctor-slave on such apparentlywith the conscience that her memory kept =
-so disconcertingly active.of governors, advanced him money for the =
-proper equipment of hiswrong?enough to go forward when the fort has shot =
-its bolt.driven by stress of weather into Bridgewater Bay, and Blood's =
-healthand daughter shrank away in renewed fear.  Mr. Blood, at the =
-headgrow on cheeks that had ever been so carefully shaven; and the =
-long,You mean, sir, that we are to sail across the Caribbean on anand =
-some seven hundred men composing their crews.  Because they hadthat =
-William of Orange had been invited to come over.something of which I =
-have knowledge.  This city of Cartagena looksavail him nothing, and in =
-his leaky condition would provide an
+I noticed that the speaker-test has limited sine wave frequency to 
+50-5000 Hz. Attached patch changes that to 0-24575Hz (that's the limit 
+at least here (x86-64) after which the freq would roll over to 0 Hz).
 
-------=_NextPart_000_001F_01C57366.F7223600
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ps. I'm not subscribed, CC me when replying.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Hello, </FONT><FONT face=3DArial>Welcome to <A 
-href=3D"http://www.xbjlbe.biggesfightye.com">PiIlsOnIine <SPAN =
-style=3D"DISPLAY: none"> objurgate </SPAN>Store</A></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>We are pleased to introduce ourselves as one of the =
-leading online pharmaceutica<SPAN style=3D"DISPLAY: none"> balustrade =
-</SPAN>I shops.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>V<SPAN style=3D"DISPLAY: =
-none"> violate </SPAN>l</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>R<SPAN style=3D"DISPLAY: =
-none"> hypochondriac </SPAN>A</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>l<SPAN style=3D"DISPLAY: =
-none"> innavigable </SPAN>A</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>L<SPAN style=3D"DISPLAY: =
-none"> catalogue </SPAN>l</FONT></TD>
-    <TD></TD></TR>
-  <TR vAlign=3Dbottom>
-    <TD><FONT face=3DArial size=3D4>A<SPAN style=3D"DISPLAY: none"> =
-quicklime </SPAN>G</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>&nbsp;C</FONT></TD>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> unyoked =
-</SPAN>LIS&nbsp;VA</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>U<SPAN style=3D"DISPLAY: none"> =
-grandparents </SPAN>M</FONT></TD>
-    <TD><FONT face=3DArial 
-  size=3D4>&nbsp;and&nbsp;many&nbsp;other.</FONT></TD></TR></TABLE></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>- Save ov<SPAN style=3D"DISPLAY: none"> randan =
-</SPAN>er 70%</FONT></DIV>
-<DIV><FONT face=3DArial>- TotaI confidentia<SPAN style=3D"DISPLAY: none"> =
-determined </SPAN>Iity</FONT></DIV>
-<DIV><FONT face=3DArial>- Worldwide SH<SPAN style=3D"DISPLAY: none"> =
-interregna </SPAN>lPPlNG</FONT></DIV>
-<DIV><FONT face=3DArial>- Ove<SPAN style=3D"DISPLAY: none"> pepper </SPAN>r =
-5 million customers in 150 countries</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>We do all we c<SPAN style=3D"DISPLAY: none"> =
-transmission </SPAN>an to keep our customers fully satisfied with our =
-services!</FONT></DIV></DIV></BODY></HTML>
+-- 
+Anssi Hannula
 
-------=_NextPart_000_001F_01C57366.F7223600--
 
+--------------080402040205000408060208
+Content-Type: text/x-patch;
+ name="speaker-test_changelimits.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="speaker-test_changelimits.diff"
+
+Index: alsa-utils/speaker-test/speaker-test.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-utils/speaker-test/speaker-test.c,v
+retrieving revision 1.8
+diff -u -r1.8 speaker-test.c
+--- alsa-utils/speaker-test/speaker-test.c	3 May 2005 18:36:08 -0000	1.8
++++ alsa-utils/speaker-test/speaker-test.c	17 Jun 2005 18:07:34 -0000
+@@ -532,8 +532,8 @@
+       break;
+     case 'f':
+       freq = atoi(optarg);
+-      freq = freq < 50 ? 50 : freq;
+-      freq = freq > 5000 ? 5000 : freq;
++      freq = freq < 0 ? 0 : freq;
++      freq = freq > 24575 ? 24575 : freq;
+       break;
+     case 'b':
+       buffer_time = atoi(optarg);
+
+--------------080402040205000408060208--
 
 
 -------------------------------------------------------
