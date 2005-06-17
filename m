@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001200]: rmedigicontrol error: Assertion `obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed
-Date: Fri, 17 Jun 2005 19:17:21 +0200
-Message-ID: <096c5eedd382a316b3f6df4a21ab9343@bugtrack.alsa-project.org>
+Date: Fri, 17 Jun 2005 19:20:11 +0200
+Message-ID: <f72a4927d148de4c59bd668203ad26d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7602815E
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 19:17:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D332615E
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2005 19:20:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1200> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-17-2005 19:17 CEST
-Last Modified:              06-17-2005 19:17 CEST
+Last Modified:              06-17-2005 19:20 CEST
 ======================================================================
 Summary:                    rmedigicontrol error: Assertion `obj->type ==
 SND_CTL_ELEM_TYPE_ENUMERATED' failed
@@ -72,12 +72,24 @@ tgkill(4714, 4714, SIGABRT)             = 0
 Any thoughts as to what's changed that could be causing this problem?
 ======================================================================
 
+----------------------------------------------------------------------
+ dmaley - 06-17-05 19:20 
+----------------------------------------------------------------------
+I've done some searching through the 2.6.10 and 2.6.11 kernel sources and
+haven't been able to find any changes that appeared relevant to this.  The
+only thing that's changed on this system is the kernel being upgraded to
+2.6.11-1.14_FC3.  When booted into the older 2.6.10-1.770_FC3 kernel
+rmedigicontrol works just fine.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-17-05 19:17 dmaley         New Issue                                    
 06-17-05 19:17 dmaley         File Added: rmedigicontrol.bad.trace              
      
+06-17-05 19:17 dmaley         File Added: rmedigicontrol.good.trace             
+      
+06-17-05 19:20 dmaley         Note Added: 0005077                          
 ======================================================================
 
 
