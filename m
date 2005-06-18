@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Sat, 18 Jun 2005 04:26:46 +0200
-Message-ID: <f81ddf61e79468955067556076e5419d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001202]: No sound  through speakers, only headphones
+Date: Sat, 18 Jun 2005 04:47:40 +0200
+Message-ID: <f997d8fde20a90e0e68a2a8d15242665@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B96E1183
-	for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2005 04:26:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F103183
+	for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2005 04:47:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,107 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1202> 
 ======================================================================
-Reported By:                yafrank
+Reported By:                viroid
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   CORE - pcm
+Issue ID:                   1202
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              06-18-2005 04:26 CEST
+Date Submitted:             06-18-2005 04:47 CEST
+Last Modified:              06-18-2005 04:47 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    No sound  through speakers, only headphones
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
-
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
-
-
+I cannot get any audio output from the internal speakers on the laptop, I
+did however hear output through headphones; I tried that after reading a
+few issues on here.  I've muted headphones, phone, and line from the
+alsamixer, I've only recently started using linux and I don't really know
+what else to try. 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-17-05 14:44 
-----------------------------------------------------------------------
-OK, then the problem is that the ac97 chip on your board cheats the
-ac97_codec.c code as if there is no PCM control.
-Please try the following with the latest ALSA code:
-- compile with debug option
-- as root
-    # echo 18 8000 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-  and
-    # cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-  and check the output of the register 0x18 again whether the value
-  0x8000 is read.
-  Then, try the value 0x000 instead of 0x8000 above, and check again.
-- similarly, try values 0x2020, 0x1010 and 0x0101 and read/compare again.
-
-----------------------------------------------------------------------
- yafrank - 06-18-05 04:26 
-----------------------------------------------------------------------
-I'm not quite sure if my antique laptop bought in 2k, CII 366M/192M/Intel
-BX/20G, contains any ac97 chip on borad. Anyway, I'm compiling
-2.6.12-rc6-git8 kernel and 1.0.9b alsa now. Alsa compile using
-"./configure --with-kernel=/path/to/kernel --with-build=/path/to/kernel
---with-debug=full --with-cards=ens1371 --with-sequencer=yes; make; make
-install-modules". Before doing the test, what are those values represent?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:47 viroid         New Issue                                    
+06-18-05 04:47 viroid         Distribution              => Fedora Core 4   
+06-18-05 04:47 viroid         Kernel Version            => 2.6.11-1.1369   
 ======================================================================
 
 
