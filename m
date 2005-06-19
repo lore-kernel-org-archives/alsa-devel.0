@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001200]: rmedigicontrol error: Assertion `obj->type == SND_CTL_ELEM_TYPE_ENUMERATED' failed
-Date: Sat, 18 Jun 2005 20:55:57 +0200
-Message-ID: <c90418fb4cc0aa5f8f71650f9935e21e@bugtrack.alsa-project.org>
+Date: Sun, 19 Jun 2005 07:39:24 +0200
+Message-ID: <aa62bf4b7d95b43149d7a07dafbb2917@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BBE318E
-	for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2005 20:55:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 271EB19A
+	for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2005 07:39:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-17-2005 19:17 CEST
-Last Modified:              06-18-2005 20:55 CEST
+Last Modified:              06-19-2005 07:39 CEST
 ======================================================================
 Summary:                    rmedigicontrol error: Assertion `obj->type ==
 SND_CTL_ELEM_TYPE_ENUMERATED' failed
@@ -71,15 +71,6 @@ tgkill(4714, 4714, SIGABRT)             = 0
 
 Any thoughts as to what's changed that could be causing this problem?
 ======================================================================
-
-----------------------------------------------------------------------
- dmaley - 06-17-05 19:20 
-----------------------------------------------------------------------
-I've done some searching through the 2.6.10 and 2.6.11 kernel sources and
-haven't been able to find any changes that appeared relevant to this.  The
-only thing that's changed on this system is the kernel being upgraded to
-2.6.11-1.14_FC3.  When booted into the older 2.6.10-1.770_FC3 kernel
-rmedigicontrol works just fine.
 
 ----------------------------------------------------------------------
  dmaley - 06-18-05 20:55 
@@ -166,6 +157,13 @@ gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(active),TRUE);
  }
 +
 
+----------------------------------------------------------------------
+ dmaley - 06-19-05 07:39 
+----------------------------------------------------------------------
+This bug should be filed against alsa-tools however I can't see how to
+change the catagory.  Also I just noticed the policy about providing email
+addresses.  Martin Langer <martin-langer@gmx.de> provided me w/ this fix.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -177,6 +175,9 @@ Date Modified  Username       Field                    Change
 06-17-05 19:20 dmaley         Note Added: 0005077                          
 06-17-05 19:20 dmaley         Issue Monitored: dmaley                      
 06-18-05 20:55 dmaley         Note Added: 0005084                          
+06-18-05 20:56 dmaley         File Added: rme_getinteger.patch                  
+ 
+06-19-05 07:39 dmaley         Note Added: 0005085                          
 ======================================================================
 
 
