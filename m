@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Tue, 21 Jun 2005 00:50:55 +0200
-Message-ID: <2f6e887df7981aadeac5958487281d45@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
+Date: Tue, 21 Jun 2005 01:37:39 +0200
+Message-ID: <6f6e98e40e52ad02e3bba85990ca8e1e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A80B01D8
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 00:50:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4572B1DA
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 01:37:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,104 +24,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
 ======================================================================
-Reported By:                vedran
+Reported By:                theoneandonlysm
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1179
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              06-21-2005 00:50 CEST
+Date Submitted:             06-10-2005 19:08 CEST
+Last Modified:              06-21-2005 01:37 CEST
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
+I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
+package update and noticed that aRts in kde did not produce any sound even
+though no errors in arts was reported.
 
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
+I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
+sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
+Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
+functioning.
 
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
+dmesg gives me no errors, and I am not certain where else to look. The
+only clue I get is from mplayer while playing an audio file, where I get
+continual output of:
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
 
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
+my lsmod:
+vmnet                  27812  2
+parport_pc             22980  1
+vmmon                 105260  0
+snd_pcm_oss            49312  0
+snd_mixer_oss          18304  1 snd_pcm_oss
+snd_hda_intel          14336  1
+snd_hda_codec          69248  1 snd_hda_intel
+snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              22276  1 snd_pcm
+snd                    50532  8
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
+lp                      8836  0
+parport                21440  2 parport_pc,lp
+nfsd                   91464  8
+exportfs                5120  1 nfsd
+nfs                    96044  1
+lockd                  61992  3 nfsd,nfs
+sunrpc                130500  5 nfsd,nfs,lockd
+vfat                   11648  1
+fat                    36252  1 vfat
+i915                   18176  1
+drm                    61204  2 i915
+intel_agp              20380  1
+agpgart                29488  3 drm,intel_agp
+hw_random               4884  0
+rtc                    10828  0
+ehci_hcd               29576  0
+usblp                  11648  0
+uhci_hcd               30480  0
+usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
 
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001094 nforce4 - optical spdif out not working
-======================================================================
 
 ----------------------------------------------------------------------
- gilesjuk - 06-19-05 16:07 
+ sally - 06-20-05 10:45 
 ----------------------------------------------------------------------
-I was playing AVI files with mplayer and suddenly I got sound. Mplayer is
-set to use SDL on my system. So there must be a certain combination of
-factors that work.
+explicitly setting programs to use OSS resolves the problem. 	
 
-The audio in the AVI was mp3, Mplayer says this:
+Do you mean "gets around the problem" or that this trick enables alsa to
+work correctly?
 
--------
-AF_pre: af format: 2 bps, 2 ch, 48000 hz, little endian signed int
-AF_pre: 48000Hz 2ch Signed 16-bit (Little-Endian)
-[AO SDL] Samplerate: 48000Hz Channels: Stereo Format Signed 16-bit
-(Little-Endian)
--------
-
-So maybe 48Khz works?
+I am starting to suspect this is a dmix problem. I will post more once I
+have nailed it down.
 
 ----------------------------------------------------------------------
- gilesjuk - 06-21-05 00:50 
+ theoneandonlysm - 06-21-05 01:37 
 ----------------------------------------------------------------------
-Gotta fix this bug, analog out on my card seriously sucks the DAC in my
-Marantz is much nicer.
+It gets around the problem - sound works correctly on the 1.0.9 libs only
+when the programs are set to use their OSS plugins. Using the alsa plugins
+will cause stutterring sound or no sound at all.
 
-Anyway, my card apparently has a Realtek ALC650, there's specs here
-including registers. My board has Nforce 5 but the codec is on a seperate
-card (Fatal1ty board).
-
-ftp://152.104.125.9/pc/ac97/alc650/alc650_data5.zip
+Is there any specific information I need to provide?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
-06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
-06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
-06-03-05 00:31 Human          Note Added: 0004880                          
-06-03-05 00:32 Human          Issue Monitored: Human                       
-06-06-05 23:30 Human          Note Added: 0004910                          
-06-08-05 15:01 tiwai          Note Added: 0004928                          
-06-10-05 18:07 Human          Note Added: 0004984                          
-06-19-05 16:07 gilesjuk       Note Added: 0005090                          
-06-21-05 00:50 gilesjuk       Note Added: 0005099                          
+06-10-05 19:08 theoneandonlysmNew Issue                                    
+06-13-05 13:09 tiwai          Note Added: 0005008                          
+06-19-05 12:30 sally          Note Added: 0005088                          
+06-20-05 03:46 theoneandonlysmNote Added: 0005092                          
+06-20-05 10:45 sally          Note Added: 0005094                          
+06-20-05 11:23 perex          Category                 0_general => 1_pcm -
+digital audio
+06-21-05 01:37 theoneandonlysmNote Added: 0005100                          
 ======================================================================
 
 
