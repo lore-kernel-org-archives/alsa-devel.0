@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000014]: No sound from external speakers (laptop)
-Date: Mon, 20 Jun 2005 06:48:31 +0200
-Message-ID: <f1d1d03aea8284c29cd5f375b5c79481@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
+Date: Mon, 20 Jun 2005 10:45:14 +0200
+Message-ID: <bf12594a8ea514cb78d4a7e2d80fbcc9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E10B91CE
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 06:48:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 392071CA
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 10:45:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,112 +24,106 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
 ======================================================================
-Reported By:                user74
+Reported By:                theoneandonlysm
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   14
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1179
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sid updated
-Kernel Version:             2.4.24-ck1
 ======================================================================
-Date Submitted:             01-29-2004 20:15 CET
-Last Modified:              06-20-2005 06:48 CEST
+Date Submitted:             06-10-2005 19:08 CEST
+Last Modified:              06-20-2005 10:45 CEST
 ======================================================================
-Summary:                    No sound from external speakers (laptop)
+Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
 Description: 
-On my laptop (acer272xv) I can't use external output with my Creative 2.1,
-because I can't hear anything.
-I've tryied with other external speaker and with other releases of
-alsa-driver, but there's no difference.
+I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
+package update and noticed that aRts in kde did not produce any sound even
+though no errors in arts was reported.
 
+I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
+sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
+Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
+functioning.
+
+dmesg gives me no errors, and I am not certain where else to look. The
+only clue I get is from mplayer while playing an audio file, where I get
+continual output of:
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+
+my lsmod:
+vmnet                  27812  2
+parport_pc             22980  1
+vmmon                 105260  0
+snd_pcm_oss            49312  0
+snd_mixer_oss          18304  1 snd_pcm_oss
+snd_hda_intel          14336  1
+snd_hda_codec          69248  1 snd_hda_intel
+snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              22276  1 snd_pcm
+snd                    50532  8
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
+lp                      8836  0
+parport                21440  2 parport_pc,lp
+nfsd                   91464  8
+exportfs                5120  1 nfsd
+nfs                    96044  1
+lockd                  61992  3 nfsd,nfs
+sunrpc                130500  5 nfsd,nfs,lockd
+vfat                   11648  1
+fat                    36252  1 vfat
+i915                   18176  1
+drm                    61204  2 i915
+intel_agp              20380  1
+agpgart                29488  3 drm,intel_agp
+hw_random               4884  0
+rtc                    10828  0
+ehci_hcd               29576  0
+usblp                  11648  0
+uhci_hcd               30480  0
+usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000664 ac97_quirk with SIS 7012 [ALC202] don't...
-======================================================================
 
 ----------------------------------------------------------------------
- dale - 02-21-05 09:16 
+ theoneandonlysm - 06-20-05 03:46 
 ----------------------------------------------------------------------
-Hi tiwai,
-
-Have tried the patch with 2.6.10-gentoo-r6 and unfortunately there is
-still no output through the headphones.
-
-thanks,
-
-Dale
+aRts does not seem to be causing the problem - it seems that when aRts or
+any other program uses alsa to access the sound device, the problem
+persists; however, explicitly setting programs to use OSS (through the OSS
+compatibility modules) resolves the problem.
 
 ----------------------------------------------------------------------
- wenton - 06-20-05 06:48 
+ sally - 06-20-05 10:45 
 ----------------------------------------------------------------------
-Greetings! Not sure if this hurts or helps.  I have been able to get this 
-working in my laptop, but not sure about this behavior: everything appears
-to 
-be sound card 1 instead of 0; e.g. alsamiser -c 1 and everything works if
-I use
-things  like/dev/dsp1 and /dev/mixer1 and so on.  Trying to use alsamixer
+explicitly setting programs to use OSS resolves the problem. 	
 
-without "-c 1" tells me, "no mixer elems found"  Trying to use /dev/dsp0 
-et. al. seems to act like I am using a null device... device is connected
-but 
-has nothing physical connected to it.  I do not have another soundcard.  
+Do you mean "gets around the problem" or that this trick enables alsa to
+work correctly?
 
-However, there is a modem built into this chip (82801DB) that does not
-seem to
-be configured correctly; could this be causing the problem? How else can I
-fix
-this? I have changed the symbolic links (/dev/dsp->/dev/dsp1, 
-dev/mixer->/dev/mixer1,etc.) but this seems more of a band-aid than a fix.
+I am starting to suspect this is a dmix problem. I will post more once I
+have nailed it down.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-04 20:15 user74         New Issue                                    
-01-29-04 20:15 user74         File Added: details.txt                      
-01-30-04 12:44 tiwai          Note Added: 0000049                          
-01-30-04 17:56 sparkyva       Note Added: 0000063                          
-01-30-04 17:56 sparkyva       Issue Monitored: sparkyva                    
-01-30-04 20:41 sparkyva       Note Added: 0000070                          
-01-30-04 22:01 jorge2         Note Added: 0000071                          
-02-02-04 19:37 jorge2         Note Added: 0000119                          
-02-04-04 20:00 tiwai          Note Added: 0000165                          
-02-04-04 20:01 tiwai          Note Added: 0000166                          
-02-04-04 20:52 jorge2         Note Added: 0000169                          
-02-04-04 20:52 jorge2         Note Added: 0000170                          
-02-04-04 20:53 jorge2         Note Deleted: 0000169                        
-02-05-04 13:52 matsgora       Note Added: 0000181                          
-02-05-04 14:05 dale           Note Added: 0000182                          
-02-26-04 13:07 rocco          Note Added: 0000347                          
-02-26-04 18:16 matsgora       Note Added: 0000358                          
-02-26-04 18:20 tiwai          Note Added: 0000359                          
-03-01-04 10:31 dale           Note Added: 0000401                          
-03-05-04 19:49 tiwai          Note Added: 0000513                          
-03-05-04 20:37 jorge2         Note Added: 0000515                          
-03-06-04 18:20 matsgora       Note Added: 0000520                          
-03-07-04 16:30 dale           Note Added: 0000524                          
-03-09-04 15:15 tiwai          Note Added: 0000547                          
-03-09-04 18:12 matsgora       Note Added: 0000551                          
-06-08-04 20:25 jorge2         Note Added: 0001296                          
-06-15-04 15:00 mcbridematt    Note Added: 0001308                          
-11-22-04 18:48 tiwai          Relationship added       has duplicate 0000664
-02-02-05 14:25 dale           Note Added: 0003488                          
-02-04-05 13:18 tiwai          Note Added: 0003504                          
-02-04-05 13:19 tiwai          File Added: ac97-alc-fix.diff                    
-02-04-05 18:03 jorge2         Note Added: 0003512                          
-02-05-05 13:27 jorge2         Issue Monitored: jorge2                      
-02-21-05 09:16 dale           Note Added: 0003678                          
-02-23-05 09:54 dale           Issue Monitored: dale                        
-06-14-05 21:20 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-06-20-05 06:48 wenton         Note Added: 0005093                          
+06-10-05 19:08 theoneandonlysmNew Issue                                    
+06-13-05 13:09 tiwai          Note Added: 0005008                          
+06-19-05 12:30 sally          Note Added: 0005088                          
+06-20-05 03:46 theoneandonlysmNote Added: 0005092                          
+06-20-05 10:45 sally          Note Added: 0005094                          
 ======================================================================
 
 
