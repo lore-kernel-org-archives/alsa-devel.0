@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
-Date: Mon, 20 Jun 2005 10:45:14 +0200
-Message-ID: <bf12594a8ea514cb78d4a7e2d80fbcc9@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: RFC: move AC97 codec and HDA codec drivers
+Date: Mon, 20 Jun 2005 10:58:15 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0506201038020.1753@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 392071CA
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 10:45:15 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F07C21CA
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 10:58:17 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C0CAC7BED9
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 10:58:17 +0200 (MEST)
+Received: from pnote.perex-int.cz (localhost [127.0.0.1])
+	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9CBCB1102F
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 10:58:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,115 +23,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
-======================================================================
-Reported By:                theoneandonlysm
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1179
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-10-2005 19:08 CEST
-Last Modified:              06-20-2005 10:45 CEST
-======================================================================
-Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
-Description: 
-I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
-package update and noticed that aRts in kde did not produce any sound even
-though no errors in arts was reported.
+	because AC97 codec and HDA codec drivers are universal and might
+be used also with another than PCI hardware (as seen with PDAs or embedded 
+systems), I propose to move this code to:
 
-I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
-sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
-Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
-functioning.
+alsa-kernel/drivers/ac97
+alsa-kernel/drivers/hdac
 
-dmesg gives me no errors, and I am not certain where else to look. The
-only clue I get is from mplayer while playing an audio file, where I get
-continual output of:
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
+	It will remove the "CONFIG_PCI" dependency in the alsa-kernel/pci 
+tree. Opinions? Also we have the i2c tree for this purpose, but I feel
+that we should rename i2c to something more appropriate like components
+in this case and move i2c code to the components/i2c tree.
 
-my lsmod:
-vmnet                  27812  2
-parport_pc             22980  1
-vmmon                 105260  0
-snd_pcm_oss            49312  0
-snd_mixer_oss          18304  1 snd_pcm_oss
-snd_hda_intel          14336  1
-snd_hda_codec          69248  1 snd_hda_intel
-snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              22276  1 snd_pcm
-snd                    50532  8
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
-lp                      8836  0
-parport                21440  2 parport_pc,lp
-nfsd                   91464  8
-exportfs                5120  1 nfsd
-nfs                    96044  1
-lockd                  61992  3 nfsd,nfs
-sunrpc                130500  5 nfsd,nfs,lockd
-vfat                   11648  1
-fat                    36252  1 vfat
-i915                   18176  1
-drm                    61204  2 i915
-intel_agp              20380  1
-agpgart                29488  3 drm,intel_agp
-hw_random               4884  0
-rtc                    10828  0
-ehci_hcd               29576  0
-usblp                  11648  0
-uhci_hcd               30480  0
-usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
+						Jaroslav
 
-======================================================================
-
-----------------------------------------------------------------------
- theoneandonlysm - 06-20-05 03:46 
-----------------------------------------------------------------------
-aRts does not seem to be causing the problem - it seems that when aRts or
-any other program uses alsa to access the sound device, the problem
-persists; however, explicitly setting programs to use OSS (through the OSS
-compatibility modules) resolves the problem.
-
-----------------------------------------------------------------------
- sally - 06-20-05 10:45 
-----------------------------------------------------------------------
-explicitly setting programs to use OSS resolves the problem. 	
-
-Do you mean "gets around the problem" or that this trick enables alsa to
-work correctly?
-
-I am starting to suspect this is a dmix problem. I will post more once I
-have nailed it down.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-10-05 19:08 theoneandonlysmNew Issue                                    
-06-13-05 13:09 tiwai          Note Added: 0005008                          
-06-19-05 12:30 sally          Note Added: 0005088                          
-06-20-05 03:46 theoneandonlysmNote Added: 0005092                          
-06-20-05 10:45 sally          Note Added: 0005094                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
