@@ -1,13 +1,14 @@
-From: fab <fab@gnux.info>
-Subject: Re: NULL pointer dereference
-Date: Mon, 20 Jun 2005 23:49:31 +0200
-Message-ID: <20050620214931.GA14357@blackmilk.localzone.fr>
-References: <20050620123344.GA20286@blackmilk.localzone.fr> <s5hekaxos7e.wl%tiwai@suse.de> <s5hd5qgq3s9.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Tue, 21 Jun 2005 00:50:55 +0200
+Message-ID: <2f6e887df7981aadeac5958487281d45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hd5qgq3s9.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A80B01D8
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 00:50:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,46 +18,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: fab <fab@gnux.info>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 20/06/05 20:30 +0200, Takashi Iwai wrote:
-> At Mon, 20 Jun 2005 19:26:13 +0200,
-> ?$B;d wrote:
-> > 
-> > At Mon, 20 Jun 2005 14:33:44 +0200,
-> > fab wrote:
-> > > 
-> > > Hi,
-> > > testing the latest cvs version to see if I can make the internal speaker
-> > > working as in realtek's drivers (after having upgraded my kernel), I got it
-> > > (and I get it as soon as I load the sound module):
-> > 
-> > Looks like the new code I added for auto-probing is buggy.
-> > As a workaround, pass model=asus option unless it's fixed.
-> 
-> ... or try the patch below.
 
-Ok, after having applied the patch everything is weired, it works even
-worse than before :(
-If I pass card=foo with "foo" being a quite old card type, I get less or
-more the same effect as before (badly working).
-With a new "foo" (z71v, asus, etc...) or no param at all, I get
-something like:
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+======================================================================
+Reported By:                vedran
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1083
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
+======================================================================
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              06-21-2005 00:50 CEST
+======================================================================
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Description: 
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
 
-Then, If I run "alsamixer" It fails:
-alsamixer: function snd_mixer_load failed: Invalid argument
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
 
-and the kernel prints:
-hda_codec: num_steps = 0 for NID=0x9
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
 
-Hope this helps.
-Fabien Devaux.
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
 
-PS: it works like a charm in realtek's version, have you really applied
-all the changes ? should I pass a specific model= argument ?
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
+
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001094 nforce4 - optical spdif out not working
+======================================================================
+
+----------------------------------------------------------------------
+ gilesjuk - 06-19-05 16:07 
+----------------------------------------------------------------------
+I was playing AVI files with mplayer and suddenly I got sound. Mplayer is
+set to use SDL on my system. So there must be a certain combination of
+factors that work.
+
+The audio in the AVI was mp3, Mplayer says this:
+
+-------
+AF_pre: af format: 2 bps, 2 ch, 48000 hz, little endian signed int
+AF_pre: 48000Hz 2ch Signed 16-bit (Little-Endian)
+[AO SDL] Samplerate: 48000Hz Channels: Stereo Format Signed 16-bit
+(Little-Endian)
+-------
+
+So maybe 48Khz works?
+
+----------------------------------------------------------------------
+ gilesjuk - 06-21-05 00:50 
+----------------------------------------------------------------------
+Gotta fix this bug, analog out on my card seriously sucks the DAC in my
+Marantz is much nicer.
+
+Anyway, my card apparently has a Realtek ALC650, there's specs here
+including registers. My board has Nforce 5 but the codec is on a seperate
+card (Fatal1ty board).
+
+ftp://152.104.125.9/pc/ac97/alc650/alc650_data5.zip
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+05-30-05 13:21 vedran         Note Added: 0004809                          
+06-01-05 16:53 tiwai          Note Added: 0004862                          
+06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
+06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
+06-03-05 00:31 Human          Note Added: 0004880                          
+06-03-05 00:32 Human          Issue Monitored: Human                       
+06-06-05 23:30 Human          Note Added: 0004910                          
+06-08-05 15:01 tiwai          Note Added: 0004928                          
+06-10-05 18:07 Human          Note Added: 0004984                          
+06-19-05 16:07 gilesjuk       Note Added: 0005090                          
+06-21-05 00:50 gilesjuk       Note Added: 0005099                          
+======================================================================
+
 
 
 
