@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
-Date: Mon, 20 Jun 2005 11:23:34 +0200
-Message-ID: <010544e03e8f08dcb31174bfb2156729@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001199]: oops with pdaudiocf after data stream abort
+Date: Mon, 20 Jun 2005 11:52:10 +0200
+Message-ID: <7cbb448596078fb7a4503c96925fa57a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 069181CA
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 11:23:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 829EC1B9
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2005 11:52:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,156 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1199> 
 ======================================================================
-Reported By:                theoneandonlysm
-Assigned To:                
+Reported By:                zwelch
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1179
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1199
+Category:                   PCMCIA - pdaudiocf
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.11.12
 ======================================================================
-Date Submitted:             06-10-2005 19:08 CEST
-Last Modified:              06-20-2005 11:23 CEST
+Date Submitted:             06-17-2005 02:50 CEST
+Last Modified:              06-20-2005 11:52 CEST
 ======================================================================
-Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
+Summary:                    oops with pdaudiocf after data stream abort
 Description: 
-I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
-package update and noticed that aRts in kde did not produce any sound even
-though no errors in arts was reported.
+The following oops report was generated while using `arecord | aplay` from
+the 1.0.9 alsa-utils release.  It was triggered by unplugging the pre-amp
+while recording, thus causing the optical signal to disappear
+unexpectedly.
 
-I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
-sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
-Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
-functioning.
+As it is, I need both the pdaudiocf and powermac drivers working, or I
+would be using the out-of-kernel alsa-driver package.  The powermac driver
+in 1.0.9a can't find the symbol 'macio_find', which I have reported
+separately (bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1198). 
+Once that bug is fixed, I can retest this issue
+with the most current release, but I hope patches might be applied to
+2.6.11.12 to fix this problem.
 
-dmesg gives me no errors, and I am not certain where else to look. The
-only clue I get is from mplayer while playing an audio file, where I get
-continual output of:
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-
-my lsmod:
-vmnet                  27812  2
-parport_pc             22980  1
-vmmon                 105260  0
-snd_pcm_oss            49312  0
-snd_mixer_oss          18304  1 snd_pcm_oss
-snd_hda_intel          14336  1
-snd_hda_codec          69248  1 snd_hda_intel
-snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              22276  1 snd_pcm
-snd                    50532  8
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
-lp                      8836  0
-parport                21440  2 parport_pc,lp
-nfsd                   91464  8
-exportfs                5120  1 nfsd
-nfs                    96044  1
-lockd                  61992  3 nfsd,nfs
-sunrpc                130500  5 nfsd,nfs,lockd
-vfat                   11648  1
-fat                    36252  1 vfat
-i915                   18176  1
-drm                    61204  2 i915
-intel_agp              20380  1
-agpgart                29488  3 drm,intel_agp
-hw_random               4884  0
-rtc                    10828  0
-ehci_hcd               29576  0
-usblp                  11648  0
-uhci_hcd               30480  0
-usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
+I can provide additional information about the kernel configuration,
+installed package versions, run further tests, or try possible patches.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-13-05 13:09 
+ zwelch - 06-19-05 09:58 
 ----------------------------------------------------------------------
-It's likely a problem arts with dmix plugin.
-A known workaround is to set the sample rate on arts to 48000.
+I have verified that this problem still exists in both the 2.6.12 in-kernel
+and 1.0.9b alsa-driver package.
 
-----------------------------------------------------------------------
- sally - 06-19-05 12:30 
-----------------------------------------------------------------------
-I have similar probs after finding 1.09 unsatisfactory and reverting to
-1.08 (all source build)
-
-I dont have any arts on this system, never have.
-
-I do have simple asound dmix:
-
-# Set default sound card
-# Useful so that all settings can be changed to a different card here.
-pcm.snd_card {
-    type hw
-    card 0
-}
-
-
-pcm.dmixer {
-    type dmix
-    ipc_key 1024
-    ipc_perm 0660 # def 0600
-#    pcm.slave "snd_card"
-    slave {
-       pcm "snd_card"
-#       period_time 0 ###time OR size , not both
-       period_size 1024
-       buffer_size 8192 # Buffer size ensoniq 65536
-#       rate 8000
-#       rate 44100
-    }
-    bindings {
-       0 0
-       1 1
-    }
-}
-
-removing the buffer line made no perceptible diff, removing the file
-asound.conf made the errors 5x more frequent. :(
+To underscore the "real-world" nature of this bug, my pre-amp (a Core
+Sound Mic2496) is nominally powered by a battery, and Murphy's Law ensures
+it will invariably run out in the middle of recording.
 
 ----------------------------------------------------------------------
- theoneandonlysm - 06-20-05 03:46 
+ perex - 06-20-05 11:52 
 ----------------------------------------------------------------------
-aRts does not seem to be causing the problem - it seems that when aRts or
-any other program uses alsa to access the sound device, the problem
-persists; however, explicitly setting programs to use OSS (through the OSS
-compatibility modules) resolves the problem.
-
-----------------------------------------------------------------------
- sally - 06-20-05 10:45 
-----------------------------------------------------------------------
-explicitly setting programs to use OSS resolves the problem. 	
-
-Do you mean "gets around the problem" or that this trick enables alsa to
-work correctly?
-
-I am starting to suspect this is a dmix problem. I will post more once I
-have nailed it down.
+The culprit of this oops is not obvious. Could you try to remove
+snd_pcm_stop() line from i2c/other/ak4114.c file?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-05 19:08 theoneandonlysmNew Issue                                    
-06-13-05 13:09 tiwai          Note Added: 0005008                          
-06-19-05 12:30 sally          Note Added: 0005088                          
-06-20-05 03:46 theoneandonlysmNote Added: 0005092                          
-06-20-05 10:45 sally          Note Added: 0005094                          
-06-20-05 11:23 perex          Category                 0_general => 1_pcm -
-digital audio
+06-17-05 02:50 zwelch         New Issue                                    
+06-17-05 02:50 zwelch         Distribution              => Gentoo          
+06-17-05 02:50 zwelch         Kernel Version            => 2.6.11.12       
+06-19-05 09:58 zwelch         Note Added: 0005086                          
+06-20-05 11:52 perex          Note Added: 0005096                          
 ======================================================================
 
 
