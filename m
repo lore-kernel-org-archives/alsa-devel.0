@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001205]: Mark M-Audio Revolution 7.1 (and probably other ICE1724 cards) as the one with no capture in card matrix
-Date: Tue, 21 Jun 2005 12:44:37 +0200
-Message-ID: <be0811652d77632c3f9dfb3ee4debb01@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001204]: Mono recording produces audio at half volume
+Date: Tue, 21 Jun 2005 12:47:35 +0200
+Message-ID: <811b8f17d233f50d86a5604b19a947a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76AD61EE
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 12:44:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D15F71EE
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 12:47:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1205> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1204> 
 ======================================================================
-Reported By:                sst4
-Assigned To:                
+Reported By:                pascal
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1205
-Category:                   1_OTHERS
+Issue ID:                   1204
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.4.16 highmem smp
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-20-2005 00:30 CEST
-Last Modified:              06-21-2005 12:44 CEST
+Date Submitted:             06-19-2005 17:07 CEST
+Last Modified:              06-21-2005 12:47 CEST
 ======================================================================
-Summary:                    Mark M-Audio Revolution 7.1 (and probably other
-ICE1724 cards) as the one with no capture in card matrix
+Summary:                    Mono recording produces audio at half volume
 Description: 
-Takashi said the following regarding M-Audio Revolution 7.1 card:
-
-in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 :
-
-"
-No, there is no capture control at all on this board, indeed. At least,
-the hardware spec I got tells nothing about the capture controls. No gain
-control, no input selection.
-";
-
-in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164 :
-
-"
-Again, revo has no capture control. At least, the hardware spec I got
-tells so.
-";
-
-in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187 :
-
-"
-The input selection of line-in and mic is unknown thing - i.e. we have no
-technical information about this feature at all. 
-".
-
-The quoted words above were said in response to my questions regarding
-enabling capture.
-
->From the same quoted words I understand that at the moment there is no
-known
-way to enable capture.
-
-Because of this I think it would be fair to mark the card as the one with
-unsupported capture. Probably other ICE1724-based cards have the same
-problem
-too.
-
-It would be a pity if other people buy the card and wouldn't be able to
-use its
-capture.
-
-I have uploaded current snapshot of ALSA card matrix, it says:
-"
- (4) Capture of sound not supported.
-",
-so I think this marker should be added to the card's description.
-
-Thanks,
-  Sergei.
-
-
+Mono recording yields audio data at half the expected volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-21-05 12:44 
+ tiwai - 06-21-05 12:47 
 ----------------------------------------------------------------------
-Please read texts carefully.  The capture works partially.  But no
-"control" for capture exists.
+It's a feature.
+If you don't this behavior, set route_policy in plug plugin to "copy".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-20-05 00:30 sst4           New Issue                                    
-06-20-05 00:30 sst4           File Added: alsa_card_matrix.html                 
-  
-06-21-05 12:44 tiwai          Note Added: 0005107                          
+06-19-05 17:07 pascal         New Issue                                    
+06-19-05 17:07 pascal         Kernel Version            => 2.4.16 highmem smp
+06-21-05 12:47 tiwai          Status                   new => resolved     
+06-21-05 12:47 tiwai          Resolution               open => not an issue
+06-21-05 12:47 tiwai          Assigned To               => tiwai           
+06-21-05 12:47 tiwai          Note Added: 0005108                          
 ======================================================================
 
 
