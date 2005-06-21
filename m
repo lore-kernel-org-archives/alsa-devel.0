@@ -1,14 +1,14 @@
-From: maximilian attems <debian@sternwelten.at>
-Subject: (fwd) Re: ES18XX Patch for Alpha
-Date: Tue, 21 Jun 2005 21:34:54 +0200
-Message-ID: <20050621193453.GD11911__44905.3464494229$1119382221$gmane$org@sputnik.stro.at>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001205]: Mark M-Audio Revolution 7.1 (and probably other ICE1724 cards) as the one with no capture in card matrix
+Date: Tue, 21 Jun 2005 23:53:21 +0200
+Message-ID: <9880c5f6ca2f14886409103a7d210e57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from baikonur.stro.at (baikonur.stro.at [213.239.196.228])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 352E21F2
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 21:34:28 +0200 (MEST)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D53E1F6
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 23:53:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,116 +19,190 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: Chuck Foreman <chuckf@arcor.de>, Tyson Whitehead <twhitehe@uwo.ca>, J.J.vanderHeijden@home.nl, debian-alpha@lists.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-forwarding your message to alsa-dev concerning the needed es18xx patch.
-commenting out aboves interrupt status read looks like breaking current setups.
 
-i'll append below the patch you talk about.
-bug must exist since early alsa, since bkbits shows similar code.
-funny that this old outcommented section is still needed,
-maybe there a more generic solution is possible nowadays.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1205> 
+======================================================================
+Reported By:                sst4
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1205
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-20-2005 00:30 CEST
+Last Modified:              06-21-2005 23:53 CEST
+======================================================================
+Summary:                    Mark M-Audio Revolution 7.1 (and probably other
+ICE1724 cards) as the one with no capture in card matrix
+Description: 
+Takashi said the following regarding M-Audio Revolution 7.1 card:
 
------ Forwarded message from Tyson Whitehead <twhitehe@uwo.ca> -----
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 :
 
+"
+No, there is no capture control at all on this board, indeed. At least,
+the hardware spec I got tells nothing about the capture controls. No gain
+control, no input selection.
+";
 
-On June 6, 2005 17:14, Chuck Foreman wrote:
-> I picked up your thread from last year because I too am experiencing
-> problems with 2.6.x and es18xx  I too had this working under the 2.4 kernel
-> with als 1.0.4.
->
-> Where could I get thsi patch (using 2.6.11.7 kernel)? Do I still need it?
->
-> Ohh Yeah and how do I patch the kernel? .. .. I think if you can share any
-> additional info on this driver and alsa.. I'mm mange figuring out how to
-> patch the kernel.
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164 :
 
-I did two patches for the es18xx.
+"
+Again, revo has no capture control. At least, the hardware spec I got
+tells so.
+";
 
-The first fixes interupt recognition.  Without it, the driver doesn't 
-recognize it's interupt on some es18xx cards, and so the card just endlessly 
-loops the first second or so of sound.
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187 :
 
-The second fixes an ISA bus problems on certain Alpha kernels.  Basically, the 
-DMA mapping functions are suppose to take a understand a NULL as "bus" to be 
-the ISA bus.  This support was removed at one time on the Alpha (I think it 
-was 2.6.8).  As a result, ISA drivers crashed on loading (you could see a 
-crash message in the log by typing "dmesg").
+"
+The input selection of line-in and mic is unknown thing - i.e. we have no
+technical information about this feature at all. 
+".
 
-As far as I know (2.6.10) the first is still required.  The second is not (I 
-believe it was only required for 2.6.8).  You can double check if you need 
-the second by looking at "include/asm-alpha/dma-mapping.h".  If it includes 
-"include/asm-generic/dma-mapping.h", you need to patch (generic doesn't 
-support the ISA bus).  Otherwise you're fine.
+The quoted words above were said in response to my questions regarding
+enabling capture.
 
-Note that not all es18xx require the first patch.  Again, you will hear 
-endless looping of the first second or so of sound if you need it.  If you 
-aren't hearing anything, you have other problems.  In this case check if you 
-put "options snd-es18xx isapnp=0" into "/etc/modprobe.d/alsa" (without this 
-the driver won't detect the card).  Also make sure you've turned up the 
-volume and unmuted the channels.
+>From the same quoted words I understand that at the moment there is no
+known
+way to enable capture.
 
-Currently I'm using a recompiled (with the first patch) 2.6.10 Debian kernel 
-on my PWS 500au.  Everything works fine for me.  You can get the recompiled 
-kernel and the patches from my box (http://whitehead.apmaths.uwo.ca/~tyson/).  
-Install the kernel with a "dpkg -i <kernel deb file>".
+Because of this I think it would be fair to mark the card as the one with
+unsupported capture. Probably other ICE1724-based cards have the same
+problem
+too.
 
-To do a patch on a manual build, just download the kernel source and do a 
-"patch -p0 < <patch file>" in the main directory followed by a build.  If you 
-want to recreate all the Debian kernel image packages (like I did) with this 
-patch added, its a bit different.
+It would be a pity if other people buy the card and wouldn't be able to
+use its
+capture.
 
-Do an "apt-get install kernel-tree-<version> kernel-package fakeroot" and an 
-"apt-get source kernel-image-<version>".  Add a command to apply the patch to 
-the patch commands (just search for patch to find it) in 
-"kernel-image-<version>/debian/rules".  Then run "dpkg-buildpackage 
-- -rfakeroot" in the "kernel-image-<version>" directory.  It will take about a 
-day and several hundred megs of disk space to complete, leaving you with some 
-nice debs you can just install with "dpkg -i".  Zap "kernel-image-<version>" 
-to recover your disk space.
+I have uploaded current snapshot of ALSA card matrix, it says:
+"
+ (4) Capture of sound not supported.
+",
+so I think this marker should be added to the card's description.
 
-Later & Good Luck!  -T  (email me if you have any more questions)
-
-PS:  I CCed this to this list because someone on it a while ago was asking 
-about the second patch and the AWE card (an ISA issue -- the above ISA 
-comments apply).
-
-- -- 
- Tyson Whitehead  (-twhitehe@uwo.ca -- WSC-)
- Computer Engineer                          Dept. of Applied Mathematics,
- Graduate Student- Applied Mathematics      University of Western Ontario,
- GnuPG Key ID# 0x8A2AB5D8                   London, Ontario, Canada
-
--- 
-To UNSUBSCRIBE, email to debian-alpha-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+Thanks,
+  Sergei.
 
 
+======================================================================
 
------ End forwarded message -----
+----------------------------------------------------------------------
+ tiwai - 06-21-05 12:44 
+----------------------------------------------------------------------
+Please read texts carefully.  The capture works partially.  But no
+"control" for capture exists.
 
---- sound/isa/es18xx.c~	2003-04-23 06:01:33.000000000 -0400
-+++ sound/isa/es18xx.c	2003-06-24 15:14:25.000000000 -0400
-@@ -736,10 +736,10 @@
- 		/* Read Interrupt status */
- 		status = inb(chip->ctrl_port + 6);
-+#if 0
- 	} else {
- 		/* Read Interrupt status */
- 		status = snd_es18xx_mixer_read(chip, 0x7f) >> 4;
--	}
--#if 0
--	else {
-+#else
-+	} else {
- 		status = 0;
- 		if (inb(chip->port + 0x0C) & 0x01)
+----------------------------------------------------------------------
+ sst4 - 06-21-05 23:53 
+----------------------------------------------------------------------
+Takashi - "The capture works partially" words of yours are not true.
+
+That is, out of the box capture does NOT work, and to be fair it does not
+work for almost any card.
+
+However, if I look into, say, asound.state file of CT4610 and the like
+cards,
+(
+snd-ens1371 driver, recent example:
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023 , attached
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=654&type=bug
+
+file
+),
+
+I see pieces like these:
 
 
+	control.15 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic Playback Switch'
+		value false
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Mic Playback Volume'
+		value 0
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic Boost (+20dB)'
+		value false
+	}
+	control.18 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Line Playback Switch'
+		value false
+	}
+	control.19 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Line Playback Volume'
+		value.0 0
+		value.1 0
+	}
+.
 
---
-maks
+So, I understand that in order to enable capture I have to give TRUE
+values to flags and non-zero values to volumes.
+
+And changing the flags/volumes makes capture work.
+
+In the M-Audio asound.state file I see no words like "Line Playback
+Switch",
+"Line Playback Volume", so I do not know what to change in order to get
+capture
+working.
+
+I asked the question about controls of M-Audion Revolution 7.1. time and
+again,
+and equivalent question about changing values in asound.state file too,
+but you
+gave me no answer.
+
+So, since apparently nobody knows the answer, please marked the card as
+the
+one with unsupported capture, or tell me, please, whow to enable capture.
+
+In particular, what control numbers in asound.state file of M-Audio
+Revolution
+to change and how to make capture work.
+
+Thanks,
+  Sergei.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-20-05 00:30 sst4           New Issue                                    
+06-20-05 00:30 sst4           File Added: alsa_card_matrix.html                 
+  
+06-21-05 12:44 tiwai          Note Added: 0005107                          
+06-21-05 23:53 sst4           Note Added: 0005114                          
+======================================================================
+
 
 
 
