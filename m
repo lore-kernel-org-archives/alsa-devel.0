@@ -1,64 +1,213 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Surround Sound (5.1) How do I debug the setup?
-	(another one)
-Date: Tue, 21 Jun 2005 19:38:40 -0400
-Message-ID: <1119397122.4569.33.camel@mindpipe>
-References: <ad2655cb050615160947d9b6cb@mail.gmail.com>
-	 <21324.1118911041@www24.gmx.net>
-	 <ad2655cb05061605554a84884e@mail.gmail.com>
-	 <089001c572a5$0d654c80$0100a8c0@BONES> <42B5BD77.9090003@jeppesens.com>
-	 <1119285484.21384.7.camel@radium>
-	 <Pine.LNX.4.60.0506210722260.29736@pc1lin.fred.org>
-	 <1119390183.4569.22.camel@mindpipe>
-	 <20050622005725.7ba8c287@athlon.home.net>
-	 <1119391216.4569.23.camel@mindpipe>
-	 <20050622010718.45dc8dd4@athlon.home.net>
-	 <1119391942.4569.25.camel@mindpipe>
-	 <20050622012110.07394a76@athlon.home.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001205]: Mark M-Audio Revolution 7.1 (and probably other ICE1724 cards) as the one with no capture in card matrix
+Date: Wed, 22 Jun 2005 01:47:16 +0200
+Message-ID: <922148ee48633585ce232b5fc03cbab9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <20050622012110.07394a76@athlon.home.net>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Sergei Steshenko <steshenko_sergei@list.ru>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C92C21F3
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 01:47:16 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-06-22 at 01:21 +0300, Sergei Steshenko wrote:
-> And sure you have no control over (in)ability of some ALSA developers
-> to answer "I do not know" immediately when they really do not know an answer,
-> thus saving frustration and time of ALSA users.
-> 
-> It took me several weeks getting the
-> 
-> "
-> No, there is no capture control at all on this board, indeed. At least, the hardware spec I got tells nothing about the capture controls. No gain control, no input selection.
-> "
-> 
-> answer, forcing me to ask the same questions again and again.
-> 
-> Sorry, I know you are very helpful in this list, but, still, I think that ALSA and OSS
-> is doomed if users have to wait for so long for simple answers.
 
-It sounds like there are other users who have capture working.  Keep in
-mind there are many, many variations of hardware that could be labeled
-"M-Audio Foo 7.1".  That soundcard matrix is the result of lots of
-painful trial and error, as you now know.
+The following issue has been set as DUPLICATE OF issue 0001096.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1205> 
+======================================================================
+Reported By:                sst4
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1205
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-20-2005 00:30 CEST
+Last Modified:              06-22-2005 01:47 CEST
+======================================================================
+Summary:                    Mark M-Audio Revolution 7.1 (and probably other
+ICE1724 cards) as the one with no capture in card matrix
+Description: 
+Takashi said the following regarding M-Audio Revolution 7.1 card:
 
-But, yes, it would be better if the soundcard matrix could be updated
-more promptly.  Maybe someone could approach the ALSA developers and
-volunteer to maintain it.
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 :
 
-Lee 
+"
+No, there is no capture control at all on this board, indeed. At least,
+the hardware spec I got tells nothing about the capture controls. No gain
+control, no input selection.
+";
+
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164 :
+
+"
+Again, revo has no capture control. At least, the hardware spec I got
+tells so.
+";
+
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187 :
+
+"
+The input selection of line-in and mic is unknown thing - i.e. we have no
+technical information about this feature at all. 
+".
+
+The quoted words above were said in response to my questions regarding
+enabling capture.
+
+>From the same quoted words I understand that at the moment there is no
+known
+way to enable capture.
+
+Because of this I think it would be fair to mark the card as the one with
+unsupported capture. Probably other ICE1724-based cards have the same
+problem
+too.
+
+It would be a pity if other people buy the card and wouldn't be able to
+use its
+capture.
+
+I have uploaded current snapshot of ALSA card matrix, it says:
+"
+ (4) Capture of sound not supported.
+",
+so I think this marker should be added to the card's description.
+
+Thanks,
+  Sergei.
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001096 no capture with M-Audio Revolution 7.1
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-21-05 12:44 
+----------------------------------------------------------------------
+Please read texts carefully.  The capture works partially.  But no
+"control" for capture exists.
+
+----------------------------------------------------------------------
+ sst4 - 06-21-05 23:53 
+----------------------------------------------------------------------
+Takashi - "The capture works partially" words of yours are not true.
+
+That is, out of the box capture does NOT work, and to be fair it does not
+work for almost any card.
+
+However, if I look into, say, asound.state file of CT4610 and the like
+cards,
+(
+snd-ens1371 driver, recent example:
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023 , attached
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=654&type=bug
+
+file
+),
+
+I see pieces like these:
+
+
+	control.15 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic Playback Switch'
+		value false
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Mic Playback Volume'
+		value 0
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic Boost (+20dB)'
+		value false
+	}
+	control.18 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Line Playback Switch'
+		value false
+	}
+	control.19 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Line Playback Volume'
+		value.0 0
+		value.1 0
+	}
+.
+
+So, I understand that in order to enable capture I have to give TRUE
+values to flags and non-zero values to volumes.
+
+And changing the flags/volumes makes capture work.
+
+In the M-Audio asound.state file I see no words like "Line Playback
+Switch",
+"Line Playback Volume", so I do not know what to change in order to get
+capture
+working.
+
+I asked the question about controls of M-Audion Revolution 7.1. time and
+again,
+and equivalent question about changing values in asound.state file too,
+but you
+gave me no answer.
+
+So, since apparently nobody knows the answer, please marked the card as
+the
+one with unsupported capture, or tell me, please, whow to enable capture.
+
+In particular, what control numbers in asound.state file of M-Audio
+Revolution
+to change and how to make capture work.
+
+Thanks,
+  Sergei.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-20-05 00:30 sst4           New Issue                                    
+06-20-05 00:30 sst4           File Added: alsa_card_matrix.html                 
+  
+06-21-05 12:44 tiwai          Note Added: 0005107                          
+06-21-05 23:53 sst4           Note Added: 0005114                          
+06-22-05 01:47 rlrevell       Relationship added       duplicate of 0001096
+======================================================================
+
 
 
 
