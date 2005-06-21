@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: Volume Peak display
-Date: Tue, 21 Jun 2005 17:08:41 +0800
-Message-ID: <42B7D919.8020400@netvigator.com>
-References: <1064034672.10497.7.camel@localhost>	<s5hfzinr34z.wl@alsa2.suse.de>	<1064414023.1630.11.camel@localhost> <s5hisnikuw5.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
+Date: Tue, 21 Jun 2005 11:13:47 +0200
+Message-ID: <cd71128baf9cbd04ce0f3677e3386caa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hisnikuw5.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCE331EC
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 11:13:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,134 +18,113 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 24 Sep 2003 10:33:43 -0400,
-> Manuel Jander wrote:
-> 
->>Hi Takashi,
->>
->>I was thinking that wouldn't it be a good idea to have a "visualization"
->>category for alsa controls ? Or at least some naming scheme that allows
->>to identify controls that should just show some data, like VU meters, or
->>the hardware EQ peak i'm implementing for the aureal vortex.
-> 
 
-Are those VU meters measure in db or percentage ?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
+======================================================================
+Reported By:                theoneandonlysm
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1179
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-10-2005 19:08 CEST
+Last Modified:              06-21-2005 11:13 CEST
+======================================================================
+Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
+Description: 
+I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
+package update and noticed that aRts in kde did not produce any sound even
+though no errors in arts was reported.
 
-> 
-> well, the volatile flag should be used for such a purpose.
-> if it's set, the control change won't be notified to the application.
-> the application which shows these controls must re-read the data
-> periodically (not passively like others).
-> 
-> the other flag name might be more obvious, though.
-> 
-> 
->>>>- The peaks doesnt get updated by alsamixer nor alsamixergui.
->>>>I set the "volatile" flag, but is doesnt have any effect.
->>>
->>>this is inteintional.
->>>(otherwise it will be too heavy for terminals over a slow network
->>> connection :)
->>>
->>>for these purposes, we'll need anyway a special mixer app like
->>>envy24control.
->>
->>Ok. I got it. I'll start writing our "Vortex turbo  mixer" as soon as i
->>can :-)
->>
+I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
+sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
+Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
+functioning.
 
-10-bands Graphic equalizer has been implemented in vortexcontrol.
+dmesg gives me no errors, and I am not certain where else to look. The
+only clue I get is from mplayer while playing an audio file, where I get
+continual output of:
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.004 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
+alsa-space: xrun of at least 0.002 msecs. resetting stream
 
->>
->>>>- Alsamixer shows only 4 of the peak control set (20 total), and other
->>>>mixers just show 2 of them.
->>>
->>>maybe the result of abstraction by simple-mixer API.
->>>
->>>
->>>>- The controls are declared as read only, but i can change their value.
->>>>This shouldn't be allowed.
->>>
->>>really?  then it must be fixed.
->>>could you elaborate how this can happen?
->>
+my lsmod:
+vmnet                  27812  2
+parport_pc             22980  1
+vmmon                 105260  0
+snd_pcm_oss            49312  0
+snd_mixer_oss          18304  1 snd_pcm_oss
+snd_hda_intel          14336  1
+snd_hda_codec          69248  1 snd_hda_intel
+snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              22276  1 snd_pcm
+snd                    50532  8
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
+lp                      8836  0
+parport                21440  2 parport_pc,lp
+nfsd                   91464  8
+exportfs                5120  1 nfsd
+nfs                    96044  1
+lockd                  61992  3 nfsd,nfs
+sunrpc                130500  5 nfsd,nfs,lockd
+vfat                   11648  1
+fat                    36252  1 vfat
+i915                   18176  1
+drm                    61204  2 i915
+intel_agp              20380  1
+agpgart                29488  3 drm,intel_agp
+hw_random               4884  0
+rtc                    10828  0
+ehci_hcd               29576  0
+usblp                  11648  0
+uhci_hcd               30480  0
+usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
 
->>This could be a problem of the mixer app. I mean that i can modify the
->>sliders on alsamixer or alsamixergui. The alsalib doesnt try to invoke a
->>"control_put()" function (which is correct), since that would yield a
->>segfault (i didnt implemented the control_put(), because that would be
->>nonsense). 
+======================================================================
 
-The message return by amixer seem to be misleading.
+----------------------------------------------------------------------
+ theoneandonlysm - 06-21-05 01:37 
+----------------------------------------------------------------------
+It gets around the problem - sound works correctly on the 1.0.9 libs only
+when the programs are set to use their OSS plugins. Using the alsa plugins
+will cause stutterring sound or no sound at all.
 
+Is there any specific information I need to provide?
 
-# amixer cget numid=12
-numid=12,iface=MIXER,name='EQ Peaks'
-   ; type=INTEGER,access=r----,values=20,min=0,max=32767,step=0
-   : values=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+----------------------------------------------------------------------
+ tiwai - 06-21-05 11:13 
+----------------------------------------------------------------------
+Try position_fix=1 or 2.  See Documentation/ALSA-Configuration.txt for
+details.
 
-# amixer sget numid=12 1,1,1,1,1,1,1,1,1
-amixer: Unable to find simple control 'numid=12',0
-
-
-
-static snd_kcontrol_new_t vortex_levels_kcontrol __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "EQ Peaks",
-	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-	.info = snd_vortex_peaks_info,
-	.get = snd_vortex_peaks_get,
-};
-
-Refer to Alien's png
-
-http://article.gmane.org/gmane.linux.alsa.devel/23112
-
-There are 4 sliders marked as "EQ peaks" in alsamixer (1.0.9a) , the
-first two are stereo and the last two are mono.
-
-The 4 EQ peaks sliders in alsamixer can be adjusted and it is strange
-that alsamixer do not get "segfault" when ".put" has not been
-implemented in au88x0.
-
-
-The following error only appear with compile with option --with-debug=full
-
-Vortex: init.... <3>ALSA control.c:325: control 3:0:0:Playback PCM
-advanced processing:0 is already present
-done.
-
-It seem that this HRTF kcontrols with 6 values cannot be created.
-
-Does it mean that kcontrols ( not enumerated ) cannot contains more than
-2 values ?
-
->>
->>What i wanted to say, is that it shouldn't be possible in a mixer app to
->>"Move" sliders from readonly controls. Their appearance should be
->>different too. They should look like "progress bars" or something else.
->>Or better than that, VU meters should look like VU meters :)
-> 
-> 
-> agreed.  at least, showing the elements with volatile in alsamixer
-> doens't make sense unless alsamixer shows vu meter (hey, it's not bad
-> :)
-> 
-> 
-
-
-Is it possible to standardise the API of multi-band equalizer ( hardware 
-equalizer / graphic equalizer )
-
-Beside Turtle Beach Montego II (au8830) , it seem that other cards such 
-as Santa Cruz (cs46xx) , Montego DDL  also have hardware equalizer.
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-10-05 19:08 theoneandonlysmNew Issue                                    
+06-13-05 13:09 tiwai          Note Added: 0005008                          
+06-19-05 12:30 sally          Note Added: 0005088                          
+06-20-05 03:46 theoneandonlysmNote Added: 0005092                          
+06-20-05 10:45 sally          Note Added: 0005094                          
+06-20-05 11:23 perex          Category                 0_general => 1_pcm -
+digital audio
+06-21-05 01:37 theoneandonlysmNote Added: 0005100                          
+06-21-05 11:13 tiwai          Note Added: 0005101                          
+======================================================================
 
 
 
