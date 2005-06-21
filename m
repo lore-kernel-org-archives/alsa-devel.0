@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001096]: no capture with M-Audio Revolution 7.1
-Date: Wed, 22 Jun 2005 01:47:19 +0200
-Message-ID: <1bd761441cc43874d64b23c2668b28d0@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 01:48:08 +0200
+Message-ID: <81ff50a4c6526b92f750ad8c9ac91e26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 589521F3
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 01:47:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24D801F6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 01:48:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001205 has been set as DUPLICATE OF the following issue.
+The issue 0001164 has been set as DUPLICATE OF the following issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096> 
 ======================================================================
@@ -330,6 +330,7 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0001187 Gain control for M-Audio Revolution (an...
 has duplicate       0001205 Mark M-Audio Revolution 7.1 (and probab...
+has duplicate       0001164 aoss + skype: volume_adjust: SOUND_MIXE...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -537,6 +538,7 @@ Date Modified  Username       Field                    Change
 06-15-05 15:28 tiwai          Note Added: 0005033                          
 06-16-05 14:59 perex          Relationship added       related to 0001187  
 06-22-05 01:47 rlrevell       Relationship added       has duplicate 0001205
+06-22-05 01:48 rlrevell       Relationship added       has duplicate 0001164
 ======================================================================
 
 
