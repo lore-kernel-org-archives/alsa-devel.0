@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001204]: Mono recording produces audio at half volume
-Date: Tue, 21 Jun 2005 12:47:35 +0200
-Message-ID: <811b8f17d233f50d86a5604b19a947a4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001201]: Can't use xmms with alsa driver (hda-intel)
+Date: Tue, 21 Jun 2005 12:48:38 +0200
+Message-ID: <8f5fd9a479edc655d37e66ab5caf41d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D15F71EE
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 12:47:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F9AD1EE
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 12:48:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1204> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1201> 
 ======================================================================
-Reported By:                pascal
+Reported By:                sse450
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1204
-Category:                   PCI - ice1712
+Issue ID:                   1201
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Distribution:               
-Kernel Version:             2.4.16 highmem smp
-Resolution:                 not an issue
+Kernel Version:             
+Resolution:                 duplicate
+Duplicate:                  1179
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-19-2005 17:07 CEST
-Last Modified:              06-21-2005 12:47 CEST
+Date Submitted:             06-17-2005 22:50 CEST
+Last Modified:              06-21-2005 12:48 CEST
 ======================================================================
-Summary:                    Mono recording produces audio at half volume
+Summary:                    Can't use xmms with alsa driver (hda-intel)
 Description: 
-Mono recording yields audio data at half the expected volume.
-======================================================================
+xmms can play using OSS and eSound output plugins. If I select alsa plugin,
+sound gets very cracky and noisy.
 
+I use spdif output of the sound chip.
+
+Here is the modprobe.conf:
+alias snd-card-0 snd-hda-intel
+options snd-card-0 index=0
+options snd-hda-intel index=0
+options snd-hda-intel model=5stack-digout
+remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-hda-intel
+
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9rc2  (Thu Mar 24
+10:33:39 2005 UTC).
+
+I would appreciate any help.
+
+Thanks,
+Mufit Eribol
+======================================================================
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- tiwai - 06-21-05 12:47 
-----------------------------------------------------------------------
-It's a feature.
-If you don't this behavior, set route_policy in plug plugin to "copy".
+duplicate of        0001179 alsa-lib 1.0.9 breaks snd_hda_intel
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-05 17:07 pascal         New Issue                                    
-06-19-05 17:07 pascal         Kernel Version            => 2.4.16 highmem smp
-06-21-05 12:47 tiwai          Status                   new => resolved     
-06-21-05 12:47 tiwai          Resolution               open => not an issue
-06-21-05 12:47 tiwai          Assigned To               => tiwai           
-06-21-05 12:47 tiwai          Note Added: 0005108                          
+06-17-05 22:50 sse450         New Issue                                    
+06-21-05 12:48 tiwai          Relationship added       duplicate of 0001179
+06-21-05 12:48 tiwai          Duplicate ID             0 => 1179           
+06-21-05 12:48 tiwai          Status                   assigned => resolved
+06-21-05 12:48 tiwai          Resolution               open => duplicate   
 ======================================================================
 
 
