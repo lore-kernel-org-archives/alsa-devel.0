@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Tue, 21 Jun 2005 16:41:09 +0200
-Message-ID: <61bb959bed272369178e4662553d6c79@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: ALSA: Is CONFIG_SND_DEBUG_MEMORY really required?
+Date: Tue, 21 Jun 2005 16:40:41 +0200
+Message-ID: <20050621144041.GP3666__29919.2247483463$1119377086$gmane$org@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A38C1F2
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 16:41:10 +0200 (MEST)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4F4EC1F2
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 16:40:43 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,105 +18,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
-======================================================================
-Reported By:                mr-k
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   1_OTHERS
-Reproducibility:            random
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              06-21-2005 16:41 CEST
-======================================================================
-Summary:                    Driver and all sound aplications hangs
-Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
+I was a bit surprised to discover that ALSA has it's own memory 
+debugging infrastructure.
 
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
+Is there a reason why CONFIG_DEBUG_SLAB isn't good enough for ALSA?
 
+cu
+Adrian
 
-======================================================================
+-- 
 
-----------------------------------------------------------------------
- mr-k - 06-01-05 15:50 
-----------------------------------------------------------------------
-It looks like everything is ok with this patch. I'll test it a litle more
-but even now I can say "good job!".
-
-----------------------------------------------------------------------
- mr-k - 06-21-05 16:41 
-----------------------------------------------------------------------
-Well, i thonk that this bug can be closed, everything is fine now. But if u
-want 
-I can make some tests..
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
-01-11-05 22:11 mr-k           Note Added: 0003158                          
-01-11-05 22:12 mr-k           File Added: alsa.log                         
-01-12-05 15:14 tiwai          Note Added: 0003170                          
-01-12-05 15:57 mr-k           Note Added: 0003173                          
-01-16-05 15:38 mr-k           Note Added: 0003218                          
-02-09-05 21:45 mr-k           Note Edited: 0003173                         
-02-09-05 21:46 mr-k           Note Edited: 0003123                         
-03-10-05 16:46 mr-k           Note Added: 0003868                          
-03-10-05 16:47 mr-k           Note Edited: 0003868                         
-03-20-05 22:53 bendis         Issue Monitored: bendis                      
-03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
-03-22-05 17:59 mr-k           Note Added: 0004126                          
-03-30-05 18:27 tiwai          Note Added: 0004269                          
-03-30-05 19:06 mr-k           Note Added: 0004270                          
-03-30-05 19:19 tiwai          Note Added: 0004271                          
-03-31-05 00:36 mr-k           Note Added: 0004276                          
-03-31-05 00:36 mr-k           File Added: alsa-sysrq                       
-04-02-05 21:50 mr-k           Note Added: 0004300                          
-05-25-05 23:10 mr-k           Note Added: 0004737                          
-05-25-05 23:11 mr-k           Note Edited: 0004737                         
-05-31-05 13:06 tiwai          Note Added: 0004829                          
-05-31-05 13:06 tiwai          File Added: pcm-drain-lock-fix.diff               
-    
-05-31-05 15:43 bendis         Note Added: 0004832                          
-06-01-05 15:50 mr-k           Note Added: 0004858                          
-06-21-05 16:41 mr-k           Note Added: 0005112                          
-======================================================================
-
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
