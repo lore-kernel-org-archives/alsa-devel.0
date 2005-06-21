@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Wed, 22 Jun 2005 01:48:06 +0200
-Message-ID: <9d56def4af33bdddea57b747b663fbd8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001187]: Gain control for M-Audio Revolution (and other ice1724 cards) needed
+Date: Wed, 22 Jun 2005 01:49:01 +0200
+Message-ID: <7d7f39a248eb0df5acf66c0dca2a99a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A0981F6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 01:48:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72ECA1F6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 01:49:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,96 +24,138 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been set as DUPLICATE OF issue 0001096.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187> 
 ======================================================================
 Reported By:                sst4
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1187
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Mandriva
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-22-2005 01:48 CEST
+Date Submitted:             06-12-2005 15:51 CEST
+Last Modified:              06-22-2005 01:49 CEST
 ======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
+Summary:                    Gain control for M-Audio Revolution (and other
+ice1724 cards) needed
 Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
+Hello,
 
-Soon (probably in a second) after this command line:
+this is in a sense continuation of
 
-aoss skype &
-
-the terminal window gets filled with
-
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001096 no capture with M-Audio Revolution 7.1
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 14:50 
-----------------------------------------------------------------------
-Could you try the attached patch?
-
-----------------------------------------------------------------------
- tiwai - 06-08-05 14:53 
-----------------------------------------------------------------------
-With revo 7.1, this might not work, too, since revo has really no "Capture
-Volume" (corresponding to IGAIN in OSS).
-
-If so, it must be a bug of Skype.  Skype must check DEVMASK before reading
-IGAIN.
-
-----------------------------------------------------------------------
- sst4 - 06-12-05 19:35 
-----------------------------------------------------------------------
-Takashi,
-
-thanks for you reply.
-
-I do not think it's that much of a bug in Skype.
-
-I think it's hard to find a soundcard which doesn't have input gain
-control
-under Windows.
-
-And I believe that the card should have, and it's possible to do, input
-gain control - please see
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164
 .
 
-Aslo, I'm repeating what I've said in the issue above:
+Yes, I remember Takashi's statement that the ADC chip on the card does
+not
+have gain control, and I checked the ADC specs and it's indeed so.
+
+However, this doesn't mean the functionality can not be implemented.
+
+I believe it should be implemented for at least two reasons:
+
+1) Windows driver has it;
+2) Applications like "Skype" need it to implement AGC (automatic gain
+control)
+in software.
+
+Regarding 2) - I clearly hear while talking through "Skype" that gain on
+the other party's side increases (room noise pickup is becoming more and
+more
+evident) when the other party makes a pause in conversation.
+
+
+Regarding 1) - in
+
+http://m-audio.com/images/en/manuals/Revo71-Manual-EN.pdf
+
+file on page number 14, under "Line and Mic In" one can read:
 
 "
-*** I still have no capture with my Revolution 7.1 (issue 0001096) ***
+You can set the INPUT LEVEL of the Line and Mic inputs on the Input/Other
+tab of th
+Revolution 7.1 control panel. See the Control Panel section for more
+details.
+"
+(capitalization by me).
+
+
+On page number 22 of the same file, under "Input/Other Tab":
+
+"
+The Input/Other tab controls the INPUT LEVELS and sampling frequency of
+the
+Revolution. You don't need to worry about the settings on this page unless
+you're
+recording audio with the Revolution.
+Link Stereo Input Levels - The Input/Other tab controls the INPUT LEVELS
+and
+sampling frequency of the Revolution. You don't need to worry about the
+settings
+on this page unless you're recording audio with the Revolution.
+"
+(capitalization by me).
+
+
+On page number 25 under "Recording":
+
+"
+The Revolution 7.1 includes a pair of audio inputs for recording. You can
+set the
+INPUT LEVEL of the inputs by launching the Revolution 7.1 control panel,
+selecting
+the Input/Other tab, and changing the level on that screen. If your
+recording
+application doesn't see audio from the Revolution's inputs, check that
+program's
+audio preferences, check your cable connections, or review the Software
+Setup
+chapter for potential problems. Go to the Windows Control panel and open
+Sounds and Multimedia icon. The Revolution 7.1 features both Line and Mic
+inputs for the best performance with your input source. The Revolution
+7.1
+records at sampling rates up to and including 96kHz.
+"
+(capitalization by me).
+
+
+The "Input/Other" tab in its non-selected form can be seen on the picture
+on page 20 - to see it more clearly I had to choose 400% zoom in 'xpdf'.
+
+
+
+Regarding feasibility.
+
+First of all, gain can be changed by multiplying the code by the gain
+value.
+
+If I remember correctly, in ALSA the card outputs audio data in 32 bit
+format,
+of the 32 bits only 24 bits are significant because that's what the ADC
+produces, so we have 8 spare bits, which means 256 times, or about 48dB
+gain
+control without even losing precision.
+
+
+General note on priority of implementing the feature.
+
+Though I believe the feature is needed, and not only for Revolution 7.1,
+but
+also for other ICE1724-based cards, please understand the following:
+
+*** I still have no capture with my Revolution 7.1 (issue
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001096) ***
 .
 
 Since I'm not getting it work, I've been trying to use ALSA utilities
 ('amixer',
-'alsamixer', 'aoss') - "trial and error" approach - to make it work, and
+'alsamixer', 'aoss') - "trial and error" approach -  to make it work, and
 have
 found other problems on the way.
 
@@ -124,7 +166,7 @@ will not solve my main problem - lack of capture.
 
 I would appreciate getting an answer to the question in
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php [^]?id=1096 :
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 :
 
 "
 Maybe my previous question does not contain enough details.
@@ -156,193 +198,73 @@ Thanks,
 Or, to be more precise, getting an answer to the question in general:
 "How
 to enable capture in M-Audio Revolution 7.1 ?".
-".
 
 Thanks,
   Sergei.
 
+======================================================================
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- tiwai - 06-13-05 13:03 
-----------------------------------------------------------------------
-This card (codec chip) has really no input level support _on hardware_.
-
-Can't you choose the capture source via alsamixer instead of amixer?
-
-----------------------------------------------------------------------
- sst4 - 06-13-05 14:12 
-----------------------------------------------------------------------
-Takashi,
-
-regarding this:
-"
-This card (codec chip) has really no input level support _on hardware_.
-"
-- I understand this, and that's why I suggested to implement it in
-_software_
-- please read description in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187
-.
-
-Regarding:
-"
-Can't you choose the capture source via alsamixer instead of amixer?
-"
-No, I can't with ALSA version 1.0,8. The attempt to at all show capture
-part of 'alsamixer' causes it to segfault, and it was reported in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1095
-
-- claimed to be resolved.
-
-If I understand correctly, everything that can be done in 'alsamixer' can
-also
-be done in 'amixer'. I think that actually even more can be done in
-'amixer'
-than in 'alsamixer' because 'amixer' deals with raw controls directly.
-
-So, could you please tell me how to enable capture using 'amixer' ?
-
-Thanks,
-  Sergei.
+duplicate of        0001096 no capture with M-Audio Revolution 7.1
+======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-13-05 14:30 
+ tiwai - 06-15-05 15:26 
 ----------------------------------------------------------------------
-No, such a software conversion shouldn't be in the kernel code.  It's a job
-of user-space.  That is, such a feature could be implemented easily on
-alsa-lib, but this can't be used through kernel OSS emulation.
+Clearly this is the problem of application.  Why the _kernel_ driver
+bothers to implement an emulation _on software_ which doesn't exist?
+Note that if Skype is running on ALSA, it'd be more easily solved.
 
-The fix of alsamixer should be already fixed in 1.0.9b.  Please update
-your system.
-
-I know there is a bug in amixer (the bug report isn't closed), but
-currently this is still in the deep of my long TODO list.  If anyone can
-take a look and debug it, it'd be appreciated.
-
-BTW, you can do the following instead of amixer, if you don't like the
-interactive program:
-- alsactl -f somefile store
-- edit somefile manuall
-- alsactl -f somefile restore
+The input selection of line-in and mic is unknown thing - i.e. we have no
+technical information about this feature at all.  Sorry, impossible to
+ipmlement now.  For improving this, please ask M-Audio to provide this
+particular information.
 
 ----------------------------------------------------------------------
- sst4 - 06-13-05 16:05 
+ sst4 - 06-20-05 01:05 
 ----------------------------------------------------------------------
-Takashi,
-
-regatrding
+Regarding
 
 "
-you can do the following instead of amixer, if you don't like the
-interactive program:
-- alsactl -f somefile store
-- edit somefile manuall
-- alsactl -f somefile restore
-"
-- please find attached 'asound.state.generated_by_alsaconf' file
-generated
-by  'alsaconf'. Before generation I cleaned up /etc/modprobe.conf by
-removing
-all sound related entries from it.
-
-Could you please tell me which lines to change and how in the
-'asound.state.generated_by_alsaconf' in order to enable capture ?
-
-Please note that the word "capture" does not appear in the file.
-
-Regarding 'amixer'. The bug that I filed affects only control number 0 -
-maybe
-'amixer' is still good enough to enable capture ?
-
-Anyway, please let me know how to enable capture either through changes
-in
-the 'asound.state.generated_by_alsaconf' file or using 'amixer'.
-
-Thanks,
-  Sergei.
-
-----------------------------------------------------------------------
- sst4 - 06-15-05 08:25 
-----------------------------------------------------------------------
-Takashi, what about an answer to this question of mine:
-
-"
-Could you please tell me which lines to change and how in the
-'asound.state.generated_by_alsaconf' in order to enable capture ?
+Why the _kernel_ driver bothers to implement an emulation _on software_
+which doesn't exist?
 "
 
-?
+- I do not know what's the best way to do this.
 
-Thanks,
-  Sergei.
+Windows "package" (driver + GUI) has it, so ALSA should have it too it
+wants
+to meaningfully compete with Windows.
+
+By the way, probably capture stream is routed through DSP of Envy24HT
+chip,
+and maybe DSP is capable of doing the required multiplication by gain
+value ?
 
 ----------------------------------------------------------------------
- tiwai - 06-15-05 15:44 
+ tiwai - 06-21-05 12:55 
 ----------------------------------------------------------------------
-I don't understand what you mean "enable capture" in general.  One of your
-bugreports told that you could capture (even on OSS) with a certain
-application.
+ALSA can support this in alsa-lib.  It's just a matter of configuration,
+and I gave an example configuration already in another bug issue.
 
-Again, revo has no capture control.  At least, the hardware spec I got
-tells so.
+The only problem is OSS emulation, especially thourhg kernel.  In this
+route, we won't support such a thing in the kernel context.  Rather use
+aoss instead.
 
-The thing that Skype aborts when no IGAIN exists is the bug of Skype.  It
-has to be fixed by the application itself.  Please report this to Skype at
-first.
-
-As a workaround of this problem, you can add a softvol plugin to 
-create a virtual volume attenuator.  For example,
-
-pcm.revocap {
-  type softvol
-  slave.pcm {
-    type hw
-    card 0
-  }
-  control {
-    name "Capture Volume"
-    card 0
-  }
-}
-
-Then, define "dsp0" PCM:
-
-pcm.dsp0 {
-  type asym
-  playback.pcm "plughw:0"
-  capture.pcm {
-    type plug
-    slave.pcm "revocap"
-  }
-}
-
-so that aoss uses the newly defined capture PCM.
+And yes, the stream from line-in might be routed to RDMA1.  IIRC, the
+mic-in can be recorded normally through RMDA0 on revo 7.1 (or vice versa?)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-05 00:33 sst4           New Issue                                    
-06-08-05 14:50 tiwai          Note Added: 0004923                          
-06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
-
-06-08-05 14:53 tiwai          Note Added: 0004926                          
-06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
- 
-06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
-  
-06-12-05 19:35 sst4           Note Added: 0004999                          
-06-13-05 13:03 tiwai          Note Added: 0005006                          
-06-13-05 14:12 sst4           Note Added: 0005009                          
-06-13-05 14:30 tiwai          Note Added: 0005010                          
-06-13-05 15:55 sst4           File Added: asound.state.geberated_by_alsaconf    
-               
-06-13-05 15:59 sst4           File Added: asound.state.generated_by_alsaconf    
-               
-06-13-05 16:05 sst4           Note Added: 0005012                          
-06-15-05 08:25 sst4           Note Added: 0005021                          
-06-15-05 15:44 tiwai          Note Added: 0005035                          
-06-22-05 01:48 rlrevell       Relationship added       duplicate of 0001096
+06-12-05 15:51 sst4           New Issue                                    
+06-12-05 15:51 sst4           Distribution              => Mandriva        
+06-12-05 15:51 sst4           Kernel Version            => 2.6.11          
+06-15-05 15:26 tiwai          Note Added: 0005032                          
+06-16-05 14:59 perex          Relationship added       related to 0001096  
+06-20-05 01:05 sst4           Note Added: 0005091                          
+06-21-05 12:55 tiwai          Note Added: 0005109                          
+06-22-05 01:49 rlrevell       Relationship replaced    duplicate of 0001096
 ======================================================================
 
 
