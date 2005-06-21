@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Tue, 21 Jun 2005 11:19:02 +0200
-Message-ID: <36e0dd8e1dca3b9f24de299d51e26ceb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
+Date: Tue, 21 Jun 2005 11:20:24 +0200
+Message-ID: <9518f330f210aa546cc9b54fb29c5c22@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 809321EE
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 11:19:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABFDC1EE
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 11:20:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,101 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
 ======================================================================
-Reported By:                vedran
-Assigned To:                
+Reported By:                Gildoniel
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Issue ID:                   1162
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
+Status:                     assigned
+Distribution:               SuSe Linux 9.3 Professional
+Kernel Version:             2.6.11.4.20a
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              06-21-2005 11:19 CEST
+Date Submitted:             06-06-2005 18:54 CEST
+Last Modified:              06-21-2005 11:20 CEST
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    no sound on speakers, low volume on the headphones
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
-
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
-
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
-
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
-
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001094 nforce4 - optical spdif out not working
+Problem diagnosis:
+ 
+* Sound card is detected and automatically configured, but no sound can be
+heard.
+* It is possible to hear _faint_ sound (very low volume) through
+headphones.
+* Headphone volume is 0 and I can still hear low volume sound (maybe
+master/headphone switched?)
+* It seems to be possible to record voice on the microphone (I see the
+amplitude when talking into the mic)
+ 
+Solution attempts so far:
+ 
+* used alsamixer to turn up and unmute all channels (failed: no sound on
+speakers, very low volume on headphones)
+* use the "quirk" option of the driver -1 through 7 (failed - no bettering
+and error messages with certain settings)
+* tried other sounddrivers (intel, via and others - didn't try them all)
+(failed - error loading modules on those I tried)
 ======================================================================
 
 ----------------------------------------------------------------------
- gilesjuk - 06-21-05 00:57 
+ Gildoniel - 06-20-05 23:31 
 ----------------------------------------------------------------------
-Gotta fix this bug, analog out on my card seriously sucks the DAC in my
-Marantz is much nicer.
+Sure I'll try and let you know! Interesting thing is that Radek Wisniewski
+reported the same problem with his system. Only difference is, that he
+tried hours with all different settings for ACPI, APM and others with no
+results at all - as he said I am lucky. 
 
-Anyway, my card apparently has a Realtek ALC650, there's specs here
-including registers. My board has Nforce 4 but the codec is on a seperate
-card (Fatal1ty board).
-
-ftp://152.104.125.9/pc/ac97/alc650/alc650_data5.zip
-
-
+The Link to his report:
+http://sourceforge.net/mailarchive/forum.php?thread_id=7463195&forum_id=1751
 
 ----------------------------------------------------------------------
- tiwai - 06-21-05 11:19 
+ tiwai - 06-21-05 11:20 
 ----------------------------------------------------------------------
-Yes, only 48kHz works on nForce SPDIF, indeed.  That is, the non-audio
-stream in other rates won't work.
-
-As mentioned, the driver works partially.  It may work with the receiver
-which accepts AC3 stream even without SPDIF non-audio status bit by
-checking the preamble.  But, the receivers strictly checking the non-audio
-bit don't work.
-
-It seems that the nForce doesn't use AC97 chip for transmitting SPDIF
-signals but directly drives from the nforce core.  Thus, checking the
-datasheet of the ac97 codec chip won't help...
+This might be quite dependent on BIOS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
-06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
-06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
-06-03-05 00:31 Human          Note Added: 0004880                          
-06-03-05 00:32 Human          Issue Monitored: Human                       
-06-06-05 23:30 Human          Note Added: 0004910                          
-06-08-05 15:01 tiwai          Note Added: 0004928                          
-06-10-05 18:07 Human          Note Added: 0004984                          
-06-19-05 16:07 gilesjuk       Note Added: 0005090                          
-06-21-05 00:50 gilesjuk       Note Added: 0005099                          
-06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
-06-21-05 11:19 tiwai          Note Added: 0005102                          
+06-06-05 18:54 Gildoniel      New Issue                                    
+06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
+06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
+Professional
+06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-07-05 17:52 Gildoniel      Note Added: 0004913                          
+06-08-05 14:35 tiwai          Note Added: 0004922                          
+06-08-05 14:43 Gildoniel      File Added: asound.state                     
+06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+         
+06-08-05 14:52 Gildoniel      Note Added: 0004924                          
+06-08-05 14:59 Gildoniel      Note Added: 0004927                          
+06-08-05 15:08 tiwai          Note Added: 0004929                          
+06-08-05 15:29 Gildoniel      Note Added: 0004933                          
+06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+06-08-05 15:36 pzad           Note Added: 0004935                          
+06-08-05 16:13 Gildoniel      Note Added: 0004948                          
+06-08-05 16:21 pzad           Note Added: 0004949                          
+06-08-05 16:39 Gildoniel      Note Added: 0004954                          
+06-08-05 16:41 tiwai          Note Added: 0004955                          
+06-08-05 16:42 pzad           Note Added: 0004956                          
+06-08-05 16:43 tiwai          Note Added: 0004957                          
+06-08-05 16:45 pzad           Note Added: 0004958                          
+06-08-05 16:52 Gildoniel      Note Added: 0004959                          
+06-08-05 16:57 pzad           Note Added: 0004960                          
+06-08-05 17:03 tiwai          Note Added: 0004961                          
+06-08-05 17:13 Gildoniel      Note Added: 0004963                          
+06-08-05 17:31 Gildoniel      Note Added: 0004964                          
+06-08-05 17:35 tiwai          Note Added: 0004965                          
+06-08-05 18:03 Gildoniel      Note Added: 0004967                          
+06-08-05 18:39 Gildoniel      Note Added: 0004970                          
+06-17-05 11:54 Gildoniel      Note Added: 0005068                          
+06-17-05 14:20 tiwai          Note Added: 0005069                          
+06-20-05 23:31 Gildoniel      Note Added: 0005098                          
+06-21-05 11:20 tiwai          Note Added: 0005103                          
 ======================================================================
 
 
