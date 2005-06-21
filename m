@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001187]: Gain control for M-Audio Revolution (and other ice1724 cards) needed
-Date: Tue, 21 Jun 2005 12:55:17 +0200
-Message-ID: <8ff97a84e8ae20012d4207a9fc4a1dd6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001202]: No sound  through speakers, only headphones
+Date: Tue, 21 Jun 2005 12:58:17 +0200
+Message-ID: <de98e699661f97ced2b7fd71921e4e8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BB021EE
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 12:55:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B7DA1EE
+	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2005 12:58:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,234 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1202> 
 ======================================================================
-Reported By:                sst4
+Reported By:                viroid
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1187
-Category:                   PCI - ice1724
+Issue ID:                   1202
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Mandriva
-Kernel Version:             2.6.11
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369
 ======================================================================
-Date Submitted:             06-12-2005 15:51 CEST
-Last Modified:              06-21-2005 12:55 CEST
+Date Submitted:             06-18-2005 04:47 CEST
+Last Modified:              06-21-2005 12:58 CEST
 ======================================================================
-Summary:                    Gain control for M-Audio Revolution (and other
-ice1724 cards) needed
+Summary:                    No sound  through speakers, only headphones
 Description: 
-Hello,
-
-this is in a sense continuation of
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164
-.
-
-Yes, I remember Takashi's statement that the ADC chip on the card does
-not
-have gain control, and I checked the ADC specs and it's indeed so.
-
-However, this doesn't mean the functionality can not be implemented.
-
-I believe it should be implemented for at least two reasons:
-
-1) Windows driver has it;
-2) Applications like "Skype" need it to implement AGC (automatic gain
-control)
-in software.
-
-Regarding 2) - I clearly hear while talking through "Skype" that gain on
-the other party's side increases (room noise pickup is becoming more and
-more
-evident) when the other party makes a pause in conversation.
-
-
-Regarding 1) - in
-
-http://m-audio.com/images/en/manuals/Revo71-Manual-EN.pdf
-
-file on page number 14, under "Line and Mic In" one can read:
-
-"
-You can set the INPUT LEVEL of the Line and Mic inputs on the Input/Other
-tab of th
-Revolution 7.1 control panel. See the Control Panel section for more
-details.
-"
-(capitalization by me).
-
-
-On page number 22 of the same file, under "Input/Other Tab":
-
-"
-The Input/Other tab controls the INPUT LEVELS and sampling frequency of
-the
-Revolution. You don't need to worry about the settings on this page unless
-you're
-recording audio with the Revolution.
-Link Stereo Input Levels - The Input/Other tab controls the INPUT LEVELS
-and
-sampling frequency of the Revolution. You don't need to worry about the
-settings
-on this page unless you're recording audio with the Revolution.
-"
-(capitalization by me).
-
-
-On page number 25 under "Recording":
-
-"
-The Revolution 7.1 includes a pair of audio inputs for recording. You can
-set the
-INPUT LEVEL of the inputs by launching the Revolution 7.1 control panel,
-selecting
-the Input/Other tab, and changing the level on that screen. If your
-recording
-application doesn't see audio from the Revolution's inputs, check that
-program's
-audio preferences, check your cable connections, or review the Software
-Setup
-chapter for potential problems. Go to the Windows Control panel and open
-Sounds and Multimedia icon. The Revolution 7.1 features both Line and Mic
-inputs for the best performance with your input source. The Revolution
-7.1
-records at sampling rates up to and including 96kHz.
-"
-(capitalization by me).
-
-
-The "Input/Other" tab in its non-selected form can be seen on the picture
-on page 20 - to see it more clearly I had to choose 400% zoom in 'xpdf'.
-
-
-
-Regarding feasibility.
-
-First of all, gain can be changed by multiplying the code by the gain
-value.
-
-If I remember correctly, in ALSA the card outputs audio data in 32 bit
-format,
-of the 32 bits only 24 bits are significant because that's what the ADC
-produces, so we have 8 spare bits, which means 256 times, or about 48dB
-gain
-control without even losing precision.
-
-
-General note on priority of implementing the feature.
-
-Though I believe the feature is needed, and not only for Revolution 7.1,
-but
-also for other ICE1724-based cards, please understand the following:
-
-*** I still have no capture with my Revolution 7.1 (issue
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001096) ***
-.
-
-Since I'm not getting it work, I've been trying to use ALSA utilities
-('amixer',
-'alsamixer', 'aoss') - "trial and error" approach -  to make it work, and
-have
-found other problems on the way.
-
-Resolution of these other problem, including introduction of gain
-control,
-will not solve my main problem - lack of capture.
-
-
-I would appreciate getting an answer to the question in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 :
-
-"
-Maybe my previous question does not contain enough details.
-
-Here is the rephrased question:
-
-Running 'amixer' with this command line
-
-amixer cget numid=<number>
-
-, where <number is in 5..12 range, I see output like this:
-
-"
-  ; type=ENUMERATED,access=rw---,values=1,items=5
-  ; Item 0 'PCM Out'
-  ; Item 0000001 'H/W In 0'
-  ; Item 0000002 'H/W In 1'
-  ; Item 0000003 'IEC958 In L'
-  ; Item 0000004 'IEC958 In R'
-  : values=0
-".
-
-Can any of these controls be related to enabling capture ?
-
-Thanks,
-  Sergei.
-".
-
-Or, to be more precise, getting an answer to the question in general:
-"How
-to enable capture in M-Audio Revolution 7.1 ?".
-
-Thanks,
-  Sergei.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001096 no capture with M-Audio Revolution 7.1
+I cannot get any audio output from the internal speakers on the laptop, I
+did however hear output through headphones; I tried that after reading a
+few issues on here.  I've muted headphones, phone, and line from the
+alsamixer, I've only recently started using linux and I don't really know
+what else to try. 
 ======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 06-20-05 01:05 
+ tiwai - 06-21-05 12:58 
 ----------------------------------------------------------------------
-Regarding
+The hardware details?  Otherwise really hard to tell you anything.
 
-"
-Why the _kernel_ driver bothers to implement an emulation _on software_
-which doesn't exist?
-"
-
-- I do not know what's the best way to do this.
-
-Windows "package" (driver + GUI) has it, so ALSA should have it too it
-wants
-to meaningfully compete with Windows.
-
-By the way, probably capture stream is routed through DSP of Envy24HT
-chip,
-and maybe DSP is capable of doing the required multiplication by gain
-value ?
-
-----------------------------------------------------------------------
- tiwai - 06-21-05 12:55 
-----------------------------------------------------------------------
-ALSA can support this in alsa-lib.  It's just a matter of configuration,
-and I gave an example configuration already in another bug issue.
-
-The only problem is OSS emulation, especially thourhg kernel.  In this
-route, we won't support such a thing in the kernel context.  Rather use
-aoss instead.
-
-And yes, the stream from line-in might be routed to RDMA1.  IIRC, the
-mic-in can be recorded normally through RMDA0 on revo 7.1 (or vice versa?)
+Please attach /etc/asound.state, the contents of
+/proc/asound/card0/codec97#0/* files, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-05 15:51 sst4           New Issue                                    
-06-12-05 15:51 sst4           Distribution              => Mandriva        
-06-12-05 15:51 sst4           Kernel Version            => 2.6.11          
-06-15-05 15:26 tiwai          Note Added: 0005032                          
-06-16-05 14:59 perex          Relationship added       related to 0001096  
-06-20-05 01:05 sst4           Note Added: 0005091                          
-06-21-05 12:55 tiwai          Note Added: 0005109                          
+06-18-05 04:47 viroid         New Issue                                    
+06-18-05 04:47 viroid         Distribution              => Fedora Core 4   
+06-18-05 04:47 viroid         Kernel Version            => 2.6.11-1.1369   
+06-21-05 12:58 tiwai          Note Added: 0005110                          
 ======================================================================
 
 
