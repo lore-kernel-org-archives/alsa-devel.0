@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
-Date: Wed, 22 Jun 2005 16:32:57 +0200
-Message-ID: <b8e700ca12bcc8845861d9eae6be9695@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001202]: No sound  through speakers, only headphones
+Date: Wed, 22 Jun 2005 16:35:14 +0200
+Message-ID: <70020055c72ba674d10fc72ee54e1a45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E0AE1FD
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 16:32:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BD601FD
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 16:35:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1202> 
 ======================================================================
-Reported By:                ahessling
+Reported By:                viroid
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1058
-Category:                   PCI - hda-intel
+Issue ID:                   1202
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11.6
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369
 ======================================================================
-Date Submitted:             04-16-2005 16:37 CEST
-Last Modified:              06-22-2005 16:32 CEST
+Date Submitted:             06-18-2005 04:47 CEST
+Last Modified:              06-22-2005 16:35 CEST
 ======================================================================
-Summary:                    CMI9880 sometimes produces distorted sound
+Summary:                    No sound  through speakers, only headphones
 Description: 
-I am using the CVS version of alsa-kernel from a few days and because of
-the soundchip CMI9880, I have to activate Intel HDA in the kernel.
-Sound is working quite fine in stereo mode, but if I want to play a DVD
-with 5.1 sound, all speakers are activated but the sound is a little bit
-distorted.
-xine uses plug:surround51:0 as the surround device.
-
-My asound.conf looks like this:
-pcm.!default {
-type plug
-slave.pcm "svol"
-}
-
-pcm.svol {
-type softvol
-slave.pcm "hw:0,0"
-control {
-name "PCM Playback Volume"
-}
-}
-
-I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
-Again, stereo sound works fine and also dmix does its work, but this time
-I only get stereo sound in xine although the same configuration of xine is
-used.
-
-I also noticed that playing some files using aplay produces the same
-distortions, e.g.:
-
-aplay /usr/share/sounds/k3b_success1.wav
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-
-Seems to have to do something with sample rate.
-Using the other asound.conf from the homepage above just gives an error:
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-aplay: set_params:857: Sample format non available
- 
-Is there a way to play 5.1 sound without these distortions? Maybe some
-lines added to my asound.conf would do the work.
-
-Thanks in advance!
-
-Regards,
-André
+I cannot get any audio output from the internal speakers on the laptop, I
+did however hear output through headphones; I tried that after reading a
+few issues on here.  I've muted headphones, phone, and line from the
+alsamixer, I've only recently started using linux and I don't really know
+what else to try. 
 ======================================================================
 
 ----------------------------------------------------------------------
- ahessling - 04-21-05 11:41 
+ tiwai - 06-22-05 12:16 
 ----------------------------------------------------------------------
-I am already using 1.0.9rc2 and the problem with the noise in aplay isn't
-the greatest one.
-I want to be able to enjoy 5.1 sound without distortion.
+What happens if you unmute/adjust "Headphone" volume?
+Also, turn on "External Amplifier".
 
 ----------------------------------------------------------------------
- andersin - 06-22-05 16:32 
+ viroid - 06-22-05 16:35 
 ----------------------------------------------------------------------
-I have a similar (same) problem, using SB Extigy. Since surround51 is not
-defined, I use plug:hw to play. Essentially, as soon as I route/test/play
-on any other but the 2 front speakers all speakers produce noise
-(speaker-test) or very distorted sound
+When I umute the headphones I nearly went deaf because the volume was at
+max..
+
+Good news though, umuting the External Amp corrected the problem, thanks
+again for your help!  I really appreciate you taking the time to address
+my issue.
+
+...Chris
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-05 16:37 ahessling      New Issue                                    
-04-16-05 16:37 ahessling      Distribution              => Gentoo          
-04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
-04-19-05 17:47 tiwai          Note Added: 0004527                          
-04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
-04-21-05 11:41 ahessling      Note Added: 0004550                          
-06-22-05 16:32 andersin       Note Added: 0005133                          
+06-18-05 04:47 viroid         New Issue                                    
+06-18-05 04:47 viroid         Distribution              => Fedora Core 4   
+06-18-05 04:47 viroid         Kernel Version            => 2.6.11-1.1369   
+06-21-05 12:58 tiwai          Note Added: 0005110                          
+06-22-05 05:12 viroid         Note Added: 0005118                          
+06-22-05 12:16 tiwai          Note Added: 0005126                          
+06-22-05 16:35 viroid         Note Added: 0005134                          
 ======================================================================
 
 
