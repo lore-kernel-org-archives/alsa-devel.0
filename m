@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
-Date: Wed, 22 Jun 2005 18:58:57 +0200
-Message-ID: <331328c0296dd8387b0af1955b6bcfe1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001207]: Cannot control front panel audio with PCM slider
+Date: Wed, 22 Jun 2005 18:58:36 +0200
+Message-ID: <1d5c72057c579e1fabbb6ed46d3402ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F10341F8
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 18:58:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DF841F8
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 18:58:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,223 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1207> 
 ======================================================================
-Reported By:                Mimosius
-Assigned To:                
+Reported By:                jbrsubscribe
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   839
-Category:                   PCI - intel8x0
+Issue ID:                   1207
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.2
-Kernel Version:             2.6.8-24.10 + 2.6.10
+Status:                     assigned
+Distribution:               SuSE
+Kernel Version:             2.6.11.4-21.7-smp (SMP)
 ======================================================================
-Date Submitted:             01-21-2005 03:12 CET
+Date Submitted:             06-22-2005 18:58 CEST
 Last Modified:              06-22-2005 18:58 CEST
 ======================================================================
-Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
-CS4299
+Summary:                    Cannot control front panel audio with PCM slider
 Description: 
-Audio-mode via SPDIF works fine but I can't get any non-audio passthru
-working.
-
-Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
-AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
-there seems to arrive no decodeable signal on receiver side.
-There are no errors or warnings after loading soundrivers and there are no
-other soundcards plugged in (notebook).
-
-
-here are some system informations:
-
-# cat /etc/modprobe.d/sound
-alias snd-card-0 snd-intel8x0
-options snd-ac97-codec
-options snd-intel8x0 enable=1 index=0
-
-
-# cat /proc/asound/pcm' 
-00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
-ac3dec -C)
-0-0/0: Cirrus Logic CS4299 rev 4
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Crystal Semi 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : Mic
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
-Extended status  : VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
-Enabled
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
-ac3dec -C)
-0:00 = 1990
-0:02 = 3f3f
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 8000
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 8000
-0:1a = 0606
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0200
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0201
-0:2a = 0001
-0:2c = bb80
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0404
-0:5c = 0000
-0:5e = 0080
-0:60 = 0022
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 8826
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 003f
-0:7a = 0000
-0:7c = 4352
-0:7e = 5934
+I am running an ASUS P5AD2-E Premium motherboard with the hda-intel/CMI9880
+audio card with alsa driver 1.0.9a installed. This board has a Front Panel
+Audio Connector (10-1 AAFP) which connects to an audio i/o module on the
+front of the system case.
+None of the mixers on the system are able to control the volume on the
+front panel connector. I have used alsamixer, KAMix, Kmix, QAMix and gamix
+- all with the same result. The volume on the Front panel connector seem
+to be set to the maximum and I have not yet found a way by which it can be
+controlled.
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-22-05 17:56 
-----------------------------------------------------------------------
-Well, two possibilities can be counted:
-1. the SPDIF signal is sent through a wrong channel or recoded somehow
-wrongly, so the non-audio data is broken
-2. the SPDIF non-audio status bit is not set.  Some receivers are so
-sentive that they don't accept SPDIF signals with that.
-
-The latter happens more often, but I'm not sure which one (or both?) in
-your case.  The former one would be either:
-- you passed the data through the normal DMA via slot3/4, or
-- wrong sample rate, not supported by the codec, or
-- any unknown reason?
-
-----------------------------------------------------------------------
- Mimosius - 06-22-05 18:58 
-----------------------------------------------------------------------
-Hi tiwai,
-
->Well, two possibilities can be counted:
->1. the SPDIF signal is sent through a wrong channel or recoded somehow
->wrongly, so the non-audio data is broken
->2. the SPDIF non-audio status bit is not set. Some receivers are so
-sentive >that they don't accept SPDIF signals with that.
-
-I tried to play an AC3-file with mplayer using alsa-driver with hwac3
-output and "ac3dec -C". Each test gives the same result, the value in
-register 0x68 changed from 0x8824 to 0x8826, which shows that the
-non-audio bit was set correctly.
- 
->The latter happens more often, but I'm not sure which one (or both?) in
-your case. The former one would be either:
-> - you passed the data through the normal DMA via slot3/4, or
-
-The AC Mode Control Register 0x5e is set to 0x80 which indicates slot
-assignment L3/R4 (Page 30 and Crystals Documentation). Maybe the DDM bit
-should also be set?
-
-from Documentation:
-"DDM: (DAC direct mode) This bit controls the source to the line and
-alternate line output drivers. When 'set' the L/R DACs directly drive the
-line and alternate line outputs by bypassing the audio mixer. When 'clear'
-the audio mixer is the source for the line and alternate line outputs."
-
-> - wrong sample rate, not supported by the codec, or
-
-PCM Front Rate Register 0x2c is set to 0xbb80 (48KHz) 
-
-
-As you said, there are maybe some recodings of the non-audio data. Is
-there any way to grab these data? (I still have a desktop system using a
-Hoontech with YMF754 and S/PDIF in.)
-Is there a simple way to grab the AC97 registers of the Win32 Driver?
-
-Regards
-Glen
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-05 03:12 Mimosius       New Issue                                    
-01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
-01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
-01-21-05 03:13 Mimosius       Issue Monitored: Mimosius                    
-03-01-05 11:31 Mimosius       Note Added: 0003758                          
-03-15-05 21:37 Mimosius       Note Added: 0003917                          
-03-16-05 12:47 tiwai          Note Added: 0003945                          
-03-16-05 12:47 tiwai          Note Added: 0003946                          
-03-17-05 01:00 Mimosius       Note Added: 0003975                          
-06-22-05 13:08 Mimosius       Note Added: 0005132                          
-06-22-05 17:56 tiwai          Note Added: 0005137                          
-06-22-05 18:58 Mimosius       Note Added: 0005143                          
+06-22-05 18:58 jbrsubscribe   New Issue                                    
+06-22-05 18:58 jbrsubscribe   Distribution              => SuSE            
+06-22-05 18:58 jbrsubscribe   Kernel Version            => 2.6.11.4-21.7-smp
+(SMP)
 ======================================================================
 
 
