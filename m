@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000043]: Rear Left - Rear Right - Center - LFE  are not loud enough
-Date: Wed, 22 Jun 2005 18:13:58 +0200
-Message-ID: <f74dd7a02c1ae9da5bf5d6759130cec1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001096]: no capture with M-Audio Revolution 7.1
+Date: Wed, 22 Jun 2005 18:16:54 +0200
+Message-ID: <f08471aa2a7c36e93e5b33f11f48d655@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B54EE205
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 18:13:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DFEC205
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 18:16:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,320 +22,348 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=43> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096> 
 ======================================================================
-Reported By:                norbert
-Assigned To:                tiwai
+Reported By:                sst4
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   43
-Category:                   PCI - via82xx
+Issue ID:                   1096
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               suse 9.0
-Kernel Version:             2.4.23
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-05-2004 17:42 CET
-Last Modified:              06-22-2005 18:13 CEST
+Date Submitted:             05-07-2005 21:28 CEST
+Last Modified:              06-22-2005 18:16 CEST
 ======================================================================
-Summary:                    Rear Left - Rear Right - Center - LFE  are not loud
-enough
+Summary:                    no capture with M-Audio Revolution 7.1
 Description: 
-lspci
-Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235 AC97
-Audio Controller (rev 50)
+I am trying to make capture on M-Audio Revolution 7.1 - to no avail so
+far.
 
-modules.conf:
-alias char-major-116 snd
-alias sound-slot-0 snd-card-0   
-alias sound-service-0-0 snd-mixer-oss
-alias snd-card-0 snd-via82xx 
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-11 snd-mixer-oss
-alias sound-service-0-12 snd-pcm-oss
-options snd-via82xx ac97_clock=48000 enable=1 index=0 mpu_port=0x330
-options snd cards_limit=1 major=116
+The OS is Mandriva 10.2, but I have the same problem with the latest
+KNOPPIX,
+MEPIS, Kubuntu.
 
-running speaker-test:
-./speaker-test -Dsurround51 -c 6
+On all the above mentioned distribution playback works out of the box,
+but
+capture is dead.
 
-Playback device is surround51
-Stream parameters are 44100Hz, S16_LE, 6 channels
-Sine wave rate is 440.0000Hz
-period_size=1200, buffer_size=4800 
-  - Front Left
-  - Front Right
-  - Rear Left
-  - Rear Right
-  - Center
-  - LFE
+I do not think there is a sign that capture at all is possible/at all
+exists
+ - see detailed information below.
+
+ 
+I think this message:
+
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg09998.html
+
+is also related to the issue.
 
 
-Front sounds fine, all others sound too quiet, I have to put my ear in
-front of the passive speakers to hear that it comes from the right one.
+I didn't find any specific explicit mentioning of capture working with
+the
+card - just general "the card is supported", "made it work", etc.
 
-amixer:
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 5 [16%] [on]
-  Front Right: Playback 5 [16%] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 15 [100%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 15 [100%]
-Simple mixer control '3D Control - Switch',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on]
-  Front Right: Playback 31 [100%] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on]
-  Front Right: Playback 31 [100%] [on]
-Simple mixer control 'Surround Down Mix',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [on]
-Simple mixer control 'Center/LFE Down Mix',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Line-In As Surround',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [on]
-  Front Right: Capture [on]
-Simple mixer control 'Mic As Center/LFE',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Mic Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Video',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Mono: Playback [off] Capture [off]
-Simple mixer control 'IEC958 Input Monitor',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 3
-  Mono: 3 [100%]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [on]
-  Front Right: Capture 0 [0%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Analog to IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Duplicate Front',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Exchange Center/LFE',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'External Amplifier Power Down',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Input Source Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Input Source Select',1
-  Capabilities:
-  Mono:
-Simple mixer control 'Swap Surround Slot',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'VIA DXS',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%]
-  Front Right: Playback 31 [100%]
-Simple mixer control 'VIA DXS',1
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%]
-  Front Right: Playback 31 [100%]
-Simple mixer control 'VIA DXS',2
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%]
-  Front Right: Playback 31 [100%]
-Simple mixer control 'VIA DXS',3
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%]
-  Front Right: Playback 31 [100%]
+Did anyone manage to make capture work with the card ? If yes, how to do
+this ?
 
-thanks,
-norbert
+I'm giving the issue "block" severity because the card was specifically
+bougth
+to perform capture at 96KHz sampling rate.
+
+Thanks in advance,
+  Sergei,
+
+Detailed information follows.
+
+--------------------------------------------------------------------------------
+  
+Output of 'uname -a' BEGIN
+
+[root@athlon ~]# uname -a
+Linux athlon.home.net 2.6.11-6mdk-i586-up-1GB
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Mar 22 15:46:07 CET
+2005 i686 AMD Athlon(tm) XP 1900+ unknown GNU/Linux
+[root@athlon ~]#            
+
+Output of 'uname -a' END
+
+--------------------------------------------------------------------------------
+
+Output of 'amixer -v' BEGIN
+
+[root@athlon ~]# amixer -v
+amixer version 1.0.8
+[root@athlon ~]#        
+
+Output of 'amixer -v' END
+
+--------------------------------------------------------------------------------
+
+Output of 'amixer -d controls' BEGIN
+
+[root@athlon ~]# amixer -d controls
+numid=1,iface=CARD,name='ICE1724 EEPROM'
+numid=18,iface=MIXER,name='IEC958 Playback Con Mask',device=1
+numid=19,iface=MIXER,name='IEC958 Playback Pro Mask',device=1
+numid=14,iface=MIXER,name='IEC958 Playback Route'
+numid=15,iface=MIXER,name='IEC958 Playback Route',index=1
+numid=16,iface=MIXER,name='IEC958 Output Switch'
+numid=20,iface=MIXER,name='DAC Volume'
+numid=21,iface=MIXER,name='DAC Volume',index=1
+numid=23,iface=MIXER,name='DAC Volume',index=2
+numid=24,iface=MIXER,name='DAC Volume',index=3
+numid=25,iface=MIXER,name='DAC Volume',index=4
+numid=26,iface=MIXER,name='DAC Volume',index=5
+numid=27,iface=MIXER,name='DAC Volume',index=6
+numid=28,iface=MIXER,name='DAC Volume',index=7
+numid=22,iface=MIXER,name='Deemphasis'
+numid=29,iface=MIXER,name='Deemphasis',index=1
+numid=5,iface=MIXER,name='H/W Playback Route'
+numid=6,iface=MIXER,name='H/W Playback Route',index=1
+numid=7,iface=MIXER,name='H/W Playback Route',index=2
+numid=8,iface=MIXER,name='H/W Playback Route',index=3
+numid=9,iface=MIXER,name='H/W Playback Route',index=4
+numid=10,iface=MIXER,name='H/W Playback Route',index=5
+numid=11,iface=MIXER,name='H/W Playback Route',index=6
+numid=12,iface=MIXER,name='H/W Playback Route',index=7
+numid=2,iface=MIXER,name='Multi Track Internal Clock'
+numid=13,iface=MIXER,name='Multi Track Peak'
+numid=3,iface=MIXER,name='Multi Track Rate Locking'
+numid=4,iface=MIXER,name='Multi Track Rate Reset'
+numid=17,iface=PCM,name='IEC958 Playback Default',device=1
+[root@athlon ~]#
+
+Output of 'amixer -d controls' END                 
+--------------------------------------------------------------------------------
+
+Info on/from /proc/asound/ BEGIN
+
+[root@athlon ~]# ls -lt /proc/asound/
+total 1
+-r--r--r--  1 root root 0 May  6 02:42 cards
+-r--r--r--  1 root root 0 May  6 02:42 devices
+-r--r--r--  1 root root 0 May  6 02:42 modules
+dr-xr-xr-x  2 root root 0 May  6 02:42 oss/
+-r--r--r--  1 root root 0 May  6 02:42 pcm
+dr-xr-xr-x  2 root root 0 May  6 02:42 seq/
+-r--r--r--  1 root root 0 May  6 02:42 timers
+-r--r--r--  1 root root 0 May  6 02:42 version
+dr-xr-xr-x  6 root root 0 May  6 02:42 card0/
+lrwxrwxrwx  1 root root 5 May  6 02:42 Revolution71 -> card0/
+[root@athlon ~]# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.8.
+[root@athlon ~]# cat /proc/asound/cards
+0 [Revolution71   ]: ICE1724 - M Audio Revolution-7.1
+                     M Audio Revolution-7.1 at 0xe400, irq 5
+[root@athlon ~]# cat /proc/asound/card0/pcm0c/info
+card: 0
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: ICE1724
+name: ICE1724
+subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+[root@athlon ~]# cat /proc/asound/card0/pcm0c/sub0/hw_params
+closed
+[root@athlon ~]# cat /proc/asound/card0/pcm0c/sub0/prealloc
+256
+[root@athlon ~]# cat /proc/asound/card0/pcm0c/sub0/status
+closed
+[root@athlon ~]# cat /proc/asound/card0/pcm0c/sub0/sw_params
+closed
+[root@athlon ~]#    
+
+Info on/from /proc/asound/ END
+
+--------------------------------------------------------------------------------
+
+Output of 'lspci -v' BEGIN
+
+[root@athlon ~]# lspci -v
+00:00.0 Host bridge: Advanced Micro Devices [AMD] AMD-760 [IGD4-1P] System
+Controller (rev 14)
+        Flags: bus master, medium devsel, latency 32
+        Memory at e0000000 (32-bit, prefetchable) [size=64M]
+        Memory at eb100000 (32-bit, prefetchable) [size=4K]
+        I/O ports at d000 [disabled] [size=4]
+        Capabilities: [a0] AGP version 2.0
+
+00:01.0 PCI bridge: Advanced Micro Devices [AMD] AMD-760 [IGD4-1P] AGP
+Bridge (prog-if 00 [Normal decode])
+        Flags: bus master, 66Mhz, medium devsel, latency 32
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=32
+        I/O behind bridge: 0000c000-0000cfff
+        Memory behind bridge: e8000000-e9ffffff
+        Prefetchable memory behind bridge: e4000000-e7ffffff
+
+00:07.0 ISA bridge: VIA Technologies, Inc. VT82C686 [Apollo Super South]
+(rev 40)
+        Subsystem: VIA Technologies, Inc. VT82C686/A PCI to ISA Bridge
+        Flags: bus master, stepping, medium devsel, latency 0
+        Capabilities: [c0] Power Management version 2
+
+00:07.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06) (prog-if
+8a [Master SecP PriP])
+        Subsystem: VIA Technologies, Inc.
+VT82C586/B/VT82C686/A/B/VT8233/A/C/VT8235 PIPC Bus Master IDE
+        Flags: bus master, medium devsel, latency 32
+        I/O ports at d400 [size=16]
+        Capabilities: [c0] Power Management version 2
+
+00:07.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1a) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at d800 [size=32]
+        Capabilities: [80] Power Management version 2
+
+00:07.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1a) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at dc00 [size=32]
+        Capabilities: [80] Power Management version 2
+
+00:07.4 SMBus: VIA Technologies, Inc. VT82C686 [Apollo Super ACPI] (rev
+40)
+        Subsystem: VIA Technologies, Inc. VT82C686 [Apollo Super ACPI]
+        Flags: medium devsel, IRQ 9
+        Capabilities: [68] Power Management version 2
+
+00:09.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
+        Subsystem: Realtek Semiconductor Co., Ltd. RT8139
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        I/O ports at e000 [size=256]
+        Memory at eb104000 (32-bit, non-prefetchable) [size=256]
+        Expansion ROM at <unassigned> [disabled] [size=64K]
+        Capabilities: [50] Power Management version 2
+
+00:0a.0 Multimedia video controller: Brooktree Corporation Bt878 Video
+Capture (rev 11)
+        Subsystem: Pinnacle Systems Inc. PCTV pro (TV + FM stereo
+receiver)
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        Memory at eb101000 (32-bit, prefetchable) [size=4K]
+        Capabilities: [44] Vital Product Data
+        Capabilities: [4c] Power Management version 2
+
+00:0a.1 Multimedia controller: Brooktree Corporation Bt878 Audio Capture
+(rev 11)
+        Subsystem: Pinnacle Systems Inc. PCTV pro (TV + FM stereo
+receiver, audio section)
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        Memory at eb102000 (32-bit, prefetchable) [size=4K]
+        Capabilities: [44] Vital Product Data
+        Capabilities: [4c] Power Management version 2
+
+00:0c.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+        Subsystem: VIA Technologies Inc. M-Audio Revolution 7.1
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at e400 [size=32]
+        I/O ports at e800 [size=128]
+        Capabilities: [80] Power Management version 1
+
+00:0f.0 Ethernet controller: Intel Corporation 82557/8/9 [Ethernet Pro
+100] (rev 02)
+        Subsystem: Intel Corporation EtherExpress PRO/100B (TX)
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        Memory at eb103000 (32-bit, prefetchable) [size=4K]
+        I/O ports at ec00 [size=32]
+        Memory at eb000000 (32-bit, non-prefetchable) [size=1M]
+        Expansion ROM at <unassigned> [disabled] [size=1M]
+
+00:11.0 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
+        Subsystem: NEC Corporation USB
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        Memory at eb105000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [40] Power Management version 2
+
+00:11.1 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
+        Subsystem: NEC Corporation USB
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        Memory at eb106000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [40] Power Management version 2
+
+00:11.2 USB Controller: NEC Corporation USB 2.0 (rev 02) (prog-if 20
+[EHCI])
+        Subsystem: Giga-byte Technology: Unknown device 5004
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        Memory at eb107000 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [40] Power Management version 2
+
+01:05.0 VGA compatible controller: ATI Technologies Inc Rage 128 RF/SG AGP
+(prog-if 00 [VGA])
+        Subsystem: ATI Technologies Inc Rage 128 AIW AGP
+        Flags: bus master, stepping, 66Mhz, medium devsel, latency 32, IRQ
+5
+        Memory at e4000000 (32-bit, prefetchable) [size=64M]
+        I/O ports at c000 [size=256]
+        Memory at e9000000 (32-bit, non-prefetchable) [size=16K]
+        Expansion ROM at <unassigned> [disabled] [size=128K]
+        Capabilities: [50] AGP version 2.0
+        Capabilities: [5c] Power Management version 1
+
+[root@athlon ~]#
+
+Output of 'lspci -v' END
+
+--------------------------------------------------------------------------------
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001187 Gain control for M-Audio Revolution (an...
+has duplicate       0001205 Mark M-Audio Revolution 7.1 (and probab...
+has duplicate       0001164 aoss + skype: volume_adjust: SOUND_MIXE...
 ======================================================================
 
 ----------------------------------------------------------------------
- imac - 06-17-05 19:41 
+ tiwai - 06-15-05 15:28 
 ----------------------------------------------------------------------
-As stated by tiwai, all my issues have been resolved.  ALSA rox
+No, there is no capture control at all on this board, indeed.  At least,
+the hardware spec I got tells nothing about the capture controls.  No gain
+control, no input selection.
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 18:13 
+ tiwai - 06-22-05 18:16 
 ----------------------------------------------------------------------
-OK, let's close this one.
+I checked my revo 7.1 board and confirmed that the capture is working with
+ALSA 1.0.9 (+ CVS).
+Ran simply
+    % arecord -fcd foo.wav
+and got signals from line-in and mic-in jacks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-04 17:42 norbert        New Issue                                    
-02-06-04 18:19 tiwai          Note Added: 0000196                          
-02-06-04 18:19 tiwai          Status                   new => assigned     
-02-06-04 18:19 tiwai          Assigned To               => tiwai           
-02-09-04 08:30 norbert        Note Added: 0000207                          
-03-01-04 19:20 tiwai          Note Added: 0000418                          
-03-03-04 08:04 norbert        Note Added: 0000453                          
-02-20-05 20:48 imac           Note Added: 0003676                          
-02-20-05 20:48 imac           Issue Monitored: imac                        
-02-20-05 20:57 imac           Note Added: 0003677                          
-06-09-05 10:38 norbert        Note Added: 0004978                          
-06-17-05 19:41 imac           Note Added: 0005078                          
-06-22-05 18:13 tiwai          Status                   assigned => resolved
-06-22-05 18:13 tiwai          Resolution               open => fixed       
-06-22-05 18:13 tiwai          Note Added: 0005140                          
+05-07-05 21:28 sst4           New Issue                                    
+05-07-05 22:24 sst4           Note Added: 0004607                          
+05-19-05 23:51 sst4           Note Added: 0004696                          
+05-24-05 11:56 tiwai          Note Added: 0004710                          
+05-24-05 22:01 sst4           Note Added: 0004732                          
+06-02-05 00:03 sst4           Note Added: 0004871                          
+06-15-05 15:28 tiwai          Note Added: 0005033                          
+06-16-05 14:59 perex          Relationship added       related to 0001187  
+06-22-05 01:47 rlrevell       Relationship added       has duplicate 0001205
+06-22-05 01:48 rlrevell       Relationship added       has duplicate 0001164
+06-22-05 01:49 rlrevell       Relationship replaced    has duplicate 0001187
+06-22-05 18:16 tiwai          Note Added: 0005141                          
 ======================================================================
 
 
