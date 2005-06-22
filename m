@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 21:26:55 +0200
-Message-ID: <e2bba5065b7344dbd45c8c784ca63327@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 22:24:50 +0200
+Message-ID: <4b59b62db151b720029844e211fe7887@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 183D21DE
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 21:26:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 537C2202
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 22:24:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 21:26 CEST
+Last Modified:              06-22-2005 22:24 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,16 +564,451 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-22-05 21:17 
-----------------------------------------------------------------------
-What happens if you set "Surround Jack Mode" to "Independent"?
-
-----------------------------------------------------------------------
  rraptorr - 06-22-05 21:26 
 ----------------------------------------------------------------------
 With Independent only front is working. Isn't Independent supposed to work
 with MoBo's which have separate output and input? P4P800-VM has 3 jacks
 and rear,center/lfe is shared with mic in,line in.
+
+----------------------------------------------------------------------
+ marcmerz - 06-22-05 22:24 
+----------------------------------------------------------------------
+I tried to install to confirm that Driver 1.06 is working with my setup as
+well and got this:
+
+cinemaxx:/usr/src/alsa-driver-1.0.6 # ./configure --with-debug=full
+--with-cards=intel8x0 --with-sequencer=yes
+checking for gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for ranlib... ranlib
+checking for a BSD-compatible install... /usr/bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for egrep... grep -E
+checking for ANSI C header files... yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc needs -traditional... no
+checking for current directory... /usr/src/alsa-driver-1.0.6
+checking cross compile...
+checking for directory with kernel source...
+/lib/modules/2.6.11.4-20a-smp-matrox/build
+checking for kernel version... 2.6.11.4-20a-smp-matrox
+checking for GCC version... Kernel compiler:  Used compiler: gcc (GCC)
+3.3.5 20050117 (prerelease) (SUSE Linux)
+
+*** NO PREDEFINED KERNEL COMPILER IS DETECTED
+*** Assuming the same compiler is used with the current system compiler.
+
+*** Please make sure that the same compiler version was used for building
+kernel.
+
+checking for built-in ALSA... "no"
+checking for existing ALSA module... "yes"
+checking for Red Hat kernel... "auto"
+checking for Red Hat kernel... "no"
+checking for SUSE kernel... "auto"
+checking for SUSE kernel... "yes"
+checking to modify of kernel linux/kmod.h... "no"
+checking for kernel linux/compiler.h... "yes"
+checking for kernel linux/pm.h... "yes"
+checking for kernel linux/spinlock.h... "yes"
+checking for kernel linux/irq.h... "yes"
+checking for kernel linux/threads.h... "yes"
+checking for kernel linux/rwsem.h... "yes"
+checking for kernel linux/gameport.h... "yes"
+checking for kernel linux/devfs_fs_kernel.h... "yes"
+checking for kernel linux/highmem.h... "yes"
+checking for kernel linux/workqueue.h... "yes"
+Removing a dummy linux/workqueue.h.
+checking for kernel linux/dma-mapping.h... "yes"
+Removing a dummy linux/dma-mapping.h.
+checking for kernel asm/hw_irq.h... "yes"
+checking for kernel linux/device.h... "yes"
+Removing a dummy linux/device.h.
+checking for kernel linux/jiffies.h... "yes"
+Removing a dummy linux/jiffies.h.
+checking for kernel linux/compat.h... "yes"
+Removing a dummy linux/compat.h.
+checking for kernel linux/adb.h... "yes"
+checking for kernel linux/cuda.h... "yes"
+checking for kernel linux/pmu.h... "yes"
+checking for kernel linux/moduleparam.h... "yes"
+Removing a dummy linux/moduleparam.h.
+checking for kernel linux/syscalls.h... "yes"
+Removing a dummy linux/syscalls.h.
+checking for kernel module symbol versions... "yes"
+checking for PCI support in kernel... "yes"
+checking for I2C driver in kernel... module
+checking for SGI/MIPS (HAL2) architecture... "no"
+checking for directory to store kernel modules...
+/lib/modules/2.6.11.4-20a-smp-matrox/kernel/sound
+checking for verbose printk... on
+checking for debug level... full
+checking for ISA support in kernel... "yes"
+checking for processor type... i586
+checking for i386 machine type... default
+checking for SMP... "yes"
+checking for Video device support in kernel... "yes"
+checking for ISA PnP driver in kernel... yes
+checking for PnP driver in kernel... yes
+checking for Kernel ISA-PnP support... "yes"
+checking for strlcpy... "yes"
+checking for snprintf... "yes"
+checking for scnprintf... "yes"
+checking for vmalloc_to_page... "yes"
+checking for old kmod... "no"
+checking for PDE... "yes"
+checking for pci_set_consistent_dma_mask... "yes"
+checking for tty->count is the atomic type... "no"
+checking for video_get_drvdata... "yes"
+checking for new remap_page_range... "yes"
+checking for kcalloc... "yes"
+checking for saved_config_space in pci_dev... "yes"
+Removing local linux/pnp.h.
+checking for driver version... 1.0.6
+checking for sequencer support... yes
+checking for OSS/Free emulation... yes
+checking for RTC callback support in kernel... "yes"
+checking for USB support... "yes"
+checking for kernel PCMCIA
+checking for PCMCIA support... "yes"
+checking for PC9800 support in kernel... "no"
+checking for which soundcards to compile driver for... intel8x0
+configure: creating ./config.status
+config.status: creating version
+config.status: creating Makefile.conf
+config.status: creating snddevices
+config.status: creating utils/alsa-driver.spec
+config.status: creating utils/buildrpm
+config.status: creating toplevel.config
+config.status: creating utils/alsasound
+config.status: creating utils/alsasound.posix
+config.status: creating include/config.h
+config.status: creating include/config1.h
+config.status: creating include/version.h
+config.status: include/version.h is unchanged
+config.status: creating include/autoconf-extra.h
+Hacking autoconf.h...
+
+
+So ./configure went ok but then:
+
+
+cinemaxx:/usr/src/alsa-driver-1.0.6 # make
+if [ ! -d include/sound -a ! -L include/sound ]; then \
+  ln -sf ../alsa-kernel/include include/sound ; \
+fi
+cp -auvf include/version.h include/sound/version.h
+`include/version.h' -> `include/sound/version.h'
+make dep
+make[1]: Entering directory `/usr/src/alsa-driver-1.0.6'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/acore'
+copying file alsa-kernel/core/info.c
+patching file info.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6 succeeded at 495
+(offset 1 line).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7 succeeded at 508
+(offset 1 line).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8 succeeded at 923
+(offset 1 line).
+copying file alsa-kernel/core/pcm_native.c
+patching file pcm_native.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 2735
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 2755
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 succeeded at 2808
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5 succeeded at 2835
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6 succeeded at 2922
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7 succeeded at 2951
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8 succeeded at 2980
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9 succeeded at 3009
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 succeeded at 3038
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=11 succeeded at 3061
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=12 succeeded at 3079
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13 succeeded at 3099
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 succeeded at 3115
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=15 succeeded at 3151
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=16 succeeded at 3163
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=17 succeeded at 3201
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=18 succeeded at 3350
+(offset 6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=19 succeeded at 3366
+(offset 6 lines).
+copying file alsa-kernel/core/control.c
+patching file control.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 1237
+(offset 309 lines).
+copying file alsa-kernel/core/hwdep.c
+patching file hwdep.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 321
+(offset 29 lines).
+copying file alsa-kernel/core/init.c
+patching file init.c
+copying file alsa-kernel/core/rawmidi.c
+patching file rawmidi.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 1338
+(offset 22 lines).
+copying file alsa-kernel/core/sound.c
+patching file sound.c
+copying file alsa-kernel/core/timer.c
+patching file timer.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 996
+(offset 27 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 1809
+(offset 76 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 1837
+(offset 56 lines).
+copying file alsa-kernel/core/memalloc.c
+patching file memalloc.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 95
+(offset 3 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 148
+(offset 3 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 succeeded at 211
+with fuzz 2 (offset 3 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5 succeeded at 725
+(offset -178 lines).
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/acore/oss'
+copying file alsa-kernel/core/oss/mixer_oss.c
+patching file mixer_oss.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 390
+(offset 14 lines).
+copying file alsa-kernel/core/oss/pcm_oss.c
+patching file pcm_oss.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 2228
+(offset 15 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 2406
+(offset 15 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 2533
+(offset 15 lines).
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/acore/oss'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/acore/seq'
+copying file alsa-kernel/core/seq/seq.c
+patching file seq.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 51
+with fuzz 2 (offset 2 lines).
+copying file alsa-kernel/core/seq/seq_clientmgr.c
+patching file seq_clientmgr.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 2500
+(offset 45 lines).
+copying file alsa-kernel/core/seq/seq_memory.c
+patching file seq_memory.c
+make[4]: Entering directory `/usr/src/alsa-driver-1.0.6/acore/seq/instr'
+make[4]: Leaving directory `/usr/src/alsa-driver-1.0.6/acore/seq/instr'
+make[4]: Entering directory `/usr/src/alsa-driver-1.0.6/acore/seq/oss'
+copying file alsa-kernel/core/seq/oss/seq_oss.c
+patching file seq_oss.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 203
+(offset 9 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 312
+(offset 9 lines).
+make[4]: Leaving directory `/usr/src/alsa-driver-1.0.6/acore/seq/oss'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/acore/seq'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/acore'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/i2c'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/i2c/other'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/i2c/other'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/i2c'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/drivers'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/drivers/opl3'
+copying file alsa-kernel/drivers/opl3/opl3_lib.c
+patching file opl3_lib.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 succeeded at 414
+(offset -2 lines).
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/drivers/opl3'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/drivers/opl4'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/drivers/opl4'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/drivers/mpu401'
+copying file alsa-kernel/drivers/mpu401/mpu401.c
+patching file mpu401.c
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/drivers/mpu401'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/drivers/vx'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/drivers/vx'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/drivers'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/isa'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/msnd'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/msnd'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/ad1816a'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/ad1816a'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/ad1848'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/ad1848'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/cs423x'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/cs423x'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/es1688'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/es1688'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/gus'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/gus'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/opti9xx'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/opti9xx'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/sb'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/sb'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/isa/wavefront'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa/wavefront'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/isa'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/synth'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/synth/emux'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/synth/emux'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/synth'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/pci'
+copying file alsa-kernel/pci/intel8x0.c
+patching file intel8x0.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 762
+(offset 13 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 773
+(offset 13 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 succeeded at 2841
+(offset 28 lines).
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/pdplus'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/pdplus'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/azx'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/azx'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/ac97'
+copying file alsa-kernel/pci/ac97/ac97_proc.c
+patching file ac97_proc.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 322
+with fuzz 1.
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 succeeded at 341
+with fuzz 1 (offset 2 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5 succeeded at 398
+(offset 2 lines).
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/ac97'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/ali5451'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/ali5451'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/au88x0'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/au88x0'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/cs46xx'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/cs46xx'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/emu10k1'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/emu10k1'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/ice1712'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/ice1712'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/korg1212'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/korg1212'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/mixart'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/mixart'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/nm256'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/nm256'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/rme9652'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/rme9652'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/trident'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/trident'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/ymfpci'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/ymfpci'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pci/vx222'
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci/vx222'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/pci'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/usb'
+copying file alsa-kernel/usb/usbaudio.c
+patching file usbaudio.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 68
+(offset -1 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 1912
+(offset 16 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 succeeded at 1929
+(offset 16 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5 succeeded at 3222
+(offset 109 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6 succeeded at 3243
+(offset 109 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7 succeeded at 3265
+(offset 109 lines).
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/usb/usx2y'
+copying file alsa-kernel/usb/usx2y/usbusx2y.c
+patching file usbusx2y.c
+copying file alsa-kernel/usb/usx2y/usX2Yhwdep.c
+patching file usX2Yhwdep.c
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/usb/usx2y'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/usb'
+make[2]: Entering directory `/usr/src/alsa-driver-1.0.6/pcmcia'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pcmcia/vx'
+copying file alsa-kernel/pcmcia/vx/vxpocket.c
+patching file vxpocket.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 69
+with fuzz 1 (offset -4 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 176
+(offset -5 lines).
+copying file alsa-kernel/pcmcia/vx/vx_entry.c
+patching file vx_entry.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 151
+(offset 4 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 234
+(offset 4 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 succeeded at 333
+(offset 4 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5 succeeded at 387
+(offset 4 lines).
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pcmcia/vx'
+make[3]: Entering directory `/usr/src/alsa-driver-1.0.6/pcmcia/pdaudiocf'
+copying file alsa-kernel/pcmcia/pdaudiocf/pdaudiocf.c
+patching file pdaudiocf.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 succeeded at 29
+with fuzz 1.
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 succeeded at 59
+with fuzz 1 (offset -3 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 succeeded at 81
+(offset -3 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5 succeeded at 193
+(offset -3 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6 succeeded at 280
+(offset -6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7 succeeded at 378
+(offset -6 lines).
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8 succeeded at 449
+(offset -6 lines).
+make[3]: Leaving directory `/usr/src/alsa-driver-1.0.6/pcmcia/pdaudiocf'
+make[2]: Leaving directory `/usr/src/alsa-driver-1.0.6/pcmcia'
+make[1]: Leaving directory `/usr/src/alsa-driver-1.0.6'
+make -C /lib/modules/2.6.11.4-20a-smp-matrox/build
+SUBDIRS=/usr/src/alsa-driver-1.0.6/kbuild  modules
+make[1]: Entering directory `/usr/src/linux-2.6.11.4-20a'
+
+WARNING: Symbol version dump /usr/src/linux-2.6.11.4-20a/Module.symvers is
+ missing; modules will have no modversions.
+
+  CC [M]  /usr/src/alsa-driver-1.0.6/kbuild/../acore/memalloc.o
+/usr/src/alsa-driver-1.0.6/acore/memalloc.c:54: error: initializer element
+is not constant
+/usr/src/alsa-driver-1.0.6/acore/memalloc.c:54: error: (near
+initialization for `__param_arr_enable.num')
+make[3]: *** [/usr/src/alsa-driver-1.0.6/kbuild/../acore/memalloc.o] Error
+1
+make[2]: *** [/usr/src/alsa-driver-1.0.6/kbuild/../acore] Error 2
+make[1]: *** [_module_/usr/src/alsa-driver-1.0.6/kbuild] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.11.4-20a'
+make: *** [compile] Error 2
+
+
+Therefore for the moment i can not test with Alsa Driver 1.06 (got the
+tarball from the alsa-project homepage.
+
+@rlrevell
+I can confirm that with setting "Surround Jack Mode" to "Independent" i
+have only front speaker working, too. It is like rraptorr said, the
+P4P800-VM does only have 3 jacks and in 6-channel mode the rear,center/lfe
+is shared with mic in,line in.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -612,6 +1047,7 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 21:17 rlrevell       Note Added: 0005150                          
 06-22-05 21:18 marcmerz       File Added: codec97-marcmerz                    
 06-22-05 21:26 rraptorr       Note Added: 0005151                          
+06-22-05 22:24 marcmerz       Note Added: 0005152                          
 ======================================================================
 
 
