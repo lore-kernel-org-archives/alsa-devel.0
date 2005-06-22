@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
-Date: Wed, 22 Jun 2005 10:19:23 +0200
-Message-ID: <54d59e1a2438e57809c77757fcfc4805@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Wed, 22 Jun 2005 11:01:26 +0200
+Message-ID: <64670cb5f0a2ebc7434500402dd952f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1D40135
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 10:19:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE295205
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 11:01:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,146 +22,107 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                herby
-Assigned To:                
+Reported By:                mr-k
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1174
-Category:                   speakertest
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   761
+Category:                   1_OTHERS
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-09-2005 00:42 CEST
-Last Modified:              06-22-2005 10:19 CEST
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              06-22-2005 11:01 CEST
 ======================================================================
-Summary:                    Speaker Test fails with error message(s) from alsa
-lib.  "problem for start_threshold"
+Summary:                    Driver and all sound aplications hangs
 Description: 
-Running speaker test gets me:
->>>
-speaker-test 0.0.8
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
 
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 32768
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3764
-was set buffer_size = 15052
-ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
-params->avail_min problem for start_threshold
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
-<<<
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 06-15-05 14:27 
+ mr-k - 06-21-05 23:04 
 ----------------------------------------------------------------------
-I have this problem too.  1.0.8 worked fine.  1.0.9 prints an error
-message
-
-    Setting of swparams failed: Invalid argument
-
-and cycles back to "Rate set to 48000Hz (requested 48000Hz)" in an
-infinite loop, without ever producing any sound.
-
-Note too that speaker-test 1.0.9 prints its version number as "0.0.8".
-
---------------------
-Test with ALSA 1.0.8
---------------------
-
-$ speaker-test
-
-speaker-test 1.0.8
-
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Sine wave rate is 440.0000Hz
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 32768
-Period size range from 16 to 1024
-Buffer time size 2525
-To choose buffer_size = 2520
-To choose period_size = 315
-was set period_size = 256
-was set buffer_size = 2520
-  - Front Left
-... with tones playing
+Well, i think that this bug can be closed, everything is fine now. But if u
+want 
+I can make some tests..
 
 
---------------------
-Test with ALSA 1.0.9
---------------------
-
-$ speaker-test
-
-speaker-test 0.0.8
-
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 32768
-Period size range from 16 to 1024
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 1024
-was set buffer_size = 15052
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 32768
-Period size range from 16 to 1024
-Periods = 4
-... ad infinitum
-
-
-jdthood@thanatos:~$ dpkg -l alsa-\* libasound\* | grep ^ii
-ii  alsa-base      1.0.9b-2~5     ALSA driver configuration files
-ii  alsa-modules-2 1.0.9+1        ALSA modules for kernel 2.4.27-2-686
-ii  alsa-source    1.0.9b-2~5     ALSA driver sources
-ii  alsa-utils     1.0.9a-2       ALSA utilities
-ii  libasound2     1.0.9-2        ALSA library
-ii  libasound2-doc 1.0.9-2        ALSA library developer documentation
-jdthood@thanatos:~$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun 15 2005 for kernel 2.6.11.
-jdthood@thanatos:~$ cat /proc/asound/cards
-0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
-                     Sound Fusion CS46xx at 0x50100000/0x50000000, irq 11
 
 ----------------------------------------------------------------------
- herby - 06-22-05 10:19 
+ tiwai - 06-22-05 11:01 
 ----------------------------------------------------------------------
-I've seen recent notes on the frequency range for speaker test (nice to
-have a wide range of things).  Has anyone tried the latest version(s) to
-see if this bug pops its head up.  I've got other programs that appear to
-exhibit this (or a similar) error, but I feel that a standard program is a
-better example.  If you need more information, PLEASE let me know!
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 00:42 herby          New Issue                                    
-06-13-05 19:49 herby          Issue Monitored: herby                       
-06-13-05 19:55 herby          Note Added: 0005013                          
-06-15-05 14:27 jdthood        Note Added: 0005024                          
-06-22-05 10:19 herby          Note Added: 0005120                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-11-05 22:11 mr-k           Note Added: 0003158                          
+01-11-05 22:12 mr-k           File Added: alsa.log                         
+01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-16-05 15:38 mr-k           Note Added: 0003218                          
+02-09-05 21:45 mr-k           Note Edited: 0003173                         
+02-09-05 21:46 mr-k           Note Edited: 0003123                         
+03-10-05 16:46 mr-k           Note Added: 0003868                          
+03-10-05 16:47 mr-k           Note Edited: 0003868                         
+03-20-05 22:53 bendis         Issue Monitored: bendis                      
+03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
+03-22-05 17:59 mr-k           Note Added: 0004126                          
+03-30-05 18:27 tiwai          Note Added: 0004269                          
+03-30-05 19:06 mr-k           Note Added: 0004270                          
+03-30-05 19:19 tiwai          Note Added: 0004271                          
+03-31-05 00:36 mr-k           Note Added: 0004276                          
+03-31-05 00:36 mr-k           File Added: alsa-sysrq                       
+04-02-05 21:50 mr-k           Note Added: 0004300                          
+05-25-05 23:10 mr-k           Note Added: 0004737                          
+05-25-05 23:11 mr-k           Note Edited: 0004737                         
+05-31-05 13:06 tiwai          Note Added: 0004829                          
+05-31-05 13:06 tiwai          File Added: pcm-drain-lock-fix.diff               
+    
+05-31-05 15:43 bendis         Note Added: 0004832                          
+06-01-05 15:50 mr-k           Note Added: 0004858                          
+06-21-05 16:41 mr-k           Note Added: 0005112                          
+06-21-05 23:04 mr-k           Note Edited: 0005112                         
+06-22-05 11:01 tiwai          Status                   new => resolved     
+06-22-05 11:01 tiwai          Resolution               open => fixed       
+06-22-05 11:01 tiwai          Assigned To               => tiwai           
+06-22-05 11:01 tiwai          Note Added: 0005121                          
 ======================================================================
 
 
