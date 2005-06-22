@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 12:48:47 +0200
-Message-ID: <63261be27416400be53f50475729b36c@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 12:51:32 +0200
+Message-ID: <a0be26df33c42fb1344f0c7f33f4d692@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 777A51D4
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 12:48:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59922205
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 12:51:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 12:48 CEST
+Last Modified:              06-22-2005 12:51 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,11 +564,6 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 12:44 
-----------------------------------------------------------------------
-Then why not try to instal 1.0.8 for testing?
-
-----------------------------------------------------------------------
  tiwai - 06-22-05 12:48 
 ----------------------------------------------------------------------
 Let me rephrase:  You can still install 1.0.8 alsa-driver with the recent
@@ -578,6 +573,29 @@ You can keep alsa-lib and alsa-utils 1.0.9 with the old drivers.
 So, just get alsa-driver-1.0.8 tarball, and configure with
 --with-debug=full --with-cards=intel8x0, and install it.  Then dump the
 ac97 proc files on that system.
+
+----------------------------------------------------------------------
+ marcmerz - 06-22-05 12:51 
+----------------------------------------------------------------------
+Do you read what i write or is my english not good enough?
+
+1.08 does have the same symptons i described in my bug report, i.e. no
+center in DD5.1 and LFE from front left speaker. Therefore i installed
+1.09b from sources to see whether it helps. I realized that it does not
+make any difference and subscribed to the alsa-user ML from where i got
+directed to the BTS.
+
+Of course i can try to deinstall 1.09b trying to reactivate 1.08 in Suse
+9.3 (which is a pain because i have to remove ALSA completely i guess
+ignoring all dependencies in YasT with the risk to get a completely
+instable 9.3 installation).
+
+If you think you have an advantage when seeing the (non-working) dump from
+/proc/asound/card0/codec97#0/* files in version 1.08, ok.
+
+But i am a bit reluctant to go back to 1.08 because of the complexity of
+dependencies in Suse 9.3 concerning ALSA (to get it right i guess i have
+to remove ALSA completely and install it back from the CD's with YasT).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -598,6 +616,7 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 12:37 marcmerz       Note Added: 0005127                          
 06-22-05 12:44 tiwai          Note Added: 0005128                          
 06-22-05 12:48 tiwai          Note Added: 0005129                          
+06-22-05 12:51 marcmerz       Note Added: 0005130                          
 ======================================================================
 
 
