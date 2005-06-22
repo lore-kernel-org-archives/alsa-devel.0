@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 12:37:59 +0200
-Message-ID: <040534655c4a06aa6f1573d28f31f336@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 12:44:03 +0200
+Message-ID: <28b1d7b9db21a028d42d054d5052f6da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B03F205
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 12:38:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3241205
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 12:44:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 12:37 CEST
+Last Modified:              06-22-2005 12:44 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,12 +564,6 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 11:53 
-----------------------------------------------------------------------
-Also, I don't understand which file is the well-working (as of 1.0.5) and
-which one is badly-working (as of 1.0.9)...
-
-----------------------------------------------------------------------
  marcmerz - 06-22-05 12:37 
 ----------------------------------------------------------------------
 Like i said, i do not have a working ALSA version (i.e. 1.04/1.05 with Suse
@@ -584,6 +578,11 @@ not have a dump with version 1.08.
 
 I can only upload those files (as in note 0005116) later during the day
 when i get back home.
+
+----------------------------------------------------------------------
+ tiwai - 06-22-05 12:44 
+----------------------------------------------------------------------
+Then why not try to instal 1.0.8 for testing?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -602,6 +601,7 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 11:49 tiwai          Note Added: 0005124                          
 06-22-05 11:53 tiwai          Note Added: 0005125                          
 06-22-05 12:37 marcmerz       Note Added: 0005127                          
+06-22-05 12:44 tiwai          Note Added: 0005128                          
 ======================================================================
 
 
