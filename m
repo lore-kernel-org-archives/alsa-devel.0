@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 21:18:00 +0200
-Message-ID: <edb7aac23a89dc8b021b1720314ddf35@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 21:26:55 +0200
+Message-ID: <e2bba5065b7344dbd45c8c784ca63327@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CF2E205
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 21:18:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 183D21DE
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 21:26:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 21:17 CEST
+Last Modified:              06-22-2005 21:26 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,37 +564,16 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- marcmerz - 06-22-05 21:13 
-----------------------------------------------------------------------
-After getting /dev/dsp back (see my former note) i did the test again and
-attached both files.
-
-@rraptorr
-Thx for confirming my problems.
-
-cinemaxx:/proc/asound/card0/codec97#0 # lsmod|grep snd
-snd_seq_oss            39552  0
-snd_seq_midi_event     12032  1 snd_seq_oss
-snd_seq                61840  4 snd_seq_oss,snd_seq_midi_event
-snd_seq_device         13068  2 snd_seq_oss,snd_seq
-snd_pcm_oss            64928  0
-snd_mixer_oss          24192  1 snd_pcm_oss
-snd_intel8x0           35008  2
-snd_ac97_codec         76920  1 snd_intel8x0
-snd_pcm               107780  3 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
-snd_timer              29700  2 snd_seq,snd_pcm
-snd                    66820  11
-snd_seq_oss,snd_seq_midi_event,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-soundcore              14048  1 snd
-snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
-
-Rgds,
-Marcus
-
-----------------------------------------------------------------------
  rlrevell - 06-22-05 21:17 
 ----------------------------------------------------------------------
 What happens if you set "Surround Jack Mode" to "Independent"?
+
+----------------------------------------------------------------------
+ rraptorr - 06-22-05 21:26 
+----------------------------------------------------------------------
+With Independent only front is working. Isn't Independent supposed to work
+with MoBo's which have separate output and input? P4P800-VM has 3 jacks
+and rear,center/lfe is shared with mic in,line in.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -631,6 +610,8 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 21:06 marcmerz       Note Edited: 0005146                         
 06-22-05 21:13 marcmerz       Note Added: 0005149                          
 06-22-05 21:17 rlrevell       Note Added: 0005150                          
+06-22-05 21:18 marcmerz       File Added: codec97-marcmerz                    
+06-22-05 21:26 rraptorr       Note Added: 0005151                          
 ======================================================================
 
 
