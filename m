@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 12:51:32 +0200
-Message-ID: <a0be26df33c42fb1344f0c7f33f4d692@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 12:55:30 +0200
+Message-ID: <915a3e8f3b624942a718d22dce5d92ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59922205
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 12:51:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8C47205
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 12:55:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 12:51 CEST
+Last Modified:              06-22-2005 12:55 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,17 +564,6 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 12:48 
-----------------------------------------------------------------------
-Let me rephrase:  You can still install 1.0.8 alsa-driver with the recent
-kernel, too.  Some drivers like usb might not, but intel8x0 should be OK. 
-You can keep alsa-lib and alsa-utils 1.0.9 with the old drivers.
-
-So, just get alsa-driver-1.0.8 tarball, and configure with
---with-debug=full --with-cards=intel8x0, and install it.  Then dump the
-ac97 proc files on that system.
-
-----------------------------------------------------------------------
  marcmerz - 06-22-05 12:51 
 ----------------------------------------------------------------------
 Do you read what i write or is my english not good enough?
@@ -597,6 +586,15 @@ But i am a bit reluctant to go back to 1.08 because of the complexity of
 dependencies in Suse 9.3 concerning ALSA (to get it right i guess i have
 to remove ALSA completely and install it back from the CD's with YasT).
 
+----------------------------------------------------------------------
+ marcmerz - 06-22-05 12:55 
+----------------------------------------------------------------------
+Ok, you were faster than i (my note 0005130 was written before i read your
+note 0005129).
+
+I will try to get the driver-1.08 tarball and without deinstalling ALSA
+just install it like you described and dump the files.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -617,6 +615,7 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 12:44 tiwai          Note Added: 0005128                          
 06-22-05 12:48 tiwai          Note Added: 0005129                          
 06-22-05 12:51 marcmerz       Note Added: 0005130                          
+06-22-05 12:55 marcmerz       Note Added: 0005131                          
 ======================================================================
 
 
