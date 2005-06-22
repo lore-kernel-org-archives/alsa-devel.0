@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 22:24:50 +0200
-Message-ID: <4b59b62db151b720029844e211fe7887@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 22:32:34 +0200
+Message-ID: <6d07f631910c04019ef0b93b4c02423a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 537C2202
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 22:24:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C7BC1E4
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 22:32:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 22:24 CEST
+Last Modified:              06-22-2005 22:32 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,13 +564,6 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- rraptorr - 06-22-05 21:26 
-----------------------------------------------------------------------
-With Independent only front is working. Isn't Independent supposed to work
-with MoBo's which have separate output and input? P4P800-VM has 3 jacks
-and rear,center/lfe is shared with mic in,line in.
-
-----------------------------------------------------------------------
  marcmerz - 06-22-05 22:24 
 ----------------------------------------------------------------------
 I tried to install to confirm that Driver 1.06 is working with my setup as
@@ -1010,6 +1003,13 @@ have only front speaker working, too. It is like rraptorr said, the
 P4P800-VM does only have 3 jacks and in 6-channel mode the rear,center/lfe
 is shared with mic in,line in.
 
+----------------------------------------------------------------------
+ rraptorr - 06-22-05 22:32 
+----------------------------------------------------------------------
+Alsa-driver 1.0.6 is not working with recent kernels. I've altered it a
+bit, to make it compile and work, but this isn't good solution (by altered
+I mean commented out some code:)).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -1048,6 +1048,7 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 21:18 marcmerz       File Added: codec97-marcmerz                    
 06-22-05 21:26 rraptorr       Note Added: 0005151                          
 06-22-05 22:24 marcmerz       Note Added: 0005152                          
+06-22-05 22:32 rraptorr       Note Added: 0005153                          
 ======================================================================
 
 
