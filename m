@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001096]: no capture with M-Audio Revolution 7.1
-Date: Thu, 23 Jun 2005 00:21:45 +0200
-Message-ID: <9e1286bdd1c1c3764e927a7cf157d420@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 00:32:04 +0200
+Message-ID: <b5bd9d8d4b0bc3feef36a0a523254f54@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A13701F8
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 00:21:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93329202
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 00:32:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-07-2005 21:28 CEST
-Last Modified:              06-23-2005 00:21 CEST
+Last Modified:              06-23-2005 00:32 CEST
 ======================================================================
 Summary:                    no capture with M-Audio Revolution 7.1
 Description: 
@@ -334,12 +334,6 @@ has duplicate       0001164 aoss + skype: volume_adjust: SOUND_MIXE...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-23-05 00:07 
-----------------------------------------------------------------------
-I'm still confused.  Are you or are you not able to capture the mic with
-"arecord file.wav"?
-
-----------------------------------------------------------------------
  sst4 - 06-23-05 00:21 
 ----------------------------------------------------------------------
 (I'm guessing that 'rlrevell' is Lee Revell)
@@ -371,6 +365,22 @@ the way it used to be with SB Live 5.1.
 Thanks,
   Sergei.
 
+----------------------------------------------------------------------
+ rlrevell - 06-23-05 00:32 
+----------------------------------------------------------------------
+We cannot help you if you are not willing to try the steps we recommend to
+debug the problem.  Please do not second-guess the ALSA developers, we
+know what we are doing.
+
+What you want is to monitor the captured signal via your headphones. 
+Since that does not seem to work, we need to test "arecord" in order to
+determine whether there is anything appearing on the inputs at all.
+
+For example, some cards do not have an internal connection from the input
+to the output, so would require the input to be copied to the output in
+software to do any monitoring.  Or maybe the device just requires some
+bits to be set in order to enable monitoring via the headphones.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -389,6 +399,7 @@ Date Modified  Username       Field                    Change
 06-22-05 23:28 sst4           Note Added: 0005155                          
 06-23-05 00:07 rlrevell       Note Added: 0005156                          
 06-23-05 00:21 sst4           Note Added: 0005157                          
+06-23-05 00:32 rlrevell       Note Added: 0005158                          
 ======================================================================
 
 
