@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001207]: Cannot control front panel audio with PCM slider
-Date: Wed, 22 Jun 2005 18:58:36 +0200
-Message-ID: <1d5c72057c579e1fabbb6ed46d3402ee@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
+Date: Wed, 22 Jun 2005 19:01:13 +0200
+Message-ID: <4331e318bededc3e9816dc76c425c371@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DF841F8
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 18:58:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B5FB1F8
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 19:01:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1207> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
 ======================================================================
-Reported By:                jbrsubscribe
-Assigned To:                tiwai
+Reported By:                Xero
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1207
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   1184
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE
-Kernel Version:             2.6.11.4-21.7-smp (SMP)
+Status:                     new
 ======================================================================
-Date Submitted:             06-22-2005 18:58 CEST
-Last Modified:              06-22-2005 18:58 CEST
+Date Submitted:             06-11-2005 21:14 CEST
+Last Modified:              06-22-2005 19:01 CEST
 ======================================================================
-Summary:                    Cannot control front panel audio with PCM slider
+Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
-I am running an ASUS P5AD2-E Premium motherboard with the hda-intel/CMI9880
-audio card with alsa driver 1.0.9a installed. This board has a Front Panel
-Audio Connector (10-1 AAFP) which connects to an audio i/o module on the
-front of the system case.
-None of the mixers on the system are able to control the volume on the
-front panel connector. I have used alsamixer, KAMix, Kmix, QAMix and gamix
-- all with the same result. The volume on the Front panel connector seem
-to be set to the maximum and I have not yet found a way by which it can be
-controlled.
+When playing a song in beep sometimes it'll pop up a "couldn't open audio"
+box as if the device is in use. This is using dmix, however, so that
+seemed a bit weird. I normally have to close and reopen beep to resolve
+this. I believe xmms does the same thing because I've read about people
+having the exact same issue with xmms.
 
+This starts showing up when I start pressing play again:
+
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+
+
+However one thing which I've never seen mentioned in the previous reports,
+is that when trying to use another app through dmix it doesn't work
+either. Here's what mplayer says, when trying to play a video:
+
+alsa-init: 1 soundcard found, using: default
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+alsa-init: playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+
+so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
+closed beep, all other applications started working properly again, and
+when I start it back up again, it works fine again too, until it does this
+again. It seems to do it sporadically so it's somewhat hard to test for.
+
+Attached is my asoundrc.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-22-05 18:22 
+----------------------------------------------------------------------
+Weird...  Could you check whether these socket files still exist if this
+happens?  Also, check which process opens /dev/snd/pcmC0D0p (e.g. via
+fuser or lsof).
+
+----------------------------------------------------------------------
+ Xero - 06-22-05 19:01 
+----------------------------------------------------------------------
+I know for a fact the socket still exists after this happens, infact it
+usually ends up leaving a bunch of sockets because when it does happen
+they don't seem to get deleted. I will check which process opens it as
+soon as I get a chance, probably later today.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-05 18:58 jbrsubscribe   New Issue                                    
-06-22-05 18:58 jbrsubscribe   Distribution              => SuSE            
-06-22-05 18:58 jbrsubscribe   Kernel Version            => 2.6.11.4-21.7-smp
-(SMP)
+06-11-05 21:14 Xero           New Issue                                    
+06-11-05 21:14 Xero           File Added: asoundrc                         
+06-11-05 21:14 Xero           Note Added: 0004994                          
+06-15-05 15:03 tiwai          Note Added: 0005030                          
+06-15-05 22:31 Xero           Note Added: 0005046                          
+06-15-05 23:55 Xero           Note Added: 0005049                          
+06-22-05 18:22 tiwai          Note Added: 0005142                          
+06-22-05 19:01 Xero           Note Added: 0005144                          
 ======================================================================
 
 
