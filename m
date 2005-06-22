@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 11:49:40 +0200
-Message-ID: <68eb12fc926a24848e70ee6903afcf01@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 11:53:36 +0200
+Message-ID: <169492ac75e9ef800e2da861b5fc6e6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCC80205
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 11:49:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B501205
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 11:53:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 11:49 CEST
+Last Modified:              06-22-2005 11:53 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,20 +564,15 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-22-05 10:04 
-----------------------------------------------------------------------
-I don't think this is same bug as jcdutton has. IIRC it was problem with
-nForce motherboard + ALC650 codec, but this is intel8x0 with Analog
-Devices AD1980.
-I think, there can be bug in AD1980 code (there was change in mixer).
-
-There was some corection for AD1958
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_patch.c?r1=1.83&r2=1.84
-
-----------------------------------------------------------------------
  tiwai - 06-22-05 11:49 
 ----------------------------------------------------------------------
 Could you upload the files instead of pasting here?
+
+----------------------------------------------------------------------
+ tiwai - 06-22-05 11:53 
+----------------------------------------------------------------------
+Also, I don't understand which file is the well-working (as of 1.0.5) and
+which one is badly-working (as of 1.0.9)...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -594,6 +589,7 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 01:43 rlrevell       Note Added: 0005117                          
 06-22-05 10:04 pzad           Note Added: 0005119                          
 06-22-05 11:49 tiwai          Note Added: 0005124                          
+06-22-05 11:53 tiwai          Note Added: 0005125                          
 ======================================================================
 
 
