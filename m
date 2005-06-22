@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 21:13:43 +0200
-Message-ID: <04e1e9a12ad5a4b57a7b36d061a78cad@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 21:18:00 +0200
+Message-ID: <edb7aac23a89dc8b021b1720314ddf35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49CD0205
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 21:13:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CF2E205
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 21:18:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 21:13 CEST
+Last Modified:              06-22-2005 21:17 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,23 +564,6 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- rraptorr - 06-22-05 20:35 
-----------------------------------------------------------------------
-OK, I've got same problem here (same MoBo Asus P4P800-VM). With alsa-driver
-1.0.9b there is no sound from center/lfe. I was trying older versions and
-I've found which version break this. Everything is working fine with 1.0.6
-but not with 1.0.7. Kernel version 2.6.12.
-
-Proc files from 1.0.6, 1.0.7 and 1.0.9b attached.
-
-Also I've noticed that starting from 1.0.7 not only center/lfe is not
-playing. But rear is coming from the jack normally used by center/lfe (as
-in MoBo manual, and in 1.0.6). So it seems that center/lfe is swapped with
-rear, but still there is no center/lfe on either jack.
-
-
-
-----------------------------------------------------------------------
  marcmerz - 06-22-05 21:13 
 ----------------------------------------------------------------------
 After getting /dev/dsp back (see my former note) i did the test again and
@@ -607,6 +590,11 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 
 Rgds,
 Marcus
+
+----------------------------------------------------------------------
+ rlrevell - 06-22-05 21:17 
+----------------------------------------------------------------------
+What happens if you set "Surround Jack Mode" to "Independent"?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -642,6 +630,7 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 20:50 rraptorr       Issue Monitored: rraptorr                    
 06-22-05 21:06 marcmerz       Note Edited: 0005146                         
 06-22-05 21:13 marcmerz       Note Added: 0005149                          
+06-22-05 21:17 rlrevell       Note Added: 0005150                          
 ======================================================================
 
 
