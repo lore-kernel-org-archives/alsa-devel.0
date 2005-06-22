@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: Volume Peak display
-Date: Wed, 22 Jun 2005 22:21:13 +0800
-Message-ID: <42B973D9.3090001@netvigator.com>
-References: <1064034672.10497.7.camel@localhost>	<s5hfzinr34z.wl@alsa2.suse.de>	<1064414023.1630.11.camel@localhost>	<s5hisnikuw5.wl@alsa2.suse.de>	<42B7D919.8020400@netvigator.com> <s5h1x6wov8m.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
+Date: Wed, 22 Jun 2005 16:32:57 +0200
+Message-ID: <b8e700ca12bcc8845861d9eae6be9695@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1x6wov8m.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E0AE1FD
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 16:32:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,93 +18,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 21 Jun 2005 17:08:41 +0800,
-> Raymond wrote:
-> 
- >>static snd_kcontrol_new_t vortex_levels_kcontrol __devinitdata = {
- >>	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- >>	.name = "EQ Peaks",
- >>	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
- >>	.info = snd_vortex_peaks_info,
- >>	.get = snd_vortex_peaks_get,
- >>};
- >>
- >>Refer to Alien's png
- >>
- >>http://article.gmane.org/gmane.linux.alsa.devel/23112
- >>
- >>There are 4 sliders marked as "EQ peaks" in alsamixer (1.0.9a) , the
- >>first two are stereo and the last two are mono.
- >>
- >>The 4 EQ peaks sliders in alsamixer can be adjusted and it is strange
- >>that alsamixer do not get "segfault" when ".put" has not been
- >>implemented in au88x0.
- >
- >
- > It shouldn't segfault but be simply ignored.
- >
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
+======================================================================
+Reported By:                ahessling
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1058
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11.6
+======================================================================
+Date Submitted:             04-16-2005 16:37 CEST
+Last Modified:              06-22-2005 16:32 CEST
+======================================================================
+Summary:                    CMI9880 sometimes produces distorted sound
+Description: 
+I am using the CVS version of alsa-kernel from a few days and because of
+the soundchip CMI9880, I have to activate Intel HDA in the kernel.
+Sound is working quite fine in stereo mode, but if I want to play a DVD
+with 5.1 sound, all speakers are activated but the sound is a little bit
+distorted.
+xine uses plug:surround51:0 as the surround device.
 
-# amixer cget numid=12 numid=12,iface=MIXER,name='EQ Peaks'
-   ; type=INTEGER,access=r----,values=20,min=0,max=32767,step=0
-   : values=1,1,0,1,0,0,0,1,0,0,1,1,0,0,0,1,0,1,0,0
+My asound.conf looks like this:
+pcm.!default {
+type plug
+slave.pcm "svol"
+}
 
-# amixer cset numid=12 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19
-amixer: Control default element write error: Operation not permitted
+pcm.svol {
+type softvol
+slave.pcm "hw:0,0"
+control {
+name "PCM Playback Volume"
+}
+}
 
-> 
->>The following error only appear with compile with option --with-debug=full
->>
->>Vortex: init.... <3>ALSA control.c:325: control 3:0:0:Playback PCM
->>advanced processing:0 is already present
->>done.
->>
->>It seem that this HRTF kcontrols with 6 values cannot be created.
->>
->>Does it mean that kcontrols ( not enumerated ) cannot contains more than
->>2 values ?
-> 
-> 
-> They can.  The above split of channels is just a matter of mixer
-> abstraction layer and alsamixer.  In the control API level, everyhing
-> is fine.
-> 
+I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
+Again, stereo sound works fine and also dmix does its work, but this time
+I only get stereo sound in xine although the same configuration of xine is
+used.
 
-The first HRTF kcontrol fail in snd_ctl_add() (there are 16 HRTF 
-controls and each contain 6 values).
+I also noticed that playing some files using aplay produces the same
+distortions, e.g.:
 
-Is the error cause by numid or duplicate name ?
+aplay /usr/share/sounds/k3b_success1.wav
+Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
+8000 Hz, Mono
 
+Seems to have to do something with sample rate.
+Using the other asound.conf from the homepage above just gives an error:
+Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
+8000 Hz, Mono
+aplay: set_params:857: Sample format non available
+ 
+Is there a way to play 5.1 sound without these distortions? Maybe some
+lines added to my asound.conf would do the work.
 
-int snd_ctl_add(snd_card_t * card, snd_kcontrol_t * kcontrol)
-{
-	snd_ctl_elem_id_t id;
-	unsigned int idx;
+Thanks in advance!
 
-	snd_runtime_check(card != NULL && kcontrol != NULL, return -EINVAL);
-	snd_assert(kcontrol->info != NULL, return -EINVAL);
-	id = kcontrol->id;
-	down_write(&card->controls_rwsem);
-	if (snd_ctl_find_id(card, &id)) {
-		up_write(&card->controls_rwsem);
-		snd_ctl_free_one(kcontrol);
-		snd_printd(KERN_ERR "control %i:%i:%i:%s:%i is already present\n",
-					id.iface,
-					id.device,
-					id.subdevice,
-					id.name,
-					id.index);
-		return -EBUSY;
-	}
+Regards,
+André
+======================================================================
 
+----------------------------------------------------------------------
+ ahessling - 04-21-05 11:41 
+----------------------------------------------------------------------
+I am already using 1.0.9rc2 and the problem with the noise in aplay isn't
+the greatest one.
+I want to be able to enjoy 5.1 sound without distortion.
 
+----------------------------------------------------------------------
+ andersin - 06-22-05 16:32 
+----------------------------------------------------------------------
+I have a similar (same) problem, using SB Extigy. Since surround51 is not
+defined, I use plug:hw to play. Essentially, as soon as I route/test/play
+on any other but the 2 front speakers all speakers produce noise
+(speaker-test) or very distorted sound
 
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-05 16:37 ahessling      New Issue                                    
+04-16-05 16:37 ahessling      Distribution              => Gentoo          
+04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
+04-19-05 17:47 tiwai          Note Added: 0004527                          
+04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
+04-21-05 11:41 ahessling      Note Added: 0004550                          
+06-22-05 16:32 andersin       Note Added: 0005133                          
+======================================================================
 
 
 
