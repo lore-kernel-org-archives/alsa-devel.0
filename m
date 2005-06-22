@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001096]: no capture with M-Audio Revolution 7.1
-Date: Thu, 23 Jun 2005 00:32:04 +0200
-Message-ID: <b5bd9d8d4b0bc3feef36a0a523254f54@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 01:01:40 +0200
+Message-ID: <e0042b1adcc0cd50a02cd937e62743e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93329202
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 00:32:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8857620E
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 01:01:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-07-2005 21:28 CEST
-Last Modified:              06-23-2005 00:32 CEST
+Last Modified:              06-23-2005 01:01 CEST
 ======================================================================
 Summary:                    no capture with M-Audio Revolution 7.1
 Description: 
@@ -334,38 +334,6 @@ has duplicate       0001164 aoss + skype: volume_adjust: SOUND_MIXE...
 ======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 06-23-05 00:21 
-----------------------------------------------------------------------
-(I'm guessing that 'rlrevell' is Lee Revell)
-
-Lee, regarding
-"
-I'm still confused. Are you or are you not able to capture the mic with
-"arecord file.wav"? 
-"
-
-- I have never written/said I ever tried to use 'arecord'. I haven't
-tried
-it after Takashi's replies either.
-
-I reported the problem as not hearing sound in the headphones, and that's
-what
-I want to resolve first.
-
-Again, this is what I said:
-
-"
-In layman terms I would like to be able to hear sound from my TV card and
-from my microphone
-the way it used to be with SB Live 5.1.
-".
-
-'arecord' hasn't been my concern yet.
-
-Thanks,
-  Sergei.
-
-----------------------------------------------------------------------
  rlrevell - 06-23-05 00:32 
 ----------------------------------------------------------------------
 We cannot help you if you are not willing to try the steps we recommend to
@@ -380,6 +348,82 @@ For example, some cards do not have an internal connection from the input
 to the output, so would require the input to be copied to the output in
 software to do any monitoring.  Or maybe the device just requires some
 bits to be set in order to enable monitoring via the headphones.
+
+----------------------------------------------------------------------
+ sst4 - 06-23-05 01:01 
+----------------------------------------------------------------------
+Lee (?),
+
+regarding:
+
+"
+We cannot help you if you are not willing to try the steps we recommend to
+debug the problem. Please do not second-guess the ALSA developers, we know
+what we are doing.
+
+What you want is to monitor the captured signal via your headphones. Since
+that does not seem to work, we need to test "arecord" in order to
+determine whether there is anything appearing on the inputs at all.
+
+For example, some cards do not have an internal connection from the input
+to the output, so would require the input to be copied to the output in
+software to do any monitoring. Or maybe the device just requires some bits
+to be set in order to enable monitoring via the headphones.
+".
+
+I am not sure why you've used "second-guess" in your reply.
+
+The developer(s) so far just mentioned what they did (tried 'arecord'),
+without
+any explanation how it was related to what I did (tried to get sound on
+Line Out)".
+
+The point of latest posts from developers is that they do have capture in
+file.
+
+They tried to use this argument to prove that capture works.
+
+I do not quite understand this logic of debugging/reproducing the bug.
+
+AFAIK, when a problem is reported, developers first try to reproduce it.
+
+Only after they've reproduced it they are suggesting to try other things.
+
+This order of actions was strictly adhered to in my bug report regarding
+OpenOffice.org : http://www.openoffice.org/issues/show_bug.cgi?id=50260
+
+So, maybe we'll return back to the basics an hear from developers whether
+they
+do have or do not have sound on Line Out ?
+
+In other words, instead of your "that does not seem to work" IMHO should
+become either "the developers confirm that the also have no sound on
+Line Out" or they say "We cannot reproduce the issue and do have the
+sound
+on Line Out".
+
+You (?) said these words:
+
+"
+Keep in
+mind there are many, many variations of hardware that could be labeled
+"M-Audio Foo 7.1". 
+"
+in Re: [Alsa-user] Surround Sound (5.1) How do I debug the setup? (another
+one)
+
+message to/cc:
+
+"
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, 
+alsa-user@lists.sourceforge.net
+".
+
+So, I agree with you, that first it should be verified that the card the
+developers have to test the issue behaves the same way as my card.
+
+Thanks,
+  Sergei.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -400,6 +444,7 @@ Date Modified  Username       Field                    Change
 06-23-05 00:07 rlrevell       Note Added: 0005156                          
 06-23-05 00:21 sst4           Note Added: 0005157                          
 06-23-05 00:32 rlrevell       Note Added: 0005158                          
+06-23-05 01:01 sst4           Note Added: 0005159                          
 ======================================================================
 
 
