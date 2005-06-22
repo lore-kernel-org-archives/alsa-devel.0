@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001096]: no capture with M-Audio Revolution 7.1
-Date: Thu, 23 Jun 2005 00:07:29 +0200
-Message-ID: <20b3a49a92889495526d92c8c47b82a1@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 00:21:45 +0200
+Message-ID: <9e1286bdd1c1c3764e927a7cf157d420@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFCCC211
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 00:07:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A13701F8
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 00:21:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-07-2005 21:28 CEST
-Last Modified:              06-23-2005 00:07 CEST
+Last Modified:              06-23-2005 00:21 CEST
 ======================================================================
 Summary:                    no capture with M-Audio Revolution 7.1
 Description: 
@@ -334,102 +334,42 @@ has duplicate       0001164 aoss + skype: volume_adjust: SOUND_MIXE...
 ======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 06-22-05 23:28 
-----------------------------------------------------------------------
-Takashi, regarding:
-"
-I checked my revo 7.1 board and confirmed that the capture is working with
-ALSA 1.0.9 (+ CVS).
-Ran simply
-    % arecord -fcd foo.wav
-and got signals from line-in and mic-in jacks.
-"
-
-here is a copy of my latest note in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1205:
-
-"
- Takashi, regarding these words of yours:
-"
-Both inputs from mic-in and line-in are recorded simply via "arecord -fcd
-foo.wav".
-"
-- I didn't try recording.
-
-As I wrote in my report, I wanted to hear sound from my TV card in the
-headphones.
-
-The same TV card works fine with other sound cards; I wrote about my way
-(of testing)/expectations on May the 24th 2005 in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php [^]?id=1096 :
-
-"
-I am trying to answer the "How did you test the capture?" question:
-
-I have a Pinnacle TV capture card is connected to Line input of the
-M-Audio cound card.
-
-I also have a microphone connected to Mic input of the M-Audio cound
-card.
-
-Both the TV card and the microphone worked fine with SB Live 5.1 - out of
-the box.
-
-As I incidentally discovered
-(https://bugtrack.alsa-project.org/alsa-bug/view.php [^] [^]?id=1106)
-the card is able of capturing sound at least under some circumstances.
-
-In layman terms I would like to be able to hear sound from my TV card and
-from my microphone
-the way it used to be with SB Live 5.1.
-
-Do I have, by any chance, to change settings of routing switches in
-'alsamixer' or using 'amixer' ?
-
-If yes, what should the settings be ?
-
-Thanks,
-  Sergei.
-".
-
-At this stage functionality of 'arecord' is secondary - I need first to
-hear
-sound in the headphones.
-
-So, could you please try to reproduce my environment by checking sound in
-the headphones (rather, on "Line out" in generic terms).
-
-Thanks,
-  Sergei.
-".
-
-Please also note that you've used a different version: 1.0.9 (+ CVS),
-mine
-was 1.0.8. This is not quite correct if you want to reproduce my
-conditions.
-
-You can probably quickly try version 1.0.8 using KNOPPIX:
-
-ftp://ftp.gwdg.de/pub/linux/knoppix/KNOPPIX_V3.9-2005-05-27-EN.iso ,
-
-the package list file is dated "05/31/2005  	01:39:00 PM" and says
-
-"
-ii  alsa-base                1.0.8-7                  ALSA driver
-configuration files
-ii  alsa-utils               1.0.8-4                  ALSA utilities
-".
-
-Thanks,
-  Sergei.
-
-----------------------------------------------------------------------
  rlrevell - 06-23-05 00:07 
 ----------------------------------------------------------------------
 I'm still confused.  Are you or are you not able to capture the mic with
 "arecord file.wav"?
+
+----------------------------------------------------------------------
+ sst4 - 06-23-05 00:21 
+----------------------------------------------------------------------
+(I'm guessing that 'rlrevell' is Lee Revell)
+
+Lee, regarding
+"
+I'm still confused. Are you or are you not able to capture the mic with
+"arecord file.wav"? 
+"
+
+- I have never written/said I ever tried to use 'arecord'. I haven't
+tried
+it after Takashi's replies either.
+
+I reported the problem as not hearing sound in the headphones, and that's
+what
+I want to resolve first.
+
+Again, this is what I said:
+
+"
+In layman terms I would like to be able to hear sound from my TV card and
+from my microphone
+the way it used to be with SB Live 5.1.
+".
+
+'arecord' hasn't been my concern yet.
+
+Thanks,
+  Sergei.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -448,6 +388,7 @@ Date Modified  Username       Field                    Change
 06-22-05 18:16 tiwai          Note Added: 0005141                          
 06-22-05 23:28 sst4           Note Added: 0005155                          
 06-23-05 00:07 rlrevell       Note Added: 0005156                          
+06-23-05 00:21 sst4           Note Added: 0005157                          
 ======================================================================
 
 
