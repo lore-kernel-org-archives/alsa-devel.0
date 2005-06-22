@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 20:18:49 +0200
-Message-ID: <21b8a2c6110292175e0079cdc430d919@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 20:34:17 +0200
+Message-ID: <b17038c0f1e590106950d54e8d13523a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16C5F16E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 20:18:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51266207
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 20:34:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 20:18 CEST
+Last Modified:              06-22-2005 20:34 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,99 +564,6 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- marcmerz - 06-22-05 19:55 
-----------------------------------------------------------------------
-So this is what i did:
-
-I got the driver-1.08 tarball and used ./configure --with-debug=full
---with-cards=intel8x0, then make and make install (as usual).
-
-The driver got installed without problems.
-
-cinemaxx:/usr/src/alsa-driver-1.0.8 # rcalsasound start
-Starting sound driver: snd-intel8x0 done
-Starting sound driver: snd-intel8x0 done
-Starting sound driver: snd-intel8x0 done
-Starting sound driver: snd-intel8x0 done
-/usr/sbin/alsactl: set_control:873: failed to obtain info for control
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=39
-(No such file or directory)
-/usr/sbin/alsactl: set_control:873: failed to obtain info for control
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=40
-(No such file or directory)
-
-cinemaxx:/usr/src/alsa-driver-1.0.8 # lsmod|grep snd
-snd_intel8x0           35008  0
-snd_ac97_codec         76920  1 snd_intel8x0
-snd_pcm               107780  2 snd_intel8x0,snd_ac97_codec
-snd_timer              29700  1 snd_pcm
-snd                    66820  4
-snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-soundcore              14048  1 snd
-snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
-
-cinemaxx:/usr/src/alsa-driver-1.0.8 # cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.8.
-Compiled on Jun 22 2005 for kernel 2.6.11.4-20a-smp-matrox (SMP).
-
-I guess because i didn't use --with-oss=yes i did not get a /dev/dsp
-device. I ran the following test with mplayer -ao alsa -channels 6
-/tmp/sdl/chan-id.wav
-
-cinemaxx:/proc/asound/card0/codec97#0 # mplayer -ao alsa -channels 6
-/tmp/sdl/chan-id.wav
-MPlayer 1.0pre7-3.3.5 (C) 2000-2005 MPlayer Team
-CPU: Intel Pentium 4/Xeon/Celeron Northwood (Family: 8, Stepping: 3)
-Detected cache-line size is 64 bytes
-CPUflags:  MMX: 1 MMX2: 1 3DNow: 0 3DNow2: 0 SSE: 1 SSE2: 1
-Compiled for x86 CPU with extensions: MMX MMX2 SSE SSE2
-
-
-85 audio & 196 video codecs
-Setting up LIRC support...
-mplayer: could not open config files /root/.lircrc and /etc/lircrc
-mplayer: No such file or directory
-Failed to read LIRC config file ~/.lircrc.
-You will not be able to use your remote control.
-Playing /tmp/sdl/chan-id.wav.
-Audio file detected.
-==========================================================================
-Opening audio decoder: [pcm] Uncompressed PCM audio decoder
-AUDIO: 44100 Hz, 6 ch, s16le, 4233.6 kbit/100.00% (ratio: 529200->529200)
-Selected audio codec: [pcm] afm:pcm (Uncompressed PCM)
-==========================================================================
-Checking audio filter chain for 44100Hz/6ch/s16le -> 44100Hz/6ch/s16le...
-AF_pre: 44100Hz/6ch/s16le
-alsa-init: 1 soundcard found, using: surround51
-alsa: 44100 Hz/6 channels/12 bpf/61440 bytes buffer/Signed 16 bit Little
-Endian
-AO: [alsa] 44100Hz 6ch s16le (2 bps)
-Building audio filter chain for 44100Hz/6ch/s16le -> 44100Hz/6ch/s16le...
-Video: no video
-Starting playback...
-A:   6.4 (06.4)  0.3%
-alsa-uninit: pcm closed
-
-Exiting... (End of file)
-
-It did not sound ok (i.e. i still have the problem with center and lfe).
-Because of the missing /dev/dsp i got:
-
-cinemaxx:/proc/asound/card0/codec97#0 # a52dec -o oss6
-/tmp/sdl/stream.ac3
-a52dec-0.7.5-cvs - by Michel Lespinasse <walken@zoy.org> and Aaron
-Holtzman
-Can not open /dev/dsp
-Can not open output
-
-The two files /proc/asound/card0/codec97#0/ac97#0-0 and
-/proc/asound/card0/codec97#0/ac97#0-0+regs are attached and were taken
-when playing the wav file with mplayer.
-
-HTH,
-Marcus
-
-----------------------------------------------------------------------
  rraptorr - 06-22-05 20:18 
 ----------------------------------------------------------------------
 OK, I've got same problem here (same MoBo Asus P4P800-VM). With alsa-driver
@@ -665,6 +572,14 @@ I've found which version break this. Everything is working fine with 1.0.6
 but not with 1.0.7. Kernel version 2.6.12.
 
 Proc files from 1.0.6, 1.0.7 and 1.0.9b attached.
+
+----------------------------------------------------------------------
+ rraptorr - 06-22-05 20:34 
+----------------------------------------------------------------------
+Also I've noticed that starting from 1.0.7 not only center/lfe is not
+playing. But rear is coming from the jack normally used by center/lfe (as
+in MoBo manual, and in 1.0.6). So it seems that center/lfe is swapped with
+rear, but still there is no center/lfe on either jack.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -693,6 +608,8 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 19:55 marcmerz       Note Added: 0005146                          
 06-22-05 19:57 marcmerz       File Added: alsasound                        
 06-22-05 20:18 rraptorr       Note Added: 0005147                          
+06-22-05 20:19 rraptorr       File Added: codec97                          
+06-22-05 20:34 rraptorr       Note Added: 0005148                          
 ======================================================================
 
 
