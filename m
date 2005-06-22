@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Wed, 22 Jun 2005 19:55:58 +0200
-Message-ID: <4091f9876fe52c0db5c2404dbb520a36@bugtrack.alsa-project.org>
+Date: Wed, 22 Jun 2005 20:18:49 +0200
+Message-ID: <21b8a2c6110292175e0079cdc430d919@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F94B207
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 19:55:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16C5F16E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2005 20:18:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              06-22-2005 19:55 CEST
+Last Modified:              06-22-2005 20:18 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -564,12 +564,6 @@ snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 18:03 
-----------------------------------------------------------------------
-Note that the version included in SUSE 9.3 is almost ALSA 1.0.9rc3.  It
-already includes the changes around the surround jack handling in 1.0.9.
-
-----------------------------------------------------------------------
  marcmerz - 06-22-05 19:55 
 ----------------------------------------------------------------------
 So this is what i did:
@@ -662,6 +656,16 @@ when playing the wav file with mplayer.
 HTH,
 Marcus
 
+----------------------------------------------------------------------
+ rraptorr - 06-22-05 20:18 
+----------------------------------------------------------------------
+OK, I've got same problem here (same MoBo Asus P4P800-VM). With alsa-driver
+1.0.9b there is no sound from center/lfe. I was trying older versions and
+I've found which version break this. Everything is working fine with 1.0.6
+but not with 1.0.7. Kernel version 2.6.12.
+
+Proc files from 1.0.6, 1.0.7 and 1.0.9b attached.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -687,6 +691,8 @@ SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 06-22-05 19:55 marcmerz       File Added: ac97#0-0                         
 06-22-05 19:55 marcmerz       File Added: ac97#0-0+regs                    
 06-22-05 19:55 marcmerz       Note Added: 0005146                          
+06-22-05 19:57 marcmerz       File Added: alsasound                        
+06-22-05 20:18 rraptorr       Note Added: 0005147                          
 ======================================================================
 
 
