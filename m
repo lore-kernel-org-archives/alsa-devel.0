@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001208]: 2 Typos and a little Question to device.c
-Date: Thu, 23 Jun 2005 10:50:57 +0200
-Message-ID: <7763f3b19454c975da7ebbb4d3062911@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001207]: Cannot control front panel audio with PCM slider
+Date: Thu, 23 Jun 2005 10:57:42 +0200
+Message-ID: <485dcdc70330ae1b90ef634b6b2ac8a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4646021F
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 10:50:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0DB221F
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 10:57:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1208> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1207> 
 ======================================================================
-Reported By:                Henne
-Assigned To:                
+Reported By:                jbrsubscribe
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1208
-Category:                   1_OTHERS
+Issue ID:                   1207
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               SuSE
+Kernel Version:             2.6.11.4-21.7-smp (SMP)
 ======================================================================
-Date Submitted:             06-22-2005 23:58 CEST
-Last Modified:              06-23-2005 10:50 CEST
+Date Submitted:             06-22-2005 18:58 CEST
+Last Modified:              06-23-2005 10:57 CEST
 ======================================================================
-Summary:                    2 Typos and a little Question to device.c
+Summary:                    Cannot control front panel audio with PCM slider
 Description: 
-The comment @type of snd_device_new() is wrong. I belive it has to be
-SNDDRV_DEV_XXX instead of SNDDRV_DEV_TYPE_XXX .
+I am running an ASUS P5AD2-E Premium motherboard with the hda-intel/CMI9880
+audio card with alsa driver 1.0.9a installed. This board has a Front Panel
+Audio Connector (10-1 AAFP) which connects to an audio i/o module on the
+front of the system case.
+None of the mixers on the system are able to control the volume on the
+front panel connector. I have used alsamixer, KAMix, Kmix, QAMix and gamix
+- all with the same result. The volume on the Front panel connector seem
+to be set to the maximum and I have not yet found a way by which it can be
+controlled.
 
-The comment in snd_device_disconnect() has to be snd_device_disconnect
-instead of snd_device_free.
-
-The sound_assert() macros in snd_device_new() and snd_device_register()
-have a couple of expessions, and I belive it would be better for debuggin
-if the macro calls would be called for paramter seperately, like in all
-the other functions.
-
- 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 10:50 
+ tiwai - 06-23-05 10:57 
 ----------------------------------------------------------------------
-Agreed.  Patches are welcome :)
-(See NEWS section for the detail how to write a patch.)
+I guess you're using an OSS application?  Then the volume can't be changed
+unless you use aoss wrapper since this chip has really no volume control
+and ALSA adjusts the volume in software inside alsa-lib plugin.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-05 23:58 Henne          New Issue                                    
-06-23-05 10:50 tiwai          Note Added: 0005166                          
+06-22-05 18:58 jbrsubscribe   New Issue                                    
+06-22-05 18:58 jbrsubscribe   Distribution              => SuSE            
+06-22-05 18:58 jbrsubscribe   Kernel Version            => 2.6.11.4-21.7-smp
+(SMP)
+06-22-05 19:01 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+06-23-05 10:57 tiwai          Note Added: 0005167                          
 ======================================================================
 
 
