@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001207]: Cannot control front panel audio with PCM slider
-Date: Thu, 23 Jun 2005 11:57:06 +0200
-Message-ID: <28575a29702d7906d5760a710b710274@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Thu, 23 Jun 2005 12:01:44 +0200
+Message-ID: <eeaa432426299c6532235b1709ecee79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20FC3216
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 11:57:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81D2D219
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:01:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1207> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                jbrsubscribe
-Assigned To:                tiwai
+Reported By:                willits
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1207
-Category:                   PCI - hda-intel
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE
-Kernel Version:             2.6.11.4-21.7-smp (SMP)
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-22-2005 18:58 CEST
-Last Modified:              06-23-2005 11:57 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-23-2005 12:01 CEST
 ======================================================================
-Summary:                    Cannot control front panel audio with PCM slider
+Summary:                    Realtek ALC650 output problem
 Description: 
-I am running an ASUS P5AD2-E Premium motherboard with the hda-intel/CMI9880
-audio card with alsa driver 1.0.9a installed. This board has a Front Panel
-Audio Connector (10-1 AAFP) which connects to an audio i/o module on the
-front of the system case.
-None of the mixers on the system are able to control the volume on the
-front panel connector. I have used alsamixer, KAMix, Kmix, QAMix and gamix
-- all with the same result. The volume on the Front panel connector seem
-to be set to the maximum and I have not yet found a way by which it can be
-controlled.
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- jbrsubscribe - 06-23-05 11:51 
+ pzad - 06-23-05 11:56 
 ----------------------------------------------------------------------
-tiwai, thank you for your response. In fact I have used several different
-applications including - alsaplayer, BMP, KMPlayer, XMMS, amaroK and
-kaffeine - all with the same result.
-I wish to add that the PCM slider DOES control the volume for the Rear
-audio outputs. It is only the Front audio output (headphone) that is not
-being controlled.
+I have via8233a + alc650d - and output using surround51 is OK for me with
+alsa 1.0.9b.
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 11:57 
+ tiwai - 06-23-05 12:01 
 ----------------------------------------------------------------------
-OK, then it's a different problem than I thought.
-
-Do you have any your own ~/.asoundrc setting?
-
-Also, for testing, use aplay for simplicity.  Just run like
-    % aplay foo.wav
+To be sure: how did you test the surround outputs?
+For testing surround speakers, try speaker-test in alsa-utils at first.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-05 18:58 jbrsubscribe   New Issue                                    
-06-22-05 18:58 jbrsubscribe   Distribution              => SuSE            
-06-22-05 18:58 jbrsubscribe   Kernel Version            => 2.6.11.4-21.7-smp
-(SMP)
-06-22-05 19:01 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-06-23-05 10:57 tiwai          Note Added: 0005167                          
-06-23-05 11:51 jbrsubscribe   Note Added: 0005171                          
-06-23-05 11:57 tiwai          Note Added: 0005173                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
 ======================================================================
 
 
