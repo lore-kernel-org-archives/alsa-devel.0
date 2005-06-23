@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001193]: no sound through speakers but sound in headphones
-Date: Thu, 23 Jun 2005 23:45:31 +0200
-Message-ID: <fa0af4b2e7eecf50c53b8e814004b8a8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
+Date: Thu, 23 Jun 2005 23:55:37 +0200
+Message-ID: <330e1517bbd24db4334ab148d0eceea6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 799DC229
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 23:45:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E02CA207
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 23:55:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1193> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
 ======================================================================
-Reported By:                gadget
+Reported By:                alfred-ganz
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1193
-Category:                   PCI - atiixp
+Issue ID:                   1209
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               debian-pure64 sid
-Kernel Version:             2.6.11.11
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-15-2005 13:03 CEST
-Last Modified:              06-23-2005 23:45 CEST
+Date Submitted:             06-23-2005 20:02 CEST
+Last Modified:              06-23-2005 23:55 CEST
 ======================================================================
-Summary:                    no sound through speakers but sound in headphones
+Summary:                    Headphone and Front Mic are switched
 Description: 
-I can't hear anything through the internel speakers of my notebook. The
-sound is anyway hear through the headphones. I can change the volume
-correctly, nothing is muted.
-I tried the ac97_quirk option through modprobe or direct insmod.
-I also tried other drivers without success (no card found).
+I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
+assignments that I can test seem to be assigned properly.
+However, there is some sound coming out of the front mike jack,
+and input is accepted through the headphone jack. Since these
+jacks work as expected with Windows XP, I suspect that they are
+misassigned in the driver.
+Hardware: RealTek ALC655 AC'97 with ALC880(D)
+
+Please let me know if there is anything else that you need from
+me.
+
+Thank you, AG
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-23-05 23:42 
+ erik - 06-23-05 23:29 
 ----------------------------------------------------------------------
-Did you try the "external amplifier" switch?
+I have the same problem, front Headphone/Mic jacks swapped on ALC880
 
 ----------------------------------------------------------------------
- gadget - 06-23-05 23:45 
+ alfred-ganz - 06-23-05 23:55 
 ----------------------------------------------------------------------
-yes I tried with & without. there is always sound in headphones but never
-in speakers
+Please not that at least in my case, there is significant protection
+circuitry on the mic jack, but none on the headphone jack, so reversing
+the use would be dangerous, and windows uses the jack right!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 13:03 gadget         New Issue                                    
-06-15-05 13:03 gadget         Distribution              => debian-pure64 sid
-06-15-05 13:03 gadget         Kernel Version            => 2.6.11.11       
-06-15-05 13:09 gadget         Issue Monitored: gadget                      
-06-15-05 13:10 gadget         Note Added: 0005022                          
-06-15-05 13:14 gadget         File Added: lsmod-report                     
-06-15-05 13:14 gadget         File Added: lspci-report                     
-06-15-05 13:15 gadget         File Added: lspci-vn-report                    
-06-15-05 13:16 gadget         File Added: lspci-vv-report                    
-06-15-05 13:16 gadget         File Added: proc-asound-report.tar.gz             
-      
-06-15-05 13:17 gadget         Issue End Monitor: gadget                    
-06-23-05 13:59 gadget         Note Added: 0005186                          
-06-23-05 14:08 gadget         Issue Monitored: gadget                      
-06-23-05 23:42 rlrevell       Note Added: 0005199                          
-06-23-05 23:45 gadget         Note Added: 0005200                          
+06-23-05 20:02 alfred-ganz    New Issue                                    
+06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
+06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
+06-23-05 23:29 erik           Note Added: 0005198                          
+06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
 ======================================================================
 
 
