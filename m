@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Thu, 23 Jun 2005 02:47:21 +0200
-Message-ID: <4f3d9d3649a384688623638b92850e31@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: Ted <ted@nowtsfree.freeserve.co.uk>
+Subject: unresolved symbols in snd-gus-synth & snd-page-alloc on linux-2.2.27
+Date: Thu, 23 Jun 2005 02:23:40 +0100
+Message-ID: <20050623012340.508C148DF@marimba.home.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EED4216
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 02:47:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,109 +12,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: ted@nowtsfree.freeserve.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
-======================================================================
-Reported By:                Xero
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-23-2005 02:47 CEST
-======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
-Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+Problem 1) I get unresolved symbols in the snd-gus-synth module of
+alsa-driver-1.0.9rc3 when building for the interwave pnp card using
 
-This starts showing up when I start pressing play again:
+$ ./configure --prefix=/usr --with-debug=detect --with-isapnp=yes \
+		--with-sequencer=yes --with-cards=interwave
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+# depmod -e
+depmod: *** Unresolved symbols in /lib/modules/2.2.27-pre2/misc/snd-gus-synth.o
+depmod:		snd_midi_channel_free_set
+depmod:		snd_midi_channel_alloc_set
+#
+
+This is because the snd-seq-midi-emul is ommitted from the build.
+A fix that appears to correct this is to add its dependancy to the file
+
+	alsa-kernel/core/seq/Makefile
+
+# diff alsa-kernel/core/seq/Makefile.Orig alsa-kernel/core/seq/Makefile
+41c41
+< obj-$(call sequencer,$(CONFIG_SND_GUS_SYNTH)) += snd-seq-instr.o
+---
+> obj-$(call sequencer,$(CONFIG_SND_GUS_SYNTH)) += snd-seq-instr.o snd-seq-midi-emul.o
+#
 
 
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
 
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
+Problem 2) Following that fix, the snd-ainstr-simple module also fails
+to load because its initialisation is incorrect:
 
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
+# insmod snd-ainstr-simple
+Using /lib/modules/2.2.27-pre2/misc/snd-ainstr-simple.o
+/lib/modules/2.2.27-pre2/misc/snd-ainstr-simple.o: init_module:
+	Invalid argument Hint: insmod errors can be caused by incorrect \
+	module parameters, including invalid IO or IRQ parameters
 
-Attached is my asoundrc.
-======================================================================
-
-----------------------------------------------------------------------
- Xero - 06-22-05 19:01 
-----------------------------------------------------------------------
-I know for a fact the socket still exists after this happens, infact it
-usually ends up leaving a bunch of sockets because when it does happen
-they don't seem to get deleted. I will check which process opens it as
-soon as I get a chance, probably later today.
-
-----------------------------------------------------------------------
- Xero - 06-23-05 02:47 
-----------------------------------------------------------------------
-here's lsof output
-
-# lsof  /dev/snd/pcmC0D0p
-COMMAND     PID USER   FD   TYPE DEVICE SIZE NODE NAME
-beep-medi  5075 xero  mem    CHR 116,16      5808 /dev/snd/pcmC0D0p
-beep-medi  5075 xero   27u   CHR 116,16      5808 /dev/snd/pcmC0D0p
-beep-medi 32106 xero  mem    CHR 116,16      5808 /dev/snd/pcmC0D0p
-beep-medi 32106 xero   27u   CHR 116,16      5808 /dev/snd/pcmC0D0p
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-======================================================================
+Not sure how to fix this, it looks like incomplete "work in progress".
+See
+	alsa-kernel/core/seq/instr/ainstr_simple.c
 
 
+
+
+Problem 3) The cvsexport 2005-06-17 also has unresolved symbols in the
+snd-page-alloc module on linux-2.2.27:
+
+# depmod -e
+depmod: *** Unresolved symbols in /lib/modules/2.2.27-pre2/misc/snd-gus-synth.o
+depmod:         snd_midi_channel_free_set
+depmod:         snd_midi_channel_alloc_set
+depmod: *** Unresolved symbols in /lib/modules/2.2.27-pre2/misc/snd-page-alloc.o
+depmod:         strsep
+depmod:         simple_strtol
+depmod:         memparse
+#
+
+These symbols are not defined in linux-2.2.27 and need adding to
+alsa-driver/include/compat_22.h.
+
+Thankyou,
+
+Ted.
+-- 
+Ted <ted@nowtsfree.freeserve.co.uk>
+   http://www.nowtsfree.freeserve.co.uk
 
 
 -------------------------------------------------------
