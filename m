@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
-Date: Thu, 23 Jun 2005 12:06:08 +0200
-Message-ID: <a6bba8bb36888b7d8b5b61c9d2313fa1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
+Date: Thu, 23 Jun 2005 12:07:29 +0200
+Message-ID: <d175a314448c6dc1d74124f710240136@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2390C219
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:06:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83E80219
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:07:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
 ======================================================================
-Reported By:                herby
-Assigned To:                tiwai
+Reported By:                JKnife
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1174
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1052
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-09-2005 00:42 CEST
-Last Modified:              06-23-2005 12:06 CEST
+Date Submitted:             04-13-2005 21:59 CEST
+Last Modified:              06-23-2005 12:07 CEST
 ======================================================================
-Summary:                    Speaker Test fails with error message(s) from alsa
-lib.  "problem for start_threshold"
+Summary:                    Riptide/Context Audio Drivers
 Description: 
-Running speaker test gets me:
->>>
-speaker-test 0.0.8
-
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 32768
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3764
-was set buffer_size = 15052
-ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
-params->avail_min problem for start_threshold
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
-<<<
+there is a set but its only for the 2.4 kernel.
+i would like you toinclude them in alsa.
+the 2.4 drivers can be found here
+http://www.linuxant.com/drivers/
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 11:39 
+ nokos - 06-15-05 14:40 
 ----------------------------------------------------------------------
-The bug acked.  Will check what's going on there...
+I have already converted this to a alsa driver 1y ago for my private use.
+Now I don't use the laptop with chip anymore.
+
+Anyone interested in the code (patch against kernel 2.6.10)?
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 12:06 
+ tiwai - 06-23-05 12:07 
 ----------------------------------------------------------------------
-Fixed on CVS.  The patch to alsa-lib is attached.
+Yes, sure, please.
+
+I'm wondering which functionality is missing in the current ALSA code...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 00:42 herby          New Issue                                    
-06-13-05 19:49 herby          Issue Monitored: herby                       
-06-13-05 19:55 herby          Note Added: 0005013                          
-06-15-05 14:27 jdthood        Note Added: 0005024                          
-06-22-05 10:19 herby          Note Added: 0005120                          
-06-22-05 11:39 tiwai          Note Added: 0005123                          
-06-23-05 12:05 tiwai          File Added: pcm-sw-params.diff                    
-06-23-05 12:06 tiwai          Status                   new => resolved     
-06-23-05 12:06 tiwai          Resolution               open => fixed       
-06-23-05 12:06 tiwai          Assigned To               => tiwai           
-06-23-05 12:06 tiwai          Note Added: 0005175                          
+04-13-05 21:59 JKnife         New Issue                                    
+04-13-05 22:01 JKnife         Note Added: 0004479                          
+06-06-05 10:51 perex          Assigned To              perex =>            
+06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
+extreme, interwave) => OTHERS
+06-08-05 15:15 tiwai          Note Added: 0004932                          
+06-08-05 23:25 JKnife         Note Added: 0004976                          
+06-15-05 14:41 nokos          Note Added: 0005027                          
+06-23-05 12:07 tiwai          Note Added: 0005176                          
 ======================================================================
 
 
