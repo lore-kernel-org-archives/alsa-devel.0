@@ -1,16 +1,16 @@
 From: Martin Langer <martin-langer@gmx.de>
-Subject: [PATCH] 2/3 miro: MPU-401 error action bugfix
-Date: Fri, 24 Jun 2005 01:02:12 +0200
-Message-ID: <20050623230212.GA3294@tuba>
+Subject: [PATCH] 1/3 miro: add firmware 0x07 which is pcm20 revE
+Date: Fri, 24 Jun 2005 01:01:56 +0200
+Message-ID: <20050623230156.GA3281@tuba>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="82I3+IH0IqGh5yIs"
+Content-Type: multipart/mixed; boundary="sdtB3X0nJg68CQEu"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2358321E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 00:59:49 +0200 (MEST)
+Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 777D021E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 00:59:33 +0200 (MEST)
 Received: from ml by tuba with local (Exim 4.50)
-	id 1Dlai4-0000rw-SV
-	for alsa-devel@alsa-project.org; Fri, 24 Jun 2005 01:02:12 +0200
+	id 1Dlaho-0000rp-Pr
+	for alsa-devel@alsa-project.org; Fri, 24 Jun 2005 01:01:56 +0200
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -25,32 +25,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---82I3+IH0IqGh5yIs
+--sdtB3X0nJg68CQEu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-An if statement which executes snd_mpu401_uart_new() doesn't run the 
-correct action if it fails. A line with an error message was missing.
-The patch completes the if statement by adding a message.
+The patch adds firmware version 0x07 to the list of PCM20 firmwares.
+That 0x07 card is marked as revision E, which can be identified now.
 
 Signed-off-by: Martin Langer <martin-langer@gmx.de>
 
---82I3+IH0IqGh5yIs
+--sdtB3X0nJg68CQEu
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="miro_mpu401.patch"
+Content-Disposition: attachment; filename="miro_pcm20revE.patch"
 
---- isa/opti9xx/miro.c.1_miro_pcm20revE	Thu Jun 23 21:56:34 2005
-+++ isa/opti9xx/miro.c	Fri Jun 24 00:16:27 2005
-@@ -1330,6 +1330,7 @@
- 		if ((error = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
- 				miro->mpu_port, 0, miro->mpu_irq, SA_INTERRUPT,
- 				&rmidi)))
-+			snd_printk("no MPU-401 device at 0x%lx?\n", miro->mpu_port);
+--- alsa-driver/isa/opti9xx/miro.c.ORIGINAL	Thu Jun 23 21:51:34 2005
++++ alsa-driver/isa/opti9xx/miro.c	Thu Jun 23 21:53:35 2005
+@@ -835,8 +835,16 @@
  
- 	/* the aci mixer is muted after reset */
+ 	if ((miro->hardware == OPTi9XX_HW_82C924) &&
+ 	    (miro->aci_vendor == 'm') && 
+-	    (miro->aci_product == 'C')) 
+-		model = "miroSOUND PCM20 radio";
++	    (miro->aci_product == 'C')) {
++		switch(miro->aci_version) {
++		case 7:
++			model = "miroSOUND PCM20 radio (Rev. E)";
++			break;
++		default:
++			model = "miroSOUND PCM20 radio";
++			break;
++		}
++	}
  
+ 	snd_iprintf(buffer, "\nGeneral information:\n");
+ 	snd_iprintf(buffer, "  model   : %s\n", model);
 
---82I3+IH0IqGh5yIs--
+--sdtB3X0nJg68CQEu--
 
 
 -------------------------------------------------------
