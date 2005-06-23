@@ -1,16 +1,16 @@
 From: Martin Langer <martin-langer@gmx.de>
-Subject: [PATCH] 1/3 miro: add firmware 0x07 which is pcm20 revE
-Date: Fri, 24 Jun 2005 01:01:56 +0200
-Message-ID: <20050623230156.GA3281@tuba>
+Subject: PATCH] 3/3 miro: set mixer values for aci on startup
+Date: Fri, 24 Jun 2005 01:02:32 +0200
+Message-ID: <20050623230232.GA3304@tuba>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="sdtB3X0nJg68CQEu"
+Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 777D021E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 00:59:33 +0200 (MEST)
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F312221E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 01:00:08 +0200 (MEST)
 Received: from ml by tuba with local (Exim 4.50)
-	id 1Dlaho-0000rp-Pr
-	for alsa-devel@alsa-project.org; Fri, 24 Jun 2005 01:01:56 +0200
+	id 1DlaiO-0000s5-55
+	for alsa-devel@alsa-project.org; Fri, 24 Jun 2005 01:02:32 +0200
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -25,42 +25,156 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---sdtB3X0nJg68CQEu
+--17pEHd4RhPHOinZp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The patch adds firmware version 0x07 to the list of PCM20 firmwares.
-That 0x07 card is marked as revision E, which can be identified now.
+It's much better to start the PCM20 with known values in the aci regs. 
+The patch sets a bunch of mixer regs during init now. We've had a few 
+aci register inits before. Now they are all merged into one function.
 
 Signed-off-by: Martin Langer <martin-langer@gmx.de>
 
---sdtB3X0nJg68CQEu
+--17pEHd4RhPHOinZp
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="miro_pcm20revE.patch"
+Content-Disposition: attachment; filename="miro_init.patch"
 
---- alsa-driver/isa/opti9xx/miro.c.ORIGINAL	Thu Jun 23 21:51:34 2005
-+++ alsa-driver/isa/opti9xx/miro.c	Thu Jun 23 21:53:35 2005
-@@ -835,8 +835,16 @@
+--- isa/opti9xx/miro.c.2_mpu401	Fri Jun 24 00:19:26 2005
++++ isa/opti9xx/miro.c	Fri Jun 24 00:20:26 2005
+@@ -613,6 +613,68 @@
+ 	.put = snd_miro_put_capture,
+ }};
  
- 	if ((miro->hardware == OPTi9XX_HW_82C924) &&
- 	    (miro->aci_vendor == 'm') && 
--	    (miro->aci_product == 'C')) 
--		model = "miroSOUND PCM20 radio";
-+	    (miro->aci_product == 'C')) {
-+		switch(miro->aci_version) {
-+		case 7:
-+			model = "miroSOUND PCM20 radio (Rev. E)";
-+			break;
-+		default:
-+			model = "miroSOUND PCM20 radio";
-+			break;
++static unsigned char aci_init_values[][2] __initdata = {
++	{ ACI_SET_MUTE, 0x00 },
++	{ ACI_SET_POWERAMP, 0x00 },
++	{ ACI_SET_PREAMP, 0x00 },
++	{ ACI_SET_SOLOMODE, 0x00 },
++	{ ACI_SET_MIC + 0, 0x20 },
++	{ ACI_SET_MIC + 8, 0x20 },
++	{ ACI_SET_LINE + 0, 0x20 },
++	{ ACI_SET_LINE + 8, 0x20 },
++	{ ACI_SET_CD + 0, 0x20 },
++	{ ACI_SET_CD + 8, 0x20 },
++	{ ACI_SET_PCM + 0, 0x20 },
++	{ ACI_SET_PCM + 8, 0x20 },
++	{ ACI_SET_LINE1 + 0, 0x20 },
++	{ ACI_SET_LINE1 + 8, 0x20 },
++	{ ACI_SET_LINE2 + 0, 0x20 },
++	{ ACI_SET_LINE2 + 8, 0x20 },
++	{ ACI_SET_SYNTH + 0, 0x20 },
++	{ ACI_SET_SYNTH + 8, 0x20 },
++	{ ACI_SET_MASTER + 0, 0x20 },
++	{ ACI_SET_MASTER + 1, 0x20 },
++};
++
++static int __devinit snd_set_aci_init_values(miro_t *miro)
++{
++	int idx, error;
++
++	/* enable WSS on PCM1 */
++
++	if ((miro->aci_product == 'A') && wss) {
++		if ((error = aci_setvalue(miro, ACI_SET_WSS, wss)) < 0) {
++			snd_printk("enabling WSS mode failed\n");
++			return error;
 +		}
 +	}
++
++	/* enable IDE port */
++
++	if (ide) {
++		if ((error = aci_setvalue(miro, ACI_SET_IDE, ide)) < 0) {
++			snd_printk("enabling IDE port failed\n");
++			return error;
++		}
++	}
++
++	/* set common aci values */
++
++	for (idx = 0; idx < ARRAY_SIZE(aci_init_values); idx++)
++                if ((error = aci_setvalue(miro, aci_init_values[idx][0], 
++					  aci_init_values[idx][1])) < 0) {
++                        snd_printk("aci_setvalue(%d) failed: %d\n", 
++				   aci_init_values[idx][0], error);
++                        return error;
++                }
++
++	miro->aci_amp = 0;
++	miro->aci_preamp = 0;
++	miro->aci_solomode = 1;
++
++	return 0;
++}
++
+ static int snd_miro_mixer(miro_t *miro)
+ {
+ 	snd_card_t *card;
+@@ -1332,60 +1394,9 @@
+ 				&rmidi)))
+ 			snd_printk("no MPU-401 device at 0x%lx?\n", miro->mpu_port);
  
- 	snd_iprintf(buffer, "\nGeneral information:\n");
- 	snd_iprintf(buffer, "  model   : %s\n", model);
+-	/* the aci mixer is muted after reset */
+-
+-	if (aci_cmd(miro, ACI_SET_MUTE, 0x00, -1) < 0) {
+-		snd_printk("unset aci muting failed\n");
++	if ((error = snd_set_aci_init_values(miro)) < 0) {
+ 		snd_card_free(card);
+-		return -EBUSY;
+-	}
+-
+-	/* enable WSS on PCM1 */
+-
+-	if ((miro->aci_product == 'A') && wss) {
+-		if ((error = aci_cmd(miro, ACI_SET_WSS, wss, -1)) < 0) {
+-			snd_printk("jumping into WSS mode failed\n");
+-			snd_card_free(card);
+-			return -EIO;
+-		}
+-	}
+-
+-	/* enable IDE port */
+-
+-	if (ide) {
+-		if ((error = aci_cmd(miro, ACI_SET_IDE, ide, -1)) < 0) {
+-			snd_printk("enabling IDE port failed\n");
+-			snd_card_free(card);
+-			return -EIO;
+-		}
+-	}
+-
+-	/* disable aci preamp and poweramp */
+-
+-	if ((error = aci_setvalue(miro, ACI_SET_POWERAMP, 0)) < 0) {
+-		snd_printk("unset aci power-amp failed\n");
+-		snd_card_free(card);
+-		return -EIO;
+-	} else {
+-		miro->aci_amp = 0;
+-	}
+-
+-	if ((error = aci_setvalue(miro, ACI_SET_PREAMP, 0)) < 0) {
+-		snd_printk("unset aci pre-amp failed\n");
+-		snd_card_free(card);
+-		return -EIO;
+-	} else {
+-		miro->aci_preamp = 0;
+-	}
+-
+-	/* solo mode init */
+-
+-	if ((error = aci_setvalue(miro, ACI_SET_SOLOMODE, 0)) < 0) {
+-		snd_printk("unset solomode failed\n");
+-		snd_card_free(card);
+-		return -EIO;
+-	} else {
+-		miro->aci_solomode = 1;
++                return error;
+ 	}
+ 
+ 	if ((error = snd_card_register(card))) {
 
---sdtB3X0nJg68CQEu--
+--17pEHd4RhPHOinZp--
 
 
 -------------------------------------------------------
