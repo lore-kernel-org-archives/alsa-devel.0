@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001208]: 2 Typos and a little Question to device.c
-Date: Thu, 23 Jun 2005 12:14:24 +0200
-Message-ID: <748fc00dbd12dbbed98cbb3ebc98272d@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Speaker-test improvements
+Date: Thu, 23 Jun 2005 18:20:59 +0800
+Message-ID: <42BA8D0B.5060501@netvigator.com>
+References: <20050414204147.78276.qmail@web60808.mail.yahoo.com> <s5hzmw0chyq.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A47421A
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:14:24 +0200 (MEST)
+In-Reply-To: <s5hzmw0chyq.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +17,120 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1208> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1208
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   text
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             06-22-2005 23:58 CEST
-Last Modified:              06-23-2005 12:14 CEST
-======================================================================
-Summary:                    2 Typos and a little Question to device.c
-Description: 
-The comment @type of snd_device_new() is wrong. I belive it has to be
-SNDDRV_DEV_XXX instead of SNDDRV_DEV_TYPE_XXX .
+>>>Takashi Iwai <tiwai@suse.de> writes:
+>>>
+>>>
+>>>>At Wed, 13 Apr 2005 21:02:31 +0100,
+>>>>James Courtier-Dutton wrote:
+>>>>
+>>>>>Hi,
+>>>>>
+>>>>>I have got some voice samples saying things like "Front Right" etc. that
+>>>>>I want the speaker-test program to output instead of the loud sine wave
+>>>>>it currently does. The sine wave will stay there as an option as I find
+>>>>>it useful for some things.
+>>>>>
+>>>>>The samples are 10 .wav files in 48khz mono S16_LE format.
+>>>>>Where abouts should I put them in the CVS, and where abouts should they
+>>>>>get installed to, so that speaker-test can find them?
+>>>>
 
-The comment in snd_device_disconnect() has to be snd_device_disconnect
-instead of snd_device_free.
+It seem most onboard audio (intel8x0,hda) have ".channels_min = 2".
 
-The sound_assert() macros in snd_device_new() and snd_device_register()
-have a couple of expessions, and I belive it would be better for debuggin
-if the macro calls would be called for paramter seperately, like in all
-the other functions.
+You may need to merge the mono "Left" and "Right" wav to a stereo
+left_right.wav
 
- 
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 06-23-05 10:50 
-----------------------------------------------------------------------
-Agreed.  Patches are welcome :)
-(See NEWS section for the detail how to write a patch.)
+static snd_pcm_hardware_t snd_intel8x0_stream =
+{
+     .channels_min =        2,
+     .channels_max =        2,
+}
 
-----------------------------------------------------------------------
- Henne - 06-23-05 12:14 
-----------------------------------------------------------------------
-Here we go!
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-22-05 23:58 Henne          New Issue                                    
-06-23-05 10:50 tiwai          Note Added: 0005166                          
-06-23-05 12:12 Henne          File Added: device-patch.diff                    
-06-23-05 12:14 Henne          Note Added: 0005179                          
-======================================================================
+aplay -D hw:1,0 speaker-test/samples/*.wav
+Playing WAVE 'speaker-test/samples/Front_Center.wav' : Signed 16 bit
+Little Endian, Rate 48000 Hz, Mono
+aplay: set_params:887: Channels count non available
+
+
+aplay -Dplughw:1,0 speaker-test/samples/*.wav
+Playing WAVE 'speaker-test/samples/Front_Left.wav' : Signed 16 bit
+Little Endian, Rate 48000 Hz, Mono
+Playing WAVE 'speaker-test/samples/Front_Right.wav' : Signed 16 bit
+Little Endian, Rate 48000 Hz, Mono
+
+
+>>
+>>
+>>I made up a sound file similar to this and it was quite helpful.  One of the
+>>files had individual voices (one at a time) to identify the speakers, and being
+>>with the proper 4-channel specifications for broadcast they were identified as
+>>"left front", "right front", "left BACK" and "right BACK".  In doing so it
+>>eliminated the abbreviation of "R" being both "rear" and "right" (not very
+>>clear).
+>>
+>>Another test was having all of the channels identified "simultaneously",
+>>usually in a loop.  This allowed me to play with mixer controls which always
+>>get mixed up and get the correct things in the correct places.  When you hook
+>>up sound cards and amplifiers and other external gear, it helps to have the
+>>channel identified.  Some mixer controls on some cards fold the "back" channels
+>>into the "front" channels, and then you need to poke around in your mixer
+>>program ('alsamixer' is but one) to turn on/off "mutes" to get it right. 
+> 
+> 
+> This sounds like a good idea.
+> 
+> 
+>>Having the speaker test "loop" with spoken words was VERY helpful to me.
+>>
+>>The only "problem" I see is having the samples at one speed.  Sometimes it is
+>>helpful to have the program send the sounds out at a specific speed to the ALSA
+>>api, where it does further operations (another re-sampling).
+> 
+> 
+> It should be fine when you specify the PCM with "plug" layer, e.g.
+> 
+> 	% speaker-test -Dplug:surround51 -c6
+> 
+
+
+# speaker-test -D hw:1,0
+
+speaker-test 0.0.8
+
+Playback device is hw:1,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Channels count (1) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+
+# speaker-test -Dplughw:1,0
+
+speaker-test 0.0.8
+
+Playback device is plughw:1,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 8 to 16384
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3763
+was set buffer_size = 15052
+  0 - Front Left
+Time per period = 2.667026
+  0 - Front Left
+Time per period = 2.978708
+  0 - Front Left
 
 
 
