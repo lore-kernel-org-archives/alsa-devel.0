@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Thu, 23 Jun 2005 15:35:53 +0200
-Message-ID: <3dc19a17b877e1b6a2107bae5faf61fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Thu, 23 Jun 2005 16:48:23 +0200
+Message-ID: <40b64f368158ecda5757f9b2e34f93e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F91D212
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 15:35:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E08E21B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 16:48:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,101 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                JKnife
-Assigned To:                
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   1_OTHERS
+Issue ID:                   1023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-23-2005 15:35 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              06-23-2005 16:48 CEST
 ======================================================================
-Summary:                    Riptide/Context Audio Drivers
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
+
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 15:26 
+ perex - 06-20-05 11:00 
 ----------------------------------------------------------------------
-Also, it would be nice if you can contact with linuxant guys as the
-original patch author.  They look also for the porting of this to ALSA,
-too (according to the notes in their web page:
-http://www.linuxant.com/drivers/riptide/limitations.php
-)
-
-Possibly they could accept to change the license to move to linux-kernel
-tree...
+Could you try ens1371-reset.patch ?
 
 ----------------------------------------------------------------------
- nokos - 06-23-05 15:35 
+ yafrank - 06-23-05 16:48 
 ----------------------------------------------------------------------
-liuxant guys:I have already geiven them the code last year and again this
-year, but they didn't use it so far. I guess they couldn't easily convert
-it to an external kernel module due to the dependends on the AC97 stuff.
-
-Have you experience with the request_frmware() stuff, then maybe you can
-add it.
-I don't use the laptop with the riptide chipset anymore, so I hope someone
-else wants to convert it to a more recent ALSA (it shouldn't be that hard,
-has the scatter/gather/memory stuff changed again?)
+I've applied the ens1371-reset.patch on alsa 1.0.9b driver and install it
+into offical kernel 2.6.12. Got similar result, still no pcm option in
+alsamixer.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
-06-08-05 15:15 tiwai          Note Added: 0004932                          
-06-08-05 23:25 JKnife         Note Added: 0004976                          
-06-15-05 14:41 nokos          Note Added: 0005027                          
-06-23-05 12:07 tiwai          Note Added: 0005176                          
-06-23-05 15:10 nokos          Note Added: 0005187                          
-06-23-05 15:21 tiwai          Note Added: 0005188                          
-06-23-05 15:26 tiwai          Note Added: 0005189                          
-06-23-05 15:35 nokos          Note Added: 0005190                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
 ======================================================================
 
 
