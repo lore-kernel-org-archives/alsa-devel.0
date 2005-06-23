@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Thu, 23 Jun 2005 15:21:36 +0200
-Message-ID: <4efd113b22e915798142532fd988a984@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 15:26:34 +0200
+Message-ID: <e3dc63980fd0002908d832712b1de160@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD2BD214
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 15:21:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6340B214
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 15:26:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-23-2005 15:21 CEST
+Last Modified:              06-23-2005 15:26 CEST
 ======================================================================
 Summary:                    Riptide/Context Audio Drivers
 Description: 
@@ -49,14 +49,6 @@ i would like you toinclude them in alsa.
 the 2.4 drivers can be found here
 http://www.linuxant.com/drivers/
 ======================================================================
-
-----------------------------------------------------------------------
- nokos - 06-23-05 15:10 
-----------------------------------------------------------------------
-There is the patch at
-http://euclid.math.brandeis.edu/~gruberp/riptide.tar.gz
-I included the original LICENCE file since the patch includes the firmware
-and I don't know under which conditions it can be redistributed.
 
 ----------------------------------------------------------------------
  tiwai - 06-23-05 15:21 
@@ -68,6 +60,18 @@ If the firmware license matters, I'd recommend you to use
 request_firmware() instead of the static image to push the stuff out of
 the kernel tree.  Then you can change your own code to GPL, and keep the
 firmware binary as the original license states.
+
+----------------------------------------------------------------------
+ tiwai - 06-23-05 15:26 
+----------------------------------------------------------------------
+Also, it would be nice if you can contact with linuxant guys as the
+original patch author.  They look also for the porting of this to ALSA,
+too (according to the notes in their web page:
+http://www.linuxant.com/drivers/riptide/limitations.php
+)
+
+Possibly they could accept to change the license to move to linux-kernel
+tree...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +87,7 @@ extreme, interwave) => OTHERS
 06-23-05 12:07 tiwai          Note Added: 0005176                          
 06-23-05 15:10 nokos          Note Added: 0005187                          
 06-23-05 15:21 tiwai          Note Added: 0005188                          
+06-23-05 15:26 tiwai          Note Added: 0005189                          
 ======================================================================
 
 
