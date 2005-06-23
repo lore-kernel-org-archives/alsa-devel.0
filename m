@@ -1,114 +1,75 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001172]: speaker-test:option -p and -f ignored
-Date: Thu, 23 Jun 2005 13:42:23 +0200
-Message-ID: <685c881b8b6cc7a9620c7bc1bcc32501@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] Fw: BUG: Kernel panic when disconnecting Edirol USB2 audio interface
+Date: Thu, 23 Jun 2005 13:45:09 +0200
+Message-ID: <1119527109.42baa0c5df4ea@www.domainfactory-webmail.de>
+References: <20050623024635.5b873305.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFB7021D
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 13:42:23 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="-MOQ11195271095e607abc2d9e56f11802ed1e29c93060"
+Return-path: <linux-usb-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20050623024635.5b873305.akpm@osdl.org>
+Sender: linux-usb-devel-admin@lists.sourceforge.net
+Errors-To: linux-usb-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
+List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
+To: Colin Fletcher <colinf@axicon.com>
+Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
 List-Id: alsa-devel@alsa-project.org
 
+This message is in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1172> 
-======================================================================
-Reported By:                norbert
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1172
-Category:                   speakertest
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             06-08-2005 15:40 CEST
-Last Modified:              06-23-2005 13:42 CEST
-======================================================================
-Summary:                    speaker-test:option -p and -f ignored
-Description: 
-speaker-test: options -p and -f are ignored
+---MOQ11195271095e607abc2d9e56f11802ed1e29c93060
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> speaker-test -c6 -p100 -f200 -Dsurround51
+Colin Fletcher wrote:
+> I hope this is the right place for this sort of bug report: if
+> there's a better place, please do point me there.
 
-speaker-test 0.0.8
+Anything related to the snd-usb-audio driver should go to alsa-devel,
+but this bug seems to be in the EHCI driver.
 
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 6 to 5461
-Period size range from 3 to 2730
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 5460
-To choose period_size = 1365
-was set period_size = 1365
-was set buffer_size = 5460
- 0 - Front Left
- 4 - Center
+> [2.] I have an Edirol UA-1000 USB 2.0 Audio Capture unit. When
+> disconnected (or powered down), it repeatably causes a kernel panic,
+> in (I think) linux/drivers/usb/host/ehci-q.c, start_unlink_async(),
 
-(sorry for choosing category aplay, but no speaker-test found)
-======================================================================
-
-----------------------------------------------------------------------
- norbert - 06-23-05 12:41 
-----------------------------------------------------------------------
-man speaker-test:
-
-... To send a nice low 75Hz tone to the Woofer and then exit without
-touch&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8208;
-       ing any other speakers:
-
-                speaker-test -Dplug:surround51 -c6 -s1 -f75
-
-They forgot -t2 in USAGE EXAMPLES and I felt into this trap by not reading
-carefully...
+You didn't mention that the device was currently playing/recording, so
+I assume it wasn't.  In this case, the oops apparently happens when the
+MIDI URBs are canceled (the MIDI input URBs are active as long as the
+driver is loaded).  Please try the attached patch; it adds two printk()s
+around the snd_usbmidi_disconnect() function.  If my theory is correct,
+the oops should happen immediately after the "killing MIDI URBs..."
+message.
 
 
-> -p option acceps the value between 1000 and 1000000. 100 is too small.
+BTW: I never had the opportunity to test my code for the UA-1000.
+Does playback/capture/MIDI work?
 
-could be added to man-page, couldn't it?
-norbert
 
-----------------------------------------------------------------------
- norbert - 06-23-05 13:42 
-----------------------------------------------------------------------
-due to -f makes sense only if sine-wave, so you can cancel -t at all.
+Regards,
+Clemens
 
-just an idea...
+---MOQ11195271095e607abc2d9e56f11802ed1e29c93060
+Content-Type: text/plain; name="umidi-disconnect.diff.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="umidi-disconnect.diff.txt"
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-08-05 15:40 norbert        New Issue                                    
-06-08-05 15:47 perex          Category                 aplay/arecord =>
-speakertest
-06-23-05 12:12 tiwai          Status                   new => resolved     
-06-23-05 12:12 tiwai          Resolution               open => not an issue
-06-23-05 12:12 tiwai          Assigned To               => tiwai           
-06-23-05 12:12 tiwai          Note Added: 0005178                          
-06-23-05 12:41 norbert        Status                   resolved => feedback
-06-23-05 12:41 norbert        Resolution               not an issue => reopened
-06-23-05 12:41 norbert        Note Added: 0005181                          
-06-23-05 13:42 norbert        Note Added: 0005185                          
-======================================================================
+LS0tIGxpbnV4L3NvdW5kL3VzYi91c2JtaWRpLmMJMjcgTWF5IDIwMDUgMTI6MTA6NTMgLTAwMDAJ
+MS40OQorKysgbGludXgvc291bmQvdXNiL3VzYm1pZGkuYwkyMyBKdW4gMjAwNSAxMTozMjo1NyAt
+MDAwMApAQCAtOTE3LDYgKzkxNyw3IEBACiAJc25kX3VzYl9taWRpX3QqIHVtaWRpOwogCWludCBp
+OwogCisJc25kX3ByaW50aygia2lsbGluZyBNSURJIFVSQnMuLi5cbiIpOwogCXVtaWRpID0gbGlz
+dF9lbnRyeShwLCBzbmRfdXNiX21pZGlfdCwgbGlzdCk7CiAJZm9yIChpID0gMDsgaSA8IE1JRElf
+TUFYX0VORFBPSU5UUzsgKytpKSB7CiAJCXNuZF91c2JfbWlkaV9lbmRwb2ludF90KiBlcCA9ICZ1
+bWlkaS0+ZW5kcG9pbnRzW2ldOwpAQCAtOTI4LDYgKzkyOSw3IEBACiAJCWlmIChlcC0+aW4gJiYg
+ZXAtPmluLT51cmIpCiAJCQl1c2Jfa2lsbF91cmIoZXAtPmluLT51cmIpOwogCX0KKwlzbmRfcHJp
+bnRrKCIuLi5kb25lXG4iKTsKIH0KIAogc3RhdGljIHZvaWQgc25kX3VzYm1pZGlfcmF3bWlkaV9m
+cmVlKHNuZF9yYXdtaWRpX3QqIHJtaWRpKQo=
 
+---MOQ11195271095e607abc2d9e56f11802ed1e29c93060--
 
 
 
@@ -117,3 +78,7 @@ SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
 speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+_______________________________________________
+linux-usb-devel@lists.sourceforge.net
+To unsubscribe, use the last form field at:
+https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
