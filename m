@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Thu, 23 Jun 2005 15:26:34 +0200
-Message-ID: <e3dc63980fd0002908d832712b1de160@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 15:35:53 +0200
+Message-ID: <3dc19a17b877e1b6a2107bae5faf61fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6340B214
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 15:26:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F91D212
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 15:35:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-23-2005 15:26 CEST
+Last Modified:              06-23-2005 15:35 CEST
 ======================================================================
 Summary:                    Riptide/Context Audio Drivers
 Description: 
@@ -49,17 +49,6 @@ i would like you toinclude them in alsa.
 the 2.4 drivers can be found here
 http://www.linuxant.com/drivers/
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-23-05 15:21 
-----------------------------------------------------------------------
-Thanks, the patch looks nice but requires a big modification to adapt to
-the latest ALSA.
-
-If the firmware license matters, I'd recommend you to use
-request_firmware() instead of the static image to push the stuff out of
-the kernel tree.  Then you can change your own code to GPL, and keep the
-firmware binary as the original license states.
 
 ----------------------------------------------------------------------
  tiwai - 06-23-05 15:26 
@@ -72,6 +61,19 @@ http://www.linuxant.com/drivers/riptide/limitations.php
 
 Possibly they could accept to change the license to move to linux-kernel
 tree...
+
+----------------------------------------------------------------------
+ nokos - 06-23-05 15:35 
+----------------------------------------------------------------------
+liuxant guys:I have already geiven them the code last year and again this
+year, but they didn't use it so far. I guess they couldn't easily convert
+it to an external kernel module due to the dependends on the AC97 stuff.
+
+Have you experience with the request_frmware() stuff, then maybe you can
+add it.
+I don't use the laptop with the riptide chipset anymore, so I hope someone
+else wants to convert it to a more recent ALSA (it shouldn't be that hard,
+has the scatter/gather/memory stuff changed again?)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +90,7 @@ extreme, interwave) => OTHERS
 06-23-05 15:10 nokos          Note Added: 0005187                          
 06-23-05 15:21 tiwai          Note Added: 0005188                          
 06-23-05 15:26 tiwai          Note Added: 0005189                          
+06-23-05 15:35 nokos          Note Added: 0005190                          
 ======================================================================
 
 
