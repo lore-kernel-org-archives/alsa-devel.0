@@ -1,54 +1,80 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: snd-via82xx on EPIA-M - 0 analog subsections not
-	ready
-Date: Thu, 23 Jun 2005 15:44:29 -0400
-Message-ID: <1119555870.13259.26.camel__38340.7787456692$1119555684$gmane$org@mindpipe>
-References: <20050623184321.GA7728@fingerbrecher>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
+Date: Thu, 23 Jun 2005 22:35:33 +0200
+Message-ID: <93b958116fcfc19958f3b6b29f95c641@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <20050623184321.GA7728@fingerbrecher>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Sebastian Henschel <sebastian@mali.geekcorps.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 882EB229
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 22:35:34 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-06-23 at 18:43 +0000, Sebastian Henschel wrote:
-> hi list,
-> 
-> i am working on a machine with an EPIA-M mainboard and the ICEensemble
-> VT1616i sound chip (see attached lspci -v).
 
-Thanks, this is an excellent bug report.  It sounds like a not quite
-fully supported device.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
+======================================================================
+Reported By:                alfred-ganz
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1209
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-23-2005 20:02 CEST
+Last Modified:              06-23-2005 22:35 CEST
+======================================================================
+Summary:                    Headphone and Front Mic are switched
+Description: 
+I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
+assignments that I can test seem to be assigned properly.
+However, there is some sound coming out of the front mike jack,
+and input is accepted through the headphone jack. Since these
+jacks work as expected with Windows XP, I suspect that they are
+misassigned in the driver.
+Hardware: RealTek ALC655 AC'97 with ALC880(D)
 
-On a related topic, it seems like a lot of users waste hours and hours
-changing settings before they even consider that they might have a
-hardware variation we have not seen before.
+Please let me know if there is anything else that you need from
+me.
 
-Since these problems will not go away until every vendor gives us full
-hardware specs, aka when hell freezes over, it would probably help to
-add to those printks ('Unknown codec', etc) some text to the effect that
-it's possibly an unknown device and they should contact alsa-devel ASAP.
-Other subsystems do things like this and it works, everyone knows to
-check dmesg, and they will do what you tell them to ;-)
+Thank you, AG
 
-I'll see if I can identify the specific errors that could indicate an
-unknown device, or anything other situation where something very strange
-has happened and we want the user to contact us with the details.  Any
-suggestions?
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ alfred-ganz - 06-23-05 22:35 
+----------------------------------------------------------------------
+Today I made some experiments with speaker-test, using -c6, and I now
+suspect that there are other assignments that are not right.
+with speaker-test -c6, which indicates "Playback device is plughw:0,0",
+I only get output on front right and front left. Unfortunately I don't
+know if I did this test right, while I am sure about headphone front mic
+switch!
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-23-05 20:02 alfred-ganz    New Issue                                    
+06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
+======================================================================
 
 
 
