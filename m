@@ -1,75 +1,92 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] Fw: BUG: Kernel panic when disconnecting Edirol USB2 audio interface
-Date: Thu, 23 Jun 2005 13:45:09 +0200
-Message-ID: <1119527109.42baa0c5df4ea@www.domainfactory-webmail.de>
-References: <20050623024635.5b873305.akpm@osdl.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001193]: no sound through speakers but sound in headphones
+Date: Thu, 23 Jun 2005 13:59:00 +0200
+Message-ID: <f26ef4734f292aff7ad2128c8a7fa8b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="-MOQ11195271095e607abc2d9e56f11802ed1e29c93060"
-Return-path: <linux-usb-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050623024635.5b873305.akpm@osdl.org>
-Sender: linux-usb-devel-admin@lists.sourceforge.net
-Errors-To: linux-usb-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
-List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
-To: Colin Fletcher <colinf@axicon.com>
-Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14E1021D
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 13:59:00 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format.
 
----MOQ11195271095e607abc2d9e56f11802ed1e29c93060
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1193> 
+======================================================================
+Reported By:                gadget
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1193
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               debian-pure64 sid
+Kernel Version:             2.6.11.11
+======================================================================
+Date Submitted:             06-15-2005 13:03 CEST
+Last Modified:              06-23-2005 13:59 CEST
+======================================================================
+Summary:                    no sound through speakers but sound in headphones
+Description: 
+I can't hear anything through the internel speakers of my notebook. The
+sound is anyway hear through the headphones. I can change the volume
+correctly, nothing is muted.
+I tried the ac97_quirk option through modprobe or direct insmod.
+I also tried other drivers without success (no card found).
+======================================================================
 
-Colin Fletcher wrote:
-> I hope this is the right place for this sort of bug report: if
-> there's a better place, please do point me there.
+----------------------------------------------------------------------
+ gadget - 06-15-05 13:10 
+----------------------------------------------------------------------
+the card is recongnized as
+x Card: ATI IXP                                                           
+                                                                          
+                                                  
+x Chip: Realtek ALC658 rev 0   
+by alsamixer
 
-Anything related to the snd-usb-audio driver should go to alsa-devel,
-but this bug seems to be in the EHCI driver.
+it appears as Realtek AC'97 under windows
 
-> [2.] I have an Edirol UA-1000 USB 2.0 Audio Capture unit. When
-> disconnected (or powered down), it repeatably causes a kernel panic,
-> in (I think) linux/drivers/usb/host/ehci-q.c, start_unlink_async(),
+----------------------------------------------------------------------
+ gadget - 06-23-05 13:59 
+----------------------------------------------------------------------
+no ideas at all ?
+it quite annoying for dvds.
 
-You didn't mention that the device was currently playing/recording, so
-I assume it wasn't.  In this case, the oops apparently happens when the
-MIDI URBs are canceled (the MIDI input URBs are active as long as the
-driver is loaded).  Please try the attached patch; it adds two printk()s
-around the snd_usbmidi_disconnect() function.  If my theory is correct,
-the oops should happen immediately after the "killing MIDI URBs..."
-message.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-15-05 13:03 gadget         New Issue                                    
+06-15-05 13:03 gadget         Distribution              => debian-pure64 sid
+06-15-05 13:03 gadget         Kernel Version            => 2.6.11.11       
+06-15-05 13:09 gadget         Issue Monitored: gadget                      
+06-15-05 13:10 gadget         Note Added: 0005022                          
+06-15-05 13:14 gadget         File Added: lsmod-report                     
+06-15-05 13:14 gadget         File Added: lspci-report                     
+06-15-05 13:15 gadget         File Added: lspci-vn-report                    
+06-15-05 13:16 gadget         File Added: lspci-vv-report                    
+06-15-05 13:16 gadget         File Added: proc-asound-report.tar.gz             
+      
+06-15-05 13:17 gadget         Issue End Monitor: gadget                    
+06-23-05 13:59 gadget         Note Added: 0005186                          
+======================================================================
 
-
-BTW: I never had the opportunity to test my code for the UA-1000.
-Does playback/capture/MIDI work?
-
-
-Regards,
-Clemens
-
----MOQ11195271095e607abc2d9e56f11802ed1e29c93060
-Content-Type: text/plain; name="umidi-disconnect.diff.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="umidi-disconnect.diff.txt"
-
-LS0tIGxpbnV4L3NvdW5kL3VzYi91c2JtaWRpLmMJMjcgTWF5IDIwMDUgMTI6MTA6NTMgLTAwMDAJ
-MS40OQorKysgbGludXgvc291bmQvdXNiL3VzYm1pZGkuYwkyMyBKdW4gMjAwNSAxMTozMjo1NyAt
-MDAwMApAQCAtOTE3LDYgKzkxNyw3IEBACiAJc25kX3VzYl9taWRpX3QqIHVtaWRpOwogCWludCBp
-OwogCisJc25kX3ByaW50aygia2lsbGluZyBNSURJIFVSQnMuLi5cbiIpOwogCXVtaWRpID0gbGlz
-dF9lbnRyeShwLCBzbmRfdXNiX21pZGlfdCwgbGlzdCk7CiAJZm9yIChpID0gMDsgaSA8IE1JRElf
-TUFYX0VORFBPSU5UUzsgKytpKSB7CiAJCXNuZF91c2JfbWlkaV9lbmRwb2ludF90KiBlcCA9ICZ1
-bWlkaS0+ZW5kcG9pbnRzW2ldOwpAQCAtOTI4LDYgKzkyOSw3IEBACiAJCWlmIChlcC0+aW4gJiYg
-ZXAtPmluLT51cmIpCiAJCQl1c2Jfa2lsbF91cmIoZXAtPmluLT51cmIpOwogCX0KKwlzbmRfcHJp
-bnRrKCIuLi5kb25lXG4iKTsKIH0KIAogc3RhdGljIHZvaWQgc25kX3VzYm1pZGlfcmF3bWlkaV9m
-cmVlKHNuZF9yYXdtaWRpX3QqIHJtaWRpKQo=
-
----MOQ11195271095e607abc2d9e56f11802ed1e29c93060--
 
 
 
@@ -78,7 +95,3 @@ SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
 speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-_______________________________________________
-linux-usb-devel@lists.sourceforge.net
-To unsubscribe, use the last form field at:
-https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
