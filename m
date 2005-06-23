@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 23 Jun 2005 19:21:05 +0200
-Message-ID: <bb01e4313a85a0a872682fdb926f5245@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 19:26:14 +0200
+Message-ID: <91c0824e2675f493e76c45614cc814de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E5A321B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 19:21:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F23A1F8
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 19:26:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-23-2005 19:21 CEST
+Last Modified:              06-23-2005 19:26 CEST
 ======================================================================
 Summary:                    Realtek ALC650 output problem
 Description: 
@@ -51,12 +51,6 @@ instead of the black connector (the black connector doesn't work).
 
 I haven't got this problem with Windows.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-23-05 12:01 
-----------------------------------------------------------------------
-To be sure: how did you test the surround outputs?
-For testing surround speakers, try speaker-test in alsa-utils at first.
 
 ----------------------------------------------------------------------
  willits - 06-23-05 19:21 
@@ -80,6 +74,20 @@ I have got this result :
 Very strange bug, I haven't got this bug under Windows. (So no connector
 problem)
 
+----------------------------------------------------------------------
+ willits - 06-23-05 19:26 
+----------------------------------------------------------------------
+Oups, forget the last post, (I had got line-in-as-surround enabled)
+
+Now, good result :
+
+ 0 - Front Left -> Work
+ 4 - Center -> Rear left
+ 1 - Front Right -> Work
+ 3 - Rear Right -> Subwoofer
+ 2 - Rear Left -> Center
+ 5 - LFE -> Rear Right
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -102,6 +110,7 @@ Date Modified  Username       Field                    Change
 06-23-05 11:56 pzad           Note Added: 0005172                          
 06-23-05 12:01 tiwai          Note Added: 0005174                          
 06-23-05 19:21 willits        Note Added: 0005192                          
+06-23-05 19:26 willits        Note Added: 0005193                          
 ======================================================================
 
 
