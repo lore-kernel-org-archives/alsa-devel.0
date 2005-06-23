@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001211]: type dmix produces noise, type plug slave.pcm "dmix" does not on SB EXtigy
-Date: Fri, 24 Jun 2005 00:02:44 +0200
-Message-ID: <6fb4ca300ef539c63e449af703a58f24@bugtrack.alsa-project.org>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] 2/3 miro: MPU-401 error action bugfix
+Date: Fri, 24 Jun 2005 01:02:12 +0200
+Message-ID: <20050623230212.GA3294@tuba>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="82I3+IH0IqGh5yIs"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 954C5207
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 00:02:44 +0200 (MEST)
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2358321E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 00:59:49 +0200 (MEST)
+Received: from ml by tuba with local (Exim 4.50)
+	id 1Dlai4-0000rw-SV
+	for alsa-devel@alsa-project.org; Fri, 24 Jun 2005 01:02:12 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +25,32 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1211> 
-======================================================================
-Reported By:                andersin
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1211
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             06-24-2005 00:02 CEST
-Last Modified:              06-24-2005 00:02 CEST
-======================================================================
-Summary:                    type dmix produces noise, type plug slave.pcm "dmix"
-does not on SB EXtigy
-Description: 
-I recently noticed crackling sound when using the dmix plugin. While the
-simple case { type plug; slave.pcm "dmix" } works, { type dmix; slave.pcm
-"extigy" } (where extigy is the pcm for the card) produces a crackling
-sound. (I observe the same problem with my build in ICH4 card, but AFAIR
-this has been reported already).
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I have tried a variety of buffering and period settings that I found in
-various documentations on the web, but all attempts were unsuccessful.
-======================================================================
+An if statement which executes snd_mpu401_uart_new() doesn't run the 
+correct action if it fails. A line with an error message was missing.
+The patch completes the if statement by adding a message.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-24-05 00:02 andersin       New Issue                                    
-06-24-05 00:02 andersin       Kernel Version            => 2.6.11          
-======================================================================
+Signed-off-by: Martin Langer <martin-langer@gmx.de>
 
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="miro_mpu401.patch"
 
+--- isa/opti9xx/miro.c.1_miro_pcm20revE	Thu Jun 23 21:56:34 2005
++++ isa/opti9xx/miro.c	Fri Jun 24 00:16:27 2005
+@@ -1330,6 +1330,7 @@
+ 		if ((error = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
+ 				miro->mpu_port, 0, miro->mpu_irq, SA_INTERRUPT,
+ 				&rmidi)))
++			snd_printk("no MPU-401 device at 0x%lx?\n", miro->mpu_port);
+ 
+ 	/* the aci mixer is muted after reset */
+ 
+
+--82I3+IH0IqGh5yIs--
 
 
 -------------------------------------------------------
