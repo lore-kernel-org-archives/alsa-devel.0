@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001096]: no capture with M-Audio Revolution 7.1
-Date: Thu, 23 Jun 2005 08:18:23 +0200
-Message-ID: <da66ec84f48b3e8ad8f9717167895ce7@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 10:43:09 +0200
+Message-ID: <f6de686edb452151dc576732aa5f0c4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0113721D
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 08:18:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E97C21F
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 10:43:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-07-2005 21:28 CEST
-Last Modified:              06-23-2005 08:18 CEST
+Last Modified:              06-23-2005 10:43 CEST
 ======================================================================
 Summary:                    no capture with M-Audio Revolution 7.1
 Description: 
@@ -334,53 +334,6 @@ has duplicate       0001164 aoss + skype: volume_adjust: SOUND_MIXE...
 ======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 06-23-05 01:30 
-----------------------------------------------------------------------
-Lee, regarding this:
-
-"
-No, when you file a bug report the first thing you should do is whatever
-the developers ask.
-
-You are asking someone to take the time to dig out their Revolution 7.1,
-shut down their machine, install it, and try to replicate your bug, when
-you won't even perform the most basic debugging steps?
-
-Sorry, that's not how it works. If you're not willing to even test
-"arecord", then I'm going to close this as NOTABUG. You are just wasting
-our time at this point.
-".
-
-If you are the authority to close this bug, what can I do ?
-
-I wrote to alsa-user@lists.sourceforge.net the mailing list and I wrote
-it
-here - there are basic steps which should be followed.
-
-First I want to hear from developers that they can reproduce my problem.
-
-If they can, I will follow the steps they suggest to run, including
-running
-'arecord'.
-
-You haven't replied to your -> my point that developers might be running
-different kinds of HW.
-
-You know better than I the story of Dell (?) SB Live 5.1 - which was not
-at
-all compatible with "regular" SB 5.1. It took probably a year a more to
-make the "Dell" SB 5.1 work.
-
-So, why shouldn't we verify that the problem reported by me can be
-reproduced ?
-
-Have you invented a new debugging methodology proving that the step of
-reproducing the bug is unnecessary ?
-
-Thanks,
-  Sergei.
-
-----------------------------------------------------------------------
  pzad - 06-23-05 08:18 
 ----------------------------------------------------------------------
 "At this stage functionality of 'arecord' is secondary - I need first to
@@ -390,6 +343,23 @@ sound in the headphones."
 Maybe there is no route from Line In to Headphone in card itself. Windows
 drivers can use capture and playback to reroute signal from line in to
 headphone. AFAIK this is not supported out of box in alsa.
+
+----------------------------------------------------------------------
+ tiwai - 06-23-05 10:43 
+----------------------------------------------------------------------
+Sigh, these many threads came just from a misunderstanding of the term
+"capture".  What the reporter wants is the "loopback (from capture)", not
+the capture we (audio deveopers) usually call.
+As Peter and Lee mentioned, the loopback controls are often (or in almost
+100% cases) implemented independently from the real capture (aka
+recording).
+
+On ICE1724, the loopback can be enabled by setting the "H/W Playback
+Route" control.  You'll see controls "H/W", "H/W1".."H/W7" in alsamixer. 
+They are the routing of each channel 0-7.
+You can choose independently the playback source from either the
+corresponding PCM channel, analog input or SPDIF input.  Change H/W and
+H/W1 to H/W In 0 and H/W In 1 via up/down key.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -414,6 +384,7 @@ Date Modified  Username       Field                    Change
 06-23-05 01:13 rlrevell       Note Added: 0005160                          
 06-23-05 01:30 sst4           Note Added: 0005161                          
 06-23-05 08:18 pzad           Note Added: 0005163                          
+06-23-05 10:43 tiwai          Note Added: 0005164                          
 ======================================================================
 
 
