@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 23 Jun 2005 11:17:19 +0200
-Message-ID: <cbee8edcf86e1e7db11198f1a9daffb5@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 11:23:33 +0200
+Message-ID: <75243b57c035edd890f6e87501680061@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1169821F
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 11:17:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1242F220
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 11:23:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-23-2005 11:17 CEST
+Last Modified:              06-23-2005 11:23 CEST
 ======================================================================
 Summary:                    Realtek ALC650 output problem
 Description: 
@@ -53,27 +53,6 @@ I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 18:12 
-----------------------------------------------------------------------
-Hmm, then this sounds like a long-standing bug of ALC650 support code.
-Interestingly, this seems to get fixed on some ALC650 revisions, but you 
-seem to have no luck yet.
-
-What I don't understand is "black jack" in your description.  How many
-jacks does the device have and how are they supposed to work?
-
-BTW, with ALSA 1.0.9, there is no longer "Line-In As Surround" and "Mic As
-Center/LFE" switches.  If you still see these switches in alsamixer, it
-means that you're using an older verison.
-
-These controls are merged to "Channel Mode" enum control and "Surround
-Jack Mode" on 1.0.9.  For 6-channel output, choose "6ch" in the former
-control.  Usually it's chosen automatically when you use "surround51" PCM
-output.
-The latter determines whether to use shared jacks or independet jacks.  If
-you have independent surround output jacks, choose "Independent" there.
-
-----------------------------------------------------------------------
  willits - 06-23-05 11:17 
 ----------------------------------------------------------------------
 (I haven't got a perfect english), the "black jack" is one of 5 audio
@@ -84,6 +63,12 @@ I have find that under Suse, packages alsa-firmware and alsa-tool are in
 1.0.8 version, but the package are in 1.0.9. I have upgraded it to 1.0.9.
 
 I try with these new driver.
+
+----------------------------------------------------------------------
+ willits - 06-23-05 11:23 
+----------------------------------------------------------------------
+With alsa 1.0.9, alsamixer say : "AlsaMixer v1.0.9a" and I have got the
+same AlsaMixer than before.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -102,6 +87,7 @@ Date Modified  Username       Field                    Change
 06-17-05 20:34 willits        Note Added: 0005080                          
 06-22-05 18:12 tiwai          Note Added: 0005139                          
 06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
 ======================================================================
 
 
