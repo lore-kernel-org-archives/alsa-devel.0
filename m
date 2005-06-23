@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Thu, 23 Jun 2005 23:21:55 +0200
-Message-ID: <919246493fc9deb9569bd2e69e91aec3@bugtrack.alsa-project.org>
+Date: Thu, 23 Jun 2005 23:29:57 +0200
+Message-ID: <2fa3d8fd0c935742d58a76d9d9e5d664@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91BAF229
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 23:21:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCA08229
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 23:29:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-23-2005 23:21 CEST
+Last Modified:              06-23-2005 23:29 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,21 +60,16 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-23-05 22:35 
-----------------------------------------------------------------------
-Today I made some experiments with speaker-test, using -c6, and I now
-suspect that there are other assignments that are not right.
-with speaker-test -c6, which indicates "Playback device is plughw:0,0",
-I only get output on front right and front left. Unfortunately I don't
-know if I did this test right, while I am sure about headphone front mic
-switch!
-
-----------------------------------------------------------------------
  alfred-ganz - 06-23-05 23:21 
 ----------------------------------------------------------------------
 Yup, I had not enabled c6 mode with alsamixer, the default was c2, and
 now I can hear rear right and left on Line In, but nothing on the Side 
 Surround Jack, and nothing on Center/Subwoofer and LFE.
+
+----------------------------------------------------------------------
+ erik - 06-23-05 23:29 
+----------------------------------------------------------------------
+I have the same problem, front Headphone/Mic jacks swapped on ALC880
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -82,6 +77,7 @@ Date Modified  Username       Field                    Change
 06-23-05 20:02 alfred-ganz    New Issue                                    
 06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
 06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
+06-23-05 23:29 erik           Note Added: 0005198                          
 ======================================================================
 
 
