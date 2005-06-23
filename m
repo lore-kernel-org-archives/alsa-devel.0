@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
-Date: Thu, 23 Jun 2005 12:10:03 +0200
-Message-ID: <997b4d0620b61ecbcd528058c7d28dbe@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001172]: speaker-test:option -p and -f ignored
+Date: Thu, 23 Jun 2005 12:12:34 +0200
+Message-ID: <c12cf8a32145f33bf61df5f54dd7eabe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D908A164
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:10:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53768219
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:12:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1172> 
 ======================================================================
-Reported By:                sgoodall
-Assigned To:                
+Reported By:                norbert
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1178
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   1172
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-09-2005 16:09 CEST
-Last Modified:              06-23-2005 12:10 CEST
+Date Submitted:             06-08-2005 15:40 CEST
+Last Modified:              06-23-2005 12:12 CEST
 ======================================================================
-Summary:                    Headphone and Speaker volume control
+Summary:                    speaker-test:option -p and -f ignored
 Description: 
-The master contol on this device does not affect the headphone speaker
-socket volume. This is a problem for assigning keyboard shortcuts (using
-gnome) to the voume controls as these get mapped to the master control. So
-when using headphones (which I usually do) i cannot control the volume.
-Ideally the master control can also affect the headphone volume, and have
-a separate control for the main speakers. (I would like to be able to keep
-these muted so sounds does not play should headphones not be plugged in
-unless I explicitly enable them).
-I am running fc3 on a dell inspiron 8500.
+speaker-test: options -p and -f are ignored
+
+> speaker-test -c6 -p100 -f200 -Dsurround51
+
+speaker-test 0.0.8
+
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 6 to 5461
+Period size range from 3 to 2730
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 5460
+To choose period_size = 1365
+was set period_size = 1365
+was set buffer_size = 5460
+ 0 - Front Left
+ 4 - Center
+
+(sorry for choosing category aplay, but no speaker-test found)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 12:10 
+ tiwai - 06-23-05 12:12 
 ----------------------------------------------------------------------
-First, please try the latest ALSA version.  This might have been already
-fixed.
-
-If not, you can pass "ac97_quirk=hp_only" option so that both master and
-headphone volumes are bound together.
+-p option acceps the value between 1000 and 1000000.  100 is too small.
+-f option specifies the frequency of sine waves.  If you use pink noises,
+it doesn't change anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:09 sgoodall       New Issue                                    
-06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:09 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
-06-23-05 12:10 tiwai          Note Added: 0005177                          
+06-08-05 15:40 norbert        New Issue                                    
+06-08-05 15:47 perex          Category                 aplay/arecord =>
+speakertest
+06-23-05 12:12 tiwai          Status                   new => resolved     
+06-23-05 12:12 tiwai          Resolution               open => not an issue
+06-23-05 12:12 tiwai          Assigned To               => tiwai           
+06-23-05 12:12 tiwai          Note Added: 0005178                          
 ======================================================================
 
 
