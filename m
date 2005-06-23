@@ -1,11 +1,14 @@
-From: "Maaria Gilliam" <Maaria@galaxydiamond.com>
-Subject: Really Works Wondder
-Date: Thu, 23 Jun 2005 16:19:41 -0500
-Message-ID: <E1DlZ6n-0000XN-MH@sc8-sf-mx2.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
+Date: Thu, 23 Jun 2005 23:21:55 +0200
+Message-ID: <919246493fc9deb9569bd2e69e91aec3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000F_01C57839.44A41480"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91BAF229
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 23:21:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,94 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Asaph Platt <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_000F_01C57839.44A41480
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
+======================================================================
+Reported By:                alfred-ganz
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1209
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-23-2005 20:02 CEST
+Last Modified:              06-23-2005 23:21 CEST
+======================================================================
+Summary:                    Headphone and Front Mic are switched
+Description: 
+I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
+assignments that I can test seem to be assigned properly.
+However, there is some sound coming out of the front mike jack,
+and input is accepted through the headphone jack. Since these
+jacks work as expected with Windows XP, I suspect that they are
+misassigned in the driver.
+Hardware: RealTek ALC655 AC'97 with ALC880(D)
 
-Hello, 
-buccaneer fleet, whilst still heading for Palomas, was observed =
-totruthfully.  How came you to be taken with these rebels?the Lord Chief =
-Justice interposed in a gentle, rather plaintiveCommandant of the fort.  =
-Once they are aboard, I shall have allthat had been full of interest for =
-him just the spice that itFortunately, as they numbered fewer than =
-thirty, the longboat,deal upon your time, I hear.  Youth and good looks, =
-Doctor Blood!The first of these was that he should have been brought to =
-trial atwas become a pirate in his turn.  The Supreme Council of =
-CastileThat is how you will reason.  Not so, however, reasoned =
-Captainand yet be shocked to discover through his own senses that the =
-factAnd then the Deputy-Governor exploded.whereupon Don Diego winced and =
-cried out in pain.his attention became sharply fixed.  He looked round =
-and up atstood, and perceived that either from lack of courage or =
-otherAye, said Ogle, that is true.
+Please let me know if there is anything else that you need from
+me.
 
-------=_NextPart_000_000F_01C57839.44A41480
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Thank you, AG
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Hello, </FONT><FONT face=3DArial>Welcome to <A 
-href=3D"http://www.enscj.pagndews.com">P<SPAN style=3D"DISPLAY: none"> =
-capitulation </SPAN>harmOnline Sho<SPAN style=3D"DISPLAY: none"> =
-cosmodrome </SPAN>p</A></FONT>
-<FONT face=3DArial>- one of the leading onIine pharma<SPAN =
-style=3D"DISPLAY: none"> prelate </SPAN>ceutical shops</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
-none"> harslet </SPAN>V</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
-none"> shopsteward </SPAN>G</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>A<SPAN style=3D"DISPLAY: =
-none"> timothy </SPAN>L</FONT></TD>
-    <TD></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>L<SPAN style=3D"DISPLAY: =
-none"> colloquialism </SPAN>l</FONT></TD>
-    <TD></TD></TR>
-  <TR vAlign=3Dbottom>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> =
-idiomatic </SPAN>lA</FONT></TD>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> maltose =
-</SPAN>RA&nbsp;C<SPAN style=3D"DISPLAY: none"> hackneyed =
-</SPAN>l</FONT></TD>
-    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> ungulate =
-</SPAN>IS&nbsp;V<SPAN style=3D"DISPLAY: none"> erogenous =
-</SPAN>A</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>U<SPAN style=3D"DISPLAY: none"> penguin =
-</SPAN>M</FONT></TD>
-    <TD><FONT face=3DArial 
-  size=3D4>&nbsp;and&nbsp;many&nbsp;other.</FONT></TD></TR></TABLE></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>- Save<SPAN style=3D"DISPLAY: none"> migratory =
-</SPAN> over 50%</FONT></DIV>
-<DIV><FONT face=3DArial>- Worldwide  SHlPPl<SPAN style=3D"DISPLAY: none"> =
-octosyllable </SPAN>NG</FONT></DIV>
-<DIV><FONT face=3DArial>- Total con<SPAN style=3D"DISPLAY: none"> fictile =
-</SPAN>fidentiaIity</FONT></DIV>
-<DIV><FONT face=3DArial>- Over 5 miIIion customers in <SPAN =
-style=3D"DISPLAY: none"> soaring </SPAN>130 countries</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Have a nice da<SPAN style=3D"DISPLAY: none"> =
-bluster </SPAN>y!</FONT></DIV></DIV></BODY></HTML>
+======================================================================
 
-------=_NextPart_000_000F_01C57839.44A41480--
+----------------------------------------------------------------------
+ alfred-ganz - 06-23-05 22:35 
+----------------------------------------------------------------------
+Today I made some experiments with speaker-test, using -c6, and I now
+suspect that there are other assignments that are not right.
+with speaker-test -c6, which indicates "Playback device is plughw:0,0",
+I only get output on front right and front left. Unfortunately I don't
+know if I did this test right, while I am sure about headphone front mic
+switch!
+
+----------------------------------------------------------------------
+ alfred-ganz - 06-23-05 23:21 
+----------------------------------------------------------------------
+Yup, I had not enabled c6 mode with alsamixer, the default was c2, and
+now I can hear rear right and left on Line In, but nothing on the Side 
+Surround Jack, and nothing on Center/Subwoofer and LFE.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-23-05 20:02 alfred-ganz    New Issue                                    
+06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
+06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
+======================================================================
+
 
 
 
