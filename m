@@ -1,23 +1,23 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-user] snd-via82xx on EPIA-M - 0 analog subsections not
- ready
+Subject: Re: snd-via82xx on EPIA-M - 0 analog subsections not
+	ready
 Date: Thu, 23 Jun 2005 15:44:29 -0400
-Message-ID: <1119555870.13259.26.camel@mindpipe>
+Message-ID: <1119555870.13259.26.camel__38340.7787456692$1119555684$gmane$org@mindpipe>
 References: <20050623184321.GA7728@fingerbrecher>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Return-path: <alsa-user-admin@lists.sourceforge.net>
 In-Reply-To: <20050623184321.GA7728@fingerbrecher>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
 To: Sebastian Henschel <sebastian@mali.geekcorps.org>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
