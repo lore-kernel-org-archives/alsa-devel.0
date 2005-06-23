@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 23 Jun 2005 22:42:50 +0200
-Message-ID: <768099d7af83441a68b89a5ac495ce28@bugtrack.alsa-project.org>
+From: "Maaria Gilliam" <Maaria@galaxydiamond.com>
+Subject: Really Works Wondder
+Date: Thu, 23 Jun 2005 16:19:41 -0500
+Message-ID: <E1DlZ6n-0000XN-MH@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000F_01C57839.44A41480"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C7211BC
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 22:42:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +15,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Asaph Platt <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
-======================================================================
-Reported By:                willits
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-23-2005 22:42 CEST
-======================================================================
-Summary:                    Realtek ALC650 output problem
-Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+------=_NextPart_000_000F_01C57839.44A41480
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I haven't got this problem with Windows.
-======================================================================
+Hello, 
+buccaneer fleet, whilst still heading for Palomas, was observed =
+totruthfully.  How came you to be taken with these rebels?the Lord Chief =
+Justice interposed in a gentle, rather plaintiveCommandant of the fort.  =
+Once they are aboard, I shall have allthat had been full of interest for =
+him just the spice that itFortunately, as they numbered fewer than =
+thirty, the longboat,deal upon your time, I hear.  Youth and good looks, =
+Doctor Blood!The first of these was that he should have been brought to =
+trial atwas become a pirate in his turn.  The Supreme Council of =
+CastileThat is how you will reason.  Not so, however, reasoned =
+Captainand yet be shocked to discover through his own senses that the =
+factAnd then the Deputy-Governor exploded.whereupon Don Diego winced and =
+cried out in pain.his attention became sharply fixed.  He looked round =
+and up atstood, and perceived that either from lack of courage or =
+otherAye, said Ogle, that is true.
 
-----------------------------------------------------------------------
- willits - 06-23-05 19:26 
-----------------------------------------------------------------------
-Oups, forget the last post, (I had got line-in-as-surround enabled)
+------=_NextPart_000_000F_01C57839.44A41480
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Now, good result :
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Hello, </FONT><FONT face=3DArial>Welcome to <A 
+href=3D"http://www.enscj.pagndews.com">P<SPAN style=3D"DISPLAY: none"> =
+capitulation </SPAN>harmOnline Sho<SPAN style=3D"DISPLAY: none"> =
+cosmodrome </SPAN>p</A></FONT>
+<FONT face=3DArial>- one of the leading onIine pharma<SPAN =
+style=3D"DISPLAY: none"> prelate </SPAN>ceutical shops</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
+none"> harslet </SPAN>V</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: =
+none"> shopsteward </SPAN>G</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4>A<SPAN style=3D"DISPLAY: =
+none"> timothy </SPAN>L</FONT></TD>
+    <TD></TD>
+    <TD rowSpan=3D2><FONT face=3DArial size=3D4>L<SPAN style=3D"DISPLAY: =
+none"> colloquialism </SPAN>l</FONT></TD>
+    <TD></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> =
+idiomatic </SPAN>lA</FONT></TD>
+    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> maltose =
+</SPAN>RA&nbsp;C<SPAN style=3D"DISPLAY: none"> hackneyed =
+</SPAN>l</FONT></TD>
+    <TD><FONT face=3DArial size=3D4><SPAN style=3D"DISPLAY: none"> ungulate =
+</SPAN>IS&nbsp;V<SPAN style=3D"DISPLAY: none"> erogenous =
+</SPAN>A</FONT></TD>
+    <TD><FONT face=3DArial size=3D4>U<SPAN style=3D"DISPLAY: none"> penguin =
+</SPAN>M</FONT></TD>
+    <TD><FONT face=3DArial 
+  size=3D4>&nbsp;and&nbsp;many&nbsp;other.</FONT></TD></TR></TABLE></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>- Save<SPAN style=3D"DISPLAY: none"> migratory =
+</SPAN> over 50%</FONT></DIV>
+<DIV><FONT face=3DArial>- Worldwide  SHlPPl<SPAN style=3D"DISPLAY: none"> =
+octosyllable </SPAN>NG</FONT></DIV>
+<DIV><FONT face=3DArial>- Total con<SPAN style=3D"DISPLAY: none"> fictile =
+</SPAN>fidentiaIity</FONT></DIV>
+<DIV><FONT face=3DArial>- Over 5 miIIion customers in <SPAN =
+style=3D"DISPLAY: none"> soaring </SPAN>130 countries</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Have a nice da<SPAN style=3D"DISPLAY: none"> =
+bluster </SPAN>y!</FONT></DIV></DIV></BODY></HTML>
 
- 0 - Front Left -> Work
- 4 - Center -> Rear left
- 1 - Front Right -> Work
- 3 - Rear Right -> Subwoofer
- 2 - Rear Left -> Center
- 5 - LFE -> Rear Right
-
-----------------------------------------------------------------------
- pzad - 06-23-05 22:42 
-----------------------------------------------------------------------
-Try to play with "Swap Surround Slot" (the most left item in alsamixer).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
-06-17-05 20:32 willits        Note Added: 0005079                          
-06-17-05 20:34 willits        Note Added: 0005080                          
-06-22-05 18:12 tiwai          Note Added: 0005139                          
-06-23-05 11:17 willits        Note Added: 0005168                          
-06-23-05 11:23 willits        Note Added: 0005169                          
-06-23-05 11:23 jcdutton       Note Added: 0005170                          
-06-23-05 11:56 pzad           Note Added: 0005172                          
-06-23-05 12:01 tiwai          Note Added: 0005174                          
-06-23-05 19:21 willits        Note Added: 0005192                          
-06-23-05 19:26 willits        Note Added: 0005193                          
-06-23-05 22:42 pzad           Note Added: 0005196                          
-======================================================================
-
+------=_NextPart_000_000F_01C57839.44A41480--
 
 
 
