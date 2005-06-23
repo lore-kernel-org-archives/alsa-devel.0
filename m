@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001172]: speaker-test:option -p and -f ignored
-Date: Thu, 23 Jun 2005 12:12:34 +0200
-Message-ID: <c12cf8a32145f33bf61df5f54dd7eabe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001208]: 2 Typos and a little Question to device.c
+Date: Thu, 23 Jun 2005 12:14:24 +0200
+Message-ID: <748fc00dbd12dbbed98cbb3ebc98272d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53768219
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:12:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A47421A
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:14:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1172> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1208> 
 ======================================================================
-Reported By:                norbert
-Assigned To:                tiwai
+Reported By:                Henne
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1172
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1208
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-08-2005 15:40 CEST
-Last Modified:              06-23-2005 12:12 CEST
+Date Submitted:             06-22-2005 23:58 CEST
+Last Modified:              06-23-2005 12:14 CEST
 ======================================================================
-Summary:                    speaker-test:option -p and -f ignored
+Summary:                    2 Typos and a little Question to device.c
 Description: 
-speaker-test: options -p and -f are ignored
+The comment @type of snd_device_new() is wrong. I belive it has to be
+SNDDRV_DEV_XXX instead of SNDDRV_DEV_TYPE_XXX .
 
-> speaker-test -c6 -p100 -f200 -Dsurround51
+The comment in snd_device_disconnect() has to be snd_device_disconnect
+instead of snd_device_free.
 
-speaker-test 0.0.8
+The sound_assert() macros in snd_device_new() and snd_device_register()
+have a couple of expessions, and I belive it would be better for debuggin
+if the macro calls would be called for paramter seperately, like in all
+the other functions.
 
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 6 to 5461
-Period size range from 3 to 2730
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 5460
-To choose period_size = 1365
-was set period_size = 1365
-was set buffer_size = 5460
- 0 - Front Left
- 4 - Center
-
-(sorry for choosing category aplay, but no speaker-test found)
+ 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 12:12 
+ tiwai - 06-23-05 10:50 
 ----------------------------------------------------------------------
--p option acceps the value between 1000 and 1000000.  100 is too small.
--f option specifies the frequency of sine waves.  If you use pink noises,
-it doesn't change anything.
+Agreed.  Patches are welcome :)
+(See NEWS section for the detail how to write a patch.)
+
+----------------------------------------------------------------------
+ Henne - 06-23-05 12:14 
+----------------------------------------------------------------------
+Here we go!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 15:40 norbert        New Issue                                    
-06-08-05 15:47 perex          Category                 aplay/arecord =>
-speakertest
-06-23-05 12:12 tiwai          Status                   new => resolved     
-06-23-05 12:12 tiwai          Resolution               open => not an issue
-06-23-05 12:12 tiwai          Assigned To               => tiwai           
-06-23-05 12:12 tiwai          Note Added: 0005178                          
+06-22-05 23:58 Henne          New Issue                                    
+06-23-05 10:50 tiwai          Note Added: 0005166                          
+06-23-05 12:12 Henne          File Added: device-patch.diff                    
+06-23-05 12:14 Henne          Note Added: 0005179                          
 ======================================================================
 
 
