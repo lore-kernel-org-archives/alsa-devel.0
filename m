@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 23 Jun 2005 11:23:41 +0200
-Message-ID: <dba234fedde9b1a73b22cf9c55e389a4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001207]: Cannot control front panel audio with PCM slider
+Date: Thu, 23 Jun 2005 11:51:28 +0200
+Message-ID: <b4f713d73891d4f81b9c0d9e1422cc9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B76AB223
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 11:23:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 962F81F7
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 11:51:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1207> 
 ======================================================================
-Reported By:                willits
-Assigned To:                
+Reported By:                jbrsubscribe
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
+Issue ID:                   1207
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
+Status:                     assigned
+Distribution:               SuSE
+Kernel Version:             2.6.11.4-21.7-smp (SMP)
 ======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-23-2005 11:23 CEST
+Date Submitted:             06-22-2005 18:58 CEST
+Last Modified:              06-23-2005 11:51 CEST
 ======================================================================
-Summary:                    Realtek ALC650 output problem
+Summary:                    Cannot control front panel audio with PCM slider
 Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+I am running an ASUS P5AD2-E Premium motherboard with the hda-intel/CMI9880
+audio card with alsa driver 1.0.9a installed. This board has a Front Panel
+Audio Connector (10-1 AAFP) which connects to an audio i/o module on the
+front of the system case.
+None of the mixers on the system are able to control the volume on the
+front panel connector. I have used alsamixer, KAMix, Kmix, QAMix and gamix
+- all with the same result. The volume on the Front panel connector seem
+to be set to the maximum and I have not yet found a way by which it can be
+controlled.
 
-I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- willits - 06-23-05 11:23 
+ tiwai - 06-23-05 10:57 
 ----------------------------------------------------------------------
-With alsa 1.0.9, alsamixer say : "AlsaMixer v1.0.9a" and I have got the
-same AlsaMixer than before.
+I guess you're using an OSS application?  Then the volume can't be changed
+unless you use aoss wrapper since this chip has really no volume control
+and ALSA adjusts the volume in software inside alsa-lib plugin.
 
 ----------------------------------------------------------------------
- jcdutton - 06-23-05 11:23 
+ jbrsubscribe - 06-23-05 11:51 
 ----------------------------------------------------------------------
-I have the ALC650 chip, and the output is also wrong for me.
-I will investigate why when I get a moment and then fix the driver.
+tiwai, thank you for your response. In fact I have used several different
+applications including - alsaplayer, BMP, KMPlayer, XMMS, amaroK and
+kaffeine - all with the same result.
+I wish to add that the PCM slider DOES control the volume for the Rear
+audio outputs. It is only the Front audio output (headphone) that is not
+being controlled.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
-06-17-05 20:32 willits        Note Added: 0005079                          
-06-17-05 20:34 willits        Note Added: 0005080                          
-06-22-05 18:12 tiwai          Note Added: 0005139                          
-06-23-05 11:17 willits        Note Added: 0005168                          
-06-23-05 11:23 willits        Note Added: 0005169                          
-06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-22-05 18:58 jbrsubscribe   New Issue                                    
+06-22-05 18:58 jbrsubscribe   Distribution              => SuSE            
+06-22-05 18:58 jbrsubscribe   Kernel Version            => 2.6.11.4-21.7-smp
+(SMP)
+06-22-05 19:01 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+06-23-05 10:57 tiwai          Note Added: 0005167                          
+06-23-05 11:51 jbrsubscribe   Note Added: 0005171                          
 ======================================================================
 
 
