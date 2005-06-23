@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Thu, 23 Jun 2005 16:48:23 +0200
-Message-ID: <40b64f368158ecda5757f9b2e34f93e1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Thu, 23 Jun 2005 19:21:05 +0200
+Message-ID: <bb01e4313a85a0a872682fdb926f5245@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E08E21B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 16:48:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E5A321B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 19:21:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,101 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                willits
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              06-23-2005 16:48 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-23-2005 19:21 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    Realtek ALC650 output problem
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
-
-
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-20-05 11:00 
+ tiwai - 06-23-05 12:01 
 ----------------------------------------------------------------------
-Could you try ens1371-reset.patch ?
+To be sure: how did you test the surround outputs?
+For testing surround speakers, try speaker-test in alsa-utils at first.
 
 ----------------------------------------------------------------------
- yafrank - 06-23-05 16:48 
+ willits - 06-23-05 19:21 
 ----------------------------------------------------------------------
-I've applied the ens1371-reset.patch on alsa 1.0.9b driver and install it
-into offical kernel 2.6.12. Got similar result, still no pcm option in
-alsamixer.
+I have done this command :
+speaker-test -Dplug:surround51 -c6
+
+And the result is really strange, (I have disabled duplicate front in
+AlsaMixer and Line-in-as-Surround, and I have connected the subwoofer to
+the "black connector")
+
+I have got this result :
+
+ 0 - Front Left -> Work
+ 4 - Center -> Is the rear left
+ 1 - Front Right -> Work
+ 3 - Rear Right-> No sound
+ 2 - Rear Left -> Is the center
+ 5 - LFE -> Is the rear right
+
+Very strange bug, I haven't got this bug under Windows. (So no connector
+problem)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-23-05 19:21 willits        Note Added: 0005192                          
 ======================================================================
 
 
