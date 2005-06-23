@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Thu, 23 Jun 2005 12:07:29 +0200
-Message-ID: <d175a314448c6dc1d74124f710240136@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
+Date: Thu, 23 Jun 2005 12:10:03 +0200
+Message-ID: <997b4d0620b61ecbcd528058c7d28dbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83E80219
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:07:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D908A164
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:10:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
 ======================================================================
-Reported By:                JKnife
+Reported By:                sgoodall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   1_OTHERS
+Issue ID:                   1178
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-23-2005 12:07 CEST
+Date Submitted:             06-09-2005 16:09 CEST
+Last Modified:              06-23-2005 12:10 CEST
 ======================================================================
-Summary:                    Riptide/Context Audio Drivers
+Summary:                    Headphone and Speaker volume control
 Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
+The master contol on this device does not affect the headphone speaker
+socket volume. This is a problem for assigning keyboard shortcuts (using
+gnome) to the voume controls as these get mapped to the master control. So
+when using headphones (which I usually do) i cannot control the volume.
+Ideally the master control can also affect the headphone volume, and have
+a separate control for the main speakers. (I would like to be able to keep
+these muted so sounds does not play should headphones not be plugged in
+unless I explicitly enable them).
+I am running fc3 on a dell inspiron 8500.
 ======================================================================
 
 ----------------------------------------------------------------------
- nokos - 06-15-05 14:40 
+ tiwai - 06-23-05 12:10 
 ----------------------------------------------------------------------
-I have already converted this to a alsa driver 1y ago for my private use.
-Now I don't use the laptop with chip anymore.
+First, please try the latest ALSA version.  This might have been already
+fixed.
 
-Anyone interested in the code (patch against kernel 2.6.10)?
-
-----------------------------------------------------------------------
- tiwai - 06-23-05 12:07 
-----------------------------------------------------------------------
-Yes, sure, please.
-
-I'm wondering which functionality is missing in the current ALSA code...
+If not, you can pass "ac97_quirk=hp_only" option so that both master and
+headphone volumes are bound together.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
-06-08-05 15:15 tiwai          Note Added: 0004932                          
-06-08-05 23:25 JKnife         Note Added: 0004976                          
-06-15-05 14:41 nokos          Note Added: 0005027                          
-06-23-05 12:07 tiwai          Note Added: 0005176                          
+06-09-05 16:09 sgoodall       New Issue                                    
+06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:09 sgoodall       Kernel Version            =>
+kernel-2.6.11-1.27_FC3
+06-23-05 12:10 tiwai          Note Added: 0005177                          
 ======================================================================
 
 
