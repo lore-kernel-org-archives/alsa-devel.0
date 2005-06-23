@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Thu, 23 Jun 2005 22:35:33 +0200
-Message-ID: <93b958116fcfc19958f3b6b29f95c641@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Thu, 23 Jun 2005 22:42:50 +0200
+Message-ID: <768099d7af83441a68b89a5ac495ce28@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 882EB229
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 22:35:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C7211BC
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 22:42:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                alfred-ganz
-Assigned To:                tiwai
+Reported By:                willits
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1209
-Category:                   PCI - hda-intel
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-23-2005 22:35 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-23-2005 22:42 CEST
 ======================================================================
-Summary:                    Headphone and Front Mic are switched
+Summary:                    Realtek ALC650 output problem
 Description: 
-I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
-assignments that I can test seem to be assigned properly.
-However, there is some sound coming out of the front mike jack,
-and input is accepted through the headphone jack. Since these
-jacks work as expected with Windows XP, I suspect that they are
-misassigned in the driver.
-Hardware: RealTek ALC655 AC'97 with ALC880(D)
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-Please let me know if there is anything else that you need from
-me.
-
-Thank you, AG
-
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-23-05 22:35 
+ willits - 06-23-05 19:26 
 ----------------------------------------------------------------------
-Today I made some experiments with speaker-test, using -c6, and I now
-suspect that there are other assignments that are not right.
-with speaker-test -c6, which indicates "Playback device is plughw:0,0",
-I only get output on front right and front left. Unfortunately I don't
-know if I did this test right, while I am sure about headphone front mic
-switch!
+Oups, forget the last post, (I had got line-in-as-surround enabled)
+
+Now, good result :
+
+ 0 - Front Left -> Work
+ 4 - Center -> Rear left
+ 1 - Front Right -> Work
+ 3 - Rear Right -> Subwoofer
+ 2 - Rear Left -> Center
+ 5 - LFE -> Rear Right
+
+----------------------------------------------------------------------
+ pzad - 06-23-05 22:42 
+----------------------------------------------------------------------
+Try to play with "Swap Surround Slot" (the most left item in alsamixer).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-23-05 20:02 alfred-ganz    New Issue                                    
-06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-23-05 19:21 willits        Note Added: 0005192                          
+06-23-05 19:26 willits        Note Added: 0005193                          
+06-23-05 22:42 pzad           Note Added: 0005196                          
 ======================================================================
 
 
