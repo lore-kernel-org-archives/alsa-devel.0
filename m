@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Thu, 23 Jun 2005 12:01:44 +0200
-Message-ID: <eeaa432426299c6532235b1709ecee79@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001174]: Speaker Test fails with error message(s) from alsa lib.  "problem for start_threshold"
+Date: Thu, 23 Jun 2005 12:06:08 +0200
+Message-ID: <a6bba8bb36888b7d8b5b61c9d2313fa1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81D2D219
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:01:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2390C219
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:06:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1174> 
 ======================================================================
-Reported By:                willits
-Assigned To:                
+Reported By:                herby
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   1174
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-23-2005 12:01 CEST
+Date Submitted:             06-09-2005 00:42 CEST
+Last Modified:              06-23-2005 12:06 CEST
 ======================================================================
-Summary:                    Realtek ALC650 output problem
+Summary:                    Speaker Test fails with error message(s) from alsa
+lib.  "problem for start_threshold"
 Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+Running speaker test gets me:
+>>>
+speaker-test 0.0.8
 
-I haven't got this problem with Windows.
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
+params->avail_min problem for start_threshold
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+<<<
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-23-05 11:56 
+ tiwai - 06-22-05 11:39 
 ----------------------------------------------------------------------
-I have via8233a + alc650d - and output using surround51 is OK for me with
-alsa 1.0.9b.
+The bug acked.  Will check what's going on there...
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 12:01 
+ tiwai - 06-23-05 12:06 
 ----------------------------------------------------------------------
-To be sure: how did you test the surround outputs?
-For testing surround speakers, try speaker-test in alsa-utils at first.
+Fixed on CVS.  The patch to alsa-lib is attached.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
-06-17-05 20:32 willits        Note Added: 0005079                          
-06-17-05 20:34 willits        Note Added: 0005080                          
-06-22-05 18:12 tiwai          Note Added: 0005139                          
-06-23-05 11:17 willits        Note Added: 0005168                          
-06-23-05 11:23 willits        Note Added: 0005169                          
-06-23-05 11:23 jcdutton       Note Added: 0005170                          
-06-23-05 11:56 pzad           Note Added: 0005172                          
-06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-09-05 00:42 herby          New Issue                                    
+06-13-05 19:49 herby          Issue Monitored: herby                       
+06-13-05 19:55 herby          Note Added: 0005013                          
+06-15-05 14:27 jdthood        Note Added: 0005024                          
+06-22-05 10:19 herby          Note Added: 0005120                          
+06-22-05 11:39 tiwai          Note Added: 0005123                          
+06-23-05 12:05 tiwai          File Added: pcm-sw-params.diff                    
+06-23-05 12:06 tiwai          Status                   new => resolved     
+06-23-05 12:06 tiwai          Resolution               open => fixed       
+06-23-05 12:06 tiwai          Assigned To               => tiwai           
+06-23-05 12:06 tiwai          Note Added: 0005175                          
 ======================================================================
 
 
