@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001172]: speaker-test:option -p and -f ignored
-Date: Thu, 23 Jun 2005 12:41:10 +0200
-Message-ID: <dbb16f44999b06504f86f7a4161501d2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000591]: Please allow control of shm gid
+Date: Thu, 23 Jun 2005 12:43:33 +0200
+Message-ID: <aab6d400f569b0de67f501eaa289f769@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DA7E21A
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:41:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECCA31EC
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:43:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1172> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=591> 
 ======================================================================
-Reported By:                norbert
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1172
-Category:                   speakertest
+Project:                    ALSA - lib
+Issue ID:                   591
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-08-2005 15:40 CEST
-Last Modified:              06-23-2005 12:41 CEST
+Date Submitted:             10-21-2004 10:49 CEST
+Last Modified:              06-23-2005 12:43 CEST
 ======================================================================
-Summary:                    speaker-test:option -p and -f ignored
+Summary:                    Please allow control of shm gid
 Description: 
-speaker-test: options -p and -f are ignored
+A Debian user requested:
 
-> speaker-test -c6 -p100 -f200 -Dsurround51
+> ALSA provides options to specify shm permissions, but it 
+> is currently not possible to specify a shm gid.
+> So, if I want to use dmix system-wide I have to use 
+> shm_perm 0666, but I'd rather use shm_perm 0660 and 
+> shm_gid audio if that were possible.
 
-speaker-test 0.0.8
+Please see Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=277539 "Please allow
+control of shm gid" for
+the whole submission.
 
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 6 to 5461
-Period size range from 3 to 2730
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 5460
-To choose period_size = 1365
-was set period_size = 1365
-was set buffer_size = 5460
- 0 - Front Left
- 4 - Center
-
-(sorry for choosing category aplay, but no speaker-test found)
+    http://bugs.debian.org/277539
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 12:12 
+ perex - 05-30-05 13:03 
 ----------------------------------------------------------------------
--p option acceps the value between 1000 and 1000000.  100 is too small.
--f option specifies the frequency of sine waves.  If you use pink noises,
-it doesn't change anything.
+It's in CVS, so please, wait until SF's anonymous CVS will be in sync (a
+few hours).
 
 ----------------------------------------------------------------------
- norbert - 06-23-05 12:41 
+ tiwai - 06-23-05 12:43 
 ----------------------------------------------------------------------
-man speaker-test:
-
-... To send a nice low 75Hz tone to the Woofer and then exit without
-touch&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8208;
-       ing any other speakers:
-
-                speaker-test -Dplug:surround51 -c6 -s1 -f75
-
-They forgot -t2 in USAGE EXAMPLES and I felt into this trap by not reading
-carefully...
-
-
-> -p option acceps the value between 1000 and 1000000. 100 is too small.
-
-could be added to man-page, couldn't it?
-norbert
+Closed since it's already implemented.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 15:40 norbert        New Issue                                    
-06-08-05 15:47 perex          Category                 aplay/arecord =>
-speakertest
-06-23-05 12:12 tiwai          Status                   new => resolved     
-06-23-05 12:12 tiwai          Resolution               open => not an issue
-06-23-05 12:12 tiwai          Assigned To               => tiwai           
-06-23-05 12:12 tiwai          Note Added: 0005178                          
-06-23-05 12:41 norbert        Status                   resolved => feedback
-06-23-05 12:41 norbert        Resolution               not an issue => reopened
-06-23-05 12:41 norbert        Note Added: 0005181                          
+10-21-04 10:49 jdthood        New Issue                                    
+10-21-04 17:25 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
+ 
+05-30-05 12:19 perex          Note Added: 0004801                          
+05-30-05 12:19 perex          Assigned To               => perex           
+05-30-05 12:19 perex          Status                   new => feedback     
+05-30-05 12:55 jdthood        Note Added: 0004804                          
+05-30-05 13:03 perex          Note Added: 0004806                          
+06-23-05 12:43 tiwai          Status                   feedback => resolved
+06-23-05 12:43 tiwai          Resolution               open => fixed       
+06-23-05 12:43 tiwai          Note Added: 0005183                          
 ======================================================================
 
 
