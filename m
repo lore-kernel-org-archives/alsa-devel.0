@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001207]: Cannot control front panel audio with PCM slider
-Date: Thu, 23 Jun 2005 12:52:15 +0200
-Message-ID: <e5b4d7b678c0e635d8bfa222ff4f6c3e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001172]: speaker-test:option -p and -f ignored
+Date: Thu, 23 Jun 2005 13:42:23 +0200
+Message-ID: <685c881b8b6cc7a9620c7bc1bcc32501@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB11B226
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 12:52:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFB7021D
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2005 13:42:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1207> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1172> 
 ======================================================================
-Reported By:                jbrsubscribe
+Reported By:                norbert
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1207
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   1172
+Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE
-Kernel Version:             2.6.11.4-21.7-smp (SMP)
+Status:                     feedback
 ======================================================================
-Date Submitted:             06-22-2005 18:58 CEST
-Last Modified:              06-23-2005 12:52 CEST
+Date Submitted:             06-08-2005 15:40 CEST
+Last Modified:              06-23-2005 13:42 CEST
 ======================================================================
-Summary:                    Cannot control front panel audio with PCM slider
+Summary:                    speaker-test:option -p and -f ignored
 Description: 
-I am running an ASUS P5AD2-E Premium motherboard with the hda-intel/CMI9880
-audio card with alsa driver 1.0.9a installed. This board has a Front Panel
-Audio Connector (10-1 AAFP) which connects to an audio i/o module on the
-front of the system case.
-None of the mixers on the system are able to control the volume on the
-front panel connector. I have used alsamixer, KAMix, Kmix, QAMix and gamix
-- all with the same result. The volume on the Front panel connector seem
-to be set to the maximum and I have not yet found a way by which it can be
-controlled.
+speaker-test: options -p and -f are ignored
 
+> speaker-test -c6 -p100 -f200 -Dsurround51
+
+speaker-test 0.0.8
+
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 6 to 5461
+Period size range from 3 to 2730
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 5460
+To choose period_size = 1365
+was set period_size = 1365
+was set buffer_size = 5460
+ 0 - Front Left
+ 4 - Center
+
+(sorry for choosing category aplay, but no speaker-test found)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 11:57 
+ norbert - 06-23-05 12:41 
 ----------------------------------------------------------------------
-OK, then it's a different problem than I thought.
+man speaker-test:
 
-Do you have any your own ~/.asoundrc setting?
+... To send a nice low 75Hz tone to the Woofer and then exit without
+touch&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8208;
+       ing any other speakers:
 
-Also, for testing, use aplay for simplicity.  Just run like
-    % aplay foo.wav
+                speaker-test -Dplug:surround51 -c6 -s1 -f75
+
+They forgot -t2 in USAGE EXAMPLES and I felt into this trap by not reading
+carefully...
+
+
+> -p option acceps the value between 1000 and 1000000. 100 is too small.
+
+could be added to man-page, couldn't it?
+norbert
 
 ----------------------------------------------------------------------
- jbrsubscribe - 06-23-05 12:52 
+ norbert - 06-23-05 13:42 
 ----------------------------------------------------------------------
-I do not have a .asoundrc file. I have uploaded a text file with some
-relevant information. Let me know if you received it.
+due to -f makes sense only if sine-wave, so you can cancel -t at all.
+
+just an idea...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-05 18:58 jbrsubscribe   New Issue                                    
-06-22-05 18:58 jbrsubscribe   Distribution              => SuSE            
-06-22-05 18:58 jbrsubscribe   Kernel Version            => 2.6.11.4-21.7-smp
-(SMP)
-06-22-05 19:01 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-06-23-05 10:57 tiwai          Note Added: 0005167                          
-06-23-05 11:51 jbrsubscribe   Note Added: 0005171                          
-06-23-05 11:57 tiwai          Note Added: 0005173                          
-06-23-05 12:50 jbrsubscribe   File Added: alsadout                         
-06-23-05 12:52 jbrsubscribe   Note Added: 0005184                          
+06-08-05 15:40 norbert        New Issue                                    
+06-08-05 15:47 perex          Category                 aplay/arecord =>
+speakertest
+06-23-05 12:12 tiwai          Status                   new => resolved     
+06-23-05 12:12 tiwai          Resolution               open => not an issue
+06-23-05 12:12 tiwai          Assigned To               => tiwai           
+06-23-05 12:12 tiwai          Note Added: 0005178                          
+06-23-05 12:41 norbert        Status                   resolved => feedback
+06-23-05 12:41 norbert        Resolution               not an issue => reopened
+06-23-05 12:41 norbert        Note Added: 0005181                          
+06-23-05 13:42 norbert        Note Added: 0005185                          
 ======================================================================
 
 
