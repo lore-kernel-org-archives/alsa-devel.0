@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 24 Jun 2005 18:31:34 +0200
-Message-ID: <294e1ee508c8cb047babe6ef63583e65@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 18:36:47 +0200
+Message-ID: <ceef64869c0ec8a58da152e71f7105a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C110C23D
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 18:31:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 905BA23D
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 18:36:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-24-2005 18:31 CEST
+Last Modified:              06-24-2005 18:36 CEST
 ======================================================================
 Summary:                    Realtek ALC650 output problem
 Description: 
@@ -53,19 +53,33 @@ I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- willits - 06-24-05 18:25 
-----------------------------------------------------------------------
-I have done that, and this work without "swap surround"...
-
-But I haven't got all my speaker works when I am playing an audio or Video
-file (with 2 channels)
-
-
-
-----------------------------------------------------------------------
  tiwai - 06-24-05 18:31 
 ----------------------------------------------------------------------
 Did you enable "Duplicate Front" switch?
+
+----------------------------------------------------------------------
+ willits - 06-24-05 18:36 
+----------------------------------------------------------------------
+Yes, but when I enable Duplicate front, I have got only front and rear
+speaker who work, no LFE or center. (These speaker are on the black
+connector)
+
+But I want to know If I can enable this feature of my soundcard :
+
+
+White-Side:/proc/asound/card0/codec97#0 # cat ac97#0-0
+0-0/0: Realtek ALC650E
+
+Capabilities :
+DAC resolution : 20-bit
+ADC resolution : 18-bit
+3D enhancement : Realtek 3D Stereo Enhancement --> I want to enable this
+
+Current setup
+Mic gain : +0dB [+0dB]
+POP path : pre 3D
+Sim. stereo : off
+3D enhancement : off --> This is disabled
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +119,7 @@ Date Modified  Username       Field                    Change
 06-24-05 18:23 willits        Note Added: 0005246                          
 06-24-05 18:25 willits        Note Edited: 0005246                         
 06-24-05 18:31 tiwai          Note Added: 0005247                          
+06-24-05 18:36 willits        Note Added: 0005248                          
 ======================================================================
 
 
