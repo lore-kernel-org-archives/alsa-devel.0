@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001210]: Exaudio produces noise on all speakers for 5.1 channels
-Date: Fri, 24 Jun 2005 10:16:47 +0200
-Message-ID: <b762ee6680e987b1447dd930ebeb0745@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 10:25:14 +0200
+Message-ID: <39176c8dde15e0d230fbb3f18cbbb0f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09D6E232
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 10:16:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 616741F6
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 10:25:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 23:54 CEST
-Last Modified:              06-24-2005 10:16 CEST
+Last Modified:              06-24-2005 10:25 CEST
 ======================================================================
 Summary:                    Exaudio produces noise on all speakers for 5.1
 channels
@@ -138,12 +138,6 @@ Christoph Burger-Scheidlin
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 06-24-05 09:23 
-----------------------------------------------------------------------
-What are the contents of /proc/asound/cardX/stream0 while you're playing
-with 6 channels?
-
-----------------------------------------------------------------------
  andersin - 06-24-05 10:16 
 ----------------------------------------------------------------------
 I added the output as stream0.txt. I did the same when playing 2 channel
@@ -166,6 +160,15 @@ sound, here is a diff:
      Altset 1
      Format: S16_LE
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 06-24-05 10:25 
+----------------------------------------------------------------------
+This device does neither support playback with four channels, nor recording
+with any other number than two channels.
+
+Is the distortion still present in a two-channel file that you record from
+"hw:X"?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -177,6 +180,7 @@ Date Modified  Username       Field                    Change
 06-24-05 09:23 Clemens LadischNote Added: 0005205                          
 06-24-05 10:14 andersin       File Added: stream0.txt                      
 06-24-05 10:16 andersin       Note Added: 0005208                          
+06-24-05 10:25 Clemens LadischNote Added: 0005209                          
 ======================================================================
 
 
