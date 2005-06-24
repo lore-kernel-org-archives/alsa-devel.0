@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 24 Jun 2005 17:59:39 +0200
-Message-ID: <50069cc509fe98cbfbe8e8e0411ab855@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 18:23:16 +0200
+Message-ID: <6cc522d3b33659430b17d7a5f2a55f02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D0DF23E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:59:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73B1A23B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 18:23:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-24-2005 17:59 CEST
+Last Modified:              06-24-2005 18:23 CEST
 ======================================================================
 Summary:                    Realtek ALC650 output problem
 Description: 
@@ -53,22 +53,20 @@ I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- willits - 06-24-05 17:27 
-----------------------------------------------------------------------
-I didn't really understand how I can see if there are the plugin "route".
-
-I have attached these file : ICH.conf and ICH4.conf
-
--- > There are not "route" in the file ICH4.conf, but in ICH.conf file,
-there are route.
-
-----------------------------------------------------------------------
  tiwai - 06-24-05 17:59 
 ----------------------------------------------------------------------
 Then the ICH4 does require the channel swapping?  Grr, I hate this.
 
 Try copy ICH.conf to ICH4.conf and replace the string "ICH" with "ICH4" in
 the new config file.  This should work without "Swap Surround"...
+
+----------------------------------------------------------------------
+ willits - 06-24-05 18:23 
+----------------------------------------------------------------------
+I have done that, and this work without "swap surround"...
+
+But I haven't all my speaker works when I am playing an audio or Video
+file (with 2 channels)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +103,7 @@ Date Modified  Username       Field                    Change
 06-24-05 17:28 willits        File Added: ICH4.conf                        
 06-24-05 17:28 willits        File Added: ICH.conf                         
 06-24-05 17:59 tiwai          Note Added: 0005245                          
+06-24-05 18:23 willits        Note Added: 0005246                          
 ======================================================================
 
 
