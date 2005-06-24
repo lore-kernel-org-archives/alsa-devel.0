@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 15:46:52 +0200
-Message-ID: <b6269962d029c0c74456e6f3137f0fce@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 16:07:21 +0200
+Message-ID: <d7f54ca10c930200e1c7af726c53a14b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7050B22A
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:46:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FD6E22B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 16:07:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 15:46 CEST
+Last Modified:              06-24-2005 16:07 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,14 +60,6 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-24-05 15:42 
-----------------------------------------------------------------------
-Tried to build from cvs, build works, but got "Unknown symbol" for a bunch
-of things when loading snd_hda_intel: snd_pcm_suspend_all snd_hda_resume 
-snd_pcm_hw_constraint_integer snd_hda_build_controls etc.
-How do I get a coherent release from cvs?
-
-----------------------------------------------------------------------
  tiwai - 06-24-05 15:46 
 ----------------------------------------------------------------------
 Make sure you unloaded snd-page-alloc module before loading snd-hda-intel. 
@@ -75,6 +67,18 @@ alsasound init script doesn't unload it.
 
 If you still have the similar error, take a look at kernel error messages.
  Usually you have unresolved symbols or errors there.
+
+----------------------------------------------------------------------
+ alfred-ganz - 06-24-05 16:07 
+----------------------------------------------------------------------
+There seem to be mismatches in what I build, what should I build?
+Here are the messages:
+kernel: snd_pcm: disagrees about version of symbol snd_dma_reserve_buf
+kernel: snd_pcm: disagrees about version of symbol snd_dma_free_pages
+there are more of these!
+My question is again, how do I get a coherent source set from which to
+build?
+I just did an update from the cvs sources.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -87,6 +91,7 @@ Date Modified  Username       Field                    Change
 06-24-05 11:13 tiwai          Note Added: 0005211                          
 06-24-05 15:42 alfred-ganz    Note Added: 0005229                          
 06-24-05 15:46 tiwai          Note Added: 0005230                          
+06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
 ======================================================================
 
 
