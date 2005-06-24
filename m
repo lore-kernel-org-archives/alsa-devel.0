@@ -1,17 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: PATCH] 3/3 miro: set mixer values for aci on startup
-Date: Fri, 24 Jun 2005 01:02:32 +0200
-Message-ID: <20050623230232.GA3304@tuba>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Fri, 24 Jun 2005 03:18:52 +0200
+Message-ID: <81154fd6a3dbb80b8c82e689b766ead3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F312221E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 01:00:08 +0200 (MEST)
-Received: from ml by tuba with local (Exim 4.50)
-	id 1DlaiO-0000s5-55
-	for alsa-devel@alsa-project.org; Fri, 24 Jun 2005 01:02:32 +0200
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE93E21E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 03:18:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,156 +22,162 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+======================================================================
+Reported By:                liangalei
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1134
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
+======================================================================
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              06-24-2005 03:18 CEST
+======================================================================
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
+Description: 
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-It's much better to start the PCM20 with known values in the aci regs. 
-The patch sets a bunch of mixer regs during init now. We've had a few 
-aci register inits before. Now they are all merged into one function.
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-Signed-off-by: Martin Langer <martin-langer@gmx.de>
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="miro_init.patch"
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
---- isa/opti9xx/miro.c.2_mpu401	Fri Jun 24 00:19:26 2005
-+++ isa/opti9xx/miro.c	Fri Jun 24 00:20:26 2005
-@@ -613,6 +613,68 @@
- 	.put = snd_miro_put_capture,
- }};
- 
-+static unsigned char aci_init_values[][2] __initdata = {
-+	{ ACI_SET_MUTE, 0x00 },
-+	{ ACI_SET_POWERAMP, 0x00 },
-+	{ ACI_SET_PREAMP, 0x00 },
-+	{ ACI_SET_SOLOMODE, 0x00 },
-+	{ ACI_SET_MIC + 0, 0x20 },
-+	{ ACI_SET_MIC + 8, 0x20 },
-+	{ ACI_SET_LINE + 0, 0x20 },
-+	{ ACI_SET_LINE + 8, 0x20 },
-+	{ ACI_SET_CD + 0, 0x20 },
-+	{ ACI_SET_CD + 8, 0x20 },
-+	{ ACI_SET_PCM + 0, 0x20 },
-+	{ ACI_SET_PCM + 8, 0x20 },
-+	{ ACI_SET_LINE1 + 0, 0x20 },
-+	{ ACI_SET_LINE1 + 8, 0x20 },
-+	{ ACI_SET_LINE2 + 0, 0x20 },
-+	{ ACI_SET_LINE2 + 8, 0x20 },
-+	{ ACI_SET_SYNTH + 0, 0x20 },
-+	{ ACI_SET_SYNTH + 8, 0x20 },
-+	{ ACI_SET_MASTER + 0, 0x20 },
-+	{ ACI_SET_MASTER + 1, 0x20 },
-+};
-+
-+static int __devinit snd_set_aci_init_values(miro_t *miro)
-+{
-+	int idx, error;
-+
-+	/* enable WSS on PCM1 */
-+
-+	if ((miro->aci_product == 'A') && wss) {
-+		if ((error = aci_setvalue(miro, ACI_SET_WSS, wss)) < 0) {
-+			snd_printk("enabling WSS mode failed\n");
-+			return error;
-+		}
-+	}
-+
-+	/* enable IDE port */
-+
-+	if (ide) {
-+		if ((error = aci_setvalue(miro, ACI_SET_IDE, ide)) < 0) {
-+			snd_printk("enabling IDE port failed\n");
-+			return error;
-+		}
-+	}
-+
-+	/* set common aci values */
-+
-+	for (idx = 0; idx < ARRAY_SIZE(aci_init_values); idx++)
-+                if ((error = aci_setvalue(miro, aci_init_values[idx][0], 
-+					  aci_init_values[idx][1])) < 0) {
-+                        snd_printk("aci_setvalue(%d) failed: %d\n", 
-+				   aci_init_values[idx][0], error);
-+                        return error;
-+                }
-+
-+	miro->aci_amp = 0;
-+	miro->aci_preamp = 0;
-+	miro->aci_solomode = 1;
-+
-+	return 0;
-+}
-+
- static int snd_miro_mixer(miro_t *miro)
- {
- 	snd_card_t *card;
-@@ -1332,60 +1394,9 @@
- 				&rmidi)))
- 			snd_printk("no MPU-401 device at 0x%lx?\n", miro->mpu_port);
- 
--	/* the aci mixer is muted after reset */
--
--	if (aci_cmd(miro, ACI_SET_MUTE, 0x00, -1) < 0) {
--		snd_printk("unset aci muting failed\n");
-+	if ((error = snd_set_aci_init_values(miro)) < 0) {
- 		snd_card_free(card);
--		return -EBUSY;
--	}
--
--	/* enable WSS on PCM1 */
--
--	if ((miro->aci_product == 'A') && wss) {
--		if ((error = aci_cmd(miro, ACI_SET_WSS, wss, -1)) < 0) {
--			snd_printk("jumping into WSS mode failed\n");
--			snd_card_free(card);
--			return -EIO;
--		}
--	}
--
--	/* enable IDE port */
--
--	if (ide) {
--		if ((error = aci_cmd(miro, ACI_SET_IDE, ide, -1)) < 0) {
--			snd_printk("enabling IDE port failed\n");
--			snd_card_free(card);
--			return -EIO;
--		}
--	}
--
--	/* disable aci preamp and poweramp */
--
--	if ((error = aci_setvalue(miro, ACI_SET_POWERAMP, 0)) < 0) {
--		snd_printk("unset aci power-amp failed\n");
--		snd_card_free(card);
--		return -EIO;
--	} else {
--		miro->aci_amp = 0;
--	}
--
--	if ((error = aci_setvalue(miro, ACI_SET_PREAMP, 0)) < 0) {
--		snd_printk("unset aci pre-amp failed\n");
--		snd_card_free(card);
--		return -EIO;
--	} else {
--		miro->aci_preamp = 0;
--	}
--
--	/* solo mode init */
--
--	if ((error = aci_setvalue(miro, ACI_SET_SOLOMODE, 0)) < 0) {
--		snd_printk("unset solomode failed\n");
--		snd_card_free(card);
--		return -EIO;
--	} else {
--		miro->aci_solomode = 1;
-+                return error;
- 	}
- 
- 	if ((error = snd_card_register(card))) {
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
 
---17pEHd4RhPHOinZp--
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-23-05 12:42 
+----------------------------------------------------------------------
+If the info is correct, yes, it sounds like an AMC97 chip.
+
+Please attach /etc/asound.state and all /proc/asound/card0/codec97#*/*
+files for checking the mixer state.
+
+----------------------------------------------------------------------
+ liangalei - 06-24-05 03:18 
+----------------------------------------------------------------------
+thanks for reply. 
+
+I have attach three very long file, see above "attach files".
+
+and here is some simply info, does any more info is needed ? 
+
+[lal@lal ~]$ cat /proc/asound/card0/intel8x0
+Intel8x0
+
+Global control        : 0xc0000002
+Global status         : 0x00700100
+SDM                   : 0x00000008
+AC'97 codecs ready    : primary
+AC'97 codecs SDIN     : 0 0 0
+
+
+[lal@lal ~]$ tree /proc/asound/card*
+/proc/asound/card0
+|-- codec97#0
+|   |-- ac97#0-0
+|   `-- ac97#0-0+regs
+|-- id
+|-- intel8x0
+|-- oss_mixer
+|-- pcm0c
+|   |-- info
+|   |-- oss
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm0p
+|   |-- info
+|   |-- oss
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm1c
+|   |-- info
+|   |-- oss
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm2c
+|   |-- info
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm3c
+|   |-- info
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+`-- pcm4p
+    |-- info
+    `-- sub0
+        |-- hw_params
+        |-- info
+        |-- prealloc
+        |-- status
+        `-- sw_params
+/proc/asound/cards [error opening dir]
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
