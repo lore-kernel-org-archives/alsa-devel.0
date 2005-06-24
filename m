@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001211]: type dmix produces noise, type plug slave.pcm "dmix" does not on SB EXtigy
-Date: Fri, 24 Jun 2005 11:11:29 +0200
-Message-ID: <c1441833fd8305a5a32b4503f87a98cb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
+Date: Fri, 24 Jun 2005 11:13:48 +0200
+Message-ID: <359c55bb3bf203f533d959cd0fd15bc0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CFBA1FB
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 11:11:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EC3B21E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 11:13:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1211> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
 ======================================================================
-Reported By:                andersin
-Assigned To:                Clemens Ladisch
+Reported By:                alfred-ganz
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1211
-Category:                   USB - usb-audio
+Issue ID:                   1209
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.11
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-24-2005 00:02 CEST
-Last Modified:              06-24-2005 11:11 CEST
+Date Submitted:             06-23-2005 20:02 CEST
+Last Modified:              06-24-2005 11:13 CEST
 ======================================================================
-Summary:                    type dmix produces noise, type plug slave.pcm "dmix"
-does not on SB EXtigy
+Summary:                    Headphone and Front Mic are switched
 Description: 
-I recently noticed crackling sound when using the dmix plugin. While the
-simple case { type plug; slave.pcm "dmix" } works, { type dmix; slave.pcm
-"extigy" } (where extigy is the pcm for the card) produces a crackling
-sound. (I observe the same problem with my build in ICH4 card, but AFAIR
-this has been reported already).
+I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
+assignments that I can test seem to be assigned properly.
+However, there is some sound coming out of the front mike jack,
+and input is accepted through the headphone jack. Since these
+jacks work as expected with Windows XP, I suspect that they are
+misassigned in the driver.
+Hardware: RealTek ALC655 AC'97 with ALC880(D)
 
-I have tried a variety of buffering and period settings that I found in
-various documentations on the web, but all attempts were unsuccessful.
+Please let me know if there is anything else that you need from
+me.
+
+Thank you, AG
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 11:11 
+ alfred-ganz - 06-23-05 23:55 
 ----------------------------------------------------------------------
-This might depend on what dmix parameters you use.  The parametes used in
-slave.pcm "dmix" is different from the default ones of dmix.
+Please not that at least in my case, there is significant protection
+circuitry on the mic jack, but none on the headphone jack, so reversing
+the use would be dangerous, and windows uses the jack right!
+
+----------------------------------------------------------------------
+ tiwai - 06-24-05 11:13 
+----------------------------------------------------------------------
+Try CVS version of ALSA driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-24-05 00:02 andersin       New Issue                                    
-06-24-05 00:02 andersin       Kernel Version            => 2.6.11          
-06-24-05 11:11 tiwai          Note Added: 0005210                          
+06-23-05 20:02 alfred-ganz    New Issue                                    
+06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
+06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
+06-23-05 23:29 erik           Note Added: 0005198                          
+06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
+06-24-05 11:13 tiwai          Note Added: 0005211                          
 ======================================================================
 
 
