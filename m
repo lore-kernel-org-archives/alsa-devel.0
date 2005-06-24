@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 24 Jun 2005 14:54:35 +0200
-Message-ID: <4b1c81456f6e26638ffc54b263034e78@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001211]: type dmix produces noise, type plug slave.pcm "dmix" does not on SB EXtigy
+Date: Fri, 24 Jun 2005 14:55:12 +0200
+Message-ID: <6ceb197137eeb772cf448174b89bc055@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F687216
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 14:54:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9283216
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 14:55:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1211> 
 ======================================================================
-Reported By:                willits
-Assigned To:                
+Reported By:                andersin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
+Issue ID:                   1211
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-24-2005 14:54 CEST
+Date Submitted:             06-24-2005 00:02 CEST
+Last Modified:              06-24-2005 14:55 CEST
 ======================================================================
-Summary:                    Realtek ALC650 output problem
+Summary:                    type dmix produces noise, type plug slave.pcm "dmix"
+does not on SB EXtigy
 Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+I recently noticed crackling sound when using the dmix plugin. While the
+simple case { type plug; slave.pcm "dmix" } works, { type dmix; slave.pcm
+"extigy" } (where extigy is the pcm for the card) produces a crackling
+sound. (I observe the same problem with my build in ICH4 card, but AFAIR
+this has been reported already).
 
-I haven't got this problem with Windows.
+I have tried a variety of buffering and period settings that I found in
+various documentations on the web, but all attempts were unsuccessful.
 ======================================================================
 
 ----------------------------------------------------------------------
- willits - 06-24-05 14:37 
+ andersin - 06-24-05 13:40 
 ----------------------------------------------------------------------
-I have tried, and now all speaker work !
+Even if I do not specify any parameters in my asound.conf, I can observer
+the effect. I might be wrong, but I assume, that the default settings of
+plug dmix and type dmix match.
 
-But, when I am playing a media file (a mp3), I have got only front speaker
-who work (Under windows, I have got all speaker).
+Where can I find out, which parameters the default dmix uses so that I can
+test it with that setup?
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 14:54 
+ tiwai - 06-24-05 14:55 
 ----------------------------------------------------------------------
-Swap Surround is not necessary with ICH4 but older ICH models seem
-requiring the channel swapping.
-
-Please show the content of /proc/asound/cards, and attach the files
-/proc/asound/card0/codec97#0/* files for more checks.
-Also, make sure that you installed alsa-lib-1.0.9.
-
-The playback of 2ch samples with surrounds is enabled by "Duplicate Front"
-switch, BTW.  Or, it's possible via own asoundrc configuration, too.
+In the case of aplay, you can see the plug configuration via -v option.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
-06-17-05 20:32 willits        Note Added: 0005079                          
-06-17-05 20:34 willits        Note Added: 0005080                          
-06-22-05 18:12 tiwai          Note Added: 0005139                          
-06-23-05 11:17 willits        Note Added: 0005168                          
-06-23-05 11:23 willits        Note Added: 0005169                          
-06-23-05 11:23 jcdutton       Note Added: 0005170                          
-06-23-05 11:56 pzad           Note Added: 0005172                          
-06-23-05 12:01 tiwai          Note Added: 0005174                          
-06-23-05 19:21 willits        Note Added: 0005192                          
-06-23-05 19:26 willits        Note Added: 0005193                          
-06-23-05 22:42 pzad           Note Added: 0005196                          
-06-24-05 14:37 willits        Note Added: 0005220                          
-06-24-05 14:54 tiwai          Note Added: 0005221                          
+06-24-05 00:02 andersin       New Issue                                    
+06-24-05 00:02 andersin       Kernel Version            => 2.6.11          
+06-24-05 11:11 tiwai          Note Added: 0005210                          
+06-24-05 13:40 andersin       Note Added: 0005219                          
+06-24-05 14:55 tiwai          Note Added: 0005222                          
 ======================================================================
 
 
