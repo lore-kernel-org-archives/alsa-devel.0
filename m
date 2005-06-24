@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 15:42:32 +0200
-Message-ID: <f2fd9fd62f246ae00cda51cafc5c6260@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 15:46:52 +0200
+Message-ID: <b6269962d029c0c74456e6f3137f0fce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 680B21AD
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:42:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7050B22A
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:46:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 15:42 CEST
+Last Modified:              06-24-2005 15:46 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,17 +60,21 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 11:13 
-----------------------------------------------------------------------
-Try CVS version of ALSA driver.
-
-----------------------------------------------------------------------
  alfred-ganz - 06-24-05 15:42 
 ----------------------------------------------------------------------
 Tried to build from cvs, build works, but got "Unknown symbol" for a bunch
 of things when loading snd_hda_intel: snd_pcm_suspend_all snd_hda_resume 
 snd_pcm_hw_constraint_integer snd_hda_build_controls etc.
 How do I get a coherent release from cvs?
+
+----------------------------------------------------------------------
+ tiwai - 06-24-05 15:46 
+----------------------------------------------------------------------
+Make sure you unloaded snd-page-alloc module before loading snd-hda-intel. 
+alsasound init script doesn't unload it.
+
+If you still have the similar error, take a look at kernel error messages.
+ Usually you have unresolved symbols or errors there.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -82,6 +86,7 @@ Date Modified  Username       Field                    Change
 06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
 06-24-05 11:13 tiwai          Note Added: 0005211                          
 06-24-05 15:42 alfred-ganz    Note Added: 0005229                          
+06-24-05 15:46 tiwai          Note Added: 0005230                          
 ======================================================================
 
 
