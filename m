@@ -1,11 +1,14 @@
-From: Karsten Jeppesen <karsten@jeppesens.com>
-Subject: Alsa fails to open plug:surround51
-Date: Thu, 23 Jun 2005 19:50:16 -0700
-Message-ID: <42BB74E8.4030006@jeppesens.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
+Date: Fri, 24 Jun 2005 08:11:50 +0200
+Message-ID: <276946095885f57d7ade977b55ee361a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B661A22A
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 08:11:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,18 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Xine will open default to play the dvd menu (2.0).
-Then it will issue a snd_pcm_close for that stream
 
-When it then tries to open plug:surround51 (for the movie)  then this 
-call fails with resource busy.
-What could be the reason?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
+======================================================================
+Reported By:                iljaguaro
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1192
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian Testing "Etch"
+Kernel Version:             kernel-image-2.6.11-1-k7
+======================================================================
+Date Submitted:             06-15-2005 11:38 CEST
+Last Modified:              06-24-2005 08:11 CEST
+======================================================================
+Summary:                    Microphone doesn't work in record and/or Skype
+Description: 
+The microphone input doesnt work well, the volume are too low and the noisy
+is to high, when you record it.
+======================================================================
 
+----------------------------------------------------------------------
+ iljaguaro - 06-24-05 08:11 
+----------------------------------------------------------------------
+same problem with ALSA 1.0.9b
 
-Karsten
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-15-05 11:38 iljaguaro      New Issue                                    
+06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
+06-15-05 11:38 iljaguaro      Kernel Version            =>
+kernel-image-2.6.11-1-k7
+06-24-05 08:11 iljaguaro      Note Added: 0005203                          
+======================================================================
+
 
 
 
