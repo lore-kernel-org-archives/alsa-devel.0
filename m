@@ -1,14 +1,14 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: atiixp: Problems making it work on SB400
-Date: Fri, 24 Jun 2005 22:16:52 +0200
-Message-ID: <20050624201652.GO19928@sunbeam.de.gnumonks.org>
-References: <20050624165908.GL19928@sunbeam.de.gnumonks.org> <s5h1x6rlk8x.wl%tiwai@suse.de>
+From: Mark Hollomon <markhollomon@comcast.net>
+Subject: PROBLEM: snd: Unknown parameter `device_mode'
+Date: Fri, 24 Jun 2005 16:25:23 -0400
+Message-ID: <42BC6C33.3040700@comcast.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l3ej7W/Jb2pB3qL2"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h1x6rlk8x.wl%tiwai@suse.de>
+Received: from rwcrmhc14.comcast.net (rwcrmhc14.comcast.net [216.148.227.89])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85FAE222
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 22:25:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +18,176 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---l3ej7W/Jb2pB3qL2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi!
+Linux v2.6.12 or linus' HEAD (a8ad86f2dc46356f87be1327dabc18bdbda32f50) fails.
 
-On Fri, Jun 24, 2005 at 07:47:42PM +0200, Takashi Iwai wrote:
-> After a quick look at your information, I couldn't find anything
-> wrong.  The ac97 register values look OK (compared with ALC658
-> datasheet).
+2.6.12-rc6 or below works.
 
-Yes, I meanwhile obtained the datasheet, too (and played with GPIO
-output and EAPD bits, but at no success).
+When trying to start hotplug, I get the following messages in dmesg:
 
-> Just to be sure, could you install alsa-driver-1.0.9b?
 
-I tried that, too (forgot to mention it in my initial mail.
+[17179604.960000] snd: Unknown parameter `device_mode'
+[17179604.976000] snd: Unknown parameter `device_mode'
+[17179604.984000] snd: Unknown parameter `device_mode'
+[17179605.032000] snd: Unknown parameter `device_mode'
 
-> There have been some bug reports with ATIIXP-laptop, and interestingly
-> someone reported that it was fixed by disabling ACPI.  But, his case
-> was only for the speaker output, so not 100% identical with your
-> case.
+And these appear in syslog:
 
-For some strange reason, the headphone output now works.  I don't really
-know what I did different from my first tries where it wasn't working.
+Jun 24 12:11:46 jupiter modprobe: WARNING: Error inserting snd (/lib/modules/2.6.12-git/kernel/sound/core/snd.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+Jun 24 12:11:46 jupiter modprobe: WARNING: Error inserting snd_timer (/lib/modules/2.6.12-git/kernel/sound/core/snd-timer.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+Jun 24 12:11:46 jupiter modprobe: WARNING: Error inserting snd (/lib/modules/2.6.12-git/kernel/sound/core/snd.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+Jun 24 12:11:46 jupiter modprobe: WARNING: Error inserting snd_timer (/lib/modules/2.6.12-git/kernel/sound/core/snd-timer.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+Jun 24 12:11:46 jupiter modprobe: FATAL: Error inserting snd_pcm (/lib/modules/2.6.12-git/kernel/sound/core/snd-pcm.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+Jun 24 12:11:46 jupiter modprobe: WARNING: Error inserting snd (/lib/modules/2.6.12-git/kernel/sound/core/snd.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+Jun 24 12:11:46 jupiter modprobe: WARNING: Error inserting snd_mixer_oss (/lib/modules/2.6.12-git/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown symbol in module, or unknown parameter (see dmesg)
 
-So it seems like I'm observing the same bug.
 
-Booting with acpi=3Doff didn't change the behaviour, and the BIOS config
-is so stripped-down that it has no option to disable ACPI.
+===== lspci -vvv output =====
 
-The only thing that I could find was that the atiixp (not ac97)
-registers 0x10 and 0x14 change when inserting/removing a plug into the
-headphone jack.  Unfortunately there is no public datasheed for the
-SB400 :(
+00:00.0 Host bridge: Intel Corporation 82865G/PE/P DRAM Controller/Host-Hub Interface (rev 02)
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort+ >SERR- <PERR-
+	Latency: 0
+	Region 0: Memory at f8000000 (32-bit, prefetchable) [size=64M]
+	Capabilities: <available only to root>
 
---=20
-- Harald Welte <laforge@gnumonks.org>          	        http://gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-"Privacy in residential applications is a desirable marketing option."
-                                                  (ETSI EN 300 175-7 Ch. A6)
+00:01.0 PCI bridge: Intel Corporation 82865G/PE/P PCI to AGP Controller (rev 02) (prog-if 00 [Normal decode])
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap- 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 32
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=32
+	I/O behind bridge: 0000f000-00000fff
+	Memory behind bridge: fc900000-fe9fffff
+	Prefetchable memory behind bridge: e7f00000-f7efffff
+	BridgeCtl: Parity+ SERR- NoISA+ VGA+ MAbort- >Reset- FastB2B-
 
---l3ej7W/Jb2pB3qL2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+00:1d.0 USB Controller: Intel Corporation 82801EB/ER (ICH5/ICH5R) USB UHCI Controller #1 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 7880
+	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 16
+	Region 4: I/O ports at e000 [size=32]
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+00:1d.1 USB Controller: Intel Corporation 82801EB/ER (ICH5/ICH5R) USB UHCI Controller #2 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 7880
+	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin B routed to IRQ 19
+	Region 4: I/O ports at e400 [size=32]
 
-iD8DBQFCvGo0XaXGVTD0i/8RApjXAKCUAxb8OaxvL7bka3IvVtmWP2o+CwCeJJ6Z
-S28GB1QgDauA7uHI2pF/t9M=
-=prbY
------END PGP SIGNATURE-----
+00:1d.2 USB Controller: Intel Corporation 82801EB/ER (ICH5/ICH5R) USB UHCI #3 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 7880
+	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin C routed to IRQ 18
+	Region 4: I/O ports at e800 [size=32]
 
---l3ej7W/Jb2pB3qL2--
+00:1d.3 USB Controller: Intel Corporation 82801EB/ER (ICH5/ICH5R) USB UHCI Controller #4 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 7880
+	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 16
+	Region 4: I/O ports at ec00 [size=32]
+
+00:1d.7 USB Controller: Intel Corporation 82801EB/ER (ICH5/ICH5R) USB2 EHCI Controller (rev 02) (prog-if 20 [EHCI])
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 7880
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin D routed to IRQ 23
+	Region 0: Memory at febffc00 (32-bit, non-prefetchable) [size=1K]
+	Capabilities: <available only to root>
+
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev c2) (prog-if 00 [Normal decode])
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR+
+	Latency: 0
+	Bus: primary=00, secondary=02, subordinate=02, sec-latency=32
+	I/O behind bridge: 0000c000-0000cfff
+	Memory behind bridge: fea00000-feafffff
+	Prefetchable memory behind bridge: fff00000-000fffff
+	BridgeCtl: Parity- SERR+ NoISA+ VGA- MAbort- >Reset- FastB2B-
+
+00:1f.0 ISA bridge: Intel Corporation 82801EB/ER (ICH5/ICH5R) LPC Interface Bridge (rev 02)
+	Control: I/O+ Mem+ BusMaster+ SpecCycle+ MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+
+00:1f.1 IDE interface: Intel Corporation 82801EB/ER (ICH5/ICH5R) IDE Controller (rev 02) (prog-if 8a [Master SecP PriP])
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 7880
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 18
+	Region 0: I/O ports at <unassigned>
+	Region 1: I/O ports at <unassigned>
+	Region 2: I/O ports at <unassigned>
+	Region 3: I/O ports at <unassigned>
+	Region 4: I/O ports at fc00 [size=16]
+	Region 5: Memory at 40000000 (32-bit, non-prefetchable) [size=1K]
+
+00:1f.3 SMBus: Intel Corporation 82801EB/ER (ICH5/ICH5R) SMBus Controller (rev 02)
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 7880
+	Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Interrupt: pin B routed to IRQ 10
+	Region 4: I/O ports at 0c00 [size=32]
+
+00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 0080
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 0
+	Interrupt: pin B routed to IRQ 17
+	Region 0: I/O ports at dc00 [size=256]
+	Region 1: I/O ports at d800 [size=64]
+	Region 2: Memory at febffa00 (32-bit, non-prefetchable) [size=512]
+	Region 3: Memory at febff900 (32-bit, non-prefetchable) [size=256]
+	Capabilities: <available only to root>
+
+01:00.0 VGA compatible controller: nVidia Corporation NV34 [GeForce FX 5200] (rev a1) (prog-if 00 [VGA])
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 9110
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 32 (1250ns min, 250ns max)
+	Interrupt: pin A routed to IRQ 16
+	Region 0: Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at e8000000 (32-bit, prefetchable) [size=128M]
+	Expansion ROM at fe9e0000 [disabled] [size=128K]
+	Capabilities: <available only to root>
+
+02:05.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host Controller (rev 46) (prog-if 10 [OHCI])
+	Subsystem: VIA Technologies, Inc. IEEE 1394 Host Controller
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 32 (8000ns max), cache line size 08
+	Interrupt: pin A routed to IRQ 17
+	Region 0: Memory at feaff800 (32-bit, non-prefetchable) [size=2K]
+	Region 1: I/O ports at cc00 [size=128]
+	Capabilities: <available only to root>
+
+02:0b.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8139/8139C/8139C+ (rev 10)
+	Subsystem: Micro-Star International Co., Ltd.: Unknown device 788c
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 32 (8000ns min, 16000ns max)
+	Interrupt: pin A routed to IRQ 23
+	Region 0: I/O ports at c800 [size=256]
+	Region 1: Memory at feaff700 (32-bit, non-prefetchable) [size=256]
+	Expansion ROM at fead0000 [disabled] [size=64K]
+	Capabilities: <available only to root>
+
+-- 
+Mark Hollomon
+
 
 
 -------------------------------------------------------
