@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Fri, 24 Jun 2005 15:09:22 +0200
-Message-ID: <1749e2d760ff2c93345beeb0534283ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Fri, 24 Jun 2005 15:19:14 +0200
+Message-ID: <fb13e7f93da3149813ebb0991d7fc2e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C82571F6
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:09:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 019B5216
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:19:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                JKnife
+Reported By:                willits
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   1_OTHERS
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-24-2005 15:09 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-24-2005 15:19 CEST
 ======================================================================
-Summary:                    Riptide/Context Audio Drivers
+Summary:                    Realtek ALC650 output problem
 Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
+
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- nokos - 06-23-05 15:35 
+ jcdutton - 06-24-05 15:07 
 ----------------------------------------------------------------------
-liuxant guys:I have already geiven them the code last year and again this
-year, but they didn't use it so far. I guess they couldn't easily convert
-it to an external kernel module due to the dependends on the AC97 stuff.
-
-Have you experience with the request_frmware() stuff, then maybe you can
-add it.
-I don't use the laptop with the riptide chipset anymore, so I hope someone
-else wants to convert it to a more recent ALSA (it shouldn't be that hard,
-has the scatter/gather/memory stuff changed again?)
+Can't we add a quirk to the driver, so that it can detect the motherboard
+type and set all the correct outputs as default.
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 15:09 
+ tiwai - 06-24-05 15:19 
 ----------------------------------------------------------------------
-The changes are trivial in most cases.  SG-buffer should be same.
-
-But I'd work on this only if someone can test quickly the patch (and if I
-have time left...)
+It does, indeed.  ICH4/5/6 are using "ICH4" driver type, and it uses
+ICH4.conf while ICH/2/3 is "ICH" driver type with ICH.conf.  The latter
+swaps the channels of surround51 PCM via route plugin.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
-06-08-05 15:15 tiwai          Note Added: 0004932                          
-06-08-05 23:25 JKnife         Note Added: 0004976                          
-06-15-05 14:41 nokos          Note Added: 0005027                          
-06-23-05 12:07 tiwai          Note Added: 0005176                          
-06-23-05 15:10 nokos          Note Added: 0005187                          
-06-23-05 15:21 tiwai          Note Added: 0005188                          
-06-23-05 15:26 tiwai          Note Added: 0005189                          
-06-23-05 15:35 nokos          Note Added: 0005190                          
-06-24-05 15:09 tiwai          Note Added: 0005226                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-23-05 19:21 willits        Note Added: 0005192                          
+06-23-05 19:26 willits        Note Added: 0005193                          
+06-23-05 22:42 pzad           Note Added: 0005196                          
+06-24-05 14:37 willits        Note Added: 0005220                          
+06-24-05 14:54 tiwai          Note Added: 0005221                          
+06-24-05 15:07 jcdutton       Note Added: 0005225                          
+06-24-05 15:19 tiwai          Note Added: 0005227                          
 ======================================================================
 
 
