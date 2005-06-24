@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 17:26:52 +0200
-Message-ID: <ee886115ea64d524d7d41b221efce870@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Fri, 24 Jun 2005 17:27:33 +0200
+Message-ID: <993da6f03b9a1182a0d180436075d6e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B995B239
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:26:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E63B523B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:27:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                alfred-ganz
-Assigned To:                tiwai
+Reported By:                willits
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1209
-Category:                   PCI - hda-intel
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 17:26 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-24-2005 17:27 CEST
 ======================================================================
-Summary:                    Headphone and Front Mic are switched
+Summary:                    Realtek ALC650 output problem
 Description: 
-I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
-assignments that I can test seem to be assigned properly.
-However, there is some sound coming out of the front mike jack,
-and input is accepted through the headphone jack. Since these
-jacks work as expected with Windows XP, I suspect that they are
-misassigned in the driver.
-Hardware: RealTek ALC655 AC'97 with ALC880(D)
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-Please let me know if there is anything else that you need from
-me.
-
-Thank you, AG
-
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-24-05 16:54 
+ tiwai - 06-24-05 16:24 
 ----------------------------------------------------------------------
-The real problem is that there is no proper depmod dependency for
-snd-page-alloc. If I do modprobe snd-page-alloc ; modprobe snd-hda-intel
-the errors go away!
+About 3D:  You have 3D control switch, center and depth controls.
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-24-05 17:26 
+ willits - 06-24-05 17:27 
 ----------------------------------------------------------------------
-I see no difference in behavior between the driver in 
-alsa-driver-1.0.9b.tar.bz2 and the one built from current cvs sources,
-except that I now need to first modprobe snd-page-alloc. 
-Here is what I can observe:
-Front jack shows stereo output,
-Front Mic jack shows sound, I presume Headphone,
-With channels set to ch6, LineIn jack shows stereo sound, I presume 
-Surround, no other jacks show output.
-Headphone jack accepts line input, 
-no other jack seems to accept input.
+I didn't really understand how I can see if there are the plugin "route".
+
+I have attached these file : ICH.conf and ICH4.conf
+
+-- > There are not "route" in the file ICH4.conf, but in ICH.conf file,
+there are route.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-23-05 20:02 alfred-ganz    New Issue                                    
-06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
-06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
-06-23-05 23:29 erik           Note Added: 0005198                          
-06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
-06-24-05 11:13 tiwai          Note Added: 0005211                          
-06-24-05 15:42 alfred-ganz    Note Added: 0005229                          
-06-24-05 15:46 tiwai          Note Added: 0005230                          
-06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
-06-24-05 16:34 tiwai          Note Added: 0005234                          
-06-24-05 16:42 alfred-ganz    Note Added: 0005235                          
-06-24-05 16:54 alfred-ganz    Note Added: 0005236                          
-06-24-05 17:26 alfred-ganz    Note Added: 0005240                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-23-05 19:21 willits        Note Added: 0005192                          
+06-23-05 19:26 willits        Note Added: 0005193                          
+06-23-05 22:42 pzad           Note Added: 0005196                          
+06-24-05 14:37 willits        Note Added: 0005220                          
+06-24-05 14:54 tiwai          Note Added: 0005221                          
+06-24-05 15:07 jcdutton       Note Added: 0005225                          
+06-24-05 15:19 tiwai          Note Added: 0005227                          
+06-24-05 15:24 willits        Note Added: 0005228                          
+06-24-05 16:15 tiwai          Note Added: 0005232                          
+06-24-05 16:24 tiwai          Note Added: 0005233                          
+06-24-05 17:27 willits        Note Added: 0005241                          
 ======================================================================
 
 
