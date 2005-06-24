@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001212]: no sound via82xx kernel 2.6.12
-Date: Fri, 24 Jun 2005 11:41:51 +0200
-Message-ID: <44fce606e67b7cd022affe8fcc8ea7d4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001193]: no sound through speakers but sound in headphones
+Date: Fri, 24 Jun 2005 12:13:35 +0200
+Message-ID: <6e121a0ae4263bfd745f744cc4c4280a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DD5D1EB
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 11:41:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB34922A
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 12:13:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,137 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1212> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1193> 
 ======================================================================
-Reported By:                bricem13
+Reported By:                gadget
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1212
-Category:                   PCI - via82xx
+Issue ID:                   1193
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian sarge
-Kernel Version:             2.6.12
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               debian-pure64 sid
+Kernel Version:             2.6.11.11
 ======================================================================
-Date Submitted:             06-24-2005 10:06 CEST
-Last Modified:              06-24-2005 11:41 CEST
+Date Submitted:             06-15-2005 13:03 CEST
+Last Modified:              06-24-2005 12:13 CEST
 ======================================================================
-Summary:                    no sound via82xx kernel 2.6.12
+Summary:                    no sound through speakers but sound in headphones
 Description: 
-I updated my kernel to 2.6.12 and since I don't have sound anymore.
-
-The volume are unmuted and the right modules are present:
-
-[brice@TuxBox:brice]$ lsmod|grep snd
-snd_via82xx            26432  1
-gameport               15624  1 snd_via82xx
-snd_ac97_codec         70520  1 snd_via82xx
-snd_pcm_oss            47008  0
-snd_mixer_oss          17024  2 snd_pcm_oss
-snd_pcm                83464  3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer              23684  1 snd_pcm
-snd_page_alloc          9604  2 snd_via82xx,snd_pcm
-snd_mpu401_uart         7424  1 snd_via82xx
-snd_rawmidi            24352  1 snd_mpu401_uart
-snd_seq_device          8332  1 snd_rawmidi
-snd                    53380  9
-snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore              10080  2 snd
-[brice@TuxBox:brice]$
-
-[brice@TuxBox:brice]$ lspci
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
-KT266/A/333]0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7
-[Apollo KT266/A/333 AGP]
-0000:00:0c.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
-0000:00:0e.0 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev aa)
-0000:00:0e.1 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev aa)
-0000:00:0e.2 FireWire (IEEE 1394): Ricoh Co Ltd R5C552 IEEE 1394
-Controller (rev 02)
-0000:00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82)
-0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
-0000:00:11.1 IDE interface: VIA Technologies, Inc.
-VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
-0000:00:11.6 Communication controller: VIA Technologies, Inc. Intel 537
-[AC97 Modem] (rev 80)
-0000:01:00.0 VGA compatible controller: nVidia Corporation NV17 [GeForce4
-420 Go] (rev a3)
-0000:06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8180L
-802.11b MAC (rev 20)
-[brice@TuxBox:brice]$
-
-I do not know what's wrong! I tried alsaconf unsuccesfully.
-I noticed also that I don't have a /etc/asound.state file but a
-/var/lib/alsa/asound.state one
-
-
-I am stuck without sound...
-
-
-Best regards, Brice
-
-
+I can't hear anything through the internel speakers of my notebook. The
+sound is anyway hear through the headphones. I can change the volume
+correctly, nothing is muted.
+I tried the ac97_quirk option through modprobe or direct insmod.
+I also tried other drivers without success (no card found).
 ======================================================================
 
 ----------------------------------------------------------------------
- bricem13 - 06-24-05 11:29 
+ tiwai - 06-24-05 11:15 
 ----------------------------------------------------------------------
-Hi
-
-muting "Line Jack Sense" and "Headphone Jack Sense" resolved the matter!
-
-So nice to hear tux playing sound... -;)
-
-
-Thanks for that!
-
-
-ps: what are the function of "Line Jack Sense" and "Headphone Jack Sense"
-??
+Related with https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162?
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 11:41 
+ gadget - 06-24-05 12:13 
 ----------------------------------------------------------------------
-They control the auto-muting via the jack connection state.  Some hardwares
-(typically laptops) require this to switch the speaker and line-out
-outputs depending on the jack.  Some hardwares (like yours or ThinkPad)
-require them off.
-
-These switches are off per default except for the hardwares known to work,
-but some weird mixer apps turn on *automatically*, which leads to such a
-problem.
+I already have the noapic option. When I don't use it I have a double clock
+frequency.
+I tried the noacpi option but it didn't work. Maybe it was nor correct
+I tried pci=noacpi
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-24-05 10:06 bricem13       New Issue                                    
-06-24-05 10:06 bricem13       Distribution              => debian sarge    
-06-24-05 10:06 bricem13       Kernel Version            => 2.6.12          
-06-24-05 10:14 pzad           Note Added: 0005207                          
-06-24-05 10:34 bricem13       File Added: test.state                       
-06-24-05 11:19 tiwai          Note Added: 0005213                          
-06-24-05 11:25 pzad           Note Added: 0005214                          
-06-24-05 11:29 bricem13       Note Added: 0005215                          
-06-24-05 11:41 tiwai          Status                   new => resolved     
-06-24-05 11:41 tiwai          Resolution               open => not an issue
-06-24-05 11:41 tiwai          Assigned To               => tiwai           
-06-24-05 11:41 tiwai          Note Added: 0005216                          
+06-15-05 13:03 gadget         New Issue                                    
+06-15-05 13:03 gadget         Distribution              => debian-pure64 sid
+06-15-05 13:03 gadget         Kernel Version            => 2.6.11.11       
+06-15-05 13:09 gadget         Issue Monitored: gadget                      
+06-15-05 13:10 gadget         Note Added: 0005022                          
+06-15-05 13:14 gadget         File Added: lsmod-report                     
+06-15-05 13:14 gadget         File Added: lspci-report                     
+06-15-05 13:15 gadget         File Added: lspci-vn-report                    
+06-15-05 13:16 gadget         File Added: lspci-vv-report                    
+06-15-05 13:16 gadget         File Added: proc-asound-report.tar.gz             
+      
+06-15-05 13:17 gadget         Issue End Monitor: gadget                    
+06-23-05 13:59 gadget         Note Added: 0005186                          
+06-23-05 14:08 gadget         Issue Monitored: gadget                      
+06-23-05 23:42 rlrevell       Note Added: 0005199                          
+06-23-05 23:45 gadget         Note Added: 0005200                          
+06-24-05 11:15 tiwai          Note Added: 0005212                          
+06-24-05 12:13 gadget         Note Added: 0005217                          
 ======================================================================
 
 
