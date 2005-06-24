@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001211]: type dmix produces noise, type plug slave.pcm "dmix" does not on SB EXtigy
-Date: Fri, 24 Jun 2005 16:56:29 +0200
-Message-ID: <530ac058755cc7431f567c445385b114@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001193]: no sound through speakers but sound in headphones
+Date: Fri, 24 Jun 2005 17:06:49 +0200
+Message-ID: <302d2f51d53d0b9cd82300170781da78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BE44239
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 16:56:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E18CA199
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:06:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1211> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1193> 
 ======================================================================
-Reported By:                andersin
-Assigned To:                Clemens Ladisch
+Reported By:                gadget
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1211
-Category:                   USB - usb-audio
+Issue ID:                   1193
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.11
+Distribution:               debian-pure64 sid
+Kernel Version:             2.6.11.11
 ======================================================================
-Date Submitted:             06-24-2005 00:02 CEST
-Last Modified:              06-24-2005 16:56 CEST
+Date Submitted:             06-15-2005 13:03 CEST
+Last Modified:              06-24-2005 17:06 CEST
 ======================================================================
-Summary:                    type dmix produces noise, type plug slave.pcm "dmix"
-does not on SB EXtigy
+Summary:                    no sound through speakers but sound in headphones
 Description: 
-I recently noticed crackling sound when using the dmix plugin. While the
-simple case { type plug; slave.pcm "dmix" } works, { type dmix; slave.pcm
-"extigy" } (where extigy is the pcm for the card) produces a crackling
-sound. (I observe the same problem with my build in ICH4 card, but AFAIR
-this has been reported already).
-
-I have tried a variety of buffering and period settings that I found in
-various documentations on the web, but all attempts were unsuccessful.
+I can't hear anything through the internel speakers of my notebook. The
+sound is anyway hear through the headphones. I can change the volume
+correctly, nothing is muted.
+I tried the ac97_quirk option through modprobe or direct insmod.
+I also tried other drivers without success (no card found).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 14:55 
+ tiwai - 06-24-05 14:58 
 ----------------------------------------------------------------------
-In the case of aplay, you can see the plug configuration via -v option.
+Try to turn on "External Amplifier" switch.  Also, attach /etc/asound.state
+for more checks.
 
 ----------------------------------------------------------------------
- andersin - 06-24-05 16:56 
+ gadget - 06-24-05 17:06 
 ----------------------------------------------------------------------
-At the moment, when the extigy is not connected, I am not able to reproduce
-any of the distortion on the INTEL chip I was talking about. Strange
-indeed. Once I get back to the extigy, I will report back, if the error
-surfaces again.
+I already tried external amplifier as I stated in 06-23-05 23:45
+I also attached /var/lib/alsa/asound.state
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-24-05 00:02 andersin       New Issue                                    
-06-24-05 00:02 andersin       Kernel Version            => 2.6.11          
-06-24-05 11:11 tiwai          Note Added: 0005210                          
-06-24-05 13:40 andersin       Note Added: 0005219                          
-06-24-05 14:55 tiwai          Note Added: 0005222                          
-06-24-05 16:56 andersin       Note Added: 0005237                          
+06-15-05 13:03 gadget         New Issue                                    
+06-15-05 13:03 gadget         Distribution              => debian-pure64 sid
+06-15-05 13:03 gadget         Kernel Version            => 2.6.11.11       
+06-15-05 13:09 gadget         Issue Monitored: gadget                      
+06-15-05 13:10 gadget         Note Added: 0005022                          
+06-15-05 13:14 gadget         File Added: lsmod-report                     
+06-15-05 13:14 gadget         File Added: lspci-report                     
+06-15-05 13:15 gadget         File Added: lspci-vn-report                    
+06-15-05 13:16 gadget         File Added: lspci-vv-report                    
+06-15-05 13:16 gadget         File Added: proc-asound-report.tar.gz             
+      
+06-15-05 13:17 gadget         Issue End Monitor: gadget                    
+06-23-05 13:59 gadget         Note Added: 0005186                          
+06-23-05 14:08 gadget         Issue Monitored: gadget                      
+06-23-05 23:42 rlrevell       Note Added: 0005199                          
+06-23-05 23:45 gadget         Note Added: 0005200                          
+06-24-05 11:15 tiwai          Note Added: 0005212                          
+06-24-05 12:13 gadget         Note Added: 0005217                          
+06-24-05 14:58 tiwai          Note Added: 0005223                          
+06-24-05 16:21 gadget         File Added: asound.state                     
+06-24-05 17:06 gadget         Note Added: 0005238                          
 ======================================================================
 
 
