@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 16:34:37 +0200
-Message-ID: <f282b56cf52e4803cbe51dfab1a59c87@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 16:42:57 +0200
+Message-ID: <c9807f5775567abb3c183f65985b1a18@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6E4A233
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 16:34:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42857234
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 16:42:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 16:34 CEST
+Last Modified:              06-24-2005 16:42 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,22 +60,17 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-24-05 16:07 
-----------------------------------------------------------------------
-There seem to be mismatches in what I build, what should I build?
-Here are the messages:
-kernel: snd_pcm: disagrees about version of symbol snd_dma_reserve_buf
-kernel: snd_pcm: disagrees about version of symbol snd_dma_free_pages
-there are more of these!
-My question is again, how do I get a coherent source set from which to
-build?
-I just did an update from the cvs sources.
-
-----------------------------------------------------------------------
  tiwai - 06-24-05 16:34 
 ----------------------------------------------------------------------
 As I wrote, just unload snd-page-alloc module before reloading other
 modules.
+
+----------------------------------------------------------------------
+ alfred-ganz - 06-24-05 16:42 
+----------------------------------------------------------------------
+There ARE NO snd-* anything installed when I do this, please!
+"lsmod |fgrep snd" shows nothing!
+How do I get sources that match???
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +85,7 @@ Date Modified  Username       Field                    Change
 06-24-05 15:46 tiwai          Note Added: 0005230                          
 06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
 06-24-05 16:34 tiwai          Note Added: 0005234                          
+06-24-05 16:42 alfred-ganz    Note Added: 0005235                          
 ======================================================================
 
 
