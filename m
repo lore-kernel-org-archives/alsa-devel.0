@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001212]: no sound via82xx kernel 2.6.12
-Date: Fri, 24 Jun 2005 11:25:54 +0200
-Message-ID: <8667398ea3177ef695ddbfd9f74093d9@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 11:29:41 +0200
+Message-ID: <888aab501da524cf2b6909b7db66c822@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9F9322A
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 11:25:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1677B152
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 11:29:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian sarge
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             06-24-2005 10:06 CEST
-Last Modified:              06-24-2005 11:25 CEST
+Last Modified:              06-24-2005 11:29 CEST
 ======================================================================
 Summary:                    no sound via82xx kernel 2.6.12
 Description: 
@@ -109,17 +109,25 @@ Best regards, Brice
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 11:19 
-----------------------------------------------------------------------
-If it worked with 2.6.11.x, try this old (working) kernel and get the
-contents of /proc/asound/card0/codec97#0/* files to compare with the
-contents of them on 2.6.12.
-(Also, compile with CONFIG_SND_DEBUG=y).
-
-----------------------------------------------------------------------
  pzad - 06-24-05 11:25 
 ----------------------------------------------------------------------
 Try mute "Line Jack Sense" and "Headphone Jack Sense".
+
+----------------------------------------------------------------------
+ bricem13 - 06-24-05 11:29 
+----------------------------------------------------------------------
+Hi
+
+muting "Line Jack Sense" and "Headphone Jack Sense" resolved the matter!
+
+So nice to hear tux playing sound... -;)
+
+
+Thanks for that!
+
+
+ps: what are the function of "Line Jack Sense" and "Headphone Jack Sense"
+??
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -131,6 +139,7 @@ Date Modified  Username       Field                    Change
 06-24-05 10:34 bricem13       File Added: test.state                       
 06-24-05 11:19 tiwai          Note Added: 0005213                          
 06-24-05 11:25 pzad           Note Added: 0005214                          
+06-24-05 11:29 bricem13       Note Added: 0005215                          
 ======================================================================
 
 
