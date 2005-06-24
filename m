@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001193]: no sound through speakers but sound in headphones
-Date: Fri, 24 Jun 2005 14:58:37 +0200
-Message-ID: <2bf6918cfc6c94204a1af0a99cbdfdc2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
+Date: Fri, 24 Jun 2005 15:00:50 +0200
+Message-ID: <3f637b720e2f1688b749d66009fa273b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45AE2216
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 14:58:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE860216
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:00:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1193> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
 ======================================================================
-Reported By:                gadget
+Reported By:                iljaguaro
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1193
-Category:                   PCI - atiixp
+Issue ID:                   1192
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               debian-pure64 sid
-Kernel Version:             2.6.11.11
+Distribution:               Debian Testing "Etch"
+Kernel Version:             kernel-image-2.6.11-1-k7
 ======================================================================
-Date Submitted:             06-15-2005 13:03 CEST
-Last Modified:              06-24-2005 14:58 CEST
+Date Submitted:             06-15-2005 11:38 CEST
+Last Modified:              06-24-2005 15:00 CEST
 ======================================================================
-Summary:                    no sound through speakers but sound in headphones
+Summary:                    Microphone doesn't work in record and/or Skype
 Description: 
-I can't hear anything through the internel speakers of my notebook. The
-sound is anyway hear through the headphones. I can change the volume
-correctly, nothing is muted.
-I tried the ac97_quirk option through modprobe or direct insmod.
-I also tried other drivers without success (no card found).
+The microphone input doesnt work well, the volume are too low and the noisy
+is to high, when you record it.
 ======================================================================
 
 ----------------------------------------------------------------------
- gadget - 06-24-05 12:13 
+ iljaguaro - 06-24-05 08:11 
 ----------------------------------------------------------------------
-I already have the noapic option. When I don't use it I have a double clock
-frequency.
-I tried the noacpi option but it didn't work. Maybe it was nor correct
-I tried pci=noacpi
+same problem with ALSA 1.0.9b
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 14:58 
+ tiwai - 06-24-05 15:00 
 ----------------------------------------------------------------------
-Try to turn on "External Amplifier" switch.  Also, attach /etc/asound.state
-for more checks.
+Try the attached patch and turn on "Mic Boost" in alsamixer capture view. 
+Note that there are two "Mic Boost" switches in playback and capture after
+the patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 13:03 gadget         New Issue                                    
-06-15-05 13:03 gadget         Distribution              => debian-pure64 sid
-06-15-05 13:03 gadget         Kernel Version            => 2.6.11.11       
-06-15-05 13:09 gadget         Issue Monitored: gadget                      
-06-15-05 13:10 gadget         Note Added: 0005022                          
-06-15-05 13:14 gadget         File Added: lsmod-report                     
-06-15-05 13:14 gadget         File Added: lspci-report                     
-06-15-05 13:15 gadget         File Added: lspci-vn-report                    
-06-15-05 13:16 gadget         File Added: lspci-vv-report                    
-06-15-05 13:16 gadget         File Added: proc-asound-report.tar.gz             
-      
-06-15-05 13:17 gadget         Issue End Monitor: gadget                    
-06-23-05 13:59 gadget         Note Added: 0005186                          
-06-23-05 14:08 gadget         Issue Monitored: gadget                      
-06-23-05 23:42 rlrevell       Note Added: 0005199                          
-06-23-05 23:45 gadget         Note Added: 0005200                          
-06-24-05 11:15 tiwai          Note Added: 0005212                          
-06-24-05 12:13 gadget         Note Added: 0005217                          
-06-24-05 14:58 tiwai          Note Added: 0005223                          
+06-15-05 11:38 iljaguaro      New Issue                                    
+06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
+06-15-05 11:38 iljaguaro      Kernel Version            =>
+kernel-image-2.6.11-1-k7
+06-24-05 08:11 iljaguaro      Note Added: 0005203                          
+06-24-05 15:00 tiwai          Note Added: 0005224                          
 ======================================================================
 
 
