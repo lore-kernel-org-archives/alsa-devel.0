@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 16:42:57 +0200
-Message-ID: <c9807f5775567abb3c183f65985b1a18@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 16:54:26 +0200
+Message-ID: <f0ab5132012a432d1177870ec7cfdce6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42857234
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 16:42:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18B9A236
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 16:54:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 16:42 CEST
+Last Modified:              06-24-2005 16:54 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,17 +60,18 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 16:34 
-----------------------------------------------------------------------
-As I wrote, just unload snd-page-alloc module before reloading other
-modules.
-
-----------------------------------------------------------------------
  alfred-ganz - 06-24-05 16:42 
 ----------------------------------------------------------------------
 There ARE NO snd-* anything installed when I do this, please!
 "lsmod |fgrep snd" shows nothing!
 How do I get sources that match???
+
+----------------------------------------------------------------------
+ alfred-ganz - 06-24-05 16:54 
+----------------------------------------------------------------------
+The real problem is that there is no proper depmod dependency for
+snd-page-alloc. If I do modprobe snd-page-alloc ; modprobe snd-hda-intel
+the errors go away!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +87,7 @@ Date Modified  Username       Field                    Change
 06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
 06-24-05 16:34 tiwai          Note Added: 0005234                          
 06-24-05 16:42 alfred-ganz    Note Added: 0005235                          
+06-24-05 16:54 alfred-ganz    Note Added: 0005236                          
 ======================================================================
 
 
