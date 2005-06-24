@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 17:48:10 +0200
-Message-ID: <b35ae3aced2e11a1393283753e275020@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001069]: Scratchy sound through AC3 passthrough with userspace version 1.0.9rc2
+Date: Fri, 24 Jun 2005 17:58:01 +0200
+Message-ID: <d384219b7d66f5246b4b81f41c62cab0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C760A23B
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:48:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7B8023E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:58:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1069> 
 ======================================================================
-Reported By:                alfred-ganz
-Assigned To:                tiwai
+Reported By:                Creideiki
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1209
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   1069
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 17:48 CEST
+Date Submitted:             04-21-2005 21:46 CEST
+Last Modified:              06-24-2005 17:58 CEST
 ======================================================================
-Summary:                    Headphone and Front Mic are switched
+Summary:                    Scratchy sound through AC3 passthrough with
+userspace version 1.0.9rc2
 Description: 
-I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
-assignments that I can test seem to be assigned properly.
-However, there is some sound coming out of the front mike jack,
-and input is accepted through the headphone jack. Since these
-jacks work as expected with Windows XP, I suspect that they are
-misassigned in the driver.
-Hardware: RealTek ALC655 AC'97 with ALC880(D)
+I have an Audigy 2 ZS sound card connected via S/PDIF to a Logitech Z-680
+decoder/speaker system. After upgrading ALSA userspace (alsa-headers,
+alsa-lib) to 1.0.9rc2, with no configuration changes, all I got when
+trying to play DVD:s using AC3 passthrough was scratchy noises, and the
+external decoder indicated that it did not think it was getting AC3 data.
+Software decoding worked, but not hardware passthrough. Both Xine and
+MPlayer had this problem. I am not running aRts, or any other sound
+server, and have no ~/.asoundrc file.
 
-Please let me know if there is anything else that you need from
-me.
+Downgrading to userspace version 1.0.8 made it work again.
 
-Thank you, AG
+I have no idea how to debug ALSA problems, so please let me know how to
+generate any extra information you might require.
 
+By the way, the "Product Version" field in Mantis doesn't let me select
+any version higher than 1.0.8.
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-24-05 17:26 
+ Creideiki - 06-24-05 17:58 
 ----------------------------------------------------------------------
-I see no difference in behavior between the driver in 
-alsa-driver-1.0.9b.tar.bz2 and the one built from current cvs sources,
-except that I now need to first modprobe snd-page-alloc. 
-Here is what I can observe:
-Front jack shows stereo output,
-Front Mic jack shows sound, I presume Headphone,
-With channels set to ch6, LineIn jack shows stereo sound, I presume 
-Surround, no other jacks show output.
-Headphone jack accepts line input, 
-no other jack seems to accept input.
+This issue still exists in version 1.0.9 final.
 
-----------------------------------------------------------------------
- tiwai - 06-24-05 17:48 
-----------------------------------------------------------------------
-What is your machine above all?  Any relevant kernel message if you use the
-CVS version (you should have one)?
-
-You can try different model type via model=xxx module option for
-snd-hda-intel.  See ALSA-Configuration.txt.
-
-Also, attach the output of /proca/sound/card0/codec#* file for checking.
+I've uploaded the results of `iecset` and `cat
+/proc/asound/Audigy2/codec97#0/ac97#0-0+regs`, which are identical for
+versions 1.0.7 and 1.0.9, and for playing PCM or AC3 passthrough.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-23-05 20:02 alfred-ganz    New Issue                                    
-06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
-06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
-06-23-05 23:29 erik           Note Added: 0005198                          
-06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
-06-24-05 11:13 tiwai          Note Added: 0005211                          
-06-24-05 15:42 alfred-ganz    Note Added: 0005229                          
-06-24-05 15:46 tiwai          Note Added: 0005230                          
-06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
-06-24-05 16:34 tiwai          Note Added: 0005234                          
-06-24-05 16:42 alfred-ganz    Note Added: 0005235                          
-06-24-05 16:54 alfred-ganz    Note Added: 0005236                          
-06-24-05 17:26 alfred-ganz    Note Added: 0005240                          
-06-24-05 17:48 tiwai          Note Added: 0005243                          
+04-21-05 21:46 Creideiki      New Issue                                    
+04-22-05 02:06 eradicator     Issue Monitored: eradicator                    
+04-29-05 09:14 mandreiana     Issue Monitored: mandreiana                    
+06-24-05 17:54 Creideiki      File Added: iecset                           
+06-24-05 17:54 Creideiki      File Added: ac97#0-0+regs                    
+06-24-05 17:58 Creideiki      Note Added: 0005244                          
 ======================================================================
 
 
