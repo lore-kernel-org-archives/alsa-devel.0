@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 20:07:48 +0200
-Message-ID: <9d8d6b1ef2ab080ac1f00d265e17be70@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 21:12:50 +0200
+Message-ID: <5c6b2cf465358507f8317e57be1eb169@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9E8C1B4
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 20:07:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36B0F18B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 21:12:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 20:07 CEST
+Last Modified:              06-24-2005 21:12 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,22 +60,6 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-24-05 20:01 
-----------------------------------------------------------------------
-OK, I found ALSA-Configuration.txt!
-With model=5stack there are some improvements:
-Back panel input to LineIN works as expected this way
-Back panel input to Mic works as expected this way
-but Front panel Mic still doesn't work, but input to front panel
-Headphone accepts input and it shows under FrontMic on alsamixer
-Back panel LineOut/speakers works as expected, shows as Front under
-alsamixer
-Back panel side-surround has stereo sound, shows as Surround under
-alsamixer
-Nothing shows on Back panel CenterSurround/Subwoofer,
-Nothing shows on Back panel Rear-Surround
-
-----------------------------------------------------------------------
  tiwai - 06-24-05 20:07 
 ----------------------------------------------------------------------
 The problem is that your BIOS is incomplete, at least it doesn't initialize
@@ -86,6 +70,21 @@ When you build the alsa-driver with --with-debug=full option, you can
 choose model=test.  With this model, you can choose almost all possible
 configuration for your device.  Note that the enum control can be changed
 via alsamixer with up/down keys.
+
+----------------------------------------------------------------------
+ alfred-ganz - 06-24-05 21:12 
+----------------------------------------------------------------------
+Here is what I get in the kernel logs:
+kernel: ACPI: PCI interrupt 0000:00:1b.0[A] -> GSI 10 (level, low) -> IRQ
+10
+kernel: PCI: Setting latency timer of device 0000:00:1b.0 to 64
+kernel: ALSA /home/fedora-3/cvs/alsa-driver/pci/hda/hda_codec.c:1549:
+hda_codec: model 'test' is selected
+kernel: ALSA /home/fedora-3/cvs/alsa-driver/acore/control.c:325: control
+2:0:0:CLFE Playback Volume:0 is already present
+kernel: HDA Intel: probe of 0000:00:1b.0 failed with error -16
+
+What do I do now??
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +106,7 @@ Date Modified  Username       Field                    Change
 06-24-05 19:14 alfred-ganz    Note Added: 0005250                          
 06-24-05 20:01 alfred-ganz    Note Added: 0005251                          
 06-24-05 20:07 tiwai          Note Added: 0005252                          
+06-24-05 21:12 alfred-ganz    Note Added: 0005253                          
 ======================================================================
 
 
