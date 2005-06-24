@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 20:01:10 +0200
-Message-ID: <c5cb8134dab8e7a3af78a781909673af@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 20:07:48 +0200
+Message-ID: <9d8d6b1ef2ab080ac1f00d265e17be70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBFA6216
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 20:01:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9E8C1B4
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 20:07:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 20:01 CEST
+Last Modified:              06-24-2005 20:07 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,209 +60,6 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- alfred-ganz - 06-24-05 19:14 
-----------------------------------------------------------------------
-Kernel messages:
-kernel: ACPI: PCI interrupt 0000:00:1b.0[A] -> GSI 10 (level, low) -> IRQ
-10
-kernel: PCI: Setting latency timer of device 0000:00:1b.0 to 64
-Machine is Acer APFV
-Sound as stated earlier: RealTek ALC655 AC'97 with ALC880(D)
-It has 6 jacks in the back, 2 jacks in the front
-back output: LineOut, (Rear) SideSurround, CenterSurround, Rear,
-back input: LineIn, Mic,
-front output: Headphone,
-front input: FrontMic.
-
-Where can I find: "See ALSA-Configuration.txt"
-did a "find" over the cvs tree, didn't find it?
-
-Here is /proc/asound/card0/codec#2:
-#########
-Codec: Realtek ALC880
-Address: 2
-Vendor Id: 0x10ec0880
-Subsystem Id: 0x0
-Revision Id: 0x90500
-Default PCM: rates 0x560, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-Node 0x02 [Audio Output] wcaps 0x411: Stereo
-  PCM: rates 0x560, bits 0x0e, types 0x1
-Node 0x03 [Audio Output] wcaps 0x411: Stereo
-  PCM: rates 0x560, bits 0x0e, types 0x1
-Node 0x04 [Audio Output] wcaps 0x411: Stereo
-  PCM: rates 0x160, bits 0x0e, types 0x1
-Node 0x05 [Audio Output] wcaps 0x411: Stereo
-  PCM: rates 0x160, bits 0x0e, types 0x1
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  PCM: rates 0x160, bits 0x1e, types 0x1
-Node 0x07 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
-  Amp-In vals: 0x00 0x00
-  PCM: rates 0x160, bits 0x06, types 0x1
-  Connection: 7
-     0x18* 0x19 0x1a 0x1b 0x1c 0x14 0x15
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
-  Amp-In vals: 0x80 0x80
-  PCM: rates 0x160, bits 0x06, types 0x1
-  Connection: 7
-     0x18* 0x19 0x1a 0x1b 0x1c 0x14 0x15
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
-  Amp-In vals: 0x00 0x00
-  PCM: rates 0x160, bits 0x06, types 0x1
-  Connection: 10
-     0x18* 0x19 0x1a 0x1b 0x1c 0x0b 0x14 0x15 0x16 0x17
-Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
-  PCM: rates 0x160, bits 0x1e, types 0x1
-  Connection: 1
-     0x1f
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x23, nsteps=0x41, stepsize=0x03, mute=1
-  Amp-In vals: 0xad 0xad
-  Connection: 8
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15
-Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals: 0x00 0x00
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals: 0x19 0x19
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals: 0x00 0x00
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals: 0x00 0x00
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals: 0x00 0x00
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals: 0x00 0x00
-  Connection: 2
-     0x04 0x0b
-Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals: 0x00 0x00
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals: 0x00 0x00
-  Connection: 2
-     0x05 0x0b
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 4
-     0x0c* 0x0d 0x0e 0x0f
-Node 0x11 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 4
-     0x0c 0x0d* 0x0e 0x0f
-Node 0x12 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 4
-     0x0c* 0x0d 0x0e 0x0f
-Node 0x13 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 4
-     0x0c* 0x0d 0x0e 0x0f
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x00 0x00
-  Pincap 0x083f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x80 0x80
-  Pincap 0x083f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x16 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x80 0x80
-  Pincap 0x083f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x17 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x80 0x80
-  Pincap 0x083f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0f
-Node 0x18 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x80 0x80
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x10
-Node 0x19 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x80 0x80
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x11
-Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x80 0x80
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x12
-Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals: 0x80 0x80
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x13
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x06
-Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
-  Pincap 0x0820: IN
-  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-Node 0x21 [Volume Knob Widget] wcaps 0x600080: Mono
-########
-
-----------------------------------------------------------------------
  alfred-ganz - 06-24-05 20:01 
 ----------------------------------------------------------------------
 OK, I found ALSA-Configuration.txt!
@@ -277,6 +74,18 @@ Back panel side-surround has stereo sound, shows as Surround under
 alsamixer
 Nothing shows on Back panel CenterSurround/Subwoofer,
 Nothing shows on Back panel Rear-Surround
+
+----------------------------------------------------------------------
+ tiwai - 06-24-05 20:07 
+----------------------------------------------------------------------
+The problem is that your BIOS is incomplete, at least it doesn't initialize
+the audio device properly.  So, we have to figure out the pin
+configuration manually.
+
+When you build the alsa-driver with --with-debug=full option, you can
+choose model=test.  With this model, you can choose almost all possible
+configuration for your device.  Note that the enum control can be changed
+via alsamixer with up/down keys.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -297,6 +106,7 @@ Date Modified  Username       Field                    Change
 06-24-05 17:48 tiwai          Note Added: 0005243                          
 06-24-05 19:14 alfred-ganz    Note Added: 0005250                          
 06-24-05 20:01 alfred-ganz    Note Added: 0005251                          
+06-24-05 20:07 tiwai          Note Added: 0005252                          
 ======================================================================
 
 
