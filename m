@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001069]: Scratchy sound through AC3 passthrough with userspace version 1.0.9rc2
-Date: Fri, 24 Jun 2005 17:58:01 +0200
-Message-ID: <d384219b7d66f5246b4b81f41c62cab0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Fri, 24 Jun 2005 17:59:39 +0200
+Message-ID: <50069cc509fe98cbfbe8e8e0411ab855@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7B8023E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:58:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D0DF23E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:59:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1069> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                Creideiki
+Reported By:                willits
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1069
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-21-2005 21:46 CEST
-Last Modified:              06-24-2005 17:58 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-24-2005 17:59 CEST
 ======================================================================
-Summary:                    Scratchy sound through AC3 passthrough with
-userspace version 1.0.9rc2
+Summary:                    Realtek ALC650 output problem
 Description: 
-I have an Audigy 2 ZS sound card connected via S/PDIF to a Logitech Z-680
-decoder/speaker system. After upgrading ALSA userspace (alsa-headers,
-alsa-lib) to 1.0.9rc2, with no configuration changes, all I got when
-trying to play DVD:s using AC3 passthrough was scratchy noises, and the
-external decoder indicated that it did not think it was getting AC3 data.
-Software decoding worked, but not hardware passthrough. Both Xine and
-MPlayer had this problem. I am not running aRts, or any other sound
-server, and have no ~/.asoundrc file.
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-Downgrading to userspace version 1.0.8 made it work again.
-
-I have no idea how to debug ALSA problems, so please let me know how to
-generate any extra information you might require.
-
-By the way, the "Product Version" field in Mantis doesn't let me select
-any version higher than 1.0.8.
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- Creideiki - 06-24-05 17:58 
+ willits - 06-24-05 17:27 
 ----------------------------------------------------------------------
-This issue still exists in version 1.0.9 final.
+I didn't really understand how I can see if there are the plugin "route".
 
-I've uploaded the results of `iecset` and `cat
-/proc/asound/Audigy2/codec97#0/ac97#0-0+regs`, which are identical for
-versions 1.0.7 and 1.0.9, and for playing PCM or AC3 passthrough.
+I have attached these file : ICH.conf and ICH4.conf
+
+-- > There are not "route" in the file ICH4.conf, but in ICH.conf file,
+there are route.
+
+----------------------------------------------------------------------
+ tiwai - 06-24-05 17:59 
+----------------------------------------------------------------------
+Then the ICH4 does require the channel swapping?  Grr, I hate this.
+
+Try copy ICH.conf to ICH4.conf and replace the string "ICH" with "ICH4" in
+the new config file.  This should work without "Swap Surround"...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-05 21:46 Creideiki      New Issue                                    
-04-22-05 02:06 eradicator     Issue Monitored: eradicator                    
-04-29-05 09:14 mandreiana     Issue Monitored: mandreiana                    
-06-24-05 17:54 Creideiki      File Added: iecset                           
-06-24-05 17:54 Creideiki      File Added: ac97#0-0+regs                    
-06-24-05 17:58 Creideiki      Note Added: 0005244                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-23-05 19:21 willits        Note Added: 0005192                          
+06-23-05 19:26 willits        Note Added: 0005193                          
+06-23-05 22:42 pzad           Note Added: 0005196                          
+06-24-05 14:37 willits        Note Added: 0005220                          
+06-24-05 14:54 tiwai          Note Added: 0005221                          
+06-24-05 15:07 jcdutton       Note Added: 0005225                          
+06-24-05 15:19 tiwai          Note Added: 0005227                          
+06-24-05 15:24 willits        Note Added: 0005228                          
+06-24-05 16:15 tiwai          Note Added: 0005232                          
+06-24-05 16:24 tiwai          Note Added: 0005233                          
+06-24-05 17:27 willits        Note Added: 0005241                          
+06-24-05 17:28 willits        File Added: ICH4.conf                        
+06-24-05 17:28 willits        File Added: ICH.conf                         
+06-24-05 17:59 tiwai          Note Added: 0005245                          
 ======================================================================
 
 
