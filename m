@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 24 Jun 2005 17:27:33 +0200
-Message-ID: <993da6f03b9a1182a0d180436075d6e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001210]: Exaudio produces noise on all speakers for 5.1 channels
+Date: Fri, 24 Jun 2005 17:47:22 +0200
+Message-ID: <64f1740ff41917443472cbb30b9d51f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E63B523B
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:27:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E061E23B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 17:47:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,156 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1210> 
 ======================================================================
-Reported By:                willits
-Assigned To:                
+Reported By:                andersin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
+Issue ID:                   1210
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.11
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-24-2005 17:27 CEST
+Date Submitted:             06-23-2005 23:54 CEST
+Last Modified:              06-24-2005 17:47 CEST
 ======================================================================
-Summary:                    Realtek ALC650 output problem
+Summary:                    Exaudio produces noise on all speakers for 5.1
+channels
 Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+I am using a soundblaster extigy with ALSA ver. 1.0.9b and am happy to say
 
-I haven't got this problem with Windows.
+that stereo sound works find and that all 6 speakers can produce some
+sound.
+
+With more than 2 channel output, I experience problems. speaker-test,
+which 
+works for 1 and 2 channels, results in a hissing/crackling for 3,5,6 
+channels, which changes in pitch depending on the number of channels. For
+4 
+channels, it loops, producing the following output
+
+
+speaker-test 0.0.8
+
+Playback device is extigy
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 96 to 8192
+Period size range from 48 to 4096
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 2048
+was set buffer_size = 8192
+Unable to set hw params for playback: Invalid argument
+Setting of hwparams failed: Invalid argument
+Rate set to 48000Hz (requested 48000Hz)
+[ The "Rate set to ..." part is repeated continuously ]
+
+
+Setting my capture device to mixer, I was able to record the output with 
+arecord -c 6 -f dat -r 48000 /root/speaker-test-6ch.wav . The distortion
+is 
+still present when playing the file, forcing 2 channels in aplay.
+
+In addition to using speaker test, I tried using the route plugin to
+isolate 
+the rear channels. When I route to any channel, I can hear the same output
+on 
+all 5 (not sure about Woofer) channels, no matter which channel I route
+to. 
+Here is the relevant setup:
+
+pcm.route1      {
+type            route;
+slave.pcm       "extigy";
+slave.channels  6;
+ttable.0.0      1.0;
+}
+
+The music that I played had similar distortions like the one for speaker
+test 
+and played considerably slower than when player with 2 channels. Again I 
+could record and replay the effect. The setup was slightly different in
+order 
+to route the stereo channels to all 6 speakers.
+
+For routing with 4 slave channels, I get a failure (as expected), this
+time 
+with the output:
+
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+aplay: set_params:910: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 48000
+PERIOD_TIME: (42666 42667)
+PERIOD_SIZE: 2048
+PERIOD_BYTES: 8192
+PERIODS: 4
+BUFFER_TIME: (170666 170667)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 1000
+
+This is all the relevant bits that I can think of at the moment. Thank you
+for 
+reading this far. If anybody thinks it is important to get the recorded 
+files, I am happy to sent them. I am grateful for any nudge on what I am 
+doing wrong with my setup.
+
+Christoph Burger-Scheidlin
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 16:24 
+ Clemens Ladisch - 06-24-05 17:22 
 ----------------------------------------------------------------------
-About 3D:  You have 3D control switch, center and depth controls.
+When you're recording with the "mixer" setting, you probably get the two
+front channels.
+
+What I meant to say above was:  if you record two channels while playing
+more than two channels, the distortion should still be present in the
+first two channels you've recorded.  Is it?  Could you upload a _small_
+test file?
 
 ----------------------------------------------------------------------
- willits - 06-24-05 17:27 
+ andersin - 06-24-05 17:47 
 ----------------------------------------------------------------------
-I didn't really understand how I can see if there are the plugin "route".
-
-I have attached these file : ICH.conf and ICH4.conf
-
--- > There are not "route" in the file ICH4.conf, but in ICH.conf file,
-there are route.
+I added two files, each representing one complete iteration of the
+speaker-test program. I hope the files are small enough.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
-06-17-05 20:32 willits        Note Added: 0005079                          
-06-17-05 20:34 willits        Note Added: 0005080                          
-06-22-05 18:12 tiwai          Note Added: 0005139                          
-06-23-05 11:17 willits        Note Added: 0005168                          
-06-23-05 11:23 willits        Note Added: 0005169                          
-06-23-05 11:23 jcdutton       Note Added: 0005170                          
-06-23-05 11:56 pzad           Note Added: 0005172                          
-06-23-05 12:01 tiwai          Note Added: 0005174                          
-06-23-05 19:21 willits        Note Added: 0005192                          
-06-23-05 19:26 willits        Note Added: 0005193                          
-06-23-05 22:42 pzad           Note Added: 0005196                          
-06-24-05 14:37 willits        Note Added: 0005220                          
-06-24-05 14:54 tiwai          Note Added: 0005221                          
-06-24-05 15:07 jcdutton       Note Added: 0005225                          
-06-24-05 15:19 tiwai          Note Added: 0005227                          
-06-24-05 15:24 willits        Note Added: 0005228                          
-06-24-05 16:15 tiwai          Note Added: 0005232                          
-06-24-05 16:24 tiwai          Note Added: 0005233                          
-06-24-05 17:27 willits        Note Added: 0005241                          
+06-23-05 23:54 andersin       New Issue                                    
+06-24-05 09:21 Clemens LadischFile Added: alsa-lib-start-threshold-check.diff   
+                
+06-24-05 09:22 Clemens LadischFile Deleted: alsa-lib-start-threshold-check.diff 
+                  
+06-24-05 09:23 Clemens LadischNote Added: 0005205                          
+06-24-05 10:14 andersin       File Added: stream0.txt                      
+06-24-05 10:16 andersin       Note Added: 0005208                          
+06-24-05 10:25 Clemens LadischNote Added: 0005209                          
+06-24-05 13:38 andersin       Note Added: 0005218                          
+06-24-05 15:23 andersin       Note Edited: 0005218                         
+06-24-05 17:22 Clemens LadischNote Added: 0005239                          
+06-24-05 17:44 andersin       File Added: speaker-test-6ch.mp3                  
+ 
+06-24-05 17:44 andersin       File Added: speaker-test-2ch.mp3                  
+ 
+06-24-05 17:47 andersin       Note Added: 0005242                          
 ======================================================================
 
 
