@@ -1,202 +1,51 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 24 Jun 2005 15:24:56 +0200
-Message-ID: <db022300276a6763c67055229f6e3614@bugtrack.alsa-project.org>
+From: Colin Fletcher <colinf@axicon.com>
+Subject: Re: [alsa-devel] Fw: BUG: Kernel panic when disconnecting
+ Edirol USB2 audio interface
+Date: Fri, 24 Jun 2005 14:39:21 +0100
+Message-ID: <42BC0D09.60507@axicon.com>
+References: <Pine.HPX.4.33n.0506241154480.11588-100000@studcom.urz.uni-halle.de>
+Reply-To: colinf@axicon.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48050221
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:24:57 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-usb-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0506241154480.11588-100000@studcom.urz.uni-halle.de>
+Sender: linux-usb-devel-admin@lists.sourceforge.net
+Errors-To: linux-usb-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
+List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, david-b@pacbell.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
+  > There is a bug in the EHCI driver that will corrupt memory, use this
+> patch:
+> http://www.mail-archive.com/linux-usb-devel@lists.sourceforge.net/msg35743.html
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
-======================================================================
-Reported By:                willits
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1197
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-24-2005 15:24 CEST
-======================================================================
-Summary:                    Realtek ALC650 output problem
-Description: 
-I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
-The problem is that I have got 5.1 speakers, and for have my subwoofer and
-central speaker work, I need to put them on the "line in" connector
-instead of the black connector (the black connector doesn't work).
+After applying this, I can start jackd, record a couple of minutes worth 
+of eight tracks in ardour, and stop jackd again with no problems.
 
-I haven't got this problem with Windows.
-======================================================================
+For the record, without the patch, as soon as I start jackd I get:
+ehci_hcd 0000:00:03.3: fatal command 010010 (park)=0 ithresh=1 Periodic 
+period=1024 HALT
+ehci_hcd 0000:00:03.3: fatal status 4008 Periodic FLR
+and my computer freezes, so that's definite progress. Thank you!
 
-----------------------------------------------------------------------
- tiwai - 06-24-05 15:19 
-----------------------------------------------------------------------
-It does, indeed.  ICH4/5/6 are using "ICH4" driver type, and it uses
-ICH4.conf while ICH/2/3 is "ICH" driver type with ICH.conf.  The latter
-swaps the channels of surround51 PCM via route plugin.
+> There seems to be another bug in either the EHCI or the snd-usb-audio
+> driver; I'm still getting problems with high speed iso transfers.
+> I'm investigating this.
 
-----------------------------------------------------------------------
- willits - 06-24-05 15:24 
-----------------------------------------------------------------------
-$ cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with ALC650E at 0xec001000, irq 5
+Do let me know if there's anything else you'd like me to test.
 
+Colin Fletcher
 
-White-Side:/proc/asound/card0/codec97#0 # cat ac97#0-0
-0-0/0: Realtek ALC650E
-
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=1 LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=3/4 VRA
-PCM front DAC    : 48000Hz
-PCM Surr DAC     : 48000Hz
-PCM LFE DAC      : 48000Hz
-PCM ADC          : 22050Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-SPDIF In Status  : Not Locked
-
-
-White-Side:/proc/asound/card0/codec97#0 # cat ac97#0-0+regs
-0:00 = 5980
-0:02 = 0505
-0:04 = 0000
-0:06 = 801f
-0:08 = 0000
-0:0a = 0000
-0:0c = 801f
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9e1e
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 1111
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 05c7
-0:2a = 05c1
-0:2c = bb80
-0:2e = bb80
-0:30 = bb80
-0:32 = 5622
-0:34 = 0000
-0:36 = 0700
-0:38 = 0505
-0:3a = 2824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0808
-0:66 = 0808
-0:68 = 0000
-0:6a = 4600
-0:6c = 0000
-0:6e = 0014
-0:70 = 0211
-0:72 = 00a0
-0:74 = 0043
-0:76 = 0001
-0:78 = 8002
-0:7a = 57c7
-0:7c = 414c
-0:7e = 4720
-
-
----
-There are this : "3D enhancement   : Realtek 3D Stereo Enhancement" in
-capabilities, and this "3D enhancement   : off" in Current setup, how I
-can enable this feature ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-16-05 15:07 willits        New Issue                                    
-06-16-05 15:07 willits        Kernel Version            => 2.6.11          
-06-16-05 15:13 pzad           Note Added: 0005056                          
-06-16-05 15:19 willits        Note Added: 0005057                          
-06-16-05 15:21 pzad           Note Added: 0005058                          
-06-16-05 15:25 willits        Note Added: 0005059                          
-06-16-05 15:43 pzad           Note Added: 0005060                          
-06-16-05 16:10 willits        Note Added: 0005062                          
-06-16-05 16:11 willits        File Added: test.state                       
-06-17-05 15:10 tiwai          Note Added: 0005075                          
-06-17-05 20:32 willits        Note Added: 0005079                          
-06-17-05 20:34 willits        Note Added: 0005080                          
-06-22-05 18:12 tiwai          Note Added: 0005139                          
-06-23-05 11:17 willits        Note Added: 0005168                          
-06-23-05 11:23 willits        Note Added: 0005169                          
-06-23-05 11:23 jcdutton       Note Added: 0005170                          
-06-23-05 11:56 pzad           Note Added: 0005172                          
-06-23-05 12:01 tiwai          Note Added: 0005174                          
-06-23-05 19:21 willits        Note Added: 0005192                          
-06-23-05 19:26 willits        Note Added: 0005193                          
-06-23-05 22:42 pzad           Note Added: 0005196                          
-06-24-05 14:37 willits        Note Added: 0005220                          
-06-24-05 14:54 tiwai          Note Added: 0005221                          
-06-24-05 15:07 jcdutton       Note Added: 0005225                          
-06-24-05 15:19 tiwai          Note Added: 0005227                          
-06-24-05 15:24 willits        Note Added: 0005228                          
-======================================================================
+-- 
 
 
 
@@ -206,3 +55,7 @@ SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
 speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+_______________________________________________
+linux-usb-devel@lists.sourceforge.net
+To unsubscribe, use the last form field at:
+https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
