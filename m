@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001212]: no sound via82xx kernel 2.6.12
-Date: Fri, 24 Jun 2005 10:06:52 +0200
-Message-ID: <15c87b80d70312d4553614499a7e45c2@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 10:14:47 +0200
+Message-ID: <04c7af1cf2b42bf8ed9b6d2332209779@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2297618C
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 10:06:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B164F232
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 10:14:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1212> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               debian sarge
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             06-24-2005 10:06 CEST
-Last Modified:              06-24-2005 10:06 CEST
+Last Modified:              06-24-2005 10:14 CEST
 ======================================================================
 Summary:                    no sound via82xx kernel 2.6.12
 Description: 
@@ -108,12 +108,20 @@ Best regards, Brice
 
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 06-24-05 10:14 
+----------------------------------------------------------------------
+Do 
+alsactl -f test.state store
+and attach test.state file
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-24-05 10:06 bricem13       New Issue                                    
 06-24-05 10:06 bricem13       Distribution              => debian sarge    
 06-24-05 10:06 bricem13       Kernel Version            => 2.6.12          
+06-24-05 10:14 pzad           Note Added: 0005207                          
 ======================================================================
 
 
