@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001212]: no sound via82xx kernel 2.6.12
-Date: Fri, 24 Jun 2005 10:14:47 +0200
-Message-ID: <04c7af1cf2b42bf8ed9b6d2332209779@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001210]: Exaudio produces noise on all speakers for 5.1 channels
+Date: Fri, 24 Jun 2005 10:16:47 +0200
+Message-ID: <b762ee6680e987b1447dd930ebeb0745@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B164F232
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 10:14:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09D6E232
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 10:16:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,104 +24,159 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1212> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1210> 
 ======================================================================
-Reported By:                bricem13
-Assigned To:                
+Reported By:                andersin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1212
-Category:                   PCI - via82xx
+Issue ID:                   1210
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               debian sarge
-Kernel Version:             2.6.12
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-24-2005 10:06 CEST
-Last Modified:              06-24-2005 10:14 CEST
+Date Submitted:             06-23-2005 23:54 CEST
+Last Modified:              06-24-2005 10:16 CEST
 ======================================================================
-Summary:                    no sound via82xx kernel 2.6.12
+Summary:                    Exaudio produces noise on all speakers for 5.1
+channels
 Description: 
-I updated my kernel to 2.6.12 and since I don't have sound anymore.
+I am using a soundblaster extigy with ALSA ver. 1.0.9b and am happy to say
 
-The volume are unmuted and the right modules are present:
+that stereo sound works find and that all 6 speakers can produce some
+sound.
 
-[brice@TuxBox:brice]$ lsmod|grep snd
-snd_via82xx            26432  1
-gameport               15624  1 snd_via82xx
-snd_ac97_codec         70520  1 snd_via82xx
-snd_pcm_oss            47008  0
-snd_mixer_oss          17024  2 snd_pcm_oss
-snd_pcm                83464  3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer              23684  1 snd_pcm
-snd_page_alloc          9604  2 snd_via82xx,snd_pcm
-snd_mpu401_uart         7424  1 snd_via82xx
-snd_rawmidi            24352  1 snd_mpu401_uart
-snd_seq_device          8332  1 snd_rawmidi
-snd                    53380  9
-snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore              10080  2 snd
-[brice@TuxBox:brice]$
-
-[brice@TuxBox:brice]$ lspci
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
-KT266/A/333]0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7
-[Apollo KT266/A/333 AGP]
-0000:00:0c.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
-0000:00:0e.0 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev aa)
-0000:00:0e.1 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev aa)
-0000:00:0e.2 FireWire (IEEE 1394): Ricoh Co Ltd R5C552 IEEE 1394
-Controller (rev 02)
-0000:00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82)
-0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
-0000:00:11.1 IDE interface: VIA Technologies, Inc.
-VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
-0000:00:11.6 Communication controller: VIA Technologies, Inc. Intel 537
-[AC97 Modem] (rev 80)
-0000:01:00.0 VGA compatible controller: nVidia Corporation NV17 [GeForce4
-420 Go] (rev a3)
-0000:06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8180L
-802.11b MAC (rev 20)
-[brice@TuxBox:brice]$
-
-I do not know what's wrong! I tried alsaconf unsuccesfully.
-I noticed also that I don't have a /etc/asound.state file but a
-/var/lib/alsa/asound.state one
+With more than 2 channel output, I experience problems. speaker-test,
+which 
+works for 1 and 2 channels, results in a hissing/crackling for 3,5,6 
+channels, which changes in pitch depending on the number of channels. For
+4 
+channels, it loops, producing the following output
 
 
-I am stuck without sound...
+speaker-test 0.0.8
+
+Playback device is extigy
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 96 to 8192
+Period size range from 48 to 4096
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 2048
+was set buffer_size = 8192
+Unable to set hw params for playback: Invalid argument
+Setting of hwparams failed: Invalid argument
+Rate set to 48000Hz (requested 48000Hz)
+[ The "Rate set to ..." part is repeated continuously ]
 
 
-Best regards, Brice
+Setting my capture device to mixer, I was able to record the output with 
+arecord -c 6 -f dat -r 48000 /root/speaker-test-6ch.wav . The distortion
+is 
+still present when playing the file, forcing 2 channels in aplay.
 
+In addition to using speaker test, I tried using the route plugin to
+isolate 
+the rear channels. When I route to any channel, I can hear the same output
+on 
+all 5 (not sure about Woofer) channels, no matter which channel I route
+to. 
+Here is the relevant setup:
 
+pcm.route1      {
+type            route;
+slave.pcm       "extigy";
+slave.channels  6;
+ttable.0.0      1.0;
+}
+
+The music that I played had similar distortions like the one for speaker
+test 
+and played considerably slower than when player with 2 channels. Again I 
+could record and replay the effect. The setup was slightly different in
+order 
+to route the stereo channels to all 6 speakers.
+
+For routing with 4 slave channels, I get a failure (as expected), this
+time 
+with the output:
+
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+aplay: set_params:910: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 48000
+PERIOD_TIME: (42666 42667)
+PERIOD_SIZE: 2048
+PERIOD_BYTES: 8192
+PERIODS: 4
+BUFFER_TIME: (170666 170667)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 1000
+
+This is all the relevant bits that I can think of at the moment. Thank you
+for 
+reading this far. If anybody thinks it is important to get the recorded 
+files, I am happy to sent them. I am grateful for any nudge on what I am 
+doing wrong with my setup.
+
+Christoph Burger-Scheidlin
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-24-05 10:14 
+ Clemens Ladisch - 06-24-05 09:23 
 ----------------------------------------------------------------------
-Do 
-alsactl -f test.state store
-and attach test.state file
+What are the contents of /proc/asound/cardX/stream0 while you're playing
+with 6 channels?
+
+----------------------------------------------------------------------
+ andersin - 06-24-05 10:16 
+----------------------------------------------------------------------
+I added the output as stream0.txt. I did the same when playing 2 channel
+sound, here is a diff:
+
+--- stream0.txt 2005-06-24 09:08:40.000000000 +0100
++++ stream0-2ch.txt     2005-06-24 09:11:07.000000000 +0100
+@@ -3,10 +3,10 @@
+ Playback:
+   Status: Running
+     Interface = 1
+-    Altset = 16
++    Altset = 1
+     URBs = 5 [ 4 4 4 4 4 ]
+-    Packet Size = 506
+-    Momentary freq = 47750 Hz (0x2f.c000)
++    Packet Size = 200
++    Momentary freq = 48000 Hz (0x30.0000)
+   Interface 1
+     Altset 1
+     Format: S16_LE
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-24-05 10:06 bricem13       New Issue                                    
-06-24-05 10:06 bricem13       Distribution              => debian sarge    
-06-24-05 10:06 bricem13       Kernel Version            => 2.6.12          
-06-24-05 10:14 pzad           Note Added: 0005207                          
+06-23-05 23:54 andersin       New Issue                                    
+06-24-05 09:21 Clemens LadischFile Added: alsa-lib-start-threshold-check.diff   
+                
+06-24-05 09:22 Clemens LadischFile Deleted: alsa-lib-start-threshold-check.diff 
+                  
+06-24-05 09:23 Clemens LadischNote Added: 0005205                          
+06-24-05 10:14 andersin       File Added: stream0.txt                      
+06-24-05 10:16 andersin       Note Added: 0005208                          
 ======================================================================
 
 
