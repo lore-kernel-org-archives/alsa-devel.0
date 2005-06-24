@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Fri, 24 Jun 2005 21:12:50 +0200
-Message-ID: <5c6b2cf465358507f8317e57be1eb169@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 21:54:26 +0200
+Message-ID: <3569d91a93282fa6c4c76f21450328ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36B0F18B
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 21:12:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E231222
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 21:54:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-24-2005 21:12 CEST
+Last Modified:              06-24-2005 21:54 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,18 +60,6 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 20:07 
-----------------------------------------------------------------------
-The problem is that your BIOS is incomplete, at least it doesn't initialize
-the audio device properly.  So, we have to figure out the pin
-configuration manually.
-
-When you build the alsa-driver with --with-debug=full option, you can
-choose model=test.  With this model, you can choose almost all possible
-configuration for your device.  Note that the enum control can be changed
-via alsamixer with up/down keys.
-
-----------------------------------------------------------------------
  alfred-ganz - 06-24-05 21:12 
 ----------------------------------------------------------------------
 Here is what I get in the kernel logs:
@@ -85,6 +73,26 @@ kernel: ALSA /home/fedora-3/cvs/alsa-driver/acore/control.c:325: control
 kernel: HDA Intel: probe of 0000:00:1b.0 failed with error -16
 
 What do I do now??
+
+----------------------------------------------------------------------
+ alfred-ganz - 06-24-05 21:54 
+----------------------------------------------------------------------
+When I rebuilt with --with-debug=full, but then loaded snd-hda-intel
+with model=5stack, Front/LineOut, SideSurround, RearSurround, and 
+CenterSurround work all fine, I don't understand why it is different
+with the debug enabled code?? Also, Front panel Headphone and Front
+panel Mic don't work right yet.
+Questions:
+Why did things change between the vailla build and the debug build?
+Note that alsamixer shows different channels than before, there are now
+three Capture channels, and the Headphone channel no longer has volume
+control.
+Why do I have to use a different order of mod=probe's in order to
+avoid error messages (currently snd, snd-page-alloc, snd-pcm,
+snd-hda-codec,
+and finally snd-hda-intel)?
+How do I find out how to change assignments for the Front panel jacks,
+and how is this information saved to carry it over reboot?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +115,7 @@ Date Modified  Username       Field                    Change
 06-24-05 20:01 alfred-ganz    Note Added: 0005251                          
 06-24-05 20:07 tiwai          Note Added: 0005252                          
 06-24-05 21:12 alfred-ganz    Note Added: 0005253                          
+06-24-05 21:54 alfred-ganz    Note Added: 0005254                          
 ======================================================================
 
 
