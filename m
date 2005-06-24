@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
-Date: Fri, 24 Jun 2005 14:37:39 +0200
-Message-ID: <68867967e4dbc70d1f41c3367528d453@bugtrack.alsa-project.org>
+Date: Fri, 24 Jun 2005 14:54:35 +0200
+Message-ID: <4b1c81456f6e26638ffc54b263034e78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A0AE1EE
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 14:37:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F687216
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 14:54:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             06-16-2005 15:07 CEST
-Last Modified:              06-24-2005 14:37 CEST
+Last Modified:              06-24-2005 14:54 CEST
 ======================================================================
 Summary:                    Realtek ALC650 output problem
 Description: 
@@ -53,17 +53,25 @@ I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-23-05 22:42 
-----------------------------------------------------------------------
-Try to play with "Swap Surround Slot" (the most left item in alsamixer).
-
-----------------------------------------------------------------------
  willits - 06-24-05 14:37 
 ----------------------------------------------------------------------
 I have tried, and now all speaker work !
 
 But, when I am playing a media file (a mp3), I have got only front speaker
 who work (Under windows, I have got all speaker).
+
+----------------------------------------------------------------------
+ tiwai - 06-24-05 14:54 
+----------------------------------------------------------------------
+Swap Surround is not necessary with ICH4 but older ICH models seem
+requiring the channel swapping.
+
+Please show the content of /proc/asound/cards, and attach the files
+/proc/asound/card0/codec97#0/* files for more checks.
+Also, make sure that you installed alsa-lib-1.0.9.
+
+The playback of 2ch samples with surrounds is enabled by "Duplicate Front"
+switch, BTW.  Or, it's possible via own asoundrc configuration, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +98,7 @@ Date Modified  Username       Field                    Change
 06-23-05 19:26 willits        Note Added: 0005193                          
 06-23-05 22:42 pzad           Note Added: 0005196                          
 06-24-05 14:37 willits        Note Added: 0005220                          
+06-24-05 14:54 tiwai          Note Added: 0005221                          
 ======================================================================
 
 
