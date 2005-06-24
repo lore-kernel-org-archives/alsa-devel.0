@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
-Date: Fri, 24 Jun 2005 15:00:50 +0200
-Message-ID: <3f637b720e2f1688b749d66009fa273b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Fri, 24 Jun 2005 15:07:26 +0200
+Message-ID: <a028c192e7b32d790fe41931e197645d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE860216
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:00:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2126C1F6
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 15:07:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
 ======================================================================
-Reported By:                iljaguaro
-Assigned To:                tiwai
+Reported By:                willits
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1192
-Category:                   PCI - cmipci
+Issue ID:                   1197
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Testing "Etch"
-Kernel Version:             kernel-image-2.6.11-1-k7
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             06-15-2005 11:38 CEST
-Last Modified:              06-24-2005 15:00 CEST
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-24-2005 15:07 CEST
 ======================================================================
-Summary:                    Microphone doesn't work in record and/or Skype
+Summary:                    Realtek ALC650 output problem
 Description: 
-The microphone input doesnt work well, the volume are too low and the noisy
-is to high, when you record it.
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
+
+I haven't got this problem with Windows.
 ======================================================================
 
 ----------------------------------------------------------------------
- iljaguaro - 06-24-05 08:11 
+ tiwai - 06-24-05 14:54 
 ----------------------------------------------------------------------
-same problem with ALSA 1.0.9b
+Swap Surround is not necessary with ICH4 but older ICH models seem
+requiring the channel swapping.
+
+Please show the content of /proc/asound/cards, and attach the files
+/proc/asound/card0/codec97#0/* files for more checks.
+Also, make sure that you installed alsa-lib-1.0.9.
+
+The playback of 2ch samples with surrounds is enabled by "Duplicate Front"
+switch, BTW.  Or, it's possible via own asoundrc configuration, too.
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 15:00 
+ jcdutton - 06-24-05 15:07 
 ----------------------------------------------------------------------
-Try the attached patch and turn on "Mic Boost" in alsamixer capture view. 
-Note that there are two "Mic Boost" switches in playback and capture after
-the patch.
+Can't we add a quirk to the driver, so that it can detect the motherboard
+type and set all the correct outputs as default.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 11:38 iljaguaro      New Issue                                    
-06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
-06-15-05 11:38 iljaguaro      Kernel Version            =>
-kernel-image-2.6.11-1-k7
-06-24-05 08:11 iljaguaro      Note Added: 0005203                          
-06-24-05 15:00 tiwai          Note Added: 0005224                          
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-23-05 19:21 willits        Note Added: 0005192                          
+06-23-05 19:26 willits        Note Added: 0005193                          
+06-23-05 22:42 pzad           Note Added: 0005196                          
+06-24-05 14:37 willits        Note Added: 0005220                          
+06-24-05 14:54 tiwai          Note Added: 0005221                          
+06-24-05 15:07 jcdutton       Note Added: 0005225                          
 ======================================================================
 
 
