@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001212]: no sound via82xx kernel 2.6.12
-Date: Fri, 24 Jun 2005 11:29:41 +0200
-Message-ID: <888aab501da524cf2b6909b7db66c822@bugtrack.alsa-project.org>
+From: Colin Fletcher <colinf@axicon.com>
+Subject: Re: [linux-usb-devel] Fw: BUG: Kernel panic when disconnecting
+ Edirol USB2 audio interface
+Date: Fri, 24 Jun 2005 10:35:36 +0100
+Message-ID: <42BBD3E8.5070505@axicon.com>
+References: <20050623024635.5b873305.akpm@osdl.org> <1119527109.42baa0c5df4ea@www.domainfactory-webmail.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1677B152
-	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2005 11:29:42 +0200 (MEST)
+In-Reply-To: <1119527109.42baa0c5df4ea@www.domainfactory-webmail.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,131 +18,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
+> You didn't mention that the device was currently playing/recording, so
+> I assume it wasn't.  
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1212> 
-======================================================================
-Reported By:                bricem13
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1212
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               debian sarge
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             06-24-2005 10:06 CEST
-Last Modified:              06-24-2005 11:29 CEST
-======================================================================
-Summary:                    no sound via82xx kernel 2.6.12
-Description: 
-I updated my kernel to 2.6.12 and since I don't have sound anymore.
+Correct. Simply plugging in and unplugging the USB cable (or powering
+the UA-1000 on and off) causes the oops every time.
 
-The volume are unmuted and the right modules are present:
+> In this case, the oops apparently happens when the
+> MIDI URBs are canceled (the MIDI input URBs are active as long as the
+> driver is loaded).  Please try the attached patch; it adds two printk()s
+> around the snd_usbmidi_disconnect() function.  If my theory is correct,
+> the oops should happen immediately after the "killing MIDI URBs..."
+> message.
 
-[brice@TuxBox:brice]$ lsmod|grep snd
-snd_via82xx            26432  1
-gameport               15624  1 snd_via82xx
-snd_ac97_codec         70520  1 snd_via82xx
-snd_pcm_oss            47008  0
-snd_mixer_oss          17024  2 snd_pcm_oss
-snd_pcm                83464  3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer              23684  1 snd_pcm
-snd_page_alloc          9604  2 snd_via82xx,snd_pcm
-snd_mpu401_uart         7424  1 snd_via82xx
-snd_rawmidi            24352  1 snd_mpu401_uart
-snd_seq_device          8332  1 snd_rawmidi
-snd                    53380  9
-snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore              10080  2 snd
-[brice@TuxBox:brice]$
+I don't see the "killing MIDI URBs..." message at all.
 
-[brice@TuxBox:brice]$ lspci
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
-KT266/A/333]0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7
-[Apollo KT266/A/333 AGP]
-0000:00:0c.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
-0000:00:0e.0 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev aa)
-0000:00:0e.1 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev aa)
-0000:00:0e.2 FireWire (IEEE 1394): Ricoh Co Ltd R5C552 IEEE 1394
-Controller (rev 02)
-0000:00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 80)
-0000:00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82)
-0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
-0000:00:11.1 IDE interface: VIA Technologies, Inc.
-VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
-0000:00:11.6 Communication controller: VIA Technologies, Inc. Intel 537
-[AC97 Modem] (rev 80)
-0000:01:00.0 VGA compatible controller: nVidia Corporation NV17 [GeForce4
-420 Go] (rev a3)
-0000:06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8180L
-802.11b MAC (rev 20)
-[brice@TuxBox:brice]$
+> BTW: I never had the opportunity to test my code for the UA-1000.
+> Does playback/capture/MIDI work?
 
-I do not know what's wrong! I tried alsaconf unsuccesfully.
-I noticed also that I don't have a /etc/asound.state file but a
-/var/lib/alsa/asound.state one
+jackd will connect to the UA-1000, at which point the 10 output state
+LEDs on the front light up, and the output meter shows signals when I
+play sound through it, but it's a bit unstable: it will stop working 
+after a short while. I haven't investigated any further.
 
 
-I am stuck without sound...
+Colin Fletcher.
+
+-- 
 
 
-Best regards, Brice
 
-
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 06-24-05 11:25 
-----------------------------------------------------------------------
-Try mute "Line Jack Sense" and "Headphone Jack Sense".
-
-----------------------------------------------------------------------
- bricem13 - 06-24-05 11:29 
-----------------------------------------------------------------------
-Hi
-
-muting "Line Jack Sense" and "Headphone Jack Sense" resolved the matter!
-
-So nice to hear tux playing sound... -;)
-
-
-Thanks for that!
-
-
-ps: what are the function of "Line Jack Sense" and "Headphone Jack Sense"
-??
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-24-05 10:06 bricem13       New Issue                                    
-06-24-05 10:06 bricem13       Distribution              => debian sarge    
-06-24-05 10:06 bricem13       Kernel Version            => 2.6.12          
-06-24-05 10:14 pzad           Note Added: 0005207                          
-06-24-05 10:34 bricem13       File Added: test.state                       
-06-24-05 11:19 tiwai          Note Added: 0005213                          
-06-24-05 11:25 pzad           Note Added: 0005214                          
-06-24-05 11:29 bricem13       Note Added: 0005215                          
-======================================================================
-
-
+This email and any files transmitted with it are confidential and intended solely for the use of the individual or entity to whom they are addressed. If you have received this email in error please notify the system manager. This message contains confidential information and is intended only for the individual named. If you are not the named addressee you should not disseminate, distribute or copy this e-mail.
 
 
 -------------------------------------------------------
