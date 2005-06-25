@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001211]: type dmix produces noise, type plug slave.pcm "dmix" does not on SB EXtigy
-Date: Sat, 25 Jun 2005 13:20:27 +0200
-Message-ID: <cb2c8b30cee042269aacdc3418aa3e2a@bugtrack.alsa-project.org>
+From: "Lenore Voss" <lenorevoss_bp@doityourself.com>
+Subject: Fun againn
+Date: Sat, 25 Jun 2005 15:25:29 +0300
+Message-ID: <HIHIFJGHGIJCCMPNJEGIFPFFPJAB.lenorevoss_bp@doityourself.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0B6F_742A469D.3BE072D9"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB29F1B9
-	for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2005 13:20:27 +0200 (MEST)
+Received: from legislator.com (cpe-70-113-198-207.austin.res.rr.com [70.113.198.207])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AAD4C16E
+	for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2005 14:27:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,68 +21,63 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1211> 
-======================================================================
-Reported By:                andersin
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1211
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             06-24-2005 00:02 CEST
-Last Modified:              06-25-2005 13:20 CEST
-======================================================================
-Summary:                    type dmix produces noise, type plug slave.pcm "dmix"
-does not on SB EXtigy
-Description: 
-I recently noticed crackling sound when using the dmix plugin. While the
-simple case { type plug; slave.pcm "dmix" } works, { type dmix; slave.pcm
-"extigy" } (where extigy is the pcm for the card) produces a crackling
-sound. (I observe the same problem with my build in ICH4 card, but AFAIR
-this has been reported already).
+------=_NextPart_000_0B6F_742A469D.3BE072D9
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I have tried a variety of buffering and period settings that I found in
-various documentations on the web, but all attempts were unsuccessful.
-======================================================================
+Find all your medications in one place!
+Everything you want! Fast and cheap!
 
-----------------------------------------------------------------------
- andersin - 06-24-05 16:56 
-----------------------------------------------------------------------
-At the moment, when the extigy is not connected, I am not able to reproduce
-any of the distortion on the INTEL chip I was talking about. Strange
-indeed. Once I get back to the extigy, I will report back, if the error
-surfaces again.
+You name it! We have it!
+http://rxcheapdeal.com
 
-----------------------------------------------------------------------
- andersin - 06-25-05 13:20 
-----------------------------------------------------------------------
-Now that I tested the setup again, I am unable to reproduce this issue. I
-am not sure what caused it and will try my best to reproduce it and give a
-more detailed explanation on what caused it. Unitl then, I think the issue
-can be closed.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-24-05 00:02 andersin       New Issue                                    
-06-24-05 00:02 andersin       Kernel Version            => 2.6.11          
-06-24-05 11:11 tiwai          Note Added: 0005210                          
-06-24-05 13:40 andersin       Note Added: 0005219                          
-06-24-05 14:55 tiwai          Note Added: 0005222                          
-06-24-05 16:56 andersin       Note Added: 0005237                          
-06-25-05 13:20 andersin       Note Added: 0005257                          
-======================================================================
+Stop receiving promotional material now
+http://rxcheapdeal.com/oo.html
 
+------=_NextPart_000_0B6F_742A469D.3BE072D9
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" xmlns=3D
+"http://www.w3.org/TR/REC-html40">
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+        <body>
+                <center> 
+                        <font face=3D"Verdana">
+                                <br>
+                                <br>
+                                <br>
+                                        <h3>Get all your prescriptions in one location!<br>
+                                        We have all tablets you could possibly need!<br>
+                                <br>
+                                        <a href=3D"http://rxcheapdeal.com">All your needs in one shop!</a> 
+                                        </h3>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                        Stop receiving promotional material <a href=3D"http://rxcheapdeal.com/oo
+html">now</a><br>
+                                <br>
+                                <br>
+                        </font>
+                </center>
+        </body>
+</html>
+
+
+------=_NextPart_000_0B6F_742A469D.3BE072D9--
 
 
 
