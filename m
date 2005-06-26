@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Sun, 26 Jun 2005 22:08:55 +0200
-Message-ID: <df8d3e629ed71085fd0719098cb6d512@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
+Date: Sun, 26 Jun 2005 22:48:36 +0200
+Message-ID: <8db83517de9be5079c2279b1afec95d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E7361C4
-	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 22:08:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A598510C
+	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 22:48:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
 ======================================================================
-Reported By:                Xero
+Reported By:                JKnife
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1052
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-26-2005 22:08 CEST
+Date Submitted:             04-13-2005 21:59 CEST
+Last Modified:              06-26-2005 22:48 CEST
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    Riptide/Context Audio Drivers
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
-
-This starts showing up when I start pressing play again:
-
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-
-
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
-
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
+there is a set but its only for the 2.4 kernel.
+i would like you toinclude them in alsa.
+the 2.4 drivers can be found here
+http://www.linuxant.com/drivers/
 ======================================================================
 
 ----------------------------------------------------------------------
- Xero - 06-23-05 02:47 
+ tiwai - 06-24-05 15:09 
 ----------------------------------------------------------------------
-here's lsof output
+The changes are trivial in most cases.  SG-buffer should be same.
 
-# lsof  /dev/snd/pcmC0D0p
-COMMAND     PID USER   FD   TYPE DEVICE SIZE NODE NAME
-beep-medi  5075 xero  mem    CHR 116,16      5808 /dev/snd/pcmC0D0p
-beep-medi  5075 xero   27u   CHR 116,16      5808 /dev/snd/pcmC0D0p
-beep-medi 32106 xero  mem    CHR 116,16      5808 /dev/snd/pcmC0D0p
-beep-medi 32106 xero   27u   CHR 116,16      5808 /dev/snd/pcmC0D0p
+But I'd work on this only if someone can test quickly the patch (and if I
+have time left...)
 
 ----------------------------------------------------------------------
- Xero - 06-26-05 22:08 
+ JKnife - 06-26-05 22:48 
 ----------------------------------------------------------------------
-I think this tends to happen more under load. I'm starting to wonder if
-this is relevant to the sound card driver. I also get distortion with dmix
-sometimes as well when under load, pops, clicks, and occasionally the fade
-in of metallic sounding distortion, I've posted in bug 0000881 about my
-problems with that, though at this point I'm thinking these two things are
-relevant to each other. This has become extremely annoying and I'm not too
-sure what to do. Even when I don't use dmix beep will just tend to freeze
-completely every once in a while, usually when under load as well.
+ill test them :-P... i usally dont test stuff like this but i NEED my sound
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
+04-13-05 21:59 JKnife         New Issue                                    
+04-13-05 22:01 JKnife         Note Added: 0004479                          
+06-06-05 10:51 perex          Assigned To              perex =>            
+06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
+extreme, interwave) => OTHERS
+06-08-05 15:15 tiwai          Note Added: 0004932                          
+06-08-05 23:25 JKnife         Note Added: 0004976                          
+06-15-05 14:41 nokos          Note Added: 0005027                          
+06-23-05 12:07 tiwai          Note Added: 0005176                          
+06-23-05 15:10 nokos          Note Added: 0005187                          
+06-23-05 15:21 tiwai          Note Added: 0005188                          
+06-23-05 15:26 tiwai          Note Added: 0005189                          
+06-23-05 15:35 nokos          Note Added: 0005190                          
+06-24-05 15:09 tiwai          Note Added: 0005226                          
+06-26-05 22:48 JKnife         Note Added: 0005268                          
 ======================================================================
 
 
