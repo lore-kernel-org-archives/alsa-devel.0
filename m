@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Sun, 26 Jun 2005 13:18:16 +0200
-Message-ID: <fc4e64e2409a808ade23b3e76063cd3e@bugtrack.alsa-project.org>
+From: fab <fab@gnux.info>
+Subject: ALC880 on medion laptop
+Date: Sun, 26 Jun 2005 18:26:29 +0200
+Message-ID: <20050626162629.GA23335@blackmilk.localzone.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2A1B1B7
-	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 13:18:16 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,114 +15,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+After the recent success-story with the alsa-cvs drivers (now the sound
+is OK for playing and the output speakers are ok) I decided to do some
+more tests. Good news:
+for playing, everything is ok, the mixer entries correspond to the
+output jacks and the internal speakers are muted automatically when I
+plug a jack on headphone or Front. This is the best behavihour IMHO.
+One remark : I have a "LFE" (??) output on the alsa-mixer and I don't
+know wtf... (I havn't a corresponding jack).
+I must note that I havn't tested the IEC958 output since I have no
+compatible device to plug.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
-======================================================================
-Reported By:                vedran
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
-======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              06-26-2005 13:18 CEST
-======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
-Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
+Now the bad news:
+Recording is completly out of order :(
+The laptop owns 2 inputs: mic & line in (labeled audio in)
+The mixer gives me 6 controls for recording:
+In capture:
+Capture, Capture 1, Capture 2
 
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
+In playback:
+Input source, Input source 1, Input source 2
+which are multi-choice over Mic, Front Mic, Line, CD
 
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
+I can't get any sound from line in, from mic I can see a concordance
+between the recorded sound and my voice but it's rather strange.
+[recorded sample file joined]
+The sound is *very* noisy and when I speek I can hear a louder noise,
+nothing more.
 
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
+Is it a known problem ?
+I hope solutions will be found as for playback, previous results are
+very encouraging.
 
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
+Thanks all.
 
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001094 nforce4 - optical spdif out not working
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-21-05 11:19 
-----------------------------------------------------------------------
-Yes, only 48kHz works on nForce SPDIF, indeed.  That is, the non-audio
-stream in other rates won't work.
-
-As mentioned, the driver works partially.  It may work with the receiver
-which accepts AC3 stream even without SPDIF non-audio status bit by
-checking the preamble.  But, the receivers strictly checking the non-audio
-bit don't work.
-
-It seems that the nForce doesn't use AC97 chip for transmitting SPDIF
-signals but directly drives from the nforce core.  Thus, checking the
-datasheet of the ac97 codec chip won't help...
-
-----------------------------------------------------------------------
- gilesjuk - 06-26-05 13:18 
-----------------------------------------------------------------------
-But in my case the Realtek chip is on a seperate card with the SPDIF and
-audio ports. Surely the audio data gets written to this chip and then
-routed to the outputs depending on how the registers are set?
-
-This is my board:
-http://www.abit-usa.com/products/mb/products.php?categories=1&model=262
-
-Excuse my ignorance, but how is the Nforce chipset responsible for the
-audio when it's an external codec being used?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
-06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
-06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
-06-03-05 00:31 Human          Note Added: 0004880                          
-06-03-05 00:32 Human          Issue Monitored: Human                       
-06-06-05 23:30 Human          Note Added: 0004910                          
-06-08-05 15:01 tiwai          Note Added: 0004928                          
-06-10-05 18:07 Human          Note Added: 0004984                          
-06-19-05 16:07 gilesjuk       Note Added: 0005090                          
-06-21-05 00:50 gilesjuk       Note Added: 0005099                          
-06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
-06-21-05 11:19 tiwai          Note Added: 0005102                          
-06-26-05 13:18 gilesjuk       Note Added: 0005263                          
-======================================================================
-
-
+Fabien Devaux
 
 
 -------------------------------------------------------
