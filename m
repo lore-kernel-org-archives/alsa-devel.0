@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Sun, 26 Jun 2005 22:48:36 +0200
-Message-ID: <8db83517de9be5079c2279b1afec95d1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
+Date: Sun, 26 Jun 2005 23:21:58 +0200
+Message-ID: <d86fc62d14916337d639610637870535@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A598510C
-	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 22:48:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49F21ED
+	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 23:21:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
 ======================================================================
-Reported By:                JKnife
-Assigned To:                
+Reported By:                iljaguaro
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   1_OTHERS
+Issue ID:                   1192
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Debian Testing "Etch"
+Kernel Version:             kernel-image-2.6.11-1-k7
 ======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-26-2005 22:48 CEST
+Date Submitted:             06-15-2005 11:38 CEST
+Last Modified:              06-26-2005 23:21 CEST
 ======================================================================
-Summary:                    Riptide/Context Audio Drivers
+Summary:                    Microphone doesn't work in record and/or Skype
 Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
+The microphone input doesnt work well, the volume are too low and the noisy
+is to high, when you record it.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 15:09 
+ iljaguaro - 06-26-05 11:46 
 ----------------------------------------------------------------------
-The changes are trivial in most cases.  SG-buffer should be same.
-
-But I'd work on this only if someone can test quickly the patch (and if I
-have time left...)
+Sorry, where put the patch? In alsa source & recompile it?
 
 ----------------------------------------------------------------------
- JKnife - 06-26-05 22:48 
+ sst4 - 06-26-05 23:21 
 ----------------------------------------------------------------------
-ill test them :-P... i usally dont test stuff like this but i NEED my sound
+Look above, against  "Attached Files":  cmipci-mic-boost2.diff,
+its URL is:
+
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=744&type=bug
+.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
-06-08-05 15:15 tiwai          Note Added: 0004932                          
-06-08-05 23:25 JKnife         Note Added: 0004976                          
-06-15-05 14:41 nokos          Note Added: 0005027                          
-06-23-05 12:07 tiwai          Note Added: 0005176                          
-06-23-05 15:10 nokos          Note Added: 0005187                          
-06-23-05 15:21 tiwai          Note Added: 0005188                          
-06-23-05 15:26 tiwai          Note Added: 0005189                          
-06-23-05 15:35 nokos          Note Added: 0005190                          
-06-24-05 15:09 tiwai          Note Added: 0005226                          
-06-26-05 22:48 JKnife         Note Added: 0005268                          
+06-15-05 11:38 iljaguaro      New Issue                                    
+06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
+06-15-05 11:38 iljaguaro      Kernel Version            =>
+kernel-image-2.6.11-1-k7
+06-24-05 08:11 iljaguaro      Note Added: 0005203                          
+06-24-05 15:00 tiwai          Note Added: 0005224                          
+06-24-05 15:01 tiwai          File Added: cmipci-mic-boost2.diff                
+   
+06-26-05 11:46 iljaguaro      Note Added: 0005262                          
+06-26-05 23:21 sst4           Note Added: 0005269                          
 ======================================================================
 
 
