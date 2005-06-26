@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001203]: mtpav driver locks X on 64 bit native system
-Date: Sun, 26 Jun 2005 10:54:06 +0200
-Message-ID: <1b0a3e588b1f396156b530671a9ab1a8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
+Date: Sun, 26 Jun 2005 11:46:28 +0200
+Message-ID: <415924319c4e541caf95c6670253ae4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC40417C
-	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 10:54:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F4591BC
+	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 11:46:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1203> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
 ======================================================================
-Reported By:                sonofzev
-Assigned To:                
+Reported By:                iljaguaro
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1203
-Category:                   GENERIC - mtpav
+Issue ID:                   1192
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo 2004.3 - 64-bit native
-Kernel Version:             2.6.9 or 2.6.11 or 2.6.12
+Status:                     assigned
+Distribution:               Debian Testing "Etch"
+Kernel Version:             kernel-image-2.6.11-1-k7
 ======================================================================
-Date Submitted:             06-19-2005 08:51 CEST
-Last Modified:              06-26-2005 10:54 CEST
+Date Submitted:             06-15-2005 11:38 CEST
+Last Modified:              06-26-2005 11:46 CEST
 ======================================================================
-Summary:                    mtpav driver locks X on 64 bit native system
+Summary:                    Microphone doesn't work in record and/or Skype
 Description: 
-Locks system completely when loading X if mtpav module is already loaded. 
-
-If loading the module after loading X, the system completely lock when
-firing up any sequencer app. 
-
-This does not happen on my 32-bit Pentium 4 
-
+The microphone input doesnt work well, the volume are too low and the noisy
+is to high, when you record it.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-21-05 11:25 
+ tiwai - 06-24-05 15:00 
 ----------------------------------------------------------------------
-Is the interrupt correct?  As default, it's set to irq 7.
+Try the attached patch and turn on "Mic Boost" in alsamixer capture view. 
+Note that there are two "Mic Boost" switches in playback and capture after
+the patch.
 
 ----------------------------------------------------------------------
- sonofzev - 06-26-05 10:54 
+ iljaguaro - 06-26-05 11:46 
 ----------------------------------------------------------------------
-How do I check?
-
-I have not setup any options, do I need to check BIOS?
-
-cheers
-
-Allan
+Sorry, where put the patch? In alsa source & recompile it?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-05 08:51 sonofzev       New Issue                                    
-06-19-05 08:51 sonofzev       Distribution              => Gentoo 2004.3 -
-64-bit native
-06-19-05 08:51 sonofzev       Kernel Version            => 2.6.9 or 2.6.11 or
-2.6.12
-06-19-05 16:05 sonofzev       Note Added: 0005089                          
-06-19-05 16:24 sonofzev       Note Deleted: 0005089                        
-06-20-05 13:47 sonofzev       Note Added: 0005097                          
-06-21-05 11:25 tiwai          Note Added: 0005104                          
-06-26-05 10:54 sonofzev       Note Added: 0005261                          
+06-15-05 11:38 iljaguaro      New Issue                                    
+06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
+06-15-05 11:38 iljaguaro      Kernel Version            =>
+kernel-image-2.6.11-1-k7
+06-24-05 08:11 iljaguaro      Note Added: 0005203                          
+06-24-05 15:00 tiwai          Note Added: 0005224                          
+06-24-05 15:01 tiwai          File Added: cmipci-mic-boost2.diff                
+   
+06-26-05 11:46 iljaguaro      Note Added: 0005262                          
 ======================================================================
 
 
