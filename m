@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
-Date: Sun, 26 Jun 2005 11:46:28 +0200
-Message-ID: <415924319c4e541caf95c6670253ae4b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Sun, 26 Jun 2005 13:18:16 +0200
+Message-ID: <fc4e64e2409a808ade23b3e76063cd3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F4591BC
-	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 11:46:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2A1B1B7
+	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2005 13:18:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
 ======================================================================
-Reported By:                iljaguaro
-Assigned To:                tiwai
+Reported By:                vedran
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1192
-Category:                   PCI - cmipci
+Issue ID:                   1083
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Testing "Etch"
-Kernel Version:             kernel-image-2.6.11-1-k7
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
 ======================================================================
-Date Submitted:             06-15-2005 11:38 CEST
-Last Modified:              06-26-2005 11:46 CEST
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              06-26-2005 13:18 CEST
 ======================================================================
-Summary:                    Microphone doesn't work in record and/or Skype
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
 Description: 
-The microphone input doesnt work well, the volume are too low and the noisy
-is to high, when you record it.
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
+
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
+
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
+
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
+
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
+
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001094 nforce4 - optical spdif out not working
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 15:00 
+ tiwai - 06-21-05 11:19 
 ----------------------------------------------------------------------
-Try the attached patch and turn on "Mic Boost" in alsamixer capture view. 
-Note that there are two "Mic Boost" switches in playback and capture after
-the patch.
+Yes, only 48kHz works on nForce SPDIF, indeed.  That is, the non-audio
+stream in other rates won't work.
+
+As mentioned, the driver works partially.  It may work with the receiver
+which accepts AC3 stream even without SPDIF non-audio status bit by
+checking the preamble.  But, the receivers strictly checking the non-audio
+bit don't work.
+
+It seems that the nForce doesn't use AC97 chip for transmitting SPDIF
+signals but directly drives from the nforce core.  Thus, checking the
+datasheet of the ac97 codec chip won't help...
 
 ----------------------------------------------------------------------
- iljaguaro - 06-26-05 11:46 
+ gilesjuk - 06-26-05 13:18 
 ----------------------------------------------------------------------
-Sorry, where put the patch? In alsa source & recompile it?
+But in my case the Realtek chip is on a seperate card with the SPDIF and
+audio ports. Surely the audio data gets written to this chip and then
+routed to the outputs depending on how the registers are set?
+
+This is my board:
+http://www.abit-usa.com/products/mb/products.php?categories=1&model=262
+
+Excuse my ignorance, but how is the Nforce chipset responsible for the
+audio when it's an external codec being used?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 11:38 iljaguaro      New Issue                                    
-06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
-06-15-05 11:38 iljaguaro      Kernel Version            =>
-kernel-image-2.6.11-1-k7
-06-24-05 08:11 iljaguaro      Note Added: 0005203                          
-06-24-05 15:00 tiwai          Note Added: 0005224                          
-06-24-05 15:01 tiwai          File Added: cmipci-mic-boost2.diff                
-   
-06-26-05 11:46 iljaguaro      Note Added: 0005262                          
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+05-30-05 13:21 vedran         Note Added: 0004809                          
+06-01-05 16:53 tiwai          Note Added: 0004862                          
+06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
+06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
+06-03-05 00:31 Human          Note Added: 0004880                          
+06-03-05 00:32 Human          Issue Monitored: Human                       
+06-06-05 23:30 Human          Note Added: 0004910                          
+06-08-05 15:01 tiwai          Note Added: 0004928                          
+06-10-05 18:07 Human          Note Added: 0004984                          
+06-19-05 16:07 gilesjuk       Note Added: 0005090                          
+06-21-05 00:50 gilesjuk       Note Added: 0005099                          
+06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
+06-21-05 11:19 tiwai          Note Added: 0005102                          
+06-26-05 13:18 gilesjuk       Note Added: 0005263                          
 ======================================================================
 
 
