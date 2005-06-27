@@ -1,128 +1,59 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Mon, 27 Jun 2005 22:41:03 +0200
-Message-ID: <cfc002eb0e82f8cd0057db418b6dacea@bugtrack.alsa-project.org>
+From: Colin Fletcher <colinf@axicon.com>
+Subject: Re: [alsa-devel] Fw: BUG: Kernel panic when disconnecting
+ Edirol USB2 audio interface
+Date: Mon, 27 Jun 2005 22:32:34 +0100
+Message-ID: <42C07072.1050105@axicon.com>
+References: <Pine.HPX.4.33n.0506271650140.7308-100000@studcom.urz.uni-halle.de>
+Reply-To: colinf@axicon.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB3191F3
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 22:41:03 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-usb-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0506271650140.7308-100000@studcom.urz.uni-halle.de>
+Sender: linux-usb-devel-admin@lists.sourceforge.net
+Errors-To: linux-usb-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
+List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, david-b@pacbell.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
-======================================================================
-Reported By:                Xero
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-27-2005 22:41 CEST
-======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
-Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+> I'd like to know if playback and/or MIDI work.  It may be possible
+> that the driver doesn't send playback PCM data at exactly the correct
+> rate because the playback stream should have been synchronized to the
+> capture stream.
 
-This starts showing up when I start pressing play again:
+I don't have any MIDI hardware to hand at the moment: I can try to dig 
+out my old Roland drum machine next week if that will help.
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+Meanwhile, I've tried playback (with jack 0.100.1, ardour, & 
+realtime_lsm loaded).
 
+With kernel 2.6.12 + "[PATCH] ehci-hcd - fix page pointer allocation in 
+itd_patch()"), using jackd in realtime mode at 44.1kHz with 64 
+frames/period and 4 periods/buffer, I get a stream of xruns of about 
+0.020 ms, several per second.
 
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
+Using the same kernel and jackd settings, but with the sound/ and 
+include/sound directories from ALSA CVS of about 7:30 this evening, it 
+seems to work fine, at least for a couple of minutes of stereo playback.
 
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
+At 128 frames/period, both kernels have a crackling background noise: I 
+haven't experimented with any other settings yet.
 
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
+I hope this is useful: I'm afraid I'm not going to have time to try much 
+more until next week now.
 
-Attached is my asoundrc.
-======================================================================
+Colin Fletcher
 
-----------------------------------------------------------------------
- Xero - 06-27-05 22:05 
-----------------------------------------------------------------------
-no, the socket remains the proper permission and owned by my user as well,
-usually. I don't really ever run anything as root, especially audio stuff,
-so I have no idea how that'd even happen. Let me wait for it to happen
-again and I'll post a ls -l of the socket. All I have to do is wait for it
-to happen a few times and there will be quite the collection of dead
-sockts in there...
-
-----------------------------------------------------------------------
- Xero - 06-27-05 22:41 
-----------------------------------------------------------------------
-hrm the socket actually did disappear this time when it happened, weird.
-That means it may or may not always remove the socket, I'm curious if the
-socket gets removed after i press play again when it first happens vs.
-just shutting down beep right then. I'll report back on this later when I
-have more of a clue. This is somewhat of a pain to reproduce as it only
-really happens on song change...and then only sometimes.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
-06-27-05 16:22 tiwai          Note Added: 0005275                          
-06-27-05 22:05 Xero           Note Added: 0005288                          
-06-27-05 22:41 Xero           Note Added: 0005289                          
-======================================================================
+-- 
 
 
 
@@ -132,3 +63,7 @@ SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
 speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+_______________________________________________
+linux-usb-devel@lists.sourceforge.net
+To unsubscribe, use the last form field at:
+https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
