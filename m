@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Mon, 27 Jun 2005 16:22:03 +0200
-Message-ID: <f1fb6773a2424bb77384eab2e18a5c75@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
+Date: Mon, 27 Jun 2005 16:26:28 +0200
+Message-ID: <b3e810bed4b3992564002461b7aa90cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AD861DD
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:22:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18A791DD
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:26:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,102 +24,101 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
 ======================================================================
-Reported By:                Xero
-Assigned To:                
+Reported By:                alfred-ganz
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1209
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-27-2005 16:22 CEST
+Date Submitted:             06-23-2005 20:02 CEST
+Last Modified:              06-27-2005 16:26 CEST
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    Headphone and Front Mic are switched
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
+assignments that I can test seem to be assigned properly.
+However, there is some sound coming out of the front mike jack,
+and input is accepted through the headphone jack. Since these
+jacks work as expected with Windows XP, I suspect that they are
+misassigned in the driver.
+Hardware: RealTek ALC655 AC'97 with ALC880(D)
 
-This starts showing up when I start pressing play again:
+Please let me know if there is anything else that you need from
+me.
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+Thank you, AG
 
-
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
-
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- Xero - 06-26-05 22:08 
+ alfred-ganz - 06-26-05 20:10 
 ----------------------------------------------------------------------
-I think this tends to happen more under load. I'm starting to wonder if
-this is relevant to the sound card driver. I also get distortion with dmix
-sometimes as well when under load, pops, clicks, and occasionally the fade
-in of metallic sounding distortion, I've posted in bug 0000881 about my
-problems with that, though at this point I'm thinking these two things are
-relevant to each other. This has become extremely annoying and I'm not too
-sure what to do. Even when I don't use dmix beep will just tend to freeze
-completely every once in a while, usually when under load as well.
+After some scrounging around in alsa-kernel/pci/hda/patch_realtek.c, I
+have come to the conclusion that although I don't believe there is any
+access to digital output on my system, the proper model to use is
+6statack-digout (Watch the spelling, I don't presume this was intended!).
+With this model selected as option, everything seems to fall into place.
+
+Unfortunately the PCI code on my system doesn't yet recognize Class
+0x0403,
+but otherwise, here is the output from scanpci -vv for the device:
+pci bus 0x0000 cardnum 0x1b function 0x00: vendor 0x8086 device 0x2668
+ Intel Corp.  Device unknown
+ CardVendor 0x1019 card 0xa884 (Card unknown)
+  STATUS    0x0010  COMMAND 0x0006
+  CLASS     0x04 0x03 0x00  REVISION 0x04
+  BIST      0x00  HEADER 0x00  LATENCY 0x00  CACHE 0x08
+  BASE0     0x00000000fbe38004  addr 0x00000000fbe38000  MEM 64BIT
+  MAX_LAT   0x00  MIN_GNT 0x00  INT_PIN 0x01  INT_LINE 0x0a
+  BYTE_0    0x03  BYTE_1  0x00  BYTE_2  0x00  BYTE_3  0x00
+The vendor and device numbers seem to match the corresponding entries in
+the
+table in the code. It would be interesting to know why the device isn't
+properly recognized.
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 16:22 
+ tiwai - 06-27-05 16:26 
 ----------------------------------------------------------------------
-The noises of dmix on a heavy CPU load is considerable, but this should
-have nothing to do with the busy-state of socket.  The confliction of
-socket means a different thing, e.g. the root takes the socket and sets it
-as the permission 0600.  No certain clue yet, though.
+OK, creating 6stack without digital is easy.  I'll work on it.
+
+Just give the output of lspci -nv.  This should contain the PCI subsystem
+IDs to recognize.  The PCI class ID is irrelevant.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
-06-27-05 16:22 tiwai          Note Added: 0005275                          
+06-23-05 20:02 alfred-ganz    New Issue                                    
+06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
+06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
+06-23-05 23:29 erik           Note Added: 0005198                          
+06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
+06-24-05 11:13 tiwai          Note Added: 0005211                          
+06-24-05 15:42 alfred-ganz    Note Added: 0005229                          
+06-24-05 15:46 tiwai          Note Added: 0005230                          
+06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
+06-24-05 16:34 tiwai          Note Added: 0005234                          
+06-24-05 16:42 alfred-ganz    Note Added: 0005235                          
+06-24-05 16:54 alfred-ganz    Note Added: 0005236                          
+06-24-05 17:26 alfred-ganz    Note Added: 0005240                          
+06-24-05 17:48 tiwai          Note Added: 0005243                          
+06-24-05 19:14 alfred-ganz    Note Added: 0005250                          
+06-24-05 20:01 alfred-ganz    Note Added: 0005251                          
+06-24-05 20:07 tiwai          Note Added: 0005252                          
+06-24-05 21:12 alfred-ganz    Note Added: 0005253                          
+06-24-05 21:54 alfred-ganz    Note Added: 0005254                          
+06-25-05 21:28 alfred-ganz    Note Added: 0005258                          
+06-26-05 04:29 alfred-ganz    Note Added: 0005260                          
+06-26-05 20:10 alfred-ganz    Note Added: 0005266                          
+06-27-05 16:26 tiwai          Note Added: 0005276                          
 ======================================================================
 
 
