@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001211]: type dmix produces noise, type plug slave.pcm "dmix" does not on SB EXtigy
-Date: Mon, 27 Jun 2005 16:20:56 +0200
-Message-ID: <b04778023029b8460953f9288a69929d@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
+Date: Mon, 27 Jun 2005 16:22:03 +0200
+Message-ID: <f1fb6773a2424bb77384eab2e18a5c75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD1CE1DD
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:20:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AD861DD
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:22:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,104 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1211> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
 ======================================================================
-Reported By:                andersin
-Assigned To:                Clemens Ladisch
+Reported By:                Xero
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1211
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   1184
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.11
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             06-24-2005 00:02 CEST
-Last Modified:              06-27-2005 16:20 CEST
+Date Submitted:             06-11-2005 21:14 CEST
+Last Modified:              06-27-2005 16:22 CEST
 ======================================================================
-Summary:                    type dmix produces noise, type plug slave.pcm "dmix"
-does not on SB EXtigy
+Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
-I recently noticed crackling sound when using the dmix plugin. While the
-simple case { type plug; slave.pcm "dmix" } works, { type dmix; slave.pcm
-"extigy" } (where extigy is the pcm for the card) produces a crackling
-sound. (I observe the same problem with my build in ICH4 card, but AFAIR
-this has been reported already).
+When playing a song in beep sometimes it'll pop up a "couldn't open audio"
+box as if the device is in use. This is using dmix, however, so that
+seemed a bit weird. I normally have to close and reopen beep to resolve
+this. I believe xmms does the same thing because I've read about people
+having the exact same issue with xmms.
 
-I have tried a variety of buffering and period settings that I found in
-various documentations on the web, but all attempts were unsuccessful.
+This starts showing up when I start pressing play again:
+
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+
+
+However one thing which I've never seen mentioned in the previous reports,
+is that when trying to use another app through dmix it doesn't work
+either. Here's what mplayer says, when trying to play a video:
+
+alsa-init: 1 soundcard found, using: default
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+alsa-init: playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+
+so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
+closed beep, all other applications started working properly again, and
+when I start it back up again, it works fine again too, until it does this
+again. It seems to do it sporadically so it's somewhat hard to test for.
+
+Attached is my asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- andersin - 06-24-05 16:56 
+ Xero - 06-26-05 22:08 
 ----------------------------------------------------------------------
-At the moment, when the extigy is not connected, I am not able to reproduce
-any of the distortion on the INTEL chip I was talking about. Strange
-indeed. Once I get back to the extigy, I will report back, if the error
-surfaces again.
+I think this tends to happen more under load. I'm starting to wonder if
+this is relevant to the sound card driver. I also get distortion with dmix
+sometimes as well when under load, pops, clicks, and occasionally the fade
+in of metallic sounding distortion, I've posted in bug 0000881 about my
+problems with that, though at this point I'm thinking these two things are
+relevant to each other. This has become extremely annoying and I'm not too
+sure what to do. Even when I don't use dmix beep will just tend to freeze
+completely every once in a while, usually when under load as well.
 
 ----------------------------------------------------------------------
- andersin - 06-25-05 13:20 
+ tiwai - 06-27-05 16:22 
 ----------------------------------------------------------------------
-Now that I tested the setup again, I am unable to reproduce this issue. I
-am not sure what caused it and will try my best to reproduce it and give a
-more detailed explanation on what caused it. Unitl then, I think the issue
-can be closed.
+The noises of dmix on a heavy CPU load is considerable, but this should
+have nothing to do with the busy-state of socket.  The confliction of
+socket means a different thing, e.g. the root takes the socket and sets it
+as the permission 0600.  No certain clue yet, though.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-24-05 00:02 andersin       New Issue                                    
-06-24-05 00:02 andersin       Kernel Version            => 2.6.11          
-06-24-05 11:11 tiwai          Note Added: 0005210                          
-06-24-05 13:40 andersin       Note Added: 0005219                          
-06-24-05 14:55 tiwai          Note Added: 0005222                          
-06-24-05 16:56 andersin       Note Added: 0005237                          
-06-25-05 13:20 andersin       Note Added: 0005257                          
-06-27-05 16:20 Clemens LadischStatus                   assigned => resolved
-06-27-05 16:20 Clemens LadischResolution               open => unable to
-duplicate
+06-11-05 21:14 Xero           New Issue                                    
+06-11-05 21:14 Xero           File Added: asoundrc                         
+06-11-05 21:14 Xero           Note Added: 0004994                          
+06-15-05 15:03 tiwai          Note Added: 0005030                          
+06-15-05 22:31 Xero           Note Added: 0005046                          
+06-15-05 23:55 Xero           Note Added: 0005049                          
+06-22-05 18:22 tiwai          Note Added: 0005142                          
+06-22-05 19:01 Xero           Note Added: 0005144                          
+06-23-05 02:47 Xero           Note Added: 0005162                          
+06-26-05 22:08 Xero           Note Added: 0005267                          
+06-27-05 16:22 tiwai          Note Added: 0005275                          
 ======================================================================
 
 
