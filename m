@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Mon, 27 Jun 2005 18:35:06 +0200
-Message-ID: <c7ce3fe40fd185a0de35907e32fbdfce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001203]: mtpav driver locks X on 64 bit native system
+Date: Mon, 27 Jun 2005 19:39:42 +0200
+Message-ID: <4a2952cca628b67c731e72971c492bf2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB9BB1E5
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 18:35:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80B151CA
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 19:39:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1203> 
 ======================================================================
-Reported By:                JKnife
+Reported By:                sonofzev
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   1_OTHERS
+Issue ID:                   1203
+Category:                   GENERIC - mtpav
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Gentoo 2004.3 - 64-bit native
+Kernel Version:             2.6.9 or 2.6.11 or 2.6.12
 ======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              06-27-2005 18:35 CEST
+Date Submitted:             06-19-2005 08:51 CEST
+Last Modified:              06-27-2005 19:39 CEST
 ======================================================================
-Summary:                    Riptide/Context Audio Drivers
+Summary:                    mtpav driver locks X on 64 bit native system
 Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
+Locks system completely when loading X if mtpav module is already loaded. 
+
+If loading the module after loading X, the system completely lock when
+firing up any sequencer app. 
+
+This does not happen on my 32-bit Pentium 4 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- JKnife - 06-26-05 22:48 
+ tiwai - 06-27-05 16:57 
 ----------------------------------------------------------------------
-ill test them :-P... i usally dont test stuff like this but i NEED my sound
+Yes.  The driver doesn't probe but just trusts the module option (or uses
+the default value 7 blindly).
 
 ----------------------------------------------------------------------
- nokos - 06-27-05 18:35 
+ sonofzev - 06-27-05 19:39 
 ----------------------------------------------------------------------
-I have made a patch against alsa-1.0.9b
-(http://euclid.math.brandeis.edu/~gruberp/riptide-alsa-1.0.9b.patch.gz)
-
-It compiles (at least for me), but I cannot test it since my Riptide chip
-is at least 2k km away for the next few weeks.
-
-Also I'm not sure if I put everything into the right places ;)
-
-As far as I understand the request_firmware stuff asks hotplug to find a
-firmware named riptide-fw ... make sure it finds the riptide.hex file from
-the linuxant driver package under that name.
+confirmed that I am using IRQ7 for my printer port.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
-06-08-05 15:15 tiwai          Note Added: 0004932                          
-06-08-05 23:25 JKnife         Note Added: 0004976                          
-06-15-05 14:41 nokos          Note Added: 0005027                          
-06-23-05 12:07 tiwai          Note Added: 0005176                          
-06-23-05 15:10 nokos          Note Added: 0005187                          
-06-23-05 15:21 tiwai          Note Added: 0005188                          
-06-23-05 15:26 tiwai          Note Added: 0005189                          
-06-23-05 15:35 nokos          Note Added: 0005190                          
-06-24-05 15:09 tiwai          Note Added: 0005226                          
-06-26-05 22:48 JKnife         Note Added: 0005268                          
-06-27-05 18:35 nokos          Note Added: 0005285                          
+06-19-05 08:51 sonofzev       New Issue                                    
+06-19-05 08:51 sonofzev       Distribution              => Gentoo 2004.3 -
+64-bit native
+06-19-05 08:51 sonofzev       Kernel Version            => 2.6.9 or 2.6.11 or
+2.6.12
+06-19-05 16:05 sonofzev       Note Added: 0005089                          
+06-19-05 16:24 sonofzev       Note Deleted: 0005089                        
+06-20-05 13:47 sonofzev       Note Added: 0005097                          
+06-21-05 11:25 tiwai          Note Added: 0005104                          
+06-26-05 10:54 sonofzev       Note Added: 0005261                          
+06-27-05 16:57 tiwai          Note Added: 0005281                          
+06-27-05 19:39 sonofzev       Note Added: 0005286                          
 ======================================================================
 
 
