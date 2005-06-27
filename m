@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [linux-usb-devel] Fw: BUG: Kernel panic when
- disconnecting Edirol USB2 audio interface
-Date: Mon, 27 Jun 2005 17:05:40 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0506271650140.7308-100000@studcom.urz.uni-halle.de>
-References: <42BC0D09.60507@axicon.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
+Date: Mon, 27 Jun 2005 17:54:38 +0200
+Message-ID: <dbf584ec2fe0876d20e8b6e928cf0ec6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42BC0D09.60507@axicon.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BB2E194
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 17:54:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Colin Fletcher <colinf@axicon.com>
-Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, david-b@pacbell.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Colin Fletcher wrote:
-> Clemens Ladisch wrote:
-> > There seems to be another bug in either the EHCI or the snd-usb-audio
-> > driver; I'm still getting problems with high speed iso transfers.
 
-That was a bug in snd-usb-audio; it didn't correctly handle high speed
-endpoints with bInterval > 1.  Now fixed in the ALSA CVS.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
+======================================================================
+Reported By:                alfred-ganz
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1209
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-23-2005 20:02 CEST
+Last Modified:              06-27-2005 17:54 CEST
+======================================================================
+Summary:                    Headphone and Front Mic are switched
+Description: 
+I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
+assignments that I can test seem to be assigned properly.
+However, there is some sound coming out of the front mike jack,
+and input is accepted through the headphone jack. Since these
+jacks work as expected with Windows XP, I suspect that they are
+misassigned in the driver.
+Hardware: RealTek ALC655 AC'97 with ALC880(D)
 
-> Do let me know if there's anything else you'd like me to test.
+Please let me know if there is anything else that you need from
+me.
 
-I'd like to know if playback and/or MIDI work.  It may be possible
-that the driver doesn't send playback PCM data at exactly the correct
-rate because the playback stream should have been synchronized to the
-capture stream.
+Thank you, AG
 
+======================================================================
 
-Regards,
-Clemens
+----------------------------------------------------------------------
+ alfred-ganz - 06-27-05 17:02 
+----------------------------------------------------------------------
+How do I find the patch??
+
+----------------------------------------------------------------------
+ alfred-ganz - 06-27-05 17:54 
+----------------------------------------------------------------------
+Ah, found them!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-23-05 20:02 alfred-ganz    New Issue                                    
+06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
+06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
+06-23-05 23:29 erik           Note Added: 0005198                          
+06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
+06-24-05 11:13 tiwai          Note Added: 0005211                          
+06-24-05 15:42 alfred-ganz    Note Added: 0005229                          
+06-24-05 15:46 tiwai          Note Added: 0005230                          
+06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
+06-24-05 16:34 tiwai          Note Added: 0005234                          
+06-24-05 16:42 alfred-ganz    Note Added: 0005235                          
+06-24-05 16:54 alfred-ganz    Note Added: 0005236                          
+06-24-05 17:26 alfred-ganz    Note Added: 0005240                          
+06-24-05 17:48 tiwai          Note Added: 0005243                          
+06-24-05 19:14 alfred-ganz    Note Added: 0005250                          
+06-24-05 20:01 alfred-ganz    Note Added: 0005251                          
+06-24-05 20:07 tiwai          Note Added: 0005252                          
+06-24-05 21:12 alfred-ganz    Note Added: 0005253                          
+06-24-05 21:54 alfred-ganz    Note Added: 0005254                          
+06-25-05 21:28 alfred-ganz    Note Added: 0005258                          
+06-26-05 04:29 alfred-ganz    Note Added: 0005260                          
+06-26-05 20:10 alfred-ganz    Note Added: 0005266                          
+06-27-05 16:26 tiwai          Note Added: 0005276                          
+06-27-05 16:36 alfred-ganz    Note Added: 0005277                          
+06-27-05 16:43 tiwai          Note Added: 0005278                          
+06-27-05 16:44 tiwai          File Added: alc880-6stack.diff                    
+06-27-05 16:50 tiwai          Note Added: 0005279                          
+06-27-05 16:50 tiwai          File Added: alc880-6stack-acer.diff               
+    
+06-27-05 17:02 alfred-ganz    Note Added: 0005283                          
+06-27-05 17:54 alfred-ganz    Note Added: 0005284                          
+======================================================================
+
 
 
 
