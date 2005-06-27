@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Mon, 27 Jun 2005 16:50:20 +0200
-Message-ID: <4aa2e0b88feff43d9e6b5e38f17767bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Mon, 27 Jun 2005 16:56:13 +0200
+Message-ID: <3c8f82e84124aec41d7c020e13ccc412@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E4631DD
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:50:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CFA81DD
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:56:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1209> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
 ======================================================================
-Reported By:                alfred-ganz
-Assigned To:                tiwai
+Reported By:                vedran
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1209
-Category:                   PCI - hda-intel
+Issue ID:                   1083
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
 ======================================================================
-Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-27-2005 16:50 CEST
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              06-27-2005 16:56 CEST
 ======================================================================
-Summary:                    Headphone and Front Mic are switched
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
 Description: 
-I installed alsa-driver-1.0.9b.tar.bz2, and the back panel
-assignments that I can test seem to be assigned properly.
-However, there is some sound coming out of the front mike jack,
-and input is accepted through the headphone jack. Since these
-jacks work as expected with Windows XP, I suspect that they are
-misassigned in the driver.
-Hardware: RealTek ALC655 AC'97 with ALC880(D)
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
 
-Please let me know if there is anything else that you need from
-me.
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
 
-Thank you, AG
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
 
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
+
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
+
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001094 nforce4 - optical spdif out not working
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 16:43 
+ gilesjuk - 06-26-05 13:19 
 ----------------------------------------------------------------------
-I committed the attached patch to CVS.  Now you have "6stack" model to
-choose (also the typo is fixed :)
+But in my case the Realtek chip is on a seperate card with the SPDIF and
+audio ports. Surely the audio data gets written to this chip and then
+routed to the outputs depending on how the registers are set?
+
+This is my board:
+"http://www.abit-usa.com/products/mb/products.php?categories=1&model=262"
+
+Excuse my ignorance, but how is the Nforce chipset responsible for the
+audio when it's an external codec being used?
+
+
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 16:50 
+ tiwai - 06-27-05 16:56 
 ----------------------------------------------------------------------
-... and the additional patch to enable your device for 6stack model.
+nforce chip is the DMA engine and controls the connected ac97 chip(s). 
+AC97 chip only converts the signal (that's why called "codec"), and isn't
+responsible for DMA.
+Although AC97 can support SPDIF, but some onboard controller chips don't
+require AC97 for SPDIF I/O but do by themselves, e.g. ATIIXP and ALI5455.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-23-05 20:02 alfred-ganz    New Issue                                    
-06-23-05 22:35 alfred-ganz    Note Added: 0005195                          
-06-23-05 23:21 alfred-ganz    Note Added: 0005197                          
-06-23-05 23:29 erik           Note Added: 0005198                          
-06-23-05 23:55 alfred-ganz    Note Added: 0005201                          
-06-24-05 11:13 tiwai          Note Added: 0005211                          
-06-24-05 15:42 alfred-ganz    Note Added: 0005229                          
-06-24-05 15:46 tiwai          Note Added: 0005230                          
-06-24-05 16:07 alfred-ganz    Note Added: 0005231                          
-06-24-05 16:34 tiwai          Note Added: 0005234                          
-06-24-05 16:42 alfred-ganz    Note Added: 0005235                          
-06-24-05 16:54 alfred-ganz    Note Added: 0005236                          
-06-24-05 17:26 alfred-ganz    Note Added: 0005240                          
-06-24-05 17:48 tiwai          Note Added: 0005243                          
-06-24-05 19:14 alfred-ganz    Note Added: 0005250                          
-06-24-05 20:01 alfred-ganz    Note Added: 0005251                          
-06-24-05 20:07 tiwai          Note Added: 0005252                          
-06-24-05 21:12 alfred-ganz    Note Added: 0005253                          
-06-24-05 21:54 alfred-ganz    Note Added: 0005254                          
-06-25-05 21:28 alfred-ganz    Note Added: 0005258                          
-06-26-05 04:29 alfred-ganz    Note Added: 0005260                          
-06-26-05 20:10 alfred-ganz    Note Added: 0005266                          
-06-27-05 16:26 tiwai          Note Added: 0005276                          
-06-27-05 16:36 alfred-ganz    Note Added: 0005277                          
-06-27-05 16:43 tiwai          Note Added: 0005278                          
-06-27-05 16:44 tiwai          File Added: alc880-6stack.diff                    
-06-27-05 16:50 tiwai          Note Added: 0005279                          
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+05-30-05 13:21 vedran         Note Added: 0004809                          
+06-01-05 16:53 tiwai          Note Added: 0004862                          
+06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
+06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
+06-03-05 00:31 Human          Note Added: 0004880                          
+06-03-05 00:32 Human          Issue Monitored: Human                       
+06-06-05 23:30 Human          Note Added: 0004910                          
+06-08-05 15:01 tiwai          Note Added: 0004928                          
+06-10-05 18:07 Human          Note Added: 0004984                          
+06-19-05 16:07 gilesjuk       Note Added: 0005090                          
+06-21-05 00:50 gilesjuk       Note Added: 0005099                          
+06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
+06-21-05 11:19 tiwai          Note Added: 0005102                          
+06-26-05 13:18 gilesjuk       Note Added: 0005263                          
+06-26-05 13:19 gilesjuk       Note Edited: 0005263                         
+06-27-05 16:56 tiwai          Note Added: 0005280                          
 ======================================================================
 
 
