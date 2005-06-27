@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
-Date: Mon, 27 Jun 2005 15:58:46 +0200
-Message-ID: <01461aa28ae656500e316c257d910f50@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
+Date: Mon, 27 Jun 2005 15:58:45 +0200
+Message-ID: <d7e1138b69caa7f8ffd6b9bf7d62b3db@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C96A1E1
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 15:58:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 870671DD
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 15:58:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,156 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000653.
+The following issue has been set as RELATED TO issue 0001192.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
 ======================================================================
-Reported By:                iljaguaro
+Reported By:                pbienst
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1192
+Issue ID:                   653
 Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian Testing "Etch"
-Kernel Version:             kernel-image-2.6.11-1-k7
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r4
 ======================================================================
-Date Submitted:             06-15-2005 11:38 CEST
-Last Modified:              06-26-2005 23:21 CEST
+Date Submitted:             11-18-2004 10:58 CET
+Last Modified:              06-27-2005 15:58 CEST
 ======================================================================
-Summary:                    Microphone doesn't work in record and/or Skype
+Summary:                    poor microphone recording quality on pcicmi
 Description: 
-The microphone input doesnt work well, the volume are too low and the noisy
-is to high, when you record it.
+I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
+card.
+
+When recording from a headset microphone, sound quality is really bad: low
+
+volume and quite some noise / distortion.
+
+I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
+Center/LFE' 
+is off.
+
+I've fiddled with all the other options, but they don't seem to affect the
+
+quality.
+
+I do my recording with:
+
+arecord -D hw:1,0 -d 4 test.wav
+
+Under Windows, sound quality is a lot better with the same setup.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000183 Mic boost boosts mic playback and not r...
-related to          0000653 poor microphone recording quality on pc...
+related to          0001192 Microphone doesn't work in record and/o...
 ======================================================================
 
 ----------------------------------------------------------------------
- iljaguaro - 06-24-05 08:11 
+ tiwai - 11-18-04 18:07 
 ----------------------------------------------------------------------
-same problem with ALSA 1.0.9b
+Could you try the attached patch and play with "MICBST", "EMUCB"
+and "VADMIC3" mixer switches?
+
+(AFAIK, "Mic Boost" affects only the mic playback volume.)
 
 ----------------------------------------------------------------------
- tiwai - 06-24-05 15:00 
+ pbienst - 11-18-04 19:11 
 ----------------------------------------------------------------------
-Try the attached patch and turn on "Mic Boost" in alsamixer capture view. 
-Note that there are two "Mic Boost" switches in playback and capture after
-the patch.
+I applied the patch, but I'm not able to change these settings. With
+alsamixer, they don't budge, and with amixer I get:
+
+pbienst@pbienst:~: amixer -c 1 set MICBST unmute
+Simple mixer control 'MICBST',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+
+But immediately afterwards:
+
+pbienst@pbienst:~: amixer -c 1 get MICBST
+Simple mixer control 'MICBST',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
 
 ----------------------------------------------------------------------
- iljaguaro - 06-26-05 11:46 
+ pbienst - 11-18-04 19:26 
 ----------------------------------------------------------------------
-Sorry, where put the patch? In alsa source & recompile it?
+In the absense of any user controls, I tried changing the options by
+changing e.g.
+
+CMIPCI_MIXER_SW_MONO("MICBST", CM_REG_EXTENT_IND, 2, 0),
+
+to
+
+CMIPCI_MIXER_SW_MONO("MICBST", CM_REG_EXTENT_IND, 2, 1),
+
+In the module.
+
+Unfortunately, none of these options seems to make any difference.
+
+Trouble is course that there are so many different options, and if they
+interact, it's like a combinatorial explosion.
+
+Are there any mixer settings which could be important, and others which
+are definitely unimportant for this problem?
 
 ----------------------------------------------------------------------
- sst4 - 06-26-05 23:21 
+ tiwai - 11-18-04 19:33 
 ----------------------------------------------------------------------
-Look above, against  "Attached Files":  cmipci-mic-boost2.diff,
-its URL is:
+They could be read only.  Do all of them behave so?
 
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=744&type=bug
-.
+----------------------------------------------------------------------
+ pbienst - 11-18-04 19:36 
+----------------------------------------------------------------------
+Yes, all 3 of them behave like that. But changing the driver source as I
+did should have done the trick too?
+
+----------------------------------------------------------------------
+ tiwai - 11-18-04 19:54 
+----------------------------------------------------------------------
+No, the last argument is the inverse - you just flipped the meaning of 0
+and 1.  So these bits also play nothing.
+
+It seems that all existing mixer switches have no influence on your
+problem at all.  No matter which combination, it's liekly useless.
+
+Sorry, simply lack of hardware information.  I can't do any more.
+
+----------------------------------------------------------------------
+ pbienst - 11-18-04 20:01 
+----------------------------------------------------------------------
+Well, I don't think we have explored all options then, since I haven't been
+able to set the "MICBST", "EMUCB" and "VADMIC3" mixer switches.
+
+Which lines in the driver do I need to change to set these?
+
+----------------------------------------------------------------------
+ tiwai - 11-18-04 20:22 
+----------------------------------------------------------------------
+When you can't change the values via amixer properly, they are read-only 
+values.  Changing the driver won't help then.  You can forget the patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 11:38 iljaguaro      New Issue                                    
-06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
-06-15-05 11:38 iljaguaro      Kernel Version            =>
-kernel-image-2.6.11-1-k7
-06-24-05 08:11 iljaguaro      Note Added: 0005203                          
-06-24-05 15:00 tiwai          Note Added: 0005224                          
-06-24-05 15:01 tiwai          File Added: cmipci-mic-boost2.diff                
-   
-06-26-05 11:46 iljaguaro      Note Added: 0005262                          
-06-26-05 23:21 sst4           Note Added: 0005269                          
-06-27-05 15:57 tiwai          Relationship added       related to 0000183  
-06-27-05 15:58 tiwai          Relationship added       related to 0000653  
+11-18-04 10:58 pbienst        New Issue                                    
+11-18-04 10:58 pbienst        Distribution              => Gentoo          
+11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
+11-18-04 18:07 tiwai          Note Added: 0002453                          
+11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
+11-18-04 19:11 pbienst        Note Added: 0002459                          
+11-18-04 19:26 pbienst        Note Added: 0002460                          
+11-18-04 19:33 tiwai          Note Added: 0002461                          
+11-18-04 19:36 pbienst        Note Added: 0002462                          
+11-18-04 19:54 tiwai          Note Added: 0002467                          
+11-18-04 20:01 pbienst        Note Added: 0002468                          
+11-18-04 20:22 tiwai          Note Added: 0002469                          
+06-27-05 15:58 tiwai          Relationship added       related to 0001192  
 ======================================================================
 
 
