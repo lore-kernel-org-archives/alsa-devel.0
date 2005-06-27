@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001209]: Headphone and Front Mic are switched
-Date: Mon, 27 Jun 2005 16:36:24 +0200
-Message-ID: <bfa79dfba408bad8a6e5b48988b64f6b@bugtrack.alsa-project.org>
+Date: Mon, 27 Jun 2005 16:43:58 +0200
+Message-ID: <cdf3f9ae1edd836b8bd32a0003e656c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 061DE173
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:36:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4DA31DD
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:43:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-23-2005 20:02 CEST
-Last Modified:              06-27-2005 16:36 CEST
+Last Modified:              06-27-2005 16:43 CEST
 ======================================================================
 Summary:                    Headphone and Front Mic are switched
 Description: 
@@ -60,14 +60,6 @@ Thank you, AG
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 16:26 
-----------------------------------------------------------------------
-OK, creating 6stack without digital is easy.  I'll work on it.
-
-Just give the output of lspci -nv.  This should contain the PCI subsystem
-IDs to recognize.  The PCI class ID is irrelevant.
-
-----------------------------------------------------------------------
  alfred-ganz - 06-27-05 16:36 
 ----------------------------------------------------------------------
 Here goes the output from lspci -nv:
@@ -81,6 +73,12 @@ Enable-
         Capabilities: [70] Express Unknown type IRQ 0
         Capabilities: [100] Virtual Channel
         Capabilities: [130] Unknown (5)
+
+----------------------------------------------------------------------
+ tiwai - 06-27-05 16:43 
+----------------------------------------------------------------------
+I committed the attached patch to CVS.  Now you have "6stack" model to
+choose (also the typo is fixed :)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,6 +107,7 @@ Date Modified  Username       Field                    Change
 06-26-05 20:10 alfred-ganz    Note Added: 0005266                          
 06-27-05 16:26 tiwai          Note Added: 0005276                          
 06-27-05 16:36 alfred-ganz    Note Added: 0005277                          
+06-27-05 16:43 tiwai          Note Added: 0005278                          
 ======================================================================
 
 
