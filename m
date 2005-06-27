@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Mon, 27 Jun 2005 22:05:22 +0200
-Message-ID: <e10e3bb9746424eecc8a7585074f48a2@bugtrack.alsa-project.org>
+Date: Mon, 27 Jun 2005 22:41:03 +0200
+Message-ID: <cfc002eb0e82f8cd0057db418b6dacea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 732D01EF
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 22:05:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB3191F3
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 22:41:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              06-27-2005 22:05 CEST
+Last Modified:              06-27-2005 22:41 CEST
 ======================================================================
 Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
@@ -87,14 +87,6 @@ Attached is my asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 16:22 
-----------------------------------------------------------------------
-The noises of dmix on a heavy CPU load is considerable, but this should
-have nothing to do with the busy-state of socket.  The confliction of
-socket means a different thing, e.g. the root takes the socket and sets it
-as the permission 0600.  No certain clue yet, though.
-
-----------------------------------------------------------------------
  Xero - 06-27-05 22:05 
 ----------------------------------------------------------------------
 no, the socket remains the proper permission and owned by my user as well,
@@ -103,6 +95,16 @@ so I have no idea how that'd even happen. Let me wait for it to happen
 again and I'll post a ls -l of the socket. All I have to do is wait for it
 to happen a few times and there will be quite the collection of dead
 sockts in there...
+
+----------------------------------------------------------------------
+ Xero - 06-27-05 22:41 
+----------------------------------------------------------------------
+hrm the socket actually did disappear this time when it happened, weird.
+That means it may or may not always remove the socket, I'm curious if the
+socket gets removed after i press play again when it first happens vs.
+just shutting down beep right then. I'll report back on this later when I
+have more of a clue. This is somewhat of a pain to reproduce as it only
+really happens on song change...and then only sometimes.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,6 +121,7 @@ Date Modified  Username       Field                    Change
 06-26-05 22:08 Xero           Note Added: 0005267                          
 06-27-05 16:22 tiwai          Note Added: 0005275                          
 06-27-05 22:05 Xero           Note Added: 0005288                          
+06-27-05 22:41 Xero           Note Added: 0005289                          
 ======================================================================
 
 
