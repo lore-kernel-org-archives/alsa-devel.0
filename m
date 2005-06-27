@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
-Date: Mon, 27 Jun 2005 03:52:41 +0200
-Message-ID: <2e2fa0b26076994d53095801c5d66637@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0 analog subsections not ready: no sound
+Date: Mon, 27 Jun 2005 12:22:10 +0200
+Message-ID: <d311de858cfbc3ebdcdeb62e30a48c35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D24171CA
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 03:52:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0B08168
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 12:22:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,95 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1213> 
 ======================================================================
-Reported By:                avuton
+Reported By:                shensche
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   959
-Category:                   PCI - ali5451
+Issue ID:                   1213
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11
+Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
+Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
 ======================================================================
-Date Submitted:             03-03-2005 18:41 CET
-Last Modified:              06-27-2005 03:52 CEST
+Date Submitted:             06-27-2005 12:22 CEST
+Last Modified:              06-27-2005 12:22 CEST
 ======================================================================
-Summary:                    After S3 resume: ali_stimer_read: stimer is not
-ready
+Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
+ready: no sound
 Description: 
-After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
-reset/power down the computer.
+i am working on a machine with an EPIA-M mainboard and the ICEensemble
+VT1616i sound chip (see attached lspci -v). unfortunately, i cannot hear
+any sound from it. it is always the same: the mixer settings seem ok,
+the applications play happily the files, but i cannot hear a thing. the
+speakers are ok, too.
 
-Workaround is to stop all audio activity and unload the driver, which
-works fine.
+the system is running kernel 2.6.11 with the kernel patches from Con
+Kolivas (-ck10) and ALSA. i also tried OSS (not the emu) on that kernel.
+i tried 2.4 kernels with Damn Small Linux and Knoppix 3.7 and 2.6.9
+=66rom Knoppix 3.7 and a custom 2.6.10-ck6.
+since ALSA 1.0.8 did not work, i installed 1.0.9b, including the libs
+and utils. during that upgrade, the mixer lost the possibility to change
+the DXS-settings. has this to do with the whitelist, introduced
+recently?
 
-This happens on my Libretto L5.
+i played around with lots of combinations of the options ac97_quirk and
+dxs_support when loading the kernel module.
+
+on the hardware side i disabled the front panel sockets for line-out and
+mic-in, just to be sure. and i often tried all three sockets for=20
+line-out, line-in and mic-in in the back to hear the output.
+
+the chip seems to share interrupt 10 with USB, so i unloaded uhci-hcd,
+but to no avail. i also dis-/enabled ACPI, reserved IRQ for non-PCI (now
+USB and sound share interrupt 5) in the BIOS. the BIOS was told that
+there was a/no PlugNPlay OS and the MC97 modem is disabled.
+the machine does not seem to have an APIC.
+
+i muted some IEC 958 settings in the mixer as read somewhere in the net,
+but that did not help either. and one of these settings always
+reenables itself as soon as i try to play a wav with aplay.
+
+i modified alsa-kernel/pci/ac97/ac97_codec.c to goto __ready_ok also
+when "0 analog subsections are ready" (weird message, btw) before line
+1960. another try was to increase the end_time in line 1953 by factor
+10. both did not yield a successful result, both being a shot in the
+blue.
+
+
+i attached /etc/asound.state (after saving with alsactl store) and the
+output of dmesg. do not mind the oops from cowloop, i guess it is not
+important, because all the other kernels do not work as well.
+
+i read=20
+http://alsa-project.org/alsa-doc/doc-php/template.php?company=3DVIA&card=3D=
+=2E&chip=3DVIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=3Dvia82xx
+alsa-kernel/Documentation/ALSA-Configuration.txt
+and many other forum entries
+
+but still something is going wrong. why are 0 analog subdevices ready?
+how to make them ready? where to wait? what to initialise?
+
+i will try to upgrade the BIOS, soon and try with MS Windows (if i manage
+to fit   it onto 1 GB)
+
 ======================================================================
-
-----------------------------------------------------------------------
- avuton - 05-02-05 02:22 
-----------------------------------------------------------------------
-This bug still exists in 2.6.12-rc3-mm2, I am a novice coder, and if this
-is a simple issue I maybe able to deal with it. Pointers anyone?
-
-The function the problem should be fixed in is: snd_ali_stimer_ready()
-The file is: sound/pci/ali5451/ali5451.c
-
-It seems like the sound card should be reset(?) in the do..while() in that
-function.
-
-Or am I totally missing things and should something happen before the
-system goes to S3?
-
-Any help would be appreciated, I will try taking a look at the other
-drivers tonight for possible clues.
-
-----------------------------------------------------------------------
- avuton - 06-27-05 03:52 
-----------------------------------------------------------------------
-This still does not work as of alsa 1.0.9b
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-03-05 18:41 avuton         New Issue                                    
-03-03-05 18:41 avuton         Distribution              => Gentoo          
-03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
-05-02-05 02:22 avuton         Note Added: 0004583                          
-06-27-05 03:52 avuton         Note Added: 0005270                          
+06-27-05 12:22 shensche       New Issue                                    
+06-27-05 12:22 shensche       File Added: asound.conf                      
+06-27-05 12:22 shensche       Distribution              => Debian (derived
+Knoppix->Morphix->Kunnafonix)
+06-27-05 12:22 shensche       Kernel Version            => 2.6.11.12, but also
+many other 2.4 and 2.6 kernels
 ======================================================================
 
 
