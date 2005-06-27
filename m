@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001215]: AC3 Passthrough does not work
-Date: Mon, 27 Jun 2005 21:59:35 +0200
-Message-ID: <ae46224aa54302d5bfa2dc92f0fe86eb@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
+Date: Mon, 27 Jun 2005 22:05:22 +0200
+Message-ID: <e10e3bb9746424eecc8a7585074f48a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA0861EF
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 21:59:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 732D01EF
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 22:05:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,103 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1215> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
 ======================================================================
-Reported By:                hugo4711
+Reported By:                Xero
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1215
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   1184
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC
 ======================================================================
-Date Submitted:             06-27-2005 21:59 CEST
-Last Modified:              06-27-2005 21:59 CEST
+Date Submitted:             06-11-2005 21:14 CEST
+Last Modified:              06-27-2005 22:05 CEST
 ======================================================================
-Summary:                    AC3 Passthrough does not work
+Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
-Since the update from FC3 to FC4 I am not able to use AC3-passthrough. It
-won't work with xine or mplayer. 
+When playing a song in beep sometimes it'll pop up a "couldn't open audio"
+box as if the device is in use. This is using dmix, however, so that
+seemed a bit weird. I normally have to close and reopen beep to resolve
+this. I believe xmms does the same thing because I've read about people
+having the exact same issue with xmms.
 
-The AC3-Reciever I am using indicates "No Audio" when playing a DVD with
-AC3-Sound. Before the Update it switches to Dolby AC3 Decoding mode. 
+This starts showing up when I start pressing play again:
 
-When I play a movie with xine, and the driver is switched into
-AC3-passthrough-mode and then I quit xine, the driver is not switched back
-out of the passthrough-mode (which is a bug in xine, I guess). This is
-very anoying, because there is no such thing as to reset the mixer
-settings, unless the previous settings are stored (alsactl
-store/restore).
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
 
-Another thing is, that I am not able to hear sound from sources which are
-plugged into line-in. Mixer Settings are checked. Every channel is unmuted
-and volume is at 100%. Digital Out is unmuted, IEC-Compliancy is muted.
+
+However one thing which I've never seen mentioned in the previous reports,
+is that when trying to use another app through dmix it doesn't work
+either. Here's what mplayer says, when trying to play a video:
+
+alsa-init: 1 soundcard found, using: default
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+alsa-init: playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+
+so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
+closed beep, all other applications started working properly again, and
+when I start it back up again, it works fine again too, until it does this
+again. It seems to do it sporadically so it's somewhat hard to test for.
+
+Attached is my asoundrc.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-27-05 16:22 
+----------------------------------------------------------------------
+The noises of dmix on a heavy CPU load is considerable, but this should
+have nothing to do with the busy-state of socket.  The confliction of
+socket means a different thing, e.g. the root takes the socket and sets it
+as the permission 0600.  No certain clue yet, though.
+
+----------------------------------------------------------------------
+ Xero - 06-27-05 22:05 
+----------------------------------------------------------------------
+no, the socket remains the proper permission and owned by my user as well,
+usually. I don't really ever run anything as root, especially audio stuff,
+so I have no idea how that'd even happen. Let me wait for it to happen
+again and I'll post a ls -l of the socket. All I have to do is wait for it
+to happen a few times and there will be quite the collection of dead
+sockts in there...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 21:59 hugo4711       New Issue                                    
-06-27-05 21:59 hugo4711       Distribution              => Fedora Core 4   
-06-27-05 21:59 hugo4711       Kernel Version            => 2.6.11-1.1369_FC
+06-11-05 21:14 Xero           New Issue                                    
+06-11-05 21:14 Xero           File Added: asoundrc                         
+06-11-05 21:14 Xero           Note Added: 0004994                          
+06-15-05 15:03 tiwai          Note Added: 0005030                          
+06-15-05 22:31 Xero           Note Added: 0005046                          
+06-15-05 23:55 Xero           Note Added: 0005049                          
+06-22-05 18:22 tiwai          Note Added: 0005142                          
+06-22-05 19:01 Xero           Note Added: 0005144                          
+06-23-05 02:47 Xero           Note Added: 0005162                          
+06-26-05 22:08 Xero           Note Added: 0005267                          
+06-27-05 16:22 tiwai          Note Added: 0005275                          
+06-27-05 22:05 Xero           Note Added: 0005288                          
 ======================================================================
 
 
