@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Tue, 28 Jun 2005 00:59:26 +0200
-Message-ID: <3a16cd3780e92bfb41ed81a46a80e10c@bugtrack.alsa-project.org>
+Date: Tue, 28 Jun 2005 01:14:15 +0200
+Message-ID: <948f929063b6227c660744256a1af3e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6C261E5
-	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 00:59:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1358E1CA
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 01:14:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-28-2005 00:59 CEST
+Last Modified:              06-28-2005 01:14 CEST
 ======================================================================
 Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
 failed: Invalid argument
@@ -73,22 +73,40 @@ duplicate of        0001096 no capture with M-Audio Revolution 7.1
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-15-05 15:44 
+ sst4 - 06-28-05 00:59 
 ----------------------------------------------------------------------
-I don't understand what you mean "enable capture" in general.  One of your
-bugreports told that you could capture (even on OSS) with a certain
-application.
+Takashi, please unmark the issue as duplicate of  duplicate of 0001096.
 
-Again, revo has no capture control.  At least, the hardware spec I got
-tells so.
+The latter was regarding capture (loopback) functionality as a whole, and
+this
+one is regarding certain error message in OSS emulation mode.
 
-The thing that Skype aborts when no IGAIN exists is the bug of Skype.  It
-has to be fixed by the application itself.  Please report this to Skype at
-first.
+Issues can be marked as duplicate if resolving one of them automatically
+resolves
+the other and vice versa. It is not the case.
 
-As a workaround of this problem, you can add a softvol plugin to 
-create a virtual volume attenuator.  For example,
+Thanks,
+  Sergei.
 
+----------------------------------------------------------------------
+ sst4 - 06-28-05 01:14 
+----------------------------------------------------------------------
+Takashi, first the good news - I managed to hear my own recording using
+'echo123' automated voice testing service of Skype - which means that
+capture
+as such + OSS emulation basically work.
+
+The volume of my recorded voice was sufficient and the sound quality was
+quite
+good of both their prerecorded message and my played back voice.
+
+Now the bad news.
+
+I created my ~/.asoundrc file according to my understanding of your
+message
+- my understanding may well be wrong.
+
+cat ~/.asoundrc
 pcm.revocap {
   type softvol
   slave.pcm {
@@ -101,8 +119,6 @@ pcm.revocap {
   }
 }
 
-Then, define "dsp0" PCM:
-
 pcm.dsp0 {
   type asym
   playback.pcm "plughw:0"
@@ -112,20 +128,38 @@ pcm.dsp0 {
   }
 }
 
-so that aoss uses the newly defined capture PCM.
+If I'm using this file, I hear only hiss when my recorded voice is played
+back.
 
-----------------------------------------------------------------------
- sst4 - 06-28-05 00:59 
-----------------------------------------------------------------------
-Takashi, please unmark the issue as duplicate of  duplicate of 0001096.
+The file does not eliminate the
 
-The latter was regarding capture (loopback) functionality as a whole, and
-this
-one is regarding certain error message in OSS emulation mode.
+"volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument"
 
-Issues can be marked as duplicate if resolving one of them automatically
-resolves
-the other and vice versa. It is not the case.
+message.
+
+I have aslo created /dev/dsp0 which is a symlink to /dev/dsp:
+
+lrwxrwxrwx  1 root root 8 Jun 28 01:22 /dev/dsp0 -> /dev/dsp
+
+- I am not sure whether this is necessary or not. Anyway, Skype does not
+allow me to choose anything but /dev/dsp.
+
+If I hide the ~/.asoundrc file, then I can use Skype as I described
+above.
+
+Another thing is capture loopback, i.e. ability to hear my own voice
+while
+I'm talking. Well, it's either or - I mean, if I enable loopback using
+"H/W", "H/W 1" controls in 'alsamixer', I cannot hear Skype.
+
+The funny workaround is this: I enable capture loopback only for one
+channel,
+say, "H/W". In such a case I hear myself while talking in the left
+earphone,
+and I hear Skype in the right earphone - "H/W 1" is set "PCM Out" for
+this.
+
+Is there a way to work with Skype normally ?
 
 Thanks,
   Sergei.
@@ -155,6 +189,7 @@ Date Modified  Username       Field                    Change
 06-15-05 15:44 tiwai          Note Added: 0005035                          
 06-22-05 01:48 rlrevell       Relationship added       duplicate of 0001096
 06-28-05 00:59 sst4           Note Added: 0005290                          
+06-28-05 01:14 sst4           Note Added: 0005291                          
 ======================================================================
 
 
