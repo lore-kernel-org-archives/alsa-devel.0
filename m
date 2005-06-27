@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] miro: OPL4 support
-Date: Mon, 27 Jun 2005 16:01:48 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0506271601220.1958-100000@studcom.urz.uni-halle.de>
-References: <20050624205040.GA3115@tuba>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0001214]: With Terratec DMX6fire, digital inputs cannot be selected correctly -always internal digital source
+Date: Mon, 27 Jun 2005 16:05:15 +0200
+Message-ID: <8e0edb033561a2124dad973f6fded3ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1503D0
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:01:51 +0200 (MEST)
-In-Reply-To: <20050624205040.GA3115@tuba>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FFA51C9
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 16:05:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,17 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Martin Langer wrote:
-> OPL4 support on miroSOUND PCMxx is working now.
 
-Applied, thanks!
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1214> 
+======================================================================
+Reported By:                alanmann
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   1214
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-27-2005 15:27 CEST
+Last Modified:              06-27-2005 16:05 CEST
+======================================================================
+Summary:                    With Terratec DMX6fire, digital inputs cannot be
+selected correctly -always internal digital source
+Description: 
+The DMX6fire sound card has onboard 'digital in' for direct connection from
+a CD drive as well as coax and optical front panel in and out. 
+Envy24control has no button to select the internal source, but in fact it
+seems always selected and works fine.  Consequently the front panel inputs
+never work,(I can only test optical, but internal source is always
+working) although the selector 'SPDIF input' changes the panel lights
+correctly, and the 'SPDIF on/off' swaps the lights whichever way they
+were.
+======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 06-27-05 16:05 
+----------------------------------------------------------------------
+IIRC, envy24control doesn't support all switches for 6fire.  Start
+alsamixer and turn on "Front Digital Input" and "Optical Digital Input"
+appropriately.
 
-Clemens
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-27-05 15:27 alanmann       New Issue                                    
+06-27-05 16:05 tiwai          Note Added: 0005274                          
+======================================================================
+
 
 
 
