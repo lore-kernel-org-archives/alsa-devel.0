@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000183]: Mic boost boosts mic playback and not recording
-Date: Mon, 27 Jun 2005 15:57:32 +0200
-Message-ID: <0dc450c8b759325496c37a7c905ab8ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
+Date: Mon, 27 Jun 2005 15:59:46 +0200
+Message-ID: <c64a2c0e4389f7befeec3f89bfed9353@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E282D1DD
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 15:57:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E99D51E0
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 15:59:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,31 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
 ======================================================================
-Reported By:                Schugy
-Assigned To:                
+Reported By:                pbienst
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   183
+Issue ID:                   653
 Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               SuSE 8.2
-Kernel Version:             2.4.25
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r4
 ======================================================================
-Date Submitted:             04-04-2004 13:51 CEST
-Last Modified:              06-27-2005 15:57 CEST
+Date Submitted:             11-18-2004 10:58 CET
+Last Modified:              06-27-2005 15:59 CEST
 ======================================================================
-Summary:                    Mic boost boosts mic playback and not recording
+Summary:                    poor microphone recording quality on pcicmi
 Description: 
-I've tried to record my voice with broadcast2000. The recording level is at
--30db (maybe 2db louder than without mic boost) while mic playback seems
-to be boosted up by 500% to an audiable level.
+I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
+card.
 
+When recording from a headset microphone, sound quality is really bad: low
 
+volume and quite some noise / distortion.
+
+I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
+Center/LFE' 
+is off.
+
+I've fiddled with all the other options, but they don't seem to affect the
+
+quality.
+
+I do my recording with:
+
+arecord -D hw:1,0 -d 4 test.wav
+
+Under Windows, sound quality is a lot better with the same setup.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
@@ -56,126 +71,33 @@ related to          0001192 Microphone doesn't work in record and/o...
 ======================================================================
 
 ----------------------------------------------------------------------
- charles_levert - 04-07-05 06:25 
+ tiwai - 11-18-04 20:22 
 ----------------------------------------------------------------------
-I had not noticed this bug-issue before, maybe because of its title.
-FWIW, here my take/experience on this.
-
-  -- I own an Asus motherboard with integrated CMI8738 audio on it.
-
-  -- I use Fedora Core on this machine, for better or for worse.
-     More specifically, I have used:
-
-     -- Red Hat 7.3 with the OSS cmpci driver.
-     -- Red Hat 7.3 with several versions of the ALSA 0.9.* cmipci
-driver.
-     -- Fedora Core 1 with the OSS cmpci driver.
-     -- Fedora Core 1 with several versions of the ALSA 1.0.* cmipci
-driver.
-
-I've been trying to zero in on the specific circumstances that cause this
-problem.  I never got any response to my queries to either Asus or C-Media
-about this (or more generally the technical documentation on how to
-program their products).  I never use non-Free OSes on my own equipment so
-I have never tried MS-Windows.  I have read the CMI8738 driver source code
-of FreeBSD, NetBSD, and OpenBSD, though, but have not tried them on this
-machine.
-
-The only time recording ever worked for me was with Fedora Core 1 with the
-OSS cmpci driver, but never right away.  It only occured, as if by magic,
-after I played back and forth with the available settings and one
-combination of settings I had gone through several times before suddendly
-started working.  I have not been able to narrow this process down to a
-minimal, systematic, and well-known sequence of setting combinations. 
-Also, going back to that driver is not an option, since it caused
-systematic kernel panics when I interrupted (aborted) midi playbacks right
-in the middle of them.
-
-Since then, with Fedora Core 1 with several versions of the ALSA 1.0.*
-cmipci driver, using the same approach of playing back and forth with the
-settings, the most I have ever gotten is to hear the audio input on the
-audio output, but still without any sound being captured (i.e., the
-recorded file ends up filled with silence and the "VU meter" for recording
-never senses anything, or just noise level).
-
-Recording never worked with Red Hat 7.3, regardless of driver.
-
-I use "aumix" with the OSS cmpci driver and "alsamixer" with the ALSA
-cmipci driver.
-
-(I am aware of the "Mic As Center/LFE" setting and have tried all possible
-combinations.  IIRC, the only one that ever worked had this off, which
-would be the obvious and expected behavior.)
-
-In summary, it is possible to make this hardware work (since I've seen
-it), the question is how.  Doesn't a C-Media employee (ChenLi Tien)
-regularly post on the devel mailing list?  I would hope that C-Media at
-least provides its own employees with enough technical documentation to
-program its own products.
-
-
-
-bash# lspci -s 00:05.0 -vv -xxx
-00:05.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev
-10)
-	Subsystem: Asustek Computer, Inc. CMI8738 6ch-MX
-	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping+ SERR- FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
-<MAbort- >SERR- <PERR-
-	Latency: 32 (500ns min, 6000ns max)
-	Interrupt: pin A routed to IRQ 5
-	Region 0: I/O ports at 9800 [size=256]
-	Capabilities: [c0] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-00: f6 13 11 01 85 00 10 02 10 00 01 04 00 20 00 00
-10: 01 98 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 e2 80
-30: 00 00 00 00 c0 00 00 00 00 00 00 00 ff 01 02 18
-40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-c0: 01 00 02 06 00 00 00 00 00 00 00 00 00 00 00 00
-d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-
-bash# lspci -s 00:05.0 -v -n
-00:05.0 Class 0401: 13f6:0111 (rev 10)
-	Subsystem: 1043:80e2
-	Flags: bus master, stepping, medium devsel, latency 32, IRQ 5
-	I/O ports at 9800 [size=256]
-	Capabilities: [c0] Power Management version 2
+When you can't change the values via amixer properly, they are read-only 
+values.  Changing the driver won't help then.  You can forget the patch.
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 15:57 
+ tiwai - 06-27-05 15:59 
 ----------------------------------------------------------------------
 Try the patch in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-04-04 13:51 Schugy         New Issue                                    
-04-04-04 13:51 Schugy         Distribution              => SuSE 8.2        
-04-04-04 13:51 Schugy         Kernel Version            => 2.4.25          
-04-27-04 17:33 mlejeune       Note Added: 0000962                          
-04-27-04 17:35 mlejeune       Issue Monitored: mlejeune                    
-04-30-04 11:43 tiwai          Note Added: 0000982                          
-05-23-04 19:45 Schugy         Note Added: 0001180                          
-05-24-04 14:50 tiwai          Note Added: 0001183                          
-07-24-04 19:47 thorstenhirsch Note Added: 0001471                          
-04-07-05 00:12 jdthood        Status                   new => acknowledged 
-04-07-05 00:12 jdthood        Resolution               open => not fixable 
-04-07-05 06:25 charles_levert Note Added: 0004354                          
-06-27-05 15:57 tiwai          Relationship added       related to 0001192  
-06-27-05 15:57 tiwai          Note Added: 0005272                          
+11-18-04 10:58 pbienst        New Issue                                    
+11-18-04 10:58 pbienst        Distribution              => Gentoo          
+11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
+11-18-04 18:07 tiwai          Note Added: 0002453                          
+11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
+11-18-04 19:11 pbienst        Note Added: 0002459                          
+11-18-04 19:26 pbienst        Note Added: 0002460                          
+11-18-04 19:33 tiwai          Note Added: 0002461                          
+11-18-04 19:36 pbienst        Note Added: 0002462                          
+11-18-04 19:54 tiwai          Note Added: 0002467                          
+11-18-04 20:01 pbienst        Note Added: 0002468                          
+11-18-04 20:22 tiwai          Note Added: 0002469                          
+06-27-05 15:58 tiwai          Relationship added       related to 0001192  
+06-27-05 15:59 tiwai          Note Added: 0005273                          
 ======================================================================
 
 
