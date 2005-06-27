@@ -1,11 +1,14 @@
-From: Matt <matt@embeddedalley.com>
-Subject: [PATCH] SigmaTel HDA resume support
-Date: Sun, 26 Jun 2005 18:22:34 -0700
-Message-ID: <20050626182234.A2032@cox.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
+Date: Mon, 27 Jun 2005 03:52:41 +0200
+Message-ID: <2e2fa0b26076994d53095801c5d66637@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D24171CA
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 03:52:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,49 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adds resume support to the SigmaTel HDA patch. Please apply.
 
-Signed-off-by: Matt <matt@embeddedalley.com>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
+======================================================================
+Reported By:                avuton
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   959
+Category:                   PCI - ali5451
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             03-03-2005 18:41 CET
+Last Modified:              06-27-2005 03:52 CEST
+======================================================================
+Summary:                    After S3 resume: ali_stimer_read: stimer is not
+ready
+Description: 
+After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
+reset/power down the computer.
 
-diff -u alsa-kernel/pci/hda/patch_sigmatel.c alsa-kernel/pci/hda/patch_sigmatel.c
---- alsa-kernel/pci/hda/patch_sigmatel.c	26 Jun 2005 01:09:35 -0000
-+++ alsa-kernel/pci/hda/patch_sigmatel.c	27 Jun 2005 00:24:35 -0000
-@@ -828,11 +828,32 @@
- 	kfree(spec);
- }
- 
-+#ifdef CONFIG_PM
-+static int stac92xx_resume(struct hda_codec *codec)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+	int i;
-+
-+	stac92xx_init(codec);
-+	for (i = 0; i < spec->num_mixers; i++)
-+		snd_hda_resume_ctls(codec, spec->mixers[i]);
-+	if (spec->multiout.dig_out_nid)
-+		snd_hda_resume_spdif_out(codec);
-+	if (spec->dig_in_nid)
-+		snd_hda_resume_spdif_in(codec);
-+
-+	return 0;
-+}
-+#endif
-+
- static struct hda_codec_ops stac92xx_patch_ops = {
- 	.build_controls = stac92xx_build_controls,
- 	.build_pcms = stac92xx_build_pcms,
- 	.init = stac92xx_init,
- 	.free = stac92xx_free,
-+#ifdef CONFIG_PM
-+	.resume = stac92xx_resume,
-+#endif
- };
- 
- static int patch_stac9200(struct hda_codec *codec)
+Workaround is to stop all audio activity and unload the driver, which
+works fine.
+
+This happens on my Libretto L5.
+======================================================================
+
+----------------------------------------------------------------------
+ avuton - 05-02-05 02:22 
+----------------------------------------------------------------------
+This bug still exists in 2.6.12-rc3-mm2, I am a novice coder, and if this
+is a simple issue I maybe able to deal with it. Pointers anyone?
+
+The function the problem should be fixed in is: snd_ali_stimer_ready()
+The file is: sound/pci/ali5451/ali5451.c
+
+It seems like the sound card should be reset(?) in the do..while() in that
+function.
+
+Or am I totally missing things and should something happen before the
+system goes to S3?
+
+Any help would be appreciated, I will try taking a look at the other
+drivers tonight for possible clues.
+
+----------------------------------------------------------------------
+ avuton - 06-27-05 03:52 
+----------------------------------------------------------------------
+This still does not work as of alsa 1.0.9b
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-03-05 18:41 avuton         New Issue                                    
+03-03-05 18:41 avuton         Distribution              => Gentoo          
+03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
+05-02-05 02:22 avuton         Note Added: 0004583                          
+06-27-05 03:52 avuton         Note Added: 0005270                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
