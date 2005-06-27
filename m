@@ -1,14 +1,14 @@
-From: Sebastian Henschel <sebastian@mali.geekcorps.org>
-Subject: Re: Re: [Alsa-user] snd-via82xx on EPIA-M - 0 analog subsections not ready
-Date: Mon, 27 Jun 2005 10:39:36 +0000
-Message-ID: <20050627103936.GA5627@fingerbrecher>
-References: <20050623184321.GA7728@fingerbrecher> <1119555870.13259.26.camel@mindpipe> <20050624105942.GA10544@fingerbrecher> <s5hoe9veqna.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001197]: Realtek ALC650 output problem
+Date: Mon, 27 Jun 2005 13:58:23 +0200
+Message-ID: <e9b5140ce01b9ea5d875b4b7b43b2693@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hoe9veqna.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB9441DD
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2005 13:58:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +18,148 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1197> 
+======================================================================
+Reported By:                willits
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1197
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             06-16-2005 15:07 CEST
+Last Modified:              06-27-2005 13:58 CEST
+======================================================================
+Summary:                    Realtek ALC650 output problem
+Description: 
+I have got a realtek ALC650 AC97 soundcard on my motherboard Abit BE7.
+The problem is that I have got 5.1 speakers, and for have my subwoofer and
+central speaker work, I need to put them on the "line in" connector
+instead of the black connector (the black connector doesn't work).
 
-hello....
+I haven't got this problem with Windows.
+======================================================================
 
-* Takashi Iwai <tiwai@suse.de> [2005-06-24 22:18 +0000]:
-> At Fri, 24 Jun 2005 10:59:42 +0000,
-> Sebastian Henschel wrote:
-> >=20
-> > * Lee Revell <rlrevell@joe-job.com> [2005-06-24 08:51 +0000]:
-> > > On Thu, 2005-06-23 at 18:43 +0000, Sebastian Henschel wrote:
-> > > >=20
-> > > > i am working on a machine with an EPIA-M mainboard and the ICEensem=
-ble
-> > > > VT1616i sound chip (see attached lspci -v).
-> > >=20
-> > > Thanks, this is an excellent bug report.  It sounds like a not quite
-> > > fully supported device.
-> >=20
-> > so should i open a bug report on that?
->=20
-> Yes, please.
+----------------------------------------------------------------------
+ tiwai - 06-24-05 18:41 
+----------------------------------------------------------------------
+2.0 -> 5.1 isn't supported _on hardware_ with ALC650.  Only 2.0 -> 4.0 is
+supported.  But, of course, you can do 2.0->5.1 on software, i.e. in
+alsa-lib configuration.  It's your homework :)
 
-ok, done: https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1213
-the contents of /proc/asound/card0/codec97#0/ will follow when i have
-access to the machine again.
+About 3D control: See my earlier comments.
+
+----------------------------------------------------------------------
+ willits - 06-27-05 13:58 
+----------------------------------------------------------------------
+I don't want 3D control (I have got 5.1 speaker that done this work).
+I am searching in the alsa configuration, but I didn't really understand
+the file alsa.conf, how I can get 2.0->5.1 by software ?
+
+In the /usr/share/alsa/alsa.conf file, there are this :
+
+defaults.ctl.card 0
+defaults.pcm.card 0
+defaults.pcm.device 0
+defaults.pcm.subdevice -1
+defaults.pcm.front.card defaults.pcm.card
+defaults.pcm.front.device defaults.pcm.device
+defaults.pcm.rear.card defaults.pcm.card
+defaults.pcm.rear.device defaults.pcm.device
+defaults.pcm.center_lfe.card defaults.pcm.card
+defaults.pcm.center_lfe.device defaults.pcm.device
+defaults.pcm.side.card defaults.pcm.card
+defaults.pcm.side.device defaults.pcm.device
+defaults.pcm.surround40.card defaults.pcm.card
+defaults.pcm.surround40.device defaults.pcm.device
+defaults.pcm.surround41.card defaults.pcm.card
+defaults.pcm.surround41.device defaults.pcm.device
+defaults.pcm.surround50.card defaults.pcm.card
+defaults.pcm.surround50.device defaults.pcm.device
+defaults.pcm.surround51.card defaults.pcm.card
+defaults.pcm.surround51.device defaults.pcm.device
+defaults.pcm.surround71.card defaults.pcm.card
+defaults.pcm.surround71.device defaults.pcm.device
+defaults.pcm.iec958.card defaults.pcm.card
+defaults.pcm.iec958.device defaults.pcm.device
+defaults.pcm.modem.card defaults.pcm.card
+defaults.pcm.modem.device defaults.pcm.device
+defaults.rawmidi.card 0
+defaults.rawmidi.device 0
+defaults.rawmidi.subdevice -1
+defaults.hwdep.card 0
+defaults.hwdep.device 0
+defaults.timer.class 2
+defaults.timer.sclass 0
+defaults.timer.card 0
+defaults.timer.device 0
+defaults.timer.subdevice 0
+
+--> In this, I have seen that : 
+
+defaults.pcm.surround51.card defaults.pcm.card
+defaults.pcm.surround51.device defaults.pcm.device
+
+But I didn't know how I can configure Alsa-lib for use this (surround51).
+
+If you can help me
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-16-05 15:07 willits        New Issue                                    
+06-16-05 15:07 willits        Kernel Version            => 2.6.11          
+06-16-05 15:13 pzad           Note Added: 0005056                          
+06-16-05 15:19 willits        Note Added: 0005057                          
+06-16-05 15:21 pzad           Note Added: 0005058                          
+06-16-05 15:25 willits        Note Added: 0005059                          
+06-16-05 15:43 pzad           Note Added: 0005060                          
+06-16-05 16:10 willits        Note Added: 0005062                          
+06-16-05 16:11 willits        File Added: test.state                       
+06-17-05 15:10 tiwai          Note Added: 0005075                          
+06-17-05 20:32 willits        Note Added: 0005079                          
+06-17-05 20:34 willits        Note Added: 0005080                          
+06-22-05 18:12 tiwai          Note Added: 0005139                          
+06-23-05 11:17 willits        Note Added: 0005168                          
+06-23-05 11:23 willits        Note Added: 0005169                          
+06-23-05 11:23 jcdutton       Note Added: 0005170                          
+06-23-05 11:56 pzad           Note Added: 0005172                          
+06-23-05 12:01 tiwai          Note Added: 0005174                          
+06-23-05 19:21 willits        Note Added: 0005192                          
+06-23-05 19:26 willits        Note Added: 0005193                          
+06-23-05 22:42 pzad           Note Added: 0005196                          
+06-24-05 14:37 willits        Note Added: 0005220                          
+06-24-05 14:54 tiwai          Note Added: 0005221                          
+06-24-05 15:07 jcdutton       Note Added: 0005225                          
+06-24-05 15:19 tiwai          Note Added: 0005227                          
+06-24-05 15:24 willits        Note Added: 0005228                          
+06-24-05 16:15 tiwai          Note Added: 0005232                          
+06-24-05 16:24 tiwai          Note Added: 0005233                          
+06-24-05 17:27 willits        Note Added: 0005241                          
+06-24-05 17:28 willits        File Added: ICH4.conf                        
+06-24-05 17:28 willits        File Added: ICH.conf                         
+06-24-05 17:59 tiwai          Note Added: 0005245                          
+06-24-05 18:23 willits        Note Added: 0005246                          
+06-24-05 18:25 willits        Note Edited: 0005246                         
+06-24-05 18:31 tiwai          Note Added: 0005247                          
+06-24-05 18:36 willits        Note Added: 0005248                          
+06-24-05 18:41 tiwai          Note Added: 0005249                          
+06-27-05 13:58 willits        Note Added: 0005271                          
+======================================================================
 
 
-> > > On a related topic, it seems like a lot of users waste hours and hours
-> > > changing settings before they even consider that they might have a
-> > > hardware variation we have not seen before.
-> >=20
-> > given that the BIOS is dated from somewhere from 2004 and that the
-> > EPIA-M is not unpopular, i would have thought it is well-known. but
-> > perhaps this is just another hardware revision (rev 50 in this case)
-> > which might do something slightly different than the revisions before.
->=20
-> Also, this kind of bug depends pretty upon the BIOS.
-
-will try to upgrade the BIOS.
-
-> Try acpi=3Doff boot option once.
-
-this used to be the default behaviour, there is no difference between on
-and off.
-
-thanks,
- Sebastian
---=20
-Oo.....................
- wer ein ganzer mensch ist, braucht keine autoritaet zu sein.
- OpenPGP key ID: 0x4A1F5E81  Geekcode: GCSd-s:a-C++ULB+++W++M+PS+++
-                                                ..................oO
-
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCv9doqe04hEofXoERAn52AJ9cBQaK08Rr2RPFkTb+TOmg0sAB+QCdESl2
-3oMXHo9HmaeQwXS6987Lui8=
-=Plm3
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
 
 
 -------------------------------------------------------
