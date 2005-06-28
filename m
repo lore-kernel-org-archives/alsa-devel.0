@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001217]: SB Audigy2 NX won't work when plugged into a separate hub
-Date: Tue, 28 Jun 2005 09:27:19 +0200
-Message-ID: <8f8d11541ce5ab7b060d912cdc7178c6@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: [Openvortex-dev] Re: Re: [ALSA - driver 0001138]:   errors when
+ installing au8820 modules
+Date: Tue, 28 Jun 2005 15:50:54 +0800
+Message-ID: <42C1015E.9010201@netvigator.com>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de> <42A5D3C8.1030903@mail.ru> <42A6E5BE.4030003@netvigator.com> <42A73305.9000000@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 743571CB
-	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 09:27:19 +0200 (MEST)
+In-Reply-To: <42A73305.9000000@mail.ru>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
+Igor Kovalenko wrote:
+> Raymond wrote:
+>>Igor Kovalenko wrote:
+>>
+>>>Well, I've not stated the problem clearly enough.
+>>>Once set, volume stays as it should. The problem is that
+>>>PCM volume is:
+>>>1% - at lowest audible level
+>>>25% - at about 50% audible level
+>>>49% - at about max audible level
+>>>51% - at lowest audible level
+>>>75% - at about 50% audible level
+>>>99% - at about max audible level
+>>>- that is what I described as low-high-low-high.
+>>>On the other hand, Master volume behaves as expected.
+>>
+>>
+>>
+>>What is the value of comment.range of 'PCM Playback Volume' in
+>>/etc/asound.state for your STAC9704 (au8820) ?
+>>
+>>
+>>According to 9704SPEC.pdf, it should be '0-31' ( 5 bits ) for STAC9704
+>>PCM Out volume.
+>>
+> 
+> 
+>         control.21 {
+>                 comment.access 'read write'
+>                 comment.type INTEGER
+>                 comment.count 2
+>                 comment.range '0 - 63'
+>                 iface MIXER
+>                 name 'PCM Playback Volume'
+>                 value.0 21
+>                 value.1 21
+>         }
+> 
+> Do you mean AC97 is incorrectly reporting 0...63 range?
+> 
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1217> 
-======================================================================
-Reported By:                bluebottle
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1217
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             06-28-2005 09:19 CEST
-Last Modified:              06-28-2005 09:27 CEST
-======================================================================
-Summary:                    SB Audigy2 NX won't work when plugged into a
-separate hub
-Description: 
-Hi,
+Try the following patch to log the read/write of ac97 and post the
+system log using dmesg. (loading au8820 and alsactl restore)
 
-I've got a SB Audigy2 NX that works well now with the 1.0.9 ALSA driver on
-a 2.6.10 kernel. It only works however if plugged directly into the
-motherboard USB. Plugged into a DLink DUB-H4 USB2 hub, it produces 0.5
-seconds of audio, a squelch and click, then nothing further until reboot,
-when the problem repeats. dmesg says:
 
-ALSA /usr/src/alsa-1.0.9/alsa-driver-1.0.9b/usb/usbaudio.c:779: cannot
-submit syncpipe for urb 0, err = -12
+alsa-driver-1.0.9b/alsa-kernel/pci/au88x0/au88x0_core.c
+@@ -2520,6 +2515,7 @@
+  	vortex_t *card = (vortex_t *) codec->private_data;
+  	unsigned int lifeboat = 0;
 
-The external hub works perfectly with other products including mice,
-joysticks, disks and memory card readers.
-======================================================================
++	printk(KERN_INFO "ac97 write %.2x : %.4x\n",addr,data);
+  	/* wait for transactions to clear */
+  	while (!(hwread(card->mmio, VORTEX_CODEC_CTRL) & 0x100)) {
+  		udelay(100);
+@@ -2567,6 +2563,7 @@
+  		}
+  	} while ((data & VORTEX_CODEC_ADDMASK) !=
+  		 (addr << VORTEX_CODEC_ADDSHIFT));
++	printk(KERN_INFO "ac97 read  %.2x : %.4x\n",addr,data &
+VORTEX_CODEC_DATMASK);
 
-----------------------------------------------------------------------
- bluebottle - 06-28-05 09:27 
-----------------------------------------------------------------------
-Today I updated the firmware with the 04 Feb 2005 driver version; no
-improvement.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-28-05 09:19 bluebottle     New Issue                                    
-06-28-05 09:19 bluebottle     Distribution              => Ubuntu Hoary    
-06-28-05 09:19 bluebottle     Kernel Version            => 2.6.10          
-06-28-05 09:27 bluebottle     Note Added: 0005292                          
-======================================================================
-
+  	/* return data. */
+  	return (u16) (data & VORTEX_CODEC_DATMASK);
 
 
 
