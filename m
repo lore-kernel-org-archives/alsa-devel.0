@@ -1,12 +1,11 @@
-From: christophe barbe <christophe@cattlegrid.net>
-Subject: intel8x0 ACPI suspend/resume bug
-Date: Tue, 28 Jun 2005 11:06:39 -0400
-Message-ID: <20050628150638.GB6677@cattlegrid.net>
+From: Peter Plessas <plessas@mur.at>
+Subject: hdsp oss emulation and sync
+Date: Tue, 28 Jun 2005 18:33:00 +0200
+Message-ID: <42C17BBC.1070402@mur.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=unknown-8bit
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,36 +18,30 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Dear List,
 
-Hi,
+I posted this before but i think to the alsa-users list.
 
-On my IBM X40, the sound outputs become crappy after a suspend/resume
-cycle. I am convinced that it's a gain value that goes wrong (but I
-could be wrong) as most of the time one side is not outputing sound
-anymore (only statics) but I can sometimes get this channel back by
-lowering its volume (so I think it's a kind of hardware protection=20
-that cuts the channel off if the gain is too high).
+I have an HDSP (Pci or CardBus) with a Multiface, which shows the 
+following behavior:
 
-Anyway I wrote every details in my bug report:
-   https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D917
-and I would really appreciate if someone could help me hunt this bug. I
-tried everything that came to my mind and don't know what to try now.
+When the card works as a sync slave to other digital equipment, the OSS 
+emulation does not work. I tested this on more than one machine.
+I can't give you any error messages by now, since i don't have the card 
+with me (but do have time to write this).
 
-NOTE: The most recent alsa driver I tried is
-alsa-driver-1.0.9rc4a.tar.bz2.
+There are simply some cases where i rely on the emulation.
 
-Thanks,
-Christophe
+Until today i just found one more posting about this problem in the 
+alsa-list archives, but that remained unsolved till today.
 
---=20
-Christophe Barb=E9 <christophe.barbe@ufies.org>
-GnuPG FingerPrint: E0F6 FADF 2A5C F072 6AF8  F67A 8F45 2F1E D72C B41E
+Any ideas?
 
+regards, Peter
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=3D7477&alloc_id=3D16492&op=3Dclic=
-k
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
