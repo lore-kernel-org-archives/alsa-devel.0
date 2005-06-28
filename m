@@ -1,50 +1,142 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] Fw: BUG: Kernel panic when
- disconnecting Edirol USB2 audio interface
-Date: Tue, 28 Jun 2005 15:39:41 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0506280857430.5280-100000@studcom.urz.uni-halle.de>
-References: <20050628020344.C5075C8944@blackbox.site>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Tue, 28 Jun 2005 16:49:06 +0200
+Message-ID: <69d0cf30b0e5e4a586a2843f4e9ea136@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050628020344.C5075C8944@blackbox.site>
-Sender: linux-usb-devel-admin@lists.sourceforge.net
-Errors-To: linux-usb-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
-List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
-To: david-b@pacbell.net
-Cc: colinf@axicon.com, linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3EC019C
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 16:49:06 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-david-b@pacbell.net wrote:
-> > With kernel 2.6.12 + "[PATCH] ehci-hcd - fix page pointer allocation in
-> > itd_patch()"), using jackd in realtime mode at 44.1kHz with 64
-> > frames/period and 4 periods/buffer, I get a stream of xruns of about
-> > 0.020 ms, several per second.
->
-> In USB, one frame == 1 msec.  Most EHCI silicon using the 2.6.12 code
-> will get unhappy with 256 msec per ISO URB, so I hope you're using
-> "frame" without a necessary adjective ... ;)
-> ...
-> I discourage drivers from using more than 64 msec per ISO URB.
 
-The URBs used by the snd-usb-audio driver are mostly independent of
-ALSA's period size, and use between 1 and 20 ms.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
+======================================================================
+Reported By:                christophe
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   917
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
+======================================================================
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              06-28-2005 16:49 CEST
+======================================================================
+Summary:                    intel8x0 ACPI suspend/resume trouble
+Description: 
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
-> Thanks for the status info ... it's seeming that ISO-OUT through
-> EHCI is probably usable now.  ISO-IN is a different story.  :)
+This is a IBM x40 laptop (23865FU) with an intel chipset.
 
-Recording on both Edirol UA-1000 and Audigy 2 NX seems to work, and
-frequency feedback for the async out endpoints, too.
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
 
+The driver I use is snd_intel8x0.
 
-Regards,
-Clemens
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
+
+======================================================================
+
+----------------------------------------------------------------------
+ christophe - 02-21-05 19:21 
+----------------------------------------------------------------------
+For the control word, the meaning of the most significant c seems to be
+related to the s/dif output which is strange especially since I don't have
+a digital output AFAIK.
+
+#define ICH_REG_GLOB_CNT      0x2c  /* dword - global control */
+#define   ICH_PCM_SPDIF_MASK  0xc0000000  /* s/pdif pcm slot mask (ICH4)
+*/
+...
+#define   ICH_PCM_SPDIF_78 0x40000000  /* s/pdif pcm on slots 7&8 */
+#define   ICH_PCM_SPDIF_69 0x80000000  /* s/pdif pcm on slots 6&9 */
+
+----------------------------------------------------------------------
+ christophe - 06-28-05 16:49 
+----------------------------------------------------------------------
+Today I upgraded my kernel to 2.6.11.12 without improvment.
+Then I upgraded alsa using alsa-driver-1.0.9rc4a.tar.bz2 and the problem
+is still there. 
+
+If somebody has a little time to help me debug this bug, that would be
+great. I have some free time and I am willing to spend it on this bug but
+I don't know where to start (I already tried all my ideas).
+
+Thanks,
+Christophe
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
+02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
+               
+02-18-05 20:35 alexs81        Note Added: 0003659                          
+02-18-05 20:50 christophe     Note Added: 0003660                          
+02-18-05 21:13 alexs81        Note Added: 0003661                          
+02-18-05 21:16 christophe     Note Added: 0003662                          
+02-18-05 21:32 alexs81        Note Added: 0003663                          
+02-18-05 21:39 rlrevell       Note Added: 0003664                          
+02-19-05 02:40 christophe     Note Added: 0003668                          
+02-19-05 12:07 alexs81        Note Added: 0003669                          
+02-19-05 22:15 christophe     Note Added: 0003671                          
+02-19-05 22:16 christophe     Note Added: 0003672                          
+02-21-05 19:16 christophe     Note Added: 0003681                          
+02-21-05 19:21 christophe     Note Added: 0003682                          
+06-28-05 16:49 christophe     Note Added: 0005298                          
+======================================================================
+
 
 
 
@@ -53,7 +145,3 @@ SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
 speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-_______________________________________________
-linux-usb-devel@lists.sourceforge.net
-To unsubscribe, use the last form field at:
-https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
