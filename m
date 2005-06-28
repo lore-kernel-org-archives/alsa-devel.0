@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Tue, 28 Jun 2005 23:45:19 +0200
-Message-ID: <e8b6e576e9967787390af3e711dfd2e8@bugtrack.alsa-project.org>
+Date: Wed, 29 Jun 2005 00:08:45 +0200
+Message-ID: <b020e7144e0f25cd25a2eae3a6d69679@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 530C4194
-	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 23:45:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0C2F194
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 00:08:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-28-2005 23:45 CEST
+Last Modified:              06-29-2005 00:08 CEST
 ======================================================================
 Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
 failed: Invalid argument
@@ -71,28 +71,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0001096 no capture with M-Audio Revolution 7.1
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-28-05 12:45 
-----------------------------------------------------------------------
-Unfortunately, the ICE1724 doesn't allow the mixing of multiple sources for
-the playback.  That is, *either* PCM, analog-in or spdif-in can be used
-*exclusively*.  If you choose the analog-loopback, you can't hear PCM.
-
-The only possible way to solve this is to do mixing on software.  But, of
-course, you will get a certain latency in comparison with the hardware
-mixing.  The best solution would be to use JACK, but again, OSS-emulation
-makes the problem...
-
-I don't see how you started skype in your recent reports.  If you start
-skype with "aoss", ~/.asoundrc has influence, and /dev/dsp* doesn't matter
-at all because the emulation doesn't open /dev/dsp* at all.
-OTOH, if you don't use "aoss", it's most likely through the kernel OSS
-emulation.  In this case, ~/.asoundrc has no influence.at all.
-
-Anyway, it looks like aoss still has a problem with IGAIN.  I'll check on
-it.  (But if Skype works only with a warning message, you can forget it
-for a while...)
 
 ----------------------------------------------------------------------
  sst4 - 06-28-05 23:45 
@@ -143,6 +121,18 @@ alsa-user@lists.sourceforge.net .
 Thanks,
   Sergei.
 
+----------------------------------------------------------------------
+ sst4 - 06-29-05 00:08 
+----------------------------------------------------------------------
+An additional clarification: the
+"
+volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
+"
+message does not appear immediately after invokation of Skype, but rather
+when a
+session begins, i.e. when, for example, I call 'echo123' automated
+service.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -171,6 +161,7 @@ Date Modified  Username       Field                    Change
 06-28-05 01:14 sst4           Note Added: 0005291                          
 06-28-05 12:45 tiwai          Note Added: 0005297                          
 06-28-05 23:45 sst4           Note Added: 0005301                          
+06-29-05 00:08 sst4           Note Added: 0005302                          
 ======================================================================
 
 
