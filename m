@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000014]: No sound from external speakers (laptop)
-Date: Tue, 28 Jun 2005 10:50:14 +0200
-Message-ID: <462e9fa8ea64b66a5b46d6484d4caa47@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001160]: Compilation hangs on hda_codec.c and ak4114.c
+Date: Tue, 28 Jun 2005 11:28:12 +0200
+Message-ID: <747a9c68d94a454ab75560bff8f1ab41@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AB0B1CE
-	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 10:50:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEC281C9
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 11:28:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,133 +22,95 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1160> 
 ======================================================================
-Reported By:                user74
-Assigned To:                
+Reported By:                Henne
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   14
-Category:                   PCI - intel8x0
+Issue ID:                   1160
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sid updated
-Kernel Version:             2.4.24-ck1
+Status:                     resolved
+Distribution:               Aurox 10.0
+Kernel Version:             2.6.7-aurox
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-29-2004 20:15 CET
-Last Modified:              06-28-2005 10:50 CEST
+Date Submitted:             06-06-2005 12:02 CEST
+Last Modified:              06-28-2005 11:28 CEST
 ======================================================================
-Summary:                    No sound from external speakers (laptop)
+Summary:                    Compilation hangs on hda_codec.c and ak4114.c
 Description: 
-On my laptop (acer272xv) I can't use external output with my Creative 2.1,
-because I can't hear anything.
-I've tryied with other external speaker and with other releases of
-alsa-driver, but there's no difference.
+I tried to compile the driver package with cvscompile, and it hung at:
+alsa-kernel/i2c/other/ak4114.c
+alsa-kernel/pci/hda/hda_codec.c
+with the message, that the macro create_workqueue needs 2 arguments, not
+one.
+I browsed the code and found out, that that macro is defined for kernels
+lower than 2.6 in the alsa-driver, but I have a greater one. So the macro
+wasn't defined and another marco from the kernel source was taken, which
+needs 2 arguments.
+I've added a zero as a second arg and the compilation worked, but that
+imho couldn't be the right solution.
 
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000664 ac97_quirk with SIS 7012 [ALC202] don't...
-======================================================================
 
 ----------------------------------------------------------------------
- wenton - 06-24-05 08:54 
+ Henne - 06-14-05 11:49 
 ----------------------------------------------------------------------
-Hi Dale,
+Aye, I found the Problem!
+The Aurox 10.0 has some changes from the original 2.6 kernels.
+ 
+In the "old" 2.6 kernels(<2.6.6) create_workqueue was a function with one
+argument. The create_workqueue macro (1 arg) came to the kernel in 2.6.6,
+but it calls the __create_workqueue function with fitting args.
+The Aurox-2.6.7-10.0 kernel added one argument. Look! :
+ 
+/* Original Kernel Headers *>=2.6.6/
+extern struct workqueue_struct *__create_workqueue(const char *name,
+						    int singlethread);
+#define create_workqueue(name) __create_workqueue((name), 0)
 
-Well, first off, if I understand correctly, (someone else please
-verify/correct me), UDEV only manages hotplug devices, but I did find an
-excerpt from 'man udev' that might be useful:
+/* Aurox Header Files */
+extern struct workqueue_struct *__create_workqueue(const char *name,
+						    int singlethread,
+						    unsigned long freezer_flag);
+#define create_workqueue(name, flags) __create_workqueue((name), 0,
+flags)
 
-   # sound card with PCI bus id 00:0b.0 to be called dsp
-   BUS="pci", ID="00:0b.0", NAME="dsp"
+I think this is not your prob, the distri broke the compatibility.
 
-but I have to admit, I don't know enough about udev to know how to use
-that information.  There were a few other things in that man page that
-suggested that various device files are managed by udev, so that might be
-why your /dev/dsp[0-3] could be missing.  (I don't want to polute things
-by posting it into here.)
+This can be closed, but should be mentioned in README.
 
-As for my own configuration, on a Compaq M2010, I am using Slackware 10.0
-which comes with ALSA1.0.5a.  I simply allowed alsaconf to detect and
-configure everything on it's own.  When I do 'ls -l /proc/asound' I find:
 
-   I82801DBICH4 -> card1
-   Modem -> card0
-   (and other stuff)
-
-So at least I can verify what I thought earlier, about ALSA detecting the
-modem as card0 and the audio ports as card1.  Also, looking at
-/proc/asound/cards tells me about the same thing.
-
-Another thought, and again I'm looking for someone to verify/correct me, I
-believe the /dev/dsp? files are OSS-related, and if you have OSS
-compatibility turned off, that might explain why those files aren't on
-your system.
-
-My laptop only has a mic input and lineout/headphone out, but it does seem
-to be working just fine.  I think ALSA only wants to set mixer settings
-specifically for /dev/dsp0 (somewhere in rc.alsa?) so I have to manually
-set my mixer settings every reboot, so I added that to my rc.local, but at
-least it does work.
 
 ----------------------------------------------------------------------
- dale - 06-28-05 10:50 
+ perex - 06-28-05 11:28 
 ----------------------------------------------------------------------
-Hi Wenton,
-
-In your last note you say you are using a Compaq M2010, but this problem
-is
-specific to the acer travelmate 27x.
+I added detection for modified macro to configure.in. The code is in CVS
+(and will be in next release).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-04 20:15 user74         New Issue                                    
-01-29-04 20:15 user74         File Added: details.txt                      
-01-30-04 12:44 tiwai          Note Added: 0000049                          
-01-30-04 17:56 sparkyva       Note Added: 0000063                          
-01-30-04 17:56 sparkyva       Issue Monitored: sparkyva                    
-01-30-04 20:41 sparkyva       Note Added: 0000070                          
-01-30-04 22:01 jorge2         Note Added: 0000071                          
-02-02-04 19:37 jorge2         Note Added: 0000119                          
-02-04-04 20:00 tiwai          Note Added: 0000165                          
-02-04-04 20:01 tiwai          Note Added: 0000166                          
-02-04-04 20:52 jorge2         Note Added: 0000169                          
-02-04-04 20:52 jorge2         Note Added: 0000170                          
-02-04-04 20:53 jorge2         Note Deleted: 0000169                        
-02-05-04 13:52 matsgora       Note Added: 0000181                          
-02-05-04 14:05 dale           Note Added: 0000182                          
-02-26-04 13:07 rocco          Note Added: 0000347                          
-02-26-04 18:16 matsgora       Note Added: 0000358                          
-02-26-04 18:20 tiwai          Note Added: 0000359                          
-03-01-04 10:31 dale           Note Added: 0000401                          
-03-05-04 19:49 tiwai          Note Added: 0000513                          
-03-05-04 20:37 jorge2         Note Added: 0000515                          
-03-06-04 18:20 matsgora       Note Added: 0000520                          
-03-07-04 16:30 dale           Note Added: 0000524                          
-03-09-04 15:15 tiwai          Note Added: 0000547                          
-03-09-04 18:12 matsgora       Note Added: 0000551                          
-06-08-04 20:25 jorge2         Note Added: 0001296                          
-06-15-04 15:00 mcbridematt    Note Added: 0001308                          
-11-22-04 18:48 tiwai          Relationship added       has duplicate 0000664
-02-02-05 14:25 dale           Note Added: 0003488                          
-02-04-05 13:18 tiwai          Note Added: 0003504                          
-02-04-05 13:19 tiwai          File Added: ac97-alc-fix.diff                    
-02-04-05 18:03 jorge2         Note Added: 0003512                          
-02-05-05 13:27 jorge2         Issue Monitored: jorge2                      
-02-21-05 09:16 dale           Note Added: 0003678                          
-02-23-05 09:54 dale           Issue Monitored: dale                        
-06-14-05 21:20 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-06-20-05 06:48 wenton         Note Added: 0005093                          
-06-22-05 19:50 dale           Note Added: 0005145                          
-06-24-05 08:54 wenton         Note Added: 0005204                          
-06-28-05 10:50 dale           Note Added: 0005294                          
+06-06-05 12:02 Henne          New Issue                                    
+06-06-05 12:02 Henne          Distribution              => Aurox 10.0      
+06-06-05 12:02 Henne          Kernel Version            => 2.6.7-aurox     
+06-08-05 15:10 tiwai          Note Added: 0004931                          
+06-09-05 11:19 Henne          Note Added: 0004979                          
+06-09-05 11:39 Henne          Note Edited: 0004979                         
+06-09-05 12:04 Henne          Note Edited: 0004979                         
+06-09-05 12:21 Henne          Note Edited: 0004979                         
+06-14-05 11:49 Henne          Note Edited: 0004979                         
+06-28-05 11:28 perex          Status                   assigned => resolved
+06-28-05 11:28 perex          Resolution               open => fixed       
+06-28-05 11:28 perex          Note Added: 0005295                          
 ======================================================================
 
 
