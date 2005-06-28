@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0 analog subsections not ready: no sound
-Date: Tue, 28 Jun 2005 20:19:59 +0200
-Message-ID: <4cbb84c54bc7a63a8c3da2392f6154b3@bugtrack.alsa-project.org>
+From: "Tiger Aldridge" <AldrTiger8069@jewitchery.com>
+Subject: V  always
+Date: Tue, 28 Jun 2005 15:11:35 -0500
+Message-ID: <20050628201139.4F1FF1A3@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_004C_01C57C1D.9542B580"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A6881A3
-	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 20:19:59 +0200 (MEST)
+Received: from jewitchery.com (static24-72-27-203.reverse.accesscomm.ca [24.72.27.203])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4F1FF1A3
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 22:11:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,136 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Demetrios Newman <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1213> 
-======================================================================
-Reported By:                shensche
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1213
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
-Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
-======================================================================
-Date Submitted:             06-27-2005 12:22 CEST
-Last Modified:              06-28-2005 20:19 CEST
-======================================================================
-Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
-ready: no sound
-Description: 
-i am working on a machine with an EPIA-M mainboard and the ICEensemble
-VT1616i sound chip (see attached lspci -v). unfortunately, i cannot hear
-any sound from it. it is always the same: the mixer settings seem ok,
-the applications play happily the files, but i cannot hear a thing. the
-speakers are ok, too.
+------=_NextPart_000_004C_01C57C1D.9542B580
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-the system is running kernel 2.6.11 with the kernel patches from Con
-Kolivas (-ck10) and ALSA. i also tried OSS (not the emu) on that kernel.
-i tried 2.4 kernels with Damn Small Linux and Knoppix 3.7 and 2.6.9
-=66rom Knoppix 3.7 and a custom 2.6.10-ck6.
-since ALSA 1.0.8 did not work, i installed 1.0.9b, including the libs
-and utils. during that upgrade, the mixer lost the possibility to change
-the DXS-settings. has this to do with the whitelist, introduced
-recently?
+Hello, 
+heaved a sigh of relief.a sensitive lad, stood mute and unmoving.  Only the =
+ebb and flow ofTo be sure I will, said Blood.  But I'm afraid the =
+circumstancesMr. Blood lifted the slight weight of Mary Traill to her =
+horse, thenas much as you are like to get from Crabston.Don Diego... he =
+was beginning, and then stopped, and lookedcould truthfully be said for =
+the Barbados Militia.  Having gainedviolence to be done in his presence =
+to a Dutchman; but it might besuspicion until he saluted the fort at =
+short range with a broadsideI am sorry to press you in such a matter, =
+Don Diego, but one glassdone to prevent it?Blood would sweep on with his =
+men, and seize the Church of Nuestrahim in the very moment of success.  =
+He accepted the situation withThis was the man who now thrust himself =
+upon Captain Blood with aFILIAL PIETYview to correcting any such =
+tendency, proceeded to introduce himself.
 
-i played around with lots of combinations of the options ac97_quirk and
-dxs_support when loading the kernel module.
+------=_NextPart_000_004C_01C57C1D.9542B580
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-on the hardware side i disabled the front panel sockets for line-out and
-mic-in, just to be sure. and i often tried all three sockets for=20
-line-out, line-in and mic-in in the back to hear the output.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial>Hello, Welcome to the <A 
+href=3D"http://www.vamtd.noinjure.com"">MedzOnli<SPAN style=3D"DISPLAY: =
+none"> needlebearing </SPAN>ne</A> 
+- online pharmaceutica<SPAN style=3D"DISPLAY: none"> confirmative </SPAN>l =
+shop.</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TBODY>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2>V<SPAN style=3D"DISPLAY: none"> tensive </SPAN>A</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>U<SPAN style=3D"DISPLAY: none"> overborne =
+</SPAN>M&nbsp;V<SPAN style=3D"DISPLAY: none"> whiffet </SPAN>I</TD>
+    <TD></TD>
+    <TD rowSpan=3D2><SPAN style=3D"DISPLAY: none"> depopulate =
+</SPAN>RA&nbsp;C<SPAN style=3D"DISPLAY: none"> feckless </SPAN>I</TD>
+    <TD></TD>
+    <TD rowSpan=3D2><SPAN style=3D"DISPLAY: none"> rafale </SPAN>IS</TD>
+    <TD></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD>L<SPAN style=3D"DISPLAY: none"> amethystine </SPAN>I</TD>
+    <TD><SPAN style=3D"DISPLAY: none"> amplify </SPAN>AG</TD>
+    <TD>A<SPAN style=3D"DISPLAY: none"> teamster </SPAN>L</TD>
+    <TD>&nbsp;and&nbsp;many&nbsp;other.</TD></TR></TBODY></TABLE>
+<DIV></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>With our shop you g<SPAN style=3D"DISPLAY: none"> =
+suicide </SPAN>et -</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>BES<SPAN style=3D"DISPLAY: none"> unmarketable =
+</SPAN>T PRlCES</FONT></DIV>
+<DIV><FONT face=3DArial>Excellent se<SPAN style=3D"DISPLAY: none"> surplice =
+</SPAN>rvice</FONT></DIV>
+<DIV><FONT face=3DArial>Fast shi<SPAN style=3D"DISPLAY: none"> velaria =
+</SPAN>pping</FONT></DIV>
+<DIV><FONT face=3DArial>Private online orde<SPAN style=3D"DISPLAY: none"> =
+prebendary </SPAN>ring</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Have a nice day.</FONT></DIV></BODY></HTML>
 
-the chip seems to share interrupt 10 with USB, so i unloaded uhci-hcd,
-but to no avail. i also dis-/enabled ACPI, reserved IRQ for non-PCI (now
-USB and sound share interrupt 5) in the BIOS. the BIOS was told that
-there was a/no PlugNPlay OS and the MC97 modem is disabled.
-the machine does not seem to have an APIC.
-
-i muted some IEC 958 settings in the mixer as read somewhere in the net,
-but that did not help either. and one of these settings always
-reenables itself as soon as i try to play a wav with aplay.
-
-i modified alsa-kernel/pci/ac97/ac97_codec.c to goto __ready_ok also
-when "0 analog subsections are ready" (weird message, btw) before line
-1960. another try was to increase the end_time in line 1953 by factor
-10. both did not yield a successful result, both being a shot in the
-blue.
-
-
-i attached /etc/asound.state (after saving with alsactl store) and the
-output of dmesg. do not mind the oops from cowloop, i guess it is not
-important, because all the other kernels do not work as well.
-
-i read=20
-http://alsa-project.org/alsa-doc/doc-php/template.php?company=3DVIA&card=3D=
-=2E&chip=3DVIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=3Dvia82xx
-alsa-kernel/Documentation/ALSA-Configuration.txt
-and many other forum entries
-
-but still something is going wrong. why are 0 analog subdevices ready?
-how to make them ready? where to wait? what to initialise?
-
-i will try to upgrade the BIOS, soon and try with MS Windows (if i manage
-to fit   it onto 1 GB)
-
-======================================================================
-
-----------------------------------------------------------------------
- shensche - 06-28-05 12:02 
-----------------------------------------------------------------------
-- added several files from /proc/asound
-- BIOS is the latest 1.16 and VIA does not seem to offer older version
-- it seems that a current Windows up to 1 GB is only possible with Windows
-CE, so i cannot test with it.
-
-----------------------------------------------------------------------
- shensche - 06-28-05 20:19 
-----------------------------------------------------------------------
-i just tried with the same hard disk (aka flash disk) on another quite
-similar system with the mainboard EPIA MII. it contains AFAIK the same
-southbridge (VT8235) and according to lspci, it is the same sound chip.
-but there it works!
-before i start uploading all the relevant files from the 2nd, working,
-system, i wonder if this is necessary for you.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-27-05 12:22 shensche       New Issue                                    
-06-27-05 12:22 shensche       File Added: asound.conf                      
-06-27-05 12:22 shensche       Distribution              => Debian (derived
-Knoppix->Morphix->Kunnafonix)
-06-27-05 12:22 shensche       Kernel Version            => 2.6.11.12, but also
-many other 2.4 and 2.6 kernels
-06-27-05 12:23 shensche       File Added: asound.state                     
-06-27-05 12:27 shensche       File Added: dmesg.full                       
-06-27-05 12:27 shensche       File Added: dmesg.oss                        
-06-27-05 12:28 shensche       File Added: lspci                            
-06-27-05 12:29 shensche       Issue Monitored: shensche                    
-06-27-05 12:36 shensche       Issue End Monitor: shensche                    
-06-28-05 11:31 shensche       File Added: proc_asound_card0_codec97#_ac97#0-0   
-                
-06-28-05 11:32 shensche       File Added:
-proc_asound_card0_codec97#_ac97#0-0+regs                    
-06-28-05 11:32 shensche       File Added: proc_asound_card0_via82xx             
-      
-06-28-05 11:32 shensche       File Added: proc_asound_cards                    
-06-28-05 11:33 shensche       File Added: proc_asound_version                   
-
-06-28-05 12:02 shensche       Note Added: 0005296                          
-06-28-05 20:19 shensche       Note Added: 0005300                          
-======================================================================
-
+------=_NextPart_000_004C_01C57C1D.9542B580--
 
 
 
