@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
-Date: Tue, 28 Jun 2005 20:03:37 +0200
-Message-ID: <8fcf5a88694663ba7e6bddc26a8412ca@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001215]: AC3 Passthrough does not work
+Date: Tue, 28 Jun 2005 20:05:52 +0200
+Message-ID: <2eabe4caec565c73ce984f5468acf512@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A56B41A2
-	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 20:03:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90406142
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 20:05:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1215> 
 ======================================================================
 Reported By:                hugo4711
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1218
+Issue ID:                   1215
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4
+Kernel Version:             2.6.11-1.1369_FC
 ======================================================================
-Date Submitted:             06-28-2005 20:03 CEST
-Last Modified:              06-28-2005 20:03 CEST
+Date Submitted:             06-27-2005 21:59 CEST
+Last Modified:              06-28-2005 20:05 CEST
 ======================================================================
-Summary:                    Line-In and Mic-In do not work
+Summary:                    AC3 Passthrough does not work
 Description: 
-Capturing from Line-In and Mic-In don't work. I have connected a
-bttv-tv-card with  Line-In and I cannot hear the sound output from it.
-Every single input is at 100% using alsamixer and kmix. This happened
-after an update from FC3 to FC4. Before the update everything was fine.
+Since the update from FC3 to FC4 I am not able to use AC3-passthrough. It
+won't work with xine or mplayer. 
 
+The AC3-Reciever I am using indicates "No Audio" when playing a DVD with
+AC3-Sound. Before the Update it switches to Dolby AC3 Decoding mode. 
 
+When I play a movie with xine, and the driver is switched into
+AC3-passthrough-mode and then I quit xine, the driver is not switched back
+out of the passthrough-mode (which is a bug in xine, I guess). This is
+very anoying, because there is no such thing as to reset the mixer
+settings, unless the previous settings are stored (alsactl
+store/restore).
+
+Another thing is, that I am not able to hear sound from sources which are
+plugged into line-in. Mixer Settings are checked. Every channel is unmuted
+and volume is at 100%. Digital Out is unmuted, IEC-Compliancy is muted.
 ======================================================================
+
+----------------------------------------------------------------------
+ hugo4711 - 06-28-05 20:05 
+----------------------------------------------------------------------
+Here is some more information (if you need more, just ask me):
+
+cat /proc/asound/version
+------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.9rc2 (Thu Mar 24
+10:33:39 2005 UTC).
+
+cat /proc/asound/cards
+----------------------
+0 [Unknown ]: Audigy - Audigy 1 or 2 [Unknown]
+                     Audigy 1 or 2 [Unknown] (rev.3, serial:0x511102) at
+0xe800, irq 11
+1 [Bt878 ]: Bt87x - Brooktree Bt878
+                     Brooktree Bt878 at 0xdddfe000, irq 10
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-05 20:03 hugo4711       New Issue                                    
-06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
-06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
+06-27-05 21:59 hugo4711       New Issue                                    
+06-27-05 21:59 hugo4711       Distribution              => Fedora Core 4   
+06-27-05 21:59 hugo4711       Kernel Version            => 2.6.11-1.1369_FC
+06-28-05 20:05 hugo4711       Note Added: 0005299                          
 ======================================================================
 
 
