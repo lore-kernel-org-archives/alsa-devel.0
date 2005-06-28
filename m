@@ -1,52 +1,73 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] Fw: BUG: Kernel panic when
- disconnecting Edirol USB2 audio interface
-Date: Tue, 28 Jun 2005 08:56:35 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0506280853210.5280-100000@studcom.urz.uni-halle.de>
-References: <42C07072.1050105@axicon.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001217]: SB Audigy2 NX won't work when plugged into a separate hub
+Date: Tue, 28 Jun 2005 09:19:16 +0200
+Message-ID: <ce0978f836be9cd853bee91306b09367@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42C07072.1050105@axicon.com>
-Sender: linux-usb-devel-admin@lists.sourceforge.net
-Errors-To: linux-usb-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
-List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
-To: Colin Fletcher <colinf@axicon.com>
-Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, david-b@pacbell.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 798451BC
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2005 09:19:16 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Colin Fletcher wrote:
-> Clemens Ladisch wrote:
-> > I'd like to know if playback and/or MIDI work.
->
-> I don't have any MIDI hardware to hand at the moment: I can try to dig
-> out my old Roland drum machine next week if that will help.
 
-You could just use a MIDI cable for loopback.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1217> 
+======================================================================
+Reported By:                bluebottle
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1217
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             06-28-2005 09:19 CEST
+Last Modified:              06-28-2005 09:19 CEST
+======================================================================
+Summary:                    SB Audigy2 NX won't work when plugged into a
+separate hub
+Description: 
+Hi,
 
-> > It may be possible
-> > that the driver doesn't send playback PCM data at exactly the correct
-> > rate because the playback stream should have been synchronized to the
-> > capture stream.
->
-> At 128 frames/period, both kernels have a crackling background noise: I
-> haven't experimented with any other settings yet.
+I've got a SB Audigy2 NX that works well now with the 1.0.9 ALSA driver on
+a 2.6.10 kernel. It only works however if plugged directly into the
+motherboard USB. Plugged into a DLink DUB-H4 USB2 hub, it produces 0.5
+seconds of audio, a squelch and click, then nothing further until reboot,
+when the problem repeats. dmesg says:
 
-This seems to be this synchronization issue.
+ALSA /usr/src/alsa-1.0.9/alsa-driver-1.0.9b/usb/usbaudio.c:779: cannot
+submit syncpipe for urb 0, err = -12
 
-To be able to handle this correctly, the driver would need to be
-extended to always capture data so that it can determine the exact
-rate for playback.
+The external hub works perfectly with other products including mice,
+joysticks, disks and memory card readers.
+======================================================================
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-28-05 09:19 bluebottle     New Issue                                    
+06-28-05 09:19 bluebottle     Distribution              => Ubuntu Hoary    
+06-28-05 09:19 bluebottle     Kernel Version            => 2.6.10          
+======================================================================
 
-Regards,
-Clemens
 
 
 
@@ -55,7 +76,3 @@ SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
 speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-_______________________________________________
-linux-usb-devel@lists.sourceforge.net
-To unsubscribe, use the last form field at:
-https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
