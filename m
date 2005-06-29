@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001219]: alsamixer cannot handle mixer controls that have separate mute for each channel.
-Date: Wed, 29 Jun 2005 22:32:24 +0200
-Message-ID: <74b9ad4fe81e729f6242bd38547ac66c@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001214]: With Terratec DMX6fire, digital inputs cannot be selected correctly -always internal digital source
+Date: Wed, 29 Jun 2005 22:39:26 +0200
+Message-ID: <fb461e8aa776cce1b3c46ab049730a9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A577168
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 22:32:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 131C917A
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 22:39:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1214> 
 ======================================================================
-Reported By:                jcdutton
+Reported By:                alanmann
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1219
-Category:                   simple mixer
+Project:                    ALSA - tools
+Issue ID:                   1214
+Category:                   envy24control
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-29-2005 11:11 CEST
-Last Modified:              06-29-2005 22:32 CEST
+Date Submitted:             06-27-2005 15:27 CEST
+Last Modified:              06-29-2005 22:39 CEST
 ======================================================================
-Summary:                    alsamixer cannot handle mixer controls that have
-separate mute for each channel.
+Summary:                    With Terratec DMX6fire, digital inputs cannot be
+selected correctly -always internal digital source
 Description: 
-When a mixer control has a mute control for each channel, alsamixer is only
-able to adjust the left channel mute.
-For example, with a snd-intel8x0 driver with the ac97 ALC650 codec, this
-has a separate mute control for surround left and surround right.
-alsamixer is only able to adjust/toggle the surround left mute control.
-So far in my investigations, this does not appear to be a bug in
-alsamixer. This still might be a bug in alsa-lib functions:
-snd_mixer_selem_get_playback_switch(elem, chn_right, &sw);
-snd_mixer_selem_set_playback_switch(elem, chn_right, !sw);
-or in alsa-kernel ac97_codec.c where is manages the stereo mute controls.
-
-I will investigate further when I get a chance.
+The DMX6fire sound card has onboard 'digital in' for direct connection from
+a CD drive as well as coax and optical front panel in and out. 
+Envy24control has no button to select the internal source, but in fact it
+seems always selected and works fine.  Consequently the front panel inputs
+never work,(I can only test optical, but internal source is always
+working) although the selector 'SPDIF input' changes the panel lights
+correctly, and the 'SPDIF on/off' swaps the lights whichever way they
+were.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 06-29-05 21:26 
+ tiwai - 06-27-05 16:05 
 ----------------------------------------------------------------------
-The problem is with the current CVS of alsa-driver, alsa-lib and alsa-utils
+IIRC, envy24control doesn't support all switches for 6fire.  Start
+alsamixer and turn on "Front Digital Input" and "Optical Digital Input"
+appropriately.
 
 ----------------------------------------------------------------------
- jcdutton - 06-29-05 22:32 
+ alanmann - 06-29-05 22:39 
 ----------------------------------------------------------------------
-I just checked in fix to alsa-lib CVS. It was a typo.
+Thanks, alsamixer does enable SPDIFs to be selected as a workaround. 
+However the switch "Front Digital Input" is reversed -ie "off" enables
+front panel sources, "on" activates the internal SPDIF.
+
+Following this I perused the source code of envy24control where the switch
+actions are used to change variables and noticed an error in hardware.c. 
+After a quick edit and recompile the SPDIF on/off switch functioned just
+as the alsamixer one does -also reversed.  Subsequently I swapped the
+logic and changed a couple of the titles to make more sense.  So the SPDIF
+selection problem is a simple 'bug' in e24c hardware.c.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-05 11:11 jcdutton       New Issue                                    
-06-29-05 20:07 tiwai          Note Added: 0005309                          
-06-29-05 21:26 jcdutton       Note Added: 0005315                          
-06-29-05 22:32 jcdutton       Note Added: 0005317                          
+06-27-05 15:27 alanmann       New Issue                                    
+06-27-05 16:05 tiwai          Note Added: 0005274                          
+06-29-05 22:39 alanmann       Note Added: 0005318                          
 ======================================================================
 
 
