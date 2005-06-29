@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001214]: With Terratec DMX6fire, digital inputs cannot be selected correctly -always internal digital source
-Date: Wed, 29 Jun 2005 22:39:26 +0200
-Message-ID: <fb461e8aa776cce1b3c46ab049730a9b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
+Date: Wed, 29 Jun 2005 23:08:06 +0200
+Message-ID: <44b244f78dafb3dbaf5cfe127e8c8912@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 131C917A
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 22:39:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9473918B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 23:08:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1214> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
 ======================================================================
-Reported By:                alanmann
+Reported By:                hugo4711
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1214
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   1218
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4
 ======================================================================
-Date Submitted:             06-27-2005 15:27 CEST
-Last Modified:              06-29-2005 22:39 CEST
+Date Submitted:             06-28-2005 20:03 CEST
+Last Modified:              06-29-2005 23:08 CEST
 ======================================================================
-Summary:                    With Terratec DMX6fire, digital inputs cannot be
-selected correctly -always internal digital source
+Summary:                    Line-In and Mic-In do not work
 Description: 
-The DMX6fire sound card has onboard 'digital in' for direct connection from
-a CD drive as well as coax and optical front panel in and out. 
-Envy24control has no button to select the internal source, but in fact it
-seems always selected and works fine.  Consequently the front panel inputs
-never work,(I can only test optical, but internal source is always
-working) although the selector 'SPDIF input' changes the panel lights
-correctly, and the 'SPDIF on/off' swaps the lights whichever way they
-were.
+Capturing from Line-In and Mic-In don't work. I have connected a
+bttv-tv-card with  Line-In and I cannot hear the sound output from it.
+Every single input is at 100% using alsamixer and kmix. This happened
+after an update from FC3 to FC4. Before the update everything was fine.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 16:05 
+ hugo4711 - 06-29-05 10:08 
 ----------------------------------------------------------------------
-IIRC, envy24control doesn't support all switches for 6fire.  Start
-alsamixer and turn on "Front Digital Input" and "Optical Digital Input"
-appropriately.
+I did an upgrade from 1.0.9rc2 to 1.0.9a with the 2.6.11-1.1369_FC4 Kernel.
+And the Bug is fixed! Now it works perfectly again. 
+
+My 0x511102 is now recognized as Audigy 1.
+
+There is a 2.6.12 Kernel in the development Branch of FC4. This Kernel
+uses the alsa 1.0.9 driver. I will try this kernel later and post if this
+one works.
 
 ----------------------------------------------------------------------
- alanmann - 06-29-05 22:39 
+ cpitchford - 06-29-05 23:08 
 ----------------------------------------------------------------------
-Thanks, alsamixer does enable SPDIFs to be selected as a workaround. 
-However the switch "Front Digital Input" is reversed -ie "off" enables
-front panel sources, "on" activates the internal SPDIF.
-
-Following this I perused the source code of envy24control where the switch
-actions are used to change variables and noticed an error in hardware.c. 
-After a quick edit and recompile the SPDIF on/off switch functioned just
-as the alsamixer one does -also reversed.  Subsequently I swapped the
-logic and changed a couple of the titles to make more sense.  So the SPDIF
-selection problem is a simple 'bug' in e24c hardware.c.
+I have an audigy1 card and have noticed that line in wasn't working and
+that the "live-drive" inputs were missing (aux2, line2, etc) This appeared
+to be the case since 2.6.12-rc2. Line in definately works on 2.6.12-rc1
+however so that fault was introduced between these two kernel versions.
+Now running with 2.6.12.1 and the fault remains, installing 1.0.9b fixes
+it again. I think merging the fixed 1.0.9b into the kernel would solve it,
+though I'm not an expert
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 15:27 alanmann       New Issue                                    
-06-27-05 16:05 tiwai          Note Added: 0005274                          
-06-29-05 22:39 alanmann       Note Added: 0005318                          
+06-28-05 20:03 hugo4711       New Issue                                    
+06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
+06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
+06-29-05 06:28 netslayer      Note Added: 0005303                          
+06-29-05 08:33 rlrevell       Note Added: 0005304                          
+06-29-05 10:08 hugo4711       Note Added: 0005305                          
+06-29-05 23:08 cpitchford     Note Added: 0005319                          
 ======================================================================
 
 
