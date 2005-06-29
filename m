@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001215]: AC3 Passthrough does not work
-Date: Wed, 29 Jun 2005 20:23:01 +0200
-Message-ID: <10d52801f2a63d388b82c0b3e58c4f59@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Wed, 29 Jun 2005 20:28:56 +0200
+Message-ID: <12dd9c6a77a0787cd2628bf05c0158b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BF8219D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 20:23:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4988419D
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 20:28:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,107 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1215> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
 ======================================================================
-Reported By:                hugo4711
+Reported By:                christophe
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1215
-Category:                   PCI - emu10k1
+Issue ID:                   917
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             06-27-2005 21:59 CEST
-Last Modified:              06-29-2005 20:23 CEST
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              06-29-2005 20:28 CEST
 ======================================================================
-Summary:                    AC3 Passthrough does not work
+Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
-Since the update from FC3 to FC4 I am not able to use AC3-passthrough. It
-won't work with xine or mplayer. 
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
-The AC3-Reciever I am using indicates "No Audio" when playing a DVD with
-AC3-Sound. Before the Update it switches to Dolby AC3 Decoding mode. 
+This is a IBM x40 laptop (23865FU) with an intel chipset.
 
-When I play a movie with xine, and the driver is switched into
-AC3-passthrough-mode and then I quit xine, the driver is not switched back
-out of the passthrough-mode (which is a bug in xine, I guess). This is
-very anoying, because there is no such thing as to reset the mixer
-settings, unless the previous settings are stored (alsactl
-store/restore).
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
 
-Another thing is, that I am not able to hear sound from sources which are
-plugged into line-in. Mixer Settings are checked. Every channel is unmuted
-and volume is at 100%. Digital Out is unmuted, IEC-Compliancy is muted.
+The driver I use is snd_intel8x0.
+
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
+
 ======================================================================
 
 ----------------------------------------------------------------------
- hugo4711 - 06-28-05 20:05 
+ tiwai - 06-29-05 20:05 
 ----------------------------------------------------------------------
-Here is some more information (if you need more, just ask me):
-
-cat /proc/asound/version
-------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.9rc2 (Thu Mar 24
-10:33:39 2005 UTC).
-
-cat /proc/asound/cards
-----------------------
-0 [Unknown ]: Audigy - Audigy 1 or 2 [Unknown]
-                     Audigy 1 or 2 [Unknown] (rev.3, serial:0x511102) at
-0xe800, irq 11
-1 [Bt878 ]: Bt87x - Brooktree Bt878
-                     Brooktree Bt878 at 0xdddfe000, irq 10
+Does the attached patch fix something?
 
 ----------------------------------------------------------------------
- tiwai - 06-29-05 20:23 
+ christophe - 06-29-05 20:28 
 ----------------------------------------------------------------------
-I guess this is already fixed with the recent version.
+I applied the patch.
+The good news is that the content of the registers is now restored
+correctly.
+The bad news is that the problem persists.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 21:59 hugo4711       New Issue                                    
-06-27-05 21:59 hugo4711       Distribution              => Fedora Core 4   
-06-27-05 21:59 hugo4711       Kernel Version            => 2.6.11-1.1369_FC
-06-28-05 20:05 hugo4711       Note Added: 0005299                          
-06-29-05 20:23 tiwai          Note Added: 0005312                          
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
+02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
+               
+02-18-05 20:35 alexs81        Note Added: 0003659                          
+02-18-05 20:50 christophe     Note Added: 0003660                          
+02-18-05 21:13 alexs81        Note Added: 0003661                          
+02-18-05 21:16 christophe     Note Added: 0003662                          
+02-18-05 21:32 alexs81        Note Added: 0003663                          
+02-18-05 21:39 rlrevell       Note Added: 0003664                          
+02-19-05 02:40 christophe     Note Added: 0003668                          
+02-19-05 12:07 alexs81        Note Added: 0003669                          
+02-19-05 22:15 christophe     Note Added: 0003671                          
+02-19-05 22:16 christophe     Note Added: 0003672                          
+02-21-05 19:16 christophe     Note Added: 0003681                          
+02-21-05 19:21 christophe     Note Added: 0003682                          
+06-28-05 16:49 christophe     Note Added: 0005298                          
+06-29-05 16:04 christophe     Note Added: 0005306                          
+06-29-05 20:05 tiwai          Note Added: 0005308                          
+06-29-05 20:05 tiwai          File Added: ich-resume-fix.diff                   
+
+06-29-05 20:28 christophe     Note Added: 0005313                          
 ======================================================================
 
 
