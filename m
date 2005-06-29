@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Wed, 29 Jun 2005 21:40:56 +0200
-Message-ID: <a89d568e7f271c0967f7014381f2b755@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001219]: alsamixer cannot handle mixer controls that have separate mute for each channel.
+Date: Wed, 29 Jun 2005 22:32:24 +0200
+Message-ID: <74b9ad4fe81e729f6242bd38547ac66c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91AE917E
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 21:40:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A577168
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 22:32:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,116 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1219> 
 ======================================================================
-Reported By:                sst4
+Reported By:                jcdutton
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
+Project:                    ALSA - lib
+Issue ID:                   1219
+Category:                   simple mixer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-29-2005 21:40 CEST
+Date Submitted:             06-29-2005 11:11 CEST
+Last Modified:              06-29-2005 22:32 CEST
 ======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
+Summary:                    alsamixer cannot handle mixer controls that have
+separate mute for each channel.
 Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
+When a mixer control has a mute control for each channel, alsamixer is only
+able to adjust the left channel mute.
+For example, with a snd-intel8x0 driver with the ac97 ALC650 codec, this
+has a separate mute control for surround left and surround right.
+alsamixer is only able to adjust/toggle the surround left mute control.
+So far in my investigations, this does not appear to be a bug in
+alsamixer. This still might be a bug in alsa-lib functions:
+snd_mixer_selem_get_playback_switch(elem, chn_right, &sw);
+snd_mixer_selem_set_playback_switch(elem, chn_right, !sw);
+or in alsa-kernel ac97_codec.c where is manages the stereo mute controls.
 
-Soon (probably in a second) after this command line:
-
-aoss skype &
-
-the terminal window gets filled with
-
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001096 no capture with M-Audio Revolution 7.1
+I will investigate further when I get a chance.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-05 20:22 
+ jcdutton - 06-29-05 21:26 
 ----------------------------------------------------------------------
-Hmm, did you apply the patch for aoss above?
-After applying the patch, try once aoss skype with softvol plugin in
-~/.asoundrc and quit immediately.  This should create a user-defined
-control "Capture Volume".  Then again aoss skype without ~/.asoundrc.
+The problem is with the current CVS of alsa-driver, alsa-lib and alsa-utils
 
 ----------------------------------------------------------------------
- sst4 - 06-29-05 21:40 
+ jcdutton - 06-29-05 22:32 
 ----------------------------------------------------------------------
-Takashi, three minutes after publishing the patch (06-08-05 14:50 ->
-06-08-05 14:53) you said:
-
-"
-With revo 7.1, this might not work, too, since revo has really no "Capture
-Volume" (corresponding to IGAIN in OSS).
-
-If so, it must be a bug of Skype. Skype must check DEVMASK before reading
-IGAIN. 
-".
-
-So, it was an indication for me that you were not insisting on the patch
-anymore.
-
-If you think the patch is worth trying, I'll have to allocate some time
-for learning how to non-destructively compile ALSA.
-
-Thanks,
-  Sergei.
+I just checked in fix to alsa-lib CVS. It was a typo.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-05 00:33 sst4           New Issue                                    
-06-08-05 14:50 tiwai          Note Added: 0004923                          
-06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
-
-06-08-05 14:53 tiwai          Note Added: 0004926                          
-06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
- 
-06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
-  
-06-12-05 19:35 sst4           Note Added: 0004999                          
-06-13-05 13:03 tiwai          Note Added: 0005006                          
-06-13-05 14:12 sst4           Note Added: 0005009                          
-06-13-05 14:30 tiwai          Note Added: 0005010                          
-06-13-05 15:55 sst4           File Added: asound.state.geberated_by_alsaconf    
-               
-06-13-05 15:59 sst4           File Added: asound.state.generated_by_alsaconf    
-               
-06-13-05 16:05 sst4           Note Added: 0005012                          
-06-15-05 08:25 sst4           Note Added: 0005021                          
-06-15-05 15:44 tiwai          Note Added: 0005035                          
-06-22-05 01:48 rlrevell       Relationship added       duplicate of 0001096
-06-28-05 00:59 sst4           Note Added: 0005290                          
-06-28-05 01:14 sst4           Note Added: 0005291                          
-06-28-05 12:45 tiwai          Note Added: 0005297                          
-06-28-05 23:45 sst4           Note Added: 0005301                          
-06-29-05 00:08 sst4           Note Added: 0005302                          
-06-29-05 20:22 tiwai          Note Added: 0005311                          
-06-29-05 21:40 sst4           Note Added: 0005316                          
+06-29-05 11:11 jcdutton       New Issue                                    
+06-29-05 20:07 tiwai          Note Added: 0005309                          
+06-29-05 21:26 jcdutton       Note Added: 0005315                          
+06-29-05 22:32 jcdutton       Note Added: 0005317                          
 ======================================================================
 
 
