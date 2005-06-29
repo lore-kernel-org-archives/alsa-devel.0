@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Thu, 30 Jun 2005 01:03:51 +0200
-Message-ID: <a2abf5b16ce67ce3c0ca550f651d590d@bugtrack.alsa-project.org>
+Date: Thu, 30 Jun 2005 01:46:41 +0200
+Message-ID: <9d8c34e9b2e36b0cdafebee71ff493a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D10E218F
-	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 01:03:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A3A018F
+	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 01:46:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              06-30-2005 01:03 CEST
+Last Modified:              06-30-2005 01:46 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -64,14 +64,6 @@ support.
 
 I would be very happy to give any further information needed.
 ======================================================================
-
-----------------------------------------------------------------------
- Demosthenes - 06-29-05 18:30 
-----------------------------------------------------------------------
-Ungod I hope your exams went well, are you ready to help on this because I
-have no idea what to do myself.
-
-Thanks
 
 ----------------------------------------------------------------------
  ungod - 06-30-05 01:03 
@@ -100,6 +92,20 @@ Just for the sport of it, I did a similar diagram of my own card (Aureon
 Space 7.1). It is located at http://linux.developers.dk/aureon.png (An
 actual photo can be seen at
 http://www.watch.impress.co.jp/akiba/hotline/20030222/image/aur1.html )
+
+----------------------------------------------------------------------
+ baesyspem - 06-30-05 01:46 
+----------------------------------------------------------------------
+I can help with that: 
+
+VIA ICEnsemble, ENVY24HT, VT1724-0428CD
+1. WM8770IFT
+2. 3CZ09FJ
+3. HC125A, PAU139
+4. IL1117-33, 451
+5. ATMEL426, 24C02N
+6. H17A, 316BJ
+7. NCO-3.3V, 49.152MHz, NTE
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -142,6 +148,8 @@ Hedgehog)
 06-14-05 21:27 ungod          Note Edited: 0005020                         
 06-29-05 18:30 Demosthenes    Note Added: 0005307                          
 06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
 ======================================================================
 
 
