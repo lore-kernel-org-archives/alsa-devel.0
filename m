@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: alsa dma transfer
-Date: Wed, 29 Jun 2005 03:21:50 -0400
-Message-ID: <1120029711.1330.4.camel@mindpipe>
-References: <9AEDBAA573BBD346BCF9637D80097D911DCCE9@greysvr02.GreyInnovation.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
+Date: Wed, 29 Jun 2005 10:08:11 +0200
+Message-ID: <861bf6f5f4bd7ddfbad49f2daf809d29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <9AEDBAA573BBD346BCF9637D80097D911DCCE9@greysvr02.GreyInnovation.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACD591B2
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 10:08:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tehn-Yit Chin <Tehn-Yit.Chin@greyinnovation.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-06-29 at 16:35 +1000, Tehn-Yit Chin wrote:
-> And how do I tell pcm layer that the device does not support recording?
 
-I'll let someone else field the first question...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
+======================================================================
+Reported By:                hugo4711
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1218
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4
+======================================================================
+Date Submitted:             06-28-2005 20:03 CEST
+Last Modified:              06-29-2005 10:08 CEST
+======================================================================
+Summary:                    Line-In and Mic-In do not work
+Description: 
+Capturing from Line-In and Mic-In don't work. I have connected a
+bttv-tv-card with  Line-In and I cannot hear the sound output from it.
+Every single input is at 100% using alsamixer and kmix. This happened
+after an update from FC3 to FC4. Before the update everything was fine.
 
-If you don't implement capture in your driver, the PCM layer will not
-present any capture devices to userspace.
 
-Lee
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 06-29-05 08:33 
+----------------------------------------------------------------------
+0 [Unknown ]: Audigy - Audigy 1 or 2 [Unknown]
+                     Audigy 1 or 2 [Unknown] (rev.3, serial:0x511102) at
+0xe800, irq 11
+
+This bug is thought to be fixed in ALSA CVS.  If someone can confirm that
+it's fixed, we need to submit this for the -stable kernel, because I think
+2.6.12 shipped with this bug too.
+
+----------------------------------------------------------------------
+ hugo4711 - 06-29-05 10:08 
+----------------------------------------------------------------------
+I did an upgrade from 1.0.9rc2 to 1.0.9a with the 2.6.11-1.1369_FC4 Kernel.
+And the Bug is fixed! Now it works perfectly again. 
+
+My 0x511102 is now recognized as Audigy 1.
+
+There is a 2.6.12 Kernel in the development Branch of FC4. This Kernel
+uses the alsa 1.0.9 driver. I will try this kernel later and post if this
+one works.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-28-05 20:03 hugo4711       New Issue                                    
+06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
+06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
+06-29-05 06:28 netslayer      Note Added: 0005303                          
+06-29-05 08:33 rlrevell       Note Added: 0005304                          
+06-29-05 10:08 hugo4711       Note Added: 0005305                          
+======================================================================
+
 
 
 
