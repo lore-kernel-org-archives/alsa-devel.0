@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
-Date: Wed, 29 Jun 2005 06:28:46 +0200
-Message-ID: <f5eb450ba83559e57e09605571394daa@bugtrack.alsa-project.org>
+Date: Wed, 29 Jun 2005 08:33:50 +0200
+Message-ID: <befb3499929d146114af490b14c24d6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73E5016D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 06:28:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C177B1CB
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 08:33:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.11-1.1369_FC4
 ======================================================================
 Date Submitted:             06-28-2005 20:03 CEST
-Last Modified:              06-29-2005 06:28 CEST
+Last Modified:              06-29-2005 08:33 CEST
 ======================================================================
 Summary:                    Line-In and Mic-In do not work
 Description: 
@@ -68,6 +68,17 @@ did before (and tried all the bars up).
 I feel like giving up on recording with this card..:-/ alsa doesn't like
 it
 
+----------------------------------------------------------------------
+ rlrevell - 06-29-05 08:33 
+----------------------------------------------------------------------
+0 [Unknown ]: Audigy - Audigy 1 or 2 [Unknown]
+                     Audigy 1 or 2 [Unknown] (rev.3, serial:0x511102) at
+0xe800, irq 11
+
+This bug is thought to be fixed in ALSA CVS.  If someone can confirm that
+it's fixed, we need to submit this for the -stable kernel, because I think
+2.6.12 shipped with this bug too.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -75,6 +86,7 @@ Date Modified  Username       Field                    Change
 06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
 06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
 06-29-05 06:28 netslayer      Note Added: 0005303                          
+06-29-05 08:33 rlrevell       Note Added: 0005304                          
 ======================================================================
 
 
