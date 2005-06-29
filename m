@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
-Date: Wed, 29 Jun 2005 23:08:06 +0200
-Message-ID: <44b244f78dafb3dbaf5cfe127e8c8912@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Wed, 29 Jun 2005 23:17:58 +0200
+Message-ID: <07ab96578bf1d23241b8b4c48fd72323@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9473918B
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 23:08:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC8EB18B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 23:17:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,114 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
 ======================================================================
-Reported By:                hugo4711
+Reported By:                christophe
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1218
-Category:                   PCI - emu10k1
+Issue ID:                   917
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             06-28-2005 20:03 CEST
-Last Modified:              06-29-2005 23:08 CEST
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              06-29-2005 23:17 CEST
 ======================================================================
-Summary:                    Line-In and Mic-In do not work
+Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
-Capturing from Line-In and Mic-In don't work. I have connected a
-bttv-tv-card with  Line-In and I cannot hear the sound output from it.
-Every single input is at 100% using alsamixer and kmix. This happened
-after an update from FC3 to FC4. Before the update everything was fine.
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
+This is a IBM x40 laptop (23865FU) with an intel chipset.
+
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
+
+The driver I use is snd_intel8x0.
+
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
 
 ======================================================================
 
 ----------------------------------------------------------------------
- hugo4711 - 06-29-05 10:08 
+ christophe - 06-29-05 20:28 
 ----------------------------------------------------------------------
-I did an upgrade from 1.0.9rc2 to 1.0.9a with the 2.6.11-1.1369_FC4 Kernel.
-And the Bug is fixed! Now it works perfectly again. 
-
-My 0x511102 is now recognized as Audigy 1.
-
-There is a 2.6.12 Kernel in the development Branch of FC4. This Kernel
-uses the alsa 1.0.9 driver. I will try this kernel later and post if this
-one works.
+I applied the patch.
+The good news is that the content of the registers is now restored
+correctly.
+The bad news is that the problem persists.
 
 ----------------------------------------------------------------------
- cpitchford - 06-29-05 23:08 
+ christophe - 06-29-05 23:17 
 ----------------------------------------------------------------------
-I have an audigy1 card and have noticed that line in wasn't working and
-that the "live-drive" inputs were missing (aux2, line2, etc) This appeared
-to be the case since 2.6.12-rc2. Line in definately works on 2.6.12-rc1
-however so that fault was introduced between these two kernel versions.
-Now running with 2.6.12.1 and the fault remains, installing 1.0.9b fixes
-it again. I think merging the fixed 1.0.9b into the kernel would solve it,
-though I'm not an expert
+I started to think that perhaps my intel chipset had a problem (especially
+now that the registers are correctly restored) so I tried again everything
+from the beginning. I tried with the oss driver and discovered to my
+surprise that the bug appeared after some suspend/resume cycles (not
+always but it happens). Then I tried apm instead of acpi and it looks like
+the bug is not there.
+So it looks like an ACPI bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-05 20:03 hugo4711       New Issue                                    
-06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
-06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
-06-29-05 06:28 netslayer      Note Added: 0005303                          
-06-29-05 08:33 rlrevell       Note Added: 0005304                          
-06-29-05 10:08 hugo4711       Note Added: 0005305                          
-06-29-05 23:08 cpitchford     Note Added: 0005319                          
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
+02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
+               
+02-18-05 20:35 alexs81        Note Added: 0003659                          
+02-18-05 20:50 christophe     Note Added: 0003660                          
+02-18-05 21:13 alexs81        Note Added: 0003661                          
+02-18-05 21:16 christophe     Note Added: 0003662                          
+02-18-05 21:32 alexs81        Note Added: 0003663                          
+02-18-05 21:39 rlrevell       Note Added: 0003664                          
+02-19-05 02:40 christophe     Note Added: 0003668                          
+02-19-05 12:07 alexs81        Note Added: 0003669                          
+02-19-05 22:15 christophe     Note Added: 0003671                          
+02-19-05 22:16 christophe     Note Added: 0003672                          
+02-21-05 19:16 christophe     Note Added: 0003681                          
+02-21-05 19:21 christophe     Note Added: 0003682                          
+06-28-05 16:49 christophe     Note Added: 0005298                          
+06-29-05 16:04 christophe     Note Added: 0005306                          
+06-29-05 20:05 tiwai          Note Added: 0005308                          
+06-29-05 20:05 tiwai          File Added: ich-resume-fix.diff                   
+
+06-29-05 20:28 christophe     Note Added: 0005313                          
+06-29-05 23:17 christophe     Note Added: 0005320                          
 ======================================================================
 
 
