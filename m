@@ -1,12 +1,14 @@
-From: "Tehn-Yit Chin" <Tehn-Yit.Chin@greyinnovation.com>
-Subject: RE: alsa dma transfer
-Date: Wed, 29 Jun 2005 22:53:56 +1000
-Message-ID: <9AEDBAA573BBD346BCF9637D80097D9109FF28@greysvr02.GreyInnovation.com>
+From: Christophe Barbe <christophe@cattlegrid.net>
+Subject: Re: intel8x0 ACPI suspend/resume bug
+Date: Wed, 29 Jun 2005 09:35:08 -0400
+Message-ID: <1120052108.14654.3.camel@localhost.localdomain>
+References: <20050628150638.GB6677@cattlegrid.net>
+	 <s5hacl97blk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C57CA9.9CA5E644"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+In-Reply-To: <s5hacl97blk.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,126 +22,76 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Le mercredi 29 juin 2005 =C3=A0 11:31 +0200, Takashi Iwai a =C3=A9crit :
+> First of all, use alsa-1.0.9b, just to be sure.
 
-------_=_NextPart_001_01C57CA9.9CA5E644
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I will try it asap.
 
-Cool. I believe that I am doing the right thing.
+> Then get the dump of /proc/asound/card0/codec97#*/* files before and
+> after the suspend, and compare them.
 
-I am calling snd_pcm_lib_malloc_pages() for the hw_params callback and =
-snd_pcm_lib_free_pages() for the hw_free callback. I also call =
-snd_pcm_lib_preallocate_pages_for_all() during the initialisation of the =
-driver which I think is the buffer pre-allocation that Takashi Iwai is =
-talking about.=20
+I did this and the result is in the bug report. Let me quote myself:
 
-Does the pre-allocated memory need to be freed when we are exiting the =
-driver?
+I saved all proc files before and after a suspend/resume cycle and look
+at the diff:
 
-Tehn Yit Chin
+In /proc/asound/card0/intel8x0=20
+I have the following diff:
+before: Global control : 0xc0000002
+after: Global control : 0x00000002
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de]
-Sent: Wed 6/29/2005 7:26 PM
-To: Tehn-Yit Chin
-Cc: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] alsa dma transfer
-=20
-At Wed, 29 Jun 2005 16:35:21 +1000,
-Tehn-Yit Chin wrote:
+/proc/asound/card0/pcm0p/sub0/[status,sw_params,hw_params] contains
+"closed" after while they have more content before but I suspect it's
+normal.
+And the file /proc/asound/card0/pcm0p/sub0/info contains the same in
+both case except the value of subdevices_avail which is 0 before and 1
+before.
+
+Finally I have the following change in the registers:
+
+before:
+0:10 =3D 8989
+0:12 =3D 9f9f
+0:14 =3D 0000
+0:16 =3D 9f9f
+0:18 =3D 1010
+0:1a =3D 0000
+0:1c =3D 8080
+...
+0:76 =3D 2010
+
+after:
+0:10 =3D 8909
+0:12 =3D 9f1f
+0:14 =3D 0000
+0:16 =3D 9f1f
+0:18 =3D 1010
+0:1a =3D 0000
+0:1c =3D 8000
+...
+0:76 =3D 0010
+
+I will try to figure out the meaning of the global control and the
+registers. The sound output was perfect before and crappy after
+(symmetric for once, but the more I increase the pcm volume the crappier
+it becomes until a certain point where I get only sound from the left
+channel).
+
+For the control word, the meaning of the most significant c seems to be
+related to the s/dif output which is strange especially since I don't
+have a digital output AFAIK.
+
+#define ICH_REG_GLOB_CNT 0x2c /* dword - global control */
+#define ICH_PCM_SPDIF_MASK 0xc0000000 /* s/pdif pcm slot mask (ICH4) */
+...
+#define ICH_PCM_SPDIF_78 0x40000000 /* s/pdif pcm on slots 7&8 */
+#define ICH_PCM_SPDIF_69 0x80000000 /* s/pdif pcm on slots 6&9 */
+
+Thanks,
+Christophe
+
 >=20
-> From what I can tell, runtime->dma_start is a virtual memory buffer =
-that
-> has the audio data, and the amount of data to transfer is in
-> frames_to_bytes(runtime, runtime->period_size). Is this right?
-
-runtime->dma_area is the virtual address and runtime->dma_addr is the
-physical (more exactly bus) address.  They are set up either via
-snd_pcm_lib_malloc_pages() or manually by yourself in hwparams
-callback.  In the former case, you'll need the buffer pre-allocation
-beforehand at the creation of PCM instance.
-
-> And how do I tell pcm layer that the device does not support =
-recording?
-
-Pass 0 to capture_count of snd_pcm_new().
-
-
-Takashi
-
-
-------_=_NextPart_001_01C57CA9.9CA5E644
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7232.36">
-<TITLE>RE: [Alsa-devel] alsa dma transfer</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Cool. I believe that I am doing the right thing.<BR>
-<BR>
-I am calling snd_pcm_lib_malloc_pages() for the hw_params callback and =
-snd_pcm_lib_free_pages() for the hw_free callback. I also call =
-snd_pcm_lib_preallocate_pages_for_all() during the initialisation of the =
-driver which I think is the buffer pre-allocation that Takashi Iwai is =
-talking about.<BR>
-<BR>
-Does the pre-allocated memory need to be freed when we are exiting the =
-driver?<BR>
-<BR>
-Tehn Yit Chin<BR>
-<BR>
------Original Message-----<BR>
-From: Takashi Iwai [<A =
-HREF=3D"mailto:tiwai@suse.de">mailto:tiwai@suse.de</A>]<BR>
-Sent: Wed 6/29/2005 7:26 PM<BR>
-To: Tehn-Yit Chin<BR>
-Cc: alsa-devel@lists.sourceforge.net<BR>
-Subject: Re: [Alsa-devel] alsa dma transfer<BR>
-<BR>
-At Wed, 29 Jun 2005 16:35:21 +1000,<BR>
-Tehn-Yit Chin wrote:<BR>
-&gt;<BR>
-&gt; From what I can tell, runtime-&gt;dma_start is a virtual memory =
-buffer that<BR>
-&gt; has the audio data, and the amount of data to transfer is in<BR>
-&gt; frames_to_bytes(runtime, runtime-&gt;period_size). Is this =
-right?<BR>
-<BR>
-runtime-&gt;dma_area is the virtual address and runtime-&gt;dma_addr is =
-the<BR>
-physical (more exactly bus) address.&nbsp; They are set up either =
-via<BR>
-snd_pcm_lib_malloc_pages() or manually by yourself in hwparams<BR>
-callback.&nbsp; In the former case, you'll need the buffer =
-pre-allocation<BR>
-beforehand at the creation of PCM instance.<BR>
-<BR>
-&gt; And how do I tell pcm layer that the device does not support =
-recording?<BR>
-<BR>
-Pass 0 to capture_count of snd_pcm_new().<BR>
-<BR>
-<BR>
-Takashi<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C57CA9.9CA5E644--
+> Takashi
 
 
 -------------------------------------------------------
