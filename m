@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
-Date: Wed, 29 Jun 2005 08:33:50 +0200
-Message-ID: <befb3499929d146114af490b14c24d6d@bugtrack.alsa-project.org>
+From: "Tehn-Yit Chin" <Tehn-Yit.Chin@greyinnovation.com>
+Subject: alsa dma transfer
+Date: Wed, 29 Jun 2005 16:35:21 +1000
+Message-ID: <9AEDBAA573BBD346BCF9637D80097D911DCCE9@greysvr02.GreyInnovation.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C177B1CB
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 08:33:50 +0200 (MEST)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
-======================================================================
-Reported By:                hugo4711
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1218
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4
-======================================================================
-Date Submitted:             06-28-2005 20:03 CEST
-Last Modified:              06-29-2005 08:33 CEST
-======================================================================
-Summary:                    Line-In and Mic-In do not work
-Description: 
-Capturing from Line-In and Mic-In don't work. I have connected a
-bttv-tv-card with  Line-In and I cannot hear the sound output from it.
-Every single input is at 100% using alsamixer and kmix. This happened
-after an update from FC3 to FC4. Before the update everything was fine.
+Please bear with me as I am a newbie at writing an ALSA device driver. I
+am a bit confused as to how ALSA manages its buffers and memory.
+Currently, I am confused as to audio data is being passed into the
+device driver so that the driver can start the DMA transfer
 
+I have read Takashi Iwai doc on "Writing an ALSA Driver" and reviewed
+some of the drivers already in the source tree and was not able to get a
+clear understanding of it.
 
-======================================================================
+>From what I can tell, runtime->dma_start is a virtual memory buffer that
+has the audio data, and the amount of data to transfer is in
+frames_to_bytes(runtime, runtime->period_size). Is this right?
 
-----------------------------------------------------------------------
- netslayer - 06-29-05 06:28 
-----------------------------------------------------------------------
-I just upgraded to alsa 1.0.9 and i'm experiencing the same thing with my
-audigy 1 card. Line in doesn't work, I have the mixer setup just like I
-did before (and tried all the bars up). 
+And how do I tell pcm layer that the device does not support recording?
 
- Sun Jun 26 21:32:35 2005 >>> sys-kernel/gentoo-sources-2.6.12-r1
- Sun Jun 26 22:25:51 2005 >>> media-sound/alsa-headers-1.0.9
- Sun Jun 26 22:29:23 2005 >>> media-libs/alsa-lib-1.0.9
- Sun Jun 26 22:30:21 2005 >>> media-sound/alsa-utils-1.0.9a
- Sun Jun 26 22:31:05 2005 >>> media-libs/alsa-oss-1.0.9
+Many thanks,
 
-I feel like giving up on recording with this card..:-/ alsa doesn't like
-it
-
-----------------------------------------------------------------------
- rlrevell - 06-29-05 08:33 
-----------------------------------------------------------------------
-0 [Unknown ]: Audigy - Audigy 1 or 2 [Unknown]
-                     Audigy 1 or 2 [Unknown] (rev.3, serial:0x511102) at
-0xe800, irq 11
-
-This bug is thought to be fixed in ALSA CVS.  If someone can confirm that
-it's fixed, we need to submit this for the -stable kernel, because I think
-2.6.12 shipped with this bug too.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-28-05 20:03 hugo4711       New Issue                                    
-06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
-06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
-06-29-05 06:28 netslayer      Note Added: 0005303                          
-06-29-05 08:33 rlrevell       Note Added: 0005304                          
-======================================================================
-
-
+Tehn Yit Chin=20
+Software Engineer, Grey Innovation Pty. Ltd.
 
 
 -------------------------------------------------------
