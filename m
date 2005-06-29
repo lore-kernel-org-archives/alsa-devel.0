@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Wed, 29 Jun 2005 18:30:54 +0200
-Message-ID: <60741129e7c891f595d6a6acec5f572a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Wed, 29 Jun 2005 20:05:15 +0200
+Message-ID: <04457c6966369a7e1ee619adb403a3c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 508301D5
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 18:30:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA4711D3
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 20:05:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,106 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
 ======================================================================
-Reported By:                Demosthenes
+Reported By:                christophe
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
+Issue ID:                   917
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              06-29-2005 18:30 CEST
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              06-29-2005 20:05 CEST
 ======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
+Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+This is a IBM x40 laptop (23865FU) with an intel chipset.
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
 
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
+The driver I use is snd_intel8x0.
 
-I would be very happy to give any further information needed.
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 06-14-05 21:27 
+ christophe - 06-29-05 16:04 
 ----------------------------------------------------------------------
-I must apologize for my abscence, however I have too been busy with the
-exams - and still am. As soon as I am done (next week), I will gladly
-assist further in implementing the prodigy 7.1lt. (I did quite a bunch of
-the aureon/prodigy 5.1/7.1 stuff and have a personal interest in making
-the driver complete, although I don't have the LT card myself)
-
-
+I just tested with 1.0.9b and got the same result.
+The diff of everything in /proc/asound/card0/ gives me the exact same
+differences: the c in the control words and the same register changes.
 
 ----------------------------------------------------------------------
- Demosthenes - 06-29-05 18:30 
+ tiwai - 06-29-05 20:05 
 ----------------------------------------------------------------------
-Ungod I hope your exams went well, are you ready to help on this because I
-have no idea what to do myself.
-
-Thanks
+Does the attached patch fix something?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-05-10-05 09:36 ungod          Note Added: 0004632                          
-05-10-05 15:50 Demosthenes    Note Added: 0004633                          
-05-14-05 15:18 Demosthenes    Note Added: 0004658                          
-05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
-06-14-05 16:02 baesyspem      Note Added: 0005018                          
-06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
-06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
-06-14-05 18:30 Demosthenes    Note Added: 0005019                          
-06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
-06-14-05 21:26 ungod          Note Added: 0005020                          
-06-14-05 21:27 ungod          Note Edited: 0005020                         
-06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
+02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
+               
+02-18-05 20:35 alexs81        Note Added: 0003659                          
+02-18-05 20:50 christophe     Note Added: 0003660                          
+02-18-05 21:13 alexs81        Note Added: 0003661                          
+02-18-05 21:16 christophe     Note Added: 0003662                          
+02-18-05 21:32 alexs81        Note Added: 0003663                          
+02-18-05 21:39 rlrevell       Note Added: 0003664                          
+02-19-05 02:40 christophe     Note Added: 0003668                          
+02-19-05 12:07 alexs81        Note Added: 0003669                          
+02-19-05 22:15 christophe     Note Added: 0003671                          
+02-19-05 22:16 christophe     Note Added: 0003672                          
+02-21-05 19:16 christophe     Note Added: 0003681                          
+02-21-05 19:21 christophe     Note Added: 0003682                          
+06-28-05 16:49 christophe     Note Added: 0005298                          
+06-29-05 16:04 christophe     Note Added: 0005306                          
+06-29-05 20:05 tiwai          Note Added: 0005308                          
 ======================================================================
 
 
