@@ -1,19 +1,14 @@
-From: <uranaisuki7781@taurus.livedoor.com>
-Subject: =?iso-2022-jp?B?GyRCTCQ+NUJ6OS05cCIoPXdAbztOQ085diROOWlMZBsoQg==?=
-Date: Wed, 29 Jun 2005 09:36:04 +0900
-Message-ID: <2a11601c57c42$88383d40$0a0ba8c0@DFTRDFYU>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
+Date: Wed, 29 Jun 2005 06:28:46 +0200
+Message-ID: <f5eb450ba83559e57e09605571394daa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-2022-jp"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA5FB1A8
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 02:36:26 +0200 (MEST)
-Received: from founder-4yge4py (p1035-ipad05kyoto.kyoto.ocn.ne.jp [220.105.38.35])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id B9B487E892
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 02:36:25 +0200 (MEST)
-Content-Class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73E5016D
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 06:28:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,25 +21,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-事業者　Most企画
-代表者　沢柳　育子
-所在地　京都市西京区桂番条100-1
-電話    0774-55-1479        
-未承諾広告※受信拒否は
-次のメールuranaisuki778@lime.livedoor.comよりお願いします。
 
-敵に捕まった女戦士の運命は拷問地獄行きしかなかった。
-今日もまた、あわれな捕らわれの女戦士達の叫び声がこだまする・・・・・。
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
+======================================================================
+Reported By:                hugo4711
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1218
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4
+======================================================================
+Date Submitted:             06-28-2005 20:03 CEST
+Last Modified:              06-29-2005 06:28 CEST
+======================================================================
+Summary:                    Line-In and Mic-In do not work
+Description: 
+Capturing from Line-In and Mic-In don't work. I have connected a
+bttv-tv-card with  Line-In and I cannot hear the sound output from it.
+Every single input is at 100% using alsamixer and kmix. This happened
+after an update from FC3 to FC4. Before the update everything was fine.
 
-http://infoest.p2p.com.hk//index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
 
-http://infoest.optus.nu/index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
+======================================================================
 
-当サイトは18禁サイトです。１８歳未満の方のご利用はお断りします。
-<御利用規約>
-http://infoest.p2p.com.hk/
+----------------------------------------------------------------------
+ netslayer - 06-29-05 06:28 
+----------------------------------------------------------------------
+I just upgraded to alsa 1.0.9 and i'm experiencing the same thing with my
+audigy 1 card. Line in doesn't work, I have the mixer setup just like I
+did before (and tried all the bars up). 
 
-http://infoest.optus.nu/
+ Sun Jun 26 21:32:35 2005 >>> sys-kernel/gentoo-sources-2.6.12-r1
+ Sun Jun 26 22:25:51 2005 >>> media-sound/alsa-headers-1.0.9
+ Sun Jun 26 22:29:23 2005 >>> media-libs/alsa-lib-1.0.9
+ Sun Jun 26 22:30:21 2005 >>> media-sound/alsa-utils-1.0.9a
+ Sun Jun 26 22:31:05 2005 >>> media-libs/alsa-oss-1.0.9
+
+I feel like giving up on recording with this card..:-/ alsa doesn't like
+it
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-28-05 20:03 hugo4711       New Issue                                    
+06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
+06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
+06-29-05 06:28 netslayer      Note Added: 0005303                          
+======================================================================
 
 
 
