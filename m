@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Wed, 29 Jun 2005 00:08:45 +0200
-Message-ID: <b020e7144e0f25cd25a2eae3a6d69679@bugtrack.alsa-project.org>
+From: <uranaisuki7781@taurus.livedoor.com>
+Subject: =?iso-2022-jp?B?GyRCTCQ+NUJ6OS05cCIoPXdAbztOQ085diROOWlMZBsoQg==?=
+Date: Wed, 29 Jun 2005 09:36:04 +0900
+Message-ID: <2a11601c57c42$88383d40$0a0ba8c0@DFTRDFYU>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0C2F194
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 00:08:45 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA5FB1A8
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 02:36:26 +0200 (MEST)
+Received: from founder-4yge4py (p1035-ipad05kyoto.kyoto.ocn.ne.jp [220.105.38.35])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id B9B487E892
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 02:36:25 +0200 (MEST)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,148 +26,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+事業者　Most企画
+代表者　沢柳　育子
+所在地　京都市西京区桂番条100-1
+電話    0774-55-1479        
+未承諾広告※受信拒否は
+次のメールuranaisuki778@lime.livedoor.comよりお願いします。
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
-======================================================================
-Reported By:                sst4
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-29-2005 00:08 CEST
-======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
-Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
+敵に捕まった女戦士の運命は拷問地獄行きしかなかった。
+今日もまた、あわれな捕らわれの女戦士達の叫び声がこだまする・・・・・。
 
-Soon (probably in a second) after this command line:
+http://infoest.p2p.com.hk//index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
 
-aoss skype &
+http://infoest.optus.nu/index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
 
-the terminal window gets filled with
+当サイトは18禁サイトです。１８歳未満の方のご利用はお断りします。
+<御利用規約>
+http://infoest.p2p.com.hk/
 
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001096 no capture with M-Audio Revolution 7.1
-======================================================================
-
-----------------------------------------------------------------------
- sst4 - 06-28-05 23:45 
-----------------------------------------------------------------------
-Takashi, all the time I was using Skype as
-
-aoss Skype
-.
-
-And I can't just forget the warning message - printing it consumes too
-much
-CPU time, and the sound becomes distorted.
-
-In order to be able to use Skype for real purposes I suppressed the
-message
-this way (starting Skype from 'tcsh'):
-
-aoss skype >& /dev/null
-.
-
-The problem is that in such a manner I suppress all error messages - it's
-too
-reckless IMHO.
-
-The best way to resolve the issue would be to implement SW gain control
-( https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1187 ); as a
-temporary
-measure it would be nice to suppress the particular message this issue is
-about.
-
-The latter is possible if the message is produced by ALSA. The
-suppression
-should be selective, of course, i.e. through command line switch, config
-file,
-environment variable or something like that.
-
-...
-
-Can there be an ALSA application that even is OSS emulation performs SW
-mixing ?
-
-I.e. an application that can take the desired capture stream (if they are
-separate) and loop it to PCM out. Is it possible ?
-
-I think such an issue has already been raised in
-alsa-user@lists.sourceforge.net .
-
-Thanks,
-  Sergei.
-
-----------------------------------------------------------------------
- sst4 - 06-29-05 00:08 
-----------------------------------------------------------------------
-An additional clarification: the
-"
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-"
-message does not appear immediately after invokation of Skype, but rather
-when a
-session begins, i.e. when, for example, I call 'echo123' automated
-service.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-07-05 00:33 sst4           New Issue                                    
-06-08-05 14:50 tiwai          Note Added: 0004923                          
-06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
-
-06-08-05 14:53 tiwai          Note Added: 0004926                          
-06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
- 
-06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
-  
-06-12-05 19:35 sst4           Note Added: 0004999                          
-06-13-05 13:03 tiwai          Note Added: 0005006                          
-06-13-05 14:12 sst4           Note Added: 0005009                          
-06-13-05 14:30 tiwai          Note Added: 0005010                          
-06-13-05 15:55 sst4           File Added: asound.state.geberated_by_alsaconf    
-               
-06-13-05 15:59 sst4           File Added: asound.state.generated_by_alsaconf    
-               
-06-13-05 16:05 sst4           Note Added: 0005012                          
-06-15-05 08:25 sst4           Note Added: 0005021                          
-06-15-05 15:44 tiwai          Note Added: 0005035                          
-06-22-05 01:48 rlrevell       Relationship added       duplicate of 0001096
-06-28-05 00:59 sst4           Note Added: 0005290                          
-06-28-05 01:14 sst4           Note Added: 0005291                          
-06-28-05 12:45 tiwai          Note Added: 0005297                          
-06-28-05 23:45 sst4           Note Added: 0005301                          
-06-29-05 00:08 sst4           Note Added: 0005302                          
-======================================================================
+http://infoest.optus.nu/
 
 
 
