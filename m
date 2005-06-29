@@ -1,13 +1,14 @@
-From: christophe barbe <christophe@cattlegrid.net>
-Subject: Re: intel8x0 ACPI suspend/resume bug
-Date: Wed, 29 Jun 2005 11:49:13 -0400
-Message-ID: <20050629154913.GD8460@cattlegrid.net>
-References: <20050628150638.GB6677@cattlegrid.net> <s5hacl97blk.wl%tiwai@suse.de> <1120052108.14654.3.camel@localhost.localdomain> <20050629153825.GC8460@cattlegrid.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Wed, 29 Jun 2005 18:30:54 +0200
+Message-ID: <60741129e7c891f595d6a6acec5f572a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20050629153825.GC8460@cattlegrid.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 508301D5
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 18:30:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +18,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 29, 2005 at 11:38:25AM -0400, christophe barbe wrote:
-> On Wed, Jun 29, 2005 at 09:35:08AM -0400, christophe barbe wrote:
-> > I saved all proc files before and after a suspend/resume cycle and look
-> > at the diff:
-> > 
-> > In /proc/asound/card0/intel8x0 
-> > I have the following diff:
-> > before: Global control : 0xc0000002
-> > after: Global control : 0x00000002
-> 
-> I think that the real problem is here as the intel datasheet says for
-> the bits 31:30 :
-> 
->    "S/PDIF Slot Map (SSM) -- R/W. If the run/pause bus master bit
->    (bit 0 of offset 2Bh) is set, then the value in these bits indicate
->    which slots S/PDIF data is transmitted on.  Software must ensure 
->    that the programming here does not conflict with the PCM channels 
->    being used.  If there is a conflict, unpredictable behavior will 
->    result - the hardware will not check for a conflict.
->       00 = Reserved
->       01 = Slots 7 and 8
->       10 = Slots 6 and 9
->       11 = Slots 10 and 11"
-> 
-> And after a suspend/resume cycle, I have 11 which does not make sense
-> since I don't have a S/PDIF output.
-> 
-> Is there an easy way to set this bits to 00?
 
-Obviously I confused myself, the bits should be 11 and after the
-suspend/resume cycle are 00 which is not good.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+======================================================================
+Reported By:                Demosthenes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1090
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              06-29-2005 18:30 CEST
+======================================================================
+Summary:                    Support for new Prodigy 7.1 LT
+Description: 
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-Christophe
- 
--- 
-Christophe Barbe <christophe.barbe@ufies.org>
-GnuPG FingerPrint: E0F6 FADF 2A5C F072 6AF8  F67A 8F45 2F1E D72C B41E
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
+
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
+
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
+
+I would be very happy to give any further information needed.
+======================================================================
+
+----------------------------------------------------------------------
+ ungod - 06-14-05 21:27 
+----------------------------------------------------------------------
+I must apologize for my abscence, however I have too been busy with the
+exams - and still am. As soon as I am done (next week), I will gladly
+assist further in implementing the prodigy 7.1lt. (I did quite a bunch of
+the aureon/prodigy 5.1/7.1 stuff and have a personal interest in making
+the driver complete, although I don't have the LT card myself)
+
+
+
+----------------------------------------------------------------------
+ Demosthenes - 06-29-05 18:30 
+----------------------------------------------------------------------
+Ungod I hope your exams went well, are you ready to help on this because I
+have no idea what to do myself.
+
+Thanks
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+======================================================================
+
 
 
 
