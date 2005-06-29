@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Wed, 29 Jun 2005 20:28:56 +0200
-Message-ID: <12dd9c6a77a0787cd2628bf05c0158b8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001208]: 2 Typos and a little Question to device.c
+Date: Wed, 29 Jun 2005 20:32:13 +0200
+Message-ID: <44c9d910368cd755d315d3ae048c2f73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4988419D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 20:28:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1237167
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 20:32:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,109 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1208> 
 ======================================================================
-Reported By:                christophe
-Assigned To:                
+Reported By:                Henne
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   917
-Category:                   PCI - intel8x0
+Issue ID:                   1208
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
-Status:                     new
-Distribution:               Ununtu
-Kernel Version:             2.6.11-rc3
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              06-29-2005 20:28 CEST
+Date Submitted:             06-22-2005 23:58 CEST
+Last Modified:              06-29-2005 20:32 CEST
 ======================================================================
-Summary:                    intel8x0 ACPI suspend/resume trouble
+Summary:                    2 Typos and a little Question to device.c
 Description: 
-I have a problem with the driver for my soundcard after
-ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
-problem with prior kernels, I first tried with 2.6.8).
+The comment @type of snd_device_new() is wrong. I belive it has to be
+SNDDRV_DEV_XXX instead of SNDDRV_DEV_TYPE_XXX .
 
-This is a IBM x40 laptop (23865FU) with an intel chipset.
+The comment in snd_device_disconnect() has to be snd_device_disconnect
+instead of snd_device_free.
 
-The relevant lspci line is:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
-Audio Controller (rev
-+01)
+The sound_assert() macros in snd_device_new() and snd_device_register()
+have a couple of expessions, and I belive it would be better for debuggin
+if the macro calls would be called for paramter seperately, like in all
+the other functions.
 
-The driver I use is snd_intel8x0.
-
-The problem is that after a suspend/resume cycle the sound
-output is either off or only on one side or with statics.
-
-I tried to do:
-
-~$ alsactl power off
-~$ alsactl power on
-
-without any change.
-
-If I suspend/resume multiple time I can get the sound output
-a little better (like on one side instead of off). But so far
-to get the correct sound back I need to reboot.
-
-Is it a known problem?
-Is there a way to force the driver to reinitialized the chipset?
-
-Thanks for alsa,
-Christophe
-
+ 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-05 20:05 
+ Henne - 06-28-05 16:28 
 ----------------------------------------------------------------------
-Does the attached patch fix something?
+Here we go!
+
+Take the third patch(device_c.diff). Forgot to sign off.
+Why can't I erase my submitted files?
+I wrote a patch for core.h and add it to this thread.
+
+
 
 ----------------------------------------------------------------------
- christophe - 06-29-05 20:28 
+ tiwai - 06-29-05 20:32 
 ----------------------------------------------------------------------
-I applied the patch.
-The good news is that the content of the registers is now restored
-correctly.
-The bad news is that the problem persists.
+Thanks, both patches are applied to CVS.
+
+The restriction of removal of attachments is the feature of mantis.
+Perhaps because there is no owner for attachments...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-05 20:16 christophe     New Issue                                    
-02-17-05 20:16 christophe     Distribution              => Ununtu          
-02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
-02-17-05 20:30 tiwai          Note Added: 0003636                          
-02-17-05 21:01 christophe     Note Added: 0003639                          
-02-17-05 21:06 christophe     Note Added: 0003640                          
-02-17-05 22:38 christophe     Note Added: 0003643                          
-02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
-02-18-05 09:41 alexs81        Note Added: 0003649                          
-02-18-05 18:00 christophe     Note Added: 0003657                          
-02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
-               
-02-18-05 20:35 alexs81        Note Added: 0003659                          
-02-18-05 20:50 christophe     Note Added: 0003660                          
-02-18-05 21:13 alexs81        Note Added: 0003661                          
-02-18-05 21:16 christophe     Note Added: 0003662                          
-02-18-05 21:32 alexs81        Note Added: 0003663                          
-02-18-05 21:39 rlrevell       Note Added: 0003664                          
-02-19-05 02:40 christophe     Note Added: 0003668                          
-02-19-05 12:07 alexs81        Note Added: 0003669                          
-02-19-05 22:15 christophe     Note Added: 0003671                          
-02-19-05 22:16 christophe     Note Added: 0003672                          
-02-21-05 19:16 christophe     Note Added: 0003681                          
-02-21-05 19:21 christophe     Note Added: 0003682                          
-06-28-05 16:49 christophe     Note Added: 0005298                          
-06-29-05 16:04 christophe     Note Added: 0005306                          
-06-29-05 20:05 tiwai          Note Added: 0005308                          
-06-29-05 20:05 tiwai          File Added: ich-resume-fix.diff                   
-
-06-29-05 20:28 christophe     Note Added: 0005313                          
+06-22-05 23:58 Henne          New Issue                                    
+06-23-05 10:50 tiwai          Note Added: 0005166                          
+06-23-05 12:12 Henne          File Added: device-patch.diff                    
+06-23-05 12:14 Henne          Note Added: 0005179                          
+06-23-05 12:17 Henne          File Added: device-patch2.diff                    
+06-23-05 12:18 Henne          Note Edited: 0005179                         
+06-28-05 16:24 Henne          File Added: device_c.diff                    
+06-28-05 16:28 Henne          Note Edited: 0005179                         
+06-28-05 16:28 Henne          File Added: core_h.diff                      
+06-29-05 20:32 tiwai          Status                   new => resolved     
+06-29-05 20:32 tiwai          Resolution               open => fixed       
+06-29-05 20:32 tiwai          Assigned To               => tiwai           
+06-29-05 20:32 tiwai          Note Added: 0005314                          
 ======================================================================
 
 
