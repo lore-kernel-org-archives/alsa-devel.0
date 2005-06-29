@@ -1,13 +1,13 @@
-From: "Tehn-Yit Chin" <Tehn-Yit.Chin@greyinnovation.com>
-Subject: alsa dma transfer
-Date: Wed, 29 Jun 2005 16:35:21 +1000
-Message-ID: <9AEDBAA573BBD346BCF9637D80097D911DCCE9@greysvr02.GreyInnovation.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: alsa dma transfer
+Date: Wed, 29 Jun 2005 03:21:50 -0400
+Message-ID: <1120029711.1330.4.camel@mindpipe>
+References: <9AEDBAA573BBD346BCF9637D80097D911DCCE9@greysvr02.GreyInnovation.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+In-Reply-To: <9AEDBAA573BBD346BCF9637D80097D911DCCE9@greysvr02.GreyInnovation.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Tehn-Yit Chin <Tehn-Yit.Chin@greyinnovation.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 2005-06-29 at 16:35 +1000, Tehn-Yit Chin wrote:
+> And how do I tell pcm layer that the device does not support recording?
 
-Please bear with me as I am a newbie at writing an ALSA device driver. I
-am a bit confused as to how ALSA manages its buffers and memory.
-Currently, I am confused as to audio data is being passed into the
-device driver so that the driver can start the DMA transfer
+I'll let someone else field the first question...
 
-I have read Takashi Iwai doc on "Writing an ALSA Driver" and reviewed
-some of the drivers already in the source tree and was not able to get a
-clear understanding of it.
+If you don't implement capture in your driver, the PCM layer will not
+present any capture devices to userspace.
 
->From what I can tell, runtime->dma_start is a virtual memory buffer that
-has the audio data, and the amount of data to transfer is in
-frames_to_bytes(runtime, runtime->period_size). Is this right?
+Lee
 
-And how do I tell pcm layer that the device does not support recording?
-
-Many thanks,
-
-Tehn Yit Chin=20
-Software Engineer, Grey Innovation Pty. Ltd.
 
 
 -------------------------------------------------------
