@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Wed, 29 Jun 2005 20:22:18 +0200
-Message-ID: <a5dadee55f079c8fa5cf49022a2682e0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001215]: AC3 Passthrough does not work
+Date: Wed, 29 Jun 2005 20:23:01 +0200
+Message-ID: <10d52801f2a63d388b82c0b3e58c4f59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B0D19D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 20:22:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BF8219D
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2005 20:23:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,104 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1215> 
 ======================================================================
-Reported By:                sst4
+Reported By:                hugo4711
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1215
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC
 ======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              06-29-2005 20:22 CEST
+Date Submitted:             06-27-2005 21:59 CEST
+Last Modified:              06-29-2005 20:23 CEST
 ======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
+Summary:                    AC3 Passthrough does not work
 Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
+Since the update from FC3 to FC4 I am not able to use AC3-passthrough. It
+won't work with xine or mplayer. 
 
-Soon (probably in a second) after this command line:
+The AC3-Reciever I am using indicates "No Audio" when playing a DVD with
+AC3-Sound. Before the Update it switches to Dolby AC3 Decoding mode. 
 
-aoss skype &
+When I play a movie with xine, and the driver is switched into
+AC3-passthrough-mode and then I quit xine, the driver is not switched back
+out of the passthrough-mode (which is a bug in xine, I guess). This is
+very anoying, because there is no such thing as to reset the mixer
+settings, unless the previous settings are stored (alsactl
+store/restore).
 
-the terminal window gets filled with
-
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001096 no capture with M-Audio Revolution 7.1
+Another thing is, that I am not able to hear sound from sources which are
+plugged into line-in. Mixer Settings are checked. Every channel is unmuted
+and volume is at 100%. Digital Out is unmuted, IEC-Compliancy is muted.
 ======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 06-29-05 00:08 
+ hugo4711 - 06-28-05 20:05 
 ----------------------------------------------------------------------
-An additional clarification: the
-"
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-"
-message does not appear immediately after invokation of Skype, but rather
-when a
-session begins, i.e. when, for example, I call 'echo123' automated
-service.
+Here is some more information (if you need more, just ask me):
+
+cat /proc/asound/version
+------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.9rc2 (Thu Mar 24
+10:33:39 2005 UTC).
+
+cat /proc/asound/cards
+----------------------
+0 [Unknown ]: Audigy - Audigy 1 or 2 [Unknown]
+                     Audigy 1 or 2 [Unknown] (rev.3, serial:0x511102) at
+0xe800, irq 11
+1 [Bt878 ]: Bt87x - Brooktree Bt878
+                     Brooktree Bt878 at 0xdddfe000, irq 10
 
 ----------------------------------------------------------------------
- tiwai - 06-29-05 20:22 
+ tiwai - 06-29-05 20:23 
 ----------------------------------------------------------------------
-Hmm, did you apply the patch for aoss above?
-After applying the patch, try once aoss skype with softvol plugin in
-~/.asoundrc and quit immediately.  This should create a user-defined
-control "Capture Volume".  Then again aoss skype without ~/.asoundrc.
+I guess this is already fixed with the recent version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-05 00:33 sst4           New Issue                                    
-06-08-05 14:50 tiwai          Note Added: 0004923                          
-06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
-
-06-08-05 14:53 tiwai          Note Added: 0004926                          
-06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
- 
-06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
-  
-06-12-05 19:35 sst4           Note Added: 0004999                          
-06-13-05 13:03 tiwai          Note Added: 0005006                          
-06-13-05 14:12 sst4           Note Added: 0005009                          
-06-13-05 14:30 tiwai          Note Added: 0005010                          
-06-13-05 15:55 sst4           File Added: asound.state.geberated_by_alsaconf    
-               
-06-13-05 15:59 sst4           File Added: asound.state.generated_by_alsaconf    
-               
-06-13-05 16:05 sst4           Note Added: 0005012                          
-06-15-05 08:25 sst4           Note Added: 0005021                          
-06-15-05 15:44 tiwai          Note Added: 0005035                          
-06-22-05 01:48 rlrevell       Relationship added       duplicate of 0001096
-06-28-05 00:59 sst4           Note Added: 0005290                          
-06-28-05 01:14 sst4           Note Added: 0005291                          
-06-28-05 12:45 tiwai          Note Added: 0005297                          
-06-28-05 23:45 sst4           Note Added: 0005301                          
-06-29-05 00:08 sst4           Note Added: 0005302                          
-06-29-05 20:22 tiwai          Note Added: 0005311                          
+06-27-05 21:59 hugo4711       New Issue                                    
+06-27-05 21:59 hugo4711       Distribution              => Fedora Core 4   
+06-27-05 21:59 hugo4711       Kernel Version            => 2.6.11-1.1369_FC
+06-28-05 20:05 hugo4711       Note Added: 0005299                          
+06-29-05 20:23 tiwai          Note Added: 0005312                          
 ======================================================================
 
 
