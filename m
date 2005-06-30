@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001222]: typo in info.c
-Date: Thu, 30 Jun 2005 12:45:03 +0200
-Message-ID: <22d9074163fc6101c5ce9df037d87118@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: Ted <ted@nowtsfree.freeserve.co.uk>
+Subject: Re: Re: unresolved symbols in snd-gus-synth & snd-page-alloc on linux-2.2.27
+Date: Thu, 30 Jun 2005 12:05:53 +0100
+Message-ID: <20050630110554.3AD5E48DF@marimba.home.net>
+References: <s5hd5q45ilb.wl%tiwai@suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1285199
-	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 12:45:03 +0200 (MEST)
+In-reply-to: Your message of "Thu, 30 Jun 2005 10:56:00 +0200."
+             <s5hd5q45ilb.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +15,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Ted <ted@nowtsfree.freeserve.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 30 Jun 2005 10:56:00 +0200,
+Takashi wrote:
+> At Thu, 30 Jun 2005 03:47:42 +0100,
+> Ted wrote:
+> > I have made a little progress but still not found a fix for Problem 2
+> > in my previous message
+> >
+> > > # insmod snd-ainstr-simple
+> > > Using /lib/modules/2.2.27-pre2/misc/snd-ainstr-simple.o
+> > > /lib/modules/2.2.27-pre2/misc/snd-ainstr-simple.o: init_module:
+> > >         Invalid argument Hint: insmod errors can be caused by incorrect \
+> > >         module parameters, including invalid IO or IRQ parameters
+> >
+> > When this error occurs, dmesg also reports the following
+> >
+> > kernel: init_module: mod->ex_table_* invalid.
+>
+> Sorry, no idea yet.
+> ainstr_simple.c has a quite simple module init, so I don't see what's
+> going wrong, at least at module init...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1222> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1222
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   text
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             06-30-2005 12:38 CEST
-Last Modified:              06-30-2005 12:45 CEST
-======================================================================
-Summary:                    typo in info.c
-Description: 
-Little typo in info.c in the kerneldocs of snd_info_get_str().
-Patch added.
-======================================================================
+Thanks for quick reply. I've tried comparing the build of similar
+small modules to snd-ainstr-simple, such as snd-ainstr-gf1, which
+does appear to load correctly, but I have not noticed anything yet.
 
-----------------------------------------------------------------------
- Henne - 06-30-05 12:45 
-----------------------------------------------------------------------
-Oops, forgot a whitespace. Take info_c.diff.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-30-05 12:38 Henne          New Issue                                    
-06-30-05 12:38 Henne          File Added: info_patch.diff                    
-06-30-05 12:45 Henne          Note Added: 0005324                          
-======================================================================
-
-
+Ted.
+-- 
+Ted <ted@nowtsfree.freeserve.co.uk>
+   http://www.nowtsfree.freeserve.co.uk
 
 
 -------------------------------------------------------
