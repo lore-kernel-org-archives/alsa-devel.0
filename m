@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Thu, 30 Jun 2005 01:46:41 +0200
-Message-ID: <9d8c34e9b2e36b0cdafebee71ff493a0@bugtrack.alsa-project.org>
+Date: Thu, 30 Jun 2005 02:27:31 +0200
+Message-ID: <9760ab06302d382776e5aa62bd6d3da8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A3A018F
-	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 01:46:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E6DE18F
+	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 02:27:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              06-30-2005 01:46 CEST
+Last Modified:              06-30-2005 02:27 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,34 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 06-30-05 01:03 
-----------------------------------------------------------------------
-Yes! Lets make som support for this card!
-
-I did some googleing for some techincal information about the Prodigy LT
-model, however I didn't end up with any certain facts about the card or
-highres photos.
-http://www.pcwelt.de/imgserver/bdb/36500/36530/original.jpg was the best I
-could find, but it is not sufficient to identify the chips, so you will
-have to do that for me.
-
-I have made a diagram (http://linux.developers.dk/prodigy.png) of how the
-card seems to be organized. The red boxes are chips which may be
-important. If you could write down the manufacturer and model of each of
-these, things may become easier.
-Chip no. 7 doesn't look like a sound-related chip, but it might be a good
-idear to also write down the name of this one.
-
-Besides there seems to be a lot of what looks like opamps (makes sense,
-since this is an audio card) and a few voltage regulators, but they are
-irrelevant for a driver implementation.
-
-Just for the sport of it, I did a similar diagram of my own card (Aureon
-Space 7.1). It is located at http://linux.developers.dk/aureon.png (An
-actual photo can be seen at
-http://www.watch.impress.co.jp/akiba/hotline/20030222/image/aur1.html )
-
-----------------------------------------------------------------------
  baesyspem - 06-30-05 01:46 
 ----------------------------------------------------------------------
 I can help with that: 
@@ -106,6 +78,23 @@ VIA ICEnsemble, ENVY24HT, VT1724-0428CD
 5. ATMEL426, 24C02N
 6. H17A, 316BJ
 7. NCO-3.3V, 49.152MHz, NTE
+
+----------------------------------------------------------------------
+ Demosthenes - 06-30-05 02:27 
+----------------------------------------------------------------------
+Ha, well if I had waited a few minutes it would have saved me taking my
+shuttle apart (which I managed to drop on the floor through stupidity,
+still works though luckily).  Some of my numbers seem to be slightly
+different (not talking about the last part of some chips, which I have
+included because I spent all that effort getting them). I have:
+1) WM8770IFT, 38AAXFF (This chip had a Q sticker on it indicating the
+QSound chip?)
+2)3AZ6D5J, HC04
+3)HC125A, PAB122
+4)H16A, 351BE
+5)ATMEL426, 24CO2N, SI27 D
+6)H17A, 317BJ
+7)NCO-3.3V, 49.152MHz, NTE
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,6 +139,7 @@ Hedgehog)
 06-30-05 01:03 ungod          Note Added: 0005321                          
 06-30-05 01:08 ungod          Issue Monitored: ungod                       
 06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
 ======================================================================
 
 
