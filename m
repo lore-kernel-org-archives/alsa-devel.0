@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB audio:  TI PCM2900 support
-Date: Thu, 30 Jun 2005 16:38:42 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0506301617150.26349-100000@studcom.urz.uni-halle.de>
-References: <20050615182733.13471.qmail@web60812.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001215]: AC3 Passthrough does not work
+Date: Thu, 30 Jun 2005 17:16:34 +0200
+Message-ID: <bbb2ff5510ca48d993c438026b371e4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050615182733.13471.qmail@web60812.mail.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35CF71A6
+	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 17:16:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,43 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tom Watson wrote:
-> My recent issue of Nuts & Volts has a project for using the TI (Burr Brown)
-> PCM2900 chip.  The whole thing looks pretty simple, just PCM in and out.  I've
-> got a couple of questions:
-> 1)  This is supposed to be a standard USB audio thing, does it need
->     anything "special"?
 
-No (if it's really compliant with the USB Audio specification, and if
-the firmware doesn't have any bugs).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1215> 
+======================================================================
+Reported By:                hugo4711
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1215
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC
+======================================================================
+Date Submitted:             06-27-2005 21:59 CEST
+Last Modified:              06-30-2005 17:16 CEST
+======================================================================
+Summary:                    AC3 Passthrough does not work
+Description: 
+Since the update from FC3 to FC4 I am not able to use AC3-passthrough. It
+won't work with xine or mplayer. 
 
-> 2)  In looking over the data sheet (near:
->           http://focus.ti.com/docs/prod/folders/print/pcm2900.html)
->     I see that it has provisions for 3 button inputs.  How would these be
->     implemented to do their function (Mute/Vol up/Vol Down)
+The AC3-Reciever I am using indicates "No Audio" when playing a DVD with
+AC3-Sound. Before the Update it switches to Dolby AC3 Decoding mode. 
 
-It says:
-| The HID function is designed as an independent end-point from both
-| isochronous-in and -out end-points. This means that the result of
-| affection for the HID operation depends on the host software.
+When I play a movie with xine, and the driver is switched into
+AC3-passthrough-mode and then I quit xine, the driver is not switched back
+out of the passthrough-mode (which is a bug in xine, I guess). This is
+very anoying, because there is no such thing as to reset the mixer
+settings, unless the previous settings are stored (alsactl
+store/restore).
 
-Some program would have to read those buttons and change the
-appropriate mixer controls.
+Another thing is, that I am not able to hear sound from sources which are
+plugged into line-in. Mixer Settings are checked. Every channel is unmuted
+and volume is at 100%. Digital Out is unmuted, IEC-Compliancy is muted.
+======================================================================
 
-> 4)  How good are these things?  I suspect that they are at least OK for
->     something as simple (sound wise) as VoIP, but 16 bit 44.1 kHz audio (96 db
->     SNR)??
+----------------------------------------------------------------------
+ tiwai - 06-29-05 20:23 
+----------------------------------------------------------------------
+I guess this is already fixed with the recent version.
 
-Having digital processing (like the USB interface) on the same chip
-might add noise to the analog part.
+----------------------------------------------------------------------
+ hugo4711 - 06-30-05 17:16 
+----------------------------------------------------------------------
+I tested the 1.0.9a driver. It works now.
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-27-05 21:59 hugo4711       New Issue                                    
+06-27-05 21:59 hugo4711       Distribution              => Fedora Core 4   
+06-27-05 21:59 hugo4711       Kernel Version            => 2.6.11-1.1369_FC
+06-28-05 20:05 hugo4711       Note Added: 0005299                          
+06-29-05 20:23 tiwai          Note Added: 0005312                          
+06-30-05 17:16 hugo4711       Note Added: 0005327                          
+======================================================================
 
-HTH
-Clemens
 
 
 
