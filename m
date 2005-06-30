@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001222]: typo in info.c
-Date: Thu, 30 Jun 2005 12:38:37 +0200
-Message-ID: <ba792e2c692a42566e8eca423d5cd206@bugtrack.alsa-project.org>
+Date: Thu, 30 Jun 2005 12:45:03 +0200
+Message-ID: <22d9074163fc6101c5ce9df037d87118@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87CFAC1
-	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 12:38:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1285199
+	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2005 12:45:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1222> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-30-2005 12:38 CEST
-Last Modified:              06-30-2005 12:38 CEST
+Last Modified:              06-30-2005 12:45 CEST
 ======================================================================
 Summary:                    typo in info.c
 Description: 
@@ -48,11 +48,17 @@ Little typo in info.c in the kerneldocs of snd_info_get_str().
 Patch added.
 ======================================================================
 
+----------------------------------------------------------------------
+ Henne - 06-30-05 12:45 
+----------------------------------------------------------------------
+Oops, forgot a whitespace. Take info_c.diff.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-30-05 12:38 Henne          New Issue                                    
 06-30-05 12:38 Henne          File Added: info_patch.diff                    
+06-30-05 12:45 Henne          Note Added: 0005324                          
 ======================================================================
 
 
