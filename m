@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001223]: Unable to select card for playback
-Date: Fri, 1 Jul 2005 12:32:48 +0200
-Message-ID: <897ce035b4e0899e62de4386bad8953f@bugtrack.alsa-project.org>
+Date: Fri, 1 Jul 2005 12:32:27 +0200
+Message-ID: <75a5d44419d57db4472aa7e031c99503@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A9C913B
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 12:32:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 403ED13B
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 12:32:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1223> 
 ======================================================================
@@ -35,7 +35,7 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
 Distribution:               Leaf Bering v1.2
 Kernel Version:             2.4.31
 ======================================================================
@@ -131,7 +131,6 @@ Date Modified  Username       Field                    Change
 07-01-05 02:59 nframpton      Distribution              => Leaf Bering v1.2
 07-01-05 02:59 nframpton      Kernel Version            => 2.4.31          
 07-01-05 12:32 jcdutton       Note Added: 0005331                          
-07-01-05 12:32 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
