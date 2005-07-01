@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 1 Jul 2005 22:46:30 +0200
-Message-ID: <cbf8c814d97de0aa647a76842959a008@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Fri, 1 Jul 2005 22:57:00 +0200
+Message-ID: <a9536f7e33572d5c6da7f1988c195c0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D328C1A9
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 22:46:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 693A91A9
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 22:57:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,148 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
-Reported By:                Demosthenes
+Reported By:                Hetfield
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
+Issue ID:                   1224
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
+Distribution:               
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-01-2005 22:46 CEST
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              07-01-2005 22:56 CEST
 ======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
+Summary:                    artsd-like style
 Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
-
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
-
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
-
-I would be very happy to give any further information needed.
+that could be very important for example using skype voip and listening
+music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 07-01-05 22:08 
+ rlrevell - 07-01-05 20:33 
 ----------------------------------------------------------------------
-Unfortunately I haven't been able to produce any sound with this patch,
-xmms when I set the audio output to hw:0,0 comes up with the error "check
-that your sound card is configured correctly".  I think I have done right
-in what I did, I downloaded the alsa-driver and alsa-kernel from cvs and
-applied the patch, then ./cvscompile, make, make install new modules for
-my sound cards (I didn't update any other parts of alsa).  The card is
-recognised and the onboard sound still works when selecting hw;1,0 in
-xmms.
+dmix works with aoss.  If skype crashes, it's a bug in skype.  Please ask
+them to fix it, or support ALSA properly.
 
 ----------------------------------------------------------------------
- ungod - 07-01-05 22:46 
+ Hetfield - 07-01-05 22:56 
 ----------------------------------------------------------------------
-My patch should not have changed anything regarding the ICE1724 chip
-(except that the Prodigy 7.1 LT is accepted by the driver). Earlier you
-were able to play audio with the card, but you had no actual sound (since
-the digital-to-analogue didn't work).
+from a point of view you're right, but, from the other, you're not.
 
-Thing is also, that the ICE1724 driver only supports audio in signed
-32-bit, and XMMS only plays 8-bit and 16-bit (in general, its ALSA support
-is quite lousy).
-
-The solution is to let ALSA convert the audio to the right format. This
-can be done in $HOME/.asoundrc:
-
-pcm.!default {
-    type plug
-    slave.pcm "hw:0,0"
-}
-
-ctl.!default {
-    type hw
-    card 0
-}
-
-Alternatively, you can substitute !default with !prodigy or something, and
-instruct XMMS to use "prodigy" as device name.
-
-In my opinion, the best way to test, is to use aplay ("aplay -Dprodigy
-file.wav" for instance)
-
-Also, remember to check that sound is enabled in the mixer etc.
+if it crashes with aoss this means aoss is not fully transparent for an
+application.
+that's why i asked for a driver low-level management.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-05-10-05 09:36 ungod          Note Added: 0004632                          
-05-10-05 15:50 Demosthenes    Note Added: 0004633                          
-05-14-05 15:18 Demosthenes    Note Added: 0004658                          
-05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
-06-14-05 16:02 baesyspem      Note Added: 0005018                          
-06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
-06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
-06-14-05 18:30 Demosthenes    Note Added: 0005019                          
-06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
-06-14-05 21:26 ungod          Note Added: 0005020                          
-06-14-05 21:27 ungod          Note Edited: 0005020                         
-06-29-05 18:30 Demosthenes    Note Added: 0005307                          
-06-30-05 01:03 ungod          Note Added: 0005321                          
-06-30-05 01:08 ungod          Issue Monitored: ungod                       
-06-30-05 01:46 baesyspem      Note Added: 0005322                          
-06-30-05 02:27 Demosthenes    Note Added: 0005323                          
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
-06-30-05 21:21 ungod          Note Added: 0005328                          
-07-01-05 14:25 baesyspem      Note Added: 0005333                          
-07-01-05 16:09 baesyspem      Note Added: 0005335                          
-07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
-         
-07-01-05 20:43 ungod          Note Added: 0005339                          
-07-01-05 22:08 Demosthenes    Note Added: 0005341                          
-07-01-05 22:46 ungod          Note Added: 0005342                          
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
 ======================================================================
 
 
