@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Fri, 1 Jul 2005 20:16:56 +0200
-Message-ID: <21c223e533a2ea0598ae0e4c40b8432e@bugtrack.alsa-project.org>
+Date: Fri, 1 Jul 2005 20:33:30 +0200
+Message-ID: <4539b61f785b3a7e2561e8928c27df0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E1CF1A8
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 20:16:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55C411A8
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 20:33:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-01-2005 20:16 CEST
+Last Modified:              07-01-2005 20:33 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -61,12 +61,19 @@ creates some problems to applications like skype (that seg fault)
 
 i meant: can alsa drivers manage all /dev/dsp without aoss proxy?
 
+----------------------------------------------------------------------
+ rlrevell - 07-01-05 20:33 
+----------------------------------------------------------------------
+dmix works with aoss.  If skype crashes, it's a bug in skype.  Please ask
+them to fix it, or support ALSA properly.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-01-05 14:49 Hetfield       New Issue                                    
 07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
 07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
 ======================================================================
 
 
