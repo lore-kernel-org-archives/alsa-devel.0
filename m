@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0 analog subsections not ready: no sound
-Date: Fri, 1 Jul 2005 12:07:14 +0200
-Message-ID: <2a13eaae4b1c10c75ad311d70ba3948d@bugtrack.alsa-project.org>
+Date: Fri, 1 Jul 2005 12:11:53 +0200
+Message-ID: <2b2660fcf073d90c9e229f0e9f626214@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C627A186
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 12:07:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86AD4186
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 12:11:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
 Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
 ======================================================================
 Date Submitted:             06-27-2005 12:22 CEST
-Last Modified:              07-01-2005 12:07 CEST
+Last Modified:              07-01-2005 12:11 CEST
 ======================================================================
 Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
 ready: no sound
@@ -103,18 +103,17 @@ to fit   it onto 1 GB)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-29-05 20:16 
-----------------------------------------------------------------------
-The message "analog subsections not ready" itself isn't always critical. 
-For example, I got this with my audigy1 but it worked...
-
-BTW, if possible, please try ALSA 1.0.8.  There are some changes in 1.0.9
-wrt DXS support, and this might influence on the behavior.
-
-----------------------------------------------------------------------
  shensche - 07-01-05 12:07 
 ----------------------------------------------------------------------
 - tried with 2.6.12-ck3 (ALSA 1.0.9rc2): no success
+
+----------------------------------------------------------------------
+ shensche - 07-01-05 12:11 
+----------------------------------------------------------------------
+- tried again with ALSA 1.0.8 (shipped with 2.6.11), all 4 VIA DXS channels
+are at maximum. tried with module option dxs_support from 0 to 4: no
+success.
+- i recompiled 1.0.9 with debug support. any more info i can provide?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -144,6 +143,7 @@ proc_asound_card0_codec97#_ac97#0-0+regs
 06-28-05 20:19 shensche       Note Added: 0005300                          
 06-29-05 20:16 tiwai          Note Added: 0005310                          
 07-01-05 12:07 shensche       Note Added: 0005329                          
+07-01-05 12:11 shensche       Note Added: 0005330                          
 ======================================================================
 
 
