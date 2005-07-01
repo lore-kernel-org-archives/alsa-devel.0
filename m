@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Fri, 1 Jul 2005 14:49:26 +0200
-Message-ID: <c277e4824ecb08c743db31504c43327c@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0_synth
+Date: Fri, 01 Jul 2005 21:42:35 +0800
+Message-ID: <42C5484B.7040201@netvigator.com>
+References: <423CCDAC.80401@netvigator.com> <s5h4qf44vna.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE251174
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 14:49:26 +0200 (MEST)
+In-Reply-To: <s5h4qf44vna.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +17,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Sun, 20 Mar 2005 09:11:08 +0800,
+> Raymond wrote:
+> 
+>>
+>>>>Lee Revell wrote:
+>>>>Looks like this chipset has a wavetable synth.  And I noticed some
+>>>>references to a driver on the openvortex list.  Would it be possible 
+>>>>for ALSA to support it?
+>>
+>>>Manuel Jander wrote:
+>>> Of course, but there are some unresolved hardware issues. The
+>>> WaveTable helper hardware is very similar to the trident
+>>> Wavetable helper hardware. It does not interpret MIDI directly, but
+>>> at least does some effect processing in hardware.
+>>
+>>
+>>http://sourceforge.net/mailarchive/message.php?msg_id=6004190
+>>
+>>1) Is the Trident Wavetable working ?
+> 
+> 
+> Very limited.  It's no proper "MIDI" wavetable implementation.
+> IIRC, only a module player worked with trident driver.
+> 
+> 
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
-======================================================================
-Reported By:                Hetfield
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-01-2005 14:49 CEST
-======================================================================
-Summary:                    artsd-like style
-Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+If WT code compiled as a separate module au88x0-synth , it cannot direct 
+call those functions in au88x0 module (e.g vortex_mix_setvolumebyte() )
 
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
+Also there are a lot of warning messages "static function declared 
+static but never defined" in au88x0.h because WT code need to include 
+au88x0.h to get the definition of vortex_t.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-======================================================================
+#define SNDRV_SEQ_DEV_ID_AU88X0_SYNTH CARD_NAME_SHORT "-synth"
+
+	if (snd_seq_device_new(card, 1, SNDRV_SEQ_DEV_ID_AU88X0_SYNTH,
+			       sizeof(snd_vortex_synth_arg_t), &wt) < 0
+	    || wt == NULL) {
+		printk(KERN_INFO "Can't initialize au88x0 wavetable synth\n");
+	} else {
+		snd_vortex_synth_arg_t *arg;
+		arg = SNDRV_SEQ_DEVICE_ARGPTR(wt);
+		sprintf(wt->name, "%s Synth",CARD_NAME_SHORT);
+		arg->chip = chip;
+		arg->index = 1;
+	}
+
+
+As WT is present on the au8820/au8830 chip and not on another chip of
+the sound card. (WT registers can be accessed by using vortex->mmio )
+
+Is there any alternative way for keeping the WT code within module
+au88x0 instead of a seperate module au88x0-synth ?
+
+
+	if ((err = snd_device_new(card, SNDRV_DEV_SEQUENCER, wt, &ops)) < 0) {
+		return err;
+	}
+
+
+
+
+
+
+
+
+
+
 
 
 
