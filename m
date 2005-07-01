@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001179]: alsa-lib 1.0.9 breaks snd_hda_intel
-Date: Fri, 1 Jul 2005 21:53:05 +0200
-Message-ID: <dcdbaafdd78a16e8128f442dfa949ae6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Fri, 1 Jul 2005 22:08:58 +0200
+Message-ID: <6ea16686ccba73fdae8585df0acd3a3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A51F71A9
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 21:53:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 010261A9
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 22:08:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,125 +24,121 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1179> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                theoneandonlysm
+Reported By:                Demosthenes
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1179
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             06-10-2005 19:08 CEST
-Last Modified:              07-01-2005 21:53 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              07-01-2005 22:08 CEST
 ======================================================================
-Summary:                    alsa-lib 1.0.9 breaks snd_hda_intel
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-I upgraded alsa (lib, tools, oss) 1.0.8 to 1.0.9 through Slackware's
-package update and noticed that aRts in kde did not produce any sound even
-though no errors in arts was reported.
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-I uninstalled the alsa-lib package and compiled the 1.0.8 sources and
-sound worked again (with self-compiled 1.0.9 drivers on kernel 2.6.11.11).
-Compiling and installing alsa-lib 1.0.9 once again caused sound to stop
-functioning.
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
 
-dmesg gives me no errors, and I am not certain where else to look. The
-only clue I get is from mplayer while playing an audio file, where I get
-continual output of:
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.004 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
-alsa-space: xrun of at least 0.002 msecs. resetting stream
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
 
-my lsmod:
-vmnet                  27812  2
-parport_pc             22980  1
-vmmon                 105260  0
-snd_pcm_oss            49312  0
-snd_mixer_oss          18304  1 snd_pcm_oss
-snd_hda_intel          14336  1
-snd_hda_codec          69248  1 snd_hda_intel
-snd_pcm                83716  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              22276  1 snd_pcm
-snd                    50532  8
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8068  2 snd_hda_intel,snd_pcm
-lp                      8836  0
-parport                21440  2 parport_pc,lp
-nfsd                   91464  8
-exportfs                5120  1 nfsd
-nfs                    96044  1
-lockd                  61992  3 nfsd,nfs
-sunrpc                130500  5 nfsd,nfs,lockd
-vfat                   11648  1
-fat                    36252  1 vfat
-i915                   18176  1
-drm                    61204  2 i915
-intel_agp              20380  1
-agpgart                29488  3 drm,intel_agp
-hw_random               4884  0
-rtc                    10828  0
-ehci_hcd               29576  0
-usblp                  11648  0
-uhci_hcd               30480  0
-usbcore               107384  4 ehci_hcd,usblp,uhci_hcd
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001201 Can't use xmms with alsa driver (hda-in...
+I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- sally - 06-25-05 05:11 
+ ungod - 07-01-05 20:43 
 ----------------------------------------------------------------------
-tiwai. Can you give an URL for that , the doc I have in my kernel source
-tree does not include position_fix.
-
-TIA
+Nice. I've uploadet at patch for the latest CVS edition of ALSA, which I
+hope work (can't really test it myself, except that my sound card is
+naturally muted, if I force ALSA to recognize it as a Prodigy 7.1 LT).
 
 ----------------------------------------------------------------------
- synx13 - 07-01-05 21:53 
+ Demosthenes - 07-01-05 22:08 
 ----------------------------------------------------------------------
-positon-fix is a card-specific option.  It only applies to snd-hda-intel. 
-I get the problem (but only with Quicktime MOV files?) with my snd-cmipci
-card.  Interestingly all types of movies play besides these particular
-ones.  I noticed on failing to convert them to AVI/mpeg that they have a
-strange bitrate:
-...[mp2 @ 0x85783c8]bitrate 224 is not allowed in mp2
-...Couldn't open codec mp2, br=224
-Is that possibly something that could provoke this juttering of sound as
-alsa-space continues to reset every half second or so?  Where is the
-source that causes the error?  I can't find it in any of the alsa sources
-I have installed.
-
-note to sally: Try the CVS alsa-kernel sources.. is what I have, and
-there's a file right under Documentation/ALSA-Configuration.txt in there. 
-(:pserver:anonymous:@cvs.sourceforge.net:/cvsroot/alsa)
+Unfortunately I haven't been able to produce any sound with this patch,
+xmms when I set the audio output to hw:0,0 comes up with the error "check
+that your sound card is configured correctly".  I think I have done right
+in what I did, I downloaded the alsa-driver and alsa-kernel from cvs and
+applied the patch, then ./cvscompile, make, make install new modules for
+my sound cards (I didn't update any other parts of alsa).  The card is
+recognised and the onboard sound still works when selecting hw;1,0 in
+xmms.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-05 19:08 theoneandonlysmNew Issue                                    
-06-13-05 13:09 tiwai          Note Added: 0005008                          
-06-19-05 12:30 sally          Note Added: 0005088                          
-06-20-05 03:46 theoneandonlysmNote Added: 0005092                          
-06-20-05 10:45 sally          Note Added: 0005094                          
-06-20-05 11:23 perex          Category                 0_general => 1_pcm -
-digital audio
-06-21-05 01:37 theoneandonlysmNote Added: 0005100                          
-06-21-05 11:13 tiwai          Note Added: 0005101                          
-06-21-05 12:48 tiwai          Relationship added       has duplicate 0001201
-06-25-05 05:11 sally          Note Added: 0005256                          
-07-01-05 21:53 synx13         Note Added: 0005340                          
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
+07-01-05 16:09 baesyspem      Note Added: 0005335                          
+07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
+         
+07-01-05 20:43 ungod          Note Added: 0005339                          
+07-01-05 22:08 Demosthenes    Note Added: 0005341                          
 ======================================================================
 
 
