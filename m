@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001223]: Unable to select card for playback
-Date: Fri, 1 Jul 2005 12:32:27 +0200
-Message-ID: <75a5d44419d57db4472aa7e031c99503@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Fri, 1 Jul 2005 14:25:41 +0200
+Message-ID: <817af316ae798e2a49cd0fd26716b797@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 403ED13B
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 12:32:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2515E151
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 14:25:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,113 +24,140 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1223> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                nframpton
-Assigned To:                jcdutton
+Reported By:                Demosthenes
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1223
-Category:                   PCI - ca0106
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Leaf Bering v1.2
-Kernel Version:             2.4.31
+Status:                     new
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-01-2005 02:59 CEST
-Last Modified:              07-01-2005 12:32 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              07-01-2005 14:25 CEST
 ======================================================================
-Summary:                    Unable to select card for playback
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-I have an Intel D875PBZ motherboard and several SB Live 24-bit (model
-SB0410) cards.  If only one card is installed the ca0106 driver works
-fine.  If multiple cards are installed I am unable to select a specific
-card for playback.
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-# aplay -D hw:0,0 /tmp/new.wav
-Playing WAVE '/tmp/new.wav' : Signed 16 bit Little Endian, Rate 16000 Hz,
-Mono
-aplay: set_params:862: Channels count non available
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
 
-I am using the default configuration supplied with alsa-lib 1.0.9.
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
 
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun 30 2005 for kernel 2.4.31-NANO.
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
 
-# cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xb800 irq 3
-1 [CA0106_1       ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xbc00 irq 10
-
-# cat /proc/asound/devices
- 19: [0- 3]: digital audio playback
- 27: [0- 3]: digital audio capture
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
- 51: [1- 3]: digital audio playback
- 59: [1- 3]: digital audio capture
- 50: [1- 2]: digital audio playback
- 58: [1- 2]: digital audio capture
- 49: [1- 1]: digital audio playback
- 57: [1- 1]: digital audio capture
- 48: [1- 0]: digital audio playback
- 56: [1- 0]: digital audio capture
- 32: [1- 0]: ctl
-
-# cat /proc/interrupts
-           CPU0
-  0:      31884          XT-PIC  timer
-  1:          3          XT-PIC  keyboard
-  2:          0          XT-PIC  cascade
-  3:          0          XT-PIC  snd_ca0106
-  4:        635          XT-PIC  serial
- 10:        726          XT-PIC  snd_ca0106, eth0
- 14:       7402          XT-PIC  ide0
-NMI:          0
-ERR:          0
-
-# cat /proc/asound/modules
-0 snd-ca0106
-1 snd-ca0106
-
-# cat /proc/asound/pcm
-00-00: ca0106 : CA0106 : playback 1 : capture 1
-00-01: ca0106 : CA0106 : playback 1 : capture 1
-00-02: ca0106 : CA0106 : playback 1 : capture 1
-00-03: ca0106 : CA0106 : playback 1 : capture 1
-01-00: ca0106 : CA0106 : playback 1 : capture 1
-01-01: ca0106 : CA0106 : playback 1 : capture 1
-01-02: ca0106 : CA0106 : playback 1 : capture 1
-01-03: ca0106 : CA0106 : playback 1 : capture 1
-
-
+I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-01-05 12:32 
+ ungod - 06-30-05 21:21 
 ----------------------------------------------------------------------
-For card0:
-aplay -D plug:front:0 /tmp/new.wav
-For card1:
-aplay -D plug:front:1 /tmp/new.wav
+Ah, WM8770 is apparently the only sound related chip onboard besides the
+opamps and the ICE1724. Now what we need to do now, is to figure out how
+the WM8770 is connected to the ICE1724.
+
+There are 4 relevant pins on the WM8770, RESETB, CE, DI, and CL (see
+http://linux.developers.dk/prodigy2.png) On the ordinary Prodigy card, the
+chip was connected to GPIO20, GPIO12, GPIO18, and GPIO19 on ICE1724,
+however this seems not to be the case on this particular card (if so, you
+would have had sound). On the ordinary Prodigy, all GPIO pins was used for
+communication with the various other chips on the board.
+
+Now, what I want you to do, is to somehow trace the route of the WM8770
+pins to the ICE1724 with a voltmeter or something. The chip is most likely
+connected to the GPIO pins and/or the I2C pins (I've marked their
+locations on the picture).
+
+You will find that the 24C02N is also connected to the I2C pins (it is an
+EEPROM containing vendor id's)
+
+I know this probably isn't easy, but it is my best shot. Hopefully, there
+are markins on the PCB, indicating pin numbers of the ICE1724 (mine have)
+
+----------------------------------------------------------------------
+ baesyspem - 07-01-05 14:25 
+----------------------------------------------------------------------
+You are correct about the pin outs ungod.  Without using a voltmeter or
+similar, I can see these direct connections on the component side of the
+board:
+
+WM8770----------ENVY
+PIN-------------PIN
+64 RESETB-------?
+63 CE-----------GPIO8
+62 DI-----------?
+61 CL-----------GPIO10
+60 MCLK---------?
+59 BCLK---------PBCLK
+
+I will have to use a voltmeter to get more information.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 02:59 nframpton      New Issue                                    
-07-01-05 02:59 nframpton      Distribution              => Leaf Bering v1.2
-07-01-05 02:59 nframpton      Kernel Version            => 2.4.31          
-07-01-05 12:32 jcdutton       Note Added: 0005331                          
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
 ======================================================================
 
 
