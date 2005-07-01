@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001225]: RMS hardware input and software plaback levels are incorrectly reported under 64 bit linux
-Date: Fri, 1 Jul 2005 20:11:49 +0200
-Message-ID: <9a73e92ec45b6e1db7c18aab13022724@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Fri, 1 Jul 2005 20:16:56 +0200
+Message-ID: <21c223e533a2ea0598ae0e4c40b8432e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 105311A8
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 20:11:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E1CF1A8
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 20:16:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1225> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
-Reported By:                ckg
-Assigned To:                charbonnel
+Reported By:                Hetfield
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1225
-Category:                   PCI - RME HDSP
+Issue ID:                   1224
+Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             2.6.11
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             07-01-2005 20:11 CEST
-Last Modified:              07-01-2005 20:11 CEST
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              07-01-2005 20:16 CEST
 ======================================================================
-Summary:                    RMS hardware input and software plaback levels are
-incorrectly reported under 64 bit linux
+Summary:                    artsd-like style
 Description: 
-I'm using the PCI HDSP with a Multiface interface,  Everything appears to
-be correct with the audio, but the hdspmixer reports bogus valus for
-hardware input and software playback RMS levels.  The peak leavels are
-correct.  The problem happens when the driver is compiled into the kernel
-and when it is a module.
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-I think the problem is caused because the rms regesters are positioned at
-a 4 byte but not an 8 byte boundary on a 32 bit system, but on a 64 bit
-system, they are movd back 4 bytes to an 8 byte alignment
+that could be very important for example using skype voip and listening
+music at the same time.
 ======================================================================
+
+----------------------------------------------------------------------
+ Hetfield - 07-01-05 20:16 
+----------------------------------------------------------------------
+maybe i'd better to explain better.
+
+i know we can use dmix plugin, but old oss apps need aoss, and this
+creates some problems to applications like skype (that seg fault)
+
+i meant: can alsa drivers manage all /dev/dsp without aoss proxy?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 20:11 ckg            New Issue                                    
-07-01-05 20:11 ckg            File Added: hdsp.patch                       
-07-01-05 20:11 ckg            Kernel Version            => 2.6.11          
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
 ======================================================================
 
 
