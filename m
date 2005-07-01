@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001223]: Unable to select card for playback
-Date: Fri, 1 Jul 2005 02:59:28 +0200
-Message-ID: <2f2d08bc35f064001b8a30b6b6f84526@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0 analog subsections not ready: no sound
+Date: Fri, 1 Jul 2005 12:07:14 +0200
+Message-ID: <2a13eaae4b1c10c75ad311d70ba3948d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0663D13E
-	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 02:59:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C627A186
+	for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2005 12:07:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,106 +22,128 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1223> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1213> 
 ======================================================================
-Reported By:                nframpton
-Assigned To:                jcdutton
+Reported By:                shensche
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1223
-Category:                   PCI - ca0106
+Issue ID:                   1213
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Leaf Bering v1.2
-Kernel Version:             2.4.31
+Status:                     new
+Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
+Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
 ======================================================================
-Date Submitted:             07-01-2005 02:59 CEST
-Last Modified:              07-01-2005 02:59 CEST
+Date Submitted:             06-27-2005 12:22 CEST
+Last Modified:              07-01-2005 12:07 CEST
 ======================================================================
-Summary:                    Unable to select card for playback
+Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
+ready: no sound
 Description: 
-I have an Intel D875PBZ motherboard and several SB Live 24-bit (model
-SB0410) cards.  If only one card is installed the ca0106 driver works
-fine.  If multiple cards are installed I am unable to select a specific
-card for playback.
+i am working on a machine with an EPIA-M mainboard and the ICEensemble
+VT1616i sound chip (see attached lspci -v). unfortunately, i cannot hear
+any sound from it. it is always the same: the mixer settings seem ok,
+the applications play happily the files, but i cannot hear a thing. the
+speakers are ok, too.
 
-# aplay -D hw:0,0 /tmp/new.wav
-Playing WAVE '/tmp/new.wav' : Signed 16 bit Little Endian, Rate 16000 Hz,
-Mono
-aplay: set_params:862: Channels count non available
+the system is running kernel 2.6.11 with the kernel patches from Con
+Kolivas (-ck10) and ALSA. i also tried OSS (not the emu) on that kernel.
+i tried 2.4 kernels with Damn Small Linux and Knoppix 3.7 and 2.6.9
+=66rom Knoppix 3.7 and a custom 2.6.10-ck6.
+since ALSA 1.0.8 did not work, i installed 1.0.9b, including the libs
+and utils. during that upgrade, the mixer lost the possibility to change
+the DXS-settings. has this to do with the whitelist, introduced
+recently?
 
-I am using the default configuration supplied with alsa-lib 1.0.9.
+i played around with lots of combinations of the options ac97_quirk and
+dxs_support when loading the kernel module.
 
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun 30 2005 for kernel 2.4.31-NANO.
+on the hardware side i disabled the front panel sockets for line-out and
+mic-in, just to be sure. and i often tried all three sockets for=20
+line-out, line-in and mic-in in the back to hear the output.
 
-# cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xb800 irq 3
-1 [CA0106_1       ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xbc00 irq 10
+the chip seems to share interrupt 10 with USB, so i unloaded uhci-hcd,
+but to no avail. i also dis-/enabled ACPI, reserved IRQ for non-PCI (now
+USB and sound share interrupt 5) in the BIOS. the BIOS was told that
+there was a/no PlugNPlay OS and the MC97 modem is disabled.
+the machine does not seem to have an APIC.
 
-# cat /proc/asound/devices
- 19: [0- 3]: digital audio playback
- 27: [0- 3]: digital audio capture
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
- 51: [1- 3]: digital audio playback
- 59: [1- 3]: digital audio capture
- 50: [1- 2]: digital audio playback
- 58: [1- 2]: digital audio capture
- 49: [1- 1]: digital audio playback
- 57: [1- 1]: digital audio capture
- 48: [1- 0]: digital audio playback
- 56: [1- 0]: digital audio capture
- 32: [1- 0]: ctl
+i muted some IEC 958 settings in the mixer as read somewhere in the net,
+but that did not help either. and one of these settings always
+reenables itself as soon as i try to play a wav with aplay.
 
-# cat /proc/interrupts
-           CPU0
-  0:      31884          XT-PIC  timer
-  1:          3          XT-PIC  keyboard
-  2:          0          XT-PIC  cascade
-  3:          0          XT-PIC  snd_ca0106
-  4:        635          XT-PIC  serial
- 10:        726          XT-PIC  snd_ca0106, eth0
- 14:       7402          XT-PIC  ide0
-NMI:          0
-ERR:          0
+i modified alsa-kernel/pci/ac97/ac97_codec.c to goto __ready_ok also
+when "0 analog subsections are ready" (weird message, btw) before line
+1960. another try was to increase the end_time in line 1953 by factor
+10. both did not yield a successful result, both being a shot in the
+blue.
 
-# cat /proc/asound/modules
-0 snd-ca0106
-1 snd-ca0106
 
-# cat /proc/asound/pcm
-00-00: ca0106 : CA0106 : playback 1 : capture 1
-00-01: ca0106 : CA0106 : playback 1 : capture 1
-00-02: ca0106 : CA0106 : playback 1 : capture 1
-00-03: ca0106 : CA0106 : playback 1 : capture 1
-01-00: ca0106 : CA0106 : playback 1 : capture 1
-01-01: ca0106 : CA0106 : playback 1 : capture 1
-01-02: ca0106 : CA0106 : playback 1 : capture 1
-01-03: ca0106 : CA0106 : playback 1 : capture 1
+i attached /etc/asound.state (after saving with alsactl store) and the
+output of dmesg. do not mind the oops from cowloop, i guess it is not
+important, because all the other kernels do not work as well.
 
+i read=20
+http://alsa-project.org/alsa-doc/doc-php/template.php?company=3DVIA&card=3D=
+=2E&chip=3DVIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=3Dvia82xx
+alsa-kernel/Documentation/ALSA-Configuration.txt
+and many other forum entries
+
+but still something is going wrong. why are 0 analog subdevices ready?
+how to make them ready? where to wait? what to initialise?
+
+i will try to upgrade the BIOS, soon and try with MS Windows (if i manage
+to fit   it onto 1 GB)
 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-29-05 20:16 
+----------------------------------------------------------------------
+The message "analog subsections not ready" itself isn't always critical. 
+For example, I got this with my audigy1 but it worked...
+
+BTW, if possible, please try ALSA 1.0.8.  There are some changes in 1.0.9
+wrt DXS support, and this might influence on the behavior.
+
+----------------------------------------------------------------------
+ shensche - 07-01-05 12:07 
+----------------------------------------------------------------------
+- tried with 2.6.12-ck3 (ALSA 1.0.9rc2): no success
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 02:59 nframpton      New Issue                                    
-07-01-05 02:59 nframpton      Distribution              => Leaf Bering v1.2
-07-01-05 02:59 nframpton      Kernel Version            => 2.4.31          
+06-27-05 12:22 shensche       New Issue                                    
+06-27-05 12:22 shensche       File Added: asound.conf                      
+06-27-05 12:22 shensche       Distribution              => Debian (derived
+Knoppix->Morphix->Kunnafonix)
+06-27-05 12:22 shensche       Kernel Version            => 2.6.11.12, but also
+many other 2.4 and 2.6 kernels
+06-27-05 12:23 shensche       File Added: asound.state                     
+06-27-05 12:27 shensche       File Added: dmesg.full                       
+06-27-05 12:27 shensche       File Added: dmesg.oss                        
+06-27-05 12:28 shensche       File Added: lspci                            
+06-27-05 12:29 shensche       Issue Monitored: shensche                    
+06-27-05 12:36 shensche       Issue End Monitor: shensche                    
+06-28-05 11:31 shensche       File Added: proc_asound_card0_codec97#_ac97#0-0   
+                
+06-28-05 11:32 shensche       File Added:
+proc_asound_card0_codec97#_ac97#0-0+regs                    
+06-28-05 11:32 shensche       File Added: proc_asound_card0_via82xx             
+      
+06-28-05 11:32 shensche       File Added: proc_asound_cards                    
+06-28-05 11:33 shensche       File Added: proc_asound_version                   
+
+06-28-05 12:02 shensche       Note Added: 0005296                          
+06-28-05 20:19 shensche       Note Added: 0005300                          
+06-29-05 20:16 tiwai          Note Added: 0005310                          
+07-01-05 12:07 shensche       Note Added: 0005329                          
 ======================================================================
 
 
