@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sat, 2 Jul 2005 20:59:15 +0200
-Message-ID: <ee1220ddf5d3a8d270776aa022f4fd90@bugtrack.alsa-project.org>
+Date: Sat, 2 Jul 2005 21:44:48 +0200
+Message-ID: <7c2bb979e6c5a624d5745aec34c10fc0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3A2E1BD
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 20:59:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6803C1C0
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 21:44:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-02-2005 20:59 CEST
+Last Modified:              07-02-2005 21:44 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,23 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 07-02-05 20:20 
-----------------------------------------------------------------------
-As I mentioned ealier, the ICE1724 driver must get audio in signed 32-bit
-format. Therefore ALSA must change the audio format on the fly. This is
-done by the plug module (type plug). If you don't use the plug module, and
-attempt to play ordinary 32-bit audio, it will fail.
-
-I know that the ICE1724 stuff work, because I saw ealier that the peak
-meter (Multi Track Peak) is altered when you attempt to play something.
-
-The only thing which doesn't work, is the WM8770, which is responsible for
-digital-to-analogue and analogue-to-digital conversion and attenuation.
-
-Actually, I made a VU meter for the card once, if I can find it again (or
-rewrite it), you would see it move when you try to play audio.
-
-----------------------------------------------------------------------
  Demosthenes - 07-02-05 20:59 
 ----------------------------------------------------------------------
 Right, thanks.  I have tried some combinations, but not by any means all
@@ -91,6 +74,12 @@ alas no sound, I don't know if baesyspem tested 11 since it wasn't
 highlighted on your diagram.  baesyspem doesn't seem to be around at the
 moment, I think I shall probably try and get at my card again and check
 those pins maybe.
+
+----------------------------------------------------------------------
+ ungod - 07-02-05 21:44 
+----------------------------------------------------------------------
+Couldn't find the old VU meter thing, but made a new one (attached as
+peak.tar.gz). Requires root permissions
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -160,6 +149,8 @@ Hedgehog)
 07-02-05 18:36 Demosthenes    Note Added: 0005355                          
 07-02-05 20:20 ungod          Note Added: 0005358                          
 07-02-05 20:59 Demosthenes    Note Added: 0005359                          
+07-02-05 21:43 ungod          File Added: peak.tar.gz                      
+07-02-05 21:44 ungod          Note Added: 0005360                          
 ======================================================================
 
 
