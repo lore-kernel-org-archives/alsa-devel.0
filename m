@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sat, 2 Jul 2005 20:20:33 +0200
-Message-ID: <8b71967f89359b063d2b6a39622e5bb2@bugtrack.alsa-project.org>
+Date: Sat, 2 Jul 2005 20:59:15 +0200
+Message-ID: <ee1220ddf5d3a8d270776aa022f4fd90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC6E71BD
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 20:20:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3A2E1BD
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 20:59:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-02-2005 20:20 CEST
+Last Modified:              07-02-2005 20:59 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,27 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 07-02-05 18:36 
-----------------------------------------------------------------------
-Yes I can start trying other combinations. 8 9 10 11 produces no sound.
-Out of interest how is it that you know that the card is playing sound but
-its not getting output?
-Also I thought I would play around with a few things so I added:
-pcm.card0 {
-type hw
-card 0
-}
-
-pcm.card1 {
-type hw
-card 1
-}
-to asound.conf. Now aplay -D card1 test.wav plays the wav but sped up (cos
-it's not using plug) but card0 gives 
-"aplay: set_params:857: Sample format non available"
-Is that the expected result?
-
-----------------------------------------------------------------------
  ungod - 07-02-05 20:20 
 ----------------------------------------------------------------------
 As I mentioned ealier, the ICE1724 driver must get audio in signed 32-bit
@@ -102,6 +81,16 @@ digital-to-analogue and analogue-to-digital conversion and attenuation.
 
 Actually, I made a VU meter for the card once, if I can find it again (or
 rewrite it), you would see it move when you try to play audio.
+
+----------------------------------------------------------------------
+ Demosthenes - 07-02-05 20:59 
+----------------------------------------------------------------------
+Right, thanks.  I have tried some combinations, but not by any means all
+(that would take a long time). 11 does look to be the logical place, but
+alas no sound, I don't know if baesyspem tested 11 since it wasn't
+highlighted on your diagram.  baesyspem doesn't seem to be around at the
+moment, I think I shall probably try and get at my card again and check
+those pins maybe.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -170,6 +159,7 @@ Hedgehog)
 07-02-05 18:27 ungod          Note Added: 0005354                          
 07-02-05 18:36 Demosthenes    Note Added: 0005355                          
 07-02-05 20:20 ungod          Note Added: 0005358                          
+07-02-05 20:59 Demosthenes    Note Added: 0005359                          
 ======================================================================
 
 
