@@ -1,14 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [Openvortex-dev] Re: Re: [ALSA - driver 0001138]:   errors when
- installing au8820 modules
-Date: Sat, 02 Jul 2005 20:53:39 +0800
-Message-ID: <42C68E53.4050406@netvigator.com>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de>	<42A5D3C8.1030903@mail.ru> <42A6E5BE.4030003@netvigator.com>	<42A73305.9000000@mail.ru> <42C1015E.9010201@netvigator.com> <42C5936C.3020305@mail.ru>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Sat, 2 Jul 2005 16:50:32 +0200
+Message-ID: <00d7d2e82c538cde340d628f57e54be1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42C5936C.3020305@mail.ru>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4FB41AF
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 16:50:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,401 +18,160 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Igor Kovalenko wrote:
-> Raymond wrote:
-> 
->>Igor Kovalenko wrote:
->>
->>>Raymond wrote:
->>>
->>>>Igor Kovalenko wrote:
->>>>
->>>>
->>>>>Well, I've not stated the problem clearly enough.
->>>>>Once set, volume stays as it should. The problem is that
->>>>>PCM volume is:
->>>>>1% - at lowest audible level
->>>>>25% - at about 50% audible level
->>>>>49% - at about max audible level
->>>>>51% - at lowest audible level
->>>>>75% - at about 50% audible level
->>>>>99% - at about max audible level
->>>>>- that is what I described as low-high-low-high.
->>>>>On the other hand, Master volume behaves as expected.
->>>>
->>>>
->>>>
->>>>What is the value of comment.range of 'PCM Playback Volume' in
->>>>/etc/asound.state for your STAC9704 (au8820) ?
->>>>
->>>>
->>>>According to 9704SPEC.pdf, it should be '0-31' ( 5 bits ) for STAC9704
->>>>PCM Out volume.
->>>>
->>>
->>>
->>>        control.21 {
->>>                comment.access 'read write'
->>>                comment.type INTEGER
->>>                comment.count 2
->>>                comment.range '0 - 63'
->>>                iface MIXER
->>>                name 'PCM Playback Volume'
->>>                value.0 21
->>>                value.1 21
->>>        }
->>>
->>>Do you mean AC97 is incorrectly reporting 0...63 range?
->>>
->>>
->>
->>Try the following patch to log the read/write of ac97 and post the
->>system log using dmesg. (loading au8820 and alsactl restore)
->>
->>
->>alsa-driver-1.0.9b/alsa-kernel/pci/au88x0/au88x0_core.c
->>@@ -2520,6 +2515,7 @@
->>     vortex_t *card = (vortex_t *) codec->private_data;
->>     unsigned int lifeboat = 0;
->>
->>+    printk(KERN_INFO "ac97 write %.2x : %.4x\n",addr,data);
->>     /* wait for transactions to clear */
->>     while (!(hwread(card->mmio, VORTEX_CODEC_CTRL) & 0x100)) {
->>         udelay(100);
->>@@ -2567,6 +2563,7 @@
->>         }
->>     } while ((data & VORTEX_CODEC_ADDMASK) !=
->>          (addr << VORTEX_CODEC_ADDSHIFT));
->>+    printk(KERN_INFO "ac97 read  %.2x : %.4x\n",addr,data &
->>VORTEX_CODEC_DATMASK);
->>
->>     /* return data. */
->>     return (u16) (data & VORTEX_CODEC_DATMASK);
->>
-> 
-> 
-> Here is the dmesg excerpt:
-> 
-> Vortex: shutdown...<6>done.
-> ACPI: PCI Interrupt 0000:02:06.0[A] -> Link [APC3] -> GSI 18 (level, low) -> IRQ 185
-> Vortex: init.... <6>done.
-> ac97 read  7c : 8384
-> ac97 read  7e : 7605
-> ac97 write 00 : 0000
-> ac97 read  00 : 6940
-> ac97 read  7c : 8384
-> ac97 read  7e : 7605
-> ac97 write 1c : 8a05
-> ac97 read  1c : 8a05
-> ac97 read  7c : 8384
-> ac97 read  7e : 7605
-> ac97 write 1c : 8a06
-> ac97 read  1c : 8a06
-> ac97 read  00 : 6940
-> ac97 read  28 : 0000
-> ac97 write 26 : 0000
-> ac97 write 00 : 0000
-> ac97 write 26 : 0000
-> ac97 write 20 : 0000
-> ac97 read  26 : 000f
-> ac97 read  02 : 8000
-> ac97 read  02 : 8000
-> ac97 write 02 : 0000
-> ac97 read  02 : 0000
-> ac97 write 02 : 8000
-> ac97 read  02 : 8000
-> ac97 write 02 : 8000
-> ac97 write 02 : a0a0
-> ac97 read  02 : 9f9f
-> ac97 write 02 : 9090
-> ac97 read  02 : 9090
-> ac97 read  02 : 9010
-> ac97 write 02 : 9f1f
-> ac97 read  06 : 9f00
-> ac97 read  06 : 8000
-> ac97 write 06 : 0000
-> ac97 read  06 : 0000
-> ac97 write 06 : 8000
-> ac97 read  06 : 8000
-> ac97 write 06 : 8000
-> ac97 write 06 : a0a0
-> ac97 read  06 : a09f
-> ac97 write 06 : 9090
-> ac97 read  06 : 9090
-> ac97 read  06 : 8010
-> ac97 write 06 : bf1f
-> ac97 read  0a : 0000
-> ac97 write 0a : 8000
-> ac97 read  0a : 8000
-> ac97 read  0a : 8000
-> ac97 write 0a : 801e
-> ac97 read  0c : 8008
-> ac97 read  0c : 8008
-> ac97 write 0c : 0008
-> ac97 read  0c : 0008
-> ac97 write 0c : 8008
-> ac97 read  0c : 8008
-> ac97 write 0c : 8008
-> ac97 write 0c : a0a0
-> ac97 read  0c : 8000
-> ac97 write 0c : 9090
-> ac97 read  0c : 8010
-> ac97 write 0c : 8181
-> ac97 read  0c : 8001
-> ac97 read  0c : 8001
-> ac97 write 0c : 801f
-> ac97 read  0e : 8008
-> ac97 read  0e : 8008
-> ac97 write 0e : 0008
-> ac97 read  0e : 0008
-> ac97 write 0e : 8008
-> ac97 read  0e : 8008
-> ac97 write 0e : 8008
-> ac97 write 0e : a0a0
-> ac97 read  0e : a0a0
-> ac97 read  0e : 8000
-> ac97 write 0e : bf3f
-> ac97 read  10 : a828
-> ac97 read  10 : 8808
-> ac97 write 10 : 0808
-> ac97 read  10 : 0808
-> ac97 write 10 : 8808
-> ac97 read  10 : 8808
-> ac97 write 10 : 8808
-> ac97 write 10 : a0a0
-> ac97 read  10 : a0a0
-> ac97 read  10 : 8000
-> ac97 write 10 : bf3f
-> ac97 read  12 : a828
-> ac97 read  12 : 8808
-> ac97 write 12 : 0808
-> ac97 read  12 : 0808
-> ac97 write 12 : 8808
-> ac97 read  12 : 8808
-> ac97 write 12 : 8808
-> ac97 write 12 : a0a0
-> ac97 read  12 : a0a0
-> ac97 read  12 : 8000
-> ac97 write 12 : bf3f
-> ac97 read  14 : a828
-> ac97 read  14 : 8808
-> ac97 write 14 : 0808
-> ac97 read  14 : 0808
-> ac97 write 14 : 8808
-> ac97 read  14 : 8808
-> ac97 write 14 : 8808
-> ac97 write 14 : a0a0
-> ac97 read  14 : a0a0
-> ac97 read  14 : 8000
-> ac97 write 14 : bf3f
-> ac97 read  16 : a828
-> ac97 read  16 : 8808
-> ac97 write 16 : 0808
-> ac97 read  16 : 0808
-> ac97 write 16 : 8808
-> ac97 read  16 : 8808
-> ac97 write 16 : 8808
-> ac97 write 16 : a0a0
-> ac97 read  16 : a0a0
-> ac97 read  16 : 8000
-> ac97 write 16 : bf3f
-> ac97 read  18 : 8808
-> ac97 write 18 : 0808
-> ac97 read  18 : 0808
-> ac97 write 18 : 8808
-> ac97 read  18 : 8808
-> ac97 write 18 : 8808
-> ac97 write 18 : a0a0
-> ac97 read  18 : a0a0
-> ac97 read  18 : 8000
-> ac97 write 18 : bf3f
-> ac97 read  1c : b030
-> ac97 write 1c : 3030
-> ac97 read  1c : 3030
-> ac97 write 1c : b030
-> ac97 read  1c : b030
-> ac97 write 1c : b030
-> ac97 write 1a : 0000
-> ac97 write 1c : 0000
-> ac97 read  20 : 0000
-> ac97 write 20 : 8000
-> ac97 read  20 : 8000
-> ac97 write 20 : 0000
-> ac97 read  20 : 0000
-> ac97 write 20 : 2000
-> ac97 read  20 : 2000
-> ac97 write 20 : 0000
-> ac97 read  20 : 0000
-> ac97 write 20 : 0200
-> ac97 read  20 : 0200
-> ac97 write 20 : 0000
-> ac97 read  20 : 0000
-> ac97 write 20 : 0100
-> ac97 read  20 : 0100
-> ac97 write 20 : 0000
-> ac97 read  22 : 0000
-> ac97 write 22 : 0707
-> ac97 read  22 : 0707
-> ac97 write 22 : 0000
-> ac97 read  26 : 000f
-> ac97 write 26 : 800f
-> ac97 read  26 : 800f
-> ac97 write 26 : 000f
-> ac97 read  2a : ffff
-> ac97 write 2a : ffff
-> ac97 write 02 : 1f1f
-> ac97 write 02 : 1313
-> ac97 write 12 : 3f3f
-> ac97 write 12 : 3434
-> ac97 write 18 : 3f3f
-> ac97 write 18 : 2828
-> ac97 write 20 : 0200
-> ac97 write 22 : 0400
-> ac97 write 22 : 0402
-> ac97 write 26 : 800f
-> 
 
-Since there is no error message "vortex: ac97 codec stuck busy" or
-"vortex: ac97 address never arrived" appear in your system log.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+======================================================================
+Reported By:                Demosthenes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1090
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              07-02-2005 16:50 CEST
+======================================================================
+Summary:                    Support for new Prodigy 7.1 LT
+Description: 
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-It seem to me that your problem is due to the routine
-check_volume_resolution() do not take care of the difference between
-STAC9704 (AC97 2.0) and AC97 2.1 Specification. ( "reserved bits are
-don't care upon read back" in AC97 2.0 and "reserved bits must return 0
-upon read back" in AC97 2.1)
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_codec.c?r1=1.163&r2=1.164
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
 
-You will need to open another bug report with category "AC97" in ALSA
-Bug Tracking System.
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
 
+I would be very happy to give any further information needed.
+======================================================================
 
-STAC9704 specification
+----------------------------------------------------------------------
+ ungod - 07-02-05 03:37 
+----------------------------------------------------------------------
+Alright then. Let's do some other testing...
+I've attaced a program, which will reset and set up the WM8770 chip to
+maximum volume, without using the driver (the driver must have been
+loadet, though)
 
-1) All registers not shown and bits contain an X are resserved.
-2) Any reserved bits, marked X, can be written to but are don't care
-upon read back.
+Syntax is:
 
-AC97 2.1 specification
+mix <CE pin> <DI pin> <CL pin> <RESETB pin>
 
-1) Italian underline indicate optional feature registers or optional
-bits within a register. Whether implemented or not, these may be written
-to but must return 0 if there is no support for this feature.
-2) Any reserved bits, marked X, can be written to but must return 0 on
-read back.
+For instance, on the ordinary Prodigy 7.1, "./mix 12 18 19 20" would do
+the trick.
 
+Now, according to you, the RESETB pin of the WM8770 is attached to the
+PRST# pin on the ICE1724. However, in order to communicate with the
+WM8770, the RESETB pin must be asserted high (and exactly when this is
+doen, impacts the communication protocol), so it is vital that the RESETB
+pin is connected to a user-controllable output pin.
+Right next to the PRST# pin, is the GPIO22. Now, if we are very lucky,
+this is were the RESETB pin is actually connected.
 
-Master Volume
+Anyway, if you make XMMS or whatever audio application, play audio on your
+Prodigy card, and execute "./mix 9 10 11 22" as root (assuming that the
+RESETB pin is connected to GPIO22), you will hopefully get sound.
 
-ac97 read  02 : 8000
-ac97 read  02 : 8000
-ac97 write 02 : 0000
-ac97 read  02 : 0000
-ac97 write 02 : 8000
-ac97 read  02 : 8000
-ac97 write 02 : 8000
-ac97 write 02 : a0a0
-ac97 read  02 : 9f9f
-ac97 write 02 : 9090
-ac97 read  02 : 9090
-ac97 read  02 : 9010
-ac97 write 02 : 9f1f  ( 5-bits )
-
-Master Volume Mono
-
-ac97 read  06 : 9f00
-ac97 read  06 : 8000
-ac97 write 06 : 0000
-ac97 read  06 : 0000
-ac97 write 06 : 8000
-ac97 read  06 : 8000
-ac97 write 06 : 8000
-ac97 write 06 : a0a0
-ac97 read  06 : a09f <--- ???
-ac97 write 06 : 9090
-ac97 read  06 : 9090
-ac97 read  06 : 8010
-ac97 write 06 : bf1f ( 6-bits )
-
-Mic Volume
-
-ac97 read  0e : 8008
-ac97 read  0e : 8008
-ac97 write 0e : 0008
-ac97 read  0e : 0008
-ac97 write 0e : 8008
-ac97 read  0e : 8008
-ac97 write 0e : 8008
-ac97 write 0e : a0a0
-ac97 read  0e : a0a0 <--- ???
-ac97 read  0e : 8000
-ac97 write 0e : bf3f ( 6-bits )
-
-CD Volume
-
-ac97 read  12 : a828
-ac97 read  12 : 8808
-ac97 write 12 : 0808
-ac97 read  12 : 0808
-ac97 write 12 : 8808
-ac97 read  12 : 8808
-ac97 write 12 : 8808
-ac97 write 12 : a0a0
-ac97 read  12 : a0a0  <--- ???
-ac97 read  12 : 8000
-ac97 write 12 : bf3f ( 6-bits )
-
-PCM Volume
-
-ac97 read  18 : 8808
-ac97 write 18 : 0808
-ac97 read  18 : 0808
-ac97 write 18 : 8808
-ac97 read  18 : 8808
-ac97 write 18 : 8808
-ac97 write 18 : a0a0
-ac97 read  18 : a0a0 <--- ???
-ac97 read  18 : 8000
-ac97 write 18 : bf3f ( 6-bits )
-
-Record Gain
-
-ac97 read  1c : b030 <--- ???
-ac97 write 1c : 3030 <--- ???
-ac97 read  1c : 3030 <--- ???
-ac97 write 1c : b030 <--- ???
-ac97 read  1c : b030 <--- ???
-ac97 write 1c : b030 <--- ???
+If everything fails, we can always brute force by trying every combination
+until we get lucky (just ignore the fact that there are loads and loads of
+combinations)
 
 
 
-alsactl restore
+----------------------------------------------------------------------
+ Demosthenes - 07-02-05 16:50 
+----------------------------------------------------------------------
+ok I just started alsaplayer with a long wav and tried that didn't get any
+sound.
+Did you not mean 8 9 10 rather than 9 10 11 since those were the pins
+baesyspem reported (I haven't looked at the pins on my card but I'm
+assuming that baesyspems numbers are fine).
+I tried also ./mix 8 9 10 22 and same result.
 
-ac97 write 02 : 1f1f
-ac97 write 02 : 1313
-ac97 write 12 : 3f3f  <--- ???
-ac97 write 12 : 3434  <--- ???
-ac97 write 18 : 3f3f  <--- ???
-ac97 write 18 : 2828  <--- ???
-ac97 write 20 : 0200
-ac97 write 22 : 0400
-ac97 write 22 : 0402
-ac97 write 26 : 800f
-
-
-
-
-
-
-
-
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
+07-01-05 16:09 baesyspem      Note Added: 0005335                          
+07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
+         
+07-01-05 20:43 ungod          Note Added: 0005339                          
+07-01-05 22:08 Demosthenes    Note Added: 0005341                          
+07-01-05 22:46 ungod          Note Added: 0005342                          
+07-01-05 23:09 Demosthenes    Note Added: 0005344                          
+07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
+07-02-05 03:29 ungod          Note Added: 0005350                          
+07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
+07-02-05 03:37 ungod          Note Edited: 0005350                         
+07-02-05 16:50 Demosthenes    Note Added: 0005353                          
+======================================================================
 
 
 
