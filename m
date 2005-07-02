@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001225]: RMS hardware input and software plaback levels are incorrectly reported under 64 bit linux
-Date: Sat, 2 Jul 2005 08:42:46 +0200
-Message-ID: <fb85270a929971e92d19d27ba5768df2@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Fix emu10k1 breakages in kernel 2.6.12
+Date: Sat, 02 Jul 2005 11:34:05 +0100
+Message-ID: <42C66D9D.9020203@superbug.co.uk>
+References: <1120273701.12256.30.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B8CE187
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 08:42:47 +0200 (MEST)
+In-Reply-To: <1120273701.12256.30.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> This set of critical fixes did not make it into the 2.6.12 kernel.
+> 
+> To better handle the large variety of devices it supports, the emu10k1
+> driver was recently cleaned up by moving all hardware details into a
+> table keyed by PCI ID; unfortunately some IDs were missing from the
+> table.
+> 
+> The typical effect is loss of mixer settings, mic not working, or no
+> sound at all when upgrading to 2.6.12.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1225> 
-======================================================================
-Reported By:                ckg
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1225
-Category:                   PCI - RME HDSP
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             07-01-2005 20:11 CEST
-Last Modified:              07-02-2005 08:42 CEST
-======================================================================
-Summary:                    RMS hardware input and software plaback levels are
-incorrectly reported under 64 bit linux
-Description: 
-I'm using the PCI HDSP with a Multiface interface,  Everything appears to
-be correct with the audio, but the hdspmixer reports bogus valus for
-hardware input and software playback RMS levels.  The peak leavels are
-correct.  The problem happens when the driver is compiled into the kernel
-and when it is a module.
+Hold on. It is supposed to be done in a backwards compatible way
+already. Before all card varients we handled as being the same card,
+except for a few special cases. The first version of the patch took the
+general case and named it "Audigy Unknown" and gave it the correct
+parameters as were used before in the general case of all card varients
+being the same. Then, I looked through the code, and extracted all the
+special cases, and created specific recognition of those cards and set
+the correct feature variables, so they were also handled.
+The result of this should have been that there were no performance
+change between either versions. Then, as more card types were
+identified, I added special cases for them, but in their case, they used
+all the default parameters for the general case, the only difference was
+that the correct Model name was recorded and displayed in
+/proc/asound/cards. This is mainly just to help users identify their
+particular card, without having to remove the case of their PC. So this
+helps them report bugs better.
 
-I think the problem is caused because the rms regesters are positioned at
-a 4 byte but not an 8 byte boundary on a 32 bit system, but on a 64 bit
-system, they are movd back 4 bytes to an 8 byte alignment
-======================================================================
+If there are loss of features during the upgrade, I would be very
+suprised. I suspect that the same problems one sees now with some cards,
+has been there all along. If that is not the case, please report them in
+the bug tracker in the normal way.
 
-----------------------------------------------------------------------
- charbonnel - 07-02-05 08:42 
-----------------------------------------------------------------------
-Hi,
+James
 
-It sounds similar to a bug in the byte swapping code that was fixed some
-time ago.
-(see ALSA BUG https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000801)
-Do you use the in-kernel alsa driver with 2.6.11 ? If so they may be a
-little old.
-What's the version reported by cat /proc/asound/version ?
-I suspect your patch seems to fix the problem but introduces a one channel
-offset in the metering values.
 
-Thomas
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 20:11 ckg            New Issue                                    
-07-01-05 20:11 ckg            File Added: hdsp.patch                       
-07-01-05 20:11 ckg            Kernel Version            => 2.6.11          
-07-02-05 08:42 charbonnel     Note Added: 0005352                          
-======================================================================
 
 
 
