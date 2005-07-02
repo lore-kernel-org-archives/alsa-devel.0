@@ -1,13 +1,11 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Fix emu10k1 breakages in kernel 2.6.12
-Date: Sat, 02 Jul 2005 11:34:05 +0100
-Message-ID: <42C66D9D.9020203@superbug.co.uk>
-References: <1120273701.12256.30.camel@mindpipe>
+Subject: A suggestion to solve the ALSA resampling problem.
+Date: Sat, 02 Jul 2005 13:23:42 +0100
+Message-ID: <42C6874E.9060301@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1120273701.12256.30.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +15,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> This set of critical fixes did not make it into the 2.6.12 kernel.
-> 
-> To better handle the large variety of devices it supports, the emu10k1
-> driver was recently cleaned up by moving all hardware details into a
-> table keyed by PCI ID; unfortunately some IDs were missing from the
-> table.
-> 
-> The typical effect is loss of mixer settings, mic not working, or no
-> sound at all when upgrading to 2.6.12.
-> 
+Hi,
 
-Hold on. It is supposed to be done in a backwards compatible way
-already. Before all card varients we handled as being the same card,
-except for a few special cases. The first version of the patch took the
-general case and named it "Audigy Unknown" and gave it the correct
-parameters as were used before in the general case of all card varients
-being the same. Then, I looked through the code, and extracted all the
-special cases, and created specific recognition of those cards and set
-the correct feature variables, so they were also handled.
-The result of this should have been that there were no performance
-change between either versions. Then, as more card types were
-identified, I added special cases for them, but in their case, they used
-all the default parameters for the general case, the only difference was
-that the correct Model name was recorded and displayed in
-/proc/asound/cards. This is mainly just to help users identify their
-particular card, without having to remove the case of their PC. So this
-helps them report bugs better.
+There are essentually 2 problems to solve. I will take the alsa code in
+the game doom3 as a way to demonstrate the problems.
 
-If there are loss of features during the upgrade, I would be very
-suprised. I suspect that the same problems one sees now with some cards,
-has been there all along. If that is not the case, please report them in
-the bug tracker in the normal way.
+doom3 uses a sample rate of 44100. Most sound cards now work at 48000 in
+hardware, so one needs to sample rate convert between 44100 to 48000 in
+software in order to get games like doom3 to play well.
+doom3 also opens the buffers at 1024 frames per period, and 4096 frames
+per buffer. It then writes 1024 frames at a time to the buffer. If the
+complete write fails, it complains and the sound sounds really bad.
+This approach is fine in the sound card can do periods of 1024 frames,
+but not all sound card hardware can, so we need to find an abstraction
+layer in order to deliver these period and buffer sizes to the
+application, while also serving the different period and buffer sizes of
+the hardware.
+
+So, how about this.
+The application can select any buffer size and period size they like.
+For simplicity, we might impose that number_of_periods is an integer.
+
+So, the 44100 application buffer is 4096(buffer size),1024(period size)
+The hardware 48000 buffer is 2048(buffer size), 512(period size)
+
+We add an intermediate buffer at 48000. This buffer size must be >=
+4096*48000/44100. period size must be >= 1024*48000/44100.
+If we round up, we get:
+intermediate buffer: 4458.23 -> 4459
+intermediate period: 1114.56 -> 1115
+
+For ease of transfer between the intermediate buffer and the hardware,
+we should really make the intermediate buffer_size = n*hardware period_size.
+So, we have the following equations to satify:
+intermediate_buffer_size = n * hardware_period_size.
+intermediate_buffer_size >=
+application_buffer*hardware_rate/application_rate.
+intermediate_period_size = hardware_period_size.
+
+This results in the:
+intermediate_buffer_size = 4608 (9 * 512)
+intermediate_period_size = 512
+
+
+Each time the sound card hardware interrupts (every 512 frames), alsa
+copies the next period from the intermediate buffer to the hardware
+buffer. This essentually allows for any sound card hardware to have as
+many periods as they wish, and thus as larger buffer size as they like.
+With the expense of one extra memcpy.
+
+Each time the application writes to the application buffer, alsa-lib
+sample rate converts the number of frames in the snd_pcm_write()
+operation, and also writes those to the intermediate buffer.
+
+Add to that some careful handling of position and avail pointers in each
+of the buffers. This should result in reliable sample rate/buffer size
+converted audio.
+
+The next thing to consider is whether some applications can get sound to
+the pcm buffer without using snd_pcm_write(). For example memcpy for
+mmap applications. We would need some way to track these memcpy writes,
+so that the sample rate converter could take the new samples, and sample
+rate convert them into the intermediate buffer.
+
+Does anyone have any ideas regarding this last point? If this last point
+never happens in alsa, then I will go ahead and start writing a patch
+for alsa to do all this.
 
 James
-
-
 
 
 
