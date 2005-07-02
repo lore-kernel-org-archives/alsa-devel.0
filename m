@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001227]: Audio output to headphone changes mapping when JACKD XRUN
-Date: Sat, 2 Jul 2005 02:46:20 +0200
-Message-ID: <87450579e0f0cdad7fb04f67dd1b607d@bugtrack.alsa-project.org>
+Date: Sat, 2 Jul 2005 02:55:31 +0200
+Message-ID: <968d080e2670989cda0e517b193ae1d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BCB31AE
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 02:46:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 447381AE
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 02:55:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3 with real time smp kernel from ccrma
 Kernel Version:             2.6.10-2.1.ll.rhfc3.ccrmasmp
 ======================================================================
 Date Submitted:             07-02-2005 01:24 CEST
-Last Modified:              07-02-2005 02:46 CEST
+Last Modified:              07-02-2005 02:55 CEST
 ======================================================================
 Summary:                    Audio output to headphone changes mapping when JACKD
 XRUN
@@ -55,26 +55,6 @@ output, and the volume is controlled by mixer "Surround". Furhter XRUNS
 will move the output to playback_5 and playback_6, and even other
 combinations.
 ======================================================================
-
-----------------------------------------------------------------------
- rfonseca - 07-02-05 01:37 
-----------------------------------------------------------------------
-I forgot to mention the soundcard is a ATI onboard with a SoundMax
-chipset.
-Modules loaded (relevant):
-
-snd_seq                64272  3 snd_seq_dummy
-snd_seq_device         13324  2 snd_seq_dummy,snd_seq
-snd_atiixp             25568  10 
-snd_ac97_codec         83064  1 snd_atiixp
-snd_pcm_oss            67488  0 
-snd_mixer_oss          25344  2 snd_pcm_oss
-snd_pcm               111492  3 snd_atiixp,snd_ac97_codec,snd_pcm_oss
-snd_timer              32004  2 snd_seq,snd_pcm
-snd                    73092  29
-snd_seq_dummy,snd_seq,snd_seq_device,snd_atiixp,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              13792  2 snd
-snd_page_alloc         14724  2 snd_atiixp,snd_pcm
 
 ----------------------------------------------------------------------
  rfonseca - 07-02-05 02:46 
@@ -191,6 +171,14 @@ subclass: 0
 subdevices_count: 1
 subdevices_avail: 1
 
+----------------------------------------------------------------------
+ rlrevell - 07-02-05 02:55 
+----------------------------------------------------------------------
+Which JACK application do you have the problem with?
+
+It sounds like an application bug - the app gets kicked by JACK for
+missing too many deadlines, and the app reconnects to the wrong ports.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -202,6 +190,7 @@ real time smp kernel from ccrma
 07-02-05 01:37 rfonseca       Note Added: 0005345                          
 07-02-05 01:39 rfonseca       Issue Monitored: rfonseca                    
 07-02-05 02:46 rfonseca       Note Added: 0005346                          
+07-02-05 02:55 rlrevell       Note Added: 0005347                          
 ======================================================================
 
 
