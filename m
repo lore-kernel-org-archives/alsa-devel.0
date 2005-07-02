@@ -1,7 +1,7 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: Fix emu10k1 breakages in kernel 2.6.12
-Date: Sat, 02 Jul 2005 23:30:25 +0100
-Message-ID: <42C71581.4070504@superbug.co.uk>
+Date: Sat, 02 Jul 2005 23:46:07 +0100
+Message-ID: <42C7192F.90705@superbug.co.uk>
 References: <1120273701.12256.30.camel@mindpipe>	 <42C66D9D.9020203@superbug.co.uk> <1120328091.2196.16.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
@@ -23,43 +23,43 @@ List-Id: alsa-devel@alsa-project.org
 
 Lee Revell wrote:
 > 
-> Right, but if the name does not match, alsactl cannot restore the
-> previous mixer settings, so the mixer is reset to the default state, ie
-> no sound.
+>>If there are loss of features during the upgrade, I would be very
+>>suprised. I suspect that the same problems one sees now with some cards,
+>>has been there all along. If that is not the case, please report them in
+>>the bug tracker in the normal way.
+>>
+> 
+> 
+> The big one is that several emu10k2 based devices like "Audigy 1 or 2
+> [Unknown]", "Audigy 2 Value [Unknown]", and "Audigy 1 [SB0090]" failed
+> to set ac97_chip, resulting in non-working mic/line in.  Here's pzad's
+> fix:
+> 
+> http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c?r1=1.52&r2=1.53
+> 
+> Users are already getting bitten, here's a bug report:
+> 
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218
+> 
+> In addition to 2.6.12, it looks like FC4 shipped with this bug.
+> 
+> Lee
 > 
 
-Ok, which name should we be using here?
-cat /proc/asound/cards
-0 [Audigy2        ]: Audigy2 - Audigy 4 PRO [SB0380]
-                     Audigy 4 PRO [SB0380] (rev.4, serial:0x20071102) at
-0x9000, irq 23
-1 [Audigy2_1      ]: Audigy2 - Audigy 2 Value [SB0400]
-                     Audigy 2 Value [SB0400] (rev.0, serial:0x10011102)
-at 0x9400, irq 17
-2 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0x8400 irq 21
-3 [CA0106_1       ]: CA0106 - CA0106
-                     AudigyLS [SB0310] at 0x8800 irq 22
+I suppose it depends what one wants to happen when the driver comes
+across a unrecognised sound card variant.
+For example, we have ac97 for the Audigy 2 LS (a ca0106 chip), but newer
+cards with the ca0106 chip have no ac97 codec. I thought that if we come
+across an unrecognised card, we should assume that it does not have
+external chips, and then add specific support into the driver if it does.
+So, now, if a new Audigy 2 arrives without any ac97 chip, the
+snd-emu10k1 module will fail to load at all. At least if the default
+unknown entry excluded the ac97 chip, the user would at least have sound
+playback, just no capture.
 
-
-But alsactl asound.state uses the following names:
-state.SB0400 {
-state.SB0240 {
-state.SB0380 {
-state.CA0106 {
-state.Audigy2 {
-
-If I clear asound.state, I now get:
-state.Audigy2 {
-state.Audigy2_1 {
-state.CA0106 {
-state.CA0106_1 {
-
-This must have been a change to alsactl. I think that using Audigy2_1
-etc. is a much better idea than using something like SB0400.
-
-I don't believe my changes to emu10k1 caused this to change. It was
-something independent that changed.
+So, my general point is that people are going to get bitten no matter
+what we do for the "unknown" case, but my original method was going to
+have less of an impact that potentially yours will.
 
 James
 
