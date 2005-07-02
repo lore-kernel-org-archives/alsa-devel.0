@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 2 Jul 2005 18:53:29 +0200
-Message-ID: <daa65fa7af2f95eb1eda452c46004de1@bugtrack.alsa-project.org>
+Date: Sat, 2 Jul 2005 20:11:08 +0200
+Message-ID: <854bc40528fc21966e276062a13a0609@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1C5A1BD
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 18:53:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2ADF41C1
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 20:11:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-02-2005 18:53 CEST
+Last Modified:              07-02-2005 20:11 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,19 +52,17 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 07-01-05 22:56 
-----------------------------------------------------------------------
-from a point of view you're right, but, from the other, you're not.
-
-if it crashes with aoss this means aoss is not fully transparent for an
-application.
-that's why i asked for a driver low-level management.
-
-----------------------------------------------------------------------
  pzad - 07-02-05 18:53 
 ----------------------------------------------------------------------
 In aoss is bug. I found one (skype doesn't crash), but still can not get it
 work - there is probably another one.
+
+----------------------------------------------------------------------
+ Hetfield - 07-02-05 20:11 
+----------------------------------------------------------------------
+very good, i was sure of aoss/ dmix system bug.
+
+can i get your fixes in order to check here?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -75,6 +73,7 @@ Date Modified  Username       Field                    Change
 07-01-05 20:33 rlrevell       Note Added: 0005338                          
 07-01-05 22:56 Hetfield       Note Added: 0005343                          
 07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
 ======================================================================
 
 
