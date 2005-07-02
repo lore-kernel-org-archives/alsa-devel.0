@@ -1,13 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Fix emu10k1 breakages in kernel 2.6.12
-Date: Sat, 02 Jul 2005 23:46:07 +0100
-Message-ID: <42C7192F.90705@superbug.co.uk>
-References: <1120273701.12256.30.camel@mindpipe>	 <42C66D9D.9020203@superbug.co.uk> <1120328091.2196.16.camel@mindpipe>
+From: matthieu castet <castet.matthieu@free.fr>
+Subject: Re: [Alsa-user] sound blaster name
+Date: Sun, 03 Jul 2005 01:09:37 +0200
+Message-ID: <42C71EB1.1020207@free.fr>
+References: <42B3E474.7000301@free.fr> <42B3ECD5.6030500@superbug.co.uk>	 <42B3F28B.4030307@free.fr> <42B3F484.5060004@free.fr>	 <42B3F83C.90305@superbug.co.uk> <42B5A056.4010608@free.fr>	 <42BC6451.8020303@free.fr> <1119647048.3290.57.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1120328091.2196.16.camel@mindpipe>
+In-Reply-To: <1119647048.3290.57.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +18,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+
 Lee Revell wrote:
+> On Fri, 2005-06-24 at 21:51 +0200, matthieu castet wrote:
 > 
->>If there are loss of features during the upgrade, I would be very
->>suprised. I suspect that the same problems one sees now with some cards,
->>has been there all along. If that is not the case, please report them in
->>the bug tracker in the normal way.
->>
+>>Any new about this ?
 > 
 > 
-> The big one is that several emu10k2 based devices like "Audigy 1 or 2
-> [Unknown]", "Audigy 2 Value [Unknown]", and "Audigy 1 [SB0090]" failed
-> to set ac97_chip, resulting in non-working mic/line in.  Here's pzad's
-> fix:
+> Yes, James' patch is in ALSA CVS.
 > 
-> http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c?r1=1.52&r2=1.53
+> This should be submitted for the -stable tree, as some people are
+> upgrading to 2.6.12 and losing their mixer settings.
 > 
-> Users are already getting bitten, here's a bug report:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218
-> 
-> In addition to 2.6.12, it looks like FC4 shipped with this bug.
-> 
-> Lee
-> 
+Yes but what about the missing entries that weren't added in the *cvs* 
+and that I list in this mail [1] ?
 
-I suppose it depends what one wants to happen when the driver comes
-across a unrecognised sound card variant.
-For example, we have ac97 for the Audigy 2 LS (a ca0106 chip), but newer
-cards with the ca0106 chip have no ac97 codec. I thought that if we come
-across an unrecognised card, we should assume that it does not have
-external chips, and then add specific support into the driver if it does.
-So, now, if a new Audigy 2 arrives without any ac97 chip, the
-snd-emu10k1 module will fail to load at all. At least if the default
-unknown entry excluded the ac97 chip, the user would at least have sound
-playback, just no capture.
+thanks
 
-So, my general point is that people are going to get bitten no matter
-what we do for the "unknown" case, but my original method was going to
-have less of an impact that potentially yours will.
+Matthieu
 
-James
+[1]
+Someone on lkml give this link : 
+http://www.digit-life.com/articles/livetolive51/.
+
+It containt some forgotten ids (CT4760, mothreboard series, EMU APS).
+SB0103 seem to be a full version (not value)
+
+matthieu
 
 
 -------------------------------------------------------
