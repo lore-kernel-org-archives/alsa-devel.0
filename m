@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001227]: Audio output to headphone changes mapping when JACKD XRUN
-Date: Sat, 2 Jul 2005 03:03:52 +0200
-Message-ID: <8aa89c31a1083c24954321310c209971@bugtrack.alsa-project.org>
+Date: Sat, 2 Jul 2005 03:10:20 +0200
+Message-ID: <c623c61840294545c690ab54ed05bf76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F36D61AE
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 03:03:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 612F61AE
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 03:10:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3 with real time smp kernel from ccrma
 Kernel Version:             2.6.10-2.1.ll.rhfc3.ccrmasmp
 ======================================================================
 Date Submitted:             07-02-2005 01:24 CEST
-Last Modified:              07-02-2005 03:03 CEST
+Last Modified:              07-02-2005 03:10 CEST
 ======================================================================
 Summary:                    Audio output to headphone changes mapping when JACKD
 XRUN
@@ -55,14 +55,6 @@ output, and the volume is controlled by mixer "Surround". Furhter XRUNS
 will move the output to playback_5 and playback_6, and even other
 combinations.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 07-02-05 02:55 
-----------------------------------------------------------------------
-Which JACK application do you have the problem with?
-
-It sounds like an application bug - the app gets kicked by JACK for
-missing too many deadlines, and the app reconnects to the wrong ports.
 
 ----------------------------------------------------------------------
  rfonseca - 07-02-05 03:03 
@@ -82,6 +74,14 @@ channels in jack.
 
 The sequence of changes is sort of random, I didn't see a real pattern.
 
+----------------------------------------------------------------------
+ rlrevell - 07-02-05 03:10 
+----------------------------------------------------------------------
+Weird, it must be a driver bug then.
+
+I guess you are using the ALSA that came with your kernel, can you try
+ALSA CVS or 1.0.9b?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -95,6 +95,7 @@ real time smp kernel from ccrma
 07-02-05 02:46 rfonseca       Note Added: 0005346                          
 07-02-05 02:55 rlrevell       Note Added: 0005347                          
 07-02-05 03:03 rfonseca       Note Added: 0005348                          
+07-02-05 03:10 rlrevell       Note Added: 0005349                          
 ======================================================================
 
 
