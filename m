@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sat, 2 Jul 2005 18:27:32 +0200
-Message-ID: <fd8be523a28f733fe1d0d09c48a29705@bugtrack.alsa-project.org>
+Date: Sat, 2 Jul 2005 18:36:48 +0200
+Message-ID: <4b5a00012e499c0e0c789fb3786899dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B27E1BA
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 18:27:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39A521BA
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 18:36:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-02-2005 18:27 CEST
+Last Modified:              07-02-2005 18:36 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,20 +66,31 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 07-02-05 16:50 
-----------------------------------------------------------------------
-ok I just started alsaplayer with a long wav and tried that didn't get any
-sound.
-Did you not mean 8 9 10 rather than 9 10 11 since those were the pins
-baesyspem reported (I haven't looked at the pins on my card but I'm
-assuming that baesyspems numbers are fine).
-I tried also ./mix 8 9 10 22 and same result.
-
-----------------------------------------------------------------------
  ungod - 07-02-05 18:27 
 ----------------------------------------------------------------------
 Yes, I did mean 8 9 10... But apparently RESETB is NOT connected to GPIO22.
 Can I persuade you to try other pins for RESETB? (11 for instance)
+
+----------------------------------------------------------------------
+ Demosthenes - 07-02-05 18:36 
+----------------------------------------------------------------------
+Yes I can start trying other combinations. 8 9 10 11 produces no sound.
+Out of interest how is it that you know that the card is playing sound but
+its not getting output?
+Also I thought I would play around with a few things so I added:
+pcm.card0 {
+type hw
+card 0
+}
+
+pcm.card1 {
+type hw
+card 1
+}
+to asound.conf. Now aplay -D card1 test.wav plays the wav but sped up (cos
+it's not using plug) but card0 gives 
+"aplay: set_params:857: Sample format non available"
+Is that the expected result?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -146,6 +157,7 @@ Hedgehog)
 07-02-05 16:50 Demosthenes    Note Added: 0005353                          
 07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
 07-02-05 18:27 ungod          Note Added: 0005354                          
+07-02-05 18:36 Demosthenes    Note Added: 0005355                          
 ======================================================================
 
 
