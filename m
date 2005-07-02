@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Fix emu10k1 breakages in kernel 2.6.12
-Date: Sat, 02 Jul 2005 14:14:50 -0400
-Message-ID: <1120328091.2196.16.camel@mindpipe>
-References: <1120273701.12256.30.camel@mindpipe>
-	 <42C66D9D.9020203@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Sat, 2 Jul 2005 20:20:33 +0200
+Message-ID: <8b71967f89359b063d2b6a39622e5bb2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42C66D9D.9020203@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC6E71BD
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 20:20:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +18,160 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-07-02 at 11:34 +0100, James Courtier-Dutton wrote:
-> Lee Revell wrote:
-> > This set of critical fixes did not make it into the 2.6.12 kernel.
-> > 
-> > To better handle the large variety of devices it supports, the emu10k1
-> > driver was recently cleaned up by moving all hardware details into a
-> > table keyed by PCI ID; unfortunately some IDs were missing from the
-> > table.
-> > 
-> > The typical effect is loss of mixer settings, mic not working, or no
-> > sound at all when upgrading to 2.6.12.
-> > 
-> 
-> Hold on. It is supposed to be done in a backwards compatible way
-> already. Before all card varients we handled as being the same card,
-> except for a few special cases. The first version of the patch took the
-> general case and named it "Audigy Unknown" and gave it the correct
-> parameters as were used before in the general case of all card varients
-> being the same. Then, I looked through the code, and extracted all the
-> special cases, and created specific recognition of those cards and set
-> the correct feature variables, so they were also handled.
-> The result of this should have been that there were no performance
-> change between either versions. Then, as more card types were
-> identified, I added special cases for them, but in their case, they used
-> all the default parameters for the general case, the only difference was
-> that the correct Model name was recorded and displayed in
-> /proc/asound/cards. This is mainly just to help users identify their
-> particular card, without having to remove the case of their PC. So this
-> helps them report bugs better.
-> 
 
-Right, but if the name does not match, alsactl cannot restore the
-previous mixer settings, so the mixer is reset to the default state, ie
-no sound.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+======================================================================
+Reported By:                Demosthenes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1090
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              07-02-2005 20:20 CEST
+======================================================================
+Summary:                    Support for new Prodigy 7.1 LT
+Description: 
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-> If there are loss of features during the upgrade, I would be very
-> suprised. I suspect that the same problems one sees now with some cards,
-> has been there all along. If that is not the case, please report them in
-> the bug tracker in the normal way.
-> 
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
 
-The big one is that several emu10k2 based devices like "Audigy 1 or 2
-[Unknown]", "Audigy 2 Value [Unknown]", and "Audigy 1 [SB0090]" failed
-to set ac97_chip, resulting in non-working mic/line in.  Here's pzad's
-fix:
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c?r1=1.52&r2=1.53
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
 
-Users are already getting bitten, here's a bug report:
+I would be very happy to give any further information needed.
+======================================================================
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218
+----------------------------------------------------------------------
+ Demosthenes - 07-02-05 18:36 
+----------------------------------------------------------------------
+Yes I can start trying other combinations. 8 9 10 11 produces no sound.
+Out of interest how is it that you know that the card is playing sound but
+its not getting output?
+Also I thought I would play around with a few things so I added:
+pcm.card0 {
+type hw
+card 0
+}
 
-In addition to 2.6.12, it looks like FC4 shipped with this bug.
+pcm.card1 {
+type hw
+card 1
+}
+to asound.conf. Now aplay -D card1 test.wav plays the wav but sped up (cos
+it's not using plug) but card0 gives 
+"aplay: set_params:857: Sample format non available"
+Is that the expected result?
 
-Lee
+----------------------------------------------------------------------
+ ungod - 07-02-05 20:20 
+----------------------------------------------------------------------
+As I mentioned ealier, the ICE1724 driver must get audio in signed 32-bit
+format. Therefore ALSA must change the audio format on the fly. This is
+done by the plug module (type plug). If you don't use the plug module, and
+attempt to play ordinary 32-bit audio, it will fail.
+
+I know that the ICE1724 stuff work, because I saw ealier that the peak
+meter (Multi Track Peak) is altered when you attempt to play something.
+
+The only thing which doesn't work, is the WM8770, which is responsible for
+digital-to-analogue and analogue-to-digital conversion and attenuation.
+
+Actually, I made a VU meter for the card once, if I can find it again (or
+rewrite it), you would see it move when you try to play audio.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
+07-01-05 16:09 baesyspem      Note Added: 0005335                          
+07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
+         
+07-01-05 20:43 ungod          Note Added: 0005339                          
+07-01-05 22:08 Demosthenes    Note Added: 0005341                          
+07-01-05 22:46 ungod          Note Added: 0005342                          
+07-01-05 23:09 Demosthenes    Note Added: 0005344                          
+07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
+07-02-05 03:29 ungod          Note Added: 0005350                          
+07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
+07-02-05 03:37 ungod          Note Edited: 0005350                         
+07-02-05 16:50 Demosthenes    Note Added: 0005353                          
+07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 18:27 ungod          Note Added: 0005354                          
+07-02-05 18:36 Demosthenes    Note Added: 0005355                          
+07-02-05 20:20 ungod          Note Added: 0005358                          
+======================================================================
+
 
 
 
