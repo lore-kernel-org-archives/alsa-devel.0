@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 3 Jul 2005 01:49:41 +0200
-Message-ID: <cbe7542aff0355ba2c1c2f1c1cf08a42@bugtrack.alsa-project.org>
+Date: Sun, 3 Jul 2005 01:55:51 +0200
+Message-ID: <3d1cdb628c3d231c5c9bb4170665d9ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D87361A4
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 01:49:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45EFE1A4
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 01:55:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-03-2005 01:49 CEST
+Last Modified:              07-03-2005 01:55 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,11 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 07-03-05 00:21 
-----------------------------------------------------------------------
-Anyway, tried alternative pins for RESETB? There are from 0 to 22
-
-----------------------------------------------------------------------
  Demosthenes - 07-03-05 01:49 
 ----------------------------------------------------------------------
 Yes I have tried all of 1-22 (except 8, 9, 10) and no result.  To check
@@ -78,6 +73,24 @@ that I am doing it correctly I can just set a wav playing and then keep
 running ./mix with different settings while the file is still playing, and
 all I needed to do was make mix and use the module from fix2 that you
 uploaded.
+
+----------------------------------------------------------------------
+ ungod - 07-03-05 01:55 
+----------------------------------------------------------------------
+Correct. Just try 0 also, just to be certain.
+
+In fact, it doesn't matter which patch you used, the program communicates
+directly with the card without using the driver. However, it does require
+a driver to initiate the card, and map its register into the I/O address
+space.
+
+But we are kinda stuck if this doesn't help (unless of course, I've made
+an error in my application, or the GPIO pins of CE, DI and CL are
+incorrect)
+
+Next step would be reverse engineering of the Audiotrak driver, but this
+can be a quite timeconsuming task, depending on the complexity of the
+driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -152,6 +165,7 @@ Hedgehog)
 07-02-05 22:30 Demosthenes    Note Added: 0005362                          
 07-03-05 00:21 ungod          Note Added: 0005363                          
 07-03-05 01:49 Demosthenes    Note Added: 0005364                          
+07-03-05 01:55 ungod          Note Added: 0005365                          
 ======================================================================
 
 
