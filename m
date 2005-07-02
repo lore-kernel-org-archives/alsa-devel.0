@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sat, 2 Jul 2005 16:50:32 +0200
-Message-ID: <00d7d2e82c538cde340d628f57e54be1@bugtrack.alsa-project.org>
+Date: Sat, 2 Jul 2005 18:27:32 +0200
+Message-ID: <fd8be523a28f733fe1d0d09c48a29705@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4FB41AF
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 16:50:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B27E1BA
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 18:27:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-02-2005 16:50 CEST
+Last Modified:              07-02-2005 18:27 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,39 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 07-02-05 03:37 
-----------------------------------------------------------------------
-Alright then. Let's do some other testing...
-I've attaced a program, which will reset and set up the WM8770 chip to
-maximum volume, without using the driver (the driver must have been
-loadet, though)
-
-Syntax is:
-
-mix <CE pin> <DI pin> <CL pin> <RESETB pin>
-
-For instance, on the ordinary Prodigy 7.1, "./mix 12 18 19 20" would do
-the trick.
-
-Now, according to you, the RESETB pin of the WM8770 is attached to the
-PRST# pin on the ICE1724. However, in order to communicate with the
-WM8770, the RESETB pin must be asserted high (and exactly when this is
-doen, impacts the communication protocol), so it is vital that the RESETB
-pin is connected to a user-controllable output pin.
-Right next to the PRST# pin, is the GPIO22. Now, if we are very lucky,
-this is were the RESETB pin is actually connected.
-
-Anyway, if you make XMMS or whatever audio application, play audio on your
-Prodigy card, and execute "./mix 9 10 11 22" as root (assuming that the
-RESETB pin is connected to GPIO22), you will hopefully get sound.
-
-If everything fails, we can always brute force by trying every combination
-until we get lucky (just ignore the fact that there are loads and loads of
-combinations)
-
-
-
-----------------------------------------------------------------------
  Demosthenes - 07-02-05 16:50 
 ----------------------------------------------------------------------
 ok I just started alsaplayer with a long wav and tried that didn't get any
@@ -107,6 +74,12 @@ Did you not mean 8 9 10 rather than 9 10 11 since those were the pins
 baesyspem reported (I haven't looked at the pins on my card but I'm
 assuming that baesyspems numbers are fine).
 I tried also ./mix 8 9 10 22 and same result.
+
+----------------------------------------------------------------------
+ ungod - 07-02-05 18:27 
+----------------------------------------------------------------------
+Yes, I did mean 8 9 10... But apparently RESETB is NOT connected to GPIO22.
+Can I persuade you to try other pins for RESETB? (11 for instance)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -171,6 +144,8 @@ Hedgehog)
 07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
 07-02-05 03:37 ungod          Note Edited: 0005350                         
 07-02-05 16:50 Demosthenes    Note Added: 0005353                          
+07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 18:27 ungod          Note Added: 0005354                          
 ======================================================================
 
 
