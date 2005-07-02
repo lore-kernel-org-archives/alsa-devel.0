@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 2 Jul 2005 20:11:08 +0200
-Message-ID: <854bc40528fc21966e276062a13a0609@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Fix emu10k1 breakages in kernel 2.6.12
+Date: Sat, 02 Jul 2005 14:14:50 -0400
+Message-ID: <1120328091.2196.16.camel@mindpipe>
+References: <1120273701.12256.30.camel@mindpipe>
+	 <42C66D9D.9020203@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2ADF41C1
-	for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2005 20:11:09 +0200 (MEST)
+In-Reply-To: <42C66D9D.9020203@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2005-07-02 at 11:34 +0100, James Courtier-Dutton wrote:
+> Lee Revell wrote:
+> > This set of critical fixes did not make it into the 2.6.12 kernel.
+> > 
+> > To better handle the large variety of devices it supports, the emu10k1
+> > driver was recently cleaned up by moving all hardware details into a
+> > table keyed by PCI ID; unfortunately some IDs were missing from the
+> > table.
+> > 
+> > The typical effect is loss of mixer settings, mic not working, or no
+> > sound at all when upgrading to 2.6.12.
+> > 
+> 
+> Hold on. It is supposed to be done in a backwards compatible way
+> already. Before all card varients we handled as being the same card,
+> except for a few special cases. The first version of the patch took the
+> general case and named it "Audigy Unknown" and gave it the correct
+> parameters as were used before in the general case of all card varients
+> being the same. Then, I looked through the code, and extracted all the
+> special cases, and created specific recognition of those cards and set
+> the correct feature variables, so they were also handled.
+> The result of this should have been that there were no performance
+> change between either versions. Then, as more card types were
+> identified, I added special cases for them, but in their case, they used
+> all the default parameters for the general case, the only difference was
+> that the correct Model name was recorded and displayed in
+> /proc/asound/cards. This is mainly just to help users identify their
+> particular card, without having to remove the case of their PC. So this
+> helps them report bugs better.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
-======================================================================
-Reported By:                Hetfield
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-02-2005 20:11 CEST
-======================================================================
-Summary:                    artsd-like style
-Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+Right, but if the name does not match, alsactl cannot restore the
+previous mixer settings, so the mixer is reset to the default state, ie
+no sound.
 
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
+> If there are loss of features during the upgrade, I would be very
+> suprised. I suspect that the same problems one sees now with some cards,
+> has been there all along. If that is not the case, please report them in
+> the bug tracker in the normal way.
+> 
 
-----------------------------------------------------------------------
- pzad - 07-02-05 18:53 
-----------------------------------------------------------------------
-In aoss is bug. I found one (skype doesn't crash), but still can not get it
-work - there is probably another one.
+The big one is that several emu10k2 based devices like "Audigy 1 or 2
+[Unknown]", "Audigy 2 Value [Unknown]", and "Audigy 1 [SB0090]" failed
+to set ac97_chip, resulting in non-working mic/line in.  Here's pzad's
+fix:
 
-----------------------------------------------------------------------
- Hetfield - 07-02-05 20:11 
-----------------------------------------------------------------------
-very good, i was sure of aoss/ dmix system bug.
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c?r1=1.52&r2=1.53
 
-can i get your fixes in order to check here?
+Users are already getting bitten, here's a bug report:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218
 
+In addition to 2.6.12, it looks like FC4 shipped with this bug.
+
+Lee
 
 
 
