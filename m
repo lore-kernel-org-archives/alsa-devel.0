@@ -1,64 +1,44 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: sound blaster name
-Date: Sun, 03 Jul 2005 00:26:37 +0100
-Message-ID: <42C722AD.1010603@superbug.co.uk>
-References: <42B3E474.7000301@free.fr> <42B3ECD5.6030500@superbug.co.uk>	 <42B3F28B.4030307@free.fr> <42B3F484.5060004@free.fr>	 <42B3F83C.90305@superbug.co.uk> <42B5A056.4010608@free.fr>	 <42BC6451.8020303@free.fr> <1119647048.3290.57.camel@mindpipe> <42C71EB1.1020207@free.fr>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: Fix emu10k1 breakages in kernel 2.6.12
+Date: Sat, 02 Jul 2005 19:41:40 -0400
+Message-ID: <1120347700.21637.53.camel@mindpipe>
+References: <1120273701.12256.30.camel@mindpipe>
+	 <42C66D9D.9020203@superbug.co.uk> <1120328091.2196.16.camel@mindpipe>
+	 <42C71581.4070504@superbug.co.uk>  <1120346449.21637.49.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <42C71EB1.1020207@free.fr>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: matthieu castet <castet.matthieu@free.fr>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1120346449.21637.49.camel@mindpipe>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
 List-Id: alsa-devel@alsa-project.org
 
-matthieu castet wrote:
-> Hi,
+On Sat, 2005-07-02 at 19:20 -0400, Lee Revell wrote:
+> On Sat, 2005-07-02 at 23:30 +0100, James Courtier-Dutton wrote:
+> > I don't believe my changes to emu10k1 caused this to change. It was
+> > something independent that changed.
 > 
-> Lee Revell wrote:
-> 
->> On Fri, 2005-06-24 at 21:51 +0200, matthieu castet wrote:
->>
->>> Any new about this ?
->>
->>
->>
->> Yes, James' patch is in ALSA CVS.
->>
->> This should be submitted for the -stable tree, as some people are
->> upgrading to 2.6.12 and losing their mixer settings.
->>
-> Yes but what about the missing entries that weren't added in the *cvs*
-> and that I list in this mail [1] ?
-> 
-> thanks
-> 
-> Matthieu
-> 
-> [1]
-> Someone on lkml give this link :
-> http://www.digit-life.com/articles/livetolive51/.
-> 
-> It containt some forgotten ids (CT4760, mothreboard series, EMU APS).
-> SB0103 seem to be a full version (not value)
-> 
-> matthieu
-> 
-> 
+> Ugh, you are right, this is alsactl's problem.  So it looks like users
+> who upgrade to alsa-utils 1.0.9+ will lose their mixer settings...
 
-I thought I added those already to the CVS.
-Matthieu, are there some still missing?
+Never mind, I just tested and it seems to restore the settings
+correctly, whether the card is called Audigy2 or SB0350.  It looks like
+alsactl is much smarter than it used to be.
 
-James
+So please disregard the part of my message about mixer settings, for
+-stable we just have to handle the ac97/noac97 type issues.
+
+Lee
 
 
 
