@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001225]: RMS hardware input and software plaback levels are incorrectly reported under 64 bit linux
-Date: Sun, 3 Jul 2005 10:26:54 +0200
-Message-ID: <2489e33d79d59df7a1c6276a51da6fef@bugtrack.alsa-project.org>
+Date: Sun, 3 Jul 2005 10:30:25 +0200
+Message-ID: <2fbbde67cbfffadbb109a38869960a59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55027192
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 10:26:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB959193
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 10:30:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1225> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - RME HDSP
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             2.6.11
+Resolution:                 fixed
+Fixed in Version:           1.0.9
 ======================================================================
 Date Submitted:             07-01-2005 20:11 CEST
-Last Modified:              07-03-2005 10:26 CEST
+Last Modified:              07-03-2005 10:30 CEST
 ======================================================================
 Summary:                    RMS hardware input and software plaback levels are
 incorrectly reported under 64 bit linux
@@ -55,38 +57,6 @@ I think the problem is caused because the rms regesters are positioned at
 a 4 byte but not an 8 byte boundary on a 32 bit system, but on a 64 bit
 system, they are movd back 4 bytes to an 8 byte alignment
 ======================================================================
-
-----------------------------------------------------------------------
- ckg - 07-03-05 05:22 
-----------------------------------------------------------------------
-Thomas,
-
-This sounds like the same problem. cat /proc/asound/version reports that
-I'm running version 1.0.8.  I am using the in-kernal driver.
-I took a look at your patch for the problem.  I haven't tried it.  There
-seems to be something interesting going on here and I am not able to
-completely grasp what is happening.  Here's the situation:
-My patch does not appear to introduce a one channel offset.  I have tested
-extensively and (unless I am seriously missing something) correct levels
-are reported on the correct inputs.
-While debuggin my guess was that running 64-bits caused the port space to
-be positioned at an 8 byte boundary.  I determined that I needed to jump
-backwards four bytes and everything worked great. but... while debugging I
-noticed that when I turned the gain up very high on my pre-amp and fed
-low-level random noise into channel two the hdspmixer would show the rms
-levels changing on channel one.  In fact, as I would turn up the gain on
-channel two, the rms level would flucuate up and down repeatedly on
-channel one.  My guess was that the least significant bytes of the rms
-value on channel one was being read into the most significant bytes of the
-rms for channel one.  The trouble is that in order to fix this issue I
-would need to offset the port addresses by -12, not -4.
-If we assume that your fix is correct then it seems quite logical that my
-fix would introduce a one channel offset.  The vise-versa is also true.  I
-need to sleep on this and perhaps something bright will occur to me.  In
-the mean time, both our fixes seem to work, and I wonder if maybe neither
-of them is entirely correct... Hmmm.  Show me what I'm missing.
-
-~ckg
 
 ----------------------------------------------------------------------
  charbonnel - 07-03-05 10:26 
@@ -110,6 +80,13 @@ also invite you to upgrade to the latest alsa version...
 
 Thomas
 
+----------------------------------------------------------------------
+ charbonnel - 07-03-05 10:30 
+----------------------------------------------------------------------
+This is the same bug as ALSA BUG
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000801 and has been
+fixed in alsa 1.0.9
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -119,6 +96,10 @@ Date Modified  Username       Field                    Change
 07-02-05 08:42 charbonnel     Note Added: 0005352                          
 07-03-05 05:22 ckg            Note Added: 0005369                          
 07-03-05 10:26 charbonnel     Note Added: 0005371                          
+07-03-05 10:30 charbonnel     Status                   assigned => resolved
+07-03-05 10:30 charbonnel     Fixed in Version          => 1.0.9           
+07-03-05 10:30 charbonnel     Resolution               open => fixed       
+07-03-05 10:30 charbonnel     Note Added: 0005372                          
 ======================================================================
 
 
