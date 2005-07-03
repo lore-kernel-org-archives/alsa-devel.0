@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: "Ronald S. Bultje" <rbultje@ronald.bitfreak.net>
 Subject: Re: spdif setup
-Date: Sun, 03 Jul 2005 16:49:13 +0100
-Message-ID: <42C808F9.1050200@superbug.co.uk>
+Date: Sun, 03 Jul 2005 19:16:51 +0200
+Message-ID: <1120411011.2722.116.camel@tux.lan>
 References: <Pine.LNX.4.56.0507111229490.12873@www.ithos.nl>
+ <42C808F9.1050200@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.56.0507111229490.12873@www.ithos.nl>
+In-reply-to: <42C808F9.1050200@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,27 +18,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Ronald S. Bultje" <rbultje@ronald.bitfreak.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Ronald S. Bultje wrote:
-> Hi,
-> 
-> Use case for the average user:
-> * have a cool new soundcard and the box says "HOT NEW SPDIF AC3!!11" [*]
-> * start Totem
-> * don't get AC-3 passthrough
-> 
+On Sun, 2005-07-03 at 17:49, James Courtier-Dutton wrote:
+> start totem, edit->preferences->audio->audio_output_type=AC3 passthru.
 
-I don't see what the problem is.
-start totem, edit->preferences->audio->audio_output_type=AC3 passthru.
+I'm one of the Totem authors. I'm trying to give that item some meaning
+by making it work. Right now, it just works if you manually select the
+right crypto-like device string in some dark-corner config file in the
+xine backend. In the gst backend, it doesn't work at all. I'm trying to
+understand how to make it work. It's not very obvious to me.
 
-It should then work.
+As said, alsa 1.0.9, it's a Nvidia Nforce (the onboard type thingy)
+using the intel_8x0 driver.
 
-If it fails, send us the output of:
-cat /proc/asound/cards
-cat /proc/asound/version
+Ronald
+
+-- 
+Ronald S. Bultje <rbultje@ronald.bitfreak.net>
+
 
 
 -------------------------------------------------------
