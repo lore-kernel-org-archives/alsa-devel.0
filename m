@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 3 Jul 2005 15:57:29 +0200
-Message-ID: <9406a54bb107a777cbae78e081b45a62@bugtrack.alsa-project.org>
+From: "Ronald S. Bultje" <rbultje@ronald.bitfreak.net>
+Subject: spdif setup
+Date: Sun, 3 Jul 2005 14:32:54 +0000 (UTC)
+Message-ID: <Pine.LNX.4.56.0507111229490.12873@www.ithos.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D1E31C6
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 15:57:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +14,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Date: Mon, 11 Jul 2005 12:45:40 +0200 (CEST)
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
-======================================================================
-Reported By:                Hetfield
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-03-2005 15:57 CEST
-======================================================================
-Summary:                    artsd-like style
-Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+Use case for the average user:
+* have a cool new soundcard and the box says "HOT NEW SPDIF AC3!!11" [*]
+* start Totem
+* don't get AC-3 passthrough
 
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
+How to fix this? I've just gone through the horror and joy that is free
+software documentation. The best I can find is cool sample code in xine,
+videolan and mplayer, who all set manual device entries with something
+called AES0, AES1 and S16LE as audio format to get AC-3 passthrough to
+work. Regardless of the fact that I cannot get any of this to work in the
+first place (FC4 default install on x86-64; alsa 1.0.9 and latest cvs of
+gstreamer), I'd like to make a more important point:
 
-----------------------------------------------------------------------
- pzad - 07-03-05 14:09 
-----------------------------------------------------------------------
-I can make skype work with dmix (but only if dmix is mono). In this mode it
-works ok. Problem is skype doesn't check return value (channel count and
-assume mono is supported, but this is not case when dmix is used in stereo
-mode).
+YOU GOTTA BE KIDDING ME!
 
-----------------------------------------------------------------------
- Hetfield - 07-03-05 15:57 
-----------------------------------------------------------------------
-i haven't undestood if the problem (only in mono) is fixed with another
-patch (and so, please submit here) or if it already works actually.
+I don't care much for the fact that the app needs some work to get this to
+work, but I need to special case every possible format and add weird code
+(what are those hex numbers anyway?) that assumes 16-bit integer to get
+AC-3 working. Is that the new great ALSA? Please... Users have to set
+weird-ass paranoia commandline options in each app out there (mplayer) or
+edit through tons of xine config files to get this setup, with the end
+result most likely being that it crashes. This just can't be it.
 
-how to check the dmix mono setting?
+So, of course I'm just hoping that I'm completely wrong. I know that most
+ALSA developers are really intelligent people and they, just like me, are
+out there to make the Linux desktop experience happen. So I must've
+misunderstood the whole thing. So, how *is* this supposed to work? What is
+the theory and where are code examples to get AC-3 passthrough to work and
+what is the suggested method for applications to make this transparent to
+their user? I'd like to make any change needed to Totem and gstreamer for
+this to be 100% transparent, but I'm just totally lost.
 
-however i submitted a skype ticket linking this thread, as soon as i got
-an answer i'll post here, hoping to fix this problem as soon as
-possibile.
+Cheers,
+Ronald
 
-the question is: shouldn't skype have the same problem with pure oss
-driver? i mean..if it assume mono and not stereo without checks, what's
-the difference with dmix?
-
-this is what i thought when i opened this bug, dmix is not fully
-transparent to applications, or, apart the init bug, it should let apps
-work as pure oss access.
-i'm not an alsa expert, never read the code, i may fail of course, but
-this is my suspect.
-
-good work.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-======================================================================
-
-
+[*] actually, the box mumbles some marketing stuff about dolby digital and
+dts support, but same thing.
 
 
 -------------------------------------------------------
