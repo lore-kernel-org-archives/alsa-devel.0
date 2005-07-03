@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001225]: RMS hardware input and software plaback levels are incorrectly reported under 64 bit linux
-Date: Sun, 3 Jul 2005 10:30:25 +0200
-Message-ID: <2fbbde67cbfffadbb109a38869960a59@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Sun, 3 Jul 2005 11:47:23 +0200
+Message-ID: <f5c0a0179b6a5d21bed07d2b1910a3a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB959193
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 10:30:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF421192
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 11:47:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,160 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1225> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                ckg
-Assigned To:                charbonnel
+Reported By:                Demosthenes
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1225
-Category:                   PCI - RME HDSP
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.11
-Resolution:                 fixed
-Fixed in Version:           1.0.9
+Status:                     new
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-01-2005 20:11 CEST
-Last Modified:              07-03-2005 10:30 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              07-03-2005 11:47 CEST
 ======================================================================
-Summary:                    RMS hardware input and software plaback levels are
-incorrectly reported under 64 bit linux
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-I'm using the PCI HDSP with a Multiface interface,  Everything appears to
-be correct with the audio, but the hdspmixer reports bogus valus for
-hardware input and software playback RMS levels.  The peak leavels are
-correct.  The problem happens when the driver is compiled into the kernel
-and when it is a module.
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-I think the problem is caused because the rms regesters are positioned at
-a 4 byte but not an 8 byte boundary on a 32 bit system, but on a 64 bit
-system, they are movd back 4 bytes to an 8 byte alignment
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
+
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
+
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
+
+I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- charbonnel - 07-03-05 10:26 
+ Demosthenes - 07-03-05 03:21 
 ----------------------------------------------------------------------
-"While debuggin my guess was that running 64-bits caused the port space to
-be positioned at an 8 byte boundary"
+Success, i have sound.  I used ./mix 8 10 9 rst and I have sound, its
+really terrible quality, probably because rst doesnt exist since I tried 8
+10 9 22 and get the same.
 
-The values you're modifying are offsets in the iomapped card memory. They
-are correct wherever the memory is mapped. This has nothing to do with the
-platform.
 
-What's happening is that you're mixing data belonging to different
-channels. On those 8 bytes values, you get the most significant ones right
-(somehow compensating for the bug in the alsa version you're using) but
-the least significant have a one channels offset. For channel one, what
-you're reading for the least significant bytes is undefined. So it looks
-right, but you're loosing precision. I invite you to do some tests
-generating sine waves with pure-data at a given level, and comparing the
-values read by the card and those calculated by Fons' excellent JAAA. I
-also invite you to upgrade to the latest alsa version...
-
-Thomas
 
 ----------------------------------------------------------------------
- charbonnel - 07-03-05 10:30 
+ ungod - 07-03-05 11:47 
 ----------------------------------------------------------------------
-This is the same bug as ALSA BUG
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000801 and has been
-fixed in alsa 1.0.9
+Excelent. I've modified fix2 to use the other pins. But I am still anoyed
+by the fact that RESETB is not user controllable. But on the other hand,
+when PRST# is asserted low, the I2S/AC97 convertes in the ICE1724 chip is
+reset. Likewise, if RESETB is asserted low, the WM8770 will not work
+either. So we can assume that the pin is high when the card is on, and
+since the mix tool actually works, I must assume that the CE pin is at
+high when the RESETB pins is high, because if it wasn't, the WM8770 would
+not use SPI as communication protocol, and neither the mix tool or the
+driver would work.
+
+The bad sound may be due to lack of proper initialization of the WM8770,
+or the fact that there is no attenuation.
+
+Anyway, please let me know whether the driver is working.
+
+For the record, due to the nature of the mix tool, "./mix 8 10 9 rst" is
+the equivalent of calling "./mix 8 10 9 0".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 20:11 ckg            New Issue                                    
-07-01-05 20:11 ckg            File Added: hdsp.patch                       
-07-01-05 20:11 ckg            Kernel Version            => 2.6.11          
-07-02-05 08:42 charbonnel     Note Added: 0005352                          
-07-03-05 05:22 ckg            Note Added: 0005369                          
-07-03-05 10:26 charbonnel     Note Added: 0005371                          
-07-03-05 10:30 charbonnel     Status                   assigned => resolved
-07-03-05 10:30 charbonnel     Fixed in Version          => 1.0.9           
-07-03-05 10:30 charbonnel     Resolution               open => fixed       
-07-03-05 10:30 charbonnel     Note Added: 0005372                          
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
+07-01-05 16:09 baesyspem      Note Added: 0005335                          
+07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
+         
+07-01-05 20:43 ungod          Note Added: 0005339                          
+07-01-05 22:08 Demosthenes    Note Added: 0005341                          
+07-01-05 22:46 ungod          Note Added: 0005342                          
+07-01-05 23:09 Demosthenes    Note Added: 0005344                          
+07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
+07-02-05 03:29 ungod          Note Added: 0005350                          
+07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
+07-02-05 03:37 ungod          Note Edited: 0005350                         
+07-02-05 16:50 Demosthenes    Note Added: 0005353                          
+07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 18:27 ungod          Note Added: 0005354                          
+07-02-05 18:36 Demosthenes    Note Added: 0005355                          
+07-02-05 20:20 ungod          Note Added: 0005358                          
+07-02-05 20:59 Demosthenes    Note Added: 0005359                          
+07-02-05 21:43 ungod          File Added: peak.tar.gz                      
+07-02-05 21:44 ungod          Note Added: 0005360                          
+07-02-05 22:30 Demosthenes    Note Added: 0005362                          
+07-03-05 00:21 ungod          Note Added: 0005363                          
+07-03-05 01:49 Demosthenes    Note Added: 0005364                          
+07-03-05 01:55 ungod          Note Added: 0005365                          
+07-03-05 02:46 Demosthenes    Note Added: 0005366                          
+07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
+07-03-05 03:18 Demosthenes    Note Added: 0005367                          
+07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
+07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
+         
+07-03-05 11:47 ungod          Note Added: 0005373                          
 ======================================================================
 
 
