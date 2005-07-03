@@ -1,69 +1,222 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001229]: Can't modprobe sound module
-Date: Sun, 3 Jul 2005 12:14:10 +0200
-Message-ID: <a8662ed006e3e02c7a1dc220c024803e@bugtrack.alsa-project.org>
+From: matthieu castet <castet.matthieu@free.fr>
+Subject: Re: sound blaster name
+Date: Sun, 03 Jul 2005 13:11:43 +0200
+Message-ID: <42C7C7EF.9030201@free.fr>
+References: <42B3E474.7000301@free.fr> <42B3ECD5.6030500@superbug.co.uk>	 <42B3F28B.4030307@free.fr> <42B3F484.5060004@free.fr>	 <42B3F83C.90305@superbug.co.uk> <42B5A056.4010608@free.fr>	 <42BC6451.8020303@free.fr> <1119647048.3290.57.camel@mindpipe> <42C71EB1.1020207@free.fr> <42C722AD.1010603@superbug.co.uk> <42C7278C.5090100@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1DBC1AF
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 12:14:10 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed;
+ boundary="------------030100030100000101090604"
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <42C7278C.5090100@free.fr>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: matthieu castet <castet.matthieu@free.fr>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------030100030100000101090604
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1229> 
-======================================================================
-Reported By:                oui
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1229
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-03-2005 11:48 CEST
-Last Modified:              07-03-2005 12:14 CEST
-======================================================================
-Summary:                    Can't modprobe sound module
-Description: 
-I use sound card Intel 82801DB AC'97 .I download alsa-driver ,alsa-lib and
-alsa-util and follow your instruction but I can't modprobe intel8x0 it
-said not found module device .Please tell me what I should do?
-======================================================================
+matthieu castet wrote:
+> Hi,
+> 
+> James Courtier-Dutton wrote:
+> 
+>> matthieu castet wrote:
+>>
+>>
+>> I thought I added those already to the CVS.
+>> Matthieu, are there some still missing?
+>>
+> {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80611102,
+>      .driver = "EMU10K1", .name = "SBLive! Player 5.1 [SB0060]",
+>      .id = "Live",
+>      .emu10k1_chip = 1,
+>      .ac97_chip = 1,
+>      .sblive51 = 1}
+> is present 2 times.
+> 
+> SBLive motherboard (PCI\VEN_1102&DEV_0002&SUBSYS_002F1102)
+> SBLive motherboard (PCI\VEN_1102&DEV_0002&SUBSYS_80251102)
+> SBLive motherboard (PCI\VEN_1102&DEV_0002&SUBSYS_80631102)
+> don't seem to be in cvs.
+> 
+> SB0103 don't seem to be a value version but a full version
+> 
+> Matthieu
+> 
+> PS :
+> I found other id on 
+> http://bbs.zol.com.cn/new/static_book2/17/924/17_226924.shtml, but I am 
+> too tired to list the missing one (there list 34 cards for EMU10K1, cvs 
+> has only 18, there are some for audigy)
+> 
+I attached a patch that sort the card by id, it will be a lot's easier 
+to find the missing ones...
 
-----------------------------------------------------------------------
- jcdutton - 07-03-05 12:14 
-----------------------------------------------------------------------
-modprobe snd-intel8x0
-not
-modprobe intel8x0
+--------------030100030100000101090604
+Content-Type: text/x-patch;
+ name="emu_id.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="emu_id.patch"
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-03-05 11:48 oui            New Issue                                    
-07-03-05 12:14 jcdutton       Note Added: 0005374                          
-======================================================================
+--- emu10k1_main.c	2005-07-03 12:51:10.000000000 +0200
++++ emu10k1_main.c.new	2005-07-03 13:05:36.000000000 +0200
+@@ -714,54 +714,49 @@
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+ 	 .ac97_chip = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x40011102,
+-	 .driver = "EMU10K1", .name = "E-mu APS [4001]", 
+-	 .id = "APS",
+-	 .emu10k1_chip = 1,
+-	 .ecard = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80611102,
+-	 .driver = "EMU10K1", .name = "SBLive! Player 5.1 [SB0060]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x806B1102,
++	 .driver = "EMU10K1", .name = "SBLive! [SB0105]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
+-	 .driver = "EMU10K1", .name = "SB Live 5.1", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x806A1102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [SB0103]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80401102,
+-	 .driver = "EMU10K1", .name = "SBLive! Platinum [CT4760P]", 
+-	 .id = "Live",
+-	 .emu10k1_chip = 1,
+-	 .ac97_chip = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x00211102,
+-	 .driver = "EMU10K1", .name = "SBLive! [CT4620]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80691102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [SB0101]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x00201102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4670]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
++	 .driver = "EMU10K1", .name = "SB Live 5.1", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80221102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4780]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80611102,
++	 .driver = "EMU10K1", .name = "SBLive! Player 5.1 [SB0060]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80231102,
+-	 .driver = "EMU10K1", .name = "SB PCI512 [CT4790]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80511102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4850]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80261102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4830]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80401102,
++	 .driver = "EMU10K1", .name = "SBLive! Platinum [CT4760P]", 
++	 .id = "Live",
++	 .emu10k1_chip = 1,
++	 .ac97_chip = 1} ,
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80321102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4871]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+@@ -772,50 +767,49 @@
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80271102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4832]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80281102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4870]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80511102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4850]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80271102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4832]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80281102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4870]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80261102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4830]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80321102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [CT4871]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80231102,
++	 .driver = "EMU10K1", .name = "SB PCI512 [CT4790]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80611102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [SB0060]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80221102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4780]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80691102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [SB0101]", 
+-	 .id = "Live",
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x40011102,
++	 .driver = "EMU10K1", .name = "E-mu APS [4001]", 
++	 .id = "APS",
+ 	 .emu10k1_chip = 1,
+-	 .ac97_chip = 1,
+-	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x806A1102,
+-	 .driver = "EMU10K1", .name = "SBLive! Value [SB0103]", 
++	 .ecard = 1} ,
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x00211102,
++	 .driver = "EMU10K1", .name = "SBLive! [CT4620]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
+-	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x806B1102,
+-	 .driver = "EMU10K1", .name = "SBLive! [SB0105]", 
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x00201102,
++	 .driver = "EMU10K1", .name = "SBLive! Value [CT4670]", 
+ 	 .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
 
-
+--------------030100030100000101090604--
 
 
 -------------------------------------------------------
