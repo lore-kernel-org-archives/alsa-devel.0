@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 3 Jul 2005 02:46:10 +0200
-Message-ID: <d9895dcc4776c3fb4e006c24d9d1e2c0@bugtrack.alsa-project.org>
+Date: Sun, 3 Jul 2005 03:18:10 +0200
+Message-ID: <c6274af31cea2b17ed663d23e09d6d91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA2B9199
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 02:46:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 381F11A6
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 03:18:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-03-2005 02:46 CEST
+Last Modified:              07-03-2005 03:18 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,32 +66,22 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 07-03-05 01:55 
-----------------------------------------------------------------------
-Correct. Just try 0 also, just to be certain.
-
-In fact, it doesn't matter which patch you used, the program communicates
-directly with the card without using the driver. However, it does require
-a driver to initiate the card, and map its register into the I/O address
-space.
-
-But we are kinda stuck if this doesn't help (unless of course, I've made
-an error in my application, or the GPIO pins of CE, DI and CL are
-incorrect)
-
-Next step would be reverse engineering of the Audiotrak driver, but this
-can be a quite timeconsuming task, depending on the complexity of the
-driver.
-
-----------------------------------------------------------------------
- Demosthenes - 07-03-05 02:46 
+ Demosthenes - 07-03-05 02:47 
 ----------------------------------------------------------------------
 ok I just took my card out and had a look at the pins with my multimeter
 and I have:
-ResetB           105 RST#
-CE               GPIO8
-DI               GPIO10
-CL               GPIO9
+ResetB    >       105 RST#
+CE        >       GPIO8
+DI        >       GPIO10
+CL        >       GPIO9
+
+
+
+----------------------------------------------------------------------
+ Demosthenes - 07-03-05 03:18 
+----------------------------------------------------------------------
+Success, i have sound.  I used ./mix 8 10 9 rst and I have sound, its
+really terrible quality but its sound.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -168,6 +158,8 @@ Hedgehog)
 07-03-05 01:49 Demosthenes    Note Added: 0005364                          
 07-03-05 01:55 ungod          Note Added: 0005365                          
 07-03-05 02:46 Demosthenes    Note Added: 0005366                          
+07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
+07-03-05 03:18 Demosthenes    Note Added: 0005367                          
 ======================================================================
 
 
