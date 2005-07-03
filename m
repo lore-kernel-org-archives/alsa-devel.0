@@ -1,15 +1,13 @@
-From: Alexander Sirotkin <demiourgos@gmail.com>
-Subject: Re: sound recording
-Date: Sun, 3 Jul 2005 23:04:54 +0300
-Message-ID: <c4357ccd050703130445674105@mail.gmail.com>
-References: <c4357ccd050603110643b5d9a3@mail.gmail.com>
-	 <Pine.HPX.4.33n.0506301613460.26349-100000@studcom.urz.uni-halle.de>
-Reply-To: Alexander Sirotkin <demiourgos@gmail.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: A Sudden Death of Audio (linux-2.6.12-RT-V0.7.50-15)
+Date: Sun, 03 Jul 2005 18:53:47 -0400
+Message-ID: <1120431227.8401.23.camel@mindpipe>
+References: <87ll4nk0pe.fsf@quasar.esben-stien.name>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_10803_20104797.1120421094966"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0506301613460.26349-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <87ll4nk0pe.fsf@quasar.esben-stien.name>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,124 +17,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Esben Stien <b0ef@esben-stien.name>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_10803_20104797.1120421094966
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Looks like a bug in the voice allocator.  This is my fault, that bug was
+thought to have been fixed.  Forwarding to alsa-devel.
 
-On 6/30/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Alexander Sirotkin wrote:
-> > Sound works OK except for the recording.
-> >
-> > Realtek ALC850
->=20
-> What is the output of "amixer contents"?
->=20
->=20
-> Regards,
-> Clemens
->=20
->=20
+Lee
 
+On Mon, 2005-07-04 at 00:02 +0200, Esben Stien wrote:
+> All of a sudden, audio died and all apps using the device froze. I'm
+> on a p3-600 with a emu10k1 chip.
+> 
+> Compiling with the latest patch now, but here's the dmesg output:
+> 
+> BUG: Unable to handle kernel NULL pointer dereference at virtual address 00000107
+>  printing eip:
+> f8865c12
+> *pde = 00000000
+> Oops: 0000 [#1]
+> PREEMPT 
+> Modules linked in: capability commoncap snd_seq_midi snd_emu10k1_synth snd_emux_synth snd_seq_virmidi snd_seq_midi_emul loop radeon usb_midi audio snd_usb_audio snd_usb_lib 8139too ne2k_pci 8390 snd_emu10k1 snd_rawmidi snd_util_mem snd_hwdep evdev
+> CPU:    0
+> EIP:    0060:[<f8865c12>]    Not tainted VLI
+> EFLAGS: 00210292   (2.6.12-RT-V0.7.50-15) 
+> EIP is at snd_emu10k1_pcm_init_voice+0x12/0x5e0 [snd_emu10k1]
+> eax: 000000ff   ebx: 0000e000   ecx: 00000000   edx: f6268b74
+> esi: f62696a4   edi: 0000e000   ebp: f6268000   esp: e2883e1c
+> ds: 007b   es: 007b   ss: 0068   preempt: 00000001
+> Process jackd (pid: 26621, threadinfo=e2882000 task=dfa222f0)
+> Stack: f6268000 0808001a 03020100 00000000 f6268590 c17e4920 e2883e80 00000000 
+>        00000001 00000000 e4c44c00 000000ff 00000000 0e0d000e 00000000 0000e000 
+>        f62696a4 0000e000 00000010 f886666d f6268000 00000000 00000000 f6268b74 
+> Call Trace:
+>  [<f886666d>] snd_emu10k1_efx_playback_prepare+0x10d/0x120 [snd_emu10k1] (80)
+>  [<c036f991>] snd_pcm_do_prepare+0x11/0x30 (60)
+>  [<c036ee6c>] snd_pcm_action_group+0x11c/0x1e0 (16)
+>  [<c036f1e9>] snd_pcm_action_nonatomic+0x49/0xa0 (32)
+>  [<c036f9fd>] snd_pcm_prepare+0x1d/0x30 (32)
+>  [<c03721b2>] snd_pcm_playback_ioctl1+0x52/0x2c0 (16)
+>  [<c0130dbb>] futex_wake+0x6b/0xc0 (16)
+>  [<c0130d04>] wake_futex+0x34/0x80 (4)
+>  [<c012fe43>] rt_up_read+0x23/0x40 (8)
+>  [<c0130dcf>] futex_wake+0x7f/0xc0 (8)
+>  [<c0130dcf>] futex_wake+0x7f/0xc0 (4)
+>  [<c017041e>] do_ioctl+0x9e/0xb0 (28)
+>  [<c012fff2>] up_mutex+0x32/0x80 (16)
+>  [<c01705d5>] vfs_ioctl+0x65/0x200 (20)
+>  [<c015cc15>] fget_light+0x85/0x90 (16)
+>  [<c01707f8>] sys_ioctl+0x88/0xa0 (20)
+>  [<c0102d2b>] sysenter_past_esp+0x54/0x75 (40)
+> Code: 00 fe 05 00 00 00 06 89 f6 c3 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90 90 55 57 56 53 83 ec 3c 8b 54 24 5c 8b 6c 24 50 8b 42 10 <8b> 40 08 8b 40 60 89 44 24 28 8b 4c 24 28 8b 72 04 83 78 2c 02 
+>  
 
---=20
-Alexander Sirotkin
-
-------=_Part_10803_20104797.1120421094966
-Content-Type: text/plain; name="amixer.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="amixer.txt"
-
-bnVtaWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgTW9ubyBQbGF5YmFjayBTd2l0Y2gnCiAg
-OyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9
-MTAsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIE1vbm8gUGxheWJhY2sgVm9sdW1lJwogIDsgdHlw
-ZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2
-YWx1ZXM9MzEKbnVtaWQ9MSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgUGxheWJhY2sgU3dpdGNo
-JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51
-bWlkPTIsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9
-SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFs
-dWVzPTIwLDIwCm51bWlkPTI0LGlmYWNlPU1JWEVSLG5hbWU9J1BDTSBQbGF5YmFjayBTd2l0Y2gn
-CiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVt
-aWQ9MjUsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5U
-RUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVz
-PTIzLDIzCm51bWlkPTcsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgU3dpdGNo
-JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MgogIDogdmFsdWVzPW9uLG9u
-Cm51bWlkPTgsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgVm9sdW1lJwogIDsg
-dHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixtaW49MCxtYXg9MzEsc3RlcD0wCiAg
-OiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MyxpZmFjZT1NSVhFUixuYW1lPSdDZW50ZXIgUGxheWJhY2sg
-U3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVz
-PW9uCm51bWlkPTQsaWZhY2U9TUlYRVIsbmFtZT0nQ2VudGVyIFBsYXliYWNrIFZvbHVtZScKICA7
-IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWluPTAsbWF4PTMxLHN0ZXA9MAog
-IDogdmFsdWVzPTMxCm51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nTEZFIFBsYXliYWNrIFN3aXRj
-aCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpu
-dW1pZD02LGlmYWNlPU1JWEVSLG5hbWU9J0xGRSBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlO
-VEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVl
-cz0zMQpudW1pZD0zNyxpZmFjZT1NSVhFUixuYW1lPSdMaW5lLUluIEFzIFN1cnJvdW5kJwogIDsg
-dHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE4
-LGlmYWNlPU1JWEVSLG5hbWU9J0xpbmUgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFO
-LGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE5LGlmYWNlPU1JWEVS
-LG5hbWU9J0xpbmUgUGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0t
-LSx2YWx1ZXM9MixtaW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MjAs
-aWZhY2U9TUlYRVIsbmFtZT0nQ0QgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFj
-Y2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTIxLGlmYWNlPU1JWEVSLG5h
-bWU9J0NEIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFs
-dWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVzPTI5LDI5Cm51bWlkPTM4LGlmYWNl
-PU1JWEVSLG5hbWU9J01pYyBBcyBDZW50ZXIvTEZFJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
-dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE3LGlmYWNlPU1JWEVSLG5hbWU9J01p
-YyBCb29zdCAoKzIwZEIpJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQog
-IDogdmFsdWVzPW9uCm51bWlkPTMwLGlmYWNlPU1JWEVSLG5hbWU9J01pYyBTZWxlY3QnCiAgOyB0
-eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLGl0ZW1zPTIKICA7IEl0ZW0gIzAg
-J01pYzEnCiAgOyBJdGVtICMxICdNaWMyJwogIDogdmFsdWVzPTAKbnVtaWQ9MTUsaWZhY2U9TUlY
-RVIsbmFtZT0nTWljIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
-LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0xNixpZmFjZT1NSVhFUixuYW1lPSdNaWMg
-UGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxt
-aW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MjkKbnVtaWQ9MTMsaWZhY2U9TUlYRVIsbmFt
-ZT0nUGhvbmUgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2
-YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE0LGlmYWNlPU1JWEVSLG5hbWU9J1Bob25lIFBs
-YXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWlu
-PTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVzPTMxCm51bWlkPTExLGlmYWNlPU1JWEVSLG5hbWU9
-J1BDIFNwZWFrZXIgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0t
-LSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTEyLGlmYWNlPU1JWEVSLG5hbWU9J1BDIFNw
-ZWFrZXIgUGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1
-ZXM9MSxtaW49MCxtYXg9MTUsc3RlcD0wCiAgOiB2YWx1ZXM9MTUKbnVtaWQ9MjIsaWZhY2U9TUlY
-RVIsbmFtZT0nQXV4IFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
-LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0yMyxpZmFjZT1NSVhFUixuYW1lPSdBdXgg
-UGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9Mixt
-aW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MjksaWZhY2U9TUlYRVIs
-bmFtZT0nTW9ubyBPdXRwdXQgU2VsZWN0JwogIDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1ydy0t
-LSx2YWx1ZXM9MSxpdGVtcz0yCiAgOyBJdGVtICMwICdNaXgnCiAgOyBJdGVtICMxICdNaWMnCiAg
-OiB2YWx1ZXM9MApudW1pZD0yNixpZmFjZT1NSVhFUixuYW1lPSdDYXB0dXJlIFNvdXJjZScKICA7
-IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9cnctLS0sdmFsdWVzPTIsaXRlbXM9OAogIDsgSXRlbSAj
-MCAnTWljJwogIDsgSXRlbSAjMSAnQ0QnCiAgOyBJdGVtICMyICdWaWRlbycKICA7IEl0ZW0gIzMg
-J0F1eCcKICA7IEl0ZW0gIzQgJ0xpbmUnCiAgOyBJdGVtICM1ICdNaXgnCiAgOyBJdGVtICM2ICdN
-aXggTW9ubycKICA7IEl0ZW0gIzcgJ1Bob25lJwogIDogdmFsdWVzPTQsNApudW1pZD0yNyxpZmFj
-ZT1NSVhFUixuYW1lPSdDYXB0dXJlIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
-LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0yOCxpZmFjZT1NSVhFUixuYW1lPSdDYXB0
-dXJlIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAs
-bWF4PTE1LHN0ZXA9MAogIDogdmFsdWVzPTksOQpudW1pZD0zMSxpZmFjZT1NSVhFUixuYW1lPSdJ
-RUM5NTggUGxheWJhY2sgQ29uIE1hc2snCiAgOyB0eXBlPUlFQzk1OCxhY2Nlc3M9ci0tLS0sdmFs
-dWVzPTEKICA6IHZhbHVlcz0/Cm51bWlkPTMyLGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBQbGF5
-YmFjayBQcm8gTWFzaycKICA7IHR5cGU9SUVDOTU4LGFjY2Vzcz1yLS0tLSx2YWx1ZXM9MQogIDog
-dmFsdWVzPT8KbnVtaWQ9MzUsaWZhY2U9TUlYRVIsbmFtZT0nSUVDOTU4IFBsYXliYWNrIEFDOTct
-U1BTQScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWluPTAsbWF4PTMs
-c3RlcD0wCiAgOiB2YWx1ZXM9MwpudW1pZD0zMyxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxh
-eWJhY2sgRGVmYXVsdCcKICA7IHR5cGU9SUVDOTU4LGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDog
-dmFsdWVzPT8KbnVtaWQ9NDAsaWZhY2U9TUlYRVIsbmFtZT0nSUVDOTU4IFBsYXliYWNrIFJvdXRl
-JwogIDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxpdGVtcz0zCiAgOyBJ
-dGVtICMwICdQQ00nCiAgOyBJdGVtICMxICdBbmFsb2cgSW4nCiAgOyBJdGVtICMyICdJRUM5NTgg
-SW4nCiAgOiB2YWx1ZXM9MApudW1pZD0zNCxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxheWJh
-Y2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFs
-dWVzPW9mZgpudW1pZD0zOSxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggQ2FwdHVyZSBTd2l0Y2gn
-CiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b2ZmCm51
-bWlkPTM2LGlmYWNlPU1JWEVSLG5hbWU9J0R1cGxpY2F0ZSBGcm9udCcKICA7IHR5cGU9Qk9PTEVB
-TixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD00MSxpZmFjZT1NSVhF
-UixuYW1lPSdFeHRlcm5hbCBBbXBsaWZpZXInCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0t
-LHZhbHVlcz0xCiAgOiB2YWx1ZXM9b2ZmCg==
-------=_Part_10803_20104797.1120421094966--
 
 
 -------------------------------------------------------
