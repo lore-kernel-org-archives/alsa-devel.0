@@ -1,15 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: spdif setup
-Date: Sun, 03 Jul 2005 16:04:28 -0400
-Message-ID: <1120421068.8401.19.camel@mindpipe>
-References: <Pine.LNX.4.56.0507111229490.12873@www.ithos.nl>
-	 <42C808F9.1050200@superbug.co.uk> <1120411011.2722.116.camel@tux.lan>
-	 <42C823A1.1080409@superbug.co.uk>  <1120416065.2722.118.camel@tux.lan>
+From: Alexander Sirotkin <demiourgos@gmail.com>
+Subject: Re: sound recording
+Date: Sun, 3 Jul 2005 23:04:54 +0300
+Message-ID: <c4357ccd050703130445674105@mail.gmail.com>
+References: <c4357ccd050603110643b5d9a3@mail.gmail.com>
+	 <Pine.HPX.4.33n.0506301613460.26349-100000@studcom.urz.uni-halle.de>
+Reply-To: Alexander Sirotkin <demiourgos@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_10803_20104797.1120421094966"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1120416065.2722.118.camel@tux.lan>
+In-Reply-To: <Pine.HPX.4.33n.0506301613460.26349-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,21 +19,124 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Ronald S. Bultje" <rbultje@ronald.bitfreak.net>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sf.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-07-03 at 20:41 +0200, Ronald S. Bultje wrote:
-> On Sun, 2005-07-03 at 19:42, James Courtier-Dutton wrote:
-> > AC3 is not possible with the Nvidia Nforce chipset in Linux due to lack
-> > of datasheets
-> 
-> OK, so what do you suggest I buy instead?
+------=_Part_10803_20104797.1120421094966
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-You could always try to RE it...
+On 6/30/05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Alexander Sirotkin wrote:
+> > Sound works OK except for the recording.
+> >
+> > Realtek ALC850
+>=20
+> What is the output of "amixer contents"?
+>=20
+>=20
+> Regards,
+> Clemens
+>=20
+>=20
 
-Lee
 
+--=20
+Alexander Sirotkin
+
+------=_Part_10803_20104797.1120421094966
+Content-Type: text/plain; name="amixer.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="amixer.txt"
+
+bnVtaWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgTW9ubyBQbGF5YmFjayBTd2l0Y2gnCiAg
+OyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9
+MTAsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIE1vbm8gUGxheWJhY2sgVm9sdW1lJwogIDsgdHlw
+ZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2
+YWx1ZXM9MzEKbnVtaWQ9MSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgUGxheWJhY2sgU3dpdGNo
+JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51
+bWlkPTIsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9
+SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFs
+dWVzPTIwLDIwCm51bWlkPTI0LGlmYWNlPU1JWEVSLG5hbWU9J1BDTSBQbGF5YmFjayBTd2l0Y2gn
+CiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVt
+aWQ9MjUsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5U
+RUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVz
+PTIzLDIzCm51bWlkPTcsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgU3dpdGNo
+JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MgogIDogdmFsdWVzPW9uLG9u
+Cm51bWlkPTgsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgVm9sdW1lJwogIDsg
+dHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixtaW49MCxtYXg9MzEsc3RlcD0wCiAg
+OiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MyxpZmFjZT1NSVhFUixuYW1lPSdDZW50ZXIgUGxheWJhY2sg
+U3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVz
+PW9uCm51bWlkPTQsaWZhY2U9TUlYRVIsbmFtZT0nQ2VudGVyIFBsYXliYWNrIFZvbHVtZScKICA7
+IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWluPTAsbWF4PTMxLHN0ZXA9MAog
+IDogdmFsdWVzPTMxCm51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nTEZFIFBsYXliYWNrIFN3aXRj
+aCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpu
+dW1pZD02LGlmYWNlPU1JWEVSLG5hbWU9J0xGRSBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlO
+VEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVl
+cz0zMQpudW1pZD0zNyxpZmFjZT1NSVhFUixuYW1lPSdMaW5lLUluIEFzIFN1cnJvdW5kJwogIDsg
+dHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE4
+LGlmYWNlPU1JWEVSLG5hbWU9J0xpbmUgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFO
+LGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE5LGlmYWNlPU1JWEVS
+LG5hbWU9J0xpbmUgUGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0t
+LSx2YWx1ZXM9MixtaW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MjAs
+aWZhY2U9TUlYRVIsbmFtZT0nQ0QgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFj
+Y2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTIxLGlmYWNlPU1JWEVSLG5h
+bWU9J0NEIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFs
+dWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVzPTI5LDI5Cm51bWlkPTM4LGlmYWNl
+PU1JWEVSLG5hbWU9J01pYyBBcyBDZW50ZXIvTEZFJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
+dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE3LGlmYWNlPU1JWEVSLG5hbWU9J01p
+YyBCb29zdCAoKzIwZEIpJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQog
+IDogdmFsdWVzPW9uCm51bWlkPTMwLGlmYWNlPU1JWEVSLG5hbWU9J01pYyBTZWxlY3QnCiAgOyB0
+eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLGl0ZW1zPTIKICA7IEl0ZW0gIzAg
+J01pYzEnCiAgOyBJdGVtICMxICdNaWMyJwogIDogdmFsdWVzPTAKbnVtaWQ9MTUsaWZhY2U9TUlY
+RVIsbmFtZT0nTWljIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
+LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0xNixpZmFjZT1NSVhFUixuYW1lPSdNaWMg
+UGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxt
+aW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MjkKbnVtaWQ9MTMsaWZhY2U9TUlYRVIsbmFt
+ZT0nUGhvbmUgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2
+YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE0LGlmYWNlPU1JWEVSLG5hbWU9J1Bob25lIFBs
+YXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWlu
+PTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVzPTMxCm51bWlkPTExLGlmYWNlPU1JWEVSLG5hbWU9
+J1BDIFNwZWFrZXIgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0t
+LSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTEyLGlmYWNlPU1JWEVSLG5hbWU9J1BDIFNw
+ZWFrZXIgUGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1
+ZXM9MSxtaW49MCxtYXg9MTUsc3RlcD0wCiAgOiB2YWx1ZXM9MTUKbnVtaWQ9MjIsaWZhY2U9TUlY
+RVIsbmFtZT0nQXV4IFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
+LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0yMyxpZmFjZT1NSVhFUixuYW1lPSdBdXgg
+UGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9Mixt
+aW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MjksaWZhY2U9TUlYRVIs
+bmFtZT0nTW9ubyBPdXRwdXQgU2VsZWN0JwogIDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1ydy0t
+LSx2YWx1ZXM9MSxpdGVtcz0yCiAgOyBJdGVtICMwICdNaXgnCiAgOyBJdGVtICMxICdNaWMnCiAg
+OiB2YWx1ZXM9MApudW1pZD0yNixpZmFjZT1NSVhFUixuYW1lPSdDYXB0dXJlIFNvdXJjZScKICA7
+IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9cnctLS0sdmFsdWVzPTIsaXRlbXM9OAogIDsgSXRlbSAj
+MCAnTWljJwogIDsgSXRlbSAjMSAnQ0QnCiAgOyBJdGVtICMyICdWaWRlbycKICA7IEl0ZW0gIzMg
+J0F1eCcKICA7IEl0ZW0gIzQgJ0xpbmUnCiAgOyBJdGVtICM1ICdNaXgnCiAgOyBJdGVtICM2ICdN
+aXggTW9ubycKICA7IEl0ZW0gIzcgJ1Bob25lJwogIDogdmFsdWVzPTQsNApudW1pZD0yNyxpZmFj
+ZT1NSVhFUixuYW1lPSdDYXB0dXJlIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
+LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0yOCxpZmFjZT1NSVhFUixuYW1lPSdDYXB0
+dXJlIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAs
+bWF4PTE1LHN0ZXA9MAogIDogdmFsdWVzPTksOQpudW1pZD0zMSxpZmFjZT1NSVhFUixuYW1lPSdJ
+RUM5NTggUGxheWJhY2sgQ29uIE1hc2snCiAgOyB0eXBlPUlFQzk1OCxhY2Nlc3M9ci0tLS0sdmFs
+dWVzPTEKICA6IHZhbHVlcz0/Cm51bWlkPTMyLGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBQbGF5
+YmFjayBQcm8gTWFzaycKICA7IHR5cGU9SUVDOTU4LGFjY2Vzcz1yLS0tLSx2YWx1ZXM9MQogIDog
+dmFsdWVzPT8KbnVtaWQ9MzUsaWZhY2U9TUlYRVIsbmFtZT0nSUVDOTU4IFBsYXliYWNrIEFDOTct
+U1BTQScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWluPTAsbWF4PTMs
+c3RlcD0wCiAgOiB2YWx1ZXM9MwpudW1pZD0zMyxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxh
+eWJhY2sgRGVmYXVsdCcKICA7IHR5cGU9SUVDOTU4LGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDog
+dmFsdWVzPT8KbnVtaWQ9NDAsaWZhY2U9TUlYRVIsbmFtZT0nSUVDOTU4IFBsYXliYWNrIFJvdXRl
+JwogIDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxpdGVtcz0zCiAgOyBJ
+dGVtICMwICdQQ00nCiAgOyBJdGVtICMxICdBbmFsb2cgSW4nCiAgOyBJdGVtICMyICdJRUM5NTgg
+SW4nCiAgOiB2YWx1ZXM9MApudW1pZD0zNCxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxheWJh
+Y2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFs
+dWVzPW9mZgpudW1pZD0zOSxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggQ2FwdHVyZSBTd2l0Y2gn
+CiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b2ZmCm51
+bWlkPTM2LGlmYWNlPU1JWEVSLG5hbWU9J0R1cGxpY2F0ZSBGcm9udCcKICA7IHR5cGU9Qk9PTEVB
+TixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD00MSxpZmFjZT1NSVhF
+UixuYW1lPSdFeHRlcm5hbCBBbXBsaWZpZXInCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0t
+LHZhbHVlcz0xCiAgOiB2YWx1ZXM9b2ZmCg==
+------=_Part_10803_20104797.1120421094966--
 
 
 -------------------------------------------------------
