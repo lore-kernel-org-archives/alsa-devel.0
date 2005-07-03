@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001227]: Audio output to headphone changes mapping when JACKD XRUN
-Date: Sun, 3 Jul 2005 05:09:21 +0200
-Message-ID: <1a6d0f1d1b964358b0d3428f899f64fa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001225]: RMS hardware input and software plaback levels are incorrectly reported under 64 bit linux
+Date: Sun, 3 Jul 2005 05:22:50 +0200
+Message-ID: <59ded2aadd79ec7eaaa7be61325d05c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DA3A187
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 05:09:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5EFB192
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 05:22:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1227> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1225> 
 ======================================================================
-Reported By:                rfonseca
-Assigned To:                tiwai
+Reported By:                ckg
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1227
-Category:                   PCI - atiixp
+Issue ID:                   1225
+Category:                   PCI - RME HDSP
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3 with real time smp kernel from ccrma
-Kernel Version:             2.6.10-2.1.ll.rhfc3.ccrmasmp
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             07-02-2005 01:24 CEST
-Last Modified:              07-03-2005 05:09 CEST
+Date Submitted:             07-01-2005 20:11 CEST
+Last Modified:              07-03-2005 05:22 CEST
 ======================================================================
-Summary:                    Audio output to headphone changes mapping when JACKD
-XRUN
+Summary:                    RMS hardware input and software plaback levels are
+incorrectly reported under 64 bit linux
 Description: 
-When running jack and there is an XRUN, the mapping of which output goes to
-the headphone jack changes. For example, suppose there is an app connected
-(via JACK) to playback_1 and playback_2 (controlled by mixer PCM).
-Sometimes when there is an XRUN, the output will stop. Suddenly, the
-output jack  (the headphones) is now fed by the surround channel. If I
-connect the same application to playback_3 and playback_4, I can hear the
-output, and the volume is controlled by mixer "Surround". Furhter XRUNS
-will move the output to playback_5 and playback_6, and even other
-combinations.
+I'm using the PCI HDSP with a Multiface interface,  Everything appears to
+be correct with the audio, but the hdspmixer reports bogus valus for
+hardware input and software playback RMS levels.  The peak leavels are
+correct.  The problem happens when the driver is compiled into the kernel
+and when it is a module.
+
+I think the problem is caused because the rms regesters are positioned at
+a 4 byte but not an 8 byte boundary on a 32 bit system, but on a 64 bit
+system, they are movd back 4 bytes to an 8 byte alignment
 ======================================================================
 
 ----------------------------------------------------------------------
- rfonseca - 07-02-05 04:32 
+ charbonnel - 07-02-05 08:42 
 ----------------------------------------------------------------------
-I did download 1.09b (alsa-drivers), then dir configure; make; make
-install; reboot. The rest of the alsa packages (alsa-oss, alsa-lib,
-alsa-firmware) are 1.09rc1.
+Hi,
 
-Same problem was reproduced. There does seem to be a pattern: output gets
-mapped to playback_1 and 2, then 3 and 4, then 5 and 6.
+It sounds similar to a bug in the byte swapping code that was fixed some
+time ago.
+(see ALSA BUG https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000801)
+Do you use the in-kernel alsa driver with 2.6.11 ? If so they may be a
+little old.
+What's the version reported by cat /proc/asound/version ?
+I suspect your patch seems to fix the problem but introduces a one channel
+offset in the metering values.
 
-Will download all packages to be 1.09b.
+Thomas
 
 ----------------------------------------------------------------------
- rfonseca - 07-03-05 05:09 
+ ckg - 07-03-05 05:22 
 ----------------------------------------------------------------------
-Still the same problem...
+Thomas,
+
+This sounds like the same problem. cat /proc/asound/version reports that
+I'm running version 1.0.8.  I am using the in-kernal driver.
+I took a look at your patch for the problem.  I haven't tried it.  There
+seems to be something interesting going on here and I am not able to
+completely grasp what is happening.  Here's the situation:
+My patch does not appear to introduce a one channel offset.  I have tested
+extensively and (unless I am seriously missing something) correct levels
+are reported on the correct inputs.
+While debuggin my guess was that running 64-bits caused the port space to
+be positioned at an 8 byte boundary.  I determined that I needed to jump
+backwards four bytes and everything worked great. but... while debugging I
+noticed that when I turned the gain up very high on my pre-amp and fed
+low-level random noise into channel two the hdspmixer would show the rms
+levels changing on channel one.  In fact, as I would turn up the gain on
+channel two, the rms level would flucuate up and down repeatedly on
+channel one.  My guess was that the least significant bytes of the rms
+value on channel one was being read into the most significant bytes of the
+rms for channel one.  The trouble is that in order to fix this issue I
+would need to offset the port addresses by -12, not -4.
+If we assume that your fix is correct then it seems quite logical that my
+fix would introduce a one channel offset.  The vise-versa is also true.  I
+need to sleep on this and perhaps something bright will occur to me.  In
+the mean time, both our fixes seem to work, and I wonder if maybe neither
+of them is entirely correct... Hmmm.  Show me what I'm missing.
+
+~ckg
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-02-05 01:24 rfonseca       New Issue                                    
-07-02-05 01:24 rfonseca       Distribution              => Fedora Core 3 with
-real time smp kernel from ccrma
-07-02-05 01:24 rfonseca       Kernel Version            =>
-2.6.10-2.1.ll.rhfc3.ccrmasmp
-07-02-05 01:37 rfonseca       Note Added: 0005345                          
-07-02-05 01:39 rfonseca       Issue Monitored: rfonseca                    
-07-02-05 02:46 rfonseca       Note Added: 0005346                          
-07-02-05 02:55 rlrevell       Note Added: 0005347                          
-07-02-05 03:03 rfonseca       Note Added: 0005348                          
-07-02-05 03:10 rlrevell       Note Added: 0005349                          
-07-02-05 04:32 rfonseca       Note Added: 0005351                          
-07-03-05 05:09 rfonseca       Note Added: 0005368                          
+07-01-05 20:11 ckg            New Issue                                    
+07-01-05 20:11 ckg            File Added: hdsp.patch                       
+07-01-05 20:11 ckg            Kernel Version            => 2.6.11          
+07-02-05 08:42 charbonnel     Note Added: 0005352                          
+07-03-05 05:22 ckg            Note Added: 0005369                          
 ======================================================================
 
 
