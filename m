@@ -1,13 +1,19 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: spdif setup
-Date: Sun, 03 Jul 2005 18:42:57 +0100
-Message-ID: <42C823A1.1080409@superbug.co.uk>
-References: <Pine.LNX.4.56.0507111229490.12873@www.ithos.nl> <42C808F9.1050200@superbug.co.uk> <1120411011.2722.116.camel@tux.lan>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] sound blaster name
+Date: Sun, 03 Jul 2005 14:14:11 -0400
+Message-ID: <1120414451.7915.2.camel@mindpipe>
+References: <42B3E474.7000301@free.fr> <42B3ECD5.6030500@superbug.co.uk>
+	 <42B3F28B.4030307@free.fr> <42B3F484.5060004@free.fr>
+	 <42B3F83C.90305@superbug.co.uk> <42B5A056.4010608@free.fr>
+	 <42BC6451.8020303@free.fr> <1119647048.3290.57.camel@mindpipe>
+	 <42C71EB1.1020207@free.fr> <42C722AD.1010603@superbug.co.uk>
+	 <42C7278C.5090100@free.fr> <42C7C7EF.9030201@free.fr>
+	 <42C7D322.1050100@superbug.co.uk>  <42C7E5C4.3030602@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1120411011.2722.116.camel@tux.lan>
+In-Reply-To: <42C7E5C4.3030602@free.fr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +23,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Ronald S. Bultje" <rbultje@ronald.bitfreak.net>
-Cc: alsa-devel@lists.sf.net
+To: matthieu castet <castet.matthieu@free.fr>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Ronald S. Bultje wrote:
-> On Sun, 2005-07-03 at 17:49, James Courtier-Dutton wrote:
-> 
->>start totem, edit->preferences->audio->audio_output_type=AC3 passthru.
-> 
-> 
-> I'm one of the Totem authors. I'm trying to give that item some meaning
-> by making it work. Right now, it just works if you manually select the
-> right crypto-like device string in some dark-corner config file in the
-> xine backend. In the gst backend, it doesn't work at all. I'm trying to
-> understand how to make it work. It's not very obvious to me.
-> 
-> As said, alsa 1.0.9, it's a Nvidia Nforce (the onboard type thingy)
-> using the intel_8x0 driver.
-> 
-> Ronald
-> 
+On Sun, 2005-07-03 at 15:19 +0200, matthieu castet wrote:
+> I there an easy way to know if the .sblive51 flag is needed ?
+> Does it is needed only for 3G SB card  (SBxxx version or those marked as 
+> 5.1) ?
 
-AC3 is not possible with the Nvidia Nforce chipset in Linux due to lack
-of datasheets
+I think it's need for any SBLive! (not Audigy) that has an analog
+center/LFE output.
 
-James
+Maybe you could extract this information from the kX driver.
+
+Lee
 
 
 
