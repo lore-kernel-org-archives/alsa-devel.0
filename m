@@ -1,13 +1,14 @@
-From: matthieu castet <castet.matthieu@free.fr>
-Subject: Re: [Alsa-user] sound blaster name
-Date: Sun, 03 Jul 2005 13:19:59 +0200
-Message-ID: <42C7C9DF.1020906@free.fr>
-References: <42B3E474.7000301@free.fr> <42B3ECD5.6030500@superbug.co.uk>	 <42B3F28B.4030307@free.fr> <42B3F484.5060004@free.fr>	 <42B3F83C.90305@superbug.co.uk> <42B5A056.4010608@free.fr>	 <42BC6451.8020303@free.fr> <1119647048.3290.57.camel@mindpipe> <42C71EB1.1020207@free.fr> <42C722AD.1010603@superbug.co.uk> <42C7278C.5090100@free.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000230]: sound is bad when dma is enabled
+Date: Sun, 3 Jul 2005 13:50:02 +0200
+Message-ID: <c8658aa49f4d1fe8c666eca881dc5af6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42C7278C.5090100@free.fr>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E52A71BD
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2005 13:50:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,99 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: matthieu castet <castet.matthieu@free.fr>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-matthieu castet wrote:
-> Hi,
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=230> 
+======================================================================
+Reported By:                Hetfield
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   230
+Category:                   PCI - ens1370
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.x
+======================================================================
+Date Submitted:             04-23-2004 18:55 CEST
+Last Modified:              07-03-2005 13:50 CEST
+======================================================================
+Summary:                    sound is bad when dma is enabled
+Description: 
+when dma is enabled for my harddisk sound is so bad
+
+0000:00:0b.0 Multimedia audio controller: Ensoniq ES1370 [AudioPCI] (rev
+01)
+        Subsystem: Unknown device 4942:4c4c
+        Flags: bus master, slow devsel, latency 248, IRQ 10
+        I/O ports at b000
+
+i setted latency to 248 but i tried lots of values, nothing changed.
+interrupts are not shared.
+disabling dma make sound clean.
+
+with 2.6.x only...2.4.x works so good.
+i tred with 2.6 integrated or external libs too, as module o builtin.
+nothing changes.
+
+how to fix that? should i disable busmaster or change devsel value? how?
 
 
-here is the missing/misnamed cards :
-maybe 5.1 flags should be adjusted...
-
-> [1102\0002]
-> 
-> ; EMU10K1 Audio Chipset (SB Live!)
-> 
-
-> 
-> 002F1102=Integrated SBLive!
-> 
-> 00411102=CT4820 SBLive!
-> 
-> 
-
-> 80241102=CT4760 SBLive!
-> 
-> 80251102=Integrated SBLive!
-
-> 
-> 80291102=CT4872 SBLive!
-> 
-> 802A1102=CT4890 SB PCI256
-> 
-> 802B1102=CT4891 SB PCI256
-> 
-
-> 
-> 80331102=CT4893 SB PCI256
-> 
-> 80351102=CT0060 SBLive!
-> 
-> 80401102=CT4760 SBLive!
-> 
-> 80501102=CT4820 SB PCI512
-> 
-
-> 
-> 80621102=SB0100 SBLive! 5.1
-> 
-> 80631102=Integrated SBLive! 5.1
-> 
-> 80641102=SB0102 SBLive! 5.1
-> 
-> 80651102=SB0220 SBLive! 5.1 Digital
-> 
-> 80661102=SB0220 SBLive! 5.1 Digital
-> 
-> 80671102=SB0220 SBLive! 5.1 Digital
-> 
-> 80681102=CT0061 SBLive!
-> 
-
-> 806A1102=SB0103 SBLive! 5.1 -> mark as value
-> 
-> 806B1102=SB0105 SBLive! 5.1 -> not marked as 5.1
-> 
-> 80711102=SB0150 Sound Blaster PCI512
-> 
-> [1102\0004]
-> 
-> ; EMU10K2 Audio Chipset (SB Audigy Series)
-> 
-> 00411102=CT4820 Audigy
-> 
-> 00421102=CT0070 Audigy
-> 
-> 00431102=CT0072 Audigy
-> 
-> 00511102=SB0090 Audigy Platinum (EX) -> not marked as Platinum
-> 
 
 
-> 10031102=SB0243 Audigy 2 (OEM'd For Dell??)
+======================================================================
 
-> 
-> [1102\0007]
-> 
-> ; Audigy LS Series
-> 
-> 10011102=SB0310 Audigy LS
-> 
-> 10021102=SB0312 Audigy LS
-> 
+----------------------------------------------------------------------
+ Hetfield - 02-23-05 13:34 
+----------------------------------------------------------------------
+with 2.6.11-rc4 and alsa 1.0.8 i have the same errors.
+
+----------------------------------------------------------------------
+ Hetfield - 07-03-05 13:50 
+----------------------------------------------------------------------
+same errors with 2.6.13-rc1 and alsa 1.0.9
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-23-04 18:55 Hetfield       New Issue                                    
+04-23-04 18:55 Hetfield       Kernel Version            => 2.6.x           
+04-24-04 14:10 perex          Note Added: 0000924                          
+04-24-04 14:10 perex          Severity                 major => tweak      
+04-24-04 14:10 perex          Description Updated                          
+04-25-04 11:00 Hetfield       Note Added: 0000937                          
+02-23-05 13:34 Hetfield       Note Added: 0003710                          
+07-03-05 13:50 Hetfield       Note Added: 0005375                          
+======================================================================
+
 
 
 
