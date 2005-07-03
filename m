@@ -1,10 +1,17 @@
-From: matthieu castet <castet.matthieu@free.fr>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: [Alsa-user] sound blaster name
-Date: Sun, 03 Jul 2005 20:52:24 +0200
-Message-ID: <42C833E8.8090304@free.fr>
-References: <42B3E474.7000301@free.fr> <42B3ECD5.6030500@superbug.co.uk>	 <42B3F28B.4030307@free.fr> <42B3F484.5060004@free.fr>	 <42B3F83C.90305@superbug.co.uk> <42B5A056.4010608@free.fr>	 <42BC6451.8020303@free.fr> <1119647048.3290.57.camel@mindpipe>	 <42C71EB1.1020207@free.fr> <42C722AD.1010603@superbug.co.uk>	 <42C7278C.5090100@free.fr> <42C7C7EF.9030201@free.fr>	 <42C7D322.1050100@superbug.co.uk>  <42C7E5C4.3030602@free.fr> <1120414451.7915.2.camel@mindpipe> <42C83388.4090804@free.fr>
+Date: Sun, 03 Jul 2005 15:06:59 -0400
+Message-ID: <1120417619.7915.3.camel@mindpipe>
+References: <42B3E474.7000301@free.fr> <42B3ECD5.6030500@superbug.co.uk>
+	 <42B3F28B.4030307@free.fr> <42B3F484.5060004@free.fr>
+	 <42B3F83C.90305@superbug.co.uk> <42B5A056.4010608@free.fr>
+	 <42BC6451.8020303@free.fr> <1119647048.3290.57.camel@mindpipe>
+	 <42C71EB1.1020207@free.fr> <42C722AD.1010603@superbug.co.uk>
+	 <42C7278C.5090100@free.fr> <42C7C7EF.9030201@free.fr>
+	 <42C7D322.1050100@superbug.co.uk>  <42C7E5C4.3030602@free.fr>
+	 <1120414451.7915.2.camel@mindpipe>  <42C83388.4090804@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <42C83388.4090804@free.fr>
@@ -17,45 +24,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Lee Revell <rlrevell@joe-job.com>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: matthieu castet <castet.matthieu@free.fr>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-matthieu castet wrote:
+On Sun, 2005-07-03 at 20:50 +0200, matthieu castet wrote:
 > Lee Revell wrote:
-> 
->> On Sun, 2005-07-03 at 15:19 +0200, matthieu castet wrote:
->>
->>> I there an easy way to know if the .sblive51 flag is needed ?
->>> Does it is needed only for 3G SB card  (SBxxx version or those marked 
->>> as 5.1) ?
->>
->>
->>
->> I think it's need for any SBLive! (not Audigy) that has an analog
->> center/LFE output.
->>
->> Maybe you could extract this information from the kX driver.
->>
+> > On Sun, 2005-07-03 at 15:19 +0200, matthieu castet wrote:
+> > 
+> >>I there an easy way to know if the .sblive51 flag is needed ?
+> >>Does it is needed only for 3G SB card  (SBxxx version or those marked as 
+> >>5.1) ?
+> > 
+> > 
+> > I think it's need for any SBLive! (not Audigy) that has an analog
+> > center/LFE output.
+> > 
+> > Maybe you could extract this information from the kX driver.
+> > 
 > on opencreative driver they use :
 > 
 > * 5.1: Enable the additional AC97 Slots and unmute extra channels on 
 > AC97 codec */
->                 if (codec->codec_read(codec, AC97_EXTENDED_ID) & 0x0080){
->                         printk(KERN_INFO "emu10k1: SBLive! 5.1 card 
-> detected\n");
->                         sblive_writeptr(card, AC97SLOT, 0, AC97SLOT_CNTR 
-> | AC97SLOT_LFE);
->                         codec->codec_write(codec, AC97_SURROUND_MASTER, 
-> 0x0);
->                 }
-> 
-> It correspond to AC97_EA_SDAC.
-AC97_EI_SDAC
-> I don't know if it is a safe way...
-> 
-> 
-> Matthieu
-> 
+>                  if (codec->codec_read(codec, AC97_EXTENDED_ID) & 0x0080){
+
+Interesting, I'll look into this.  I guess you mean the OSS driver?
+
+Lee
 
 
 
