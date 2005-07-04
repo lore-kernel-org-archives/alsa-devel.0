@@ -1,12 +1,14 @@
-From: cundongyang@ece.unm.edu
-Subject: Really need help! A newbie
-Date: Mon,  4 Jul 2005 11:53:56 -0600
-Message-ID: <1120499636.0a2a81f111c8b@webmail.ece.unm.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0000985]: hdspmixer mute/solo buttons not working
+Date: Mon, 4 Jul 2005 20:35:59 +0200
+Message-ID: <436a6258bf913c9546ba8210b771a3c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A92F81B5
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 20:35:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,All:
-   Now I was asked to develop a sound driver by my boss. However, I
-am completely new to this area. And did not know where should I start to
-learn the principle of a sound card driver :)
-   The idea of my project is change one CD player, and let that CD player
-read music data from CD, and wrote into one file. Then trigger my program,sound
-card driver, do some processing, and send them to sound card.
-   I am going to do my project based on ALSA. Hoewever, cause I know nothing
-about this field? Could your nice guy give some advice on:
-   1) Which CD player should I use? Now I have xmms, amarok.
-   2) How to understand the principle of a sound card driver. The data
-flow from CD player to sound card? Is there some entry materials online.
 
-   Your help is really appreciated! Thanks a lot.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=985> 
+======================================================================
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   985
+Category:                   hdsp progs
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             03-12-2005 19:43 CET
+Last Modified:              07-04-2005 20:35 CEST
+======================================================================
+Summary:                    hdspmixer mute/solo buttons not working
+Description: 
+I think these used to work but when I tried them this morning they no
+longer seem to work.
+======================================================================
 
---cundong
+----------------------------------------------------------------------
+ charbonnel - 07-04-05 08:40 
+----------------------------------------------------------------------
+Hi Mark,
+
+Is this still an issue ?
+You have to activate the global mute and/or solo buttons before the ones
+on the tracks have any effect.
+Also mute and solo only affect routing, not the recorded audio.
+
+Thomas
+
+----------------------------------------------------------------------
+ Mark Knecht - 07-04-05 20:35 
+----------------------------------------------------------------------
+Hi Thomas,
+   I did a very quick test. With the global buttons engaged then both the
+mute and solo work, at least on playback channels. Thanks.
+
+   If you happen to be looking at this area of hdspmixer then to my eye it
+is not possible to see whether the global mute or solo buttons are engaged
+or disengaged. It would be great if they got brighter or something. The
+global solo button does light up when a channel solo button is pressed but
+it seems that the global mute doesn't do anything.
+
+   Anyway, please close this bug. It's seems more a user error on my
+part.
+
+Thanks!
+Mark
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-12-05 19:43 Mark Knecht    New Issue                                    
+07-04-05 08:40 charbonnel     Note Added: 0005380                          
+07-04-05 20:35 Mark Knecht    Note Added: 0005387                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
