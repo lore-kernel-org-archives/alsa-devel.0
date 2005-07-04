@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Mon, 4 Jul 2005 11:53:46 +0200
-Message-ID: <98cb73b1c24fc816c66eabd67b43d4a5@bugtrack.alsa-project.org>
+Date: Mon, 4 Jul 2005 14:02:45 +0200
+Message-ID: <0ad3c0a57ecea56a0f971be840d7af5a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22766187
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 11:53:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57D6D199
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 14:02:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-04-2005 11:53 CEST
+Last Modified:              07-04-2005 14:02 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,30 +52,6 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 07-03-05 15:57 
-----------------------------------------------------------------------
-i haven't undestood if the problem (only in mono) is fixed with another
-patch (and so, please submit here) or if it already works actually.
-
-how to check the dmix mono setting?
-
-however i submitted a skype ticket linking this thread, as soon as i got
-an answer i'll post here, hoping to fix this problem as soon as
-possibile.
-
-the question is: shouldn't skype have the same problem with pure oss
-driver? i mean..if it assume mono and not stereo without checks, what's
-the difference with dmix?
-
-this is what i thought when i opened this bug, dmix is not fully
-transparent to applications, or, apart the init bug, it should let apps
-work as pure oss access.
-i'm not an alsa expert, never read the code, i may fail of course, but
-this is my suspect.
-
-good work.
-
-----------------------------------------------------------------------
  pzad - 07-04-05 11:53 
 ----------------------------------------------------------------------
 aoss.patch - this will make skype work in mono mode. You need to put
@@ -83,6 +59,16 @@ channels 1 to dmix.conf and dsnoop.conf.
 
 In pure oss mode skype ask for mono 48000 kHz and it got this. In dmix it
 got 48000 but stereo.
+
+----------------------------------------------------------------------
+ Hetfield - 07-04-05 14:02 
+----------------------------------------------------------------------
+i'm sorry, i searched the web for a while but didn't got that mono config.
+
+however, if i have understood well, i would have mono for all apps and not
+only skype, and that's not good.
+
+i'm still waiting for skype support response..i'll keep you updated.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +87,7 @@ Date Modified  Username       Field                    Change
 07-03-05 15:57 Hetfield       Note Added: 0005378                          
 07-04-05 11:49 pzad           File Added: aoss.patch                       
 07-04-05 11:53 pzad           Note Added: 0005384                          
+07-04-05 14:02 Hetfield       Note Added: 0005385                          
 ======================================================================
 
 
