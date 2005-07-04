@@ -1,15 +1,16 @@
-From: Alexander Sirotkin <demiourgos@gmail.com>
-Subject: Re: sound recording
-Date: Mon, 4 Jul 2005 23:08:53 +0300
-Message-ID: <c4357ccd05070413083e0d00d5@mail.gmail.com>
-References: <c4357ccd050703130445674105@mail.gmail.com>
-	 <Pine.HPX.4.33n.0507041825510.1989-100000@studcom.urz.uni-halle.de>
-Reply-To: Alexander Sirotkin <demiourgos@gmail.com>
+From: <uranaisuki7781@taurus.livedoor.com>
+Subject: =?iso-2022-jp?B?GyRCTCQ+NUJ6OS05cCIoPXdAbztOQ085diROOWlMZBsoQg==?=
+Date: Tue, 5 Jul 2005 06:32:47 +0900
+Message-ID: <c30c01c580df$ec32ed30$0a0ba8c0@DFTRDFYU>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_13455_10031761.1120507733457"
+Content-Type: text/plain;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0507041825510.1989-100000@studcom.urz.uni-halle.de>
+Received: from YUI-X6CRTZ (p1035-ipad05kyoto.kyoto.ocn.ne.jp [220.105.38.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AE461B5
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 23:33:34 +0200 (MEST)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,137 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_13455_10031761.1120507733457
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+事業者　Most企画
+代表者　沢柳　育子
+所在地　京都市西京区桂番条100-1
+電話    0774-55-1479        
+未承諾広告※受信拒否は
+次のメール jyushinno@yahoo.co.jpよりお願いします。
 
-Unfortunately it did not help much. I attached the new "amixer
-contents" output. Still recording does not work...
+敵に捕まった女戦士の運命は拷問地獄行きしかなかった。
+今日もまた、あわれな捕らわれの女戦士達の叫び声がこだまする・・・・・。
 
-On 7/4/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Alexander Sirotkin wrote:
-> > On 6/30/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> > > Alexander Sirotkin wrote:
-> > > > Sound works OK except for the recording.
-> > > >
-> > > > Realtek ALC850
-> > >
-> > > What is the output of "amixer contents"?
-> >
-> > numid=3D37,iface=3DMIXER,name=3D'Line-In As Surround'
-> >   : values=3Don
-> > numid=3D38,iface=3DMIXER,name=3D'Mic As Center/LFE'
-> >   : values=3Don
->=20
-> Your Line-In and Mic-In jacks have been configured as outputs for 5.1
-> sound.  Toggle these mixer controls in alsamixer.
->=20
->=20
-> HTH
-> Clemens
->=20
->=20
+http://infoest.p2p.com.hk/index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
+
+http://infoshop.dynu.com/index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
+
+当サイトは18禁サイトです。１８歳未満の方のご利用はお断りします。
+<御利用規約>
+http://infoest.p2p.com.hk/
+
+http://infoshop.dynu.com/
 
 
---=20
-Alexander Sirotkin
-
-------=_Part_13455_10031761.1120507733457
-Content-Type: text/plain; name="amixer.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="amixer.txt"
-
-bnVtaWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgTW9ubyBQbGF5YmFjayBTd2l0Y2gnCiAg
-OyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9
-MTAsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIE1vbm8gUGxheWJhY2sgVm9sdW1lJwogIDsgdHlw
-ZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2
-YWx1ZXM9MzEKbnVtaWQ9MSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgUGxheWJhY2sgU3dpdGNo
-JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51
-bWlkPTIsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9
-SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFs
-dWVzPTI3LDI3Cm51bWlkPTI0LGlmYWNlPU1JWEVSLG5hbWU9J1BDTSBQbGF5YmFjayBTd2l0Y2gn
-CiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVt
-aWQ9MjUsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5U
-RUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVz
-PTIzLDIzCm51bWlkPTcsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgU3dpdGNo
-JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MgogIDogdmFsdWVzPW9uLG9u
-Cm51bWlkPTgsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgVm9sdW1lJwogIDsg
-dHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixtaW49MCxtYXg9MzEsc3RlcD0wCiAg
-OiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MyxpZmFjZT1NSVhFUixuYW1lPSdDZW50ZXIgUGxheWJhY2sg
-U3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVz
-PW9uCm51bWlkPTQsaWZhY2U9TUlYRVIsbmFtZT0nQ2VudGVyIFBsYXliYWNrIFZvbHVtZScKICA7
-IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWluPTAsbWF4PTMxLHN0ZXA9MAog
-IDogdmFsdWVzPTMxCm51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nTEZFIFBsYXliYWNrIFN3aXRj
-aCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpu
-dW1pZD02LGlmYWNlPU1JWEVSLG5hbWU9J0xGRSBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlO
-VEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVl
-cz0zMQpudW1pZD0zNyxpZmFjZT1NSVhFUixuYW1lPSdMaW5lLUluIEFzIFN1cnJvdW5kJwogIDsg
-dHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9mZgpudW1pZD0x
-OCxpZmFjZT1NSVhFUixuYW1lPSdMaW5lIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVB
-TixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0xOSxpZmFjZT1NSVhF
-UixuYW1lPSdMaW5lIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnct
-LS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVzPTMxLDMxCm51bWlkPTIw
-LGlmYWNlPU1JWEVSLG5hbWU9J0NEIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixh
-Y2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0yMSxpZmFjZT1NSVhFUixu
-YW1lPSdDRCBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZh
-bHVlcz0yLG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVlcz0yOSwyOQpudW1pZD0zOCxpZmFj
-ZT1NSVhFUixuYW1lPSdNaWMgQXMgQ2VudGVyL0xGRScKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9
-cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vZmYKbnVtaWQ9MTcsaWZhY2U9TUlYRVIsbmFtZT0n
-TWljIEJvb3N0ICgrMjBkQiknCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0x
-CiAgOiB2YWx1ZXM9b24KbnVtaWQ9MzAsaWZhY2U9TUlYRVIsbmFtZT0nTWljIFNlbGVjdCcKICA7
-IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9cnctLS0sdmFsdWVzPTEsaXRlbXM9MgogIDsgSXRlbSAj
-MCAnTWljMScKICA7IEl0ZW0gIzEgJ01pYzInCiAgOiB2YWx1ZXM9MApudW1pZD0xNSxpZmFjZT1N
-SVhFUixuYW1lPSdNaWMgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
-dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE2LGlmYWNlPU1JWEVSLG5hbWU9J01p
-YyBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0x
-LG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVlcz0zMQpudW1pZD0xMyxpZmFjZT1NSVhFUixu
-YW1lPSdQaG9uZSBQbGF5YmFjayBTd2l0Y2gnCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0t
-LHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9MTQsaWZhY2U9TUlYRVIsbmFtZT0nUGhvbmUg
-UGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxt
-aW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MzEKbnVtaWQ9MTEsaWZhY2U9TUlYRVIsbmFt
-ZT0nUEMgU3BlYWtlciBQbGF5YmFjayBTd2l0Y2gnCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3
-LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9MTIsaWZhY2U9TUlYRVIsbmFtZT0nUEMg
-U3BlYWtlciBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZh
-bHVlcz0xLG1pbj0wLG1heD0xNSxzdGVwPTAKICA6IHZhbHVlcz0xNQpudW1pZD0yMixpZmFjZT1N
-SVhFUixuYW1lPSdBdXggUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
-dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTIzLGlmYWNlPU1JWEVSLG5hbWU9J0F1
-eCBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0y
-LG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVlcz0zMSwzMQpudW1pZD0yOSxpZmFjZT1NSVhF
-UixuYW1lPSdNb25vIE91dHB1dCBTZWxlY3QnCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3
-LS0tLHZhbHVlcz0xLGl0ZW1zPTIKICA7IEl0ZW0gIzAgJ01peCcKICA7IEl0ZW0gIzEgJ01pYycK
-ICA6IHZhbHVlcz0wCm51bWlkPTI2LGlmYWNlPU1JWEVSLG5hbWU9J0NhcHR1cmUgU291cmNlJwog
-IDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixpdGVtcz04CiAgOyBJdGVt
-ICMwICdNaWMnCiAgOyBJdGVtICMxICdDRCcKICA7IEl0ZW0gIzIgJ1ZpZGVvJwogIDsgSXRlbSAj
-MyAnQXV4JwogIDsgSXRlbSAjNCAnTGluZScKICA7IEl0ZW0gIzUgJ01peCcKICA7IEl0ZW0gIzYg
-J01peCBNb25vJwogIDsgSXRlbSAjNyAnUGhvbmUnCiAgOiB2YWx1ZXM9MCwwCm51bWlkPTI3LGlm
-YWNlPU1JWEVSLG5hbWU9J0NhcHR1cmUgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
-dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTI4LGlmYWNlPU1JWEVSLG5hbWU9J0Nh
-cHR1cmUgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixtaW49
-MCxtYXg9MTUsc3RlcD0wCiAgOiB2YWx1ZXM9OSw5Cm51bWlkPTMxLGlmYWNlPU1JWEVSLG5hbWU9
-J0lFQzk1OCBQbGF5YmFjayBDb24gTWFzaycKICA7IHR5cGU9SUVDOTU4LGFjY2Vzcz1yLS0tLSx2
-YWx1ZXM9MQogIDogdmFsdWVzPT8KbnVtaWQ9MzIsaWZhY2U9TUlYRVIsbmFtZT0nSUVDOTU4IFBs
-YXliYWNrIFBybyBNYXNrJwogIDsgdHlwZT1JRUM5NTgsYWNjZXNzPXItLS0tLHZhbHVlcz0xCiAg
-OiB2YWx1ZXM9PwpudW1pZD0zNSxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxheWJhY2sgQUM5
-Ny1TUFNBJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9
-MyxzdGVwPTAKICA6IHZhbHVlcz0zCm51bWlkPTMzLGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBQ
-bGF5YmFjayBEZWZhdWx0JwogIDsgdHlwZT1JRUM5NTgsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAg
-OiB2YWx1ZXM9PwpudW1pZD00MCxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxheWJhY2sgUm91
-dGUnCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLGl0ZW1zPTMKICA7
-IEl0ZW0gIzAgJ1BDTScKICA7IEl0ZW0gIzEgJ0FuYWxvZyBJbicKICA7IEl0ZW0gIzIgJ0lFQzk1
-OCBJbicKICA6IHZhbHVlcz0wCm51bWlkPTM0LGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBQbGF5
-YmFjayBTd2l0Y2gnCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2
-YWx1ZXM9b2ZmCm51bWlkPTM5LGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBDYXB0dXJlIFN3aXRj
-aCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vZmYK
-bnVtaWQ9MzYsaWZhY2U9TUlYRVIsbmFtZT0nRHVwbGljYXRlIEZyb250JwogIDsgdHlwZT1CT09M
-RUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTQxLGlmYWNlPU1J
-WEVSLG5hbWU9J0V4dGVybmFsIEFtcGxpZmllcicKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
-LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vZmYK
-------=_Part_13455_10031761.1120507733457--
 
 
 -------------------------------------------------------
