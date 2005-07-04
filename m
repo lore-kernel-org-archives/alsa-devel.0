@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Creative Audigy 2 NX Notebook PCMCIA
-Date: Mon, 4 Jul 2005 09:34:41 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507040931450.6723-100000@studcom.urz.uni-halle.de>
-References: <42C5AB17.8000003@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001230]: Compiler warning while compiling gus_main.c
+Date: Mon, 4 Jul 2005 09:48:47 +0200
+Message-ID: <0ce7625687dedd1c2a452d8025486336@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42C5AB17.8000003@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AAE7199
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 09:48:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> Is there any /usr/share/alsa/cards/....   file for this USB device?
 
-The card-specfifc files are selected using the driver name which is
-"USB-Audio" for all USB devices.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1230> 
+======================================================================
+Reported By:                Henne
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1230
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             07-04-2005 09:48 CEST
+Last Modified:              07-04-2005 09:48 CEST
+======================================================================
+Summary:                    Compiler warning while compiling gus_main.c
+Description: 
+The compiler gives a warning on gus_main.c, that snd_gus_seq_dev_free() is
+defined but not used. This patch will fix it. 
+======================================================================
 
-> It seems that even "speaker-test -c2 -Dfront"  does not work with it.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-04-05 09:48 Henne          New Issue                                    
+07-04-05 09:48 Henne          File Added: gus_main_c.diff                    
+======================================================================
 
-USB devices usually don't need any special configuration for
-front/surround output, so I guess we could add a generic USB conf file
-that just redirect those virtual devices to the default one.
-
-
-Regards,
-Clemens
 
 
 
