@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000985]: hdspmixer mute/solo buttons not working
-Date: Mon, 4 Jul 2005 20:35:59 +0200
-Message-ID: <436a6258bf913c9546ba8210b771a3c4@bugtrack.alsa-project.org>
+From: Alexander Sirotkin <demiourgos@gmail.com>
+Subject: Re: sound recording
+Date: Mon, 4 Jul 2005 23:08:53 +0300
+Message-ID: <c4357ccd05070413083e0d00d5@mail.gmail.com>
+References: <c4357ccd050703130445674105@mail.gmail.com>
+	 <Pine.HPX.4.33n.0507041825510.1989-100000@studcom.urz.uni-halle.de>
+Reply-To: Alexander Sirotkin <demiourgos@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_13455_10031761.1120507733457"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A92F81B5
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 20:35:59 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0507041825510.1989-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +19,137 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_13455_10031761.1120507733457
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=985> 
-======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   985
-Category:                   hdsp progs
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             03-12-2005 19:43 CET
-Last Modified:              07-04-2005 20:35 CEST
-======================================================================
-Summary:                    hdspmixer mute/solo buttons not working
-Description: 
-I think these used to work but when I tried them this morning they no
-longer seem to work.
-======================================================================
+Unfortunately it did not help much. I attached the new "amixer
+contents" output. Still recording does not work...
 
-----------------------------------------------------------------------
- charbonnel - 07-04-05 08:40 
-----------------------------------------------------------------------
-Hi Mark,
-
-Is this still an issue ?
-You have to activate the global mute and/or solo buttons before the ones
-on the tracks have any effect.
-Also mute and solo only affect routing, not the recorded audio.
-
-Thomas
-
-----------------------------------------------------------------------
- Mark Knecht - 07-04-05 20:35 
-----------------------------------------------------------------------
-Hi Thomas,
-   I did a very quick test. With the global buttons engaged then both the
-mute and solo work, at least on playback channels. Thanks.
-
-   If you happen to be looking at this area of hdspmixer then to my eye it
-is not possible to see whether the global mute or solo buttons are engaged
-or disengaged. It would be great if they got brighter or something. The
-global solo button does light up when a channel solo button is pressed but
-it seems that the global mute doesn't do anything.
-
-   Anyway, please close this bug. It's seems more a user error on my
-part.
-
-Thanks!
-Mark
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-12-05 19:43 Mark Knecht    New Issue                                    
-07-04-05 08:40 charbonnel     Note Added: 0005380                          
-07-04-05 20:35 Mark Knecht    Note Added: 0005387                          
-======================================================================
+On 7/4/05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Alexander Sirotkin wrote:
+> > On 6/30/05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> > > Alexander Sirotkin wrote:
+> > > > Sound works OK except for the recording.
+> > > >
+> > > > Realtek ALC850
+> > >
+> > > What is the output of "amixer contents"?
+> >
+> > numid=3D37,iface=3DMIXER,name=3D'Line-In As Surround'
+> >   : values=3Don
+> > numid=3D38,iface=3DMIXER,name=3D'Mic As Center/LFE'
+> >   : values=3Don
+>=20
+> Your Line-In and Mic-In jacks have been configured as outputs for 5.1
+> sound.  Toggle these mixer controls in alsamixer.
+>=20
+>=20
+> HTH
+> Clemens
+>=20
+>=20
 
 
+--=20
+Alexander Sirotkin
+
+------=_Part_13455_10031761.1120507733457
+Content-Type: text/plain; name="amixer.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="amixer.txt"
+
+bnVtaWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgTW9ubyBQbGF5YmFjayBTd2l0Y2gnCiAg
+OyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9
+MTAsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIE1vbm8gUGxheWJhY2sgVm9sdW1lJwogIDsgdHlw
+ZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2
+YWx1ZXM9MzEKbnVtaWQ9MSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgUGxheWJhY2sgU3dpdGNo
+JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51
+bWlkPTIsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9
+SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFs
+dWVzPTI3LDI3Cm51bWlkPTI0LGlmYWNlPU1JWEVSLG5hbWU9J1BDTSBQbGF5YmFjayBTd2l0Y2gn
+CiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVt
+aWQ9MjUsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5U
+RUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVz
+PTIzLDIzCm51bWlkPTcsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgU3dpdGNo
+JwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MgogIDogdmFsdWVzPW9uLG9u
+Cm51bWlkPTgsaWZhY2U9TUlYRVIsbmFtZT0nU3Vycm91bmQgUGxheWJhY2sgVm9sdW1lJwogIDsg
+dHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixtaW49MCxtYXg9MzEsc3RlcD0wCiAg
+OiB2YWx1ZXM9MzEsMzEKbnVtaWQ9MyxpZmFjZT1NSVhFUixuYW1lPSdDZW50ZXIgUGxheWJhY2sg
+U3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVz
+PW9uCm51bWlkPTQsaWZhY2U9TUlYRVIsbmFtZT0nQ2VudGVyIFBsYXliYWNrIFZvbHVtZScKICA7
+IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTEsbWluPTAsbWF4PTMxLHN0ZXA9MAog
+IDogdmFsdWVzPTMxCm51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nTEZFIFBsYXliYWNrIFN3aXRj
+aCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpu
+dW1pZD02LGlmYWNlPU1JWEVSLG5hbWU9J0xGRSBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlO
+VEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVl
+cz0zMQpudW1pZD0zNyxpZmFjZT1NSVhFUixuYW1lPSdMaW5lLUluIEFzIFN1cnJvdW5kJwogIDsg
+dHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9mZgpudW1pZD0x
+OCxpZmFjZT1NSVhFUixuYW1lPSdMaW5lIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVB
+TixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0xOSxpZmFjZT1NSVhF
+UixuYW1lPSdMaW5lIFBsYXliYWNrIFZvbHVtZScKICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnct
+LS0sdmFsdWVzPTIsbWluPTAsbWF4PTMxLHN0ZXA9MAogIDogdmFsdWVzPTMxLDMxCm51bWlkPTIw
+LGlmYWNlPU1JWEVSLG5hbWU9J0NEIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixh
+Y2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD0yMSxpZmFjZT1NSVhFUixu
+YW1lPSdDRCBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZh
+bHVlcz0yLG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVlcz0yOSwyOQpudW1pZD0zOCxpZmFj
+ZT1NSVhFUixuYW1lPSdNaWMgQXMgQ2VudGVyL0xGRScKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9
+cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vZmYKbnVtaWQ9MTcsaWZhY2U9TUlYRVIsbmFtZT0n
+TWljIEJvb3N0ICgrMjBkQiknCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0x
+CiAgOiB2YWx1ZXM9b24KbnVtaWQ9MzAsaWZhY2U9TUlYRVIsbmFtZT0nTWljIFNlbGVjdCcKICA7
+IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9cnctLS0sdmFsdWVzPTEsaXRlbXM9MgogIDsgSXRlbSAj
+MCAnTWljMScKICA7IEl0ZW0gIzEgJ01pYzInCiAgOiB2YWx1ZXM9MApudW1pZD0xNSxpZmFjZT1N
+SVhFUixuYW1lPSdNaWMgUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
+dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTE2LGlmYWNlPU1JWEVSLG5hbWU9J01p
+YyBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0x
+LG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVlcz0zMQpudW1pZD0xMyxpZmFjZT1NSVhFUixu
+YW1lPSdQaG9uZSBQbGF5YmFjayBTd2l0Y2gnCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0t
+LHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9MTQsaWZhY2U9TUlYRVIsbmFtZT0nUGhvbmUg
+UGxheWJhY2sgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxt
+aW49MCxtYXg9MzEsc3RlcD0wCiAgOiB2YWx1ZXM9MzEKbnVtaWQ9MTEsaWZhY2U9TUlYRVIsbmFt
+ZT0nUEMgU3BlYWtlciBQbGF5YmFjayBTd2l0Y2gnCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3
+LS0tLHZhbHVlcz0xCiAgOiB2YWx1ZXM9b24KbnVtaWQ9MTIsaWZhY2U9TUlYRVIsbmFtZT0nUEMg
+U3BlYWtlciBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZh
+bHVlcz0xLG1pbj0wLG1heD0xNSxzdGVwPTAKICA6IHZhbHVlcz0xNQpudW1pZD0yMixpZmFjZT1N
+SVhFUixuYW1lPSdBdXggUGxheWJhY2sgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
+dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTIzLGlmYWNlPU1JWEVSLG5hbWU9J0F1
+eCBQbGF5YmFjayBWb2x1bWUnCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLHZhbHVlcz0y
+LG1pbj0wLG1heD0zMSxzdGVwPTAKICA6IHZhbHVlcz0zMSwzMQpudW1pZD0yOSxpZmFjZT1NSVhF
+UixuYW1lPSdNb25vIE91dHB1dCBTZWxlY3QnCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3
+LS0tLHZhbHVlcz0xLGl0ZW1zPTIKICA7IEl0ZW0gIzAgJ01peCcKICA7IEl0ZW0gIzEgJ01pYycK
+ICA6IHZhbHVlcz0wCm51bWlkPTI2LGlmYWNlPU1JWEVSLG5hbWU9J0NhcHR1cmUgU291cmNlJwog
+IDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixpdGVtcz04CiAgOyBJdGVt
+ICMwICdNaWMnCiAgOyBJdGVtICMxICdDRCcKICA7IEl0ZW0gIzIgJ1ZpZGVvJwogIDsgSXRlbSAj
+MyAnQXV4JwogIDsgSXRlbSAjNCAnTGluZScKICA7IEl0ZW0gIzUgJ01peCcKICA7IEl0ZW0gIzYg
+J01peCBNb25vJwogIDsgSXRlbSAjNyAnUGhvbmUnCiAgOiB2YWx1ZXM9MCwwCm51bWlkPTI3LGlm
+YWNlPU1JWEVSLG5hbWU9J0NhcHR1cmUgU3dpdGNoJwogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1y
+dy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTI4LGlmYWNlPU1JWEVSLG5hbWU9J0Nh
+cHR1cmUgVm9sdW1lJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MixtaW49
+MCxtYXg9MTUsc3RlcD0wCiAgOiB2YWx1ZXM9OSw5Cm51bWlkPTMxLGlmYWNlPU1JWEVSLG5hbWU9
+J0lFQzk1OCBQbGF5YmFjayBDb24gTWFzaycKICA7IHR5cGU9SUVDOTU4LGFjY2Vzcz1yLS0tLSx2
+YWx1ZXM9MQogIDogdmFsdWVzPT8KbnVtaWQ9MzIsaWZhY2U9TUlYRVIsbmFtZT0nSUVDOTU4IFBs
+YXliYWNrIFBybyBNYXNrJwogIDsgdHlwZT1JRUM5NTgsYWNjZXNzPXItLS0tLHZhbHVlcz0xCiAg
+OiB2YWx1ZXM9PwpudW1pZD0zNSxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxheWJhY2sgQUM5
+Ny1TUFNBJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9
+MyxzdGVwPTAKICA6IHZhbHVlcz0zCm51bWlkPTMzLGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBQ
+bGF5YmFjayBEZWZhdWx0JwogIDsgdHlwZT1JRUM5NTgsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAg
+OiB2YWx1ZXM9PwpudW1pZD00MCxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxheWJhY2sgUm91
+dGUnCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLGl0ZW1zPTMKICA7
+IEl0ZW0gIzAgJ1BDTScKICA7IEl0ZW0gIzEgJ0FuYWxvZyBJbicKICA7IEl0ZW0gIzIgJ0lFQzk1
+OCBJbicKICA6IHZhbHVlcz0wCm51bWlkPTM0LGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBQbGF5
+YmFjayBTd2l0Y2gnCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xCiAgOiB2
+YWx1ZXM9b2ZmCm51bWlkPTM5LGlmYWNlPU1JWEVSLG5hbWU9J0lFQzk1OCBDYXB0dXJlIFN3aXRj
+aCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vZmYK
+bnVtaWQ9MzYsaWZhY2U9TUlYRVIsbmFtZT0nRHVwbGljYXRlIEZyb250JwogIDsgdHlwZT1CT09M
+RUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQogIDogdmFsdWVzPW9uCm51bWlkPTQxLGlmYWNlPU1J
+WEVSLG5hbWU9J0V4dGVybmFsIEFtcGxpZmllcicKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
+LS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vZmYK
+------=_Part_13455_10031761.1120507733457--
 
 
 -------------------------------------------------------
