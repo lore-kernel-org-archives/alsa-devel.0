@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001232]: Microphone in front bracket - very low volume
-Date: Mon, 4 Jul 2005 16:47:31 +0200
-Message-ID: <6e55ab63b53adee8f22e5fdee89931f5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001229]: Can't modprobe sound module
+Date: Mon, 4 Jul 2005 17:06:02 +0200
+Message-ID: <91259381f048a78fbbe7019809d01594@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F10411A2
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 16:47:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A06A1A2
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 17:06:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1232> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1229> 
 ======================================================================
-Reported By:                jirka
-Assigned To:                
+Reported By:                oui
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1232
-Category:                   PCI - intel8x0
+Issue ID:                   1229
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               latest Ubuntu, RedHat (I tried them both)
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-04-2005 16:47 CEST
-Last Modified:              07-04-2005 16:47 CEST
+Date Submitted:             07-03-2005 11:48 CEST
+Last Modified:              07-04-2005 17:06 CEST
 ======================================================================
-Summary:                    Microphone in front bracket - very low volume
+Summary:                    Can't modprobe sound module
 Description: 
-I have mainboard MicroStar K8N Neo2 Platinum-54G - nForce3 Ultra (it's
-nforce ultra chipset with integrated sound chip). This board has 7.1 audio
-and audio can be recorded via "sound in" jack (stereo jack connector) or
-"microphone" jack. These input jacks are placed on the back side of the
-case (on the mainboard). When I connect microphone to this jack and turn
-it on, it works great. But there is an option to connect some "sound
-bracket" to this board. You can buy computer case which has some input
-jacks on the front side and connect the cable from them to your mainboard.
-So you get two more jacks. One for phones and one for microphone. If you
-have headset (for internet telephony) with earphones and microphone, you
-don't need to connect them to the back side of your case. You connect them
-to the front side.
-
-And this is a problem. If I connect my microphone to the front "sound
-bracket", the volume is very very low. If I connect it to the back jack
-(integrated on motherboard), it works normally (I can record with normal
-volume). 
-
-I think this is not a configuration problem. I tried every combination in
-alsamixer and nothing helps. Always front jack has very low audio. If I
-record something using it, I need set very high volume to hear something,
-if I play it.
-
-Lots of people has these computer cases with front bracket and  think it's
-very confusing when it works normally in Windows and in Linux you cannot
-use the front connector.
+I use sound card Intel 82801DB AC'97 .I download alsa-driver ,alsa-lib and
+alsa-util and follow your instruction but I can't modprobe intel8x0 it
+said not found module device .Please tell me what I should do?
 ======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 07-03-05 12:14 
+----------------------------------------------------------------------
+modprobe snd-intel8x0
+not
+modprobe intel8x0
+
+----------------------------------------------------------------------
+ oui - 07-04-05 17:06 
+----------------------------------------------------------------------
+To jcdutton 
+Thanks for your answer but I type modprobe snd-intel8x0 
+It said not find module device and now I can't use sound anymore.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-05 16:47 jirka          New Issue                                    
-07-04-05 16:47 jirka          Distribution              => latest Ubuntu, RedHat
-(I tried them both)
-07-04-05 16:47 jirka          Kernel Version            => 2.6.10          
+07-03-05 11:48 oui            New Issue                                    
+07-03-05 12:14 jcdutton       Note Added: 0005374                          
+07-04-05 17:06 oui            Note Added: 0005386                          
 ======================================================================
 
 
