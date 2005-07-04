@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001223]: Unable to select card for playback
-Date: Mon, 4 Jul 2005 10:28:59 +0200
-Message-ID: <c6582402d003f7979a9499b45aaa1a12@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Mon, 4 Jul 2005 11:53:46 +0200
+Message-ID: <98cb73b1c24fc816c66eabd67b43d4a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 437DD18D
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 10:29:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22766187
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 11:53:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,120 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1223> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
-Reported By:                nframpton
-Assigned To:                jcdutton
+Reported By:                Hetfield
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1223
-Category:                   PCI - ca0106
+Issue ID:                   1224
+Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Leaf Bering v1.2
-Kernel Version:             2.4.31
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             07-01-2005 02:59 CEST
-Last Modified:              07-04-2005 10:28 CEST
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              07-04-2005 11:53 CEST
 ======================================================================
-Summary:                    Unable to select card for playback
+Summary:                    artsd-like style
 Description: 
-I have an Intel D875PBZ motherboard and several SB Live 24-bit (model
-SB0410) cards.  If only one card is installed the ca0106 driver works
-fine.  If multiple cards are installed I am unable to select a specific
-card for playback.
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-# aplay -D hw:0,0 /tmp/new.wav
-Playing WAVE '/tmp/new.wav' : Signed 16 bit Little Endian, Rate 16000 Hz,
-Mono
-aplay: set_params:862: Channels count non available
-
-I am using the default configuration supplied with alsa-lib 1.0.9.
-
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun 30 2005 for kernel 2.4.31-NANO.
-
-# cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xb800 irq 3
-1 [CA0106_1       ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xbc00 irq 10
-
-# cat /proc/asound/devices
- 19: [0- 3]: digital audio playback
- 27: [0- 3]: digital audio capture
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
- 51: [1- 3]: digital audio playback
- 59: [1- 3]: digital audio capture
- 50: [1- 2]: digital audio playback
- 58: [1- 2]: digital audio capture
- 49: [1- 1]: digital audio playback
- 57: [1- 1]: digital audio capture
- 48: [1- 0]: digital audio playback
- 56: [1- 0]: digital audio capture
- 32: [1- 0]: ctl
-
-# cat /proc/interrupts
-           CPU0
-  0:      31884          XT-PIC  timer
-  1:          3          XT-PIC  keyboard
-  2:          0          XT-PIC  cascade
-  3:          0          XT-PIC  snd_ca0106
-  4:        635          XT-PIC  serial
- 10:        726          XT-PIC  snd_ca0106, eth0
- 14:       7402          XT-PIC  ide0
-NMI:          0
-ERR:          0
-
-# cat /proc/asound/modules
-0 snd-ca0106
-1 snd-ca0106
-
-# cat /proc/asound/pcm
-00-00: ca0106 : CA0106 : playback 1 : capture 1
-00-01: ca0106 : CA0106 : playback 1 : capture 1
-00-02: ca0106 : CA0106 : playback 1 : capture 1
-00-03: ca0106 : CA0106 : playback 1 : capture 1
-01-00: ca0106 : CA0106 : playback 1 : capture 1
-01-01: ca0106 : CA0106 : playback 1 : capture 1
-01-02: ca0106 : CA0106 : playback 1 : capture 1
-01-03: ca0106 : CA0106 : playback 1 : capture 1
-
-
+that could be very important for example using skype voip and listening
+music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 07-01-05 12:32 
+ Hetfield - 07-03-05 15:57 
 ----------------------------------------------------------------------
-For card0:
-aplay -D plug:front:0 /tmp/new.wav
-For card1:
-aplay -D plug:front:1 /tmp/new.wav
+i haven't undestood if the problem (only in mono) is fixed with another
+patch (and so, please submit here) or if it already works actually.
+
+how to check the dmix mono setting?
+
+however i submitted a skype ticket linking this thread, as soon as i got
+an answer i'll post here, hoping to fix this problem as soon as
+possibile.
+
+the question is: shouldn't skype have the same problem with pure oss
+driver? i mean..if it assume mono and not stereo without checks, what's
+the difference with dmix?
+
+this is what i thought when i opened this bug, dmix is not fully
+transparent to applications, or, apart the init bug, it should let apps
+work as pure oss access.
+i'm not an alsa expert, never read the code, i may fail of course, but
+this is my suspect.
+
+good work.
 
 ----------------------------------------------------------------------
- nframpton - 07-04-05 10:28 
+ pzad - 07-04-05 11:53 
 ----------------------------------------------------------------------
-That worked fine, thanks.  Is this documented somewhere?
+aoss.patch - this will make skype work in mono mode. You need to put
+channels 1 to dmix.conf and dsnoop.conf.
+
+In pure oss mode skype ask for mono 48000 kHz and it got this. In dmix it
+got 48000 but stereo.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 02:59 nframpton      New Issue                                    
-07-01-05 02:59 nframpton      Distribution              => Leaf Bering v1.2
-07-01-05 02:59 nframpton      Kernel Version            => 2.4.31          
-07-01-05 12:32 jcdutton       Note Added: 0005331                          
-07-01-05 12:32 jcdutton       Status                   assigned => feedback
-07-04-05 10:28 nframpton      Note Added: 0005383                          
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
+07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
+07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
+07-02-05 21:47 pzad           Note Added: 0005361                          
+07-03-05 09:25 Hetfield       Note Added: 0005370                          
+07-03-05 14:09 pzad           Note Added: 0005376                          
+07-03-05 15:57 Hetfield       Note Added: 0005378                          
+07-04-05 11:49 pzad           File Added: aoss.patch                       
+07-04-05 11:53 pzad           Note Added: 0005384                          
 ======================================================================
 
 
