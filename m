@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Mon, 4 Jul 2005 14:02:45 +0200
-Message-ID: <0ad3c0a57ecea56a0f971be840d7af5a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001231]: Sharing soundcard via dmix does not work when mixing 32bit and 64bit applications.
+Date: Mon, 4 Jul 2005 16:30:39 +0200
+Message-ID: <5f388bd37b09dcecb3a2023204fd864e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57D6D199
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 14:02:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B863199
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 16:30:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1231> 
 ======================================================================
-Reported By:                Hetfield
+Reported By:                Tobias Diedrich
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
+Project:                    ALSA - lib
+Issue ID:                   1231
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-04-2005 14:02 CEST
+Date Submitted:             07-04-2005 16:30 CEST
+Last Modified:              07-04-2005 16:30 CEST
 ======================================================================
-Summary:                    artsd-like style
+Summary:                    Sharing soundcard via dmix does not work when mixing
+32bit and 64bit applications.
 Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
-
-that could be very important for example using skype voip and listening
-music at the same time.
+I have configured a friends AMD64-System to use dmix by default.
+I also made the same configuration for the 32bit-chroot and made sure
+that
+/tmp is a bind-mount, so the dmix-Socket is shared between 32bit and 64bit
+applications.
+However while sharing between one type of applications (either all 32bit
+or all 64bit) works fine, mixed sharing doesn't work.  A strace shows that
+the socket is opened by apparently communication fails.
+I suspect that the structures passed by dmix have problems with differntly
+sized fields between 32bit and 64bit.
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 07-04-05 11:53 
-----------------------------------------------------------------------
-aoss.patch - this will make skype work in mono mode. You need to put
-channels 1 to dmix.conf and dsnoop.conf.
-
-In pure oss mode skype ask for mono 48000 kHz and it got this. In dmix it
-got 48000 but stereo.
-
-----------------------------------------------------------------------
- Hetfield - 07-04-05 14:02 
-----------------------------------------------------------------------
-i'm sorry, i searched the web for a while but didn't got that mono config.
-
-however, if i have understood well, i would have mono for all apps and not
-only skype, and that's not good.
-
-i'm still waiting for skype support response..i'll keep you updated.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-07-04-05 11:49 pzad           File Added: aoss.patch                       
-07-04-05 11:53 pzad           Note Added: 0005384                          
-07-04-05 14:02 Hetfield       Note Added: 0005385                          
+07-04-05 16:30 Tobias DiedrichNew Issue                                    
 ======================================================================
 
 
