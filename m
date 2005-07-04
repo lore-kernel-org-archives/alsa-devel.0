@@ -1,16 +1,14 @@
-From: <uranaisuki7781@taurus.livedoor.com>
-Subject: =?iso-2022-jp?B?GyRCTCQ+NUJ6OS05cCIoPXdAbztOQ085diROOWlMZBsoQg==?=
-Date: Tue, 5 Jul 2005 06:32:47 +0900
-Message-ID: <c30c01c580df$ec32ed30$0a0ba8c0@DFTRDFYU>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
+Date: Mon, 4 Jul 2005 23:39:54 +0200
+Message-ID: <65c4716f43a5bea958cfb81d3404fdbb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-2022-jp"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from YUI-X6CRTZ (p1035-ipad05kyoto.kyoto.ocn.ne.jp [220.105.38.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AE461B5
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 23:33:34 +0200 (MEST)
-Content-Class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B28A71B5
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 23:39:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,25 +21,76 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-事業者　Most企画
-代表者　沢柳　育子
-所在地　京都市西京区桂番条100-1
-電話    0774-55-1479        
-未承諾広告※受信拒否は
-次のメール jyushinno@yahoo.co.jpよりお願いします。
 
-敵に捕まった女戦士の運命は拷問地獄行きしかなかった。
-今日もまた、あわれな捕らわれの女戦士達の叫び声がこだまする・・・・・。
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
+======================================================================
+Reported By:                jwiegley
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1064
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian-pure64
+Kernel Version:             2.6.12-rc2
+======================================================================
+Date Submitted:             04-18-2005 20:42 CEST
+Last Modified:              07-04-2005 23:39 CEST
+======================================================================
+Summary:                    snd_hda_intel does not recognize acl880 sound chip
+Description: 
+I bought a Shuttle ST20G5 box. Sound doesn't get detected or
+seem to work with manual load.
 
-http://infoest.p2p.com.hk/index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
+chipset:
+  ATI Xpress 200 northbridge
+  ULI 1573 southbridge
 
-http://infoshop.dynu.com/index.aspx?mode=Web?mode=alsa-devel@alsa-project.org
+The documentation says the sound is:
+  Realtek ALC880
 
-当サイトは18禁サイトです。１８歳未満の方のご利用はお断りします。
-<御利用規約>
-http://infoest.p2p.com.hk/
+alsaconf detects nothing
+manually loading snd_hda_intel also doesn't print anything in the
+log files; though it does seem to load all the snd stuff just fine.
+======================================================================
 
-http://infoshop.dynu.com/
+----------------------------------------------------------------------
+ tiwai - 06-15-05 14:39 
+----------------------------------------------------------------------
+Try the latest CVS version.
+
+----------------------------------------------------------------------
+ Christoph - 07-04-05 23:39 
+----------------------------------------------------------------------
+Tried the last CVS version today, same result.
+
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-05 20:42 jwiegley       New Issue                                    
+04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
+04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
+04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
+04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 17:38 tiwai          Note Added: 0004523                          
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-12-05 20:52 jwiegley       Note Added: 0005001                          
+06-15-05 14:39 tiwai          Note Added: 0005026                          
+07-04-05 23:27 Christoph      Issue Monitored: Christoph                    
+07-04-05 23:39 Christoph      Note Added: 0005388                          
+======================================================================
 
 
 
