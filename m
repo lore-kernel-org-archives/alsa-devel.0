@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
-Date: Mon, 4 Jul 2005 23:39:54 +0200
-Message-ID: <65c4716f43a5bea958cfb81d3404fdbb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
+Date: Tue, 5 Jul 2005 04:15:48 +0200
+Message-ID: <1ed9e4be70c10550ec65d0a24dad34ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B28A71B5
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2005 23:39:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D8C71B5
+	for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2005 04:15:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
 ======================================================================
-Reported By:                jwiegley
+Reported By:                bjl667
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1064
-Category:                   PCI - hda-intel
+Issue ID:                   1181
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian-pure64
-Kernel Version:             2.6.12-rc2
+Distribution:               Gentoo 2005.0
+Kernel Version:             2.6.12-rc4-love2
 ======================================================================
-Date Submitted:             04-18-2005 20:42 CEST
-Last Modified:              07-04-2005 23:39 CEST
+Date Submitted:             06-10-2005 22:28 CEST
+Last Modified:              07-05-2005 04:15 CEST
 ======================================================================
-Summary:                    snd_hda_intel does not recognize acl880 sound chip
+Summary:                    ice1724: Invalid EEPROM version 1
 Description: 
-I bought a Shuttle ST20G5 box. Sound doesn't get detected or
-seem to work with manual load.
+ Upon starting alsa, in dmesg I get:
+ EcX / # dmesg | grep ice
+ ice1724: Invalid EEPROM version 1
 
-chipset:
-  ATI Xpress 200 northbridge
-  ULI 1573 southbridge
+ EcX / # cat /proc/asound/cards
+ 0 [AV710          ]: ICE1724 - Chaintech AV-710
+                      Chaintech AV-710 at 0xa000, irq 16
 
-The documentation says the sound is:
-  Realtek ALC880
+ I can play music in XMMS.. Then close it after that my sound stops
+working I gotta restart alsasound to make it work again. I dunno wtf it is
+my card is a Chaintech AV-710 (ENVY24HT-S)
 
-alsaconf detects nothing
-manually loading snd_hda_intel also doesn't print anything in the
-log files; though it does seem to load all the snd stuff just fine.
+ From what it seems this is another version of the Chaintech card..
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-15-05 14:39 
+ bjl667 - 07-04-05 08:46 
 ----------------------------------------------------------------------
-Try the latest CVS version.
+Isn't there a way that I could possibly extract my eeprom and add support ?
 
 ----------------------------------------------------------------------
- Christoph - 07-04-05 23:39 
+ bjl667 - 07-05-05 04:15 
 ----------------------------------------------------------------------
-Tried the last CVS version today, same result.
-
-ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
-ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
-ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
-ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
-...
+This is real lame, no-one around here seems to respond to my replies about
+this card..  Go ahead and delete this report I've had it already.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-05 20:42 jwiegley       New Issue                                    
-04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
-04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
-04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
-04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
-hda-intel
-04-19-05 17:38 tiwai          Note Added: 0004523                          
-06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
-06-12-05 20:52 jwiegley       Note Added: 0005001                          
-06-15-05 14:39 tiwai          Note Added: 0005026                          
-07-04-05 23:27 Christoph      Issue Monitored: Christoph                    
-07-04-05 23:39 Christoph      Note Added: 0005388                          
+06-10-05 22:28 bjl667         New Issue                                    
+06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
+06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
+06-14-05 01:56 bjl667         Note Added: 0005014                          
+06-15-05 22:35 bjl667         Note Added: 0005047                          
+06-16-05 00:00 bjl667         Note Edited: 0005047                         
+06-17-05 22:48 bjl667         Note Added: 0005081                          
+06-18-05 12:24 bjl667         Note Edited: 0005081                         
+06-18-05 12:26 bjl667         Note Deleted: 0005014                        
+06-20-05 02:41 bjl667         Note Edited: 0005047                         
+06-25-05 02:12 bjl667         Note Added: 0005255                          
+06-30-05 21:12 bjl667         Note Edited: 0005255                         
+07-04-05 08:46 bjl667         Note Added: 0005381                          
+07-05-05 04:15 bjl667         Note Added: 0005389                          
 ======================================================================
 
 
