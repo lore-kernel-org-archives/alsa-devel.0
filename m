@@ -1,8 +1,14 @@
-From: w3sz@comcast.net
-Subject: ALSA Delta44 ice 1712 bug
-Date: Tue, 05 Jul 2005 11:58:38 +0000
-Message-ID: <070520051158.25328.42CA75EE000904DA000062F02205886014969CCC99@comcast.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001233]: Please move aserver to alsa-utils
+Date: Tue, 5 Jul 2005 13:58:12 +0200
+Message-ID: <ee1ae4470cbf074d83b7bbbaa760d7f0@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 191251D4
+	for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2005 13:58:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,24 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I have found and numerous others have confirmed that the Maudio Delta-44 does not function properly under ASLA when 96000 Hz sampling of the input stream is attempted.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1233> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1233
+Category:                   0_general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-05-2005 11:36 CEST
+Last Modified:              07-05-2005 13:58 CEST
+======================================================================
+Summary:                    Please move aserver to alsa-utils
+Description: 
+In Debian, library packages may not contain executable binaries. 
+Therefore, the Debian maintainers would like to move the aserver program
+from the libasound2 package to the alsa-utils package.  This would be much
+easier if the program were moved from (upstream) alsa-lib to (upstream)
+alsa-utils; otherwise the Debian alsa-utils package has to be built from
+both the alsa-utils and the alsa-lib tarballs.  Could you please move the
+program?  Or is there some reason why the program has to be in alsa-lib
+rather than in alsa-utils?
+======================================================================
 
-This issue has occurred with a variety of different Linux installations.  
+----------------------------------------------------------------------
+ perex - 07-05-05 13:58 
+----------------------------------------------------------------------
+This program requires some alsa-lib internal functions. I suggest to create
+a new package like alsa-aserver for this daemon....
 
-I have noticed it with Debian-Sarge [3.1] and also with Knoppix 3.8.0, 3.8.1, and 3.9.2, using several different kernel versions up to and including 2.6.11.11.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-05-05 11:36 jdthood        New Issue                                    
+07-05-05 13:58 perex          Note Added: 0005390                          
+======================================================================
 
-The hardware showing this behaviour has been varied, from P3 1 GHz thru P4 3.2 GHz with Hyperthreading.
 
-This has been so commonly reported that I was surprised to not see it on your known bugs page, at:  http://www.alsa-project.org/alsa-doc/doc-php/bugs-full.php.
-
-Thank you,
-
-ROger Rehr
 
 
 -------------------------------------------------------
