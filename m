@@ -1,12 +1,13 @@
-From: cundongyang@ece.unm.edu
-Subject: How to understand these fucntions
-Date: Tue,  5 Jul 2005 15:41:14 -0600
-Message-ID: <1120599674.0207c209f7e57@webmail.ece.unm.edu>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: How to understand these fucntions
+Date: Tue, 05 Jul 2005 18:05:22 -0400
+Message-ID: <1120601123.22671.32.camel@mindpipe>
+References: <1120599674.0207c209f7e57@webmail.ece.unm.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1120599674.0207c209f7e57@webmail.ece.unm.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,21 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: cundongyang@ece.unm.edu
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, All:
-   Where could I find some documents explaining these functions
-or structures in detail:
-   snd_kcontrol_chip
-   snd_kcontrol_t
-   snd_ctl_elem_value_t
+On Tue, 2005-07-05 at 15:41 -0600, cundongyang@ece.unm.edu wrote:
+> Hi, All:
+>    Where could I find some documents explaining these functions
+> or structures in detail:
+>    snd_kcontrol_chip
+>    snd_kcontrol_t
+>    snd_ctl_elem_value_t
+> 
+>   I really want to understand them, but no dcouments :)
 
-  I really want to understand them, but no dcouments :)
+Wrong:
 
-Thanks
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x964.htm
 
---cundong
+Linux docs do not get much better than this...
+
+Lee
+
 
 
 -------------------------------------------------------
