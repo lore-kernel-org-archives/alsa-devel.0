@@ -1,12 +1,8 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: sound recording
-Date: Tue, 5 Jul 2005 13:52:51 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507051348540.21969-100000@studcom.urz.uni-halle.de>
-References: <c4357ccd05070413083e0d00d5@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: w3sz@comcast.net
+Subject: ALSA Delta44 ice 1712 bug
+Date: Tue, 05 Jul 2005 11:58:38 +0000
+Message-ID: <070520051158.25328.42CA75EE000904DA000062F02205886014969CCC99@comcast.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <c4357ccd05070413083e0d00d5@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,21 +12,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alexander Sirotkin <demiourgos@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Alexander Sirotkin wrote:
-> Unfortunately it did not help much.
-> Still recording does not work...
+Hello,
 
-Please try ALSA 1.0.9, it has another mixer control for front panel
-mics that might help.
+I have found and numerous others have confirmed that the Maudio Delta-44 does not function properly under ASLA when 96000 Hz sampling of the input stream is attempted.
 
+This issue has occurred with a variety of different Linux installations.  
 
-HTH
-Clemens
+I have noticed it with Debian-Sarge [3.1] and also with Knoppix 3.8.0, 3.8.1, and 3.9.2, using several different kernel versions up to and including 2.6.11.11.
 
+The hardware showing this behaviour has been varied, from P3 1 GHz thru P4 3.2 GHz with Hyperthreading.
+
+This has been so commonly reported that I was surprised to not see it on your known bugs page, at:  http://www.alsa-project.org/alsa-doc/doc-php/bugs-full.php.
+
+Thank you,
+
+ROger Rehr
 
 
 -------------------------------------------------------
