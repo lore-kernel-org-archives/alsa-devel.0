@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001233]: Please move aserver to alsa-utils
-Date: Tue, 5 Jul 2005 13:58:12 +0200
-Message-ID: <ee1ae4470cbf074d83b7bbbaa760d7f0@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@gmail.com>
+Subject: Unresolved symbol
+Date: Tue, 5 Jul 2005 14:04:55 +0200
+Message-ID: <21ed1c3705070505042d503a58@mail.gmail.com>
+Reply-To: Manuel Jander <manuel.jander@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 191251D4
-	for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2005 13:58:13 +0200 (MEST)
+Received: from rproxy.gmail.com (rproxy.gmail.com [64.233.170.193])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DC731A7
+	for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2005 14:04:56 +0200 (MEST)
+Received: by rproxy.gmail.com with SMTP id z35so837584rne
+        for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2005 05:04:55 -0700 (PDT)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,51 +25,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Building a pure USB alsa-driver set, I encountered the following
+situation (ARM target):
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1233> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1233
-Category:                   0_general
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-05-2005 11:36 CEST
-Last Modified:              07-05-2005 13:58 CEST
-======================================================================
-Summary:                    Please move aserver to alsa-utils
-Description: 
-In Debian, library packages may not contain executable binaries. 
-Therefore, the Debian maintainers would like to move the aserver program
-from the libasound2 package to the alsa-utils package.  This would be much
-easier if the program were moved from (upstream) alsa-lib to (upstream)
-alsa-utils; otherwise the Debian alsa-utils package has to be built from
-both the alsa-utils and the alsa-lib tarballs.  Could you please move the
-program?  Or is there some reason why the program has to be in alsa-lib
-rather than in alsa-utils?
-======================================================================
+The function snd_compat_strlcpy() does sometimes not get build when
+only USB devices (no memory_wrapper.o being build). I guess this
+function should go elsewhere.
 
-----------------------------------------------------------------------
- perex - 07-05-05 13:58 
-----------------------------------------------------------------------
-This program requires some alsa-lib internal functions. I suggest to create
-a new package like alsa-aserver for this daemon....
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-05-05 11:36 jdthood        New Issue                                    
-07-05-05 13:58 perex          Note Added: 0005390                          
-======================================================================
+The result: unresolved symbols: snd_compat_strlcpy()
 
 
+Best Regards,
+--=20
+Manuel Jander
 
 
 -------------------------------------------------------
