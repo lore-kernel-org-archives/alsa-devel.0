@@ -1,14 +1,10 @@
-From: TELUS.net Postmaster <helpdesk@telus.net>
-Subject: Your Message Could Not Be Delivered
-Date: Mon, 4 Jul 2005 22:56:02 -0600
-Message-ID: <20050705045602.TUYG1612.priv-edtnes16.telusplanet.net@priv-edtnes16>
-Reply-To: <Postmaster@telusplanet.net>
-Mime-Version: 1.0
-Content-Type: multipart/report;
-		report-type=delivery-status;
-		Boundary="===========================_ _= 9702453(1612)1120539362"
-Content-Transfer-Encoding: 7bit
+From: administracion-newprint@in-out.es
+Subject: Re: Hi
+Date: Tue, 5 Jul 2005 03:44:46 -0400
+Message-ID: <200507050744.j657ikMx005824@host.verdial.org>
+References: <200507050744.j657idn2005713@host.verdial.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200507050744.j657idn2005713@host.verdial.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,37 +17,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+El correo al cual a enviado este eMail no existe, para contactar con nosotros por favor envie sus correos a alguna de las siguientes direcciones.
 
---===========================_ _= 9702453(1612)1120539362
-Content-Type: text/plain
+administración@in-out.es 	Administracion Grupo IN-out.
 
-Your message could not be delivered.
+comercial@in-out.es		Dpto. Comercial Grupo IN-out.
 
-The recipient's account is temporarily over the maximum allowed mailbox size.
+pedidos@in-out.es		Pedidos Grupo IN-out.
 
-<rollin@telusplanet.net>
-
-We hope this information is helpful. 
-For more information, visit us at <<http://help.telus.net>> or e-mail 
-TELUS at <helpdesk@telus.net>.
-
-
-
-The original message has been removed from the bounce message.
-
---===========================_ _= 9702453(1612)1120539362
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; priv-edtnes16-hme0.telusplanet.net
-Arrival-Date: Mon, 4 Jul 2005 22:56:02 -0600
-Received-From-MTA: dns; CBILEGAN.org (80.96.202.114)
-
-Final-Recipient: RFC822; <rollin@telusplanet.net>
-Action: failed
-Status: 4.2.2
-
---===========================_ _= 9702453(1612)1120539362--
-
+grafismo@in-out.es		Dpto. diseño Grupo IN-out
 
 
 -------------------------------------------------------
