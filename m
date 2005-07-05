@@ -1,15 +1,16 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Fix emu10k1 breakages in kernel 2.6.12
-Date: Tue, 05 Jul 2005 11:33:37 -0400
-Message-ID: <1120577617.17355.15.camel@mindpipe>
+Date: Tue, 05 Jul 2005 11:41:44 -0400
+Message-ID: <1120578104.17355.17.camel@mindpipe>
 References: <1120273701.12256.30.camel@mindpipe>
 	 <42C66D9D.9020203@superbug.co.uk> <1120328091.2196.16.camel@mindpipe>
-	 <42C7192F.90705@superbug.co.uk>
+	 <42C7192F.90705@superbug.co.uk> <1120577617.17355.15.camel@mindpipe>
+	 <s5hslytdzxq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42C7192F.90705@superbug.co.uk>
+In-Reply-To: <s5hslytdzxq.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,17 +20,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mikael Magnusson <mikaelmagnusson@glocalnet.net>, Peter Zubaj <pzad@pobox.sk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-07-02 at 23:46 +0100, James Courtier-Dutton wrote:
-> So, my general point is that people are going to get bitten no matter
-> what we do for the "unknown" case, but my original method was going to
-> have less of an impact that potentially yours will.
+On Tue, 2005-07-05 at 17:40 +0200, Takashi Iwai wrote:
+> At Tue, 05 Jul 2005 11:33:37 -0400,
+> Lee Revell wrote:
+> > 
+> > On Sat, 2005-07-02 at 23:46 +0100, James Courtier-Dutton wrote:
+> > > So, my general point is that people are going to get bitten no matter
+> > > what we do for the "unknown" case, but my original method was going to
+> > > have less of an impact that potentially yours will.
+> > 
+> > Any more feedback on this?  We absolutely need to address the problem in
+> > the next -stable release.
+> 
+> I agree with James.
 
-Any more feedback on this?  We absolutely need to address the problem in
-the next -stable release.
+OK, James, do you want to generate a new patch for -stable?   As the
+developer of this feature, I think you understand the behavior better
+than me...
 
 Lee
 
