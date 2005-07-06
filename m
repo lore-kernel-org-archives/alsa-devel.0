@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
-Date: Wed, 6 Jul 2005 23:26:12 +0200
-Message-ID: <8280b4084eb010d368b448e01e5afa7a@bugtrack.alsa-project.org>
+Date: Wed, 6 Jul 2005 23:27:15 +0200
+Message-ID: <6f74714a736ebba5594721a8dfdaafcd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 227BE19D
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 23:26:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 441FD1A4
+	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 23:27:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Fedora Core 4
 Kernel Version:             2.6.11-1.1369_FC4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             06-28-2005 20:03 CEST
-Last Modified:              07-06-2005 23:26 CEST
+Last Modified:              07-06-2005 23:27 CEST
 ======================================================================
 Summary:                    Line-In and Mic-In do not work
 Description: 
@@ -84,6 +86,8 @@ Date Modified  Username       Field                    Change
 06-29-05 23:08 cpitchford     Note Added: 0005319                          
 07-06-05 22:10 rlrevell       Relationship added       duplicate of 0001216
 07-06-05 23:26 rlrevell       Note Added: 0005397                          
+07-06-05 23:27 rlrevell       Status                   new => resolved     
+07-06-05 23:27 rlrevell       Resolution               open => fixed       
 ======================================================================
 
 
