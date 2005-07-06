@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
-Date: Wed, 6 Jul 2005 20:17:07 +0200
-Message-ID: <0afea445b273af43657f6b9afb952c5b@bugtrack.alsa-project.org>
+From: Colin Fletcher <colinf@axicon.com>
+Subject: Re: [linux-usb-devel] Fw: BUG: Kernel panic when disconnecting
+ Edirol USB2 audio interface
+Date: Wed, 06 Jul 2005 19:24:08 +0100
+Message-ID: <42CC21C8.10505@axicon.com>
+References: <Pine.HPX.4.33n.0506280853210.5280-100000@studcom.urz.uni-halle.de>
+Reply-To: colinf@axicon.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80DC319C
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 20:17:07 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0506280853210.5280-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +19,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
+>>>I'd like to know if playback and/or MIDI work.
+>>
+>>I don't have any MIDI hardware to hand at the moment: I can try to dig
+>>out my old Roland drum machine next week if that will help.
+> 
+> 
+> You could just use a MIDI cable for loopback.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
-======================================================================
-Reported By:                abonilla
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   800
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             01-10-2005 03:20 CET
-Last Modified:              07-06-2005 20:17 CEST
-======================================================================
-Summary:                    Sound is Corrupted or terribe quality.
-Description: 
-Sound goes out just like if the jack was not propperly plugged. bad Sound
-Quality.
-======================================================================
+I'm sorry it took me so long to find a MIDI cable... I've now tried 
+this, and it seems to work (kernel 2.6.12.2 + the ALSA CVS from 
+27/06/2005 that I was using before). I haven't stressed it: I just sent 
+a few note on/note off events and continuous controllers to the "UA-1000 
+MIDI" out, and saw that they came back in again. Is there anything more 
+elaborate I should try?
 
-----------------------------------------------------------------------
- tiwai - 06-08-05 16:11 
-----------------------------------------------------------------------
-And what about position_fix option?  No influence?
+Colin Fletcher
 
-----------------------------------------------------------------------
- pforai - 07-06-05 20:17 
-----------------------------------------------------------------------
-how can i set this option?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-10-05 03:20 abonilla       New Issue                                    
-01-10-05 03:20 abonilla       Distribution              => Debian          
-01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
-01-10-05 14:56 tiwai          Note Added: 0003134                          
-03-16-05 13:27 jdthood        Note Added: 0003956                          
-03-18-05 18:23 tiwai          Note Added: 0004003                          
-03-18-05 23:35 allefant       Issue Monitored: allefant                    
-03-18-05 23:36 allefant       Issue End Monitor: allefant                    
-03-19-05 12:42 jdthood        Note Added: 0004036                          
-05-24-05 13:37 jdthood        Note Added: 0004725                          
-05-24-05 13:37 jdthood        Note Edited: 0004725                         
-05-24-05 14:12 tiwai          Note Added: 0004728                          
-05-24-05 14:15 jdthood        Note Edited: 0004725                         
-05-31-05 16:27 pforai         Note Added: 0004836                          
-05-31-05 16:28 pforai         Note Edited: 0004836                         
-06-08-05 16:11 tiwai          Note Added: 0004947                          
-07-06-05 20:17 pforai         Note Added: 0005393                          
-======================================================================
+-- 
 
 
 
