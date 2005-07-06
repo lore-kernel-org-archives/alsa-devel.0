@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001236]: No Sound output in main speackers
-Date: Wed, 6 Jul 2005 14:14:07 +0200
-Message-ID: <3e2fb5265d6ef4ad9df6cfaf13c32b23@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+From: =?ISO-8859-1?Q?Bernd_L=F6hr?= <B.Loehr@hermstedt.de>
+Subject: How to aquire headphone jack sense
+Date: Wed, 6 Jul 2005 15:55:40 +0200
+Message-ID: <4F7EC8DB-D872-4C1A-A850-3E49959F8FA2@hermstedt.de>
+Mime-Version: 1.0 (Apple Message framework v730)
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4173D1CE
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 14:14:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,42 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1236> 
-======================================================================
-Reported By:                humpback
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1236
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-06-2005 14:14 CEST
-Last Modified:              07-06-2005 14:14 CEST
-======================================================================
-Summary:                    No Sound output in main speackers
-Description: 
-I already talked with Takashi about this issue on a ixp 400 card.
-I have no sound output in the main speackers of the laptop. Changing
-"External Amplifier" did not help.
-======================================================================
+how can I find out (via libalsa) if a headphone is plugged in? I'm  
+using an embedded system with AC97 / AD1981B sound device which  
+supports jack sensing. The only thing: How can I access that info via  
+ALSA. Is it also possible, to use the OSS emulation layer to get this  
+info?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-06-05 14:14 humpback       New Issue                                    
-======================================================================
+Thanks
+
+Bernd
 
 
 
