@@ -1,13 +1,11 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: How to understand these fucntions
-Date: Tue, 05 Jul 2005 18:05:22 -0400
-Message-ID: <1120601123.22671.32.camel@mindpipe>
-References: <1120599674.0207c209f7e57@webmail.ece.unm.edu>
+Subject: memory leaks
+Date: Tue, 05 Jul 2005 22:52:27 -0400
+Message-ID: <1120618347.5803.3.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1120599674.0207c209f7e57@webmail.ece.unm.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,27 +15,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: cundongyang@ece.unm.edu
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-07-05 at 15:41 -0600, cundongyang@ece.unm.edu wrote:
-> Hi, All:
->    Where could I find some documents explaining these functions
-> or structures in detail:
->    snd_kcontrol_chip
->    snd_kcontrol_t
->    snd_ctl_elem_value_t
-> 
->   I really want to understand them, but no dcouments :)
+WHen reloading ALSA modules I got this message:
 
-Wrong:
+ALSA sound/core/memory.c:71: Not freed snd_alloc_kmalloc = 1728
+ALSA sound/core/memory.c:80: kmalloc(164) from dc8506f9 not freed
+ALSA sound/core/memory.c:80: kmalloc(268) from dc850606 not freed
+ALSA sound/core/memory.c:80: kmalloc(164) from dc8506f9 not freed
+ALSA sound/core/memory.c:80: kmalloc(268) from dc850606 not freed
+ALSA sound/core/memory.c:80: kmalloc(164) from dc8506f9 not freed
+ALSA sound/core/memory.c:80: kmalloc(268) from dc850606 not freed
+ALSA sound/core/memory.c:80: kmalloc(164) from dc8506f9 not freed
+ALSA sound/core/memory.c:80: kmalloc(268) from dc850606 not freed
 
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x964.htm
+These are the closest symbols:
 
-Linux docs do not get much better than this...
+dc850590 t snd_hwdep_ioctl      [snd_hwdep]
+dc850630 t snd_hwdep_mmap       [snd_hwdep]
+dc850660 t snd_hwdep_control_ioctl      [snd_hwdep]
+
+AFAICT this means the leaks are in snd_hwdep_ioctl and control_ioctl.
 
 Lee
+
 
 
 
