@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001235]: ESI ESP 1010 partialy supportet
-Date: Wed, 6 Jul 2005 10:16:37 +0200
-Message-ID: <72318a822812754a9b72c5da4e9d14f5@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001234]: ESI Miditerminal M4U / M8U fully supported
+Date: Wed, 6 Jul 2005 10:20:44 +0200
+Message-ID: <c12b072262f3e89f768abee3bf7a3a57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 669F519C
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 10:16:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED0B6179
+	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 10:20:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1235> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1234> 
 ======================================================================
 Reported By:                metasymbol
-Assigned To:                
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1235
-Category:                   PCI - ice1712
+Project:                    ALSA - WWW server
+Issue ID:                   1234
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.2/9.3, Debian.
-Kernel Version:             2.6.xx
+Status:                     assigned
 ======================================================================
-Date Submitted:             07-06-2005 10:16 CEST
-Last Modified:              07-06-2005 10:16 CEST
+Date Submitted:             07-06-2005 10:04 CEST
+Last Modified:              07-06-2005 10:20 CEST
 ======================================================================
-Summary:                    ESI ESP 1010 partialy supportet
+Summary:                    ESI Miditerminal M4U / M8U fully supported
 Description: 
-The ESI ESP1010 is a 10CH I/0 Audiosystem with 2 midi I/O.
-The base features are supportet:
-Midi I/O and 8 CH Analog
+These mididevices are fully supported as device compilant usb.
 
-not supportet:
-The digital I/O
-the virtual headphone mixing
-the virtual preampflifer mixing (by design of the Envy24control)
+Please make a mark for 
 
+ESI Miditerminal M4U
+ESI Miditerminal M8U
+
+in the ALSA database.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-05 10:16 metasymbol     New Issue                                    
-07-06-05 10:16 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
-07-06-05 10:16 metasymbol     Kernel Version            => 2.6.xx          
+07-06-05 10:04 metasymbol     New Issue                                    
+07-06-05 10:04 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
+07-06-05 10:04 metasymbol     Kernel Version            => 2.6.xx          
+07-06-05 10:19 Clemens LadischProject                  ALSA - driver => ALSA -
+WWW server
+07-06-05 10:20 Clemens LadischAssigned To              Clemens Ladisch => perex
+07-06-05 10:20 Clemens LadischCategory                 USB - usb-audio =>
+soundcard matrix
 ======================================================================
 
 
