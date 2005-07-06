@@ -1,15 +1,14 @@
-From: Colin Fletcher <colinf@axicon.com>
-Subject: Re: [linux-usb-devel] Fw: BUG: Kernel panic when disconnecting
- Edirol USB2 audio interface
-Date: Wed, 06 Jul 2005 19:24:08 +0100
-Message-ID: <42CC21C8.10505@axicon.com>
-References: <Pine.HPX.4.33n.0506280853210.5280-100000@studcom.urz.uni-halle.de>
-Reply-To: colinf@axicon.com
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001237]: Audigy ES not recognised
+Date: Wed, 6 Jul 2005 21:16:57 +0200
+Message-ID: <4da9885432f7a83e289477512579278f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0506280853210.5280-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65C5D18C
+	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 21:16:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,29 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
->>>I'd like to know if playback and/or MIDI work.
->>
->>I don't have any MIDI hardware to hand at the moment: I can try to dig
->>out my old Roland drum machine next week if that will help.
-> 
-> 
-> You could just use a MIDI cable for loopback.
 
-I'm sorry it took me so long to find a MIDI cable... I've now tried 
-this, and it seems to work (kernel 2.6.12.2 + the ALSA CVS from 
-27/06/2005 that I was using before). I haven't stressed it: I just sent 
-a few note on/note off events and continuous controllers to the "UA-1000 
-MIDI" out, and saw that they came back in again. Is there anything more 
-elaborate I should try?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1237> 
+======================================================================
+Reported By:                jakubpol
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1237
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             07-06-2005 21:16 CEST
+Last Modified:              07-06-2005 21:16 CEST
+======================================================================
+Summary:                    Audigy ES not recognised
+Description: 
+I have noticed the following problem: my Audigy ES card (it's an Audigy 1)
+is not properly recognised under alsa-driver 1.0.9b.
 
-Colin Fletcher
+Here's the output of 'cat /proc/asound/cards':
 
--- 
+0 [Audigy         ]: Audigy - Audigy 1 [Unknown]
+                     Audigy 1 [Unknown] (rev.3, serial:0x521102) at
+0xc800, irq 3
+
+Here's the output of 'lspci':
+
+0000:00:0f.0 Multimedia audio controller: Creative Labs SB Audigy (rev
+03)
+        Subsystem: Creative Labs: Unknown device 0052
+        Flags: bus master, medium devsel, latency 32, IRQ 3
+        I/O ports at c800 [size=32]
+        Capabilities: [dc] Power Management version 2
+
+In the changelog for the 1.0.9 driver it says that the problem with
+recognising the Audugy ES should be fixed. Obviously it is not.
+
+
+Thanks.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-06-05 21:16 jakubpol       New Issue                                    
+======================================================================
 
 
 
