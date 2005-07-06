@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001216]: Microphone does not work
-Date: Wed, 6 Jul 2005 22:11:29 +0200
-Message-ID: <dc04f0c9589ebc12355dde7fbbf190d9@bugtrack.alsa-project.org>
+Date: Wed, 6 Jul 2005 22:10:46 +0200
+Message-ID: <fbafe3b8e89620c00edf2bd24534b964@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE090199
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 22:11:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A3CA19D
+	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 22:10:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0001237 has been set as DUPLICATE OF the following issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1216> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.11-1.1369_FC4smp
 ======================================================================
 Date Submitted:             06-28-2005 07:13 CEST
-Last Modified:              07-06-2005 22:11 CEST
+Last Modified:              06-28-2005 07:13 CEST
 ======================================================================
 Summary:                    Microphone does not work
 Description: 
@@ -222,11 +222,6 @@ has duplicate       0001218 Line-In and Mic-In do not work
 has duplicate       0001237 Audigy ES not recognised
 ======================================================================
 
-----------------------------------------------------------------------
- rlrevell - 07-06-05 22:11 
-----------------------------------------------------------------------
-Fixed in CVS.  Should also be fixed in the next stable kernel release.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -235,7 +230,6 @@ Date Modified  Username       Field                    Change
 06-28-05 07:13 enilef         Kernel Version            => 2.6.11-1.1369_FC4smp
 07-06-05 22:10 rlrevell       Relationship added       has duplicate 0001218
 07-06-05 22:10 rlrevell       Relationship added       has duplicate 0001237
-07-06-05 22:11 rlrevell       Note Added: 0005394                          
 ======================================================================
 
 
