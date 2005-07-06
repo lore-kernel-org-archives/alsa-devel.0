@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
-Date: Wed, 6 Jul 2005 22:10:25 +0200
-Message-ID: <29364af8001a6f5db80223d57675bf49@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001226]: Ego Sys NEON
+Date: Wed, 6 Jul 2005 23:06:01 +0200
+Message-ID: <e95f6e466c565e83606d5a32c0c3aff6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03656199
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 22:10:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4BF8173
+	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 23:06:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,101 +22,466 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001216.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1226> 
 ======================================================================
-Reported By:                hugo4711
-Assigned To:                
+Reported By:                nictuku
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1218
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1226
+Category:                   USB - usb-audio
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4
+Status:                     assigned
+Distribution:               Slackware Current
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             06-28-2005 20:03 CEST
-Last Modified:              07-06-2005 22:10 CEST
+Date Submitted:             07-01-2005 21:21 CEST
+Last Modified:              07-06-2005 23:06 CEST
 ======================================================================
-Summary:                    Line-In and Mic-In do not work
+Summary:                    Ego Sys NEON
 Description: 
-Capturing from Line-In and Mic-In don't work. I have connected a
-bttv-tv-card with  Line-In and I cannot hear the sound output from it.
-Every single input is at 100% using alsamixer and kmix. This happened
-after an update from FC3 to FC4. Before the update everything was fine.
-
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001216 Microphone does not work
+hi, i have a ESI NeON (
+http://www.esi-pro.com/viewProduct.php?pid=42&page=1 ) i've tryed to make
+it work with alsa with no success, but strangely on the oss the 24-bit
+audio interface works. I just send this bug report to know if there's a
+way to make it work or if it's planned to put support on this hardware. if
+you need to test it feel free to contactme (nictuku@gmail.com)
+thanx
 ======================================================================
 
 ----------------------------------------------------------------------
- netslayer - 06-29-05 06:28 
+ Clemens Ladisch - 07-04-05 09:23 
 ----------------------------------------------------------------------
-I just upgraded to alsa 1.0.9 and i'm experiencing the same thing with my
-audigy 1 card. Line in doesn't work, I have the mixer setup just like I
-did before (and tried all the bars up). 
-
- Sun Jun 26 21:32:35 2005 >>> sys-kernel/gentoo-sources-2.6.12-r1
- Sun Jun 26 22:25:51 2005 >>> media-sound/alsa-headers-1.0.9
- Sun Jun 26 22:29:23 2005 >>> media-libs/alsa-lib-1.0.9
- Sun Jun 26 22:30:21 2005 >>> media-sound/alsa-utils-1.0.9a
- Sun Jun 26 22:31:05 2005 >>> media-libs/alsa-oss-1.0.9
-
-I feel like giving up on recording with this card..:-/ alsa doesn't like
-it
+Please show the output of "lsusb -v" for this device.
 
 ----------------------------------------------------------------------
- rlrevell - 06-29-05 08:33 
+ nictuku - 07-06-05 23:06 
 ----------------------------------------------------------------------
-0 [Unknown ]: Audigy - Audigy 1 or 2 [Unknown]
-                     Audigy 1 or 2 [Unknown] (rev.3, serial:0x511102) at
-0xe800, irq 11
+as u request i put the lsusb output, thanx.
 
-This bug is thought to be fixed in ALSA CVS.  If someone can confirm that
-it's fixed, we need to submit this for the -stable kernel, because I think
-2.6.12 shipped with this bug too.
-
-----------------------------------------------------------------------
- hugo4711 - 06-29-05 10:08 
-----------------------------------------------------------------------
-I did an upgrade from 1.0.9rc2 to 1.0.9a with the 2.6.11-1.1369_FC4 Kernel.
-And the Bug is fixed! Now it works perfectly again. 
-
-My 0x511102 is now recognized as Audigy 1.
-
-There is a 2.6.12 Kernel in the development Branch of FC4. This Kernel
-uses the alsa 1.0.9 driver. I will try this kernel later and post if this
-one works.
-
-----------------------------------------------------------------------
- cpitchford - 06-29-05 23:08 
-----------------------------------------------------------------------
-I have an audigy1 card and have noticed that line in wasn't working and
-that the "live-drive" inputs were missing (aux2, line2, etc) This appeared
-to be the case since 2.6.12-rc2. Line in definately works on 2.6.12-rc1
-however so that fault was introduced between these two kernel versions.
-Now running with 2.6.12.1 and the fault remains, installing 1.0.9b fixes
-it again. I think merging the fixed 1.0.9b into the kernel would solve it,
-though I'm not an expert
+Bus 002 Device 002: ID 0a92:00c1 EGO SYStems, Inc. 
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x0a92 EGO SYStems, Inc.
+  idProduct          0x00c1 
+  bcdDevice            1.00
+  iManufacturer           1 ESI
+  iProduct                2 NeON
+  iSerial                 0 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength          316
+    bNumInterfaces          5
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength           73
+        bInCollection           3
+        baInterfaceNr( 0)       1
+        baInterfaceNr( 1)       2
+        baInterfaceNr( 2)       3
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             1
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0 
+        iTerminal               0 
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                 2
+        bSourceID               1
+        bControlSize            1
+        bmaControls( 0)      0x01
+          Mute
+        bmaControls( 1)      0x02
+          Volume
+        bmaControls( 2)      0x02
+          Volume
+        iFeature                0 
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             3
+        wTerminalType      0x0301 Speaker
+        bAssocTerminal          0
+        bSourceID               2
+        iTerminal               0 
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             4
+        wTerminalType      0x0201 Microphone
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0 
+        iTerminal               0 
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                 5
+        bSourceID               4
+        bControlSize            1
+        bmaControls( 0)      0x01
+          Mute
+        bmaControls( 1)      0x02
+          Volume
+        bmaControls( 2)      0x02
+          Volume
+        iFeature                0 
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             6
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bSourceID               5
+        iTerminal               0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x0120  bytes 288 once
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x01
+            Sampling Frequency
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      AudioStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  1 frames
+        wFormatTag              1 PCM
+      AudioStreaming Interface Descriptor:
+        bLength                14
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           3
+        bBitResolution         24
+        bSamFreqType            2 Discrete
+        tSamFreq[ 0]        44100
+        tSamFreq[ 1]        48000
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes           13
+          Transfer Type            Isochronous
+          Synch Type               Synchronous
+          Usage Type               Data
+        wMaxPacketSize     0x0120  bytes 288 once
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x01
+            Sampling Frequency
+          bLockDelayUnits         0 Undefined
+          wLockDelay              0 Undefined
+      AudioStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           6
+        bDelay                  1 frames
+        wFormatTag              1 PCM
+      AudioStreaming Interface Descriptor:
+        bLength                14
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           3
+        bBitResolution         24
+        bSamFreqType            2 Discrete
+        tSamFreq[ 0]        44100
+        tSamFreq[ 1]        48000
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      3 MIDI Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x03  EP 3 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0004  bytes 4 three times
+        bInterval               0
+        bRefresh                0
+        bSynchAddress           0
+        MIDIStreaming Endpoint Descriptor:
+          bLength                 5
+          bDescriptorType        37
+          bDescriptorSubtype      1 (GENERAL)
+          bNumEmbMIDIJack         1
+          baAssocJackID( 0)       1
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0004  bytes 4 three times
+        bInterval               0
+        bRefresh                0
+        bSynchAddress           0
+        MIDIStreaming Endpoint Descriptor:
+          bLength                 6
+          bDescriptorType        37
+          bDescriptorSubtype      1 (GENERAL)
+          bNumEmbMIDIJack         2
+          baAssocJackID( 0)       3
+          baAssocJackID( 1)       5
+      MIDIStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength           81
+      MIDIStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (MIDI_IN_JACK)
+        bJackType               1 Embedded
+        bJackID                 1
+        iJack                   0 
+      MIDIStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (MIDI_IN_JACK)
+        bJackType               2 External
+        bJackID                 4
+        iJack                   0 
+      MIDIStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (MIDI_IN_JACK)
+        bJackType               2 External
+        bJackID                 6
+        iJack                   0 
+      MIDIStreaming Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (MIDI_OUT_JACK)
+        bJackType               1 Embedded
+        bJackID                 3
+        bNrInputPins            1
+        baSourceID( 0)          4
+        BaSourcePin( 0)         1
+        iJack                   0 
+      MIDIStreaming Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (MIDI_OUT_JACK)
+        bJackType               1 Embedded
+        bJackID                 5
+        bNrInputPins            1
+        baSourceID( 0)          6
+        BaSourcePin( 0)         1
+        iJack                   0 
+      MIDIStreaming Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (MIDI_OUT_JACK)
+        bJackType               2 External
+        bJackID                 2
+        bNrInputPins            1
+        baSourceID( 0)          1
+        BaSourcePin( 0)         1
+        iJack                   0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        4
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         3 Human Interface Devices
+      bInterfaceSubClass      0 No Subclass
+      bInterfaceProtocol      0 None
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x85  EP 5 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0008  bytes 8 once
+        bInterval              20
+        HID Device Descriptor:
+          bLength                 9
+          bDescriptorType        33
+          bcdHID               1.00
+          bCountryCode            0 Not supported
+          bNumDescriptors         1
+          bDescriptorType        34 Report
+          wDescriptorLength      52
+	  Report Descriptor: (length is 52)
+            Item(Global): Usage Page, data= [ 0xa0 0xff ] 65440
+                            (null)
+            Item(Local ): Usage, data= [ 0x01 ] 1
+                            (null)
+            Item(Main  ): Collection, data= [ 0x01 ] 1
+                            Application
+            Item(Local ): Usage, data= [ 0x02 ] 2
+                            (null)
+            Item(Main  ): Collection, data= [ 0x00 ] 0
+                            Physical
+            Item(Global): Usage Page, data= [ 0xa1 0xff ] 65441
+                            (null)
+            Item(Local ): Usage, data= [ 0x03 ] 3
+                            (null)
+            Item(Local ): Usage, data= [ 0x04 ] 4
+                            (null)
+            Item(Global): Logical Minimum, data= [ 0x80 ] 128
+            Item(Global): Logical Maximum, data= [ 0x7f ] 127
+            Item(Global): Physical Minimum, data= [ 0x00 ] 0
+            Item(Global): Physical Maximum, data= [ 0xff ] 255
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x08 ] 8
+            Item(Main  ): Input, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile
+Bitfield
+            Item(Local ): Usage, data= [ 0x05 ] 5
+                            (null)
+            Item(Local ): Usage, data= [ 0x06 ] 6
+                            (null)
+            Item(Global): Logical Minimum, data= [ 0x80 ] 128
+            Item(Global): Logical Maximum, data= [ 0x7f ] 127
+            Item(Global): Physical Minimum, data= [ 0x00 ] 0
+            Item(Global): Physical Maximum, data= [ 0xff ] 255
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x08 ] 8
+            Item(Main  ): Output, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile
+Bitfield
+            Item(Main  ): End Collection, data=none
+            Item(Main  ): End Collection, data=none
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-05 20:03 hugo4711       New Issue                                    
-06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
-06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
-06-29-05 06:28 netslayer      Note Added: 0005303                          
-06-29-05 08:33 rlrevell       Note Added: 0005304                          
-06-29-05 10:08 hugo4711       Note Added: 0005305                          
-06-29-05 23:08 cpitchford     Note Added: 0005319                          
-07-06-05 22:10 rlrevell       Relationship added       duplicate of 0001216
+07-01-05 21:21 nictuku        New Issue                                    
+07-01-05 21:21 nictuku        Distribution              => Slackware Current
+07-01-05 21:21 nictuku        Kernel Version            => 2.4             
+07-04-05 09:23 Clemens LadischNote Added: 0005382                          
+07-06-05 23:04 nictuku        Issue Monitored: nictuku                     
+07-06-05 23:06 nictuku        Note Added: 0005395                          
 ======================================================================
 
 
