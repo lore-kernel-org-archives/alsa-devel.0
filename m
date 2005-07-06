@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001234]: ESI Miditerminal M4U / M8U fully supported
-Date: Wed, 6 Jul 2005 10:04:32 +0200
-Message-ID: <191be7c087c871f57f082993ff1ba257@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: memory leaks
+Date: Wed, 6 Jul 2005 10:06:33 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507061005010.28308-100000@studcom.urz.uni-halle.de>
+References: <1120618347.5803.3.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B69119C
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 10:04:33 +0200 (MEST)
+In-Reply-To: <1120618347.5803.3.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> WHen reloading ALSA modules I got this message:
+> ALSA sound/core/memory.c:80: kmalloc(164) from dc8506f9 not freed
+> ALSA sound/core/memory.c:80: kmalloc(268) from dc850606 not freed
+>
+> These are the closest symbols:
+>
+> dc850590 t snd_hwdep_ioctl      [snd_hwdep]
+> dc850630 t snd_hwdep_mmap       [snd_hwdep]
+> dc850660 t snd_hwdep_control_ioctl      [snd_hwdep]
+>
+> AFAICT this means the leaks are in snd_hwdep_ioctl and control_ioctl.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1234> 
-======================================================================
-Reported By:                metasymbol
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1234
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE 9.2/9.3, Debian.
-Kernel Version:             2.6.xx
-======================================================================
-Date Submitted:             07-06-2005 10:04 CEST
-Last Modified:              07-06-2005 10:04 CEST
-======================================================================
-Summary:                    ESI Miditerminal M4U / M8U fully supported
-Description: 
-These mididevices are fully supported as device compilant usb.
+These functions don't directly allocate memory, the leak is probably
+in some driver function.  What hwdep device is this?
 
-Please make a mark for 
 
-ESI Miditerminal M4U
-ESI Miditerminal M8U
-
-in the ALSA database.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-06-05 10:04 metasymbol     New Issue                                    
-07-06-05 10:04 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
-07-06-05 10:04 metasymbol     Kernel Version            => 2.6.xx          
-======================================================================
-
+HTH
+Clemens
 
 
 
