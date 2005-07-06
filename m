@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: memory leaks
-Date: Wed, 6 Jul 2005 10:06:33 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507061005010.28308-100000@studcom.urz.uni-halle.de>
-References: <1120618347.5803.3.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001235]: ESI ESP 1010 partialy supportet
+Date: Wed, 6 Jul 2005 10:16:37 +0200
+Message-ID: <72318a822812754a9b72c5da4e9d14f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1120618347.5803.3.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 669F519C
+	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 10:16:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,29 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> WHen reloading ALSA modules I got this message:
-> ALSA sound/core/memory.c:80: kmalloc(164) from dc8506f9 not freed
-> ALSA sound/core/memory.c:80: kmalloc(268) from dc850606 not freed
->
-> These are the closest symbols:
->
-> dc850590 t snd_hwdep_ioctl      [snd_hwdep]
-> dc850630 t snd_hwdep_mmap       [snd_hwdep]
-> dc850660 t snd_hwdep_control_ioctl      [snd_hwdep]
->
-> AFAICT this means the leaks are in snd_hwdep_ioctl and control_ioctl.
 
-These functions don't directly allocate memory, the leak is probably
-in some driver function.  What hwdep device is this?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1235> 
+======================================================================
+Reported By:                metasymbol
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1235
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE 9.2/9.3, Debian.
+Kernel Version:             2.6.xx
+======================================================================
+Date Submitted:             07-06-2005 10:16 CEST
+Last Modified:              07-06-2005 10:16 CEST
+======================================================================
+Summary:                    ESI ESP 1010 partialy supportet
+Description: 
+The ESI ESP1010 is a 10CH I/0 Audiosystem with 2 midi I/O.
+The base features are supportet:
+Midi I/O and 8 CH Analog
 
+not supportet:
+The digital I/O
+the virtual headphone mixing
+the virtual preampflifer mixing (by design of the Envy24control)
 
-HTH
-Clemens
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-06-05 10:16 metasymbol     New Issue                                    
+07-06-05 10:16 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
+07-06-05 10:16 metasymbol     Kernel Version            => 2.6.xx          
+======================================================================
+
 
 
 
