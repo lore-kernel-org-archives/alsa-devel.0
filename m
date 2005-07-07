@@ -1,12 +1,17 @@
-From: cundongyang@ece.unm.edu
-Subject: About Open source CD player
-Date: Wed,  6 Jul 2005 22:57:41 -0600
-Message-ID: <1120712261.9208981bc41a7@webmail.ece.unm.edu>
+From: Michael Gerdau <mgd@technosis.de>
+Subject: Re: About Open source CD player
+Date: Thu, 7 Jul 2005 10:36:16 +0200
+Message-ID: <200507071036.27673.mgd@technosis.de>
+References: <1120712261.9208981bc41a7@webmail.ece.unm.edu>
+Reply-To: mgd@technosis.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: multipart/signed;
+  boundary="nextPart40032830.0iMJ8uzjyn";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1120712261.9208981bc41a7@webmail.ece.unm.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,13 +24,38 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, all:
-  Who could introduce a nice CD play software under Linux.The software
-had better be smaller, and open source .
+--nextPart40032830.0iMJ8uzjyn
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Thanks
+>   Who could introduce a nice CD play software under Linux.The software
+> had better be smaller, and open source .
 
---cundong
+???
+
+What's wrong with the many, many open source CD player already there ???
+
+Probably not understanding the question,
+Michael
+=2D-=20
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ Michael Gerdau       email: mgd@technosis.de
+ GPG-keys available on request or at public keyserver
+
+--nextPart40032830.0iMJ8uzjyn
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQBCzOmLUYYhyuxDQc4RAni+AKCQ61fm66YI8HIS5qd9xIdT9bCgogCeMB6S
+Q+HmpnMU87lJUQunrnr3oAk=
+=Vlun
+-----END PGP SIGNATURE-----
+
+--nextPart40032830.0iMJ8uzjyn--
 
 
 -------------------------------------------------------
