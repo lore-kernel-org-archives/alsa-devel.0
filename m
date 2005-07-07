@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001239]: forgotten __init and __exit in memory.c
-Date: Thu, 7 Jul 2005 10:37:11 +0200
-Message-ID: <82988437a9db5af9652cb89a2a60aed8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
+Date: Thu, 7 Jul 2005 11:30:07 +0200
+Message-ID: <576362cdef7cebc232b7a228d5568ebb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15B361B8
-	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 10:37:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 305E11BD
+	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 11:30:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1239> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
 ======================================================================
-Reported By:                Henne
+Reported By:                sgoodall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1239
-Category:                   1_OTHERS
+Issue ID:                   1178
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 3
+Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             07-07-2005 10:37 CEST
-Last Modified:              07-07-2005 10:37 CEST
+Date Submitted:             06-09-2005 16:09 CEST
+Last Modified:              07-07-2005 11:30 CEST
 ======================================================================
-Summary:                    forgotten __init and __exit in memory.c
+Summary:                    Headphone and Speaker volume control
 Description: 
-I think that snd_memory_init() should get an __init,
-and snd_memory_exit() an __exit, cause that __init
-function isn't called again and can be removed from the memory.
-That doesn't save too much space, but it's cleaner and mekes more sense
-.
-The patch I added will fix it and is made for the current cvs
-version(memory.c 1.38). 
-
+The master contol on this device does not affect the headphone speaker
+socket volume. This is a problem for assigning keyboard shortcuts (using
+gnome) to the voume controls as these get mapped to the master control. So
+when using headphones (which I usually do) i cannot control the volume.
+Ideally the master control can also affect the headphone volume, and have
+a separate control for the main speakers. (I would like to be able to keep
+these muted so sounds does not play should headphones not be plugged in
+unless I explicitly enable them).
+I am running fc3 on a dell inspiron 8500.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-23-05 12:10 
+----------------------------------------------------------------------
+First, please try the latest ALSA version.  This might have been already
+fixed.
+
+If not, you can pass "ac97_quirk=hp_only" option so that both master and
+headphone volumes are bound together.
+
+----------------------------------------------------------------------
+ sgoodall - 07-07-05 11:30 
+----------------------------------------------------------------------
+I've just upgraded to fc4 which has alsa 1.0.9. The problem is still in
+this version.
+Making the master and headphone control do the same thing is not quite the
+behaviour I would like.
+I would still like to be able to make sure the main speakers are muted
+should say I forget to plug headphones in.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-07-05 10:37 Henne          New Issue                                    
-07-07-05 10:37 Henne          File Added: memory_c.diff                    
+06-09-05 16:09 sgoodall       New Issue                                    
+06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:09 sgoodall       Kernel Version            =>
+kernel-2.6.11-1.27_FC3
+06-23-05 12:10 tiwai          Note Added: 0005177                          
+07-07-05 11:30 sgoodall       Note Added: 0005398                          
 ======================================================================
 
 
