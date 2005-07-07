@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
-Date: Thu, 7 Jul 2005 11:30:07 +0200
-Message-ID: <576362cdef7cebc232b7a228d5568ebb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
+Date: Thu, 7 Jul 2005 12:01:02 +0200
+Message-ID: <ffe4f09d7e938d08f281b14e9802834a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 305E11BD
-	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 11:30:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D2B3178
+	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 12:01:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
 ======================================================================
 Reported By:                sgoodall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1178
+Issue ID:                   1177
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
@@ -39,50 +39,33 @@ Status:                     new
 Distribution:               Fedora Core 3
 Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             06-09-2005 16:09 CEST
-Last Modified:              07-07-2005 11:30 CEST
+Date Submitted:             06-09-2005 16:00 CEST
+Last Modified:              07-07-2005 12:01 CEST
 ======================================================================
-Summary:                    Headphone and Speaker volume control
+Summary:                    Dell Inspiron 8500  + port replicator issues.
 Description: 
-The master contol on this device does not affect the headphone speaker
-socket volume. This is a problem for assigning keyboard shortcuts (using
-gnome) to the voume controls as these get mapped to the master control. So
-when using headphones (which I usually do) i cannot control the volume.
-Ideally the master control can also affect the headphone volume, and have
-a separate control for the main speakers. (I would like to be able to keep
-these muted so sounds does not play should headphones not be plugged in
-unless I explicitly enable them).
-I am running fc3 on a dell inspiron 8500.
+I have a dell inspiron 8500 and the port replicator. The has an additional
+headphone socket, however the only mixer control that affects it is the
+IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
+sound completely, or plays sound at full volume.
+All other controls have no affect and, even if muted. The headphone socket
+on the laptop itself still works however.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-23-05 12:10 
+ sgoodall - 07-07-05 12:01 
 ----------------------------------------------------------------------
-First, please try the latest ALSA version.  This might have been already
-fixed.
-
-If not, you can pass "ac97_quirk=hp_only" option so that both master and
-headphone volumes are bound together.
-
-----------------------------------------------------------------------
- sgoodall - 07-07-05 11:30 
-----------------------------------------------------------------------
-I've just upgraded to fc4 which has alsa 1.0.9. The problem is still in
-this version.
-Making the master and headphone control do the same thing is not quite the
-behaviour I would like.
-I would still like to be able to make sure the main speakers are muted
-should say I forget to plug headphones in.
+I have just upgraded to fc4 which includes alsa 1.0.9 and the same problem
+occurs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:09 sgoodall       New Issue                                    
-06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:09 sgoodall       Kernel Version            =>
+06-09-05 16:00 sgoodall       New Issue                                    
+06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:00 sgoodall       Kernel Version            =>
 kernel-2.6.11-1.27_FC3
-06-23-05 12:10 tiwai          Note Added: 0005177                          
-07-07-05 11:30 sgoodall       Note Added: 0005398                          
+07-07-05 12:01 sgoodall       Note Added: 0005399                          
 ======================================================================
 
 
