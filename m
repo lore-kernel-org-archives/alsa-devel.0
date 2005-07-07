@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001240]: compile fails on ak4114, macro missing second parameter
-Date: Thu, 7 Jul 2005 20:07:38 +0200
-Message-ID: <82bde5f2db57c7488bd7d3b4cc170b7b@bugtrack.alsa-project.org>
+From: Ekatalog developers <developers-alsa@ekatalog.com.pl>
+Subject: Aserver / network transparency
+Date: Thu, 07 Jul 2005 20:55:36 +0200
+Message-ID: <42CD7AA8.20403@ekatalog.com.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB9831A8
-	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 20:07:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1240> 
-======================================================================
-Reported By:                allanw
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1240
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2005.0 (amd64)
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             07-07-2005 20:05 CEST
-Last Modified:              07-07-2005 20:07 CEST
-======================================================================
-Summary:                    compile fails on ak4114, macro missing second
-parameter
-Description: 
-In file included from
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.c:1:
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:49:
-macro "create_workqueue" requires 2 arguments, but only 1 given
-In file included from
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.c:1:
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:
-In function `snd_ak4114_create':
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
-error: `create_workqueue' undeclared (first use in this function)
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
-error: (Each undeclared identifier is reported only once
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
-error: for each function it appears in.)
-make[5]: ***
-[/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.o]
-Error 1
+I am building xterminal networks. Nowaday, it needs sound support. I am
+sick of arts/nas/esd etc. I'd like something very simple (no additional
+buffering, mixing etc, lack of support in apps).
 
-I can fix the problem by editing ak4114.c and passing PF_SYNCTHREAD as the
-second argument to create_workqueue.
+My idea is to add network transparency to alsa.
+I've looked through alsa-lib and found aserver. I configured a chain to
+use it. Sadly, alsamixer quickly freezes (but it works for a while), and
+aplay fails with an error.
 
-Patch attached.
-======================================================================
+I'd like to make a contribution to alsa project. I will attempt to write
+some documentation about aserver & co and make it work ok and work
+through network (now it needs local unix socket).
 
-----------------------------------------------------------------------
- allanw - 07-07-05 20:07 
-----------------------------------------------------------------------
-Sorry, looks like a dupe. How do I close this bug?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-07-05 20:05 allanw         New Issue                                    
-07-07-05 20:05 allanw         File Added: ak4114-fix.patch                    
-07-07-05 20:05 allanw         Distribution              => Gentoo 2005.0 (amd64)
-07-07-05 20:05 allanw         Kernel Version            => 2.6.11          
-07-07-05 20:07 allanw         Note Added: 0005402                          
-======================================================================
+I am completely new to alsa development (never written any app or driver
+for it). What documentation should I read? What guidelines should I
+comply with? I feel a bit lost in all this :).
+How should the patches look like to get accepted?
 
 
+bye,
+Filip Zyzniewski
+Ekatalog
 
 
 -------------------------------------------------------
