@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001238]: Fails to install nforce2 or Sound Blaster Audigy drivers properly
-Date: Thu, 7 Jul 2005 02:33:37 +0200
-Message-ID: <645a1f1e5938fc0e03f2bb2655de5c84@bugtrack.alsa-project.org>
+From: TELUS.net Postmaster <helpdesk@telus.net>
+Subject: Your Message Could Not Be Delivered
+Date: Wed, 6 Jul 2005 22:55:49 -0600
+Message-ID: <20050707045549.QPTB14154.priv-edmwes34.telusplanet.net@priv-edmwes34>
+Reply-To: <Postmaster@telusplanet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/report;
+		report-type=delivery-status;
+		Boundary="===========================_ _= 5984802(14154)1120712149"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71EF918B
-	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 02:33:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +18,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1238> 
-======================================================================
-Reported By:                AKinyon
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1238
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Mandriva
-Kernel Version:             2.6x
-======================================================================
-Date Submitted:             07-07-2005 02:33 CEST
-Last Modified:              07-07-2005 02:33 CEST
-======================================================================
-Summary:                    Fails to install nforce2 or Sound Blaster Audigy
-drivers properly
-Description: 
-Sound server informational message:
-Error while initializing driver: device /dev/dsp can't be opened (No such
-device)
-The sound server will continue, using the null output device.
-======================================================================
+--===========================_ _= 5984802(14154)1120712149
+Content-Type: text/plain
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-07-05 02:33 AKinyon        New Issue                                    
-07-07-05 02:33 AKinyon        Distribution              => Mandriva        
-07-07-05 02:33 AKinyon        Kernel Version            => 2.6x            
-======================================================================
+Your message could not be delivered.
 
+The recipient's account is temporarily over the maximum allowed mailbox size.
+
+<rollin@telusplanet.net>
+
+We hope this information is helpful. 
+For more information, visit us at <<http://help.telus.net>> or e-mail 
+TELUS at <helpdesk@telus.net>.
+
+
+
+The original message has been removed from the bounce message.
+
+--===========================_ _= 5984802(14154)1120712149
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; priv-edmwes34.telusplanet.net
+Arrival-Date: Wed, 6 Jul 2005 22:55:49 -0600
+Received-From-MTA: dns; CBILEGAN.org (80.96.202.114)
+
+Final-Recipient: RFC822; <rollin@telusplanet.net>
+Action: failed
+Status: 4.2.2
+
+--===========================_ _= 5984802(14154)1120712149--
 
 
 
