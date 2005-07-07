@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001240]: compile fails on ak4114, macro missing second parameter
-Date: Thu, 7 Jul 2005 20:05:10 +0200
-Message-ID: <2cebc6ad99b2db266caa22b21548c61b@bugtrack.alsa-project.org>
+Date: Thu, 7 Jul 2005 20:07:38 +0200
+Message-ID: <82bde5f2db57c7488bd7d3b4cc170b7b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E137A1A8
-	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 20:05:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB9831A8
+	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 20:07:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1240> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo 2005.0 (amd64)
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             07-07-2005 20:05 CEST
-Last Modified:              07-07-2005 20:05 CEST
+Last Modified:              07-07-2005 20:07 CEST
 ======================================================================
 Summary:                    compile fails on ak4114, macro missing second
 parameter
@@ -69,6 +69,11 @@ second argument to create_workqueue.
 Patch attached.
 ======================================================================
 
+----------------------------------------------------------------------
+ allanw - 07-07-05 20:07 
+----------------------------------------------------------------------
+Sorry, looks like a dupe. How do I close this bug?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -76,6 +81,7 @@ Date Modified  Username       Field                    Change
 07-07-05 20:05 allanw         File Added: ak4114-fix.patch                    
 07-07-05 20:05 allanw         Distribution              => Gentoo 2005.0 (amd64)
 07-07-05 20:05 allanw         Kernel Version            => 2.6.11          
+07-07-05 20:07 allanw         Note Added: 0005402                          
 ======================================================================
 
 
