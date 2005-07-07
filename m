@@ -1,14 +1,12 @@
-From: TELUS.net Postmaster <helpdesk@telus.net>
-Subject: Your Message Could Not Be Delivered
-Date: Wed, 6 Jul 2005 22:55:49 -0600
-Message-ID: <20050707045549.QPTB14154.priv-edmwes34.telusplanet.net@priv-edmwes34>
-Reply-To: <Postmaster@telusplanet.net>
+From: cundongyang@ece.unm.edu
+Subject: About Open source CD player
+Date: Wed,  6 Jul 2005 22:57:41 -0600
+Message-ID: <1120712261.9208981bc41a7@webmail.ece.unm.edu>
 Mime-Version: 1.0
-Content-Type: multipart/report;
-		report-type=delivery-status;
-		Boundary="===========================_ _= 5984802(14154)1120712149"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,37 +19,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi, all:
+  Who could introduce a nice CD play software under Linux.The software
+had better be smaller, and open source .
 
---===========================_ _= 5984802(14154)1120712149
-Content-Type: text/plain
+Thanks
 
-Your message could not be delivered.
-
-The recipient's account is temporarily over the maximum allowed mailbox size.
-
-<rollin@telusplanet.net>
-
-We hope this information is helpful. 
-For more information, visit us at <<http://help.telus.net>> or e-mail 
-TELUS at <helpdesk@telus.net>.
-
-
-
-The original message has been removed from the bounce message.
-
---===========================_ _= 5984802(14154)1120712149
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; priv-edmwes34.telusplanet.net
-Arrival-Date: Wed, 6 Jul 2005 22:55:49 -0600
-Received-From-MTA: dns; CBILEGAN.org (80.96.202.114)
-
-Final-Recipient: RFC822; <rollin@telusplanet.net>
-Action: failed
-Status: 4.2.2
-
---===========================_ _= 5984802(14154)1120712149--
-
+--cundong
 
 
 -------------------------------------------------------
