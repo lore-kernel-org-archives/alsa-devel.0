@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [linux-usb-devel] Fw: BUG: Kernel panic when
- disconnecting Edirol USB2 audio interface
-Date: Thu, 7 Jul 2005 13:07:16 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507071305230.21603-100000@studcom.urz.uni-halle.de>
-References: <42CC21C8.10505@axicon.com>
+From: TELUS.net Postmaster <helpdesk@telus.net>
+Subject: Your Message Could Not Be Delivered
+Date: Thu, 7 Jul 2005 05:25:03 -0600
+Message-ID: <20050707112503.NYBQ22692.priv-edmwes24.telusplanet.net@priv-edmwes24>
+Reply-To: <Postmaster@telusplanet.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/report;
+		report-type=delivery-status;
+		Boundary="===========================_ _= 4794921(22692)1120735503"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42CC21C8.10505@axicon.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +18,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Colin Fletcher <colinf@axicon.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Colin Fletcher wrote:
-> Clemens Ladisch wrote:
-> >>>I'd like to know if playback and/or MIDI work.
->
-> I've now tried this, and it seems to work (kernel 2.6.12.2 + the
-> ALSA CVS from 27/06/2005 that I was using before). I haven't
-> stressed it: I just sent a few note on/note off events and
-> continuous controllers to the "UA-1000 MIDI" out, and saw that
-> they came back in again. Is there anything more elaborate I should
-> try?
 
-You could try a SysEx, but it seems to work just fine.
+--===========================_ _= 4794921(22692)1120735503
+Content-Type: text/plain
 
-Do you (or the manual) know what the control port is good for?
+Your message could not be delivered.
+
+The recipient's account is temporarily over the maximum allowed mailbox size.
+
+<rollin@telusplanet.net>
+
+We hope this information is helpful. 
+For more information, visit us at <<http://help.telus.net>> or e-mail 
+TELUS at <helpdesk@telus.net>.
 
 
-Regards,
-Clemens
+
+The original message has been removed from the bounce message.
+
+--===========================_ _= 4794921(22692)1120735503
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; priv-edmwes24.telusplanet.net
+Arrival-Date: Thu, 7 Jul 2005 05:25:03 -0600
+Received-From-MTA: dns; CBILEGAN.com (80.96.202.114)
+
+Final-Recipient: RFC822; <rollin@telusplanet.net>
+Action: failed
+Status: 4.2.2
+
+--===========================_ _= 4794921(22692)1120735503--
 
 
 
