@@ -1,17 +1,14 @@
-From: Michael Gerdau <mgd@technosis.de>
-Subject: Re: About Open source CD player
-Date: Thu, 7 Jul 2005 10:36:16 +0200
-Message-ID: <200507071036.27673.mgd@technosis.de>
-References: <1120712261.9208981bc41a7@webmail.ece.unm.edu>
-Reply-To: mgd@technosis.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001239]: forgotten __init and __exit in memory.c
+Date: Thu, 7 Jul 2005 10:37:11 +0200
+Message-ID: <82988437a9db5af9652cb89a2a60aed8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart40032830.0iMJ8uzjyn";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1120712261.9208981bc41a7@webmail.ece.unm.edu>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15B361B8
+	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 10:37:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,41 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart40032830.0iMJ8uzjyn
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
->   Who could introduce a nice CD play software under Linux.The software
-> had better be smaller, and open source .
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1239> 
+======================================================================
+Reported By:                Henne
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1239
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             07-07-2005 10:37 CEST
+Last Modified:              07-07-2005 10:37 CEST
+======================================================================
+Summary:                    forgotten __init and __exit in memory.c
+Description: 
+I think that snd_memory_init() should get an __init,
+and snd_memory_exit() an __exit, cause that __init
+function isn't called again and can be removed from the memory.
+That doesn't save too much space, but it's cleaner and mekes more sense
+.
+The patch I added will fix it and is made for the current cvs
+version(memory.c 1.38). 
 
-???
+======================================================================
 
-What's wrong with the many, many open source CD player already there ???
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-07-05 10:37 Henne          New Issue                                    
+07-07-05 10:37 Henne          File Added: memory_c.diff                    
+======================================================================
 
-Probably not understanding the question,
-Michael
-=2D-=20
- Vote against SPAM - see http://www.politik-digital.de/spam/
- Michael Gerdau       email: mgd@technosis.de
- GPG-keys available on request or at public keyserver
 
---nextPart40032830.0iMJ8uzjyn
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBCzOmLUYYhyuxDQc4RAni+AKCQ61fm66YI8HIS5qd9xIdT9bCgogCeMB6S
-Q+HmpnMU87lJUQunrnr3oAk=
-=Vlun
------END PGP SIGNATURE-----
-
---nextPart40032830.0iMJ8uzjyn--
 
 
 -------------------------------------------------------
