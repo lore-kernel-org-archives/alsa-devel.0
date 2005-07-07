@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001218]: Line-In and Mic-In do not work
-Date: Wed, 6 Jul 2005 23:27:15 +0200
-Message-ID: <6f74714a736ebba5594721a8dfdaafcd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001238]: Fails to install nforce2 or Sound Blaster Audigy drivers properly
+Date: Thu, 7 Jul 2005 02:33:37 +0200
+Message-ID: <645a1f1e5938fc0e03f2bb2655de5c84@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 441FD1A4
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2005 23:27:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71EF918B
+	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 02:33:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1218> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1238> 
 ======================================================================
-Reported By:                hugo4711
+Reported By:                AKinyon
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1218
-Category:                   PCI - emu10k1
+Issue ID:                   1238
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Mandriva
+Kernel Version:             2.6x
 ======================================================================
-Date Submitted:             06-28-2005 20:03 CEST
-Last Modified:              07-06-2005 23:27 CEST
+Date Submitted:             07-07-2005 02:33 CEST
+Last Modified:              07-07-2005 02:33 CEST
 ======================================================================
-Summary:                    Line-In and Mic-In do not work
+Summary:                    Fails to install nforce2 or Sound Blaster Audigy
+drivers properly
 Description: 
-Capturing from Line-In and Mic-In don't work. I have connected a
-bttv-tv-card with  Line-In and I cannot hear the sound output from it.
-Every single input is at 100% using alsamixer and kmix. This happened
-after an update from FC3 to FC4. Before the update everything was fine.
-
-
+Sound server informational message:
+Error while initializing driver: device /dev/dsp can't be opened (No such
+device)
+The sound server will continue, using the null output device.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001216 Microphone does not work
-======================================================================
-
-----------------------------------------------------------------------
- cpitchford - 06-29-05 23:08 
-----------------------------------------------------------------------
-I have an audigy1 card and have noticed that line in wasn't working and
-that the "live-drive" inputs were missing (aux2, line2, etc) This appeared
-to be the case since 2.6.12-rc2. Line in definately works on 2.6.12-rc1
-however so that fault was introduced between these two kernel versions.
-Now running with 2.6.12.1 and the fault remains, installing 1.0.9b fixes
-it again. I think merging the fixed 1.0.9b into the kernel would solve it,
-though I'm not an expert
-
-----------------------------------------------------------------------
- rlrevell - 07-06-05 23:26 
-----------------------------------------------------------------------
-Fixed in CVS.  Should also be fixed in the nest stable kernel release.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-05 20:03 hugo4711       New Issue                                    
-06-28-05 20:03 hugo4711       Distribution              => Fedora Core 4   
-06-28-05 20:03 hugo4711       Kernel Version            => 2.6.11-1.1369_FC4
-06-29-05 06:28 netslayer      Note Added: 0005303                          
-06-29-05 08:33 rlrevell       Note Added: 0005304                          
-06-29-05 10:08 hugo4711       Note Added: 0005305                          
-06-29-05 23:08 cpitchford     Note Added: 0005319                          
-07-06-05 22:10 rlrevell       Relationship added       duplicate of 0001216
-07-06-05 23:26 rlrevell       Note Added: 0005397                          
-07-06-05 23:27 rlrevell       Status                   new => resolved     
-07-06-05 23:27 rlrevell       Resolution               open => fixed       
+07-07-05 02:33 AKinyon        New Issue                                    
+07-07-05 02:33 AKinyon        Distribution              => Mandriva        
+07-07-05 02:33 AKinyon        Kernel Version            => 2.6x            
 ======================================================================
 
 
