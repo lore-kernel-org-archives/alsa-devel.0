@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
-Date: Thu, 7 Jul 2005 12:01:02 +0200
-Message-ID: <ffe4f09d7e938d08f281b14e9802834a@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [linux-usb-devel] Fw: BUG: Kernel panic when
+ disconnecting Edirol USB2 audio interface
+Date: Thu, 7 Jul 2005 13:07:16 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507071305230.21603-100000@studcom.urz.uni-halle.de>
+References: <42CC21C8.10505@axicon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D2B3178
-	for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2005 12:01:03 +0200 (MEST)
+In-Reply-To: <42CC21C8.10505@axicon.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Colin Fletcher <colinf@axicon.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Colin Fletcher wrote:
+> Clemens Ladisch wrote:
+> >>>I'd like to know if playback and/or MIDI work.
+>
+> I've now tried this, and it seems to work (kernel 2.6.12.2 + the
+> ALSA CVS from 27/06/2005 that I was using before). I haven't
+> stressed it: I just sent a few note on/note off events and
+> continuous controllers to the "UA-1000 MIDI" out, and saw that
+> they came back in again. Is there anything more elaborate I should
+> try?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
-======================================================================
-Reported By:                sgoodall
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1177
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
-======================================================================
-Date Submitted:             06-09-2005 16:00 CEST
-Last Modified:              07-07-2005 12:01 CEST
-======================================================================
-Summary:                    Dell Inspiron 8500  + port replicator issues.
-Description: 
-I have a dell inspiron 8500 and the port replicator. The has an additional
-headphone socket, however the only mixer control that affects it is the
-IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
-sound completely, or plays sound at full volume.
-All other controls have no affect and, even if muted. The headphone socket
-on the laptop itself still works however.
-======================================================================
+You could try a SysEx, but it seems to work just fine.
 
-----------------------------------------------------------------------
- sgoodall - 07-07-05 12:01 
-----------------------------------------------------------------------
-I have just upgraded to fc4 which includes alsa 1.0.9 and the same problem
-occurs.
+Do you (or the manual) know what the control port is good for?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-09-05 16:00 sgoodall       New Issue                                    
-06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:00 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
-07-07-05 12:01 sgoodall       Note Added: 0005399                          
-======================================================================
 
+Regards,
+Clemens
 
 
 
