@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
-Date: Fri, 8 Jul 2005 17:04:21 +0200
-Message-ID: <8fa4a52737c0b2a6d51fd46c264c1485@bugtrack.alsa-project.org>
+From: Alfons Adriaensen <fons.adriaensen@alcatel.be>
+Subject: Re: [Jackit-devel] Reading alsa midi-data inside the jack client process thread
+Date: Fri, 8 Jul 2005 17:11:02 +0200
+Message-ID: <20050708151102.GB7127@bth05w.ABSp.alcatel.be>
+References: <21780.212.169.96.218.1120819000.squirrel@webmail.uio.no> <20050708114237.GA7127@bth05w.ABSp.alcatel.be> <26283.212.169.96.218.1120825827.squirrel@webmail.uio.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47936179
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 17:04:21 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <26283.212.169.96.218.1120825827.squirrel@webmail.uio.no>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "Kjetil Svalastog Matheussen <k.s.matheussen@notam02.no>" <k.s.matheussen@notam02.no>
+Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 08, 2005 at 02:30:27PM +0200, Kjetil Svalastog Matheussen <k.s.matheussen@notam02.no> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
-======================================================================
-Reported By:                jwiegley
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1064
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian-pure64
-Kernel Version:             2.6.12-rc2
-======================================================================
-Date Submitted:             04-18-2005 20:42 CEST
-Last Modified:              07-08-2005 17:04 CEST
-======================================================================
-Summary:                    snd_hda_intel does not recognize acl880 sound chip
-Description: 
-I bought a Shuttle ST20G5 box. Sound doesn't get detected or
-seem to work with manual load.
+> Thanks, reading your source, thats correct. (But I don't understand what
+> the fetch_sequencer argument for snd_seq_event_input_pending does though:
+> 
 
-chipset:
-  ATI Xpress 200 northbridge
-  ULI 1573 southbridge
+IIRC, if the second argument of snd_seq_event_input_pending () is
+1, it will do a transfer of all available MIDI data from a system
+space buffer to user space. If it is zero, it examines only the user
+space buffer.
 
-The documentation says the sound is:
-  Realtek ALC880
+> I also wonder whats the difference between your code above and this:
+> 
+> if (snd_seq_event_input_pending (seq,1)) {
+>   while(snd_seq_event_input(seq,&event);
+>       ....
+>    }
+> }
 
-alsaconf detects nothing
-manually loading snd_hda_intel also doesn't print anything in the
-log files; though it does seem to load all the snd stuff just fine.
-======================================================================
+The code as in Aeolus will do one system to user space transfer only,
+while if you put your code into a loop, it will do this every time.
+The rationale for doing it only once is that 
+1. it's a system call, and probably relatively expensive,
+2. in the short time required to handle the MIDI events arrived 
+during the past period, it is unlikely that anything new will
+arrive anyway.
 
-----------------------------------------------------------------------
- tiwai - 07-08-05 12:03 
-----------------------------------------------------------------------
-The timeout implies that the irq isn't handled correctly.  It's often
-related with ACPI.  Try pci=noacpi or acpi=off boot option for testing.
+Point 1. is why you'd probably prefer a separate thread if your
+period size could be very small (64, 32, 16). The minimum for
+Aeolus is 64 anyway, so I didn't bother. This will change in the
+next release, which will handle OSC as well.
 
-----------------------------------------------------------------------
- Christoph - 07-08-05 17:04 
-----------------------------------------------------------------------
-I tried both options, but it did not change anything. Still the same error.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-05 20:42 jwiegley       New Issue                                    
-04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
-04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
-04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
-04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
-hda-intel
-04-19-05 17:38 tiwai          Note Added: 0004523                          
-06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
-06-12-05 20:52 jwiegley       Note Added: 0005001                          
-06-15-05 14:39 tiwai          Note Added: 0005026                          
-07-04-05 23:27 Christoph      Issue Monitored: Christoph                    
-07-04-05 23:39 Christoph      Note Added: 0005388                          
-07-08-05 12:03 tiwai          Note Added: 0005413                          
-07-08-05 17:04 Christoph      Note Added: 0005433                          
-======================================================================
+-- 
+FA
+
+
+
 
 
 
