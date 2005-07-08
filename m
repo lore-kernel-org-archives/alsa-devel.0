@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0 analog subsections not ready: no sound
-Date: Fri, 8 Jul 2005 11:46:27 +0200
-Message-ID: <522f35e7ae502887cb02e222df5c0e8e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
+Date: Fri, 8 Jul 2005 11:51:27 +0200
+Message-ID: <82ce729a6783dd1d1e7b7ffcacbaa4b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9A72138
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:46:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65DB818A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:51:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,127 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1213> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
 ======================================================================
-Reported By:                shensche
+Reported By:                sgoodall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1213
-Category:                   PCI - via82xx
+Issue ID:                   1178
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
-Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
+Distribution:               Fedora Core 3
+Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             06-27-2005 12:22 CEST
-Last Modified:              07-08-2005 11:46 CEST
+Date Submitted:             06-09-2005 16:09 CEST
+Last Modified:              07-08-2005 11:51 CEST
 ======================================================================
-Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
-ready: no sound
+Summary:                    Headphone and Speaker volume control
 Description: 
-i am working on a machine with an EPIA-M mainboard and the ICEensemble
-VT1616i sound chip (see attached lspci -v). unfortunately, i cannot hear
-any sound from it. it is always the same: the mixer settings seem ok,
-the applications play happily the files, but i cannot hear a thing. the
-speakers are ok, too.
-
-the system is running kernel 2.6.11 with the kernel patches from Con
-Kolivas (-ck10) and ALSA. i also tried OSS (not the emu) on that kernel.
-i tried 2.4 kernels with Damn Small Linux and Knoppix 3.7 and 2.6.9
-=66rom Knoppix 3.7 and a custom 2.6.10-ck6.
-since ALSA 1.0.8 did not work, i installed 1.0.9b, including the libs
-and utils. during that upgrade, the mixer lost the possibility to change
-the DXS-settings. has this to do with the whitelist, introduced
-recently?
-
-i played around with lots of combinations of the options ac97_quirk and
-dxs_support when loading the kernel module.
-
-on the hardware side i disabled the front panel sockets for line-out and
-mic-in, just to be sure. and i often tried all three sockets for=20
-line-out, line-in and mic-in in the back to hear the output.
-
-the chip seems to share interrupt 10 with USB, so i unloaded uhci-hcd,
-but to no avail. i also dis-/enabled ACPI, reserved IRQ for non-PCI (now
-USB and sound share interrupt 5) in the BIOS. the BIOS was told that
-there was a/no PlugNPlay OS and the MC97 modem is disabled.
-the machine does not seem to have an APIC.
-
-i muted some IEC 958 settings in the mixer as read somewhere in the net,
-but that did not help either. and one of these settings always
-reenables itself as soon as i try to play a wav with aplay.
-
-i modified alsa-kernel/pci/ac97/ac97_codec.c to goto __ready_ok also
-when "0 analog subsections are ready" (weird message, btw) before line
-1960. another try was to increase the end_time in line 1953 by factor
-10. both did not yield a successful result, both being a shot in the
-blue.
-
-
-i attached /etc/asound.state (after saving with alsactl store) and the
-output of dmesg. do not mind the oops from cowloop, i guess it is not
-important, because all the other kernels do not work as well.
-
-i read=20
-http://alsa-project.org/alsa-doc/doc-php/template.php?company=3DVIA&card=3D=
-=2E&chip=3DVIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=3Dvia82xx
-alsa-kernel/Documentation/ALSA-Configuration.txt
-and many other forum entries
-
-but still something is going wrong. why are 0 analog subdevices ready?
-how to make them ready? where to wait? what to initialise?
-
-i will try to upgrade the BIOS, soon and try with MS Windows (if i manage
-to fit   it onto 1 GB)
-
+The master contol on this device does not affect the headphone speaker
+socket volume. This is a problem for assigning keyboard shortcuts (using
+gnome) to the voume controls as these get mapped to the master control. So
+when using headphones (which I usually do) i cannot control the volume.
+Ideally the master control can also affect the headphone volume, and have
+a separate control for the main speakers. (I would like to be able to keep
+these muted so sounds does not play should headphones not be plugged in
+unless I explicitly enable them).
+I am running fc3 on a dell inspiron 8500.
 ======================================================================
 
 ----------------------------------------------------------------------
- shensche - 07-07-05 19:07 
+ sgoodall - 07-07-05 11:30 
 ----------------------------------------------------------------------
-ok, since nothing happened in the meantime: how likely is a faulty
-hardware? be it the chip, the sockets or the wiring of the sockets?
+I've just upgraded to fc4 which has alsa 1.0.9. The problem is still in
+this version.
+Making the master and headphone control do the same thing is not quite the
+behaviour I would like.
+I would still like to be able to make sure the main speakers are muted
+should say I forget to plug headphones in.
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 11:46 
+ tiwai - 07-08-05 11:51 
 ----------------------------------------------------------------------
-I don't think it's a chip bug.
-Any chance to try another machine with the same model?
+Sorry, I don't understand your request.  Please describe more clearly?
+
+Does the hardware switch (mute/unmute) the speaker volume when you plug in
+HP jack?  Or you have to turn on/off mixer switch (which) manually?
+In the former case, ac97_quirk=hp_only should suffice.  I don't want to
+implemenet a separate HP volume.  In the latter case, we'll need a code to
+handle the ac97 jack detection, which is sitll missing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 12:22 shensche       New Issue                                    
-06-27-05 12:22 shensche       File Added: asound.conf                      
-06-27-05 12:22 shensche       Distribution              => Debian (derived
-Knoppix->Morphix->Kunnafonix)
-06-27-05 12:22 shensche       Kernel Version            => 2.6.11.12, but also
-many other 2.4 and 2.6 kernels
-06-27-05 12:23 shensche       File Added: asound.state                     
-06-27-05 12:27 shensche       File Added: dmesg.full                       
-06-27-05 12:27 shensche       File Added: dmesg.oss                        
-06-27-05 12:28 shensche       File Added: lspci                            
-06-27-05 12:29 shensche       Issue Monitored: shensche                    
-06-27-05 12:36 shensche       Issue End Monitor: shensche                    
-06-28-05 11:31 shensche       File Added: proc_asound_card0_codec97#_ac97#0-0   
-                
-06-28-05 11:32 shensche       File Added:
-proc_asound_card0_codec97#_ac97#0-0+regs                    
-06-28-05 11:32 shensche       File Added: proc_asound_card0_via82xx             
-      
-06-28-05 11:32 shensche       File Added: proc_asound_cards                    
-06-28-05 11:33 shensche       File Added: proc_asound_version                   
-
-06-28-05 12:02 shensche       Note Added: 0005296                          
-06-28-05 20:19 shensche       Note Added: 0005300                          
-06-29-05 20:16 tiwai          Note Added: 0005310                          
-07-01-05 12:07 shensche       Note Added: 0005329                          
-07-01-05 12:11 shensche       Note Added: 0005330                          
-07-07-05 19:07 shensche       Note Added: 0005401                          
-07-08-05 11:46 tiwai          Note Added: 0005408                          
+06-09-05 16:09 sgoodall       New Issue                                    
+06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:09 sgoodall       Kernel Version            =>
+kernel-2.6.11-1.27_FC3
+06-23-05 12:10 tiwai          Note Added: 0005177                          
+07-07-05 11:30 sgoodall       Note Added: 0005398                          
+07-08-05 11:51 tiwai          Note Added: 0005409                          
 ======================================================================
 
 
