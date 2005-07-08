@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000243]: the duration option does not work in arecord and aplay too
-Date: Fri, 8 Jul 2005 10:34:34 +0200
-Message-ID: <d67beb4e98a0c02c2260ff5046aadac3@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000276]: envy24control crash
+Date: Fri, 8 Jul 2005 10:34:40 +0200
+Message-ID: <937f9b7ddf4bba1c414fe3b7bbce6ba9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3ACAE17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD31F17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=243> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=276> 
 ======================================================================
-Reported By:                Nibble
+Reported By:                BugBuster
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   243
-Category:                   aplay/arecord
+Project:                    ALSA - tools
+Issue ID:                   276
+Category:                   envy24control
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Resolution:                 open
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-28-2004 01:31 CEST
+Date Submitted:             05-14-2004 19:09 CEST
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    the duration option does not work in arecord and
-aplay too
+Summary:                    envy24control crash
 Description: 
-when using that option: -d 1 or any other number for seconds arecord and
-aplay don't stop. The only way to stop recording is Ctrl+C.
+If you do:
+"./envy24control --help" you get a segmentation fault in getopt_long...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-24-04 05:41 
+ jdthood - 03-19-05 09:40 
 ----------------------------------------------------------------------
-Works for me
+Submitter: Is the bug still present?
 
-$ arecord -d5 foo.wav
-Recording WAVE 'foo.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-$ arecord --version
-arecord: version 1.0.6 by Jaroslav Kysela <perex@suse.cz>
+This should be reassigned to alsa-tools.
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:27 
+ jdthood - 03-19-05 17:49 
 ----------------------------------------------------------------------
-This can be closed.
+This was reported fixed in 1.0.7
+
+* alsa-tools
+  - envy24control
+    - Fixed segfault when envy24control --help is called
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-04 01:31 Nibble         New Issue                                    
-09-24-04 05:41 jdthood        Note Added: 0001855                          
-03-20-05 13:27 jdthood        Note Added: 0004083                          
-03-22-05 09:44 jdthood        Status                   new => resolved     
+05-14-04 19:09 BugBuster      New Issue                                    
+05-14-04 19:09 BugBuster      Distribution              => Gentoo          
+05-14-04 19:09 BugBuster      Kernel Version            => 2.6.5-gentoo-r1 
+03-19-05 09:40 jdthood        Note Added: 0004024                          
+03-19-05 17:49 jdthood        Note Added: 0004058                          
+03-19-05 19:43 perex          Project                  ALSA - driver => ALSA -
+tools
+03-19-05 19:44 perex          Status                   new => resolved     
+03-19-05 19:44 perex          Resolution               open => fixed       
+03-19-05 19:44 perex          Category                 OTHERS => envy24control
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
