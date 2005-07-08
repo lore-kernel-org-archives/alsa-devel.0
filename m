@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000594]: Sound level is extremely low
-Date: Fri, 8 Jul 2005 10:37:39 +0200
-Message-ID: <27d65e8f5342fd9e95d2690277452f28@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000376]: inserting maestro3 hangs system
+Date: Fri, 8 Jul 2005 10:37:33 +0200
+Message-ID: <05cae761a9f2b7605bf8396e185250d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 850AE18B
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CACD218A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=594> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=376> 
 ======================================================================
-Reported By:                danstef
-Assigned To:                
+Reported By:                tmarble
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   594
-Category:                   PCI - intel8x0
+Issue ID:                   376
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.4.20
-Resolution:                 not an issue
+Distribution:               Debian unstable
+Kernel Version:             2.4.26
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-21-2004 23:19 CEST
+Date Submitted:             07-11-2004 18:30 CEST
 Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    Sound level is extremely low
+Summary:                    inserting maestro3 hangs system
 Description: 
-I compiled and installed drivers and utilities without a 
-problem. 
-I used the alsamixer and unmute all channels and raise levels. I also used
-aumix to max the gain. When I play
-a wave file (play --volume=100) I can barely hear the sound.
-I have speakers hooked up to the line out and a front panel
-speaker. Sound is coming out of both at the same really, really low level.
+modprobe snd-maestro3 consistently hangs the system.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 17:44 
+ jdthood - 04-07-05 21:02 
 ----------------------------------------------------------------------
-Please attach /etc/asound.state and /proc/asound/card0/codec97#0/* files
-for debugging.
+Submitter: Has there been any progress on this issue?
 
 ----------------------------------------------------------------------
- danstef - 04-12-05 23:51 
+ tmarble - 04-15-05 14:21 
 ----------------------------------------------------------------------
-Please disregard this issue.
-This is not an alsa bug, we found that we need to use an audio amplifier
-with the motherboard we are using, the previous motherboard had enough
-power out to not need an amplifier. 
-Thanks for looking into this.
+I am now using 2.6.9 (still debian unstable) on this hardware
+and sound is working fine.
+
+I do not have the time to investigate if this problem has
+been resolved in the 2.4 series kernels.
+
+Please go ahead and close this bug.
+
+Thank you!
+
+--Tom
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 23:19 danstef        New Issue                                    
-10-21-04 23:19 danstef        Kernel Version            => 2.4.20          
-10-21-04 23:21 danstef        Note Added: 0002224                          
-04-09-05 16:26 jdthood        Note Added: 0004412                          
-04-12-05 17:44 tiwai          Note Added: 0004456                          
-04-12-05 23:51 danstef        Note Added: 0004466                          
-04-13-05 05:57 jdthood        Status                   new => resolved     
-04-13-05 05:57 jdthood        Resolution               open => not an issue
+07-11-04 18:30 tmarble        New Issue                                    
+07-11-04 18:30 tmarble        Distribution              => Debian unstable 
+07-11-04 18:30 tmarble        Kernel Version            => 2.4.26          
+07-13-04 07:37 tmarble        File Added: 2.4.26-tm2.config.txt                 
+  
+07-13-04 07:38 tmarble        File Added: System.map-2.4.26-tm2.txt             
+      
+07-13-04 07:38 tmarble        File Added: alsa-1.0.conf                    
+07-13-04 07:39 tmarble        File Added: depmod.txt                       
+07-13-04 07:40 tmarble        File Added: depends.txt                      
+07-13-04 07:41 tmarble        File Added: 20040712233907.modules.txt            
+       
+07-13-04 07:41 tmarble        File Added: 20040712233907.ksyms.txt              
+     
+07-13-04 07:43 tmarble        Note Added: 0001412                          
+07-15-04 11:25 tiwai          Note Added: 0001428                          
+07-15-04 19:40 tmarble        Note Added: 0001437                          
+04-07-05 21:02 jdthood        Note Added: 0004368                          
+04-15-05 14:21 tmarble        Note Added: 0004500                          
+04-15-05 19:37 jdthood        Status                   assigned => resolved
+04-15-05 19:37 jdthood        Resolution               open => fixed       
 07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
