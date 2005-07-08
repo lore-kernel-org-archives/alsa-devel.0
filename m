@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000565]: Bug reported to gnomemeeting team
-Date: Fri, 8 Jul 2005 10:35:12 +0200
-Message-ID: <9862dacc4ef4b3ceb569b5f451210296@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000847]: alsa-tools 1.0.8 fail to compile on ppc64
+Date: Fri, 8 Jul 2005 10:35:22 +0200
+Message-ID: <2df4a13b1a8da8c2a5ca188cab21a277@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF6EE186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA75D17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=565> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=847> 
 ======================================================================
-Reported By:                mirko
-Assigned To:                
+Reported By:                Markus Rothe
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   565
-Category:                   1_pcm - digital audio
+Project:                    ALSA - tools
+Issue ID:                   847
+Category:                   ac3dec
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-04-2004 14:35 CEST
+Date Submitted:             01-24-2005 21:09 CET
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    Bug reported to gnomemeeting team
+Summary:                    alsa-tools 1.0.8 fail to compile on ppc64
 Description: 
-http://bugzilla.gnome.org/show_bug.cgi?id=153770
+Hi,
 
-D. Sandras says it's a big-endian/little-endian problem and suggested to
-report it here.
+I'm just trying to compile alsa-tools 1.0.8 on my G5, which runs Gentoo
+Linux.
 
+Here comes the output:
 
+checking for ALSA CFLAGS... 
+checking for ALSA LDFLAGS...  -lasound -lm -ldl -lpthread
+checking for libasound headers version >= 1.0.0... found.
+checking for snd_ctl_open in -lasound... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: executing depfiles commands
+if powerpc64-unknown-linux-gnu-gcc -DPACKAGE_NAME=\"\"
+-DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
+-DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"cspctl\" -DVERSION=\"0.2.0\"
+-DSTDC_HEADERS=1 -DHAVE_LIBASOUND=1  -I. -I.   -I/usr/include/fltk-1.1 
+-mcpu=G5 -O3 -pipe -fsigned-char -mabi=altivec  -MT cspctl.o -MD -MP -MF
+".deps/cspctl.Tpo" \
+  -c -o cspctl.o `test -f 'cspctl.c' || echo './'`cspctl.c; \
+then mv -f ".deps/cspctl.Tpo" ".deps/cspctl.Po"; \
+else rm -f ".deps/cspctl.Tpo"; exit 1; \
+fi
+powerpc64-unknown-linux-gnu-gcc  -mcpu=G5 -O3 -pipe -fsigned-char
+-mabi=altivec   -L/usr/lib/fltk-1.1  -lasound -lm -ldl -lpthread -o cspctl
+ cspctl.o  -lasound -lm -ldl -lpthread
+cspctl.o(.toc+0xe8): undefined reference to
+`__invalid_size_argument_for_IOC'
+collect2: ld returned 1 exit status
+make: *** [cspctl] Error 1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 02-13-05 11:03 
+ Markus Rothe - 01-24-05 21:11 
 ----------------------------------------------------------------------
-I believe that this bug was closed by the 1.0.8 release.  See Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=245040.
+sorry, Category is wrong..
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 16:20 
+ tiwai - 01-25-05 15:17 
 ----------------------------------------------------------------------
-OK, let's close this one, then.  Please open if the problem persists.
+This probleam happens because the available ioctl size is only 13bits on
+PPC64 while it's 14bit on x86.
+
+Don't compile this program for PPC64.  It's only for ISA SB16 boards.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-04-04 14:35 mirko          New Issue                                    
-10-04-04 15:01 jcdutton       Note Added: 0002010                          
-10-04-04 15:58 tiwai          Note Added: 0002011                          
-10-17-04 15:13 jdthood        Note Added: 0002192                          
-10-18-04 18:03 tiwai          Note Added: 0002198                          
-02-13-05 11:03 jdthood        Note Added: 0003582                          
-02-14-05 16:20 tiwai          Status                   new => resolved     
-02-14-05 16:20 tiwai          Resolution               open => fixed       
-02-14-05 16:20 tiwai          Assigned To               => tiwai           
-02-14-05 16:20 tiwai          Note Added: 0003596                          
-02-14-05 16:20 tiwai          Assigned To              tiwai =>            
+01-24-05 21:09 Markus Rothe   New Issue                                    
+01-24-05 21:10 Markus Rothe   Issue Monitored: Markus Rothe                    
+01-24-05 21:11 Markus Rothe   Note Added: 0003397                          
+01-25-05 15:17 tiwai          Status                   assigned => resolved
+01-25-05 15:17 tiwai          Resolution               open => won't fix   
+01-25-05 15:17 tiwai          Note Added: 0003401                          
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
