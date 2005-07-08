@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000834]: alsa-utils 1.0.8 compilation failes
-Date: Fri, 8 Jul 2005 10:35:35 +0200
-Message-ID: <9a8f3371b50236f90a6d6468a15d045d@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000767]: crash during ./cvscompile of alsa-utils package
+Date: Fri, 8 Jul 2005 10:35:03 +0200
+Message-ID: <1cf220a47bae6fae49551c1ba6a5f318@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECAC717A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49E5518A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=834> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=767> 
 ======================================================================
-Reported By:                soger
+Reported By:                wbrown338
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   834
-Category:                   alsaconf
+Issue ID:                   767
+Category:                   aconnect
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-18-2005 21:53 CET
+Date Submitted:             12-31-2004 16:01 CET
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    alsa-utils 1.0.8 compilation failes
+Summary:                    crash during ./cvscompile of alsa-utils package
 Description: 
-I use the alsa driver shipped with the kernel 2.6.9, and I successfully
-installed the lib and the oss-compat, but I have trouble compiling the
-utils package.
-`./configure' runs smoothly but when I try to `make' it says:
-
-Making all in include
-make[1]: Entering directory `/root/tmp/alsa-utils-1.0.8/include'
-make  all-am
-make[2]: Entering directory `/root/tmp/alsa-utils-1.0.8/include'
-make[2]: Leaving directory `/root/tmp/alsa-utils-1.0.8/include'
-make[1]: Leaving directory `/root/tmp/alsa-utils-1.0.8/include'
-Making all in alsactl
-make[1]: Entering directory `/root/tmp/alsa-utils-1.0.8/alsactl'
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT alsactl.o -MD
--MP -MF ".deps/alsactl.Tpo" \
-  -c -o alsactl.o `test -f 'alsactl.c' || echo './'`alsactl.c; \
-then mv -f ".deps/alsactl.Tpo" ".deps/alsactl.Po"; \
-else rm -f ".deps/alsactl.Tpo"; exit 1; \
-fi
-gcc  -g -O2   -o alsactl  alsactl.o  -lasound -lm -ldl -lpthread
-make[1]: Leaving directory `/root/tmp/alsa-utils-1.0.8/alsactl'
-Making all in alsaconf
-make[1]: Entering directory `/root/tmp/alsa-utils-1.0.8/alsaconf'
-Making all in po
-make[2]: Entering directory `/root/tmp/alsa-utils-1.0.8/alsaconf/po'
-mv: cannot stat `t-ja.gmo': No such file or directory
-make[2]: *** [ja.gmo] Error 1
-make[2]: Leaving directory `/root/tmp/alsa-utils-1.0.8/alsaconf/po'
+gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
+.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o
+.libs/userfile.o -Wl,--whole-archive control/.libs/libcontrol.a
+mixer/.libs/libmixer.a ordinary_mixer/.libs/libordinarymixer.a
+pcm/.libs/libpcm.a ordinary_pcm/.libs/libordinarypcm.a
+rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
+seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
+alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread 
+-Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
+snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
+/usr/bin/ld: failed to set dynamic section sizes: Bad value
+collect2: ld returned 1 exit status
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/usr/src/alsa/alsa-lib/src'
 make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/root/tmp/alsa-utils-1.0.8/alsaconf'
+make[1]: Leaving directory `/usr/src/alsa/alsa-lib/src'
 make: *** [all-recursive] Error 1
 
-
-I have no idea what t-ja.gmo could be, I have not once met an error
-message like this before. I would appreciate any help.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:29 
+ jdthood - 02-13-05 11:00 
 ----------------------------------------------------------------------
-This is lack of gettext.
-Already fixed on CVS.
+This report can probably be closed.
+
+----------------------------------------------------------------------
+ tiwai - 02-14-05 16:22 
+----------------------------------------------------------------------
+Yeah, let's close this.  Please reopen if any new information is available.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-18-05 21:53 soger          New Issue                                    
-01-19-05 14:29 tiwai          Status                   new => resolved     
-01-19-05 14:29 tiwai          Resolution               open => fixed       
-01-19-05 14:29 tiwai          Assigned To               => tiwai           
-01-19-05 14:29 tiwai          Note Added: 0003268                          
-01-19-05 14:29 tiwai          Assigned To              tiwai =>            
+12-31-04 16:01 wbrown338      New Issue                                    
+01-03-05 12:06 tiwai          Project                  ALSA - utils => ALSA -
+lib
+01-03-05 12:12 tiwai          Note Added: 0003055                          
+02-13-05 11:00 jdthood        Note Added: 0003581                          
+02-14-05 16:22 tiwai          Status                   new => resolved     
+02-14-05 16:22 tiwai          Resolution               open => unable to
+duplicate
+02-14-05 16:22 tiwai          Assigned To               => tiwai           
+02-14-05 16:22 tiwai          Note Added: 0003597                          
+02-14-05 16:22 tiwai          Assigned To              tiwai =>            
+02-22-05 09:50 perex          Project                  ALSA - lib => ALSA -
+utils
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
