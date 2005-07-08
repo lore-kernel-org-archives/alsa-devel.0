@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000369]: SPDIF gives continous output on later versions of ALSA
-Date: Fri, 8 Jul 2005 10:38:10 +0200
-Message-ID: <8a236a9a23cfd123397b1773517733d2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000248]: Compil problem with au8810
+Date: Fri, 8 Jul 2005 10:38:13 +0200
+Message-ID: <60c9a2c7fdab30c4ec4667d0f76ede91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9141219E
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E04F018B
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,120 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=369> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=248> 
 ======================================================================
-Reported By:                Alphix
-Assigned To:                
+Reported By:                croiset
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   369
-Category:                   PCI - intel8x0
+Issue ID:                   248
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.4.25 and 2.6.7
-Resolution:                 not an issue
+Distribution:               
+Kernel Version:             2.4.7-10 Linux Redhat 7.2
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-06-2004 20:26 CEST
+Date Submitted:             04-30-2004 16:25 CEST
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    SPDIF gives continous output on later versions of
-ALSA
+Summary:                    Compil problem with au8810
 Description: 
-First I was using this box with Linux kernel 2.4.25 and ALSA 1.0.3 (both
-downloaded and built myself). Everything worked great, I have both the
-SPDIF and regular stereo jack connected to my reciever. 
-
-The reason for this is that the OSS emulation won't work with the SPDIF as
-it's underlying device. This was no problem however, since the reciever
-could detect if there was activity on the digital input and automatically
-switch between digital and analogous.
-
-However, I've been working on moving to a 2.6 based kernel, and one of the
-last few annoyances that stop me is that ALSA as shipped with the 2.6.7
-kernel (it seems to be 1.0.5a) seems to fool the reciever into believing
-that there is input on the SPDIF wire constantly. Therefore auto-switching
-doesn't work anymore (playback via both devices still work, it's just the
-autoswitching that stopped working so I now have to switch manually).
+When i want to makes a RPM of alsa-driver 1.0.4, I obtain this message when
+I compil it :
+-----------------
+i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
+-I/usr/src/redhat/BUILD/alsa-driver-1.0.4/include 
+-I/lib/modules/2.4.7-10/build/include -O2 -mpreferred-stack-boundary=2
+-march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
+-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-nostdinc-iwithprefix include  -DKBUILD_BASENAME=au8810   -c -o au8810.o
+au8810.c
+In file included from ../../alsa-kernel/pci/au88x0/au8810.c:9,
+                 from au8810.c:2:
+../../alsa-kernel/pci/au88x0/au88x0_core.c: In function
+`vortex_interrupt':
+../../alsa-kernel/pci/au88x0/au88x0_core.c:2396: warning: implicit
+declaration
+of function `unlikely'
+In file included from ../../alsa-kernel/pci/au88x0/au8810.c:13,
+                 from au8810.c:2:
+../../alsa-kernel/pci/au88x0/au88x0_game.c: In function
+`vortex_game_read':
+../../alsa-kernel/pci/au88x0/au88x0_game.c:48: structure has no member
+named `driver'
+../../alsa-kernel/pci/au88x0/au88x0_game.c: In function
+`vortex_game_trigger':
+../../alsa-kernel/pci/au88x0/au88x0_game.c:54: structure has no member
+named `driver'
+../../alsa-kernel/pci/au88x0/au88x0_game.c: In function
+`vortex_game_cooked_read':
+../../alsa-kernel/pci/au88x0/au88x0_game.c:61: structure has no member
+named `driver'
+../../alsa-kernel/pci/au88x0/au88x0_game.c: In function
+`vortex_game_open':
+../../alsa-kernel/pci/au88x0/au88x0_game.c:77: structure has no member
+named `driver'
+../../alsa-kernel/pci/au88x0/au88x0_game.c: In function
+`vortex_gameport_register':
+../../alsa-kernel/pci/au88x0/au88x0_game.c:102: structure has no member
+named `driver'
+make[2]: *** [au8810.o] Erreur 1
+make[2]: Quitte le répertoire
+`/usr/src/redhat/BUILD/alsa-driver-1.0.4/pci/au88x0'
+make[1]: *** [_modsubdir_au88x0] Erreur 2
+make[1]: Quitte le répertoire
+`/usr/src/redhat/BUILD/alsa-driver-1.0.4/pci'
+make: *** [compile] Erreur 1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Alphix - 08-05-04 21:49 
+ mjander - 05-24-04 16:38 
 ----------------------------------------------------------------------
-I've investigated this some more and it turns out that everything works as
-expected when ALSA is built from sources downloaded from the ALSA website
-on either a 2.4 or 2.6 kernel (tried 1.0.3, 1.0.5a and 1.0.6a and they all
-worked on 2.4.25 and 2.6.7).
+Correct if i got this wrong, but i would conclude that:
 
-I've also managed to find out that the in-kernel ALSA tree (in 2.6.7)
-*does* work as expected, provided that IEC958 is muted (then both digital
-and analogue playback works as expected).
+- This is a RedHat 7.2 specific problem. There is nothing i can do about
+to fix that, except the RedHat kernel maintainers. They no longer support
+RedHat 7.2, so unfortunately they won't help either (you're fried,
+sorry).
 
-I don't know if the in-kernel version of ALSA or the out-of-kernel one is
-the version which has got it wrong but it seems to me that they should be
-consistent.
+- RedHat kernels are NOT standard kernels. They are custom modified
+versions, unique to RedHat. So changing anything on the ALSA source code
+won't make any sense. Its there business to stay compatible.
 
-This is now a very minor severity as a easy workaround exists.
+- If you are having latency problems with other newer kernels, You should
+rather fix your application than expecting the kernel source to change. Or
+try enabling "preemptible" in kernel 2.6, which does a much better job in
+the latency department than 2.4.
+
+Best Regards
+
+Manuel Jander
+
+----------------------------------------------------------------------
+ jdthood - 04-07-05 21:03 
+----------------------------------------------------------------------
+Presumed fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-04 20:26 Alphix         New Issue                                    
-07-06-04 20:26 Alphix         Distribution              => Debian          
-07-06-04 20:26 Alphix         Kernel Version            => 2.4.25 and 2.6.7
-08-05-04 21:49 Alphix         Note Added: 0001537                          
-04-09-05 04:24 jdthood        Status                   new => resolved     
-04-09-05 04:24 jdthood        Resolution               open => not an issue
+04-30-04 16:25 croiset        New Issue                                    
+04-30-04 16:25 croiset        Kernel Version            => 2.4.7-10 Linux Redhat
+7.2
+05-17-04 15:20 mjander        Note Added: 0001132                          
+05-22-04 16:50 mjander        Note Added: 0001175                          
+05-22-04 16:50 mjander        File Added: aureal-2.6.6.diff.gz                  
+ 
+05-24-04 10:48 croiset        Note Added: 0001182                          
+05-24-04 16:38 mjander        Note Added: 0001189                          
+04-07-05 21:03 jdthood        Note Added: 0004369                          
+04-07-05 21:03 jdthood        Status                   assigned => resolved
+04-07-05 21:03 jdthood        Resolution               open => fixed       
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
