@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000899]: Cannot aplay to Sound Galaxy card with alsa-lib 1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
-Date: Fri, 8 Jul 2005 10:35:06 +0200
-Message-ID: <51b66362cba09fb1ff7c8b88db9da238@bugtrack.alsa-project.org>
+Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
+Date: Fri, 8 Jul 2005 10:35:05 +0200
+Message-ID: <ae6ed4c6c79d129dd5d48f9bb752ff70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19298186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4517B17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,85 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=899> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                gvy
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   899
-Category:                   0_general
+Project:                    ALSA - firmware
+Issue ID:                   815
+Category:                   
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-09-2005 17:14 CET
+Date Submitted:             01-13-2005 20:21 CET
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    Cannot aplay to Sound Galaxy card with alsa-lib
-1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
+Summary:                    missing DESTDIR support with hotplug dir
 Description: 
-This is forwarded Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=293907.  Please see
-http://bugs.debian.org/293907 for the full report.
+with intoruction of hotplug dir I had to kludge in RPM buildroot into
+configure parameters -- it doesn't belong there, it's rather install-time
+not compile-time (and definitely not configure-time).
 
-The submitter says that with his Sound Galaxy card he cannot get aplay
-to work.  He gets the following error when he runs aplay:
-
--------------- error message ----------------------
-
-ALSA lib conf.c:2792:(snd_config_hook_load) "/usr/share/alsa/cards/Sound
-Galaxy.conf" is not a word
-ALSA lib conf.c:2672:(snd_config_hooks_call) function
-snd_config_hook_load_for_all_cards returned error: Invalid argument
-ALSA lib pcm.c:1947:(snd_pcm_open_conf) Invalid type for PCM default
-definition (id: default, value: cards.pcm.default)
-aplay: main:508: audio open error: Invalid argument
-
------------- end error message ---------------------
-
-There is no "Sound Galaxy.conf" file, but the user doesn't get an error
-message when he uses alsa-lib 1.0.7.
-
+hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
+too.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 02-12-05 10:07 
+ gvy - 02-15-05 11:02 
 ----------------------------------------------------------------------
-Will this bug:
-
-    http://bugs.debian.org/294880
-
-also be fixed by your patch?
+Yep, thanks, it helped.  Our kernel maintainer noticed that %makeinstall is
+broken indeed... sorry for disturbing.
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 16:23 
+ tiwai - 02-16-05 17:17 
 ----------------------------------------------------------------------
-I believe yes.
+Closed again :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-05 17:14 jdthood        New Issue                                    
-02-09-05 17:56 tiwai          Note Added: 0003560                          
-02-09-05 17:57 tiwai          File Added: conf-space-fix.diff                   
-
-02-09-05 17:59 tiwai          Status                   new => resolved     
-02-09-05 17:59 tiwai          Resolution               open => fixed       
-02-09-05 17:59 tiwai          Assigned To               => tiwai           
-02-09-05 17:59 tiwai          Note Added: 0003561                          
-02-09-05 17:59 tiwai          Assigned To              tiwai =>            
-02-12-05 10:07 jdthood        Status                   resolved => feedback
-02-12-05 10:07 jdthood        Resolution               fixed => reopened   
-02-12-05 10:07 jdthood        Note Added: 0003570                          
-02-14-05 16:23 tiwai          Status                   feedback => resolved
-02-14-05 16:23 tiwai          Resolution               reopened => fixed   
-02-14-05 16:23 tiwai          Assigned To               => tiwai           
-02-14-05 16:23 tiwai          Note Added: 0003599                          
-02-14-05 16:24 tiwai          Assigned To              tiwai =>            
+01-13-05 20:21 gvy            New Issue                                    
+01-13-05 20:33 tiwai          Note Added: 0003199                          
+01-13-05 20:48 gvy            Note Added: 0003201                          
+01-13-05 20:52 tiwai          Status                   new => resolved     
+01-13-05 20:52 tiwai          Resolution               open => not an issue
+01-13-05 20:52 tiwai          Assigned To               => tiwai           
+01-13-05 20:52 tiwai          Note Added: 0003203                          
+01-13-05 20:52 tiwai          Assigned To              tiwai =>            
+02-14-05 19:39 tiwai          Status                   resolved => closed  
+02-14-05 19:51 gvy            Status                   closed => feedback  
+02-14-05 19:51 gvy            Resolution               not an issue => reopened
+02-14-05 19:51 gvy            Note Added: 0003608                          
+02-14-05 19:51 gvy            Resolution               reopened => not an issue
+02-14-05 20:04 tiwai          Note Added: 0003609                          
+02-14-05 20:09 gvy            Note Added: 0003610                          
+02-14-05 20:10 tiwai          Note Added: 0003611                          
+02-15-05 11:02 gvy            Note Added: 0003619                          
+02-16-05 17:17 tiwai          Status                   feedback => resolved
+02-16-05 17:17 tiwai          Assigned To               => tiwai           
+02-16-05 17:17 tiwai          Note Added: 0003624                          
+02-16-05 17:17 tiwai          Assigned To              tiwai =>            
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
