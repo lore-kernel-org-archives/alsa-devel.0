@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000936]: AM_PATH_ALSA does not set prefix properly
-Date: Fri, 8 Jul 2005 10:38:24 +0200
-Message-ID: <95746ad25afe1ff79149824cf70470bc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001054]: Alsa Segmentation Fault
+Date: Fri, 8 Jul 2005 10:37:27 +0200
+Message-ID: <f1e48073eb2d0a6e806d0a051dbf02ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D697818B
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D033117A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=936> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1054> 
 ======================================================================
-Reported By:                starling
-Assigned To:                
+Reported By:                bultom
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   936
-Category:                   aconnect
+Project:                    ALSA - driver
+Issue ID:                   1054
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Resolution:                 won't fix
+Distribution:               Gentoo linux
+Kernel Version:             2.6.11
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-23-2005 22:39 CET
-Last Modified:              07-08-2005 10:38 CEST
+Date Submitted:             04-15-2005 02:39 CEST
+Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    AM_PATH_ALSA does not set prefix properly
+Summary:                    Alsa Segmentation Fault
 Description: 
-When configure calls AM_PATH_ALSA, it wrongly assumes that
---with-alsa-prefix specifies the location of the library, not the prefix
-of alsa.  In addition, --with-alsa-inc-prefix does not properly modify
-CFLAGS.  The result is that every configure where alsa-lib is installed
-outside the hardcoded include/lib paths fails unconditionally.
+Alsa driver make all my application who use it crashing ( compiled built in
+my kernel )
 ======================================================================
 
 ----------------------------------------------------------------------
- starling - 02-26-05 03:31 
+ bultom - 04-15-05 22:55 
 ----------------------------------------------------------------------
-I'm not sure how the number of bits per character would break my patch.  As
-for it being an incompatible configure option, I don't see how the current
-configure can work at all.  With the current (unpatched) alsa.m4, any
-installation outside of /usr, of alsa-utils will fail.  With the patch
-applied it changes the interface, but installations into /usr (or
-/usr/local depending on your compiler) will not fail because they are
-checked regardless of which -I/-L flag is passed to the compiler. So the
-only configurations that would not be backwards compatible, and would
-become 'broken', are the configurations that do not work in the first
-place (for no good reason).  Nothing to worry about.
-
-Unless you know something I don't, which is likely.  64-bit whosamawhudda?
- You mean like Unicode paths?
-
-Oh... and anyone downloading alsa-lib would get the new alsa.m4, so I
-think it's not /too/ much trouble for people to get it.  :)  That's the
-nice thing about aclocal: even people who don't have the patched alsa.m4
-will still be able to use the AM_PATH_ALSA macro the same way, complete
-with the current inability to install into non hard coded compiler
-prefixes.
-
-
+I've found the bug solution , i've just to re compile all apps who use alsa
+cause they have been compiled with alsa 1.0.6 and now i'm in 1.0.8
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 19:09 
+ tiwai - 04-19-05 17:49 
 ----------------------------------------------------------------------
---with-alsa-prefix is the path of alsa-library, and --with-alsa-inc-prefix
-is the path of alsa headers.
-So, you can simply pass like
-
-   ./configure --with-alsa-prefix=/somehwere/lib \
-      --with-alsa-inc-prefix=/another/include
-
-So, it does work.  Only its option name is weird.
-
-But changing the option name is not a good idea since this macro is
-already used widely as I wrote.  Imagine if you change the option and you
-write a configure to run both new and slightly-old ALSA versions?   Such
-an incompatibility is indeed a big problem!
-
-About 64bit: it's a path for 64bit binaries to avoid conflict with 32bit
-ones.  See LSB for details.
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 22:39 starling       New Issue                                    
-02-23-05 22:39 starling       File Added: alsa.diff                        
-02-24-05 22:02 tiwai          Note Added: 0003726                          
-02-26-05 03:28 starling       Note Added: 0003738                          
-02-26-05 03:31 starling       Note Edited: 0003738                         
-03-09-05 19:09 tiwai          Note Added: 0003844                          
-03-31-05 20:39 jdthood        Status                   new => resolved     
-03-31-05 20:39 jdthood        Resolution               open => won't fix   
-07-08-05 10:38 perex          Status                   resolved => closed  
+04-15-05 02:39 bultom         New Issue                                    
+04-15-05 02:39 bultom         Distribution              => Gentoo linux    
+04-15-05 02:39 bultom         Kernel Version            => 2.6.11          
+04-15-05 02:41 bultom         Issue Monitored: bultom                      
+04-15-05 22:55 bultom         Note Added: 0004503                          
+04-19-05 17:49 tiwai          Status                   new => resolved     
+04-19-05 17:49 tiwai          Resolution               open => fixed       
+04-19-05 17:49 tiwai          Assigned To               => tiwai           
+04-19-05 17:49 tiwai          Note Added: 0004528                          
+07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
 
