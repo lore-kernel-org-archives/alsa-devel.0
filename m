@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000360]: Don`t run
-Date: Fri, 8 Jul 2005 10:34:37 +0200
-Message-ID: <cbcb3f098c4c4547c4a7d14d21589cbe@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000243]: the duration option does not work in arecord and aplay too
+Date: Fri, 8 Jul 2005 10:34:34 +0200
+Message-ID: <d67beb4e98a0c02c2260ff5046aadac3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 124FE19E
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3ACAE17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=360> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=243> 
 ======================================================================
-Reported By:                alexnanow
+Reported By:                Nibble
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   360
-Category:                   alsamixer
+Issue ID:                   243
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 not an issue
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-02-2004 00:17 CEST
+Date Submitted:             04-28-2004 01:31 CEST
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    Don`t run
+Summary:                    the duration option does not work in arecord and
+aplay too
 Description: 
-when i try to run alsamixer get this error message:
-
-alsamixer: function snd_ctl_open failed for default: No such file or
-directory
-
-I have compiled all correctly thingy`s but that s*** don`t works... and
-the alsamixer GUI interface too... help please!!
+when using that option: -d 1 or any other number for seconds arecord and
+aplay don't stop. The only way to stop recording is Ctrl+C.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:23 
+ jdthood - 09-24-04 05:41 
+----------------------------------------------------------------------
+Works for me
+
+$ arecord -d5 foo.wav
+Recording WAVE 'foo.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+$ arecord --version
+arecord: version 1.0.6 by Jaroslav Kysela <perex@suse.cz>
+
+----------------------------------------------------------------------
+ jdthood - 03-20-05 13:27 
 ----------------------------------------------------------------------
 This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-02-04 00:17 alexnanow      New Issue                                    
-03-20-05 13:23 jdthood        Note Added: 0004081                          
-03-20-05 13:38 perex          Status                   new => resolved     
-03-20-05 13:38 perex          Resolution               open => not an issue
-03-20-05 13:38 perex          Description Updated                          
-03-22-05 08:10 ms9580         Issue Monitored: ms9580                      
+04-28-04 01:31 Nibble         New Issue                                    
+09-24-04 05:41 jdthood        Note Added: 0001855                          
+03-20-05 13:27 jdthood        Note Added: 0004083                          
+03-22-05 09:44 jdthood        Status                   new => resolved     
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
