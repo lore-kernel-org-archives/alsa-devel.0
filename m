@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000847]: alsa-tools 1.0.8 fail to compile on ppc64
-Date: Fri, 8 Jul 2005 10:35:22 +0200
-Message-ID: <2df4a13b1a8da8c2a5ca188cab21a277@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000699]: [PATCH] Document --config option on alsaconf man page
+Date: Fri, 8 Jul 2005 10:35:24 +0200
+Message-ID: <4cecd6d97f423bf21743e447979999ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA75D17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7768917A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=847> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=699> 
 ======================================================================
-Reported By:                Markus Rothe
-Assigned To:                perex
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   847
-Category:                   ac3dec
+Project:                    ALSA - utils
+Issue ID:                   699
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Resolution:                 won't fix
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-24-2005 21:09 CET
+Date Submitted:             12-02-2004 08:57 CET
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    alsa-tools 1.0.8 fail to compile on ppc64
+Summary:                    [PATCH] Document --config option on alsaconf man
+page
 Description: 
-Hi,
+The alsaconf man page fails to mention alsaconf's --config option.  Here is
+a patch to fix this.
 
-I'm just trying to compile alsa-tools 1.0.8 on my G5, which runs Gentoo
-Linux.
-
-Here comes the output:
-
-checking for ALSA CFLAGS... 
-checking for ALSA LDFLAGS...  -lasound -lm -ldl -lpthread
-checking for libasound headers version >= 1.0.0... found.
-checking for snd_ctl_open in -lasound... yes
-configure: creating ./config.status
-config.status: creating Makefile
-config.status: executing depfiles commands
-if powerpc64-unknown-linux-gnu-gcc -DPACKAGE_NAME=\"\"
--DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
--DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"cspctl\" -DVERSION=\"0.2.0\"
--DSTDC_HEADERS=1 -DHAVE_LIBASOUND=1  -I. -I.   -I/usr/include/fltk-1.1 
--mcpu=G5 -O3 -pipe -fsigned-char -mabi=altivec  -MT cspctl.o -MD -MP -MF
-".deps/cspctl.Tpo" \
-  -c -o cspctl.o `test -f 'cspctl.c' || echo './'`cspctl.c; \
-then mv -f ".deps/cspctl.Tpo" ".deps/cspctl.Po"; \
-else rm -f ".deps/cspctl.Tpo"; exit 1; \
-fi
-powerpc64-unknown-linux-gnu-gcc  -mcpu=G5 -O3 -pipe -fsigned-char
--mabi=altivec   -L/usr/lib/fltk-1.1  -lasound -lm -ldl -lpthread -o cspctl
- cspctl.o  -lasound -lm -ldl -lpthread
-cspctl.o(.toc+0xe8): undefined reference to
-`__invalid_size_argument_for_IOC'
-collect2: ld returned 1 exit status
-make: *** [cspctl] Error 1
-
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 ======================================================================
 
 ----------------------------------------------------------------------
- Markus Rothe - 01-24-05 21:11 
+ jdthood - 01-19-05 15:19 
 ----------------------------------------------------------------------
-sorry, Category is wrong..
+>  A new patch? ;-)
+
+Putting the options in alphabetical order should be trivially easy
+for anyone who has learned the alphabet.  ;)
 
 ----------------------------------------------------------------------
- tiwai - 01-25-05 15:17 
+ tiwai - 01-20-05 19:06 
 ----------------------------------------------------------------------
-This probleam happens because the available ioctl size is only 13bits on
-PPC64 while it's 14bit on x86.
-
-Don't compile this program for PPC64.  It's only for ISA SB16 boards.
+OK, fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 21:09 Markus Rothe   New Issue                                    
-01-24-05 21:10 Markus Rothe   Issue Monitored: Markus Rothe                    
-01-24-05 21:11 Markus Rothe   Note Added: 0003397                          
-01-25-05 15:17 tiwai          Status                   assigned => resolved
-01-25-05 15:17 tiwai          Resolution               open => won't fix   
-01-25-05 15:17 tiwai          Note Added: 0003401                          
+12-02-04 08:57 jdthood        New Issue                                    
+12-02-04 08:57 jdthood        File Added:
+alsaconf_doc_config_20041202jdth1.patch                    
+12-02-04 08:58 jdthood        Note Added: 0002675                          
+12-02-04 09:03 jdthood        Note Added: 0002676                          
+12-02-04 12:15 tiwai          Note Added: 0002677                          
+01-19-05 15:19 jdthood        Note Added: 0003284                          
+01-20-05 19:06 tiwai          Status                   new => resolved     
+01-20-05 19:06 tiwai          Resolution               open => fixed       
+01-20-05 19:06 tiwai          Assigned To               => tiwai           
+01-20-05 19:06 tiwai          Note Added: 0003329                          
+01-20-05 19:07 tiwai          Assigned To              tiwai =>            
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
