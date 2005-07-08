@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001054]: Alsa Segmentation Fault
-Date: Fri, 8 Jul 2005 10:37:27 +0200
-Message-ID: <f1e48073eb2d0a6e806d0a051dbf02ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000338]: intel8x0 driver is not able to find sound card
+Date: Fri, 8 Jul 2005 10:38:11 +0200
+Message-ID: <0abe34d394636e85bb60189ee1f5dd62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D033117A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00B911A9
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1054> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=338> 
 ======================================================================
-Reported By:                bultom
-Assigned To:                tiwai
+Reported By:                jrh
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1054
-Category:                   PCI - emu10k1
+Issue ID:                   338
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo linux
-Kernel Version:             2.6.11
+Distribution:               
+Kernel Version:             2.6.6 (vanilla)
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-15-2005 02:39 CEST
-Last Modified:              07-08-2005 10:37 CEST
+Date Submitted:             06-17-2004 17:55 CEST
+Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    Alsa Segmentation Fault
+Summary:                    intel8x0 driver is not able to find sound card
 Description: 
-Alsa driver make all my application who use it crashing ( compiled built in
-my kernel )
+Hi folks, 
+
+  I've been using the intel8x0 alsa driver since kernel 2.6 without any
+problems upto kernel 2.6.5 (compile from vanilla). However, since 2.6.6
+and 2.6.7 came out I'm not able to listen to any audio as the driver does
+not seem to recognice my card. I've made NO changes to the configuration
+files of the kernel and to any other setup. Simple start 2.6.5 alsa works,
+reboot with 2.6.6/7 and sound is not working.
+
+ The modules are loaded (same modules). "alsaconf" (1.0.5) reports the
+right card and loads it but for instance "alsactl restore" fails...
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- bultom - 04-15-05 22:55 
+ jrh - 07-30-04 17:13 
 ----------------------------------------------------------------------
-I've found the bug solution , i've just to re compile all apps who use alsa
-cause they have been compiled with alsa 1.0.6 and now i'm in 1.0.8
+Hi again,
+
+  First of all, thanks tiwai for your time helping me find this problem. 
+
+I've check all this again and it actually seems to be two mixed bugs.
+First of all I've check my windows partition and I've seen that modem and
+sound card also shared the same IRQ so as you said that shouldn't be the
+problem :-(
+
+Anyways, I've tried all possible configurations in the bios (enabling
+modem, infrared, parallel port, etc.) in order to check what was happening
+and it seems the parallel port is causing the trouble:
+
+- All enabled: Soundcard is *not* detected (output from
+/proc/asound/cards) shows no soundcard 
+
+- Parallel port disabled: Soundcard is detected only if (here comes what
+looks the second bug) snd_intel8x0 is loaded *before* snd_intel8x0m.
+Otherwise no sound.
+
+So now I can decide between listening to music or using the printer :-) 
+
+What do you think it may be the problem?
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 17:49 
+ tiwai - 07-30-04 17:51 
 ----------------------------------------------------------------------
-OK, closing now.
+There was a problem regarding the probing of chips between
+intel8x0 modem and audio drivers.  I fixed it yesterday on CVS.
+
+Please try CVS version or wait for 1.0.6-rc release.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-05 02:39 bultom         New Issue                                    
-04-15-05 02:39 bultom         Distribution              => Gentoo linux    
-04-15-05 02:39 bultom         Kernel Version            => 2.6.11          
-04-15-05 02:41 bultom         Issue Monitored: bultom                      
-04-15-05 22:55 bultom         Note Added: 0004503                          
-04-19-05 17:49 tiwai          Status                   new => resolved     
-04-19-05 17:49 tiwai          Resolution               open => fixed       
-04-19-05 17:49 tiwai          Assigned To               => tiwai           
-04-19-05 17:49 tiwai          Note Added: 0004528                          
-07-08-05 10:37 perex          Status                   resolved => closed  
+06-17-04 17:55 jrh            New Issue                                    
+06-17-04 17:55 jrh            Kernel Version            => 2.6.6 (vanilla) 
+06-18-04 08:58 jrh            Issue Monitored: jrh                         
+06-30-04 16:46 tiwai          Note Added: 0001361                          
+07-29-04 11:17 jrh            Note Added: 0001483                          
+07-30-04 16:49 tiwai          Note Added: 0001489                          
+07-30-04 17:13 jrh            Note Added: 0001497                          
+07-30-04 17:51 tiwai          Note Added: 0001504                          
+04-08-05 22:33 jdthood        Status                   new => resolved     
+04-08-05 22:33 jdthood        Resolution               open => fixed       
+07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
 
