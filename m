@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001034]: (potential) problems introduced with the " improved stream linking and plugin code cleanups" patch by perex
-Date: Fri, 8 Jul 2005 10:38:15 +0200
-Message-ID: <a1fb9658f811d4186cafd59d0cc9b11d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000298]: Unable to play S/P-DIF or surround sound
+Date: Fri, 8 Jul 2005 10:38:18 +0200
+Message-ID: <12459db947c6528e454f990cff265209@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3107186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04BDE186
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,154 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1034> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=298> 
 ======================================================================
-Reported By:                modax
-Assigned To:                tiwai
+Reported By:                bhess
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1034
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   298
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
+Distribution:               Suse 9.0
+Kernel Version:             2.4.21-144
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-03-2005 17:42 CEST
+Date Submitted:             05-22-2004 21:14 CEST
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    (potential) problems introduced with the " improved
-stream linking and plugin code cleanups" patch by perex
+Summary:                    Unable to play S/P-DIF or surround sound
 Description: 
-I'm not an alsa developer so I hadn't known anything about alsa internals
-up until I started debugging alsa-lib to fix an annoying bug I was having
-with alsa 1.0.9rc1 and above. I'm not sure whether my patch/suggestions
-are 100% correct or the best way fix to those bugs.
+I'm trying to use spdif on my VIA EPIA-V board.
+ 
+When I test with "./speaker-test -Dsurround51 -c 6"
+I'm getting the message:
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) 
+Invalid type for PCM surround51 definition (id: surround51, value:
+cards.pcm.surround51)
+Playback open error: Invalid argument
 
-The initial problem I'm refering to is described in bug#1009 note
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275. I narrowed my
-search of the regression down to the big patch,
-which was submitted to alsa-lib CVS on 2005-01-20 by perex. The patch
-cleans up plugin code. Unfortunately, some things have been overlooked by
-the author. Firstly, I'll start with my problem and a fix for it.
 
-As I described in note
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275, I had problems
-with -Dsurround51 on my
-NFORCE board. The root of the problem was a combination of two plugins -
-route and hooks - used in surround51 configuration. Later I learned, that
-removing one of them helped, but they both wouldn't work. The portion of
-code which is to blame for the regression can be seen in
-hooks-channel-info-fix.patch (attached). Just compare the original
-pcm_hooks.c:snd_pcm_hooks_channel_info() (before "2005-01-20" patch) and
-pcm_generic.c:snd_pcm_generic_channel_info(), which was supposed to
-replace it. They are completely different functions. Other plugins which
-are likely to suffer from the same bug are:
-  * pcm_file.c
-  * pcm_plug.c
+My setup (output from alsamixer):
+Card: VIA 82C686A/B rev40
+Chip: VIA Technologies VIA1612A                    
 
-However, most other plugins used
-pcm_plugin.c:snd_pcm_plugin_channel_info() before the "2005-01-20" patch.
-It shares the same code with snd_pcm_generic_channel_info(). So this issue
-raises a few question:
-  * Is snd_pcm_generic_channel() as it is now valid? At least pcm_hooks
-and likely pcm_file and pcm_plug don't work with it.
-  * If it's valid, there is a necessity to create another generic
-function, which clones the code previously provided by
-snd_pcm_{hooks,file,plug}_channel_info() functions.
+But this chip is built into the south bridge VT8231 of my VIA EPIA-V.
 
-The attached patch solves the problem for me, but it is not an universal
-solution. The patch should be applied against CVS as of 2005-01-21 or
-later.
 
-And now here it comes some other remarks regarding the "2005-01-20"
-patch.
-  * I guess, snd_pcm_plugin_fast_ops.status = snd_pcm_generic_status in
-pcm_plugin.c is incorrect because it makes snd_pcm_plugin_status()
-reduntant and these functions don't share the same code.
-  * Plugins which haven't been "cleaned up" by the "2005-01-20" patch
-include:
-    - pcm_meter.c
-    - pcm_null.c
-    - pcm_share.c
-    - pcm_shm.c
-    The latter two seem to be kinda different beasts whereas the first two
-shouldn't be too difficult to "_generic_"'ize.
+The info files look this way:
+/proc/asound/card0/pcm0p/info   /proc/asound/card0/pcm0p/sub0/info        
+
+card: 0                         card: 0                                   
+
+device: 0                       device: 0                                 
+
+subdevice: 0                    subdevice: 0                              
+
+stream: PLAYBACK                stream: PLAYBACK                          
+
+id: VIA 82C686A/B rev40         id: VIA 82C686A/B rev40                   
+
+name: VIA 82C686A/B rev40       name: VIA 82C686A/B rev40                 
+
+subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0     
+     subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+                    
+
+class: 0                        class: 0                                  
+
+subclass: 0                     subclass: 0                               
+
+subdevices_count: 1             subdevices_count: 1                       
+
+subdevices_avail: 1             subdevices_avail: 1                       
+
+                                                                          
+
+
+It seems that alsa tries to open the definition file cards.VIA686A, which
+is not
+provided by alsa. When I add the line "VIA686A cards.VIA8233A" to
+aliases.conf, 
+the command
+
+./speaker-test -Dsurround51 -c 2 
+
+works fine.
+
+Yet, the next command yields
+
+./speaker-test -Dsurround51 -c 4
+Playback device is surround51
+Stream parameters are 44100Hz, S16_LE, 4 channels
+Sine wave rate is 440.0000Hz
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+
+How can I fix this?
+
+Cheers
+Beat
 ======================================================================
 
 ----------------------------------------------------------------------
- modax - 04-03-05 17:53 
+ tiwai - 05-27-04 11:47 
 ----------------------------------------------------------------------
-I wonder where my alsa/os info has disappered. The bug applies to alsa-lib
-1.0.8+cvs20050121 and later. I'm running Debian unstable and Linux kernel
-2.6.11.5  with alsa-driver 1.0.9rc2+cvs20050330
+could you try 1.0.5?
 
 ----------------------------------------------------------------------
- tiwai - 04-05-05 18:07 
+ bhess - 05-28-04 19:51 
 ----------------------------------------------------------------------
-Thanks for reports.  I fixed this on CVS in the similar way.
-snd_pcm_generic_channel_info_slave() is added to be called from these
-three plugins.
+It's working with 1.0.5rc1!
+
+So far, I was able to play two channel output
+./speaker-test -Dspdif -c2
+Playback device is spdif
+Stream parameters are 44100Hz, S16_LE, 2 channels
+Sine wave rate is 440.0000Hz
+period_size=1200, buffer_size=4800
+  - Front Left
+  - Front Right
+  - Front Left
+
+
+
+
+When I try 4 channels, I get 
+
+./speaker-test -Dspdif -c4
+Playback device is spdif
+Stream parameters are 44100Hz, S16_LE, 4 channels
+Sine wave rate is 440.0000Hz
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+
+I suppose this is a limit of my sound chip, isn't it?
+
+Thanks for your help
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-05 17:42 modax          New Issue                                    
-04-03-05 17:42 modax          File Added: hooks-channel-info-fix.diff           
-        
-04-03-05 17:53 modax          Note Added: 0004312                          
-04-05-05 18:07 tiwai          Status                   new => resolved     
-04-05-05 18:07 tiwai          Resolution               open => fixed       
-04-05-05 18:07 tiwai          Assigned To               => tiwai           
-04-05-05 18:07 tiwai          Note Added: 0004338                          
+05-22-04 21:14 bhess          New Issue                                    
+05-22-04 21:14 bhess          Distribution              => Suse 9.0        
+05-22-04 21:14 bhess          Kernel Version            => 2.4.21-144      
+05-24-04 15:05 tiwai          Note Added: 0001186                          
+05-24-04 21:50 bhess          Note Added: 0001197                          
+05-25-04 12:43 tiwai          Note Added: 0001203                          
+05-26-04 11:42 bhess          Note Added: 0001246                          
+05-26-04 13:34 tiwai          Note Added: 0001250                          
+05-26-04 19:54 bhess          Note Added: 0001260                          
+05-27-04 11:47 tiwai          Note Added: 0001263                          
+05-28-04 19:51 bhess          Note Added: 0001271                          
+04-04-05 22:29 jdthood        Status                   new => resolved     
+04-04-05 22:29 jdthood        Resolution               open => fixed       
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
