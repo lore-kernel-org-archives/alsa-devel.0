@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000520]: [PATCH] 91_debian_alsaconf_noclear
-Date: Fri, 8 Jul 2005 10:34:56 +0200
-Message-ID: <ce4772d29c7102ea28ebaaf57cfa81a4@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000947]: replace audigyls driver with ca0106
+Date: Fri, 8 Jul 2005 10:34:54 +0200
+Message-ID: <12d79dcd285db4abfc6de8c7c3a5fa6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D33B17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEE3917A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=520> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=947> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                roerich
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   520
-Category:                   alsaconf
+Project:                    ALSA - WWW server
+Issue ID:                   947
+Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -39,41 +39,35 @@ Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-21-2004 20:03 CEST
+Date Submitted:             02-27-2005 17:25 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    [PATCH] 91_debian_alsaconf_noclear
+Summary:                    replace audigyls driver with ca0106
 Description: 
-This is a patch for alsaconf which makes it not clear the
-screen, but print a newline instead.  The advantage is that
-error messages are not cleared.
+Hi,
+
+I just took a look at the soundcard matrix.
+There is a section stating that the Creative Labs Audigy LS uses the
+audigyls driver. This is true für alsa 1.0.6. Afterwards James changed the
+driver name to ca0106. Additionally the SoundBlaster Live 24bit card is
+supported by the ca0106 driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 02-18-05 22:02 
+ perex - 03-01-05 10:50 
 ----------------------------------------------------------------------
-This report can be closed.
-
-----------------------------------------------------------------------
- tiwai - 02-22-05 18:07 
-----------------------------------------------------------------------
-OK, let's close.
+Fixed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:03 jdthood        New Issue                                    
-09-21-04 20:03 jdthood        File Added: 91_debian_alsaconf_noclear.dpatch     
-              
-09-22-04 18:24 tiwai          Note Added: 0001816                          
-09-22-04 22:37 jdthood        Note Added: 0001820                          
-09-23-04 13:02 tiwai          Note Added: 0001823                          
-02-18-05 22:02 jdthood        Note Added: 0003665                          
-02-22-05 18:07 tiwai          Status                   new => resolved     
-02-22-05 18:07 tiwai          Resolution               open => fixed       
-02-22-05 18:07 tiwai          Assigned To               => tiwai           
-02-22-05 18:07 tiwai          Note Added: 0003708                          
-02-22-05 18:07 tiwai          Assigned To              tiwai =>            
+02-27-05 17:25 roerich        New Issue                                    
+03-01-05 10:50 perex          Status                   new => resolved     
+03-01-05 10:50 perex          Resolution               open => fixed       
+03-01-05 10:50 perex          Assigned To               => perex           
+03-01-05 10:50 perex          Note Added: 0003756                          
+03-01-05 10:50 perex          Assigned To              perex =>            
+03-24-05 21:47 Ariel          Issue Monitored: Ariel                       
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
