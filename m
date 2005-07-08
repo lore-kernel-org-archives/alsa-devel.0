@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000438]: OpenOffice crashes with LD_PRELOAD=/usr/lib/libaoss.so
-Date: Fri, 8 Jul 2005 10:34:35 +0200
-Message-ID: <714e8d26e2b4f802e7b2bf31cca89ffb@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000765]: Very high latency with MIDI soft + dmix + ALSA PCM
+Date: Fri, 8 Jul 2005 10:34:42 +0200
+Message-ID: <dbdcc89b9f7baf198d6b449f5a4bb240@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA88519E
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42A2E17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=438> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=765> 
 ======================================================================
-Reported By:                vslavik
+Reported By:                ccasteyde
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   438
-Category:                   
+Project:                    ALSA - lib
+Issue ID:                   765
+Category:                   0_general
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 open
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-13-2004 11:41 CEST
+Date Submitted:             12-31-2004 13:54 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    OpenOffice crashes with
-LD_PRELOAD=/usr/lib/libaoss.so
+Summary:                    Very high latency with MIDI soft + dmix + ALSA PCM
 Description: 
-I'm having problems with using ALSA's OSS library together with OpenOffice
-(version 1.1.1): it crashes early during startup. It doesn't happen if
-libaoss.so is not preloaded.
+There is a high latency problem with the ALSA MIDI sequencer and the PCM
+interface, and this is even more true when dmix is used.
 
-Ending parts of strace output are:
-...
-open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
-such file or directory)
-open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
-such file or directory)
-open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
-such file or directory)
-open("i686/mmx/libz.so.1", O_RDONLY)    = -1 ENOENT (No such file or
-directory)
-open("i686/libz.so.1", O_RDONLY)        = -1 ENOENT (No such file or
-directory)
-open("mmx/libz.so.1", O_RDONLY)         = -1 ENOENT (No such file or
-directory)
-open("libz.so.1", O_RDONLY)             = -1 ENOENT (No such file or
-directory)
-open("/lib/libz.so.1", O_RDONLY)        = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\300\23"..., 512)
-= 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=65412, ...}) = 0
-mmap2(NULL, 67388, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4203e000
-mmap2(0x4204e000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
-0xf) = 0x4204e000
-close(3)                                = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
-= 0x4204f000
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
-= 0x42050000
-mprotect(0x4181d000, 8519680, PROT_READ|PROT_WRITE) = 0
-mprotect(0x4181d000, 8519680, PROT_READ|PROT_EXEC) = 0
-munmap(0x4108d000, 115564)              = 0
-modify_ldt(1, {entry_number:0, base_addr:0x411c8060, limit:1048575,
-seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1,
-seg_not_present:0, useable:1}, 16) = 0
-getpid()                                = 7468
-rt_sigaction(SIGRTMIN, {0x411c2f90, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
-= 0
-rt_sigaction(SIGRT_1, {0x411c3070, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
-= 0
-rt_sigaction(SIGRT_2, {0x411c31e0, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
-= 0
-rt_sigprocmask(SIG_BLOCK, [RTMIN], NULL, 8) = 0
-rt_sigprocmask(SIG_UNBLOCK, [RT_1], NULL, 8) = 0
-_sysctl({{CTL_KERN, KERN_VERSION}, 2, 0xbfffea64, 32, (nil), 0}) = 0
-brk(0)                                  = 0x80a66a4
-brk(0x80c76a4)                          = 0x80c76a4
-brk(0x80c8000)                          = 0x80c8000
---- SIGSEGV (Segmentation fault) @ 0 (0) ---
-+++ killed by SIGSEGV +++
+My goal was to use Timidity or fluidsynth as soft wavetable to emulate
+MIDI port 128:0 and mix their output with other PCM applications through
+dmix. It's nearly impossible, since in this configuration sound is hashed
+as if the synth software was unable to output data while dealing with each
+MIDI tune. I think nearly 30% sound is lost during this process.
 
-Some additional information can be found here (another reporter a few
-months ago):
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=234044
-Let me know if you need more information.
+The funny thing is that forcing Timidity to use aRts as output, and
+configuring aRts itself to use ALSA pcm dmixer makes everything works
+nicely. I think this is due to the extra desynchronisation and buffering
+due to the main aRts thread, which lets Timidity release ALSA resource
+before sending the output to the DMA card.
+
+I therefore suspect a locking problem/resource contention in ALSA
+driver/ALSALib. If this proves true, and cannot be fixed with fine locking
+rules, I think it is in ALSA lib the problem should be fixed rather than
+in each sound software (the problem appears with both Timidity and
+Fluidsynth and certainly all software that use both input and ouput ALSA
+devices).
 ======================================================================
 
 ----------------------------------------------------------------------
- vslavik - 03-21-05 11:25 
+ jdthood - 03-19-05 09:22 
 ----------------------------------------------------------------------
-No, I don't see it anymore either.
+Submitter: Has there been any progress on this issue?
 
 ----------------------------------------------------------------------
- jdthood - 03-22-05 09:36 
+ ccasteyde - 03-19-05 14:39 
 ----------------------------------------------------------------------
-Thanks for confirming.
+Well, I tried to play with ALSA midi and sequencer input and output with
+Timidity (same version) on an updated slack 10.1 + 2.6.11 kernel (vanilla,
+rebuilt) + NPTL 2.3.4 (rebuilt) + alsalib 2.6.8 (from slack), and I didn't
+managed to reproduce with and without dmixing. There are still some
+problems when I do other tasks on the computer, but at least it doesn't
+crackle anymore if alone now.
+
+Don't know if it was kernel, sound driver, or alsalib that caused that,
+but it seems to be fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-04 11:41 vslavik        New Issue                                    
-03-21-05 00:01 jdthood        Note Added: 0004105                          
-03-21-05 11:25 vslavik        Note Added: 0004117                          
-03-22-05 09:36 jdthood        Note Added: 0004122                          
-03-22-05 09:36 jdthood        Status                   new => resolved     
+12-31-04 13:54 ccasteyde      New Issue                                    
+12-31-04 13:54 ccasteyde      File Added: asound.conf                      
+03-19-05 09:22 jdthood        Note Added: 0004014                          
+03-19-05 14:39 ccasteyde      Note Added: 0004046                          
+03-19-05 14:44 perex          Status                   new => resolved     
+03-19-05 14:44 perex          Resolution               open => fixed       
+03-19-05 14:44 perex          Assigned To               => perex           
+03-19-05 14:44 perex          Assigned To              perex =>            
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
