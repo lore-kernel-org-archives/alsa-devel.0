@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000372]: Problem using Jack with multiple RME 96/8 PAD sound cards
-Date: Fri, 8 Jul 2005 10:38:23 +0200
-Message-ID: <0dc175e7e45e564921270da50c059051@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000621]: Audigy input
+Date: Fri, 8 Jul 2005 10:38:26 +0200
+Message-ID: <6c8bd4c4e52cea235a2f519e0486b94b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59463186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BF9F1AB
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=372> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
 ======================================================================
-Reported By:                sidorovich
+Reported By:                KoxtaRF
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   372
-Category:                   0_general
+Project:                    ALSA - utils
+Issue ID:                   621
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 unable to duplicate
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-09-2004 19:22 CEST
+Date Submitted:             10-31-2004 15:14 CET
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    Problem using Jack with multiple RME 96/8 PAD sound
-cards
+Summary:                    Audigy input
 Description: 
-I am trying to use two RME 96/8 PAD sound cards in a system running Red Hat
-version 9 and can't get capture to work.  I am trying to get this working
-using Jack and have used the
-.asoundrc magic found on http://www.opensrc.org to treat these two cards
-as one four channel device but it only seems to work in playback mode. 
-If I try capture, or duplex, mode I immediately get the following errors:
-  ALSA lib pcm.c:1148:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed:
-Operation already in progress
- jackstart:  pcm.c:6036: snd_pcm_mmap_commit:  Assertion " frames <=
-snd_pcm_mmap_avail(pcm)" failed.
- 
- I can get either card working one at a time but not together for a four
-channel system.  I have attached the .asoundrc file that I am using to
-combine these two cards into one.  
- 
-Is this a bug with ALSA?
+I get exactly the same issue as the guy who posted this message:
+
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13087.html
+
+I cannot select any input source to be captured in alsamixer . Moreover,
+many of the output sliders cannot be muted by pressing M (like Master or
+PCM).
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:08 
+ pzad - 11-03-04 08:18 
 ----------------------------------------------------------------------
-Submitter: Did you ever figure out this problem?
+> I didn't know that it's technically impossible to mute the Master or PCM
+channel. 
+
+This is posible, but need changes in driver or usage of ld10k1 (dl10k1).
+
+>However, I remember that I was able to choose the input source to capture
+simply clicking space on it. Is there a way to bring it back?
+
+Previous versions uses AC97 ADC and you choose capture source on this
+AC97. Now, philips ADC is used (it is 24 bit and has better SNR). AC97 ADC
+is used only for Mic. I think, this will be step back. Under windows you
+can not capture from only line in too. You can capture only "Analog Mix".
+
+In previous alsa version you can set capture source only on sources mixed
+in AC97 all other source didn't have capture switch (Audigy CD,
+AudigyDrive inputs, ...).
+
+----------------------------------------------------------------------
+ jdthood - 03-20-05 13:29 
+----------------------------------------------------------------------
+It looks as if this report can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 19:22 sidorovich     New Issue                                    
-07-09-04 19:22 sidorovich     File Added: .asoundrc.txt                    
-03-19-05 09:08 jdthood        Note Added: 0004012                          
-03-31-05 20:47 jdthood        Status                   new => resolved     
-03-31-05 20:47 jdthood        Resolution               open => unable to
-duplicate
+10-31-04 15:14 KoxtaRF        New Issue                                    
+10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
+10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
+11-02-04 09:31 pzad           Note Added: 0002295                          
+11-02-04 18:50 KoxtaRF        Note Added: 0002298                          
+11-03-04 08:18 pzad           Note Added: 0002303                          
+03-20-05 13:29 jdthood        Note Added: 0004085                          
+03-31-05 20:25 jdthood        Status                   new => resolved     
+03-31-05 20:25 jdthood        Resolution               open => not an issue
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
