@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000621]: Audigy input
-Date: Fri, 8 Jul 2005 10:38:26 +0200
-Message-ID: <6c8bd4c4e52cea235a2f519e0486b94b@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000710]: Alsa-oss works with mpg123 too...fast!!!
+Date: Fri, 8 Jul 2005 10:38:36 +0200
+Message-ID: <0ac957b7cd9aa1de047e92bc7f387df0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BF9F1AB
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F888E3
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=710> 
 ======================================================================
-Reported By:                KoxtaRF
-Assigned To:                
+Reported By:                booxter
+Assigned To:                jdthood
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   621
-Category:                   alsamixer
+Project:                    ALSA - liboss
+Issue ID:                   710
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 not an issue
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-31-2004 15:14 CET
+Date Submitted:             12-05-2004 20:22 CET
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    Audigy input
+Summary:                    Alsa-oss works with mpg123 too...fast!!!
 Description: 
-I get exactly the same issue as the guy who posted this message:
-
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13087.html
-
-I cannot select any input source to be captured in alsamixer . Moreover,
-many of the output sliders cannot be muted by pressing M (like Master or
-PCM).
+When I run
+aoss mpg123 some.mp3,
+I hear all the sound, but too fast (about a 3-5 seconds for a 4minutes
+mp3). Other programs that works primarily through OSS (I tested with
+mp3blaster and mplayer with -o oss) works with aoss fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-03-04 08:18 
+ jdthood - 03-20-05 23:58 
 ----------------------------------------------------------------------
-> I didn't know that it's technically impossible to mute the Master or PCM
-channel. 
-
-This is posible, but need changes in driver or usage of ld10k1 (dl10k1).
-
->However, I remember that I was able to choose the input source to capture
-simply clicking space on it. Is there a way to bring it back?
-
-Previous versions uses AC97 ADC and you choose capture source on this
-AC97. Now, philips ADC is used (it is 24 bit and has better SNR). AC97 ADC
-is used only for Mic. I think, this will be step back. Under windows you
-can not capture from only line in too. You can capture only "Analog Mix".
-
-In previous alsa version you can set capture source only on sources mixed
-in AC97 all other source didn't have capture switch (Audigy CD,
-AudigyDrive inputs, ...).
+Submitter: Is this still a problem in ALSA 1.0.8?
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:29 
+ jdthood - 03-28-05 04:06 
 ----------------------------------------------------------------------
-It looks as if this report can be closed.
+Not confirmed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-04 15:14 KoxtaRF        New Issue                                    
-10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
-10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
-11-02-04 09:31 pzad           Note Added: 0002295                          
-11-02-04 18:50 KoxtaRF        Note Added: 0002298                          
-11-03-04 08:18 pzad           Note Added: 0002303                          
-03-20-05 13:29 jdthood        Note Added: 0004085                          
-03-31-05 20:25 jdthood        Status                   new => resolved     
-03-31-05 20:25 jdthood        Resolution               open => not an issue
+12-05-04 20:22 booxter        New Issue                                    
+12-05-04 20:42 booxter        Note Added: 0002723                          
+12-05-04 22:14 eradicator     Issue Monitored: eradicator                    
+03-20-05 23:58 jdthood        Note Added: 0004103                          
+03-28-05 04:06 jdthood        Status                   new => closed       
+03-28-05 04:06 jdthood        Note Added: 0004230                          
+03-28-05 04:09 jdthood        Status                   closed => resolved  
+03-28-05 04:09 jdthood        Resolution               open => unable to
+duplicate
+03-28-05 04:09 jdthood        Assigned To               => jdthood         
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
