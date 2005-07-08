@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Fri, 8 Jul 2005 12:16:31 +0200
-Message-ID: <34e6896c76abb289c95b343fa2059d11@bugtrack.alsa-project.org>
+Date: Fri, 8 Jul 2005 12:27:17 +0200
+Message-ID: <639e97430b013c20deb553313a642e17@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1FFE193
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:16:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86E8318A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:27:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-08-2005 12:16 CEST
+Last Modified:              07-08-2005 12:27 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,19 +52,16 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 07-04-05 14:02 
-----------------------------------------------------------------------
-i'm sorry, i searched the web for a while but didn't got that mono config.
-
-however, if i have understood well, i would have mono for all apps and not
-only skype, and that's not good.
-
-i'm still waiting for skype support response..i'll keep you updated.
-
-----------------------------------------------------------------------
  tiwai - 07-08-05 12:16 
 ----------------------------------------------------------------------
 Doesn't plug layer work for mono conversion?
+
+----------------------------------------------------------------------
+ Hetfield - 07-08-05 12:27 
+----------------------------------------------------------------------
+i think i configured that in a wrong way.
+
+but i don't want mono sound, that's why i didn't search a lot.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +82,7 @@ Date Modified  Username       Field                    Change
 07-04-05 11:53 pzad           Note Added: 0005384                          
 07-04-05 14:02 Hetfield       Note Added: 0005385                          
 07-08-05 12:16 tiwai          Note Added: 0005417                          
+07-08-05 12:27 Hetfield       Note Added: 0005418                          
 ======================================================================
 
 
