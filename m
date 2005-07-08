@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001042]: Segfault when using "arecord -fS16_LE -r96000 -c2 -Ddefault" with the hardware doing 48000.
-Date: Fri, 8 Jul 2005 10:37:23 +0200
-Message-ID: <4e349e64b9dbb6dac59ec02b7f9f37c9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000572]: spdif hw entry fails to work in multi
+Date: Fri, 8 Jul 2005 10:38:00 +0200
+Message-ID: <bfaf4d20a45ea51e1433365c50f6245b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC9AC18A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBABD17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,150 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1042> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=572> 
 ======================================================================
-Reported By:                jcdutton
+Reported By:                ramendik
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1042
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   572
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               RH-based
+Kernel Version:             2.6.8.1, with alsa 1.0.7rc1 plus patches from bug
+0000505
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-09-2005 18:48 CEST
-Last Modified:              07-08-2005 10:37 CEST
+Date Submitted:             10-08-2004 02:27 CEST
+Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    Segfault when using "arecord -fS16_LE -r96000 -c2
--Ddefault" with the hardware doing 48000.
+Summary:                    spdif hw entry fails to work in multi
 Description: 
-(gdb) run -fS16_LE -r96000 -c2 -Ddefault:2
-Starting program: /usr/bin/arecord -fS16_LE -r96000 -c2 -Ddefault:2
-[Thread debugging using libthread_db enabled]
-[New Thread 16384 (LWP 10130)]
-RIFF$\uffff\uffffWAVEfmt w\uffffdata\uffff\uffffRecording WAVE 'stdout' :
-Signed 16 bit Little Endian, Rate 96000 Hz, Stereo
+After bug 0000505 was fixed, hw:0,0 only plays to analog devices, and
+hw:0,4 to spdif. As one needs output in both, I tried to use .asoundrc ,
+and therefore needed to use the "multi" pcm type in order to unite these
+two (and then route). This is what I put in .asoundrc
 
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 16384 (LWP 10130)]
-snd_pcm_rate_expand_s16 (dst_areas=0x805c000, dst_offset=0,
-dst_frames=8192, src_areas=0x806e380, src_offset=0,
-    src_frames=4096, channels=2, rate=0x80556b8) at pcm_rate.c:187
-187                     new_sample = rate->old_sample[channel];
-(gdb) bt
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0 
-snd_pcm_rate_expand_s16 (dst_areas=0x805c000, dst_offset=0,
-dst_frames=8192, src_areas=0x806e380, src_offset=0,
-    src_frames=4096, channels=2, rate=0x80556b8) at pcm_rate.c:187
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0xb7e63e0e in
-snd_pcm_rate_avail_update (pcm=0x8055530) at
-pcm_rate.c:785
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0xb7e46edb in
-snd_pcm_avail_update (pcm=0x2000) at pcm.c:2265
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0xb7e4cc14 in
-snd_pcm_read_areas (pcm=0x8055530, areas=0xbfe01ad0,
-offset=0, size=8192,
-    func=0xb7e680b0 <snd_pcm_mmap_read_areas>) at pcm.c:6250
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0xb7e6838f in
-snd_pcm_mmap_readi (pcm=0x8055530, buffer=0x2000,
-size=8192) at pcm_mmap.c:236
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0xb7e44e88 in
-snd_pcm_readi (pcm=0x0, buffer=0x8071170, size=8192) at
-pcm_local.h:402
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x0804dc8b in
-capture_go ()
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x0804f234 in capture
-()
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x08050bde in main ()
+pcm.whole {
+    type multi
+    slaves.a.pcm "hw:0,0"
+    slaves.a.channels 2
+    slaves.b.pcm "hw:0,4"
+    slaves.b.channels 2
+    bindings.0.slave a
+    bindings.0.channel 0
+    bindings.1.slave a
+    bindings.1.channel 1
+    bindings.2.slave b
+    bindings.2.channel 0
+    bindings.3.slave b
+    bindings.3.channel 1
+}
 
+pcm.rt {
+    type route
+    slave.pcm "whole"
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
+
+The ttable may be wrong - I could not find a sane description anywhere -
+but I tried many variants, and besides, playing to "whole" bypasses this.
+
+So here's what I get when playing to "rt" OR to "whole" via alsaplayer :
+
+$ alsaplayer -d whole test.wav 
+error on set_channels (2)
+Unavailable hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 44100
+PERIOD_TIME: (181 371520)
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [64 131072]
+PERIODS: [1 1024]
+BUFFER_TIME: (181 371520)
+BUFFER_SIZE: [8 16384]
+BUFFER_BYTES: [64 131072]
+TICK_TIME: 1000
+error on set_channels (2)
+Unavailable hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 44100
+PERIOD_TIME: (181 371520)
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [64 131072]
+PERIODS: [1 1024]
+BUFFER_TIME: (181 371520)
+BUFFER_SIZE: [8 16384]
+BUFFER_BYTES: [64 131072]
+TICK_TIME: 1000
+failed to configure output device...trying OSS
+
+then alsaplayer hangs until interrupted.
+
+When I comment out everything related to slave b, "whole" seems to work
+(without spdif output, of course). So this seems like a bug in the spdif
+device.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 18:36 
+ ramendik - 10-13-04 17:31 
 ----------------------------------------------------------------------
-fixed on CVS.
+1.0.7rc2 has patched ok, but then failed to compile inside kernel 2.6.8.1.
+And it's not about the patch - the failure was in core/rtctimer.o . 
+
+Perhaps I can stick intel_i8x0.c from 1.0.7rc2 into 1.0.7rc1? Or, perhaps
+wait for kernel 2.6.9 ?
+
+----------------------------------------------------------------------
+ tiwai - 10-14-04 12:37 
+----------------------------------------------------------------------
+Just copying may not work.  I don't know of compile problems for
+rtctimer.c.  Please file the bug report about it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-09-05 18:48 jcdutton       New Issue                                    
-04-19-05 18:36 tiwai          Status                   new => resolved     
-04-19-05 18:36 tiwai          Resolution               open => fixed       
-04-19-05 18:36 tiwai          Assigned To               => tiwai           
-04-19-05 18:36 tiwai          Note Added: 0004537                          
-07-08-05 10:37 perex          Status                   resolved => closed  
+10-08-04 02:27 ramendik       New Issue                                    
+10-08-04 02:27 ramendik       Distribution              => RH-based        
+10-08-04 02:27 ramendik       Kernel Version            => 2.6.8.1, with alsa
+1.0.7rc1 plus patches from bug 0000505
+10-08-04 02:31 ramendik       Issue Monitored: ramendik                    
+10-08-04 12:13 tiwai          Note Added: 0002045                          
+10-08-04 12:29 ramendik       Note Added: 0002048                          
+10-08-04 12:42 tiwai          Status                   new => resolved     
+10-08-04 12:42 tiwai          Resolution               open => not an issue
+10-08-04 12:42 tiwai          Assigned To               => tiwai           
+10-08-04 12:42 tiwai          Note Added: 0002049                          
+10-11-04 15:39 tiwai          Status                   resolved => feedback
+10-11-04 15:39 tiwai          Resolution               not an issue => reopened
+10-11-04 15:39 tiwai          Note Added: 0002079                          
+10-11-04 15:39 tiwai          File Added: ich-analog-spdif-dup.dif              
+     
+10-13-04 06:43 ramendik       Note Added: 0002110                          
+10-13-04 10:49 tiwai          Note Added: 0002117                          
+10-13-04 17:31 ramendik       Note Added: 0002128                          
+10-14-04 12:37 tiwai          Note Added: 0002141                          
+04-09-05 16:19 jdthood        Status                   feedback => resolved
+04-09-05 16:19 jdthood        Resolution               reopened => fixed   
+04-09-05 16:19 jdthood        Description Updated                          
+07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
 
