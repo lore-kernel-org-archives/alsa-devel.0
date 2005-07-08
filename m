@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
-Date: Fri, 8 Jul 2005 11:55:17 +0200
-Message-ID: <167a682bb96d9314b474049e002d11ce@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001231]: Sharing soundcard via dmix does not work when mixing 32bit and 64bit applications.
+Date: Fri, 8 Jul 2005 12:00:53 +0200
+Message-ID: <50e78893e7ce75481bd21e099ad5caf7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDDAB18A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:55:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BFB018A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:00:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1231> 
 ======================================================================
-Reported By:                sgoodall
+Reported By:                Tobias Diedrich
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1177
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1231
+Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             06-09-2005 16:00 CEST
-Last Modified:              07-08-2005 11:55 CEST
+Date Submitted:             07-04-2005 16:30 CEST
+Last Modified:              07-08-2005 12:00 CEST
 ======================================================================
-Summary:                    Dell Inspiron 8500  + port replicator issues.
+Summary:                    Sharing soundcard via dmix does not work when mixing
+32bit and 64bit applications.
 Description: 
-I have a dell inspiron 8500 and the port replicator. The has an additional
-headphone socket, however the only mixer control that affects it is the
-IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
-sound completely, or plays sound at full volume.
-All other controls have no affect and, even if muted. The headphone socket
-on the laptop itself still works however.
+I have configured a friends AMD64-System to use dmix by default.
+I also made the same configuration for the 32bit-chroot and made sure
+that
+/tmp is a bind-mount, so the dmix-Socket is shared between 32bit and 64bit
+applications.
+However while sharing between one type of applications (either all 32bit
+or all 64bit) works fine, mixed sharing doesn't work.  A strace shows that
+the socket is opened by apparently communication fails.
+I suspect that the structures passed by dmix have problems with differntly
+sized fields between 32bit and 64bit.
 ======================================================================
 
 ----------------------------------------------------------------------
- sgoodall - 07-07-05 12:01 
+ tiwai - 07-08-05 12:00 
 ----------------------------------------------------------------------
-I have just upgraded to fc4 which includes alsa 1.0.9 and the same problem
-occurs.
-
-----------------------------------------------------------------------
- tiwai - 07-08-05 11:55 
-----------------------------------------------------------------------
-Need the hardware information.  Please attach (upload) the output of
-/proc/asound/card0/codec97#0/* files and /etc/asound.state.
+Yes, it's incompatible between 32 and 64bits.  The struct shared in shmem
+doesn't match.
+snd_pcm_direct_share_t in pcm_direct.h defines the shared struct and the
+size of snd_pcm_[su]frames_t is long, so it depends on architecture.
+Also, we should be careful about alignment, too...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:00 sgoodall       New Issue                                    
-06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:00 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
-07-07-05 12:01 sgoodall       Note Added: 0005399                          
-07-08-05 11:55 tiwai          Note Added: 0005411                          
+07-04-05 16:30 Tobias DiedrichNew Issue                                    
+07-08-05 12:00 tiwai          Note Added: 0005412                          
 ======================================================================
 
 
