@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000538]: error on loading modules
-Date: Fri, 8 Jul 2005 10:38:03 +0200
-Message-ID: <6caa8764fc75c61fba311e1a94025fe7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000447]: Capture Switch control is read only
+Date: Fri, 8 Jul 2005 10:38:06 +0200
+Message-ID: <c78ca0419af70226c3bd08a5ed8b0a0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 969E6186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F204618B
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=538> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=447> 
 ======================================================================
-Reported By:                microft
+Reported By:                Andrew
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   538
-Category:                   1_OTHERS
+Issue ID:                   447
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               slackware
-Kernel Version:             2.4.26
-Resolution:                 not an issue
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 21:42 CEST
+Date Submitted:             08-17-2004 11:22 CEST
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    error on loading modules
+Summary:                    Capture Switch control is read only
 Description: 
-I just compiled and installed the drivers, lib and utils on my Asus S5200N,
-according to the instructions on this page:
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Intel&card=i820&chip=i820&module=intel8x0#Inst
-
-
+Second value of the Capture Switch control is read only
+(always on)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-28-04 19:25 
+ Andrew - 04-09-05 10:56 
 ----------------------------------------------------------------------
-Apparently you didn't specify (or have) the correct kernel source
-tree corresponding to the running kernel.
+Yes, it was. I think, the issue may be closed.
+
+----------------------------------------------------------------------
+ jdthood - 04-09-05 11:22 
+----------------------------------------------------------------------
+Thanks for the info.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 21:42 microft        New Issue                                    
-09-24-04 21:42 microft        Distribution              => slackware       
-09-24-04 21:42 microft        Kernel Version            => 2.4.26          
-09-28-04 19:25 tiwai          Note Added: 0001956                          
-04-09-05 14:37 jdthood        Status                   new => resolved     
-04-09-05 14:37 jdthood        Resolution               open => not an issue
+08-17-04 11:22 Andrew         New Issue                                    
+04-09-05 04:41 jdthood        Note Added: 0004388                          
+04-09-05 10:56 Andrew         Note Added: 0004389                          
+04-09-05 11:22 jdthood        Note Added: 0004390                          
+04-09-05 11:22 jdthood        Status                   new => resolved     
+04-09-05 11:22 jdthood        Resolution               open => fixed       
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
