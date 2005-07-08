@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000546]: 5.1 surround sound output on NForce2 is broken through native output
-Date: Fri, 8 Jul 2005 10:37:31 +0200
-Message-ID: <3ff9455d3e2f38df4fe66ff7a3f85c7d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000911]: On board sound for ASUS P5GD2 Deluxe not detected
+Date: Fri, 8 Jul 2005 10:37:35 +0200
+Message-ID: <7e42f182fc388c7e11526009e08b7401@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF76517A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AF4D186
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=546> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=911> 
 ======================================================================
-Reported By:                AdamW
+Reported By:                scot
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   546
+Issue ID:                   911
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Mandrakelinux Cooker
-Kernel Version:             2.6.8.1 (10mdk revision)
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.760_FC3smp
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-26-2004 20:23 CEST
+Date Submitted:             02-16-2005 17:08 CET
 Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    5.1 surround sound output on NForce2 is broken
-through native output
+Summary:                    On board sound for ASUS P5GD2 Deluxe not detected
 Description: 
-Despite much fiddling with levels, it seems to be impossible to get 5.1
-sound to play correctly through NForce2's onboard sound with native ALSA
-output and the snd-intel8x0 driver. I have a test file which plays a sound
-through each speaker of a 5.1 setup in turn and using native ALSA output
-through mplayer -channels 6, totem, aplay or any other app mangles it;
-depending on the mixer setting I can get some of the sounds through some
-of the speakers but never all the sounds and never anywhere near the right
-speakers. However, if I use OSS output instead of native ALSA output, it
-works perfectly; the speaker identification file plays exactly correct and
-my 5.1 movies sound great. Having it working through native output would
-obviously be better, though.
+Using ASUS P5GD2 Deluxe mother board that has on board Intel high
+definition audio controller.  Loaded Fedora Core 3 latest updates.  On
+board audio controller is not found and can not be configured.  
+
+Using: 2.6.10-1.760_FC3smp kernel
+
+alsa-utils-1.0.8-12.rhfc3.at
+alsa-lib-devel-1.0.8-18.rhfc3.at
+alsa-lib-1.0.8-18.rhfc3.at
+
+lspci -v :
+
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: ASUSTeK Computer Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 5
+        Memory at bdffc000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+ When alsaconf is run it comes back with:
+
+No supported PnP or PCI card found.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- AdamW - 04-17-05 22:19 
+ tiwai - 02-16-05 17:15 
 ----------------------------------------------------------------------
-Yes, it's pretty much fixed, I can now get proper 5.1 output via native
-ALSA output or OSS emulation. Oddly enough I need _different_ mixer
-settings for each method, but that's not too much of a hassle. I can
-provide the two asound.state files if anyone's interested, but this is
-basically fixed.
-
-----------------------------------------------------------------------
- jdthood - 04-17-05 22:27 
-----------------------------------------------------------------------
-Thanks for the update.
+You need to install alsa-driver manually.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 20:23 AdamW          New Issue                                    
-09-26-04 20:23 AdamW          Distribution              => Mandrakelinux Cooker
-09-26-04 20:23 AdamW          Kernel Version            => 2.6.8.1 (10mdk
-revision)
-09-28-04 16:01 djtm           Note Added: 0001946                          
-09-29-04 17:37 AdamW          Note Added: 0001972                          
-04-09-05 14:39 jdthood        Note Added: 0004402                          
-04-17-05 22:19 AdamW          Note Added: 0004512                          
-04-17-05 22:27 jdthood        Note Added: 0004513                          
-04-17-05 22:27 jdthood        Status                   new => resolved     
-04-17-05 22:27 jdthood        Resolution               open => fixed       
+02-16-05 17:08 scot           New Issue                                    
+02-16-05 17:08 scot           Distribution              => Fedora Core 3   
+02-16-05 17:08 scot           Kernel Version            => 2.6.10-1.760_FC3smp
+02-16-05 17:15 tiwai          Note Added: 0003623                          
+04-13-05 21:54 jdthood        Status                   new => resolved     
+04-13-05 21:54 jdthood        Resolution               open => fixed       
 07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
