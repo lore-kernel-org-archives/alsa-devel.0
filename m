@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001065]: bugtrack category for hda_intel needed
-Date: Fri, 8 Jul 2005 10:37:30 +0200
-Message-ID: <7c1b3bf846bf40bd7c3fc73ac1ff613d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000155]: Crackly / sizzly recording on VIA VT82C686 AC97 since 2.6.3
+Date: Fri, 8 Jul 2005 10:37:25 +0200
+Message-ID: <03a7950b24b6dc8e6fc17929e71fb49b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AACEB186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C42517A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,98 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1065> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=155> 
 ======================================================================
-Reported By:                jwiegley
+Reported By:                sim
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1065
-Category:                   PCI - azx
+Issue ID:                   155
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               Debian unstable
+Kernel Version:             2.6.3 through 2.6.5-rc2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-18-2005 20:43 CEST
+Date Submitted:             03-24-2004 06:03 CET
 Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    bugtrack category for hda_intel needed
+Summary:                    Crackly / sizzly recording on VIA VT82C686 AC97
+since 2.6.3
 Description: 
-The azx driver was recently renamed hda_intel. Bugtrack needs a
-PCI - hda_intel
-category I think.
+Hello,
+
+I have a mythtv box set up and recently upgraded the kernel from
+2.6.0-test9 to 2.6.4.  Everything appeared to play normally, but new
+recordings since the upgrade all sound crackly.  2.6.5-rc2 and 2.6.3 also
+seem to be broken.  2.6.2 works as expected.
+
+There appear to be a large number of changes to the ALSA core between
+2.6.2 and 2.6.3.  How should I attempt to track the problem down further?
+
+Athlon 1800 XP, MSI K7 Master (MS-6330), 48 KHz stereo recording and
+playback.  The problem also shows up with Audacity, and as such does not
+appear to be application specific.  I can send a sample of the poor sound
+recording upon request.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 17:32 
+ tiwai - 04-11-05 22:47 
 ----------------------------------------------------------------------
-Added now.
+The patch was NOT applied yet.
+It seems that some OSS apps don't like avail_min=1 (i.e. poll woke up as
+soon as any data is available).
+Since no corresponding bug reports for the playback direction, this seems
+to be specific to capture.
+
+Could you test the latest ALSA together with the patch attached
+(pcm-oss-capture-fix.diff)?
+
+----------------------------------------------------------------------
+ tiwai - 04-19-05 18:35 
+----------------------------------------------------------------------
+I applied the patch to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-05 20:43 jwiegley       New Issue                                    
-04-19-05 17:32 tiwai          Status                   new => resolved     
-04-19-05 17:32 tiwai          Resolution               open => fixed       
-04-19-05 17:32 tiwai          Assigned To               => tiwai           
-04-19-05 17:32 tiwai          Note Added: 0004522                          
+03-24-04 06:03 sim            New Issue                                    
+03-24-04 06:03 sim            Distribution              => Debian unstable 
+03-24-04 06:03 sim            Kernel Version            => 2.6.3 through
+2.6.5-rc2
+04-08-04 15:15 m9715936       Issue Monitored: m9715936                    
+04-08-04 15:25 m9715936       Note Added: 0000767                          
+04-08-04 15:29 m9715936       Note Edited: 0000767                         
+04-10-04 10:13 m9715936       Note Edited: 0000767                         
+04-11-04 19:28 uli            Note Added: 0000780                          
+04-23-04 17:29 tiwai          Status                   new => assigned     
+04-23-04 17:29 tiwai          Assigned To               => tiwai           
+04-23-04 17:30 tiwai          Note Added: 0000907                          
+04-23-04 18:02 m9715936       Note Added: 0000913                          
+04-23-04 18:07 tiwai          Note Added: 0000914                          
+04-23-04 18:36 m9715936       Note Added: 0000915                          
+04-23-04 18:40 tiwai          Note Added: 0000916                          
+04-23-04 18:59 m9715936       Note Added: 0000917                          
+06-13-04 11:27 sim            File Added: patch-2.6.3-rc1-try2.11.works         
+          
+06-13-04 11:32 sim            Note Added: 0001303                          
+06-20-04 11:41 uli            Note Added: 0001324                          
+06-22-04 18:41 tiwai          Status                   assigned => resolved
+06-22-04 18:41 tiwai          Resolution               open => fixed       
+07-16-04 12:45 tiwai          Status                   resolved => feedback
+07-16-04 12:45 tiwai          Resolution               fixed => reopened   
+07-16-04 12:45 tiwai          Note Added: 0001450                          
+04-08-05 22:23 jdthood        Note Added: 0004374                          
+04-11-05 22:47 tiwai          Note Added: 0004444                          
+04-11-05 22:48 tiwai          File Added: pcm-oss-capture-fix.diff              
+     
+04-19-05 18:35 tiwai          Status                   feedback => resolved
+04-19-05 18:35 tiwai          Resolution               reopened => fixed   
+04-19-05 18:35 tiwai          Note Added: 0004536                          
 07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
