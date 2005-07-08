@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000830]: ia64, alpha: "pcm_jack.c:742: warning: int format, different type arg (arg 5)"
-Date: Fri, 8 Jul 2005 10:35:33 +0200
-Message-ID: <a8f9e17bff6132ae8f7b9902f2b9cae3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000468]: stuttering audio output with SDL_audio applications
+Date: Fri, 8 Jul 2005 10:38:05 +0200
+Message-ID: <d4a2f7bafba9f96518bd5564a0809185@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67440186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EE7F18F
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=830> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=468> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                int-e
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   830
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   468
+Category:                   PCI - via82xx
+Reproducibility:            sometimes
+Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-17-2005 09:36 CET
-Last Modified:              07-08-2005 10:35 CEST
+Date Submitted:             08-27-2004 03:48 CEST
+Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    ia64, alpha: "pcm_jack.c:742: warning: int format,
-different type arg (arg 5)"
+Summary:                    stuttering audio output with SDL_audio applications
 Description: 
-This warning is thrown on ia64 and alpha.
+I traced this down to the check that's now called check_invalid_pos() in
+calc_linear_pos() in the driver being triggered with lastpos==bufsize and
+res==bufsize/2.
 
-Making all in utils
-[...]
-make[1]: Entering directory `/build/buildd/alsa-lib-1.0.8/src/pcm/ext'
-if /bin/sh ../../../libtool --mode=compile ia64-linux-gcc -DHAVE_CONFIG_H
--I. -I. -I../../../include -I../../../include -I../../../src/pcm 
--D__ia64__  -g -Wall -O2 -MT pcm_jack.lo -MD -MP -MF ".deps/pcm_jack.Tpo"
-\
-  -c -o pcm_jack.lo `test -f 'pcm_jack.c' || echo './'`pcm_jack.c; \
-then mv -f ".deps/pcm_jack.Tpo" ".deps/pcm_jack.Plo"; \
-else rm -f ".deps/pcm_jack.Tpo"; exit 1; \
-fi
-mkdir .libs
- ia64-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../../include
--I../../../include -I../../../src/pcm -D__ia64__ -g -Wall -O2 -MT
-pcm_jack.lo -MD -MP -MF .deps/pcm_jack.Tpo -c pcm_jack.c  -fPIC -DPIC -o
-.libs/pcm_jack.o
-pcm_jack.c: In function `snd_pcm_jack_open':
-pcm_jack.c:742: warning: int format, different type arg (arg 5)
- ia64-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../../include
--I../../../include -I../../../src/pcm -D__ia64__ -g -Wall -O2 -MT
-pcm_jack.lo -MD -MP -MF .deps/pcm_jack.Tpo -c pcm_jack.c -o pcm_jack.o
->/dev/null 2>&1
+I think lastpos should be 0 at that point.
 
+Moving the assignment viadev->lastpos = res; at the end of that function
+after the wrap handling if() solved the problem for me.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 11:23 
+ int-e - 04-09-05 11:37 
 ----------------------------------------------------------------------
-This warning is also thrown on s390.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
-for the full build log on s390.
+I can't reproduce the problem on linux kernel version 2.6.11.7.
+check_invalid_pos() does not seem to get triggered any more either, so I
+suppose it's fixed.
+
+Thank you.
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:37 
+ jdthood - 04-09-05 12:03 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Thanks for the info.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:36 jdthood        New Issue                                    
-01-17-05 11:23 jdthood        Note Added: 0003232                          
-01-19-05 14:37 tiwai          Status                   new => resolved     
-01-19-05 14:37 tiwai          Resolution               open => fixed       
-01-19-05 14:37 tiwai          Assigned To               => tiwai           
-01-19-05 14:37 tiwai          Note Added: 0003273                          
-01-19-05 14:37 tiwai          Assigned To              tiwai =>            
-07-08-05 10:35 perex          Status                   resolved => closed  
+08-27-04 03:48 int-e          New Issue                                    
+08-27-04 03:48 int-e          File Added: via82xx.diff                     
+08-27-04 03:48 int-e          Distribution              => Gentoo          
+08-27-04 03:48 int-e          Kernel Version            => 2.6.8.1         
+04-09-05 04:28 jdthood        Note Added: 0004383                          
+04-09-05 11:37 int-e          Note Added: 0004391                          
+04-09-05 12:03 jdthood        Note Added: 0004392                          
+04-09-05 12:03 jdthood        Status                   new => resolved     
+04-09-05 12:03 jdthood        Resolution               open => fixed       
+04-09-05 12:03 jdthood        Summary                  stuttering audio output
+with SDL_audio applications
+ => stuttering audio output with SDL_audio applications
+07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
 
