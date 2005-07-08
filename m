@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001056]: Realtek ALC 880 on board sound chip not detected.
-Date: Fri, 8 Jul 2005 10:37:29 +0200
-Message-ID: <bf718dff275ddd3993fdd7e7728fa07e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
+Date: Fri, 8 Jul 2005 10:37:36 +0200
+Message-ID: <beb0c95a0fdcb935a109cf1bb5a93c64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4504417A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D03518A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,85 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1056> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
 ======================================================================
-Reported By:                David Kinzer
-Assigned To:                tiwai
+Reported By:                aquarichy
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1056
-Category:                   alisp
+Project:                    ALSA - driver
+Issue ID:                   750
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               Slackware 10
+Kernel Version:             2.6.9+
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-15-2005 15:51 CEST
+Date Submitted:             12-28-2004 02:20 CET
 Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    Realtek ALC 880 on board sound chip not detected.
+Summary:                    no sound since 2.6.8.1
 Description: 
-Description of problem:
-New HP m7060n Media Center PC. (Private ASUS motherboard with integrated
-sound.)
-Install FC3 core (workstation config) from scratch.
-Sound chip is not detected.
-Core is "up2date"
-
->From Specs sheet:
-      Integrated Intel High Definition (TM) audio (Azalia) 
-
-          o Realtek ALC 880 chipset
-          o THX certification support
-          o 8-channels for Full Dolby 5.1/6.1/7.1 surround sound support
-with Dolby Pro Logic IIx
-          o Dolby 5.1
-
-
-
+Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
+compile  any newer stable kernel, there is no sound.  Compilation executes
+without complaints.  No Sound related options change.  I have even tried
+saying No to all the new options 2.6.9 and .10 provided in fear that one
+of those might be interfering, but nada.  
 ======================================================================
 
 ----------------------------------------------------------------------
- David Kinzer - 04-17-05 22:55 
+ FrankS - 02-05-05 20:42 
 ----------------------------------------------------------------------
-By fiddling with enough things that I read about on the web I have managed
-to get everything working at this point.  
+tiwai,
+I finally got a chance to try the patch today. I applied it to the current
+CVS files, and I did get sound without needing to set the ac97_quirk to 0.
+ On my system, the patch works.
 
-Thanks again for your assistance.
-
-Notes for future readers:
-
-Desktop & game noises started working after running the test in
-Preferences->More Preferences->Multimedia System Selector.  I don't know
-why.
-
-This computer does not ship with an analog audio connection to the CD
-drive, the Gnome CD player requires this.  I loaded XMMS and XMMS-cdread
-to get a CD player working.  Use cd-rom drive (/dev/cdrom1) instead of
-burner drive which would skip regularily as it spun up and down in speed.
+Thanks,
+Frank
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 17:43 
+ jdthood - 04-13-05 17:15 
 ----------------------------------------------------------------------
-Thanks for confirmation.  The rest seems to be non-specific to the sound
-system, so let's close this now.
+Good work, all.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-05 15:51 David Kinzer   New Issue                                    
-04-15-05 15:52 David Kinzer   Note Added: 0004501                          
-04-15-05 15:57 pzad           Note Added: 0004502                          
-04-16-05 04:41 David Kinzer   Note Added: 0004504                          
-04-16-05 08:58 pzad           Note Added: 0004505                          
-04-17-05 01:03 David Kinzer   Note Added: 0004509                          
-04-17-05 22:55 David Kinzer   Note Added: 0004514                          
-04-19-05 17:43 tiwai          Status                   new => resolved     
-04-19-05 17:43 tiwai          Resolution               open => fixed       
-04-19-05 17:43 tiwai          Assigned To               => tiwai           
-04-19-05 17:43 tiwai          Note Added: 0004526                          
+12-28-04 02:20 aquarichy      New Issue                                    
+12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
+12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
+12-29-04 08:23 aquarichy      Note Added: 0002993                          
+12-29-04 14:12 tiwai          Note Added: 0002996                          
+12-29-04 19:02 aquarichy      Note Added: 0003007                          
+12-29-04 19:17 aquarichy      Note Added: 0003008                          
+12-29-04 19:37 aquarichy      Note Added: 0003009                          
+12-29-04 20:39 aquarichy      Note Added: 0003011                          
+12-29-04 20:46 rlrevell       Note Added: 0003012                          
+12-30-04 00:07 aquarichy      Note Added: 0003015                          
+12-30-04 06:05 aquarichy      Note Edited: 0003015                         
+12-30-04 06:36 aquarichy      Note Added: 0003017                          
+12-30-04 13:02 tiwai          Note Added: 0003018                          
+12-31-04 06:30 aquarichy      Note Added: 0003024                          
+01-03-05 12:07 tiwai          Note Added: 0003053                          
+01-03-05 20:30 aquarichy      Note Added: 0003074                          
+01-24-05 04:10 FrankS         Note Added: 0003389                          
+01-25-05 15:22 tiwai          Note Added: 0003403                          
+01-31-05 19:10 tiwai          Note Added: 0003457                          
+02-01-05 16:33 FrankS         File Added: ac97info.tar.gz                    
+02-01-05 16:37 FrankS         Note Added: 0003462                          
+02-02-05 11:14 tiwai          Note Added: 0003482                          
+02-02-05 11:14 tiwai          File Added: ac97-bind-hp2.diff                    
+02-05-05 20:42 FrankS         Note Added: 0003524                          
+04-13-05 17:15 jdthood        Note Added: 0004471                          
+04-13-05 17:15 jdthood        Status                   new => resolved     
+04-13-05 17:15 jdthood        Resolution               open => fixed       
 07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
