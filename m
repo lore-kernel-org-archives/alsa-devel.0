@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001001]: Please ship alsa-plugins tarball
-Date: Fri, 8 Jul 2005 10:38:32 +0200
-Message-ID: <2d6c261d028e4b05ce62520eaf0fa1c6@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000824]: sparc, powerpc, hppa, alpha, ia64: "Please, recode mix_areas1() routine to your architecture..."
+Date: Fri, 8 Jul 2005 10:38:31 +0200
+Message-ID: <c09e5748bd61821e1ec57d05581fc5f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C282F140
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63D94143
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1001> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=824> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1001
-Category:                   0_general
+Issue ID:                   824
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-19-2005 19:19 CET
+Date Submitted:             01-17-2005 08:58 CET
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    Please ship alsa-plugins tarball
+Summary:                    sparc, powerpc, hppa, alpha, ia64: "Please, recode
+mix_areas1() routine to your architecture..."
 Description: 
-Please ship the alsa-plugins source code in tarball form.
+Making all in pcm
+[...]
+if /bin/sh ../../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include  -D__ppc__  -g -Wall -O2 -MT
+pcm_dmix.lo -MD -MP -MF ".deps/pcm_dmix.Tpo" \
+  -c -o pcm_dmix.lo `test -f 'pcm_dmix.c' || echo './'`pcm_dmix.c; \
+then mv -f ".deps/pcm_dmix.Tpo" ".deps/pcm_dmix.Plo"; \
+else rm -f ".deps/pcm_dmix.Tpo"; exit 1; \
+fi
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c  -fPIC -DPIC -o .libs/pcm_dmix.o
+pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas1':
+pcm_dmix.c:247: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:248: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:249: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas2':
+pcm_dmix.c:279: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:280: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:281: warning: use of cast expressions as lvalues is deprecated
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c -o pcm_dmix.o >/dev/null 2>&1
 
-As a Debian maintainer of the ALSA packages I would prefer to see
-alsa-plugins in a separate tarball.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000926 dmix segfaults
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 19:05 
+ jdthood - 03-16-05 22:34 
 ----------------------------------------------------------------------
-Fixed with rc2.
+See also bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=926.
+
+----------------------------------------------------------------------
+ tiwai - 03-29-05 19:06 
+----------------------------------------------------------------------
+The CVS version has the generic architecture support without atomic ops.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-05 19:19 jdthood        New Issue                                    
-03-29-05 19:05 tiwai          Status                   new => resolved     
-03-29-05 19:05 tiwai          Resolution               open => fixed       
-03-29-05 19:05 tiwai          Assigned To               => tiwai           
-03-29-05 19:05 tiwai          Note Added: 0004254                          
+01-17-05 08:58 jdthood        New Issue                                    
+01-17-05 09:06 jdthood        Note Added: 0003222                          
+01-17-05 11:21 jdthood        Note Added: 0003230                          
+01-18-05 16:48 jdthood        Note Added: 0003250                          
+01-18-05 17:45 tiwai          Note Added: 0003253                          
+01-18-05 17:59 jdthood        Note Added: 0003255                          
+01-18-05 18:01 tiwai          Note Added: 0003256                          
+01-20-05 12:37 jdthood        Note Added: 0003326                          
+01-23-05 17:59 jdthood        Note Added: 0003388                          
+03-16-05 22:34 jdthood        Note Added: 0003971                          
+03-17-05 08:16 perex          Relationship added       related to 0000926  
+03-29-05 19:06 tiwai          Status                   new => resolved     
+03-29-05 19:06 tiwai          Resolution               open => fixed       
+03-29-05 19:06 tiwai          Assigned To               => tiwai           
+03-29-05 19:06 tiwai          Note Added: 0004255                          
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
