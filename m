@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001214]: With Terratec DMX6fire, digital inputs cannot be selected correctly -always internal digital source
-Date: Fri, 8 Jul 2005 14:48:45 +0200
-Message-ID: <89f8053701a45ff3be403c719a4ebf5d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001222]: typo in info.c
+Date: Fri, 8 Jul 2005 14:53:57 +0200
+Message-ID: <da1c80dc414e314fe8500a1372540082@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 014C3140
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 14:48:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B0E317C
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 14:53:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1214> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1222> 
 ======================================================================
-Reported By:                alanmann
-Assigned To:                
+Reported By:                Henne
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1214
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   1222
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   text
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-27-2005 15:27 CEST
-Last Modified:              07-08-2005 14:48 CEST
+Date Submitted:             06-30-2005 12:38 CEST
+Last Modified:              07-08-2005 14:53 CEST
 ======================================================================
-Summary:                    With Terratec DMX6fire, digital inputs cannot be
-selected correctly -always internal digital source
+Summary:                    typo in info.c
 Description: 
-The DMX6fire sound card has onboard 'digital in' for direct connection from
-a CD drive as well as coax and optical front panel in and out. 
-Envy24control has no button to select the internal source, but in fact it
-seems always selected and works fine.  Consequently the front panel inputs
-never work,(I can only test optical, but internal source is always
-working) although the selector 'SPDIF input' changes the panel lights
-correctly, and the 'SPDIF on/off' swaps the lights whichever way they
-were.
+Little typo in info.c in the kerneldocs of snd_info_get_str().
+Patch added.
 ======================================================================
 
 ----------------------------------------------------------------------
- alanmann - 06-29-05 22:39 
+ Henne - 06-30-05 12:45 
 ----------------------------------------------------------------------
-Thanks, alsamixer does enable SPDIFs to be selected as a workaround. 
-However the switch "Front Digital Input" is reversed -ie "off" enables
-front panel sources, "on" activates the internal SPDIF.
-
-Following this I perused the source code of envy24control where the switch
-actions are used to change variables and noticed an error in hardware.c. 
-After a quick edit and recompile the SPDIF on/off switch functioned just
-as the alsamixer one does -also reversed.  Subsequently I swapped the
-logic and changed a couple of the titles to make more sense.  So the SPDIF
-selection problem is a simple 'bug' in e24c hardware.c.
+Oops, forgot a whitespace. Take info_c.diff.
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 14:48 
+ tiwai - 07-08-05 14:53 
 ----------------------------------------------------------------------
-Do you have a patch to fix it?
+Thanks, applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 15:27 alanmann       New Issue                                    
-06-27-05 16:05 tiwai          Note Added: 0005274                          
-06-29-05 22:39 alanmann       Note Added: 0005318                          
-07-08-05 14:48 tiwai          Note Added: 0005428                          
+06-30-05 12:38 Henne          New Issue                                    
+06-30-05 12:38 Henne          File Added: info_patch.diff                    
+06-30-05 12:45 Henne          Note Added: 0005324                          
+06-30-05 12:45 Henne          Issue Monitored: Henne                       
+06-30-05 12:47 Henne          File Added: info_c.diff                      
+07-08-05 14:53 tiwai          Status                   new => resolved     
+07-08-05 14:53 tiwai          Resolution               open => fixed       
+07-08-05 14:53 tiwai          Assigned To               => tiwai           
+07-08-05 14:53 tiwai          Note Added: 0005429                          
 ======================================================================
 
 
