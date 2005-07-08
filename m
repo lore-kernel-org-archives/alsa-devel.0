@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000993]: Please provide asound_fm.h
-Date: Fri, 8 Jul 2005 10:34:53 +0200
-Message-ID: <0149c130cf71897d9b4f42927b3a0a14@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000968]: arecord/aplay 24-bit nonstandard?
+Date: Fri, 8 Jul 2005 10:34:43 +0200
+Message-ID: <11fc1ddc38a04eedf00bdd2753a445eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FD8917A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A6CCD17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=993> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=968> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                ScottHelmke
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   993
-Category:                   0_general
+Project:                    ALSA - utils
+Issue ID:                   968
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-14-2005 22:28 CET
+Date Submitted:             03-07-2005 18:11 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    Please provide asound_fm.h
+Summary:                    arecord/aplay 24-bit nonstandard?
 Description: 
-The submitter of Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299423 says:
+Using arecord with S24_LE resolution, later tried to import files into
+Ardour.  Apparently the 24-bit implemenation by arecord is faulty.  16 and
+32 bit audio from arecord imported just fine.  Ardour developers say that
+problem is with arecord.
 
-> Please include the header asound_fm.h  This is required to use the
-> OSS compatibility Direct-FM interface (or ALSA DMFM device directly via
-> ioctls, as opposed to using through alsa-lib as normal).
 
-See http://bugs.debian.org/299423 for the full request.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-15-05 22:51 
+ ScottHelmke - 03-17-05 07:32 
 ----------------------------------------------------------------------
-Here is the manual page which mentions that header:
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1192.htm
+S24_3LE works fine with Ardour - thanks!
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:41 
+ tiwai - 03-18-05 18:15 
 ----------------------------------------------------------------------
-Fixed on CVS.  Will appear in rc2.
+OK, closing this now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 22:28 jdthood        New Issue                                    
-03-15-05 22:51 jdthood        Note Added: 0003920                          
-03-16-05 12:41 tiwai          Status                   new => resolved     
-03-16-05 12:41 tiwai          Resolution               open => fixed       
-03-16-05 12:41 tiwai          Assigned To               => tiwai           
-03-16-05 12:41 tiwai          Note Added: 0003944                          
-03-16-05 12:41 tiwai          Assigned To              tiwai =>            
+03-07-05 18:11 ScottHelmke    New Issue                                    
+03-07-05 20:52 perex          Note Added: 0003808                          
+03-07-05 20:58 ScottHelmke    Note Added: 0003810                          
+03-09-05 18:38 tiwai          Note Added: 0003831                          
+03-17-05 07:32 ScottHelmke    Note Added: 0003978                          
+03-18-05 18:15 tiwai          Status                   new => resolved     
+03-18-05 18:15 tiwai          Resolution               open => not an issue
+03-18-05 18:15 tiwai          Assigned To               => tiwai           
+03-18-05 18:15 tiwai          Note Added: 0004000                          
+03-18-05 18:15 tiwai          Assigned To              tiwai =>            
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
