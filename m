@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000247]: An option cannot specify correctly.
-Date: Fri, 8 Jul 2005 10:34:32 +0200
-Message-ID: <6d8630c667c3cd9f7d1e4904524fc4a9@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001002]: Software volume control should be enabled by default for CMI9761
+Date: Fri, 8 Jul 2005 10:34:31 +0200
+Message-ID: <7fb991d8ccc6fe0fe7acd89962be2294@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3C07186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65BBC17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=247> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1002> 
 ======================================================================
-Reported By:                sitamo
-Assigned To:                
+Reported By:                e_val
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   247
-Category:                   alsamixer
+Project:                    ALSA - lib
+Issue ID:                   1002
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-29-2004 18:14 CEST
+Date Submitted:             03-19-2005 20:42 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    An option cannot specify correctly.
+Summary:                    Software volume control should be enabled by default
+for CMI9761
 Description: 
-I think that it becomes the following codes.
+Sinc version 1.0.8, ALSA provides softvol plugin to deal with those chips
+which does not provide hardware volume control. So, according to the
+changelog, defunct  volume bars 'PCM Playback Volume' and similiar were
+removed from /usr/share/alsa/*.conf for thos cards. In theory, they should
+not be removed but replaced with softvol, as it was done for some chips.
+(eg. Azalia).
 
---- alsamixer/alsamixer.c.org   2004-02-17 01:44:06.000000000 +0900
-+++ alsamixer/alsamixer.c       2004-04-30 01:08:52.000000000 +0900
-@@ -2002,8 +2002,8 @@
-          }
-          break;
-        case 'D':
--         strncpy(card_id, optarg, sizeof(card_id));
--         card_id[sizeof(card_id)-1] = '\0';
-+         strncpy(card_id, optarg, strlen(optarg));
-+         card_id[strlen(optarg)] = '\0';
-          break;
-        case 'g':
-          mixer_do_color = !mixer_do_color;
+The simple construct
+pcm.!default {
+  type softvol
+  slave.pcm "hw:0,0"
+  control {
+    name "PCM Playback Volume"
+  }
+}
+in /etc/asound.conf is sufficient for my CMI9761-based audiocard to work.
+I think it would be beter to integrate a more advenced version of the code
+into system-wide configs.
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-01-04 11:07 
+ tiwai - 03-22-05 19:35 
 ----------------------------------------------------------------------
-the current code is correct.
-
-what error did you have exactly?
+softvol and dmix are used as default in 1.0.9.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-04 18:14 sitamo         New Issue                                    
-05-01-04 11:07 tiwai          Note Added: 0000999                          
-03-22-05 09:47 jdthood        Status                   new => resolved     
-03-22-05 09:47 jdthood        Resolution               open => not an issue
+03-19-05 20:42 e_val          New Issue                                    
+03-22-05 19:35 tiwai          Status                   new => resolved     
+03-22-05 19:35 tiwai          Resolution               open => fixed       
+03-22-05 19:35 tiwai          Assigned To               => tiwai           
+03-22-05 19:35 tiwai          Note Added: 0004127                          
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
