@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001240]: compile fails on ak4114, macro missing second parameter
-Date: Fri, 8 Jul 2005 10:18:24 +0200
-Message-ID: <16130582deab46f6d1630b12bfb348a8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001229]: Can't modprobe sound module
+Date: Fri, 8 Jul 2005 10:21:10 +0200
+Message-ID: <b7bd772cb91fd117ad3a3239166208b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 92E8C181
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:18:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB1B4181
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:21:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1240> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1229> 
 ======================================================================
-Reported By:                allanw
+Reported By:                oui
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1240
+Issue ID:                   1229
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo 2005.0 (amd64)
-Kernel Version:             2.6.11
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-07-2005 20:05 CEST
-Last Modified:              07-08-2005 10:18 CEST
+Date Submitted:             07-03-2005 11:48 CEST
+Last Modified:              07-08-2005 10:21 CEST
 ======================================================================
-Summary:                    compile fails on ak4114, macro missing second
-parameter
+Summary:                    Can't modprobe sound module
 Description: 
-In file included from
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.c:1:
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:49:
-macro "create_workqueue" requires 2 arguments, but only 1 given
-In file included from
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.c:1:
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:
-In function `snd_ak4114_create':
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
-error: `create_workqueue' undeclared (first use in this function)
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
-error: (Each undeclared identifier is reported only once
-/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
-error: for each function it appears in.)
-make[5]: ***
-[/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.o]
-Error 1
-
-I can fix the problem by editing ak4114.c and passing PF_SYNCTHREAD as the
-second argument to create_workqueue.
-
-Patch attached.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001160 Compilation hangs on hda_codec.c and ak...
+I use sound card Intel 82801DB AC'97 .I download alsa-driver ,alsa-lib and
+alsa-util and follow your instruction but I can't modprobe intel8x0 it
+said not found module device .Please tell me what I should do?
 ======================================================================
 
 ----------------------------------------------------------------------
- allanw - 07-07-05 20:07 
+ oui - 07-04-05 17:06 
 ----------------------------------------------------------------------
-Sorry, looks like a dupe. How do I close this bug?
+To jcdutton 
+Thanks for your answer but I type modprobe snd-intel8x0 
+It said not find module device and now I can't use sound anymore.
 
 ----------------------------------------------------------------------
- perex - 07-08-05 10:18 
+ perex - 07-08-05 10:21 
 ----------------------------------------------------------------------
-Yep, it's a dupe, but you're using another special kernel. Can we pass zero
-as the second parameter with the Gentoo kernel, too? The current CVS does
-it in this way.
+Any messages in /var/log/messages? Please, copy and paste the commands and
+output from them which you tried. Please, be verbose.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-07-05 20:05 allanw         New Issue                                    
-07-07-05 20:05 allanw         File Added: ak4114-fix.patch                    
-07-07-05 20:05 allanw         Distribution              => Gentoo 2005.0 (amd64)
-07-07-05 20:05 allanw         Kernel Version            => 2.6.11          
-07-07-05 20:07 allanw         Note Added: 0005402                          
-07-08-05 10:15 perex          Relationship added       related to 0001160  
-07-08-05 10:18 perex          Note Added: 0005403                          
+07-03-05 11:48 oui            New Issue                                    
+07-03-05 12:14 jcdutton       Note Added: 0005374                          
+07-04-05 17:06 oui            Note Added: 0005386                          
+07-08-05 10:21 perex          Note Added: 0005404                          
 ======================================================================
 
 
