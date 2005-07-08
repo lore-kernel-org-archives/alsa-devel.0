@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001231]: Sharing soundcard via dmix does not work when mixing 32bit and 64bit applications.
-Date: Fri, 8 Jul 2005 12:00:53 +0200
-Message-ID: <50e78893e7ce75481bd21e099ad5caf7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
+Date: Fri, 8 Jul 2005 12:03:10 +0200
+Message-ID: <62be0809b956f2e0c4f9cc8a9f5383e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BFB018A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:00:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10D81166
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:03:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1231> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
 ======================================================================
-Reported By:                Tobias Diedrich
+Reported By:                jwiegley
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1231
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1064
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian-pure64
+Kernel Version:             2.6.12-rc2
 ======================================================================
-Date Submitted:             07-04-2005 16:30 CEST
-Last Modified:              07-08-2005 12:00 CEST
+Date Submitted:             04-18-2005 20:42 CEST
+Last Modified:              07-08-2005 12:03 CEST
 ======================================================================
-Summary:                    Sharing soundcard via dmix does not work when mixing
-32bit and 64bit applications.
+Summary:                    snd_hda_intel does not recognize acl880 sound chip
 Description: 
-I have configured a friends AMD64-System to use dmix by default.
-I also made the same configuration for the 32bit-chroot and made sure
-that
-/tmp is a bind-mount, so the dmix-Socket is shared between 32bit and 64bit
-applications.
-However while sharing between one type of applications (either all 32bit
-or all 64bit) works fine, mixed sharing doesn't work.  A strace shows that
-the socket is opened by apparently communication fails.
-I suspect that the structures passed by dmix have problems with differntly
-sized fields between 32bit and 64bit.
+I bought a Shuttle ST20G5 box. Sound doesn't get detected or
+seem to work with manual load.
+
+chipset:
+  ATI Xpress 200 northbridge
+  ULI 1573 southbridge
+
+The documentation says the sound is:
+  Realtek ALC880
+
+alsaconf detects nothing
+manually loading snd_hda_intel also doesn't print anything in the
+log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 12:00 
+ Christoph - 07-04-05 23:39 
 ----------------------------------------------------------------------
-Yes, it's incompatible between 32 and 64bits.  The struct shared in shmem
-doesn't match.
-snd_pcm_direct_share_t in pcm_direct.h defines the shared struct and the
-size of snd_pcm_[su]frames_t is long, so it depends on architecture.
-Also, we should be careful about alignment, too...
+Tried the last CVS version today, same result.
+
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+ALSA sound/pci/hda/hda_intel.c:461: azx_get_response timeout
+...
+
+----------------------------------------------------------------------
+ tiwai - 07-08-05 12:03 
+----------------------------------------------------------------------
+The timeout implies that the irq isn't handled correctly.  It's often
+related with ACPI.  Try pci=noacpi or acpi=off boot option for testing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-05 16:30 Tobias DiedrichNew Issue                                    
-07-08-05 12:00 tiwai          Note Added: 0005412                          
+04-18-05 20:42 jwiegley       New Issue                                    
+04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
+04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
+04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
+04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 17:38 tiwai          Note Added: 0004523                          
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-12-05 20:52 jwiegley       Note Added: 0005001                          
+06-15-05 14:39 tiwai          Note Added: 0005026                          
+07-04-05 23:27 Christoph      Issue Monitored: Christoph                    
+07-04-05 23:39 Christoph      Note Added: 0005388                          
+07-08-05 12:03 tiwai          Note Added: 0005413                          
 ======================================================================
 
 
