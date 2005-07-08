@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000572]: spdif hw entry fails to work in multi
-Date: Fri, 8 Jul 2005 10:38:00 +0200
-Message-ID: <bfaf4d20a45ea51e1433365c50f6245b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000625]: ISA - 4232 has no CD sound
+Date: Fri, 8 Jul 2005 10:37:51 +0200
+Message-ID: <eed237a6baf802afa3b57d683c2871c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBABD17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8780919E
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,150 +24,211 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=572> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=625> 
 ======================================================================
-Reported By:                ramendik
-Assigned To:                tiwai
+Reported By:                hugovanwoerkom
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   572
-Category:                   PCI - intel8x0
+Issue ID:                   625
+Category:                   ISA - cs4232
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               RH-based
-Kernel Version:             2.6.8.1, with alsa 1.0.7rc1 plus patches from bug
-0000505
-Resolution:                 fixed
+Distribution:               Debian Sarge
+Kernel Version:             2.6.9
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-08-2004 02:27 CEST
-Last Modified:              07-08-2005 10:38 CEST
+Date Submitted:             11-03-2004 13:49 CET
+Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    spdif hw entry fails to work in multi
+Summary:                    ISA - 4232 has no CD sound
 Description: 
-After bug 0000505 was fixed, hw:0,0 only plays to analog devices, and
-hw:0,4 to spdif. As one needs output in both, I tried to use .asoundrc ,
-and therefore needed to use the "multi" pcm type in order to unite these
-two (and then route). This is what I put in .asoundrc
-
-pcm.whole {
-    type multi
-    slaves.a.pcm "hw:0,0"
-    slaves.a.channels 2
-    slaves.b.pcm "hw:0,4"
-    slaves.b.channels 2
-    bindings.0.slave a
-    bindings.0.channel 0
-    bindings.1.slave a
-    bindings.1.channel 1
-    bindings.2.slave b
-    bindings.2.channel 0
-    bindings.3.slave b
-    bindings.3.channel 1
-}
-
-pcm.rt {
-    type route
-    slave.pcm "whole"
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
-
-The ttable may be wrong - I could not find a sane description anywhere -
-but I tried many variants, and besides, playing to "whole" bypasses this.
-
-So here's what I get when playing to "rt" OR to "whole" via alsaplayer :
-
-$ alsaplayer -d whole test.wav 
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-failed to configure output device...trying OSS
-
-then alsaplayer hangs until interrupted.
-
-When I comment out everything related to slave b, "whole" seems to work
-(without spdif output, of course). So this seems like a bug in the spdif
-device.
+Switched from OSS to Alsa. Enabled sound, alsa, OSS emulation and cs4232
+isa card in kernel. Tried with modules and without. Has sound but not from
+the CD. System ran OSS module  with sound from the CD previous to kernel
+compile, so everything that OSS needed is still there.
 ======================================================================
 
 ----------------------------------------------------------------------
- ramendik - 10-13-04 17:31 
+ hugovanwoerkom - 11-11-04 13:47 
 ----------------------------------------------------------------------
-1.0.7rc2 has patched ok, but then failed to compile inside kernel 2.6.8.1.
-And it's not about the patch - the failure was in core/rtctimer.o . 
+On Debian systems:
+/var/lib/alsa/asound.state
+follows:
 
-Perhaps I can stick intel_i8x0.c from 1.0.7rc2 into 1.0.7rc1? Or, perhaps
-wait for kernel 2.6.9 ?
+state.CS4236 {
+	control.1 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'PCM Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 63'
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 52
+		value.1 52
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Line Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Line Playback Volume'
+		value.0 31
+		value.1 31
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Aux Playback Switch'
+		value.0 false
+		value.1 false
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Aux Playback Volume'
+		value.0 31
+		value.1 31
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Aux Playback Switch'
+		index 1
+		value.0 false
+		value.1 false
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Aux Playback Volume'
+		index 1
+		value.0 31
+		value.1 31
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mono Playback Switch'
+		value false
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 15'
+		iface MIXER
+		name 'Mono Playback Volume'
+		value 15
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mono Output Playback Switch'
+		value false
+	}
+	control.12 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mono Output Playback Bypass'
+		value false
+	}
+	control.13 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 15'
+		iface MIXER
+		name 'Capture Volume'
+		value.0 11
+		value.1 11
+	}
+	control.14 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.item.0 Line
+		comment.item.1 Aux
+		comment.item.2 Mic
+		comment.item.3 Mix
+		iface MIXER
+		name 'Capture Source'
+		value.0 Mic
+		value.1 Mic
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic Boost'
+		value.0 false
+		value.1 false
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Loopback Capture Switch'
+		value false
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 63'
+		iface MIXER
+		name 'Loopback Capture Volume'
+		value 63
+	}
+}
+
+I would turn on CD Playback Switch if I knew how.
 
 ----------------------------------------------------------------------
- tiwai - 10-14-04 12:37 
+ tiwai - 11-11-04 14:40 
 ----------------------------------------------------------------------
-Just copying may not work.  I don't know of compile problems for
-rtctimer.c.  Please file the bug report about it.
+Ah ok you're using cs4232 (the category was missing - added now).
+Then there is no CD volume control indeed.
+
+Try to turn on 'Aux Playback Switch' (or unmute 'Aux' on alsamixer).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-08-04 02:27 ramendik       New Issue                                    
-10-08-04 02:27 ramendik       Distribution              => RH-based        
-10-08-04 02:27 ramendik       Kernel Version            => 2.6.8.1, with alsa
-1.0.7rc1 plus patches from bug 0000505
-10-08-04 02:31 ramendik       Issue Monitored: ramendik                    
-10-08-04 12:13 tiwai          Note Added: 0002045                          
-10-08-04 12:29 ramendik       Note Added: 0002048                          
-10-08-04 12:42 tiwai          Status                   new => resolved     
-10-08-04 12:42 tiwai          Resolution               open => not an issue
-10-08-04 12:42 tiwai          Assigned To               => tiwai           
-10-08-04 12:42 tiwai          Note Added: 0002049                          
-10-11-04 15:39 tiwai          Status                   resolved => feedback
-10-11-04 15:39 tiwai          Resolution               not an issue => reopened
-10-11-04 15:39 tiwai          Note Added: 0002079                          
-10-11-04 15:39 tiwai          File Added: ich-analog-spdif-dup.dif              
-     
-10-13-04 06:43 ramendik       Note Added: 0002110                          
-10-13-04 10:49 tiwai          Note Added: 0002117                          
-10-13-04 17:31 ramendik       Note Added: 0002128                          
-10-14-04 12:37 tiwai          Note Added: 0002141                          
-04-09-05 16:19 jdthood        Status                   feedback => resolved
-04-09-05 16:19 jdthood        Resolution               reopened => fixed   
-04-09-05 16:19 jdthood        Description Updated                          
-07-08-05 10:38 perex          Status                   resolved => closed  
+11-03-04 13:49 hugovanwoerkom New Issue                                    
+11-03-04 13:49 hugovanwoerkom Distribution              => Debian Sarge    
+11-03-04 13:49 hugovanwoerkom Kernel Version            => 2.6.9           
+11-09-04 18:49 tiwai          Note Added: 0002333                          
+11-11-04 13:47 hugovanwoerkom Note Added: 0002384                          
+11-11-04 14:30 tiwai          Category                 ISA - cs4236 => ISA -
+cs4232
+11-11-04 14:40 tiwai          Note Added: 0002385                          
+04-09-05 16:59 jdthood        Status                   new => resolved     
+04-09-05 16:59 jdthood        Resolution               open => not an issue
+07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
 
