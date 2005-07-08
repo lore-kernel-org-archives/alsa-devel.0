@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000307]: Can't play 6 channels wave file
-Date: Fri, 8 Jul 2005 10:37:47 +0200
-Message-ID: <83b342acdce0d5af4de805b49a50fecc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000594]: Sound level is extremely low
+Date: Fri, 8 Jul 2005 10:37:39 +0200
+Message-ID: <27d65e8f5342fd9e95d2690277452f28@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 746FB18A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 850AE18B
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=594> 
 ======================================================================
-Reported By:                pshou
+Reported By:                danstef
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   307
-Category:                   CORE - pcm
+Issue ID:                   594
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Redhat7.3
-Kernel Version:             2.4.18-3
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             2.4.20
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-26-2004 04:28 CEST
+Date Submitted:             10-21-2004 23:19 CEST
 Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    Can't play 6 channels wave file
+Summary:                    Sound level is extremely low
 Description: 
-I have a ALC655 for ICH5 motherboard.
-I used the aplay to play a 5.1 channels wave file, then show a error
-message "Can't use period equal to buffer size"
-I used the ICH2, ICH4 and ATi motherboard have the same problem.
+I compiled and installed drivers and utilities without a 
+problem. 
+I used the alsamixer and unmute all channels and raise levels. I also used
+aumix to max the gain. When I play
+a wave file (play --volume=100) I can barely hear the sound.
+I have speakers hooked up to the line out and a front panel
+speaker. Sound is coming out of both at the same really, really low level.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-04-05 22:24 
+ tiwai - 04-12-05 17:44 
 ----------------------------------------------------------------------
-Submitter: Do you still have this problem?
+Please attach /etc/asound.state and /proc/asound/card0/codec97#0/* files
+for debugging.
 
 ----------------------------------------------------------------------
- pshou - 04-11-05 09:03 
+ danstef - 04-12-05 23:51 
 ----------------------------------------------------------------------
-The problem is fixed by the newest ALSA driver. Thank's very much your
-help.
+Please disregard this issue.
+This is not an alsa bug, we found that we need to use an audio amplifier
+with the motherboard we are using, the previous motherboard had enough
+power out to not need an amplifier. 
+Thanks for looking into this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-04 04:28 pshou          New Issue                                    
-05-26-04 04:28 pshou          Distribution              => Redhat7.3       
-05-26-04 04:28 pshou          Kernel Version            => 2.4.18-3        
-05-26-04 13:36 tiwai          Note Added: 0001251                          
-04-04-05 22:24 jdthood        Note Added: 0004332                          
-04-11-05 09:03 pshou          Note Added: 0004441                          
-04-11-05 09:45 jdthood        Status                   new => resolved     
-04-11-05 09:45 jdthood        Resolution               open => fixed       
+10-21-04 23:19 danstef        New Issue                                    
+10-21-04 23:19 danstef        Kernel Version            => 2.4.20          
+10-21-04 23:21 danstef        Note Added: 0002224                          
+04-09-05 16:26 jdthood        Note Added: 0004412                          
+04-12-05 17:44 tiwai          Note Added: 0004456                          
+04-12-05 23:51 danstef        Note Added: 0004466                          
+04-13-05 05:57 jdthood        Status                   new => resolved     
+04-13-05 05:57 jdthood        Resolution               open => not an issue
 07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
