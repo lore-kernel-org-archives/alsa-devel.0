@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000825]: On alpha: "alisp.c:2933: warning: int format, different type arg (arg 6)"
-Date: Fri, 8 Jul 2005 10:35:30 +0200
-Message-ID: <03a3b489b728bb6df1f610b982d56db5@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
+Date: Fri, 8 Jul 2005 10:35:27 +0200
+Message-ID: <e72c2f9389c86a8a28dc733e59d71da3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98A9717A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D0F717A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=825> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                christeck
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   825
-Category:                   alisp
+Project:                    ALSA - utils
+Issue ID:                   798
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-17-2005 09:05 CET
+Date Submitted:             01-09-2005 22:05 CET
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    On alpha: "alisp.c:2933: warning: int format,
-different type arg (arg 6)"
+Summary:                    Make alsaconf optinal able to create an asound.conf
 Description: 
-Making all in alisp
-make[3]: Entering directory `/build/buildd/alsa-lib-1.0.8/src/alisp'
-if /bin/sh ../../libtool --mode=compile alpha-linux-gcc -DHAVE_CONFIG_H
--I. -I. -I../../include -I../../include    -g -Wall -O2 -MT alisp.lo -MD
--MP -MF ".deps/alisp.Tpo" \
-  -c -o alisp.lo `test -f 'alisp.c' || echo './'`alisp.c; \
-then mv -f ".deps/alisp.Tpo" ".deps/alisp.Plo"; \
-else rm -f ".deps/alisp.Tpo"; exit 1; \
-fi
-mkdir .libs
- alpha-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT alisp.lo -MD -MP -MF .deps/alisp.Tpo -c alisp.c  -fPIC
--DPIC -o .libs/alisp.o
-alisp.c: In function `F_stat_memory':
-alisp.c:2933: warning: int format, different type arg (arg 6)
- alpha-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT alisp.lo -MD -MP -MF .deps/alisp.Tpo -c alisp.c -o
-alisp.o >/dev/null 2>&1
+An asound.conf is difficult to create manually due to its difficult to
+understand syntax. Would be great if alsaconf could optional create it, so
+the user can
 
+* Define in which order the cards appear (e.g., internal AC97, Modem,
+USB-Audio and an USB MIDI card)
+
+* Define some dmix devices
+
+* Else? Not familiar enough with dmix, I do not use it :)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 11:22 
+ christeck - 01-19-05 18:33 
 ----------------------------------------------------------------------
-This warning also appears on s390.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
-for the full build log on s390.
+You're certainly right, but it seems that I cannot close this entry; I
+guess you have permissions, can you please close this entry?
+
+Thanks and sorry for the traffic :) .
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:57 
+ tiwai - 01-19-05 18:38 
 ----------------------------------------------------------------------
-Fixed on CVS.
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:05 jdthood        New Issue                                    
-01-17-05 09:25 jdthood        Note Added: 0003223                          
-01-17-05 11:22 jdthood        Note Added: 0003231                          
-01-19-05 14:57 tiwai          Status                   new => resolved     
-01-19-05 14:57 tiwai          Resolution               open => fixed       
-01-19-05 14:57 tiwai          Assigned To               => tiwai           
-01-19-05 14:57 tiwai          Note Added: 0003279                          
-01-19-05 14:57 tiwai          Assigned To              tiwai =>            
+01-09-05 22:05 christeck      New Issue                                    
+01-19-05 15:29 jdthood        Note Added: 0003287                          
+01-19-05 16:48 tiwai          Note Added: 0003293                          
+01-19-05 16:54 jdthood        Note Added: 0003297                          
+01-19-05 16:56 tiwai          Note Added: 0003298                          
+01-19-05 18:33 christeck      Note Added: 0003309                          
+01-19-05 18:38 tiwai          Status                   new => resolved     
+01-19-05 18:38 tiwai          Resolution               open => won't fix   
+01-19-05 18:38 tiwai          Assigned To               => tiwai           
+01-19-05 18:38 tiwai          Note Added: 0003312                          
+01-19-05 18:38 tiwai          Assigned To              tiwai =>            
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
