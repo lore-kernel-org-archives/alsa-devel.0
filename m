@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001018]: resampler produces noise
-Date: Fri, 8 Jul 2005 10:38:33 +0200
-Message-ID: <e981186bbe58597ea54704f2fc3e6a7d@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000492]: EMU10K1 and OSS emulation PCM volume problem
+Date: Fri, 8 Jul 2005 10:38:38 +0200
+Message-ID: <9ce9c81dfaf1027adad6fe9452bc387d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 067F614F
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47814E3
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1018> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=492> 
 ======================================================================
-Reported By:                grabner
-Assigned To:                tiwai
+Reported By:                croiset
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1018
-Category:                   1_pcm - digital audio
+Project:                    ALSA - liboss
+Issue ID:                   492
+Category:                   
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-26-2005 22:51 CET
+Date Submitted:             09-09-2004 16:51 CEST
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    resampler produces noise
+Summary:                    EMU10K1 and OSS emulation PCM volume problem
 Description: 
-Sad to say, but after some recent improvements (thanks to tiwai) the
-resampling code is still buggy. Under certain conditions, noise peaks are
-added to the signal, which are clearly audible.
-To make sure that this is not a problem with any particular hardware
-driver, I created a test case using the "file" and "null" plugins (i.e.,
-no output on audio hardware). See below for details.
+when I use a sound card :
+0 [Live           ]: EMU10K1 - Sound Blaster Live!
+                     Sound Blaster Live! (rev.10) at 0x8400, irq 10
+when I use the oss emulation, the only way to have sound on the audio
+analog output, is to use the mixer call Wave (ALTPCM) instead of PCM like
+other cards. The mixer I used for the test is alsamixer.
+
+My tests are on alsa driver 1.0.5a.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- grabner - 03-26-05 23:10 
+ jdthood - 03-21-05 00:02 
 ----------------------------------------------------------------------
-It seems that the text entered in the field "Steps To Reproduce" has been
-lost, so here it is again:
-*) unpack the attached archive
-*) copy ".asoundrc" to your $HOME
-*) execute "resample.sh"
-*) listen to "out1.32000.1.wav"
-You will hear the sine wave and a periodic clicking with changing
-amplitude (credits for the input files go to a previous poster on a
-similar issue).
-
-----------------------------------------------------------------------
- tiwai - 03-29-05 15:55 
-----------------------------------------------------------------------
-Fixed on CVS (pcm_rate.c rev.1.92).
+Submitter: Any improvement with later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-26-05 22:51 grabner        New Issue                                    
-03-26-05 22:51 grabner        File Added: resampling_bug_demo.tbz               
-    
-03-26-05 22:53 grabner        Issue Monitored: grabner                     
-03-26-05 23:10 grabner        Note Added: 0004218                          
-03-29-05 15:55 tiwai          Status                   new => resolved     
-03-29-05 15:55 tiwai          Resolution               open => fixed       
-03-29-05 15:55 tiwai          Assigned To               => tiwai           
-03-29-05 15:55 tiwai          Note Added: 0004245                          
+09-09-04 16:51 croiset        New Issue                                    
+03-21-05 00:02 jdthood        Note Added: 0004106                          
+03-28-05 04:08 jdthood        Status                   new => resolved     
+03-28-05 04:08 jdthood        Resolution               open => unable to
+duplicate
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
