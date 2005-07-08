@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000376]: inserting maestro3 hangs system
-Date: Fri, 8 Jul 2005 10:37:33 +0200
-Message-ID: <05cae761a9f2b7605bf8396e185250d4@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001056]: Realtek ALC 880 on board sound chip not detected.
+Date: Fri, 8 Jul 2005 10:37:29 +0200
+Message-ID: <bf718dff275ddd3993fdd7e7728fa07e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CACD218A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4504417A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=376> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1056> 
 ======================================================================
-Reported By:                tmarble
+Reported By:                David Kinzer
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   376
-Category:                   PCI - maestro3
+Project:                    ALSA - lib
+Issue ID:                   1056
+Category:                   alisp
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian unstable
-Kernel Version:             2.4.26
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-11-2004 18:30 CEST
+Date Submitted:             04-15-2005 15:51 CEST
 Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    inserting maestro3 hangs system
+Summary:                    Realtek ALC 880 on board sound chip not detected.
 Description: 
-modprobe snd-maestro3 consistently hangs the system.
+Description of problem:
+New HP m7060n Media Center PC. (Private ASUS motherboard with integrated
+sound.)
+Install FC3 core (workstation config) from scratch.
+Sound chip is not detected.
+Core is "up2date"
+
+>From Specs sheet:
+      Integrated Intel High Definition (TM) audio (Azalia) 
+
+          o Realtek ALC 880 chipset
+          o THX certification support
+          o 8-channels for Full Dolby 5.1/6.1/7.1 surround sound support
+with Dolby Pro Logic IIx
+          o Dolby 5.1
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 21:02 
+ David Kinzer - 04-17-05 22:55 
 ----------------------------------------------------------------------
-Submitter: Has there been any progress on this issue?
+By fiddling with enough things that I read about on the web I have managed
+to get everything working at this point.  
+
+Thanks again for your assistance.
+
+Notes for future readers:
+
+Desktop & game noises started working after running the test in
+Preferences->More Preferences->Multimedia System Selector.  I don't know
+why.
+
+This computer does not ship with an analog audio connection to the CD
+drive, the Gnome CD player requires this.  I loaded XMMS and XMMS-cdread
+to get a CD player working.  Use cd-rom drive (/dev/cdrom1) instead of
+burner drive which would skip regularily as it spun up and down in speed.
 
 ----------------------------------------------------------------------
- tmarble - 04-15-05 14:21 
+ tiwai - 04-19-05 17:43 
 ----------------------------------------------------------------------
-I am now using 2.6.9 (still debian unstable) on this hardware
-and sound is working fine.
-
-I do not have the time to investigate if this problem has
-been resolved in the 2.4 series kernels.
-
-Please go ahead and close this bug.
-
-Thank you!
-
---Tom
+Thanks for confirmation.  The rest seems to be non-specific to the sound
+system, so let's close this now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-11-04 18:30 tmarble        New Issue                                    
-07-11-04 18:30 tmarble        Distribution              => Debian unstable 
-07-11-04 18:30 tmarble        Kernel Version            => 2.4.26          
-07-13-04 07:37 tmarble        File Added: 2.4.26-tm2.config.txt                 
-  
-07-13-04 07:38 tmarble        File Added: System.map-2.4.26-tm2.txt             
-      
-07-13-04 07:38 tmarble        File Added: alsa-1.0.conf                    
-07-13-04 07:39 tmarble        File Added: depmod.txt                       
-07-13-04 07:40 tmarble        File Added: depends.txt                      
-07-13-04 07:41 tmarble        File Added: 20040712233907.modules.txt            
-       
-07-13-04 07:41 tmarble        File Added: 20040712233907.ksyms.txt              
-     
-07-13-04 07:43 tmarble        Note Added: 0001412                          
-07-15-04 11:25 tiwai          Note Added: 0001428                          
-07-15-04 19:40 tmarble        Note Added: 0001437                          
-04-07-05 21:02 jdthood        Note Added: 0004368                          
-04-15-05 14:21 tmarble        Note Added: 0004500                          
-04-15-05 19:37 jdthood        Status                   assigned => resolved
-04-15-05 19:37 jdthood        Resolution               open => fixed       
+04-15-05 15:51 David Kinzer   New Issue                                    
+04-15-05 15:52 David Kinzer   Note Added: 0004501                          
+04-15-05 15:57 pzad           Note Added: 0004502                          
+04-16-05 04:41 David Kinzer   Note Added: 0004504                          
+04-16-05 08:58 pzad           Note Added: 0004505                          
+04-17-05 01:03 David Kinzer   Note Added: 0004509                          
+04-17-05 22:55 David Kinzer   Note Added: 0004514                          
+04-19-05 17:43 tiwai          Status                   new => resolved     
+04-19-05 17:43 tiwai          Resolution               open => fixed       
+04-19-05 17:43 tiwai          Assigned To               => tiwai           
+04-19-05 17:43 tiwai          Note Added: 0004526                          
 07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
