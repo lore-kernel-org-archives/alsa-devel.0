@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000958]: noisy output on low sample rate files when using dmix
-Date: Fri, 8 Jul 2005 10:34:26 +0200
-Message-ID: <d1a2f51a75ed12ffb34a1d86b8171176@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001005]: [PATCH] pcm_dmix.c:92: error: static declaration of 'shm_sum_discard' follows non-static declaration
+Date: Fri, 8 Jul 2005 10:34:29 +0200
+Message-ID: <2f655ff7a4732d36793e22d3874de5fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81EFD17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0EE8F17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=958> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1005> 
 ======================================================================
-Reported By:                mtraum
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   958
-Category:                   2_mixer
+Issue ID:                   1005
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -39,51 +39,161 @@ Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-02-2005 21:23 CET
+Date Submitted:             03-22-2005 09:03 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    noisy output on low sample rate files when using
-dmix
+Summary:                    [PATCH] pcm_dmix.c:92: error: static declaration of
+'shm_sum_discard' follows non-static declaration
 Description: 
-When using dmix, I get noise when playing files with low sample rates. The
-level of noise increases the lower the sample rate is. This noise does not
-exist when playing files without dmix, and I'm playing them with 'aplay'.
+http://bugs.debian.org/300792
 
+-------- Forwarded Message --------
+From: Andreas Jochens <aj@andaco.de>
+Reply-To: Andreas Jochens <aj@andaco.de>, 300792@bugs.debian.org
+To: Debian Bug Tracking System <submit@bugs.debian.org>
+Subject: [Pkg-alsa-devel] Bug#300792: alsa-lib: FTBFS (ppc64/gcc-4.0):
+static declaration of 'shm_sum_discard' follows non-static declaration
+Date: Mon, 21 Mar 2005 22:42:00 +0100
+Package: alsa-lib
+Severity: normal
+Tags: patch
 
-Files sampled at 44100 have no noticeable noise (at least for me), so I'm
-assumming there's a problem with the resampling algorithm.
+When building 'alsa-lib' on ppc64 with gcc-4.0,
+I get the following error:
 
-Just to be sure, I generated some test tones with sgen
-(http://www.comp.leeds.ac.uk/jj/linux/siggen.html). You can clearly hear
-the noise on these samles, which I am attaching.
+pcm_dmix.c: At top level:
+pcm_dmix.c:92: error: static declaration of 'shm_sum_discard' follows
+non-static declaration
+pcm_dmix.c:84: error: previous implicit declaration of 'shm_sum_discard'
+was here
+pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
+your architecture...
+pcm_dmix.c: In function 'mix_areas1':
+pcm_dmix.c:247: error: invalid lvalue in assignment
+pcm_dmix.c:248: error: invalid lvalue in assignment
+pcm_dmix.c:249: error: invalid lvalue in assignment
+pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
+your architecture...
+pcm_dmix.c: In function 'mix_areas2':
+pcm_dmix.c:279: error: invalid lvalue in assignment
+pcm_dmix.c:280: error: invalid lvalue in assignment
+pcm_dmix.c:281: error: invalid lvalue in assignment
+make[3]: *** [pcm_dmix.lo] Error 1
+make[3]: Leaving directory `/alsa-lib-1.0.8/src/pcm'
+
+With the attached patch 'alsa-lib' can be compiled
+on ppc64 using gcc-4.0.
+
+Regards
+Andreas Jochens
+
+diff -urN ../tmp-orig/alsa-lib-1.0.8/src/conf.c ./src/conf.c
+--- ../tmp-orig/alsa-lib-1.0.8/src/conf.c	2004-10-05 17:33:04.000000000
++0200
++++ ./src/conf.c	2005-03-21 22:30:08.619865849 +0100
+@@ -2486,6 +2486,8 @@
+ 				snd_config_searcha, snd_config_searchva);
+ }
+ 
++static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
++
+ /**
+  * \brief Searches for a node in a configuration tree and expands hooks.
+  * \param config Handle to the root of the configuration (sub)tree to
+search.
+@@ -2496,7 +2498,6 @@
+  */
+ int snd_config_search_hooks(snd_config_t *config, const char *key,
+snd_config_t **result)
+ {
+-	static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
+ 	SND_CONFIG_SEARCH(config, key, result, \
+ 					err = snd_config_hooks(config, NULL); \
+ 					if (err < 0) \
+@@ -2504,6 +2505,8 @@
+ 			 );
+ }
+ 
++static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
++
+ /**
+  * \brief Searches for a node in a configuration tree, expanding aliases
+and hooks.
+  * \param root Handle to the root configuration node containing alias
+@@ -2516,7 +2519,6 @@
+  */
+ int snd_config_searcha_hooks(snd_config_t *root, snd_config_t *config,
+const char *key, snd_config_t **result)
+ {
+-	static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
+ 	SND_CONFIG_SEARCHA(root, config, key, result,
+ 					snd_config_searcha_hooks,
+ 					err = snd_config_hooks(config, NULL); \
+diff -urN ../tmp-orig/alsa-lib-1.0.8/src/pcm/pcm_dmix.c
+./src/pcm/pcm_dmix.c
+--- ../tmp-orig/alsa-lib-1.0.8/src/pcm/pcm_dmix.c	2005-01-11
+18:42:49.000000000 +0100
++++ ./src/pcm/pcm_dmix.c	2005-03-21 22:07:17.000000000 +0100
+@@ -53,12 +53,13 @@
+  *
+  */
+ 
++static int shm_sum_discard(snd_pcm_direct_t *dmix);
++
+ /*
+  *  sum ring buffer shared memory area 
+  */
+ static int shm_sum_create_or_connect(snd_pcm_direct_t *dmix)
+ {
+-	static int shm_sum_discard(snd_pcm_direct_t *dmix);
+ 	struct shmid_ds buf;
+ 	int tmpid, err;
+ 	size_t size;
+@@ -244,9 +245,9 @@
+ 		} while (*sum != old_sample);
+ 		if (!--size)
+ 			return;
+-		((char *)src) += src_step;
+-		((char *)dst) += dst_step;
+-		((char *)sum) += sum_step;
++		src = ((char *)src) + src_step;
++		dst = ((char *)dst) + dst_step;
++		sum = ((char *)sum) + sum_step;
+ 	}
+ }
+ 
+@@ -276,9 +277,9 @@
+ 		} while (*sum != old_sample);
+ 		if (!--size)
+ 			return;
+-		((char *)src) += src_step;
+-		((char *)dst) += dst_step;
+-		((char *)sum) += sum_step;
++		src = ((char *)src) + src_step;
++		dst = ((char *)dst) + dst_step;
++		sum = ((char *)sum) + sum_step;
+ 	}
+ }
+ 
 ======================================================================
 
 ----------------------------------------------------------------------
- Rottwang - 03-24-05 01:40 
+ tiwai - 03-22-05 19:49 
 ----------------------------------------------------------------------
-I had no problems with 1.0.7 and 1.0.8-rc1 was fine too (I'm using it now).
-
-----------------------------------------------------------------------
- tiwai - 03-24-05 21:32 
-----------------------------------------------------------------------
-Fixed on CVS (pcm_rate.c rev.1.91).  Will appear in 1.0.9-rc3 or final.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-05 21:23 mtraum         New Issue                                    
-03-02-05 21:23 mtraum         File Added: testtones.tar.gz                    
-03-02-05 22:08 hamel_g        Note Added: 0003781                          
-03-13-05 09:43 Rottwang       Note Added: 0003901                          
-03-22-05 00:01 eradicator     Issue Monitored: eradicator                    
-03-24-05 00:39 grabner        Note Added: 0004188                          
-03-24-05 00:39 grabner        Issue Monitored: grabner                     
-03-24-05 01:40 Rottwang       Note Added: 0004189                          
-03-24-05 21:32 tiwai          Status                   new => resolved     
-03-24-05 21:32 tiwai          Resolution               open => fixed       
-03-24-05 21:32 tiwai          Assigned To               => tiwai           
-03-24-05 21:32 tiwai          Note Added: 0004201                          
-04-08-05 14:15 ikonst         Issue Monitored: ikonst                      
+03-22-05 09:03 jdthood        New Issue                                    
+03-22-05 19:49 tiwai          Status                   new => resolved     
+03-22-05 19:49 tiwai          Resolution               open => fixed       
+03-22-05 19:49 tiwai          Assigned To               => tiwai           
+03-22-05 19:49 tiwai          Note Added: 0004129                          
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
