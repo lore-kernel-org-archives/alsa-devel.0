@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000828]: sparc: "pcm_direct.c:165: warning: long int format, __suseconds_t arg (arg 6)"
-Date: Fri, 8 Jul 2005 10:35:31 +0200
-Message-ID: <e8e347e7550f9d94ba7c0c44df3fec5a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000825]: On alpha: "alisp.c:2933: warning: int format, different type arg (arg 6)"
+Date: Fri, 8 Jul 2005 10:35:30 +0200
+Message-ID: <03a3b489b728bb6df1f610b982d56db5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D03E617A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98A9717A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=828> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=825> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   828
+Issue ID:                   825
 Category:                   alisp
 Reproducibility:            always
 Severity:                   minor
@@ -39,49 +39,56 @@ Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-17-2005 09:18 CET
+Date Submitted:             01-17-2005 09:05 CET
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    sparc: "pcm_direct.c:165: warning: long int format,
-__suseconds_t arg (arg 6)"
+Summary:                    On alpha: "alisp.c:2933: warning: int format,
+different type arg (arg 6)"
 Description: 
-When building on sparc we get the following warning:
-
-Making all in pcm
-[...]
-if /bin/sh ../../libtool --mode=compile sparc-linux-gcc -DHAVE_CONFIG_H
--I. -I. -I../../include -I../../include    -g -Wall -O2 -MT pcm_direct.lo
--MD -MP -MF ".deps/pcm_direct.Tpo" \
-  -c -o pcm_direct.lo `test -f 'pcm_direct.c' || echo './'`pcm_direct.c;
-\
-then mv -f ".deps/pcm_direct.Tpo" ".deps/pcm_direct.Plo"; \
-else rm -f ".deps/pcm_direct.Tpo"; exit 1; \
+Making all in alisp
+make[3]: Entering directory `/build/buildd/alsa-lib-1.0.8/src/alisp'
+if /bin/sh ../../libtool --mode=compile alpha-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include    -g -Wall -O2 -MT alisp.lo -MD
+-MP -MF ".deps/alisp.Tpo" \
+  -c -o alisp.lo `test -f 'alisp.c' || echo './'`alisp.c; \
+then mv -f ".deps/alisp.Tpo" ".deps/alisp.Plo"; \
+else rm -f ".deps/alisp.Tpo"; exit 1; \
 fi
- sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT pcm_direct.lo -MD -MP -MF .deps/pcm_direct.Tpo -c
-pcm_direct.c  -fPIC -DPIC -o .libs/pcm_direct.o
-pcm_direct.c: In function `get_tmp_name':
-pcm_direct.c:165: warning: long int format, __suseconds_t arg (arg 6)
- sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT pcm_direct.lo -MD -MP -MF .deps/pcm_direct.Tpo -c
-pcm_direct.c -o pcm_direct.o >/dev/null 2>&1
+mkdir .libs
+ alpha-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT alisp.lo -MD -MP -MF .deps/alisp.Tpo -c alisp.c  -fPIC
+-DPIC -o .libs/alisp.o
+alisp.c: In function `F_stat_memory':
+alisp.c:2933: warning: int format, different type arg (arg 6)
+ alpha-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT alisp.lo -MD -MP -MF .deps/alisp.Tpo -c alisp.c -o
+alisp.o >/dev/null 2>&1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:43 
+ jdthood - 01-17-05 11:22 
+----------------------------------------------------------------------
+This warning also appears on s390.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
+for the full build log on s390.
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 14:57 
 ----------------------------------------------------------------------
 Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:18 jdthood        New Issue                                    
-01-19-05 14:43 tiwai          Status                   new => resolved     
-01-19-05 14:43 tiwai          Resolution               open => fixed       
-01-19-05 14:43 tiwai          Assigned To               => tiwai           
-01-19-05 14:43 tiwai          Note Added: 0003276                          
-01-19-05 14:43 tiwai          Assigned To              tiwai =>            
+01-17-05 09:05 jdthood        New Issue                                    
+01-17-05 09:25 jdthood        Note Added: 0003223                          
+01-17-05 11:22 jdthood        Note Added: 0003231                          
+01-19-05 14:57 tiwai          Status                   new => resolved     
+01-19-05 14:57 tiwai          Resolution               open => fixed       
+01-19-05 14:57 tiwai          Assigned To               => tiwai           
+01-19-05 14:57 tiwai          Note Added: 0003279                          
+01-19-05 14:57 tiwai          Assigned To              tiwai =>            
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
