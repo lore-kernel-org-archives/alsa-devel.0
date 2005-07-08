@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001016]: [PATCH] conf.c -- allow to compile with gcc 4.0
-Date: Fri, 8 Jul 2005 10:38:35 +0200
-Message-ID: <c96c98ebf2f67bfd0b292af5c0c4e4aa@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001018]: resampler produces noise
+Date: Fri, 8 Jul 2005 10:38:33 +0200
+Message-ID: <e981186bbe58597ea54704f2fc3e6a7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D13FE3
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 067F614F
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1016> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1018> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                grabner
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1016
-Category:                   0_general
+Issue ID:                   1018
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-25-2005 15:41 CET
+Date Submitted:             03-26-2005 22:51 CET
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    [PATCH] conf.c -- allow to compile with gcc 4.0
+Summary:                    resampler produces noise
 Description: 
-The submitter of Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=300792 has provided this
-patch which allows
-alsa-lib to be built with gcc 4.0.
-
-He says that without the patch, gcc-4.0 stops with an 'invalid 
-storage class' error because it is not allowed to declare a 'static'
-function inside another function.
+Sad to say, but after some recent improvements (thanks to tiwai) the
+resampling code is still buggy. Under certain conditions, noise peaks are
+added to the signal, which are clearly audible.
+To make sure that this is not a problem with any particular hardware
+driver, I created a test case using the "file" and "null" plugins (i.e.,
+no output on audio hardware). See below for details.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 15:25 
+ grabner - 03-26-05 23:10 
 ----------------------------------------------------------------------
-Already fixed on CVS.
+It seems that the text entered in the field "Steps To Reproduce" has been
+lost, so here it is again:
+*) unpack the attached archive
+*) copy ".asoundrc" to your $HOME
+*) execute "resample.sh"
+*) listen to "out1.32000.1.wav"
+You will hear the sine wave and a periodic clicking with changing
+amplitude (credits for the input files go to a previous poster on a
+similar issue).
+
+----------------------------------------------------------------------
+ tiwai - 03-29-05 15:55 
+----------------------------------------------------------------------
+Fixed on CVS (pcm_rate.c rev.1.92).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 15:41 jdthood        New Issue                                    
-03-25-05 15:41 jdthood        File Added: conf.c-gcc-4.0_20050325jdth1.patch    
-               
-03-29-05 15:25 tiwai          Status                   new => resolved     
-03-29-05 15:25 tiwai          Resolution               open => fixed       
-03-29-05 15:25 tiwai          Assigned To               => tiwai           
-03-29-05 15:25 tiwai          Note Added: 0004243                          
+03-26-05 22:51 grabner        New Issue                                    
+03-26-05 22:51 grabner        File Added: resampling_bug_demo.tbz               
+    
+03-26-05 22:53 grabner        Issue Monitored: grabner                     
+03-26-05 23:10 grabner        Note Added: 0004218                          
+03-29-05 15:55 tiwai          Status                   new => resolved     
+03-29-05 15:55 tiwai          Resolution               open => fixed       
+03-29-05 15:55 tiwai          Assigned To               => tiwai           
+03-29-05 15:55 tiwai          Note Added: 0004245                          
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
