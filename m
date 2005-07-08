@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000468]: stuttering audio output with SDL_audio applications
-Date: Fri, 8 Jul 2005 10:38:05 +0200
-Message-ID: <d4a2f7bafba9f96518bd5564a0809185@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
+Date: Fri, 8 Jul 2005 10:37:53 +0200
+Message-ID: <03e4f322b2e9af1779dde1acd4e33051@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EE7F18F
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 191B717A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=468> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=270> 
 ======================================================================
-Reported By:                int-e
+Reported By:                wraiden
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   468
-Category:                   PCI - via82xx
-Reproducibility:            sometimes
-Severity:                   major
+Issue ID:                   270
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
+Distribution:               LFS
+Kernel Version:             2.6.9-mm1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-27-2004 03:48 CEST
-Last Modified:              07-08-2005 10:38 CEST
+Date Submitted:             05-11-2004 11:14 CEST
+Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    stuttering audio output with SDL_audio applications
+Summary:                    Audigy 2 ZS side surround channels not supported
 Description: 
-I traced this down to the check that's now called check_invalid_pos() in
-calc_linear_pos() in the driver being triggered with lastpos==bufsize and
-res==bufsize/2.
+There is no Support for the side surround channels on SB Audigy 2 ZS (
+Platinum Pro ) in Alsa.
 
-I think lastpos should be 0 at that point.
-
-Moving the assignment viadev->lastpos = res; at the end of that function
-after the wrap handling if() solved the problem for me.
+I'll try to get it work and test everything you give me to test.
 ======================================================================
 
 ----------------------------------------------------------------------
- int-e - 04-09-05 11:37 
+ wraiden - 10-28-04 20:41 
 ----------------------------------------------------------------------
-I can't reproduce the problem on linux kernel version 2.6.11.7.
-check_invalid_pos() does not seem to get triggered any more either, so I
-suppose it's fixed.
+well, ok ... my card is the "Audigy 2 ZS Platinum Pro" ( thats the version
+with external drive ) and i think creative is not so crazy after all
+because the Platinum Pro card has more chanels to mix volume for ... after
+all the PCI id for my card was 0x2001 not 0x2002 and it culd be that all
+versions of the ZS have different id's ... i'm hounting for the currently
+not working channels ( LineIn 2 / Digital and Analog CD [ and mybe more ]
+) of my card and will post patches inside new bugreports ... btw, the
+current mixer for audigy 2 ZS Platium Pro is horrible ( morst chanels are
+useless ) ... i post details on demand ... i'll try to get this fixed up
+along with the remaining channels
 
-Thank you.
-
 ----------------------------------------------------------------------
- jdthood - 04-09-05 12:03 
+ jdthood - 04-09-05 16:50 
 ----------------------------------------------------------------------
-Thanks for the info.
+Code equivalent to that in alsa-audigy2zs-detection-fix.patch
+is present in the current ALSA cvs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-27-04 03:48 int-e          New Issue                                    
-08-27-04 03:48 int-e          File Added: via82xx.diff                     
-08-27-04 03:48 int-e          Distribution              => Gentoo          
-08-27-04 03:48 int-e          Kernel Version            => 2.6.8.1         
-04-09-05 04:28 jdthood        Note Added: 0004383                          
-04-09-05 11:37 int-e          Note Added: 0004391                          
-04-09-05 12:03 jdthood        Note Added: 0004392                          
-04-09-05 12:03 jdthood        Status                   new => resolved     
-04-09-05 12:03 jdthood        Resolution               open => fixed       
-04-09-05 12:03 jdthood        Summary                  stuttering audio output
-with SDL_audio applications
- => stuttering audio output with SDL_audio applications
-07-08-05 10:38 perex          Status                   resolved => closed  
+05-11-04 11:14 wraiden        New Issue                                    
+05-11-04 11:14 wraiden        Distribution              => LFS             
+05-11-04 11:14 wraiden        Kernel Version            => 2.6.5           
+05-11-04 14:41 pzad           Note Added: 0001084                          
+05-21-04 16:15 wraiden        File Added: wraiden-alsa-emu10k1-side.patch       
+            
+05-21-04 16:21 wraiden        Note Added: 0001166                          
+05-24-04 09:21 pzad           Note Added: 0001181                          
+05-24-04 16:18 wraiden        Note Added: 0001188                          
+05-31-04 08:32 pzad           File Added: audigy2zs_driver.diff                 
+  
+05-31-04 08:38 pzad           Note Added: 0001281                          
+06-10-04 22:48 bryanhundven   Note Added: 0001298                          
+06-15-04 15:56 wraiden        Note Added: 0001309                          
+06-15-04 16:41 pzad           Note Added: 0001310                          
+06-15-04 19:44 wraiden        Note Added: 0001311                          
+06-15-04 19:55 wraiden        Note Edited: 0001311                         
+06-22-04 13:00 pzad           Note Added: 0001328                          
+06-22-04 16:39 elklein        Note Added: 0001329                          
+06-27-04 22:00 wraiden        Note Added: 0001341                          
+06-27-04 22:53 jcdutton       Note Added: 0001342                          
+07-30-04 12:46 BiO            Issue Monitored: BiO                         
+07-30-04 12:47 BiO            Issue End Monitor: BiO                       
+08-27-04 20:20 jcdutton       Status                   new => closed       
+08-27-04 20:20 jcdutton       Note Added: 0001656                          
+10-25-04 13:20 wraiden        Kernel Version           2.6.5 => 2.6.9-mm1  
+10-25-04 13:20 wraiden        Status                   closed => feedback  
+10-25-04 13:20 wraiden        Resolution               open => reopened    
+10-25-04 13:20 wraiden        Note Added: 0002261                          
+10-25-04 13:21 wraiden        File Added: alsa-audigy2zs-detection-fix.patch    
+               
+10-25-04 21:36 lee            Note Added: 0002262                          
+10-28-04 20:41 wraiden        Note Added: 0002286                          
+04-09-05 16:50 jdthood        Note Added: 0004414                          
+04-09-05 16:50 jdthood        Status                   feedback => resolved
+04-09-05 16:50 jdthood        Resolution               reopened => fixed   
+07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
 
