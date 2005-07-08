@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000649]: alsaplayer only works as root
-Date: Fri, 8 Jul 2005 10:34:38 +0200
-Message-ID: <77c0a81b33d676682f8bbaa2754f8020@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000247]: An option cannot specify correctly.
+Date: Fri, 8 Jul 2005 10:34:32 +0200
+Message-ID: <6d8630c667c3cd9f7d1e4904524fc4a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A157D1A8
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3C07186
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=649> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=247> 
 ======================================================================
-Reported By:                mthoro
+Reported By:                sitamo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   649
-Category:                   aplay/arecord
+Issue ID:                   247
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
@@ -39,38 +39,43 @@ Status:                     closed
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-14-2004 15:37 CET
+Date Submitted:             04-29-2004 18:14 CEST
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    alsaplayer only works as root
+Summary:                    An option cannot specify correctly.
 Description: 
-changed permissions on snd devices to 777.  player only works after login
-as root.  after login as user in audio group, player will not work even if
-I log back in as root.  I have to reboot and login as root to get the
-player to work again. gnome cd player works okay, but the alsaplayer is
-great!
+I think that it becomes the following codes.
+
+--- alsamixer/alsamixer.c.org   2004-02-17 01:44:06.000000000 +0900
++++ alsamixer/alsamixer.c       2004-04-30 01:08:52.000000000 +0900
+@@ -2002,8 +2002,8 @@
+          }
+          break;
+        case 'D':
+-         strncpy(card_id, optarg, sizeof(card_id));
+-         card_id[sizeof(card_id)-1] = '\0';
++         strncpy(card_id, optarg, strlen(optarg));
++         card_id[strlen(optarg)] = '\0';
+          break;
+        case 'g':
+          mixer_do_color = !mixer_do_color;
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 11-15-04 18:10 
+ tiwai - 05-01-04 11:07 
 ----------------------------------------------------------------------
-It seems you're using a system that automatically creates device nodes
-(devfs or udev).  You have to change the devfs/udev configuration so that
-it sets correct permissions.  Ask the debian experts.
+the current code is correct.
 
-----------------------------------------------------------------------
- jdthood - 03-20-05 13:31 
-----------------------------------------------------------------------
-This report can be closed.
+what error did you have exactly?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-14-04 15:37 mthoro         New Issue                                    
-11-15-04 18:10 Clemens LadischNote Added: 0002417                          
-03-20-05 13:31 jdthood        Note Added: 0004087                          
-03-20-05 13:36 perex          Status                   new => resolved     
-03-20-05 13:36 perex          Resolution               open => not an issue
+04-29-04 18:14 sitamo         New Issue                                    
+05-01-04 11:07 tiwai          Note Added: 0000999                          
+03-22-05 09:47 jdthood        Status                   new => resolved     
+03-22-05 09:47 jdthood        Resolution               open => not an issue
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
