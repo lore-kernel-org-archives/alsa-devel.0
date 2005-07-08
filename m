@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Fri, 8 Jul 2005 10:35:05 +0200
-Message-ID: <ae6ed4c6c79d129dd5d48f9bb752ff70@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000565]: Bug reported to gnomemeeting team
+Date: Fri, 8 Jul 2005 10:35:12 +0200
+Message-ID: <9862dacc4ef4b3ceb569b5f451210296@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4517B17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF6EE186
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=565> 
 ======================================================================
-Reported By:                gvy
+Reported By:                mirko
 Assigned To:                
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   815
-Category:                   
+Project:                    ALSA - lib
+Issue ID:                   565
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-13-2005 20:21 CET
+Date Submitted:             10-04-2004 14:35 CEST
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    missing DESTDIR support with hotplug dir
+Summary:                    Bug reported to gnomemeeting team
 Description: 
-with intoruction of hotplug dir I had to kludge in RPM buildroot into
-configure parameters -- it doesn't belong there, it's rather install-time
-not compile-time (and definitely not configure-time).
+http://bugzilla.gnome.org/show_bug.cgi?id=153770
 
-hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
-too.
+D. Sandras says it's a big-endian/little-endian problem and suggested to
+report it here.
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- gvy - 02-15-05 11:02 
+ jdthood - 02-13-05 11:03 
 ----------------------------------------------------------------------
-Yep, thanks, it helped.  Our kernel maintainer noticed that %makeinstall is
-broken indeed... sorry for disturbing.
+I believe that this bug was closed by the 1.0.8 release.  See Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=245040.
 
 ----------------------------------------------------------------------
- tiwai - 02-16-05 17:17 
+ tiwai - 02-14-05 16:20 
 ----------------------------------------------------------------------
-Closed again :)
+OK, let's close this one, then.  Please open if the problem persists.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-05 20:21 gvy            New Issue                                    
-01-13-05 20:33 tiwai          Note Added: 0003199                          
-01-13-05 20:48 gvy            Note Added: 0003201                          
-01-13-05 20:52 tiwai          Status                   new => resolved     
-01-13-05 20:52 tiwai          Resolution               open => not an issue
-01-13-05 20:52 tiwai          Assigned To               => tiwai           
-01-13-05 20:52 tiwai          Note Added: 0003203                          
-01-13-05 20:52 tiwai          Assigned To              tiwai =>            
-02-14-05 19:39 tiwai          Status                   resolved => closed  
-02-14-05 19:51 gvy            Status                   closed => feedback  
-02-14-05 19:51 gvy            Resolution               not an issue => reopened
-02-14-05 19:51 gvy            Note Added: 0003608                          
-02-14-05 19:51 gvy            Resolution               reopened => not an issue
-02-14-05 20:04 tiwai          Note Added: 0003609                          
-02-14-05 20:09 gvy            Note Added: 0003610                          
-02-14-05 20:10 tiwai          Note Added: 0003611                          
-02-15-05 11:02 gvy            Note Added: 0003619                          
-02-16-05 17:17 tiwai          Status                   feedback => resolved
-02-16-05 17:17 tiwai          Assigned To               => tiwai           
-02-16-05 17:17 tiwai          Note Added: 0003624                          
-02-16-05 17:17 tiwai          Assigned To              tiwai =>            
+10-04-04 14:35 mirko          New Issue                                    
+10-04-04 15:01 jcdutton       Note Added: 0002010                          
+10-04-04 15:58 tiwai          Note Added: 0002011                          
+10-17-04 15:13 jdthood        Note Added: 0002192                          
+10-18-04 18:03 tiwai          Note Added: 0002198                          
+02-13-05 11:03 jdthood        Note Added: 0003582                          
+02-14-05 16:20 tiwai          Status                   new => resolved     
+02-14-05 16:20 tiwai          Resolution               open => fixed       
+02-14-05 16:20 tiwai          Assigned To               => tiwai           
+02-14-05 16:20 tiwai          Note Added: 0003596                          
+02-14-05 16:20 tiwai          Assigned To              tiwai =>            
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
