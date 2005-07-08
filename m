@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001002]: Software volume control should be enabled by default for CMI9761
-Date: Fri, 8 Jul 2005 10:34:31 +0200
-Message-ID: <7fb991d8ccc6fe0fe7acd89962be2294@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000360]: Don`t run
+Date: Fri, 8 Jul 2005 10:34:37 +0200
+Message-ID: <cbcb3f098c4c4547c4a7d14d21589cbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65BBC17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 124FE19E
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1002> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=360> 
 ======================================================================
-Reported By:                e_val
-Assigned To:                tiwai
+Reported By:                alexnanow
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1002
-Category:                   1_pcm - digital audio
+Project:                    ALSA - utils
+Issue ID:                   360
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-19-2005 20:42 CET
+Date Submitted:             07-02-2004 00:17 CEST
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    Software volume control should be enabled by default
-for CMI9761
+Summary:                    Don`t run
 Description: 
-Sinc version 1.0.8, ALSA provides softvol plugin to deal with those chips
-which does not provide hardware volume control. So, according to the
-changelog, defunct  volume bars 'PCM Playback Volume' and similiar were
-removed from /usr/share/alsa/*.conf for thos cards. In theory, they should
-not be removed but replaced with softvol, as it was done for some chips.
-(eg. Azalia).
+when i try to run alsamixer get this error message:
 
-The simple construct
-pcm.!default {
-  type softvol
-  slave.pcm "hw:0,0"
-  control {
-    name "PCM Playback Volume"
-  }
-}
-in /etc/asound.conf is sufficient for my CMI9761-based audiocard to work.
-I think it would be beter to integrate a more advenced version of the code
-into system-wide configs.
+alsamixer: function snd_ctl_open failed for default: No such file or
+directory
 
-
+I have compiled all correctly thingy`s but that s*** don`t works... and
+the alsamixer GUI interface too... help please!!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-22-05 19:35 
+ jdthood - 03-20-05 13:23 
 ----------------------------------------------------------------------
-softvol and dmix are used as default in 1.0.9.
+This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-05 20:42 e_val          New Issue                                    
-03-22-05 19:35 tiwai          Status                   new => resolved     
-03-22-05 19:35 tiwai          Resolution               open => fixed       
-03-22-05 19:35 tiwai          Assigned To               => tiwai           
-03-22-05 19:35 tiwai          Note Added: 0004127                          
+07-02-04 00:17 alexnanow      New Issue                                    
+03-20-05 13:23 jdthood        Note Added: 0004081                          
+03-20-05 13:38 perex          Status                   new => resolved     
+03-20-05 13:38 perex          Resolution               open => not an issue
+03-20-05 13:38 perex          Description Updated                          
+03-22-05 08:10 ms9580         Issue Monitored: ms9580                      
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
