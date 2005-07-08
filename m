@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
-Date: Fri, 8 Jul 2005 11:51:27 +0200
-Message-ID: <82ce729a6783dd1d1e7b7ffcacbaa4b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001239]: forgotten __init and __exit in memory.c
+Date: Fri, 8 Jul 2005 11:52:54 +0200
+Message-ID: <ec9bebff5a57a79cf54b7396b11bf160@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65DB818A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:51:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3FF718A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:52:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1239> 
 ======================================================================
-Reported By:                sgoodall
+Reported By:                Henne
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1178
-Category:                   PCI - intel8x0
+Issue ID:                   1239
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-09-2005 16:09 CEST
-Last Modified:              07-08-2005 11:51 CEST
+Date Submitted:             07-07-2005 10:37 CEST
+Last Modified:              07-08-2005 11:52 CEST
 ======================================================================
-Summary:                    Headphone and Speaker volume control
+Summary:                    forgotten __init and __exit in memory.c
 Description: 
-The master contol on this device does not affect the headphone speaker
-socket volume. This is a problem for assigning keyboard shortcuts (using
-gnome) to the voume controls as these get mapped to the master control. So
-when using headphones (which I usually do) i cannot control the volume.
-Ideally the master control can also affect the headphone volume, and have
-a separate control for the main speakers. (I would like to be able to keep
-these muted so sounds does not play should headphones not be plugged in
-unless I explicitly enable them).
-I am running fc3 on a dell inspiron 8500.
+I think that snd_memory_init() should get an __init,
+and snd_memory_exit() an __exit, cause that __init
+function isn't called again and can be removed from the memory.
+That doesn't save too much space, but it's cleaner and mekes more sense
+.
+The patch I added will fix it and is made for the current cvs
+version(memory.c 1.38). 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- sgoodall - 07-07-05 11:30 
+ tiwai - 07-08-05 11:52 
 ----------------------------------------------------------------------
-I've just upgraded to fc4 which has alsa 1.0.9. The problem is still in
-this version.
-Making the master and headphone control do the same thing is not quite the
-behaviour I would like.
-I would still like to be able to make sure the main speakers are muted
-should say I forget to plug headphones in.
-
-----------------------------------------------------------------------
- tiwai - 07-08-05 11:51 
-----------------------------------------------------------------------
-Sorry, I don't understand your request.  Please describe more clearly?
-
-Does the hardware switch (mute/unmute) the speaker volume when you plug in
-HP jack?  Or you have to turn on/off mixer switch (which) manually?
-In the former case, ac97_quirk=hp_only should suffice.  I don't want to
-implemenet a separate HP volume.  In the latter case, we'll need a code to
-handle the ac97 jack detection, which is sitll missing.
+__exit can't be applied since it's called from init function, too.
+Could you regenerate the patch?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:09 sgoodall       New Issue                                    
-06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:09 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
-06-23-05 12:10 tiwai          Note Added: 0005177                          
-07-07-05 11:30 sgoodall       Note Added: 0005398                          
-07-08-05 11:51 tiwai          Note Added: 0005409                          
+07-07-05 10:37 Henne          New Issue                                    
+07-07-05 10:37 Henne          File Added: memory_c.diff                    
+07-08-05 11:52 tiwai          Note Added: 0005410                          
 ======================================================================
 
 
