@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001235]: ESI ESP 1010 partialy supportet
-Date: Fri, 8 Jul 2005 12:10:15 +0200
-Message-ID: <96f1e3b3da43fb17596ef36df9e3de1e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001232]: Microphone in front bracket - very low volume
+Date: Fri, 8 Jul 2005 12:13:40 +0200
+Message-ID: <ac2a7a585ad9ed564619c50042744f0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3270A193
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:10:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80EA9193
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:13:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1235> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1232> 
 ======================================================================
-Reported By:                metasymbol
+Reported By:                jirka
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1235
-Category:                   PCI - ice1712
+Issue ID:                   1232
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE 9.2/9.3, Debian.
-Kernel Version:             2.6.xx
+Distribution:               latest Ubuntu, RedHat (I tried them both)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-06-2005 10:16 CEST
-Last Modified:              07-08-2005 12:10 CEST
+Date Submitted:             07-04-2005 16:47 CEST
+Last Modified:              07-08-2005 12:13 CEST
 ======================================================================
-Summary:                    ESI ESP 1010 partialy supportet
+Summary:                    Microphone in front bracket - very low volume
 Description: 
-The ESI ESP1010 is a 10CH I/0 Audiosystem with 2 midi I/O.
-The base features are supportet:
-Midi I/O and 8 CH Analog
+I have mainboard MicroStar K8N Neo2 Platinum-54G - nForce3 Ultra (it's
+nforce ultra chipset with integrated sound chip). This board has 7.1 audio
+and audio can be recorded via "sound in" jack (stereo jack connector) or
+"microphone" jack. These input jacks are placed on the back side of the
+case (on the mainboard). When I connect microphone to this jack and turn
+it on, it works great. But there is an option to connect some "sound
+bracket" to this board. You can buy computer case which has some input
+jacks on the front side and connect the cable from them to your mainboard.
+So you get two more jacks. One for phones and one for microphone. If you
+have headset (for internet telephony) with earphones and microphone, you
+don't need to connect them to the back side of your case. You connect them
+to the front side.
 
-not supportet:
-The digital I/O
-the virtual headphone mixing
-the virtual preampflifer mixing (by design of the Envy24control)
+And this is a problem. If I connect my microphone to the front "sound
+bracket", the volume is very very low. If I connect it to the back jack
+(integrated on motherboard), it works normally (I can record with normal
+volume). 
 
+I think this is not a configuration problem. I tried every combination in
+alsamixer and nothing helps. Always front jack has very low audio. If I
+record something using it, I need set very high volume to hear something,
+if I play it.
+
+Lots of people has these computer cases with front bracket and  think it's
+very confusing when it works normally in Windows and in Linux you cannot
+use the front connector.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 12:10 
+ tiwai - 07-08-05 12:13 
 ----------------------------------------------------------------------
-Try another board model via model option in case that your device is
-compatible with another one?
+Can you record from the front mic?  I mean, not the passthru but record to
+a file.  It might be that the front mic is a separate secondary mic, which
+has to be handled differently.
+
+Anyway, more detailed h/w information is required.  Please attach (upload)
+/proc/asound/card0/codec97#0/* files and /etc/asound.state file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-05 10:16 metasymbol     New Issue                                    
-07-06-05 10:16 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
-07-06-05 10:16 metasymbol     Kernel Version            => 2.6.xx          
-07-08-05 12:10 tiwai          Note Added: 0005415                          
+07-04-05 16:47 jirka          New Issue                                    
+07-04-05 16:47 jirka          Distribution              => latest Ubuntu, RedHat
+(I tried them both)
+07-04-05 16:47 jirka          Kernel Version            => 2.6.10          
+07-08-05 12:13 tiwai          Note Added: 0005416                          
 ======================================================================
 
 
