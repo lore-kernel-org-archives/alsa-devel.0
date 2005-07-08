@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000276]: envy24control crash
-Date: Fri, 8 Jul 2005 10:34:40 +0200
-Message-ID: <937f9b7ddf4bba1c414fe3b7bbce6ba9@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000920]: 97_debian_alsaconf_cfgfile.dpatch: Change file used by Debian
+Date: Fri, 8 Jul 2005 10:34:57 +0200
+Message-ID: <3c158bc33a0bbf66b4b007d24a5d9b59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD31F17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FEAE17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=920> 
 ======================================================================
-Reported By:                BugBuster
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   276
-Category:                   envy24control
+Project:                    ALSA - utils
+Issue ID:                   920
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-14-2004 19:09 CEST
+Date Submitted:             02-18-2005 22:08 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    envy24control crash
+Summary:                    97_debian_alsaconf_cfgfile.dpatch: Change file used
+by Debian
 Description: 
-If you do:
-"./envy24control --help" you get a segmentation fault in getopt_long...
+    Summary: Change the Debian configuration file name
+
+    The patch changes the file name to which alsaconf writes
+    if the system is Debian
+
+    Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:40 
+ tiwai - 02-22-05 18:06 
 ----------------------------------------------------------------------
-Submitter: Is the bug still present?
-
-This should be reassigned to alsa-tools.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 17:49 
-----------------------------------------------------------------------
-This was reported fixed in 1.0.7
-
-* alsa-tools
-  - envy24control
-    - Fixed segfault when envy24control --help is called
+Appled to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-04 19:09 BugBuster      New Issue                                    
-05-14-04 19:09 BugBuster      Distribution              => Gentoo          
-05-14-04 19:09 BugBuster      Kernel Version            => 2.6.5-gentoo-r1 
-03-19-05 09:40 jdthood        Note Added: 0004024                          
-03-19-05 17:49 jdthood        Note Added: 0004058                          
-03-19-05 19:43 perex          Project                  ALSA - driver => ALSA -
-tools
-03-19-05 19:44 perex          Status                   new => resolved     
-03-19-05 19:44 perex          Resolution               open => fixed       
-03-19-05 19:44 perex          Category                 OTHERS => envy24control
+02-18-05 22:08 jdthood        New Issue                                    
+02-18-05 22:08 jdthood        File Added: 97_debian_alsaconf_cfgfile.patch      
+             
+02-22-05 18:06 tiwai          Status                   new => resolved     
+02-22-05 18:06 tiwai          Resolution               open => fixed       
+02-22-05 18:06 tiwai          Assigned To               => tiwai           
+02-22-05 18:06 tiwai          Note Added: 0003707                          
+02-22-05 18:07 tiwai          Assigned To              tiwai =>            
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
