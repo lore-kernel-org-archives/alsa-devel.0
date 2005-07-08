@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
-Date: Fri, 8 Jul 2005 12:08:14 +0200
-Message-ID: <de4cc3698c48024d8359c40266605050@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001235]: ESI ESP 1010 partialy supportet
+Date: Fri, 8 Jul 2005 12:10:15 +0200
+Message-ID: <96f1e3b3da43fb17596ef36df9e3de1e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75FF8193
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:08:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3270A193
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:10:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1235> 
 ======================================================================
-Reported By:                bjl667
+Reported By:                metasymbol
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1181
-Category:                   PCI - ice1724
+Issue ID:                   1235
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo 2005.0
-Kernel Version:             2.6.12-rc4-love2
+Distribution:               SuSE 9.2/9.3, Debian.
+Kernel Version:             2.6.xx
 ======================================================================
-Date Submitted:             06-10-2005 22:28 CEST
-Last Modified:              07-08-2005 12:08 CEST
+Date Submitted:             07-06-2005 10:16 CEST
+Last Modified:              07-08-2005 12:10 CEST
 ======================================================================
-Summary:                    ice1724: Invalid EEPROM version 1
+Summary:                    ESI ESP 1010 partialy supportet
 Description: 
- Upon starting alsa, in dmesg I get:
- EcX / # dmesg | grep ice
- ice1724: Invalid EEPROM version 1
+The ESI ESP1010 is a 10CH I/0 Audiosystem with 2 midi I/O.
+The base features are supportet:
+Midi I/O and 8 CH Analog
 
- EcX / # cat /proc/asound/cards
- 0 [AV710          ]: ICE1724 - Chaintech AV-710
-                      Chaintech AV-710 at 0xa000, irq 16
+not supportet:
+The digital I/O
+the virtual headphone mixing
+the virtual preampflifer mixing (by design of the Envy24control)
 
- I can play music in XMMS.. Then close it after that my sound stops
-working I gotta restart alsasound to make it work again. I dunno wtf it is
-my card is a Chaintech AV-710 (ENVY24HT-S)
-
- From what it seems this is another version of the Chaintech card..
 ======================================================================
 
 ----------------------------------------------------------------------
- bjl667 - 07-06-05 21:56 
+ tiwai - 07-08-05 12:10 
 ----------------------------------------------------------------------
-Isn't there a way that I could possibly extract my eeprom and add support
-?
-
-/etc/init.d/alsasound restart
-
-dmesg shows:
-  [19662.998286] ice1724: Invalid EEPROM version 1
-
-And this is using the latest alsacvs...
-
-
-
-----------------------------------------------------------------------
- tiwai - 07-08-05 12:08 
-----------------------------------------------------------------------
-Try to specify the model module option, for example, model=k8x800.
-See ALSA-Configuration.txt for details.
+Try another board model via model option in case that your device is
+compatible with another one?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-05 22:28 bjl667         New Issue                                    
-06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
-06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
-06-14-05 01:56 bjl667         Note Added: 0005014                          
-06-15-05 22:35 bjl667         Note Added: 0005047                          
-06-16-05 00:00 bjl667         Note Edited: 0005047                         
-06-17-05 22:48 bjl667         Note Added: 0005081                          
-06-18-05 12:24 bjl667         Note Edited: 0005081                         
-06-18-05 12:26 bjl667         Note Deleted: 0005014                        
-06-20-05 02:41 bjl667         Note Edited: 0005047                         
-06-25-05 02:12 bjl667         Note Added: 0005255                          
-06-30-05 21:12 bjl667         Note Edited: 0005255                         
-07-04-05 08:46 bjl667         Note Added: 0005381                          
-07-05-05 04:15 bjl667         Note Added: 0005389                          
-07-05-05 04:16 bjl667         Note Deleted: 0005047                        
-07-06-05 21:44 bjl667         Note Deleted: 0005389                        
-07-06-05 21:56 bjl667         Note Edited: 0005381                         
-07-08-05 12:08 tiwai          Note Added: 0005414                          
+07-06-05 10:16 metasymbol     New Issue                                    
+07-06-05 10:16 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
+07-06-05 10:16 metasymbol     Kernel Version            => 2.6.xx          
+07-08-05 12:10 tiwai          Note Added: 0005415                          
 ======================================================================
 
 
