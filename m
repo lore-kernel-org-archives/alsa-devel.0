@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000788]: Analog to IEC958 Output toggle has no effect
-Date: Fri, 8 Jul 2005 10:37:41 +0200
-Message-ID: <2093593cd9089435996bcc68972b13ad@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000695]: Turning off Audigy 2 NX makes keyboard unusable
+Date: Fri, 8 Jul 2005 10:37:16 +0200
+Message-ID: <c062a074a41248d5b8a9dff215e15927@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A261186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56A0B17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,277 +24,115 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=788> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=695> 
 ======================================================================
-Reported By:                abernat
-Assigned To:                
+Reported By:                jk
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   788
-Category:                   PCI - intel8x0
+Issue ID:                   695
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo, gcc v3.3.4, glibc 2.3.4, alsa-driver 1.0.7,
-alsa-lib 1.0.7, alsa-utils 1.0.7
-Kernel Version:             2.6.9
-Resolution:                 not an issue
+Distribution:               Debian unstable
+Kernel Version:             2.6.10-rc2-mm4
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-06-2005 04:53 CET
+Date Submitted:             12-01-2004 12:59 CET
 Last Modified:              07-08-2005 10:37 CEST
 ======================================================================
-Summary:                    Analog to IEC958 Output toggle has no effect
+Summary:                    Turning off Audigy 2 NX makes keyboard unusable
 Description: 
-I have an NForce2 motherboard, using the ALSA 1.0.7 intel8x0 driver. I
-would like to pipe sound from the analog line-in input (ALSA hw:0,0) to
-the digital output (ALSA hw:0,2). According to documentation, this should
-be possible by unmuting the "Analog to IEC958 Output" toggle with a mixer
-program (I use alsamixer). However, this toggle (and the other IEC958
-controls) have no effect; I hear the analog line-in signal on the analog
-output, but not the digital.
+If I turn off my Audigy 2 NX, my USB keyboard no longer works under X.  The
+mouse plugged into the keyboard's hub still works.  dmesg doesn't show
+anything suspicous at this point but after stopping X I get the following
+oops:
 
-I've attached amixer and lsmod outputs.
+Oops: Kernel access of bad area, sig: 11
+[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+SMP NR_CPUS=2 POWERMAC
+NIP: C0000000001CE448 XER: 0000000020000000 LR: C0000000001C7C30
+REGS: c00000000ff97230 TRAP: 0300   Not tainted  (2.6.10-rc2-mm4jk1)
+MSR: 9000000000009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+DAR: 0000000000000000, DSISR: 0000000040000000
+TASK: c00000000ffce030[7] 'events/1' THREAD: c00000000ff94000 CPU: 1
+GPR00: C000000000221430 C00000000FF974B0 C00000000055B1A0
+0000000000000000
+GPR04: FFFFFFFFFFFFFFFF C0000000014EAEB0 000000000000001A
+C00000000FEC4058
+GPR08: 00000000000003A8 C00000000053E3C8 FFFFFFFFFFFFFFFF
+0000000000000000
+GPR12: 0000000022008042 C000000000461500 0000000000000000
+0000000000000000
+GPR16: 0000000001400000 C0000000004068D8 0000000001803C18
+0000000001803C18
+GPR20: C000000000488360 C00000000FF975D4 0000000000000000
+C00000000FEC4058
+GPR24: 00000000000003A8 C0000000014EAD98 00000000000000D0
+C00000000FEC4130
+GPR28: 0000000000000001 C00000000FEC4130 C0000000004E7340
+C00000000FF974B0
+NIP [c0000000001ce448] .strlen+0x4/0x18
+LR [c0000000001c7c30] .kobject_get_path+0x44/0x11c
+Call Trace:
+[c00000000ff974b0] [c00000000ff97500] 0xc00000000ff97500 (unreliable)
+[c00000000ff97560] [c000000000221430] .class_hotplug+0xe4/0x24c
+[c00000000ff97640] [c0000000001c9194] .kobject_hotplug+0x34c/0x38c
+[c00000000ff97730] [c0000000001c81b8] .kobject_del+0x28/0x58
+[c00000000ff977c0] [c000000000221b84] .class_device_del+0x1ac/0x240
+[c00000000ff97880] [c000000000221c3c] .class_device_unregister+0x24/0x44
+[c00000000ff97910] [c000000000222534]
+.class_simple_device_remove+0x104/0x128
+[c00000000ff979a0] [d00000000003ca28] .snd_unregister_device+0x174/0x1d8
+[snd]
+[c00000000ff97a40] [d00000000008543c] .snd_pcm_dev_unregister+0xb4/0x208
+[snd_pcm]
+[c00000000ff97af0] [d000000000044ea4] .snd_device_free+0x140/0x224 [snd]
+[c00000000ff97b80] [d000000000045540] .snd_device_free_all+0xb8/0x10c
+[snd]
+[c00000000ff97c20] [d00000000003d3c8] .snd_card_free+0xa0/0x36c [snd]
+[c00000000ff97d20] [d00000000003d748] .snd_card_free_thread+0xb4/0x170
+[snd]
+[c00000000ff97db0] [c00000000005a4c0] .worker_thread+0x258/0x324
+[c00000000ff97ee0] [c0000000000613dc] .kthread+0x168/0x1bc
+[c00000000ff97f90] [c000000000013500] .kernel_thread+0x4c/0x6c
 
-My amixer output:
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 22 [71%] [on]
-  Front Right: Playback 22 [71%] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-Simple mixer control '3D Control - Switch',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 22 [71%] [on]
-  Front Right: Playback 22 [71%] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off]
-  Front Right: Playback 0 [0%] [off]
-Simple mixer control 'Surround Down Mix',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [off]
-Simple mixer control 'Center/LFE Down Mix',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 24 [77%] [on] Capture [on]
-  Front Right: Playback 24 [77%] [on] Capture [on]
-Simple mixer control 'Line-In As Surround',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mic As Center/LFE',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Mic Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Video',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Mono: Playback [on] Capture [off]
-Simple mixer control 'IEC958 Input Monitor',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 3
-  Mono: 0 [0%]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [on]
-  Front Right: Capture 0 [0%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Analog to IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Duplicate Front',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Exchange Center/LFE',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Swap Surround Slot',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-
-Module                  Size  Used by
-bttv                  153612  0 
-video_buf              21444  1 bttv
-firmware_class         10176  1 bttv
-btcx_risc               4552  1 bttv
-snd_seq                54800  0 
-snd_seq_device          8844  1 snd_seq
-snd_intel8x0           33340  1 
-snd_ac97_codec         75680  1 snd_intel8x0
-snd_pcm                96648  3 snd_intel8x0,snd_ac97_codec
-snd_timer              25604  2 snd_seq,snd_pcm
-snd                    52408  7
-snd_seq,snd_seq_device,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc          9864  2 snd_intel8x0,snd_pcm
-ivtv_fb                35868  1 
-msp3400                27960  0 
-saa7127                12956  0 
-saa7115                12632  0 
-tuner                  19940  0 
-tveeprom               12148  0 
-ivtv                  812548  3 ivtv_fb
-i2c_algo_bit            9224  2 bttv,ivtv
-lirc_serial            13024  1 
-lirc_dev               13260  1 lirc_serial
-forcedeth              17408  0 
-
-
-
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000977 Unplug playing USB audio device: normal...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 17:57 
+ suamor - 12-11-04 08:40 
 ----------------------------------------------------------------------
-The "IEC958*" mixer switches there are controls for AC97.
-Nforce outputs the SPDIf not through AC97 but directly to the transmitter.
- So, the mixer switches have no influence indeed.
+I can confirm this problem. I have a Mandrake 10.1 system with Kernel
+2.6.8.1. The bug happens on both the alsa from the kernel itself (1.6.0)
+and with the current version. Also when shutting down X the keyboard
+sometimes works on the console.
 
-In short: no hardware function to route from analog input to spdif output.
+----------------------------------------------------------------------
+ Clemens Ladisch - 04-25-05 11:00 
+----------------------------------------------------------------------
+There was a bug in the USB audio driver that resulted in the kernel input
+event thread being blocked.
+
+This has been fixed in CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-06-05 04:53 abernat        New Issue                                    
-01-06-05 04:53 abernat        Distribution              => Gentoo, gcc v3.3.4,
-glibc 2.3.4, alsa-driver 1.0.7, alsa-lib 1.0.7, alsa-utils 1.0.7
-01-06-05 04:53 abernat        Kernel Version            => 2.6.9           
-01-07-05 17:57 tiwai          Note Added: 0003106                          
-04-12-05 21:36 jdthood        Status                   new => resolved     
-04-12-05 21:36 jdthood        Resolution               open => not an issue
+12-01-04 12:59 jk             New Issue                                    
+12-01-04 12:59 jk             Distribution              => Debian unstable 
+12-01-04 12:59 jk             Kernel Version            => 2.6.10-rc2-mm4  
+12-11-04 08:40 suamor         Note Added: 0002810                          
+04-25-05 10:59 Clemens LadischRelationship added       duplicate of 0000977
+04-25-05 11:00 Clemens LadischStatus                   assigned => resolved
+04-25-05 11:00 Clemens LadischResolution               open => fixed       
+04-25-05 11:00 Clemens LadischNote Added: 0004575                          
 07-08-05 10:37 perex          Status                   resolved => closed  
 ======================================================================
 
