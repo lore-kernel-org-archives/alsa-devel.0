@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001239]: forgotten __init and __exit in memory.c
-Date: Fri, 8 Jul 2005 11:52:54 +0200
-Message-ID: <ec9bebff5a57a79cf54b7396b11bf160@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
+Date: Fri, 8 Jul 2005 11:55:17 +0200
+Message-ID: <167a682bb96d9314b474049e002d11ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3FF718A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:52:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDDAB18A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:55:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1239> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
 ======================================================================
-Reported By:                Henne
+Reported By:                sgoodall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1239
-Category:                   1_OTHERS
+Issue ID:                   1177
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 3
+Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             07-07-2005 10:37 CEST
-Last Modified:              07-08-2005 11:52 CEST
+Date Submitted:             06-09-2005 16:00 CEST
+Last Modified:              07-08-2005 11:55 CEST
 ======================================================================
-Summary:                    forgotten __init and __exit in memory.c
+Summary:                    Dell Inspiron 8500  + port replicator issues.
 Description: 
-I think that snd_memory_init() should get an __init,
-and snd_memory_exit() an __exit, cause that __init
-function isn't called again and can be removed from the memory.
-That doesn't save too much space, but it's cleaner and mekes more sense
-.
-The patch I added will fix it and is made for the current cvs
-version(memory.c 1.38). 
-
+I have a dell inspiron 8500 and the port replicator. The has an additional
+headphone socket, however the only mixer control that affects it is the
+IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
+sound completely, or plays sound at full volume.
+All other controls have no affect and, even if muted. The headphone socket
+on the laptop itself still works however.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 11:52 
+ sgoodall - 07-07-05 12:01 
 ----------------------------------------------------------------------
-__exit can't be applied since it's called from init function, too.
-Could you regenerate the patch?
+I have just upgraded to fc4 which includes alsa 1.0.9 and the same problem
+occurs.
+
+----------------------------------------------------------------------
+ tiwai - 07-08-05 11:55 
+----------------------------------------------------------------------
+Need the hardware information.  Please attach (upload) the output of
+/proc/asound/card0/codec97#0/* files and /etc/asound.state.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-07-05 10:37 Henne          New Issue                                    
-07-07-05 10:37 Henne          File Added: memory_c.diff                    
-07-08-05 11:52 tiwai          Note Added: 0005410                          
+06-09-05 16:00 sgoodall       New Issue                                    
+06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:00 sgoodall       Kernel Version            =>
+kernel-2.6.11-1.27_FC3
+07-07-05 12:01 sgoodall       Note Added: 0005399                          
+07-08-05 11:55 tiwai          Note Added: 0005411                          
 ======================================================================
 
 
