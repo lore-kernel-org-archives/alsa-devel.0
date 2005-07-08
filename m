@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
-Date: Fri, 8 Jul 2005 12:54:45 +0200
-Message-ID: <a737962a86052236f539c47a7ad691fc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001242]: echoaudio layla 20 doesn't compile
+Date: Fri, 8 Jul 2005 12:57:35 +0200
+Message-ID: <09d17617c7d11259317ca10e2f3826cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E59D142
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:54:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8E60142
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:57:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1242> 
 ======================================================================
-Reported By:                sgoodall
-Assigned To:                
+Reported By:                hennewou
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1178
-Category:                   PCI - intel8x0
+Issue ID:                   1242
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
+Status:                     assigned
+Distribution:               debian
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             06-09-2005 16:09 CEST
-Last Modified:              07-08-2005 12:54 CEST
+Date Submitted:             07-08-2005 12:57 CEST
+Last Modified:              07-08-2005 12:57 CEST
 ======================================================================
-Summary:                    Headphone and Speaker volume control
+Summary:                    echoaudio layla 20 doesn't compile
 Description: 
-The master contol on this device does not affect the headphone speaker
-socket volume. This is a problem for assigning keyboard shortcuts (using
-gnome) to the voume controls as these get mapped to the master control. So
-when using headphones (which I usually do) i cannot control the volume.
-Ideally the master control can also affect the headphone volume, and have
-a separate control for the main speakers. (I would like to be able to keep
-these muted so sounds does not play should headphones not be plugged in
-unless I explicitly enable them).
-I am running fc3 on a dell inspiron 8500.
+Hi, 
+
+
+I tried to compile alsa-driver for echoaudio layla20:
+
+./configure --with-cards=layla20 --with-sequencer=yes;make;make install
+
+Allthough I see the file pci/echoaudio/layla20.c in the alsa-driver tree,
+I allways get the same error for all latest versions (1.0.9 series):
+
+checking for which soundcards to compile driver for... configure: error:
+Unsupported soundcard layla20
+
+
+Greetings Hendrik
+
 ======================================================================
-
-----------------------------------------------------------------------
- sgoodall - 07-08-05 12:39 
-----------------------------------------------------------------------
-Yes, when i plug my headphones in, the speakers are muted.
-Most of the time, I don't want sound coming out of my speakers because
-that is undesirable in the environment i work in. I do listen to music
-through the headphones however.
-By binding both headphone and master as one control it means that if i
-forget to plug the headphones in, or mute the volume then  sound will be
-played on the main speakers.
-The windows drivers on my machine have a tick box that disables any sound
-coming through the main speakers regardless of whether anything is plugged
-into the headphone jack.
-
-----------------------------------------------------------------------
- tiwai - 07-08-05 12:54 
-----------------------------------------------------------------------
-OK, then the attached patch will add a new ac97_quirk type,
-"bind_hp_voume".  In this mode, only HP volume is bound with master volume
-but HP switch is left so that you can mute/unmute HP.  Pass
-ac97_quirk=bind_hp_volume, instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:09 sgoodall       New Issue                                    
-06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:09 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
-06-23-05 12:10 tiwai          Note Added: 0005177                          
-07-07-05 11:30 sgoodall       Note Added: 0005398                          
-07-08-05 11:51 tiwai          Note Added: 0005409                          
-07-08-05 12:39 sgoodall       Note Added: 0005420                          
-07-08-05 12:54 tiwai          Note Added: 0005421                          
+07-08-05 12:57 hennewou       New Issue                                    
+07-08-05 12:57 hennewou       Distribution              => debian          
+07-08-05 12:57 hennewou       Kernel Version            => 2.4.25          
 ======================================================================
 
 
