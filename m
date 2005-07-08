@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001005]: [PATCH] pcm_dmix.c:92: error: static declaration of 'shm_sum_discard' follows non-static declaration
-Date: Fri, 8 Jul 2005 10:34:29 +0200
-Message-ID: <2f655ff7a4732d36793e22d3874de5fa@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000438]: OpenOffice crashes with LD_PRELOAD=/usr/lib/libaoss.so
+Date: Fri, 8 Jul 2005 10:34:35 +0200
+Message-ID: <714e8d26e2b4f802e7b2bf31cca89ffb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0EE8F17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA88519E
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,176 +24,105 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1005> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=438> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                vslavik
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1005
-Category:                   0_general
+Project:                    ALSA - liboss
+Issue ID:                   438
+Category:                   
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-22-2005 09:03 CET
+Date Submitted:             08-13-2004 11:41 CEST
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    [PATCH] pcm_dmix.c:92: error: static declaration of
-'shm_sum_discard' follows non-static declaration
+Summary:                    OpenOffice crashes with
+LD_PRELOAD=/usr/lib/libaoss.so
 Description: 
-http://bugs.debian.org/300792
+I'm having problems with using ALSA's OSS library together with OpenOffice
+(version 1.1.1): it crashes early during startup. It doesn't happen if
+libaoss.so is not preloaded.
 
--------- Forwarded Message --------
-From: Andreas Jochens <aj@andaco.de>
-Reply-To: Andreas Jochens <aj@andaco.de>, 300792@bugs.debian.org
-To: Debian Bug Tracking System <submit@bugs.debian.org>
-Subject: [Pkg-alsa-devel] Bug#300792: alsa-lib: FTBFS (ppc64/gcc-4.0):
-static declaration of 'shm_sum_discard' follows non-static declaration
-Date: Mon, 21 Mar 2005 22:42:00 +0100
-Package: alsa-lib
-Severity: normal
-Tags: patch
+Ending parts of strace output are:
+...
+open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
+such file or directory)
+open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
+such file or directory)
+open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
+such file or directory)
+open("i686/mmx/libz.so.1", O_RDONLY)    = -1 ENOENT (No such file or
+directory)
+open("i686/libz.so.1", O_RDONLY)        = -1 ENOENT (No such file or
+directory)
+open("mmx/libz.so.1", O_RDONLY)         = -1 ENOENT (No such file or
+directory)
+open("libz.so.1", O_RDONLY)             = -1 ENOENT (No such file or
+directory)
+open("/lib/libz.so.1", O_RDONLY)        = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\300\23"..., 512)
+= 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=65412, ...}) = 0
+mmap2(NULL, 67388, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4203e000
+mmap2(0x4204e000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
+0xf) = 0x4204e000
+close(3)                                = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+= 0x4204f000
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+= 0x42050000
+mprotect(0x4181d000, 8519680, PROT_READ|PROT_WRITE) = 0
+mprotect(0x4181d000, 8519680, PROT_READ|PROT_EXEC) = 0
+munmap(0x4108d000, 115564)              = 0
+modify_ldt(1, {entry_number:0, base_addr:0x411c8060, limit:1048575,
+seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1,
+seg_not_present:0, useable:1}, 16) = 0
+getpid()                                = 7468
+rt_sigaction(SIGRTMIN, {0x411c2f90, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
+= 0
+rt_sigaction(SIGRT_1, {0x411c3070, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
+= 0
+rt_sigaction(SIGRT_2, {0x411c31e0, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
+= 0
+rt_sigprocmask(SIG_BLOCK, [RTMIN], NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RT_1], NULL, 8) = 0
+_sysctl({{CTL_KERN, KERN_VERSION}, 2, 0xbfffea64, 32, (nil), 0}) = 0
+brk(0)                                  = 0x80a66a4
+brk(0x80c76a4)                          = 0x80c76a4
+brk(0x80c8000)                          = 0x80c8000
+--- SIGSEGV (Segmentation fault) @ 0 (0) ---
++++ killed by SIGSEGV +++
 
-When building 'alsa-lib' on ppc64 with gcc-4.0,
-I get the following error:
-
-pcm_dmix.c: At top level:
-pcm_dmix.c:92: error: static declaration of 'shm_sum_discard' follows
-non-static declaration
-pcm_dmix.c:84: error: previous implicit declaration of 'shm_sum_discard'
-was here
-pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
-your architecture...
-pcm_dmix.c: In function 'mix_areas1':
-pcm_dmix.c:247: error: invalid lvalue in assignment
-pcm_dmix.c:248: error: invalid lvalue in assignment
-pcm_dmix.c:249: error: invalid lvalue in assignment
-pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
-your architecture...
-pcm_dmix.c: In function 'mix_areas2':
-pcm_dmix.c:279: error: invalid lvalue in assignment
-pcm_dmix.c:280: error: invalid lvalue in assignment
-pcm_dmix.c:281: error: invalid lvalue in assignment
-make[3]: *** [pcm_dmix.lo] Error 1
-make[3]: Leaving directory `/alsa-lib-1.0.8/src/pcm'
-
-With the attached patch 'alsa-lib' can be compiled
-on ppc64 using gcc-4.0.
-
-Regards
-Andreas Jochens
-
-diff -urN ../tmp-orig/alsa-lib-1.0.8/src/conf.c ./src/conf.c
---- ../tmp-orig/alsa-lib-1.0.8/src/conf.c	2004-10-05 17:33:04.000000000
-+0200
-+++ ./src/conf.c	2005-03-21 22:30:08.619865849 +0100
-@@ -2486,6 +2486,8 @@
- 				snd_config_searcha, snd_config_searchva);
- }
- 
-+static int snd_config_hooks(snd_config_t *config, snd_config_t
-*private_data);
-+
- /**
-  * \brief Searches for a node in a configuration tree and expands hooks.
-  * \param config Handle to the root of the configuration (sub)tree to
-search.
-@@ -2496,7 +2498,6 @@
-  */
- int snd_config_search_hooks(snd_config_t *config, const char *key,
-snd_config_t **result)
- {
--	static int snd_config_hooks(snd_config_t *config, snd_config_t
-*private_data);
- 	SND_CONFIG_SEARCH(config, key, result, \
- 					err = snd_config_hooks(config, NULL); \
- 					if (err < 0) \
-@@ -2504,6 +2505,8 @@
- 			 );
- }
- 
-+static int snd_config_hooks(snd_config_t *config, snd_config_t
-*private_data);
-+
- /**
-  * \brief Searches for a node in a configuration tree, expanding aliases
-and hooks.
-  * \param root Handle to the root configuration node containing alias
-@@ -2516,7 +2519,6 @@
-  */
- int snd_config_searcha_hooks(snd_config_t *root, snd_config_t *config,
-const char *key, snd_config_t **result)
- {
--	static int snd_config_hooks(snd_config_t *config, snd_config_t
-*private_data);
- 	SND_CONFIG_SEARCHA(root, config, key, result,
- 					snd_config_searcha_hooks,
- 					err = snd_config_hooks(config, NULL); \
-diff -urN ../tmp-orig/alsa-lib-1.0.8/src/pcm/pcm_dmix.c
-./src/pcm/pcm_dmix.c
---- ../tmp-orig/alsa-lib-1.0.8/src/pcm/pcm_dmix.c	2005-01-11
-18:42:49.000000000 +0100
-+++ ./src/pcm/pcm_dmix.c	2005-03-21 22:07:17.000000000 +0100
-@@ -53,12 +53,13 @@
-  *
-  */
- 
-+static int shm_sum_discard(snd_pcm_direct_t *dmix);
-+
- /*
-  *  sum ring buffer shared memory area 
-  */
- static int shm_sum_create_or_connect(snd_pcm_direct_t *dmix)
- {
--	static int shm_sum_discard(snd_pcm_direct_t *dmix);
- 	struct shmid_ds buf;
- 	int tmpid, err;
- 	size_t size;
-@@ -244,9 +245,9 @@
- 		} while (*sum != old_sample);
- 		if (!--size)
- 			return;
--		((char *)src) += src_step;
--		((char *)dst) += dst_step;
--		((char *)sum) += sum_step;
-+		src = ((char *)src) + src_step;
-+		dst = ((char *)dst) + dst_step;
-+		sum = ((char *)sum) + sum_step;
- 	}
- }
- 
-@@ -276,9 +277,9 @@
- 		} while (*sum != old_sample);
- 		if (!--size)
- 			return;
--		((char *)src) += src_step;
--		((char *)dst) += dst_step;
--		((char *)sum) += sum_step;
-+		src = ((char *)src) + src_step;
-+		dst = ((char *)dst) + dst_step;
-+		sum = ((char *)sum) + sum_step;
- 	}
- }
- 
+Some additional information can be found here (another reporter a few
+months ago):
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=234044
+Let me know if you need more information.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-22-05 19:49 
+ vslavik - 03-21-05 11:25 
 ----------------------------------------------------------------------
-Fixed on CVS.
+No, I don't see it anymore either.
+
+----------------------------------------------------------------------
+ jdthood - 03-22-05 09:36 
+----------------------------------------------------------------------
+Thanks for confirming.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 09:03 jdthood        New Issue                                    
-03-22-05 19:49 tiwai          Status                   new => resolved     
-03-22-05 19:49 tiwai          Resolution               open => fixed       
-03-22-05 19:49 tiwai          Assigned To               => tiwai           
-03-22-05 19:49 tiwai          Note Added: 0004129                          
+08-13-04 11:41 vslavik        New Issue                                    
+03-21-05 00:01 jdthood        Note Added: 0004105                          
+03-21-05 11:25 vslavik        Note Added: 0004117                          
+03-22-05 09:36 jdthood        Note Added: 0004122                          
+03-22-05 09:36 jdthood        Status                   new => resolved     
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
