@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000947]: replace audigyls driver with ca0106
-Date: Fri, 8 Jul 2005 10:34:54 +0200
-Message-ID: <12d79dcd285db4abfc6de8c7c3a5fa6c@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000993]: Please provide asound_fm.h
+Date: Fri, 8 Jul 2005 10:34:53 +0200
+Message-ID: <0149c130cf71897d9b4f42927b3a0a14@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEE3917A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FD8917A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=947> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=993> 
 ======================================================================
-Reported By:                roerich
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   947
-Category:                   soundcard matrix
+Project:                    ALSA - lib
+Issue ID:                   993
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-27-2005 17:25 CET
+Date Submitted:             03-14-2005 22:28 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    replace audigyls driver with ca0106
+Summary:                    Please provide asound_fm.h
 Description: 
-Hi,
+The submitter of Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299423 says:
 
-I just took a look at the soundcard matrix.
-There is a section stating that the Creative Labs Audigy LS uses the
-audigyls driver. This is true für alsa 1.0.6. Afterwards James changed the
-driver name to ca0106. Additionally the SoundBlaster Live 24bit card is
-supported by the ca0106 driver.
+> Please include the header asound_fm.h  This is required to use the
+> OSS compatibility Direct-FM interface (or ALSA DMFM device directly via
+> ioctls, as opposed to using through alsa-lib as normal).
+
+See http://bugs.debian.org/299423 for the full request.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-01-05 10:50 
+ jdthood - 03-15-05 22:51 
 ----------------------------------------------------------------------
-Fixed now.
+Here is the manual page which mentions that header:
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1192.htm
+
+----------------------------------------------------------------------
+ tiwai - 03-16-05 12:41 
+----------------------------------------------------------------------
+Fixed on CVS.  Will appear in rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-05 17:25 roerich        New Issue                                    
-03-01-05 10:50 perex          Status                   new => resolved     
-03-01-05 10:50 perex          Resolution               open => fixed       
-03-01-05 10:50 perex          Assigned To               => perex           
-03-01-05 10:50 perex          Note Added: 0003756                          
-03-01-05 10:50 perex          Assigned To              perex =>            
-03-24-05 21:47 Ariel          Issue Monitored: Ariel                       
+03-14-05 22:28 jdthood        New Issue                                    
+03-15-05 22:51 jdthood        Note Added: 0003920                          
+03-16-05 12:41 tiwai          Status                   new => resolved     
+03-16-05 12:41 tiwai          Resolution               open => fixed       
+03-16-05 12:41 tiwai          Assigned To               => tiwai           
+03-16-05 12:41 tiwai          Note Added: 0003944                          
+03-16-05 12:41 tiwai          Assigned To              tiwai =>            
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
