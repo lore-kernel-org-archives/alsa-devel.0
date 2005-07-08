@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000527]: snd_pcm_set_rate_near used always
-Date: Fri, 8 Jul 2005 10:38:29 +0200
-Message-ID: <f75e0dd769d891e52c9e5fc42340ddb8@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001001]: Please ship alsa-plugins tarball
+Date: Fri, 8 Jul 2005 10:38:32 +0200
+Message-ID: <2d6c261d028e4b05ce62520eaf0fa1c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29238C1
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C282F140
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=527> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1001> 
 ======================================================================
-Reported By:                AKennedy
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   527
-Category:                   aplay/arecord
+Project:                    ALSA - lib
+Issue ID:                   1001
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-23-2004 21:43 CEST
+Date Submitted:             03-19-2005 19:19 CET
 Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    snd_pcm_set_rate_near used always
+Summary:                    Please ship alsa-plugins tarball
 Description: 
-When selecting to record using a speific device, say hw1,0, this craps out.
-. . using plughw1,0 or default works, however.  Should this have an if
-statement to control if the device selected is hw/can you _near if the
-device is NOT default or plughw?
+Please ship the alsa-plugins source code in tarball form.
+
+As a Debian maintainer of the ALSA packages I would prefer to see
+alsa-plugins in a separate tarball.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 15:47 
+ tiwai - 03-29-05 19:05 
 ----------------------------------------------------------------------
-> When selecting to record using a speific device, say hw1,0, this
-> craps out. . . using plughw1,0 or default works, however. Should
-> this have an if statement to control if the device selected is
-> hw/can you _near if the device is NOT default or plughw?
-
-Can you please try to explain more clearly what you mean?
-
-----------------------------------------------------------------------
- tiwai - 03-23-05 12:51 
-----------------------------------------------------------------------
-You'll see a warning message if the given rate can't be used (at least with
-the latest version).
+Fixed with rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 21:43 AKennedy       New Issue                                    
-09-29-04 05:37 AKennedy       Issue Monitored: AKennedy                    
-09-29-04 05:37 AKennedy       Issue End Monitor: AKennedy                    
-03-20-05 15:47 jdthood        Note Added: 0004094                          
-03-23-05 12:51 tiwai          Note Added: 0004154                          
-03-31-05 20:22 jdthood        Status                   new => resolved     
-03-31-05 20:22 jdthood        Resolution               open => fixed       
+03-19-05 19:19 jdthood        New Issue                                    
+03-29-05 19:05 tiwai          Status                   new => resolved     
+03-29-05 19:05 tiwai          Resolution               open => fixed       
+03-29-05 19:05 tiwai          Assigned To               => tiwai           
+03-29-05 19:05 tiwai          Note Added: 0004254                          
 07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
