@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
-Date: Fri, 8 Jul 2005 10:37:53 +0200
-Message-ID: <03e4f322b2e9af1779dde1acd4e33051@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000936]: AM_PATH_ALSA does not set prefix properly
+Date: Fri, 8 Jul 2005 10:38:24 +0200
+Message-ID: <95746ad25afe1ff79149824cf70470bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 191B717A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:37:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D697818B
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,94 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=270> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=936> 
 ======================================================================
-Reported By:                wraiden
+Reported By:                starling
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   270
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   936
+Category:                   aconnect
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               LFS
-Kernel Version:             2.6.9-mm1
-Resolution:                 fixed
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-11-2004 11:14 CEST
-Last Modified:              07-08-2005 10:37 CEST
+Date Submitted:             02-23-2005 22:39 CET
+Last Modified:              07-08-2005 10:38 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS side surround channels not supported
+Summary:                    AM_PATH_ALSA does not set prefix properly
 Description: 
-There is no Support for the side surround channels on SB Audigy 2 ZS (
-Platinum Pro ) in Alsa.
-
-I'll try to get it work and test everything you give me to test.
+When configure calls AM_PATH_ALSA, it wrongly assumes that
+--with-alsa-prefix specifies the location of the library, not the prefix
+of alsa.  In addition, --with-alsa-inc-prefix does not properly modify
+CFLAGS.  The result is that every configure where alsa-lib is installed
+outside the hardcoded include/lib paths fails unconditionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- wraiden - 10-28-04 20:41 
+ starling - 02-26-05 03:31 
 ----------------------------------------------------------------------
-well, ok ... my card is the "Audigy 2 ZS Platinum Pro" ( thats the version
-with external drive ) and i think creative is not so crazy after all
-because the Platinum Pro card has more chanels to mix volume for ... after
-all the PCI id for my card was 0x2001 not 0x2002 and it culd be that all
-versions of the ZS have different id's ... i'm hounting for the currently
-not working channels ( LineIn 2 / Digital and Analog CD [ and mybe more ]
-) of my card and will post patches inside new bugreports ... btw, the
-current mixer for audigy 2 ZS Platium Pro is horrible ( morst chanels are
-useless ) ... i post details on demand ... i'll try to get this fixed up
-along with the remaining channels
+I'm not sure how the number of bits per character would break my patch.  As
+for it being an incompatible configure option, I don't see how the current
+configure can work at all.  With the current (unpatched) alsa.m4, any
+installation outside of /usr, of alsa-utils will fail.  With the patch
+applied it changes the interface, but installations into /usr (or
+/usr/local depending on your compiler) will not fail because they are
+checked regardless of which -I/-L flag is passed to the compiler. So the
+only configurations that would not be backwards compatible, and would
+become 'broken', are the configurations that do not work in the first
+place (for no good reason).  Nothing to worry about.
+
+Unless you know something I don't, which is likely.  64-bit whosamawhudda?
+ You mean like Unicode paths?
+
+Oh... and anyone downloading alsa-lib would get the new alsa.m4, so I
+think it's not /too/ much trouble for people to get it.  :)  That's the
+nice thing about aclocal: even people who don't have the patched alsa.m4
+will still be able to use the AM_PATH_ALSA macro the same way, complete
+with the current inability to install into non hard coded compiler
+prefixes.
+
+
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:50 
+ tiwai - 03-09-05 19:09 
 ----------------------------------------------------------------------
-Code equivalent to that in alsa-audigy2zs-detection-fix.patch
-is present in the current ALSA cvs.
+--with-alsa-prefix is the path of alsa-library, and --with-alsa-inc-prefix
+is the path of alsa headers.
+So, you can simply pass like
+
+   ./configure --with-alsa-prefix=/somehwere/lib \
+      --with-alsa-inc-prefix=/another/include
+
+So, it does work.  Only its option name is weird.
+
+But changing the option name is not a good idea since this macro is
+already used widely as I wrote.  Imagine if you change the option and you
+write a configure to run both new and slightly-old ALSA versions?   Such
+an incompatibility is indeed a big problem!
+
+About 64bit: it's a path for 64bit binaries to avoid conflict with 32bit
+ones.  See LSB for details.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-11-04 11:14 wraiden        New Issue                                    
-05-11-04 11:14 wraiden        Distribution              => LFS             
-05-11-04 11:14 wraiden        Kernel Version            => 2.6.5           
-05-11-04 14:41 pzad           Note Added: 0001084                          
-05-21-04 16:15 wraiden        File Added: wraiden-alsa-emu10k1-side.patch       
-            
-05-21-04 16:21 wraiden        Note Added: 0001166                          
-05-24-04 09:21 pzad           Note Added: 0001181                          
-05-24-04 16:18 wraiden        Note Added: 0001188                          
-05-31-04 08:32 pzad           File Added: audigy2zs_driver.diff                 
-  
-05-31-04 08:38 pzad           Note Added: 0001281                          
-06-10-04 22:48 bryanhundven   Note Added: 0001298                          
-06-15-04 15:56 wraiden        Note Added: 0001309                          
-06-15-04 16:41 pzad           Note Added: 0001310                          
-06-15-04 19:44 wraiden        Note Added: 0001311                          
-06-15-04 19:55 wraiden        Note Edited: 0001311                         
-06-22-04 13:00 pzad           Note Added: 0001328                          
-06-22-04 16:39 elklein        Note Added: 0001329                          
-06-27-04 22:00 wraiden        Note Added: 0001341                          
-06-27-04 22:53 jcdutton       Note Added: 0001342                          
-07-30-04 12:46 BiO            Issue Monitored: BiO                         
-07-30-04 12:47 BiO            Issue End Monitor: BiO                       
-08-27-04 20:20 jcdutton       Status                   new => closed       
-08-27-04 20:20 jcdutton       Note Added: 0001656                          
-10-25-04 13:20 wraiden        Kernel Version           2.6.5 => 2.6.9-mm1  
-10-25-04 13:20 wraiden        Status                   closed => feedback  
-10-25-04 13:20 wraiden        Resolution               open => reopened    
-10-25-04 13:20 wraiden        Note Added: 0002261                          
-10-25-04 13:21 wraiden        File Added: alsa-audigy2zs-detection-fix.patch    
-               
-10-25-04 21:36 lee            Note Added: 0002262                          
-10-28-04 20:41 wraiden        Note Added: 0002286                          
-04-09-05 16:50 jdthood        Note Added: 0004414                          
-04-09-05 16:50 jdthood        Status                   feedback => resolved
-04-09-05 16:50 jdthood        Resolution               reopened => fixed   
-07-08-05 10:37 perex          Status                   resolved => closed  
+02-23-05 22:39 starling       New Issue                                    
+02-23-05 22:39 starling       File Added: alsa.diff                        
+02-24-05 22:02 tiwai          Note Added: 0003726                          
+02-26-05 03:28 starling       Note Added: 0003738                          
+02-26-05 03:31 starling       Note Edited: 0003738                         
+03-09-05 19:09 tiwai          Note Added: 0003844                          
+03-31-05 20:39 jdthood        Status                   new => resolved     
+03-31-05 20:39 jdthood        Resolution               open => won't fix   
+07-08-05 10:38 perex          Status                   resolved => closed  
 ======================================================================
 
 
