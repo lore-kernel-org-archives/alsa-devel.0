@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
-Date: Fri, 8 Jul 2005 10:34:47 +0200
-Message-ID: <397214a3327b6713bcd7b20ed6bb586d@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000994]: 5.1 output broken since ~1.0.8 with VIA8237
+Date: Fri, 8 Jul 2005 10:34:49 +0200
+Message-ID: <3294f32eca6b9d7aab30adc264f5068a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B3FF17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6895D186
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=544> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=994> 
 ======================================================================
-Reported By:                sasa
+Reported By:                mru
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   544
+Issue ID:                   994
 Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-26-2004 10:44 CEST
+Date Submitted:             03-14-2005 23:42 CET
 Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    Sound freezes (but can be restarted OK) after kernel
-locked for a long time
+Summary:                    5.1 output broken since
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1#1.0.8 with VIA8237
 Description: 
-When doing an intensive task that locks the kernel (such as fixating
-CD-ROM, initializing Lucent modem chipset) when even the mouse pointer
-stops moving for half a second or so, sound from xmms stops playing until
-I press stop and play again.
-Interesting thing is that this only happens when MMAP is on. When I turn
-it off, the sound freezes for a second and after that continues.
+The surround51 device on VIA8237 stopped working some time after alsa-lib
+version 1.0.7.  Driver v1.0.8 works properly with older library versions.
+
+With alsa-lib 1.0.8, there is this error: ALSA lib
+pcm_hw.c:407:(snd_pcm_hw_channel_info) SNDRV_PCM_IOCTL_CHANNEL_INFO
+failed: Inappropriate ioctl for device
+
+With CVS of today (2005-03-14), about 100 ms of random sound is looped.
+
+Using the surround40 device works, with some channels moved around.
+
+>From the output of aplay -v, it appears that the surround51 device is
+surround40, with some channel rerouting applied, all else being equal. 
+Could there be a bug in the route plugin?
+
+The same problem occurs with surround41 and surround50 as well.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-16-05 22:21 
+ mru - 03-15-05 16:10 
 ----------------------------------------------------------------------
-Apparently this report can be closed.
+I found the problem.  A -D_FILEOFFSET_BITS=64 had managed to sneak in,
+resulting
+in differing definitions of off_t, which is used in he argument to
+SNDRV_PCM_IOCTL_CHANNEL_INFO, between the library and the driver.
+
+Please close this bug.
 
 ----------------------------------------------------------------------
- perex - 03-17-05 08:13 
+ tiwai - 03-16-05 12:53 
 ----------------------------------------------------------------------
-Ok, let's close it...
+OK, resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 10:44 sasa           New Issue                                    
-09-26-04 10:58 sasa           Note Added: 0001916                          
-09-26-04 10:59 sasa           Issue Monitored: sasa                        
-09-26-04 12:03 lee            Note Added: 0001918                          
-09-26-04 12:25 sasa           Note Added: 0001919                          
-10-09-04 20:02 jtimonen       Note Added: 0002062                          
-10-09-04 20:13 lee            Note Added: 0002063                          
-03-16-05 22:21 jdthood        Note Added: 0003966                          
-03-17-05 08:13 perex          Status                   new => resolved     
-03-17-05 08:13 perex          Resolution               open => not an issue
-03-17-05 08:13 perex          Assigned To               => perex           
-03-17-05 08:13 perex          Note Added: 0003979                          
-03-17-05 08:14 perex          Assigned To              perex =>            
+03-14-05 23:42 mru            New Issue                                    
+03-15-05 16:10 mru            Note Added: 0003915                          
+03-16-05 12:53 tiwai          Status                   new => resolved     
+03-16-05 12:53 tiwai          Resolution               open => not an issue
+03-16-05 12:53 tiwai          Assigned To               => tiwai           
+03-16-05 12:53 tiwai          Note Added: 0003949                          
+03-16-05 12:53 tiwai          Assigned To              tiwai =>            
 07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
