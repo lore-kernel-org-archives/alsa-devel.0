@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000898]: API compatibility with pselect(2)
-Date: Fri, 8 Jul 2005 10:35:15 +0200
-Message-ID: <2c278947f690c18b3619308bba88927c@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000828]: sparc: "pcm_direct.c:165: warning: long int format, __suseconds_t arg (arg 6)"
+Date: Fri, 8 Jul 2005 10:35:31 +0200
+Message-ID: <e8e347e7550f9d94ba7c0c44df3fec5a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 060C2186
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D03E617A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:35:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=898> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=828> 
 ======================================================================
-Reported By:                phunge
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   898
-Category:                   0_general
+Issue ID:                   828
+Category:                   alisp
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-09-2005 16:11 CET
+Date Submitted:             01-17-2005 09:18 CET
 Last Modified:              07-08-2005 10:35 CEST
 ======================================================================
-Summary:                    API compatibility with pselect(2)
+Summary:                    sparc: "pcm_direct.c:165: warning: long int format,
+__suseconds_t arg (arg 6)"
 Description: 
-I have a program which uses the ALSA sequencer API, and also uses
-setitimer() to trigger some regular processing.
+When building on sparc we get the following warning:
 
-I had a bug where I cannot open the sequencer when running under valgrind
-- the
-program output "Unknown SEQ default" when calling snd_seq_open. My theory
-is, this is caused by a SIGALRM being delivered while alsa-lib is in
-read() or write() or some other syscall, and none of alsa-lib handles
-EINTR correctly.
+Making all in pcm
+[...]
+if /bin/sh ../../libtool --mode=compile sparc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include    -g -Wall -O2 -MT pcm_direct.lo
+-MD -MP -MF ".deps/pcm_direct.Tpo" \
+  -c -o pcm_direct.lo `test -f 'pcm_direct.c' || echo './'`pcm_direct.c;
+\
+then mv -f ".deps/pcm_direct.Tpo" ".deps/pcm_direct.Plo"; \
+else rm -f ".deps/pcm_direct.Tpo"; exit 1; \
+fi
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT pcm_direct.lo -MD -MP -MF .deps/pcm_direct.Tpo -c
+pcm_direct.c  -fPIC -DPIC -o .libs/pcm_direct.o
+pcm_direct.c: In function `get_tmp_name':
+pcm_direct.c:165: warning: long int format, __suseconds_t arg (arg 6)
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT pcm_direct.lo -MD -MP -MF .deps/pcm_direct.Tpo -c
+pcm_direct.c -o pcm_direct.o >/dev/null 2>&1
 
-I fixed this by blocking SIGALRM except for when calling poll(). However,
-using poll() there's no way to atomically unblock a signal and enter
-poll() - that's what pselect is for. However, the
-snd_*_poll_descriptors-style API makes it hard to use select/pselect, so
-I'm forced to implement it in a way that's not 100% 
-free of race conditions.
-
-My request: please add a way to use select/pselect with ALSA.
 ======================================================================
 
 ----------------------------------------------------------------------
- phunge - 02-14-05 11:04 
+ tiwai - 01-19-05 14:43 
 ----------------------------------------------------------------------
-I didn't think of that - that will work fine. This bug is a non-issue.
-
-Thanks for the info.
-
-----------------------------------------------------------------------
- tiwai - 02-14-05 16:09 
-----------------------------------------------------------------------
-OK, closing now.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-05 16:11 phunge         New Issue                                    
-02-09-05 17:12 tiwai          Note Added: 0003557                          
-02-14-05 11:04 phunge         Note Added: 0003588                          
-02-14-05 16:09 tiwai          Status                   new => resolved     
-02-14-05 16:09 tiwai          Resolution               open => not an issue
-02-14-05 16:09 tiwai          Assigned To               => tiwai           
-02-14-05 16:09 tiwai          Note Added: 0003591                          
-02-14-05 16:09 tiwai          Assigned To              tiwai =>            
+01-17-05 09:18 jdthood        New Issue                                    
+01-19-05 14:43 tiwai          Status                   new => resolved     
+01-19-05 14:43 tiwai          Resolution               open => fixed       
+01-19-05 14:43 tiwai          Assigned To               => tiwai           
+01-19-05 14:43 tiwai          Note Added: 0003276                          
+01-19-05 14:43 tiwai          Assigned To              tiwai =>            
 07-08-05 10:35 perex          Status                   resolved => closed  
 ======================================================================
 
