@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000492]: EMU10K1 and OSS emulation PCM volume problem
-Date: Fri, 8 Jul 2005 10:38:38 +0200
-Message-ID: <9ce9c81dfaf1027adad6fe9452bc387d@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001241]: alsaconf missing in the package alsa-utils
+Date: Fri, 8 Jul 2005 11:46:29 +0200
+Message-ID: <2783de9a33d5f322b5e134f84e1272a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47814E3
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:38:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16050185
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 11:46:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=492> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1241> 
 ======================================================================
-Reported By:                croiset
+Reported By:                levy
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   492
-Category:                   
+Project:                    ALSA - utils
+Issue ID:                   1241
+Category:                   alsaconf
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             09-09-2004 16:51 CEST
-Last Modified:              07-08-2005 10:38 CEST
+Date Submitted:             07-08-2005 11:46 CEST
+Last Modified:              07-08-2005 11:46 CEST
 ======================================================================
-Summary:                    EMU10K1 and OSS emulation PCM volume problem
+Summary:                    alsaconf missing in the package alsa-utils
 Description: 
-when I use a sound card :
-0 [Live           ]: EMU10K1 - Sound Blaster Live!
-                     Sound Blaster Live! (rev.10) at 0x8400, irq 10
-when I use the oss emulation, the only way to have sound on the audio
-analog output, is to use the mixer call Wave (ALTPCM) instead of PCM like
-other cards. The mixer I used for the test is alsamixer.
+system-config-soundcard was unable to detect the sound card of the toshiba
+310CDT.
+This card is a Chip set Yamaha OPL3-SA3 connected to ISA BUS.
 
-My tests are on alsa driver 1.0.5a.
+On the contrary, alsaconf was able to detect the card (module sb8) : I
+give you a copy of the part of /etc/modprobe.conf produced by alsaconf :
+alias sound-card-0 snd-sb8
+alias sound-slot-0 snd-sb8
+options snd-sb8 dma8=1 irq=9
+
 
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 03-21-05 00:02 
-----------------------------------------------------------------------
-Submitter: Any improvement with later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-04 16:51 croiset        New Issue                                    
-03-21-05 00:02 jdthood        Note Added: 0004106                          
-03-28-05 04:08 jdthood        Status                   new => resolved     
-03-28-05 04:08 jdthood        Resolution               open => unable to
-duplicate
-07-08-05 10:38 perex          Status                   resolved => closed  
+07-08-05 11:46 levy           New Issue                                    
 ======================================================================
 
 
