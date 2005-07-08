@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
-Date: Fri, 8 Jul 2005 12:39:47 +0200
-Message-ID: <761032864193388a9a7c3cde32a53728@bugtrack.alsa-project.org>
+Date: Fri, 8 Jul 2005 12:54:45 +0200
+Message-ID: <a737962a86052236f539c47a7ad691fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FB5F165
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:39:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E59D142
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 12:54:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
 Date Submitted:             06-09-2005 16:09 CEST
-Last Modified:              07-08-2005 12:39 CEST
+Last Modified:              07-08-2005 12:54 CEST
 ======================================================================
 Summary:                    Headphone and Speaker volume control
 Description: 
@@ -56,17 +56,6 @@ I am running fc3 on a dell inspiron 8500.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 11:51 
-----------------------------------------------------------------------
-Sorry, I don't understand your request.  Please describe more clearly?
-
-Does the hardware switch (mute/unmute) the speaker volume when you plug in
-HP jack?  Or you have to turn on/off mixer switch (which) manually?
-In the former case, ac97_quirk=hp_only should suffice.  I don't want to
-implemenet a separate HP volume.  In the latter case, we'll need a code to
-handle the ac97 jack detection, which is sitll missing.
-
-----------------------------------------------------------------------
  sgoodall - 07-08-05 12:39 
 ----------------------------------------------------------------------
 Yes, when i plug my headphones in, the speakers are muted.
@@ -80,6 +69,14 @@ The windows drivers on my machine have a tick box that disables any sound
 coming through the main speakers regardless of whether anything is plugged
 into the headphone jack.
 
+----------------------------------------------------------------------
+ tiwai - 07-08-05 12:54 
+----------------------------------------------------------------------
+OK, then the attached patch will add a new ac97_quirk type,
+"bind_hp_voume".  In this mode, only HP volume is bound with master volume
+but HP switch is left so that you can mute/unmute HP.  Pass
+ac97_quirk=bind_hp_volume, instead.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -91,6 +88,7 @@ kernel-2.6.11-1.27_FC3
 07-07-05 11:30 sgoodall       Note Added: 0005398                          
 07-08-05 11:51 tiwai          Note Added: 0005409                          
 07-08-05 12:39 sgoodall       Note Added: 0005420                          
+07-08-05 12:54 tiwai          Note Added: 0005421                          
 ======================================================================
 
 
