@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001230]: Compiler warning while compiling gus_main.c
-Date: Fri, 8 Jul 2005 10:29:48 +0200
-Message-ID: <1f95b23b041f087c6e84f3dbaf672689@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000958]: noisy output on low sample rate files when using dmix
+Date: Fri, 8 Jul 2005 10:34:26 +0200
+Message-ID: <d1a2f51a75ed12ffb34a1d86b8171176@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2059A17A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:29:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81EFD17A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 10:34:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1230> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=958> 
 ======================================================================
-Reported By:                Henne
-Assigned To:                perex
+Reported By:                mtraum
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1230
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   958
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
+Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-04-2005 09:48 CEST
-Last Modified:              07-08-2005 10:29 CEST
+Date Submitted:             03-02-2005 21:23 CET
+Last Modified:              07-08-2005 10:34 CEST
 ======================================================================
-Summary:                    Compiler warning while compiling gus_main.c
+Summary:                    noisy output on low sample rate files when using
+dmix
 Description: 
-The compiler gives a warning on gus_main.c, that snd_gus_seq_dev_free() is
-defined but not used. This patch will fix it. 
+When using dmix, I get noise when playing files with low sample rates. The
+level of noise increases the lower the sample rate is. This noise does not
+exist when playing files without dmix, and I'm playing them with 'aplay'.
+
+
+Files sampled at 44100 have no noticeable noise (at least for me), so I'm
+assumming there's a problem with the resampling algorithm.
+
+Just to be sure, I generated some test tones with sgen
+(http://www.comp.leeds.ac.uk/jj/linux/siggen.html). You can clearly hear
+the noise on these samles, which I am attaching.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 07-08-05 10:29 
+ Rottwang - 03-24-05 01:40 
 ----------------------------------------------------------------------
-Applied to CVS. Thanks.
+I had no problems with 1.0.7 and 1.0.8-rc1 was fine too (I'm using it now).
+
+----------------------------------------------------------------------
+ tiwai - 03-24-05 21:32 
+----------------------------------------------------------------------
+Fixed on CVS (pcm_rate.c rev.1.91).  Will appear in 1.0.9-rc3 or final.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-05 09:48 Henne          New Issue                                    
-07-04-05 09:48 Henne          File Added: gus_main_c.diff                    
-07-08-05 10:29 perex          Status                   assigned => resolved
-07-08-05 10:29 perex          Resolution               open => fixed       
-07-08-05 10:29 perex          Note Added: 0005407                          
+03-02-05 21:23 mtraum         New Issue                                    
+03-02-05 21:23 mtraum         File Added: testtones.tar.gz                    
+03-02-05 22:08 hamel_g        Note Added: 0003781                          
+03-13-05 09:43 Rottwang       Note Added: 0003901                          
+03-22-05 00:01 eradicator     Issue Monitored: eradicator                    
+03-24-05 00:39 grabner        Note Added: 0004188                          
+03-24-05 00:39 grabner        Issue Monitored: grabner                     
+03-24-05 01:40 Rottwang       Note Added: 0004189                          
+03-24-05 21:32 tiwai          Status                   new => resolved     
+03-24-05 21:32 tiwai          Resolution               open => fixed       
+03-24-05 21:32 tiwai          Assigned To               => tiwai           
+03-24-05 21:32 tiwai          Note Added: 0004201                          
+04-08-05 14:15 ikonst         Issue Monitored: ikonst                      
+07-08-05 10:34 perex          Status                   resolved => closed  
 ======================================================================
 
 
