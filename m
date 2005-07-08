@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001243]: gnome-alsamixer segfaults in snd_ctl_elem_value_set_iec958 when clicking 'Headphone Detection'
-Date: Fri, 8 Jul 2005 14:31:10 +0200
-Message-ID: <3cc420d659cce6b3af427f29fa9e23b2@bugtrack.alsa-project.org>
+Date: Fri, 8 Jul 2005 14:36:29 +0200
+Message-ID: <f4b9b0aa35649f9056d1294d1916568f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B88E0179
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 14:31:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EA4117C
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2005 14:36:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-08-2005 13:54 CEST
-Last Modified:              07-08-2005 14:31 CEST
+Last Modified:              07-08-2005 14:36 CEST
 ======================================================================
 Summary:                    gnome-alsamixer segfaults in
 snd_ctl_elem_value_set_iec958 when clicking 'Headphone Detection'
@@ -234,11 +234,23 @@ E:  Ad=84(I) Atr=03(Int.) MxPS=   1 Ivl=10ms
 The control has nothing to do with IEC958, and it's read-only, so it must
 be not changed at all.
 
+----------------------------------------------------------------------
+ jdthood - 07-08-05 14:36 
+----------------------------------------------------------------------
+Thanks for the quick reply.
+
+>  The control has nothing to do with IEC958, and it's read-only, so it
+must be not changed at all.
+
+Are you saying that, in your opinion, there is no bug in alsa-lib --- that
+the only bug is in gnome-alsamixer?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-08-05 13:54 jdthood        New Issue                                    
 07-08-05 14:31 tiwai          Note Added: 0005424                          
+07-08-05 14:36 jdthood        Note Added: 0005425                          
 ======================================================================
 
 
