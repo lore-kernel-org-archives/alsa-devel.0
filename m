@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Sat, 9 Jul 2005 06:26:28 +0200
-Message-ID: <c413ac75a8246beb04b1a32c88cb7883@bugtrack.alsa-project.org>
+Date: Sat, 9 Jul 2005 11:13:13 +0200
+Message-ID: <da5498d8411c08ac3cc0476fb28893d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 764E8172
-	for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2005 06:26:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EA62170
+	for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2005 11:13:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10
 Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
 Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              07-09-2005 06:26 CEST
+Last Modified:              07-09-2005 11:13 CEST
 ======================================================================
 Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
 on 2.6.x kernels
@@ -66,13 +66,7 @@ reposting this bug here)
 ======================================================================
 
 ----------------------------------------------------------------------
- iive - 04-14-05 00:02 
-----------------------------------------------------------------------
-Tell me what to do and I'll do it.
-btw have you took a look of the attached file?
-
-----------------------------------------------------------------------
- ahaning - 07-09-05 06:26 
+ ahaning - 07-09-05 06:38 
 ----------------------------------------------------------------------
 I was able to get alsa to brute-force detect my opl3sa2 card in linux 2.4
 and then copy the modules.conf to modprobe.conf and then (after installing
@@ -115,6 +109,21 @@ HTH.
 
 -Andy
 
+(If you need any other information, I'm probably better reached via email:
+ahaning@gmail.com)
+
+
+
+----------------------------------------------------------------------
+ jdthood - 07-09-05 11:13 
+----------------------------------------------------------------------
+> btw have you took a look of the attached file?
+
+I just looked at it now.  I see that it contains a lot of information.
+
+jdthood@turmeric:/tmp/isa_opl3sa2$ ls
+fullog  isapnp_after  isapnp_before  kernel/  lsmod  proc/  sys/
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -126,6 +135,8 @@ version (current 2.6.10)
 04-13-05 21:59 jdthood        Note Added: 0004478                          
 04-14-05 00:02 iive           Note Added: 0004485                          
 07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
 ======================================================================
 
 
