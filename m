@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001245]: crash while building latest driver for mia soundcard on ubuntu linux.
-Date: Sat, 9 Jul 2005 05:11:20 +0200
-Message-ID: <cc051688cffd302e57b785179e4aa44f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Sat, 9 Jul 2005 06:26:28 +0200
+Message-ID: <c413ac75a8246beb04b1a32c88cb7883@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC720170
-	for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2005 05:11:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 764E8172
+	for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2005 06:26:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,110 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1245> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                wbrown338
-Assigned To:                perex
+Reported By:                iive
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1245
-Category:                   0_compilation problem_!!!
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Linux ubuntu 2.6.10-5-386
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Fri Jun 24 16:53:01 UTC
-2005 i686 GNU/Linux
-Kernel Version:             2.6.10-5-386
+Status:                     new
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             07-09-2005 05:11 CEST
-Last Modified:              07-09-2005 05:11 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              07-09-2005 06:26 CEST
 ======================================================================
-Summary:                    crash while building latest driver for mia soundcard
-on ubuntu linux.
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-crash during build:
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
 
-make -C /usr/src/linux-source-2.6.10
-SUBDIRS=/usr/src/alsa/alsa-driver-1.0.9b  modules
-make[1]: Entering directory `/usr/src/linux-source-2.6.10'
-  CC [M]  /usr/src/alsa/alsa-driver-1.0.9b/acore/memalloc.o
-/bin/sh: scripts/genksyms/genksyms: No such file or directory
-make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore/memalloc.o] Error 1
-make[2]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore] Error 2
-make[1]: *** [_module_/usr/src/alsa/alsa-driver-1.0.9b] Error 2
-make[1]: Leaving directory `/usr/src/linux-source-2.6.10'
-make: *** [compile] Error 2
-rm -f /lib/modules/2.6.10/misc/snd*.*o /lib/modules/2.6.10/misc/persist.o
-/lib/modules/2.6.10/misc/isapnp.o
-make[1]: Entering directory `/usr/src/alsa/alsa-driver-1.0.9b/acore'
-mkdir -p /lib/modules/2.6.10/misc/acore
-cp snd-hpet.ko snd-page-alloc.ko snd-pcm.ko snd-rawmidi.ko snd-rtctimer.ko
-snd-timer.ko snd.ko /lib/modules/2.6.10/misc/acore
-cp: cannot stat `snd-hpet.ko': No such file or directory
-cp: cannot stat `snd-page-alloc.ko': No such file or directory
-cp: cannot stat `snd-pcm.ko': No such file or directory
-cp: cannot stat `snd-rawmidi.ko': No such file or directory
-cp: cannot stat `snd-rtctimer.ko': No such file or directory
-cp: cannot stat `snd-timer.ko': No such file or directory
-cp: cannot stat `snd.ko': No such file or directory
-make[1]: *** [modules_install] Error 1
-make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.9b/acore'
-make: *** [install-modules] Error 1
-root@ubuntu:/usr/src/alsa/alsa-driver-1.0.9b #
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
+
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
+
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
 
 ======================================================================
+
+----------------------------------------------------------------------
+ iive - 04-14-05 00:02 
+----------------------------------------------------------------------
+Tell me what to do and I'll do it.
+btw have you took a look of the attached file?
+
+----------------------------------------------------------------------
+ ahaning - 07-09-05 06:26 
+----------------------------------------------------------------------
+I was able to get alsa to brute-force detect my opl3sa2 card in linux 2.4
+and then copy the modules.conf to modprobe.conf and then (after installing
+the drivers compiled for the currently-installed kernel) I can do
+'alsasound start' and I get audio just fine in kernel 2.6(.12.2).
+
+HTH.
+
+FWIW, here is the modprobe.conf that was generated under kernel 2.6:
+
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF version 1.0.9rc3 ---
+alias snd-card-0 snd-opl3sa2
+alias sound-slot-0 snd-opl3sa2
+options snd-opl3sa2 fm_port=-1 midi_port=-1 port=0x370 wss_port=0x530
+dma1=3 dma2=1 irq=9
+# --- END: Generated by ALSACONF, do not edit. ---
+
+
+and here is the configuration generated under 2.4 (that works in 2.6,
+too):
+
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF version 1.0.9 ---
+alias char-major-116 snd
+alias char-major-14 soundcore
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+alias snd-card-0 snd-opl3sa2
+alias sound-slot-0 snd-opl3sa2
+options snd-opl3sa2 fm_port=-1 midi_port=-1 port=0x370 wss_port=0x530
+dma1=0 dma2=1 irq=11 isapnp=0
+# --- END: Generated by ALSACONF, do not edit. ---
+
+
+HTH.
+
+-Andy
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-05 05:11 wbrown338      New Issue                                    
-07-09-05 05:11 wbrown338      Distribution              => Linux ubuntu
-2.6.10-5-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Fri Jun 24
-16:53:01 UTC 2005 i686 GNU/Linux
-07-09-05 05:11 wbrown338      Kernel Version            => 2.6.10-5-386    
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
 ======================================================================
 
 
