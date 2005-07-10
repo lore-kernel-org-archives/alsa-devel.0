@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001249]: dmix doesn't survive suspend to RAM
-Date: Sun, 10 Jul 2005 11:33:38 +0200
-Message-ID: <61f9760940189ef4f19418d5457c14d6@bugtrack.alsa-project.org>
+From: Adam Nielsen <a.nielsen@shikadi.net>
+Subject: Disabling fake 3D sound with es1688
+Date: Sun, 10 Jul 2005 22:25:55 +1000
+Message-ID: <20050710222555.67b4a876.a.nielsen@shikadi.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F9B0186
-	for <alsa-devel@alsa-project.org>; Sun, 10 Jul 2005 11:33:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1249> 
-======================================================================
-Reported By:                nijel
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1249
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-10-2005 11:33 CEST
-Last Modified:              07-10-2005 11:33 CEST
-======================================================================
-Summary:                    dmix doesn't survive suspend to RAM
-Description: 
-After resuming from suspend to RAM, dmix stops working. Application(s) that
-had sound device opened can still use it, while the newly started can
-not:
+I've got a laptop with an onboard es1688 based ISA sound card, and it
+has an annoying 3D stereo effect I want to disable.  I've seen other
+sound cards that have a mixer control that can disable this, but
+apparently not the es1688.  I was just wondering whether anyone is aware
+of any way of disabling it (there's no module option and the source
+code doesn't indicate anything), or failing that if someone has the
+datasheet for the chip, as it seems very difficult to find (I can only
+find one explaining what the pins are for, not one detailing the
+software interface to the chip.)
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-3679-1120945544-968306: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA snd_pcm_open error: No such file or directory
+Any info would be greatly appreciated!
 
-Stoping application that has opened device makes it work again.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-10-05 11:33 nijel          New Issue                                    
-======================================================================
-
-
+Thanks,
+Adam.
 
 
 -------------------------------------------------------
