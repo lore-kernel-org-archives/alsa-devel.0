@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001247]: amixer beeps on errors in arguments
-Date: Sat, 9 Jul 2005 21:39:17 +0200
-Message-ID: <5c6c0418a6244e1781329721b22882a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001248]: Sampling rate not correct - reports 44100 but works at 48000
+Date: Sun, 10 Jul 2005 05:25:25 +0200
+Message-ID: <6027f39d6f5d102584fcc79ea9628234@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 613DC11E
-	for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2005 21:39:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B66163
+	for <alsa-devel@alsa-project.org>; Sun, 10 Jul 2005 05:25:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,38 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1247> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1248> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                steve
+Assigned To:                karsten
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1247
-Category:                   amixer
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   1248
+Category:                   USB - usb-usx2y
+Reproducibility:            random
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             07-09-2005 21:39 CEST
-Last Modified:              07-09-2005 21:39 CEST
+Date Submitted:             07-10-2005 05:25 CEST
+Last Modified:              07-10-2005 05:25 CEST
 ======================================================================
-Summary:                    amixer beeps on errors in arguments
+Summary:                    Sampling rate not correct - reports 44100 but works
+at 48000
 Description: 
-Please remove the bell characters from the error messages.
+Often, when recording with jackd and ardour, after specifying a sampling
+rate of 44100 and receiving no complaint from jackd I find the US-122 has
+actually been working at 48000.
 
-jdthood@turmeric:/usr/src/alsa/alsa/alsa-utils/amixer$ grep nvali *
-amixer.c:                                       fprintf(stderr,
-"\07Invalid card number.\n");
-amixer.c:                       fprintf(stderr, "\07Invalid switch or
-option needs an argument.\n");
+Also, trying to play a 44100 WAV file via beep-media-player I find the
+output pitch-shifted and suspect that again the US-122 is working at
+48000.  Resampling the file in software to 48000 causes it to play at the
+correct pitch.
 
+I have checked the outpout from dmesg and can see no error messages about
+being unable to set the sample rate so I'm puzzled.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-05 21:39 jdthood        New Issue                                    
+07-10-05 05:25 steve          New Issue                                    
+07-10-05 05:25 steve          Distribution              => Debian          
+07-10-05 05:25 steve          Kernel Version            => 2.6.12          
 ======================================================================
 
 
