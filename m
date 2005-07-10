@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Sun, 10 Jul 2005 20:08:40 +0200
-Message-ID: <888ec6fa2cc03ec7b8f0ddf1412235a1@bugtrack.alsa-project.org>
+From: Olaf Hering <olh@suse.de>
+Subject: [PATCH 77/82] remove linux/version.h from sound/
+Date: Sun, 10 Jul 2005 19:36:25 +0000
+Message-ID: <42904.5358243913$1121024298@news.gmane.org>
+References: <20050710193508.0.PmFpst2252.2247.olh@nectarine.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3419B1AA
-	for <alsa-devel@alsa-project.org>; Sun, 10 Jul 2005 20:08:41 +0200 (MEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D52261AB
+	for <alsa-devel@alsa-project.org>; Sun, 10 Jul 2005 21:36:31 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20050710193508.0.PmFpst2252.2247.olh@nectarine.suse.de>  
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,640 +20,172 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1206> 
-======================================================================
-Reported By:                marcmerz
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1206
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Suse 9.3
-Kernel Version:             Linux cinemaxx 2.6.11.4-20a-smp-matrox
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 SMP Fri May 27 20:49:09
-CEST 2005 i686 i686 i386 GNU/Linux
-======================================================================
-Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              07-10-2005 20:08 CEST
-======================================================================
-Summary:                    No Surround Sound (5.1) with analog speaker set on
-ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Description: 
-The same hardware (Asus P4P800-VM with an analog surround set from
-creative) was working fine under Suse 9.1 with Kernel 2.6.5. I then had to
-change my HD (/dev/hda) due to harddisk crash and installed Suse 9.3 with
-Kernel 2.6.11.4-20a (where i included module support for my Matrox G400
-everything else is default config). It came with ALSA 1.08. I already got
-the sources from the alsa homepage and updated to the current versions
-(1.09b, 1.09a and 1.09 for drivers, utils, libs, tools etc.).
- 
-Meanwhile i spent more than 7 days now to get my DD5.1 Surround working in
-6-channel mode but to no avail. When i do the speaker test, the front left
-and front right are ok. Rear Left comes from the Rear Right speaker and
-Rear Right comes from the left rear speaker. The center channel does not
-do any sounds at all and the LFE output is on the left front speaker.
- 
-I checked my wirings a couple of times. I do have 'normal' sound in KDE
-playing MP3's etc. and i can also use the 'Spread Front to Surround/LFE'
-switch in kmix to get some sound from all speakers including center and
-lfe.
- 
-When i play AC3 testfiles with a52dec, the center is always off (i.e. not
-to hear) and the lfe output is going to the front left speaker. With
-ac3dec i get the same result but on top of it, using 'ac3dec -6' the sound
-is crackling and therefore useless (btw. this was also the case with Alsa
-1.04|5 under Suse 9.1 with Kernel 2.6.5).
- 
-I can not believe that the same setup did work flawlessly under ALSA 1.05
-and with a new kernel and current source drivers from the alsa project
-homepage it is just not working in DD5.1.
- 
-Maybe there is a configuration mistake concerning plug:surround51 sending
-output to the wrong channels but a) i did not change anything there and b)
-i have no clue how to do that anyway.
- 
-Any help would be greatly appreciated.
- 
-Just some settings from my setup:
-# lspci -v|grep audio  // (using acpi=off noapic in /boot/grub/menu.lst
-does not make any difference
-0000:00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+changing CONFIG_LOCALVERSION rebuilds too much, for no appearent reason.
+remove code for obsolete kernel versions
 
-# hwinfo --sound
-21: PCI 1f.5: 0401 Multimedia audio controller
-  [Created at pci.273]
-  Unique ID: W60f.jRYEjR2QAA3
-  SysFS ID: /devices/pci0000:00/0000:00:1f.5
-  SysFS BusID: 0000:00:1f.5
-  Hardware Class: sound
-  Model: "ASUSTeK 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller"
-  Vendor: pci 0x8086 "Intel Corporation"
-  Device: pci 0x24d5 "82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller"
-  SubVendor: pci 0x1043 "ASUSTeK Computer Inc."
-  SubDevice: pci 0x80b0
-  Revision: 0x02
-  Driver: "Intel ICH"
-  I/O Ports: 0xe800-0xe8ff (rw)
-  I/O Ports: 0xee80-0xeebf (rw)
-  Memory Range: 0xfebff800-0xfebff9ff (rw,non-prefetchable)
-  Memory Range: 0xfebff400-0xfebff4ff (rw,non-prefetchable)
-  IRQ: 209 (170062 events)
-  Driver Info https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0:
-    Driver Status: snd-intel8x0 is active
-    Driver Activation Cmd: "modprobe snd-intel8x0"
-  Driver Info https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1:
-    Driver Status: i810_audio is not active
-    Driver Activation Cmd: "modprobe i810_audio"
-  Config Status: cfg=yes, avail=yes, need=no, active=unknown
+Signed-off-by: Olaf Hering <olh@suse.de>
 
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun  8 2005 for kernel 2.6.11.4-20a-smp-matrox (SMP).
- 
-# cat /proc/asound/cards
-0 [ICH5           ]: ICH4 - Intel ICH5
-                     Intel ICH5 with AD1980 at 0xfebff800, irq 209
+include/sound/tea575x-tuner.h |    2 --
+sound/mips/au1x00.c           |   19 -------------------
+sound/oss/au1550_ac97.c       |    1 -
+sound/oss/msnd.c              |    1 -
+sound/oss/os.h                |    1 -
+sound/oss/rme96xx.c           |    1 -
+sound/oss/sh_dac_audio.c      |    1 -
+sound/ppc/pmac.h              |    1 -
+8 files changed, 27 deletions(-)
 
-# cat /proc/asound/devices
- 20: [0- 4]: digital audio playback
- 27: [0- 3]: digital audio capture
- 26: [0- 2]: digital audio capture
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
+Index: linux-2.6.13-rc2-mm1/include/sound/tea575x-tuner.h
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/include/sound/tea575x-tuner.h
++++ linux-2.6.13-rc2-mm1/include/sound/tea575x-tuner.h
+@@ -34,9 +34,7 @@ struct snd_tea575x_ops {
+struct snd_tea575x {
+snd_card_t *card;
+struct video_device vd;		/* video device */
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 5, 0)
+struct file_operations fops;
+-#endif
+int dev_nr;			/* requested device number + 1 */
+int vd_registered;		/* video device is registered */
+int tea5759;			/* 5759 chip is present */
+Index: linux-2.6.13-rc2-mm1/sound/mips/au1x00.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/sound/mips/au1x00.c
++++ linux-2.6.13-rc2-mm1/sound/mips/au1x00.c
+@@ -39,7 +39,6 @@
+#include <sound/driver.h>
+#include <linux/init.h>
+#include <linux/slab.h>
+-#include <linux/version.h>
+#include <sound/core.h>
+#include <sound/initval.h>
+#include <sound/pcm.h>
+@@ -50,12 +49,7 @@
+MODULE_AUTHOR("Charles Eidsness <charles@cooper-street.com>");
+MODULE_DESCRIPTION("Au1000 AC'97 ALSA Driver");
+MODULE_LICENSE("GPL");
+-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,8)
+MODULE_SUPPORTED_DEVICE("{{AMD,Au1000 AC'97}}");
+-#else
+-MODULE_CLASSES("{sound}");
+-MODULE_DEVICES("{{AMD,Au1000 AC'97}}");
+-#endif
 
-# cat /proc/asound/modules
-0 snd_intel8x0
+#define chip_t au1000_t
 
-# cat /proc/asound/pcm
-00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
+@@ -535,17 +529,12 @@ snd_au1000_ac97_new(void)
+{
+int err;
 
-/etc/asound.state:
-state.ICH5 {
-        control.1 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Surround Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Master Surround Playback Volume'
-                value.0 28
-                value.1 28
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Center Playback Switch'
-                value true
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 1
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Center Playback Volume'
-                value 31
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'LFE Playback Switch'
-                value true
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 1
-                comment.range '0 - 31'
-                iface MIXER
-                name 'LFE Playback Volume'
-                value 31
-        }
-        control.7 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Surround Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.8 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Surround Playback Volume'
-                value.0 31
-                value.1 31
-        }
-        control.9 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.10 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 28
-                value.1 28
-        }
-        control.11 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Master Mono Playback Switch'
-                value false
-        }
-        control.12 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 1
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Master Mono Playback Volume'
-                value 0
-        }
-        control.13 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Phone Playback Switch'
-                value false
-        }
-        control.14 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 1
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Phone Playback Volume'
-                value 0
-        }
-        control.15 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Mic Playback Switch'
-                value true
-        }
-        control.16 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 1
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Mic Playback Volume'
-                value 31
-        }
-        control.17 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Mic Boost (+20dB)'
-                value false
-        }
-        control.18 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Line Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.19 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Line Playback Volume'
-                value.0 31
-                value.1 31
-        }
-        control.20 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'CD Playback Switch'
-                value.0 false
-                value.1 false
-        }
-        control.21 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                iface MIXER
-                name 'CD Playback Volume'
-                value.0 0
-                value.1 0
-        }
-        control.22 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Aux Playback Switch'
-                value.0 false
-                value.1 false
-        }
-        control.23 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Aux Playback Volume'
-                value.0 0
-                value.1 0
-        }
-        control.24 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'PCM Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.25 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 31
-                value.1 31
-        }
-        control.26 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 2
-                comment.item.0 Mic
-                comment.item.1 CD
-                comment.item.2 Video
-                comment.item.3 Aux
-                comment.item.4 Line
-                comment.item.5 Mix
-                comment.item.6 'Mix Mono'
-                comment.item.7 Phone
-                iface MIXER
-                name 'Capture Source'
-                value.0 Mic
-                value.1 Mic
-        }
-        control.27 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 true
-                value.1 true
-        }
-        control.28 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 0
-                value.1 0
-        }
-        control.29 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 Mic1
-                comment.item.1 Mic2
-                iface MIXER
-                name 'Mic Select'
-                value Mic1
-        }
-        control.30 {
-                comment.access read
-                comment.type IEC958
-                comment.count 1
-                iface MIXER
-                name 'IEC958 Playback Con Mask'
-                value
-'0fff000f0000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000'
-        }
-        control.31 {
-                comment.access read
-                comment.type IEC958
-                comment.count 1
-                iface MIXER
-                name 'IEC958 Playback Pro Mask'
-                value
-cf00000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000
-        }
-        control.32 {
-                comment.access 'read write'
-                comment.type IEC958
-                comment.count 1
-                iface MIXER
-                name 'IEC958 Playback Default'
-                value
-'008200020000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000'
-        }
-        control.33 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'IEC958 Playback Switch'
-                value false
-        }
-        control.34 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 1
-                comment.range '0 - 3'
-                iface MIXER
-                name 'IEC958 Playback AC97-SPSA'
-                value 0
-        }
-        control.35 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 AC-Link
-                comment.item.1 'A/D Converter'
-                iface MIXER
-                name 'IEC958 Playback Source'
-                value 'A/D Converter'
-        }
-        control.36 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Exchange Front/Surround'
-                value false
-        }
-        control.37 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Spread Front to Surround and Center/LFE'
-                value false
-        }
-        control.38 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 Off
-                comment.item.1 '6 -> 4'
-                comment.item.2 '6 -> 2'
-                iface MIXER
-                name Downmix
-                value Off
-        }
-        control.39 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 Shared
-                comment.item.1 Independent
-                iface MIXER
-                name 'Surround Jack Mode'
-                value Shared
-        }
-        control.40 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 '2ch'
-                comment.item.1 '4ch'
-                comment.item.2 '6ch'
-                iface MIXER
-                name 'Channel Mode'
-                value '6ch'
-        }
-        control.41 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Stereo Mic'
-                value false
-        }
-        control.42 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'External Amplifier'
-                value false
-        }
-}
+-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,8)
+ac97_bus_t *pbus;
+ac97_template_t ac97;
+static ac97_bus_ops_t ops = {
+.write = snd_au1000_ac97_write,
+.read = snd_au1000_ac97_read,
+};
+-#else
+-	ac97_bus_t bus, *pbus;
+-	ac97_t ac97;
+-#endif
 
-# lsmod|grep snd
-snd_intel8x0           35136  0
-snd_ac97_codec         84220  1 snd_intel8x0
-snd_pcm               106500  2 snd_intel8x0,snd_ac97_codec
-snd_timer              29700  1 snd_pcm
-snd                    65796  4
-snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-soundcore              14048  1 snd
-snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
-======================================================================
+if ((au1000->ac97_res_port = request_region(AC97C_CONFIG,
+sizeof(au1000_ac97_reg_t), "Au1x00 AC97")) == NULL) {
+@@ -577,16 +566,8 @@ snd_au1000_ac97_new(void)
+spin_unlock(&au1000->ac97_lock);
 
-----------------------------------------------------------------------
- marcmerz - 06-26-05 19:45 
-----------------------------------------------------------------------
-Hi Takashi,
+/* Initialise AC97 middle-layer */
+-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,8)
+if ((err = snd_ac97_bus(au1000->card, 0, &ops, au1000, &pbus)) < 0)
+return err;
+-#else
+-	memset(&bus, 0, sizeof(bus));
+-	bus.write = snd_au1000_ac97_write;
+-	bus.read = snd_au1000_ac97_read;
+-	if ((err = snd_ac97_bus(au1000->card, &bus, &pbus)) < 0)
+-		return err;
+-#endif
+memset(&ac97, 0, sizeof(ac97));
+ac97.private_data = au1000;
+ac97.private_free = snd_au1000_ac97_free;
+Index: linux-2.6.13-rc2-mm1/sound/oss/au1550_ac97.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/sound/oss/au1550_ac97.c
++++ linux-2.6.13-rc2-mm1/sound/oss/au1550_ac97.c
+@@ -35,7 +35,6 @@
 
-did you have a chance to look at my additional notes/files and comments
-from another user?
+#undef DEBUG
 
-Thanks and kind regards,
-Marcus
+-#include <linux/version.h>
+#include <linux/module.h>
+#include <linux/string.h>
+#include <linux/ioport.h>
+Index: linux-2.6.13-rc2-mm1/sound/oss/msnd.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/sound/oss/msnd.c
++++ linux-2.6.13-rc2-mm1/sound/oss/msnd.c
+@@ -24,7 +24,6 @@
+*
+********************************************************************/
 
+-#include <linux/version.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/slab.h>
+Index: linux-2.6.13-rc2-mm1/sound/oss/os.h
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/sound/oss/os.h
++++ linux-2.6.13-rc2-mm1/sound/oss/os.h
+@@ -5,7 +5,6 @@
+#undef  DO_TIMINGS
 
-----------------------------------------------------------------------
- phision - 07-10-05 20:08 
-----------------------------------------------------------------------
-I have da same problem. My motherboard is ASUS P4P800 with integrated audio
-controler, using the AD1985 chip. After some hacking around in the
-alsa-drivers I found a way to resolve this issue. Below I am talking about
-alsa-driver-1.0.9b.
+#include <linux/module.h>
+-#include <linux/version.h>
 
-In the file alsa-driver-1.0.9b/alsa-kernel/pci/intel8x0.c, line 2043, in
-the function
-static int __devinit snd_intel8x0_mixer(intel8x0_t *chip, int ac97_clock,
-const char *quirk_override)
+#ifdef __KERNEL__
+#include <linux/utsname.h>
+Index: linux-2.6.13-rc2-mm1/sound/oss/rme96xx.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/sound/oss/rme96xx.c
++++ linux-2.6.13-rc2-mm1/sound/oss/rme96xx.c
+@@ -44,7 +44,6 @@ TODO:
+#define RMEVERSION "0.8"
+#endif
 
-I commented the following two lines:
+-#include <linux/version.h>
+#include <linux/module.h>
+#include <linux/string.h>
+#include <linux/sched.h>
+Index: linux-2.6.13-rc2-mm1/sound/oss/sh_dac_audio.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/sound/oss/sh_dac_audio.c
++++ linux-2.6.13-rc2-mm1/sound/oss/sh_dac_audio.c
+@@ -2,7 +2,6 @@
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/sched.h>
+-#include <linux/version.h>
+#include <linux/linkage.h>
+#include <linux/slab.h>
+#include <linux/fs.h>
+Index: linux-2.6.13-rc2-mm1/sound/ppc/pmac.h
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/sound/ppc/pmac.h
++++ linux-2.6.13-rc2-mm1/sound/ppc/pmac.h
+@@ -22,7 +22,6 @@
+#ifndef __PMAC_H
+#define __PMAC_H
 
-        else
-                pbus->dra = 1;
-
-and this resolved the problem with the center and surround not being
-heard. I am not sure exactly how this fixes the issue and if this is the
-right solution.
-
-Anyway, the rear left and rear right channels still come out of the
-center/lfe jack and vice versa (i.e. they are exchanged compared to the
-jacks in windows).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-20-05 20:39 marcmerz       New Issue                                    
-06-20-05 20:39 marcmerz       Distribution              => Suse 9.3        
-06-20-05 20:39 marcmerz       Kernel Version            => Linux cinemaxx
-2.6.11.4-20a-smp-matrox https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
-06-21-05 11:26 tiwai          Note Added: 0005105                          
-06-21-05 20:29 marcmerz       Note Added: 0005113                          
-06-22-05 01:08 marcmerz       Note Added: 0005115                          
-06-22-05 01:20 marcmerz       Note Added: 0005116                          
-06-22-05 01:43 rlrevell       Note Added: 0005117                          
-06-22-05 10:04 pzad           Note Added: 0005119                          
-06-22-05 11:49 tiwai          Note Added: 0005124                          
-06-22-05 11:53 tiwai          Note Added: 0005125                          
-06-22-05 12:37 marcmerz       Note Added: 0005127                          
-06-22-05 12:44 tiwai          Note Added: 0005128                          
-06-22-05 12:48 tiwai          Note Added: 0005129                          
-06-22-05 12:51 marcmerz       Note Added: 0005130                          
-06-22-05 12:55 marcmerz       Note Added: 0005131                          
-06-22-05 18:03 tiwai          Note Added: 0005138                          
-06-22-05 19:55 marcmerz       File Added: ac97#0-0                         
-06-22-05 19:55 marcmerz       File Added: ac97#0-0+regs                    
-06-22-05 19:55 marcmerz       Note Added: 0005146                          
-06-22-05 19:57 marcmerz       File Added: alsasound                        
-06-22-05 20:18 rraptorr       Note Added: 0005147                          
-06-22-05 20:19 rraptorr       File Added: codec97                          
-06-22-05 20:34 rraptorr       Note Added: 0005148                          
-06-22-05 20:35 rraptorr       Note Edited: 0005147                         
-06-22-05 20:35 rraptorr       Note Deleted: 0005148                        
-06-22-05 20:50 rraptorr       Issue Monitored: rraptorr                    
-06-22-05 21:06 marcmerz       Note Edited: 0005146                         
-06-22-05 21:13 marcmerz       Note Added: 0005149                          
-06-22-05 21:17 rlrevell       Note Added: 0005150                          
-06-22-05 21:18 marcmerz       File Added: codec97-marcmerz                    
-06-22-05 21:26 rraptorr       Note Added: 0005151                          
-06-22-05 22:24 marcmerz       Note Added: 0005152                          
-06-22-05 22:32 rraptorr       Note Added: 0005153                          
-06-22-05 22:59 marcmerz       Note Edited: 0005152                         
-06-23-05 20:21 marcmerz       Note Added: 0005194                          
-06-26-05 19:45 marcmerz       Issue Monitored: tiwai                       
-06-26-05 19:45 marcmerz       Note Added: 0005265                          
-06-28-05 10:49 perex          Assigned To              perex =>            
-06-28-05 10:49 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-07-10-05 19:57 phision        Issue Monitored: phision                     
-07-10-05 20:08 phision        Note Added: 0005443                          
-======================================================================
-
-
+-#include <linux/version.h>
+#include <sound/control.h>
+#include <sound/pcm.h>
+#include "awacs.h"
 
 
 -------------------------------------------------------
