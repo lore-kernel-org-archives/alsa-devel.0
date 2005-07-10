@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001248]: Sampling rate not correct - reports 44100 but works at 48000
-Date: Sun, 10 Jul 2005 05:25:25 +0200
-Message-ID: <6027f39d6f5d102584fcc79ea9628234@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001246]: Sound card loops and doesn't play any more
+Date: Sun, 10 Jul 2005 06:49:31 +0200
+Message-ID: <3304c5bcde1bae08686f02cf1beacbbc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B66163
-	for <alsa-devel@alsa-project.org>; Sun, 10 Jul 2005 05:25:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59497186
+	for <alsa-devel@alsa-project.org>; Sun, 10 Jul 2005 06:49:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,48 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1248> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1246> 
 ======================================================================
-Reported By:                steve
-Assigned To:                karsten
+Reported By:                syberdave
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1248
-Category:                   USB - usb-usx2y
-Reproducibility:            random
+Issue ID:                   1246
+Category:                   ISA - es18xx
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.12
+Status:                     new
+Distribution:               Debian Testing
+Kernel Version:             2.6.7-grsec
 ======================================================================
-Date Submitted:             07-10-2005 05:25 CEST
-Last Modified:              07-10-2005 05:25 CEST
+Date Submitted:             07-09-2005 17:04 CEST
+Last Modified:              07-10-2005 06:49 CEST
 ======================================================================
-Summary:                    Sampling rate not correct - reports 44100 but works
-at 48000
+Summary:                    Sound card loops and doesn't play any more
 Description: 
-Often, when recording with jackd and ardour, after specifying a sampling
-rate of 44100 and receiving no complaint from jackd I find the US-122 has
-actually been working at 48000.
+I installed a second sound card (ESS 1868 F/ISA) and when I send data to
+it, it plays the first second or so and starts repeating it and it doesn't
+move on. I notice that when I make the sound mono and bring the bitrate
+down, the data that it repeats becomes longer: mpg321 --wav - music.mp3
+|sox -t wav - -t ossdsp -c 1 -r 4096 /dev/dsp1
 
-Also, trying to play a 44100 WAV file via beep-media-player I find the
-output pitch-shifted and suspect that again the US-122 is working at
-48000.  Resampling the file in software to 48000 causes it to play at the
-correct pitch.
+And when I try to play it with ALSA, this command works for my first sound
+card:
+mpg321 --wav - music.mp3 |aplay -D hw:0,0
+But this command doesn't - it does that loop thing again:
+mpg321 --wav - music.mp3 |aplay -D hw:1,0
 
-I have checked the outpout from dmesg and can see no error messages about
-being unable to set the sample rate so I'm puzzled.
+This is my results for lsmod:
+Module                  Size  Used by
+snd_es18xx             29100  0 
+snd_cs4231_lib         21280  0 
+snd_sb16_dsp            8064  0 
+snd_sb_common          13152  1 snd_sb16_dsp
+snd_ymfpci             54084  1 
+snd_ac97_codec         60356  1 snd_ymfpci
+snd_opl3_lib            8320  2 snd_es18xx,snd_ymfpci
+snd_hwdep               7136  1 snd_opl3_lib
+snd_mpu401_uart         5824  2 snd_es18xx,snd_ymfpci
+snd_rawmidi            19872  1 snd_mpu401_uart
+
+Any help would be appreciated.
 ======================================================================
+
+----------------------------------------------------------------------
+ syberdave - 07-10-05 06:49 
+----------------------------------------------------------------------
+Never mind - I found the Sound FAQ and it says that it's because of an IRQ
+conflict. I'll fix that... somehow.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-10-05 05:25 steve          New Issue                                    
-07-10-05 05:25 steve          Distribution              => Debian          
-07-10-05 05:25 steve          Kernel Version            => 2.6.12          
+07-09-05 17:04 syberdave      New Issue                                    
+07-09-05 17:04 syberdave      Distribution              => Debian Testing  
+07-09-05 17:04 syberdave      Kernel Version            => 2.6.7-grsec     
+07-09-05 17:04 syberdave      Issue Monitored: syberdave                    
+07-10-05 06:49 syberdave      Note Added: 0005441                          
 ======================================================================
 
 
