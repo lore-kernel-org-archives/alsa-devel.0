@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Mon, 11 Jul 2005 16:47:39 +0200
-Message-ID: <66637989cc406b45cca599e91bee9f83@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001178]: Headphone and Speaker volume control
+Date: Mon, 11 Jul 2005 18:21:03 +0200
+Message-ID: <40dffab7ee34a99486b35c07359c3037@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED63719F
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 16:47:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12B59195
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 18:21:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,109 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                sgoodall
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Issue ID:                   1178
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-11-2005 16:47 CEST
+Date Submitted:             06-09-2005 16:09 CEST
+Last Modified:              07-11-2005 18:21 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    Headphone and Speaker volume control
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
-
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
-
-
+The master contol on this device does not affect the headphone speaker
+socket volume. This is a problem for assigning keyboard shortcuts (using
+gnome) to the voume controls as these get mapped to the master control. So
+when using headphones (which I usually do) i cannot control the volume.
+Ideally the master control can also affect the headphone volume, and have
+a separate control for the main speakers. (I would like to be able to keep
+these muted so sounds does not play should headphones not be plugged in
+unless I explicitly enable them).
+I am running fc3 on a dell inspiron 8500.
 ======================================================================
 
 ----------------------------------------------------------------------
- yafrank - 07-11-05 13:45 
+ tiwai - 07-08-05 12:54 
 ----------------------------------------------------------------------
-Tried patch from bug 4425 at http://bugzilla.kernel.org against 1.0.9b
-driver with no help. The kernel is offcial 2.6.12 and building procedure
-is similar to 0005067. Running script 'alsasound restart' followed by
-alsamixer repeatly shows alsamixer has different controls everytime
-restarted. PCM control can be seen occasionally, but sound was never
-produced.
+OK, then the attached patch will add a new ac97_quirk type,
+"bind_hp_voume".  In this mode, only HP volume is bound with master volume
+but HP switch is left so that you can mute/unmute HP.  Pass
+ac97_quirk=bind_hp_volume, instead.
 
 ----------------------------------------------------------------------
- yafrank - 07-11-05 16:47 
+ sgoodall - 07-11-05 18:21 
 ----------------------------------------------------------------------
-In addition to the patch from 4425 at http://bugzilla.kernel.org,
-ens1371-reset.patch was applied against 1.0.9b driver, no help either.
+That patch seems to work ok, however when using the gnome keyboard
+shortcuts, it umutes the master contol when the volume changes.
+
+Would it be possible to have a mute speakers instead of mute headphone
+switch?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
+06-09-05 16:09 sgoodall       New Issue                                    
+06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:09 sgoodall       Kernel Version            =>
+kernel-2.6.11-1.27_FC3
+06-23-05 12:10 tiwai          Note Added: 0005177                          
+07-07-05 11:30 sgoodall       Note Added: 0005398                          
+07-08-05 11:51 tiwai          Note Added: 0005409                          
+07-08-05 12:39 sgoodall       Note Added: 0005420                          
+07-08-05 12:54 tiwai          Note Added: 0005421                          
+07-08-05 12:55 tiwai          File Added: ac97-bind-hp-vol.diff                 
+  
+07-11-05 18:21 sgoodall       Note Added: 0005450                          
 ======================================================================
 
 
