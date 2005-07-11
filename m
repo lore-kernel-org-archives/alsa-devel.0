@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Mon, 11 Jul 2005 13:45:26 +0200
-Message-ID: <705ff29f07c10a663116f3bb3191d56c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001250]: Emagic a62m - only one mic-capture recognized
+Date: Mon, 11 Jul 2005 14:32:07 +0200
+Message-ID: <74c8b0357c4efbd5c66bbadadd2a2b83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0200B19E
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 13:45:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7CB8190
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 14:32:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,111 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1250> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                Robert_Schulze
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Issue ID:                   1250
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Distribution:               my own
+Kernel Version:             2.6.12.2
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              07-11-2005 13:45 CEST
+Date Submitted:             07-11-2005 14:32 CEST
+Last Modified:              07-11-2005 14:32 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    Emagic a62m - only one mic-capture recognized
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+Alsamixer shows up only one stereo-capture-channel, although the
+audio-interface has got 6 mono-ins. 
+When using amixer, you can see that the rest of the channels is shown up
+as rear-left, rear-right, center and subwoofer, which is not OK.
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+It would be better, if alsamixer would show up 6 independent mono-capture
+channels, if that is not possible, it should at least show up controls for
+rear-left, rear-right, center, subwoofer - although those names are not
+reasonable in the context of this audiointerface.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 07-08-05 10:25 
-----------------------------------------------------------------------
-Could you try patch from bug 4425 at http://bugzilla.kernel.org ?
-
-
-
-----------------------------------------------------------------------
- yafrank - 07-11-05 13:45 
-----------------------------------------------------------------------
-Tried patch from bug 4425 at http://bugzilla.kernel.org against 1.0.9b
-driver with no help. The kernel is offcial 2.6.12 and building procedure
-is similar to 0005067. Running script 'alsasound restart' followed by
-alsamixer repeatly shows alsamixer has different controls everytime
-restarted. PCM control can be seen occasionally, but sound was never
-produced.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 14:32 Robert_Schulze New Issue                                    
+07-11-05 14:32 Robert_Schulze Distribution              => my own          
+07-11-05 14:32 Robert_Schulze Kernel Version            => 2.6.12.2        
 ======================================================================
 
 
