@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
-Date: Mon, 11 Jul 2005 15:38:52 +0200
-Message-ID: <62d2854623cd78f58cfabd40e4f69e94@bugtrack.alsa-project.org>
+Date: Mon, 11 Jul 2005 15:40:58 +0200
+Message-ID: <d0543a1574eccb8da32a494d116e705a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF930195
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 15:38:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A57C6195
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 15:41:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             kernel-2.6.11-1.27_FC3
 ======================================================================
 Date Submitted:             06-09-2005 16:00 CEST
-Last Modified:              07-11-2005 15:38 CEST
+Last Modified:              07-11-2005 15:40 CEST
 ======================================================================
 Summary:                    Dell Inspiron 8500  + port replicator issues.
 Description: 
@@ -53,17 +53,16 @@ on the laptop itself still works however.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 11:55 
-----------------------------------------------------------------------
-Need the hardware information.  Please attach (upload) the output of
-/proc/asound/card0/codec97#0/* files and /etc/asound.state.
-
-----------------------------------------------------------------------
  sgoodall - 07-11-05 15:38 
 ----------------------------------------------------------------------
 I've uploaded my /etc/asound.conf file and the results of cat
 /proc/asound/card0/codec97#0/* in the proc-asound files. proc-asound was
 created when undocked, and proc-asound-2 was created when docked.
+
+----------------------------------------------------------------------
+ sgoodall - 07-11-05 15:40 
+----------------------------------------------------------------------
+Added asound.state as well
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +77,8 @@ kernel-2.6.11-1.27_FC3
 07-11-05 15:37 sgoodall       File Added: proc-asound                      
 07-11-05 15:37 sgoodall       File Added: proc-asound-2                    
 07-11-05 15:38 sgoodall       Note Added: 0005445                          
+07-11-05 15:39 sgoodall       File Added: asound.state                     
+07-11-05 15:40 sgoodall       Note Added: 0005446                          
 ======================================================================
 
 
