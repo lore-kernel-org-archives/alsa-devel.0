@@ -1,16 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: [ALSA - driver 0001242]: echoaudio layla 20 doe
-Date: Mon, 11 Jul 2005 10:33:05 +0200 (CEST)
-Message-ID: <XFMail.20050711103305.pochini@shiny.it>
-References: <09d17617c7d11259317ca10e2f3826cd@bugtrack.alsa-project.org>
+From: Adam Nielsen <a.nielsen@shikadi.net>
+Subject: Re: Disabling fake 3D sound with es1688
+Date: Mon, 11 Jul 2005 20:37:37 +1000
+Message-ID: <20050711203737.019e36da.a.nielsen@shikadi.net>
+References: <20050710222555.67b4a876.a.nielsen@shikadi.net>
+	<20050710223716.GA11888@dbz.icequake.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21EBC16C
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 10:32:59 +0200 (MEST)
-In-Reply-To: <09d17617c7d11259317ca10e2f3826cd@bugtrack.alsa-project.org>
+In-Reply-To: <20050710223716.GA11888@dbz.icequake.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,22 +18,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: bugtrack@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: Ryan Underwood <nemesis-lists@icequake.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> Are you sure it's not just the sound from the speakers?  Is the effect
+> there when you use headphones?
 
-On 08-Jul-2005 bugtrack@alsa-project.org wrote:
+Unfortunately yes, which is why I'm so keen to disable it.  In this
+particular laptop, it seems the speakers and headphones are wired
+identically - same mixer controls, volume and annoying 3D effect.
 
-> checking for which soundcards to compile driver for... configure: error=
-:
-> Unsupported soundcard layla20
-
-Is your kernel compiled with the "firmware loader" option enabled ?
-
-
---
-Giuliano.
+Thanks,
+Adam.
 
 
 -------------------------------------------------------
