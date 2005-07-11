@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
-Date: Mon, 11 Jul 2005 15:40:58 +0200
-Message-ID: <d0543a1574eccb8da32a494d116e705a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001250]: Emagic a62m - only one mic-capture recognized
+Date: Mon, 11 Jul 2005 16:08:03 +0200
+Message-ID: <822a9ab59a83c46b5194ac16cd4a2210@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A57C6195
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 15:41:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32DE1195
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 16:08:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1250> 
 ======================================================================
-Reported By:                sgoodall
-Assigned To:                
+Reported By:                Robert_Schulze
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1177
-Category:                   PCI - intel8x0
+Issue ID:                   1250
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
+Status:                     assigned
+Distribution:               my own
+Kernel Version:             2.6.12.2
 ======================================================================
-Date Submitted:             06-09-2005 16:00 CEST
-Last Modified:              07-11-2005 15:40 CEST
+Date Submitted:             07-11-2005 14:32 CEST
+Last Modified:              07-11-2005 16:08 CEST
 ======================================================================
-Summary:                    Dell Inspiron 8500  + port replicator issues.
+Summary:                    Emagic a62m - only one mic-capture recognized
 Description: 
-I have a dell inspiron 8500 and the port replicator. The has an additional
-headphone socket, however the only mixer control that affects it is the
-IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
-sound completely, or plays sound at full volume.
-All other controls have no affect and, even if muted. The headphone socket
-on the laptop itself still works however.
+Alsamixer shows up only one stereo-capture-channel, although the
+audio-interface has got 6 mono-ins. 
+When using amixer, you can see that the rest of the channels is shown up
+as rear-left, rear-right, center and subwoofer, which is not OK.
+
+It would be better, if alsamixer would show up 6 independent mono-capture
+channels, if that is not possible, it should at least show up controls for
+rear-left, rear-right, center, subwoofer - although those names are not
+reasonable in the context of this audiointerface.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- sgoodall - 07-11-05 15:38 
+ Clemens Ladisch - 07-11-05 16:08 
 ----------------------------------------------------------------------
-I've uploaded my /etc/asound.conf file and the results of cat
-/proc/asound/card0/codec97#0/* in the proc-asound files. proc-asound was
-created when undocked, and proc-asound-2 was created when docked.
-
-----------------------------------------------------------------------
- sgoodall - 07-11-05 15:40 
-----------------------------------------------------------------------
-Added asound.state as well
+Please show the output of "lsusb -v" for this device.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 16:00 sgoodall       New Issue                                    
-06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:00 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
-07-07-05 12:01 sgoodall       Note Added: 0005399                          
-07-08-05 11:55 tiwai          Note Added: 0005411                          
-07-11-05 15:36 sgoodall       File Added: asound.conf                      
-07-11-05 15:37 sgoodall       File Added: proc-asound                      
-07-11-05 15:37 sgoodall       File Added: proc-asound-2                    
-07-11-05 15:38 sgoodall       Note Added: 0005445                          
-07-11-05 15:39 sgoodall       File Added: asound.state                     
-07-11-05 15:40 sgoodall       Note Added: 0005446                          
+07-11-05 14:32 Robert_Schulze New Issue                                    
+07-11-05 14:32 Robert_Schulze Distribution              => my own          
+07-11-05 14:32 Robert_Schulze Kernel Version            => 2.6.12.2        
+07-11-05 16:08 Clemens LadischNote Added: 0005447                          
 ======================================================================
 
 
