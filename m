@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001250]: Emagic a62m - only one mic-capture recognized
-Date: Mon, 11 Jul 2005 16:08:03 +0200
-Message-ID: <822a9ab59a83c46b5194ac16cd4a2210@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
+Date: Mon, 11 Jul 2005 16:20:13 +0200
+Message-ID: <c16c9497329c6b002ae4b71ef68788f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32DE1195
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 16:08:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3BCD195
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 16:20:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1250> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
 ======================================================================
 Reported By:                Robert_Schulze
-Assigned To:                Clemens Ladisch
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1250
-Category:                   USB - usb-audio
+Project:                    ALSA - utils
+Issue ID:                   1251
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               my own
-Kernel Version:             2.6.12.2
+Status:                     new
 ======================================================================
-Date Submitted:             07-11-2005 14:32 CEST
-Last Modified:              07-11-2005 16:08 CEST
+Date Submitted:             07-11-2005 14:39 CEST
+Last Modified:              07-11-2005 16:20 CEST
 ======================================================================
-Summary:                    Emagic a62m - only one mic-capture recognized
+Summary:                    emagic a62m: maybe bug: arecord doesn't record
+anything, jack+jackrec work
 Description: 
-Alsamixer shows up only one stereo-capture-channel, although the
-audio-interface has got 6 mono-ins. 
-When using amixer, you can see that the rest of the channels is shown up
-as rear-left, rear-right, center and subwoofer, which is not OK.
+When I want to record something from my emi a62m audiointerface, arecord
+doesn't work:
 
-It would be better, if alsamixer would show up 6 independent mono-capture
-channels, if that is not possible, it should at least show up controls for
-rear-left, rear-right, center, subwoofer - although those names are not
-reasonable in the context of this audiointerface.
+"arecord -D emi -f cd > test.wav"
+when issuing "aplay -vvv test.wav", the histogram shows up a permanent
+peak of 36% during the whole file, no sound hearable.
 
+Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
+alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
 
+.asoundrc:
+
+pcm.emi 
+ {
+ type hw
+ card 1 
+ }
+
+ctl.emi
+ {
+ type hw
+ card 1
+ }
+
+Card 0 is a solo1.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-11-05 16:08 
+ Clemens Ladisch - 07-11-05 16:20 
 ----------------------------------------------------------------------
-Please show the output of "lsusb -v" for this device.
+The "cd" format uses 44.1 Khz while Jack's default sample rate is 48 Khz.
+
+Does arecord work with "-f dat"?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-11-05 14:32 Robert_Schulze New Issue                                    
-07-11-05 14:32 Robert_Schulze Distribution              => my own          
-07-11-05 14:32 Robert_Schulze Kernel Version            => 2.6.12.2        
-07-11-05 16:08 Clemens LadischNote Added: 0005447                          
+07-11-05 14:39 Robert_Schulze New Issue                                    
+07-11-05 16:20 Clemens LadischNote Added: 0005448                          
 ======================================================================
 
 
