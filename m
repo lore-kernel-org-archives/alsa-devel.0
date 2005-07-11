@@ -1,16 +1,16 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: [ALSA - driver 0001244]: error with firmware wi
-Date: Mon, 11 Jul 2005 10:31:10 +0200 (CEST)
-Message-ID: <XFMail.20050711103110.pochini@shiny.it>
-References: <1582228b1f6357b819be4222b9a2ee32@bugtrack.alsa-project.org>
+Subject: RE: [ALSA - driver 0001242]: echoaudio layla 20 doe
+Date: Mon, 11 Jul 2005 10:33:05 +0200 (CEST)
+Message-ID: <XFMail.20050711103305.pochini@shiny.it>
+References: <09d17617c7d11259317ca10e2f3826cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35D7916C
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 10:31:07 +0200 (MEST)
-In-Reply-To: <1582228b1f6357b819be4222b9a2ee32@bugtrack.alsa-project.org>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21EBC16C
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 10:32:59 +0200 (MEST)
+In-Reply-To: <09d17617c7d11259317ca10e2f3826cd@bugtrack.alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,23 +25,13 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On 09-Jul-2005 bugtrack@alsa-project.org wrote:
+On 08-Jul-2005 bugtrack@alsa-project.org wrote:
 
-> I get this error when loading snd-layla20 card:
->
-> ACPI: PCI interrupt 0000:02:0d.0[A] -> GSI 21 (level, low) -> IRQ 177
-> ALSA /usr/src/modules/alsa-driver/pci/echoaudio/echoaudio.c:41:
-> get_firmware(): Firmware not available (-2)
-> Echoaudio Layla20: probe of 0000:02:0d.0 failed with error -2
->
-> I compiled an alsa driver for layla20 (I had to patch the alsa-driver t=
-ree
-> a year ago for linux-2.4.25, and that worked (and still does).
+> checking for which soundcards to compile driver for... configure: error=
+:
+> Unsupported soundcard layla20
 
-If you built the driver when it was not merged in alsa-driver yet,
-it worked because the firmware was compiled in the driver. Now the
-firmware is loaded from disk when you load the module. You have to
-compile and install alsa-firmware.
+Is your kernel compiled with the "firmware loader" option enabled ?
 
 
 --
