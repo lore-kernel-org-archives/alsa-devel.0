@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
-Date: Mon, 11 Jul 2005 16:20:13 +0200
-Message-ID: <c16c9497329c6b002ae4b71ef68788f8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Mon, 11 Jul 2005 16:47:39 +0200
+Message-ID: <66637989cc406b45cca599e91bee9f83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3BCD195
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 16:20:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED63719F
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2005 16:47:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                Robert_Schulze
-Assigned To:                
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1251
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   1023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             07-11-2005 14:39 CEST
-Last Modified:              07-11-2005 16:20 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              07-11-2005 16:47 CEST
 ======================================================================
-Summary:                    emagic a62m: maybe bug: arecord doesn't record
-anything, jack+jackrec work
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-When I want to record something from my emi a62m audiointerface, arecord
-doesn't work:
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-"arecord -D emi -f cd > test.wav"
-when issuing "aplay -vvv test.wav", the histogram shows up a permanent
-peak of 36% during the whole file, no sound hearable.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
-Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
-alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
 
-.asoundrc:
-
-pcm.emi 
- {
- type hw
- card 1 
- }
-
-ctl.emi
- {
- type hw
- card 1
- }
-
-Card 0 is a solo1.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-11-05 16:20 
+ yafrank - 07-11-05 13:45 
 ----------------------------------------------------------------------
-The "cd" format uses 44.1 Khz while Jack's default sample rate is 48 Khz.
+Tried patch from bug 4425 at http://bugzilla.kernel.org against 1.0.9b
+driver with no help. The kernel is offcial 2.6.12 and building procedure
+is similar to 0005067. Running script 'alsasound restart' followed by
+alsamixer repeatly shows alsamixer has different controls everytime
+restarted. PCM control can be seen occasionally, but sound was never
+produced.
 
-Does arecord work with "-f dat"?
+----------------------------------------------------------------------
+ yafrank - 07-11-05 16:47 
+----------------------------------------------------------------------
+In addition to the patch from 4425 at http://bugzilla.kernel.org,
+ens1371-reset.patch was applied against 1.0.9b driver, no help either.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-11-05 14:39 Robert_Schulze New Issue                                    
-07-11-05 16:20 Clemens LadischNote Added: 0005448                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
 ======================================================================
 
 
