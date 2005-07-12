@@ -1,11 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: ac97_codec.c - unresolved symbol msecs_to_jiffies on Kernel 2.4
-Date: Tue, 12 Jul 2005 16:38:46 +0800
-Message-ID: <42D38196.6020106@netvigator.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
+Date: Tue, 12 Jul 2005 11:57:55 +0200
+Message-ID: <5a27eb2cd505aec98250b64dea4ab04f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0DB4A199
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 11:57:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,40 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
+======================================================================
+Reported By:                Robert_Schulze
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1251
+Category:                   aplay/arecord
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-11-2005 14:39 CEST
+Last Modified:              07-12-2005 11:57 CEST
+======================================================================
+Summary:                    emagic a62m: maybe bug: arecord doesn't record
+anything, jack+jackrec work
+Description: 
+When I want to record something from my emi a62m audiointerface, arecord
+doesn't work:
 
-make  -C ac97 modules
-make[2]: Entering directory `/root/alsa/alsa-driver-1.0.9b/pci/ac97'
-gcc32 -D__KERNEL__ -DMODULE=1 -I/root/alsa/alsa-driver-1.0.9b/include
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc
--iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
--DEXPORT_SYMTAB -c ac97_codec.c
-In file included from ac97_codec.c:1:
-../../alsa-kernel/pci/ac97/ac97_codec.c: In function `snd_ac97_resume':
-../../alsa-kernel/pci/ac97/ac97_codec.c:2252: warning: implicit
-declaration of function `msecs_to_jiffies'
+"arecord -D emi -f cd > test.wav"
+when issuing "aplay -vvv test.wav", the histogram shows up a permanent
+peak of 36% during the whole file, no sound hearable.
 
+Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
+alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_codec.c?r1=1.188&r2=1.189
+.asoundrc:
 
+pcm.emi 
+ {
+ type hw
+ card 1 
+ }
 
-# modprobe snd-au8830
-/lib/modules/2.4.22-1.2199.nptl/kernel/sound/pci/ac97/snd-ac97-codec.o: 
-unresolved symbol msecs_to_jiffies
-/lib/modules/2.4.22-1.2199.nptl/kernel/sound/pci/ac97/snd-ac97-codec.o: 
-insmod 
-/lib/modules/2.4.22-1.2199.nptl/kernel/sound/pci/ac97/snd-ac97-codec.o 
-failed
-/lib/modules/2.4.22-1.2199.nptl/kernel/sound/pci/ac97/snd-ac97-codec.o: 
-insmod snd-au8830 failed
+ctl.emi
+ {
+ type hw
+ card 1
+ }
 
+Card 0 is a solo1.
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-11-05 16:20 
+----------------------------------------------------------------------
+The "cd" format uses 44.1 Khz while Jack's default sample rate is 48 Khz.
+
+Does arecord work with "-f dat"?
+
+----------------------------------------------------------------------
+ Robert_Schulze - 07-12-05 11:57 
+----------------------------------------------------------------------
+Well, even if I simulate jack's-settings by:
+
+arecord -D emi -f S16_LE -r 48000 -c 2 
+
+it doesn't work.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-11-05 14:39 Robert_Schulze New Issue                                    
+07-11-05 16:20 Clemens LadischNote Added: 0005448                          
+07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
+======================================================================
 
 
 
