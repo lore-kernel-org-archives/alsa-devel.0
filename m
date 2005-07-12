@@ -1,14 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: ac97_codec.c - unresolved symbol msecs_to_jiffies   on Kernel
- 2.4
-Date: Tue, 12 Jul 2005 21:07:17 +0800
-Message-ID: <42D3C085.9090600@netvigator.com>
-References: <42D38196.6020106@netvigator.com> <Pine.HPX.4.33n.0507121253250.2200-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001254]: "invalid argument" error when pressing tab
+Date: Tue, 12 Jul 2005 15:31:21 +0200
+Message-ID: <ee4b0bc200db5e2959863cd25d8d4a14@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0507121253250.2200-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19DC3199
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 15:31:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,35 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ac97_codec.c can be compiled and snd-ac97-codec.o can be loaded.
 
-http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-driver/include/adriver.h?rev=1.128
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1254> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1254
+Category:                   alsamixer
+Reproducibility:            have not tried
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-12-2005 15:31 CEST
+Last Modified:              07-12-2005 15:31 CEST
+======================================================================
+Summary:                    "invalid argument" error when pressing tab
+Description: 
+when pressing <Tab> in alsamixer, the program exits with:
 
-http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-driver/configure.in?rev=1.318
+$ alsamixer
+alsamixer: function snd_mixer_find_selem() failed: Invalid argument
 
-./cvscompile --with-cards
+$ echo $?
+2
 
-/root/alsa/alsa-driver/include/adriver.h: In function `jiffies_to_msecs':
-/root/alsa/alsa-driver/include/adriver.h:639: warning: division by zero
+Pressing <F4> instead, the program stays in playback mode.
+
+trying to run in capture mode:
+$ alsamixer -V capture
+No mixer elems found
 
 
+======================================================================
 
-Clemens Ladisch wrote:
-> Raymond wrote:
-> 
->>ac97_codec.c:2252: warning: implicit declaration of function
->>`msecs_to_jiffies'
->>
->>http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_codec.c?r1=1.188&r2=1.189
-> 
-> 
-> This was caused by a bug in the configure script which has been fixed
-> now.
-> 
-> 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-12-05 15:31 jdthood        New Issue                                    
+======================================================================
+
 
 
 
