@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001166]: doesn't support two-channel mixing; mute missing on master volume
-Date: Tue, 12 Jul 2005 15:33:48 +0200
-Message-ID: <cb779292a899296c5c09d7019c1bdf0f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001255]: Sound mixing
+Date: Tue, 12 Jul 2005 17:05:43 +0200
+Message-ID: <2b6fb4e80655671c704c36330f123f0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DD85199
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 15:33:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DAA2A1B5
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 17:05:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1166> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1255> 
 ======================================================================
-Reported By:                stigfjel
+Reported By:                DimaTsigelnik
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1166
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1255
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-08-2005 00:27 CEST
-Last Modified:              07-12-2005 15:33 CEST
+Date Submitted:             07-12-2005 17:05 CEST
+Last Modified:              07-12-2005 17:05 CEST
 ======================================================================
-Summary:                    doesn't support two-channel mixing; mute missing on
-master volume
+Summary:                    Sound mixing
 Description: 
-Doesn't support two-channel mixing. I can't adjust volume on separate
-channels with Audigy 2 Platinum. Mute is also missing on master volume,
-PCM and other controls.
+Why sound mixing is plugin???!!! Many programs not working with dmix. 
+Please make sound mixing ny default whithout any plugins! whitout this
+feature multimedia usability on linux stations very bad. Many peoples
+complains about sound mixing with alsa
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 06-08-05 19:52 
-----------------------------------------------------------------------
-Please try alsamixer in the 1.0.9a release and report whether or not the
-situation has improved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-05 00:27 stigfjel       New Issue                                    
-06-08-05 19:52 jdthood        Note Added: 0004971                          
-07-12-05 15:33 jdthood        Summary                  Controls => doesn't
-support two-channel mixing; mute missing on master volume
+07-12-05 17:05 DimaTsigelnik  New Issue                                    
 ======================================================================
 
 
