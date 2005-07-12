@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
-Date: Tue, 12 Jul 2005 12:52:41 +0200
-Message-ID: <ce6e53a3dfb6380da090bd6bf5394ba6@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ac97_codec.c - unresolved symbol msecs_to_jiffies
+ on Kernel 2.4
+Date: Tue, 12 Jul 2005 12:54:43 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507121253250.2200-100000@studcom.urz.uni-halle.de>
+References: <42D38196.6020106@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C97A130
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 12:52:41 +0200 (MEST)
+In-Reply-To: <42D38196.6020106@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Raymond wrote:
+> ac97_codec.c:2252: warning: implicit declaration of function
+> `msecs_to_jiffies'
+>
+> http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_codec.c?r1=1.188&r2=1.189
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
-======================================================================
-Reported By:                Robert_Schulze
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1251
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-11-2005 14:39 CEST
-Last Modified:              07-12-2005 12:52 CEST
-======================================================================
-Summary:                    emagic a62m: maybe bug: arecord doesn't record
-anything, jack+jackrec work
-Description: 
-When I want to record something from my emi a62m audiointerface, arecord
-doesn't work:
+This was caused by a bug in the configure script which has been fixed
+now.
 
-"arecord -D emi -f cd > test.wav"
-when issuing "aplay -vvv test.wav", the histogram shows up a permanent
-peak of 36% during the whole file, no sound hearable.
 
-Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
-alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
-
-.asoundrc:
-
-pcm.emi 
- {
- type hw
- card 1 
- }
-
-ctl.emi
- {
- type hw
- card 1
- }
-
-Card 0 is a solo1.
-======================================================================
-
-----------------------------------------------------------------------
- Robert_Schulze - 07-12-05 11:57 
-----------------------------------------------------------------------
-Well, even if I simulate jack's-settings by:
-
-arecord -D emi -f S16_LE -r 48000 -c 2 
-
-it doesn't work.
-
-----------------------------------------------------------------------
- Clemens Ladisch - 07-12-05 12:52 
-----------------------------------------------------------------------
-The difference may be that Jack uses a different bit depth.  Does this
-device support 24 bit sample?  Please show the contents of
-/proc/asound/card1/stream0.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-11-05 14:39 Robert_Schulze New Issue                                    
-07-11-05 16:20 Clemens LadischNote Added: 0005448                          
-07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
-07-12-05 12:52 Clemens LadischNote Added: 0005453                          
-======================================================================
-
+HTH
+Clemens
 
 
 
