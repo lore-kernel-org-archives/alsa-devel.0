@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001250]: Emagic a62m - only one mic-capture recognized
-Date: Tue, 12 Jul 2005 17:18:14 +0200
-Message-ID: <8cc7ef1c939c38184ad3dbba5dfcbd47@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
+Date: Tue, 12 Jul 2005 17:29:24 +0200
+Message-ID: <89d471013c0cd9528c577d4a9b923866@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D91F41B5
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 17:18:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA8311B5
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 17:29:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,517 +24,239 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1250> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
 ======================================================================
 Reported By:                Robert_Schulze
-Assigned To:                Clemens Ladisch
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1250
-Category:                   USB - usb-audio
+Project:                    ALSA - utils
+Issue ID:                   1251
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               my own
-Kernel Version:             2.6.12.2
+Status:                     new
 ======================================================================
-Date Submitted:             07-11-2005 14:32 CEST
-Last Modified:              07-12-2005 17:18 CEST
+Date Submitted:             07-11-2005 14:39 CEST
+Last Modified:              07-12-2005 17:29 CEST
 ======================================================================
-Summary:                    Emagic a62m - only one mic-capture recognized
+Summary:                    emagic a62m: maybe bug: arecord doesn't record
+anything, jack+jackrec work
 Description: 
-Alsamixer shows up only one stereo-capture-channel, although the
-audio-interface has got 6 mono-ins. 
-When using amixer, you can see that the rest of the channels is shown up
-as rear-left, rear-right, center and subwoofer, which is not OK.
+When I want to record something from my emi a62m audiointerface, arecord
+doesn't work:
 
-It would be better, if alsamixer would show up 6 independent mono-capture
-channels, if that is not possible, it should at least show up controls for
-rear-left, rear-right, center, subwoofer - although those names are not
-reasonable in the context of this audiointerface.
+"arecord -D emi -f cd > test.wav"
+when issuing "aplay -vvv test.wav", the histogram shows up a permanent
+peak of 36% during the whole file, no sound hearable.
 
+Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
+alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
 
+.asoundrc:
+
+pcm.emi 
+ {
+ type hw
+ card 1 
+ }
+
+ctl.emi
+ {
+ type hw
+ card 1
+ }
+
+Card 0 is a solo1.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-11-05 16:08 
+ Clemens Ladisch - 07-12-05 12:52 
 ----------------------------------------------------------------------
-Please show the output of "lsusb -v" for this device.
+The difference may be that Jack uses a different bit depth.  Does this
+device support 24 bit sample?  Please show the contents of
+/proc/asound/card1/stream0.
 
 ----------------------------------------------------------------------
- Robert_Schulze - 07-12-05 17:18 
+ Robert_Schulze - 07-12-05 17:29 
 ----------------------------------------------------------------------
-lsusb -v
+While nothing runs:
 
-Bus 001 Device 004: ID 086a:0111 Emagic Soft-und Hardware GmbH
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.10
-  bDeviceClass            0 Interface
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0        64
-  idVendor           0x086a Emagic Soft-und Hardware GmbH
-  idProduct          0x0111
-  bcdDevice            1.00
-  iManufacturer           1 Emagic GmbH
-  iProduct                2 Emagic EMI 6|2 m
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          428
-    bNumInterfaces          3
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x80
-    MaxPower              100mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           86
-        bInCollection           2
-        baInterfaceNr( 0)       1
-        baInterfaceNr( 1)       2
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0000
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                13
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 5
-        bSourceID               1
-        bControlSize            2
-        bmaControls( 0)      0x03
-        bmaControls( 1)      0x00
-          Mute
-          Volume
-        bmaControls( 0)      0x00
-        bmaControls( 1)      0x00
-        bmaControls( 0)      0x00
-        bmaControls( 1)      0x00
-        iFeature                0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             2
-        wTerminalType      0x0304 Desktop Speaker
-        bAssocTerminal          0
-        bSourceID               5
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             3
-        wTerminalType      0x0205 Microphone Array
-        bAssocTerminal          0
-        bNrChannels             6
-        wChannelConfig     0x0000
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                21
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 6
-        bSourceID               3
-        bControlSize            2
-        bmaControls( 0)      0x00
-        bmaControls( 1)      0x00
-        bmaControls( 0)      0x03
-        bmaControls( 1)      0x00
-          Mute
-          Volume
-        bmaControls( 0)      0x03
-        bmaControls( 1)      0x00
-          Mute
-          Volume
-        bmaControls( 0)      0x03
-        bmaControls( 1)      0x00
-          Mute
-          Volume
-        bmaControls( 0)      0x03
-        bmaControls( 1)      0x00
-          Mute
-          Volume
-        bmaControls( 0)      0x03
-        bmaControls( 1)      0x00
-          Mute
-          Volume
-        bmaControls( 0)      0x03
-        bmaControls( 1)      0x00
-          Mute
-          Volume
-        iFeature                0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             4
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID               6
-        iTerminal               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        44100
-        tSamFreq[ 1]        48000
-        tSamFreq[ 2]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x0a  EP 10 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-        wMaxPacketSize        388
-        bInterval               1
-        bRefresh                0
-        bSynchAddress         143
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x8f  EP 15 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               none
-        wMaxPacketSize          3
-        bInterval               1
-        bRefresh                5
-        bSynchAddress           0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       2
-      bNumEndpoints           2
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        44100
-        tSamFreq[ 1]        48000
-        tSamFreq[ 2]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x0a  EP 10 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-        wMaxPacketSize        582
-        bInterval               1
-        bRefresh                0
-        bSynchAddress         143
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x8f  EP 15 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               none
-        wMaxPacketSize          3
-        bInterval               1
-        bRefresh                5
-        bSynchAddress           0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             6
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        44100
-        tSamFreq[ 1]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x8c  EP 12 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-        wMaxPacketSize        588
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay              0 Decoded PCM samples
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             6
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        44100
-        tSamFreq[ 1]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x8c  EP 12 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-        wMaxPacketSize        882
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay              0 Decoded PCM samples
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        44100
-        tSamFreq[ 1]        48000
-        tSamFreq[ 2]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x8c  EP 12 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-        wMaxPacketSize        388
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay              0 Decoded PCM samples
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        44100
-        tSamFreq[ 1]        48000
-        tSamFreq[ 2]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x8c  EP 12 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-        wMaxPacketSize        582
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay              0 Decoded PCM samples
-  Language IDs: 0409
+Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
+Audio
+
+Playback:
+  Status: Stop
+  Interface 1
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 10 OUT (ASYNC)
+    Rates: 44100, 48000, 96000
+  Interface 1
+    Altset 2
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 10 OUT (ASYNC)
+    Rates: 44100, 48000, 96000
+
+Capture:
+  Status: Stop
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000
+  Interface 2
+    Altset 2
+    Format: S24_3LE
+    Channels: 6
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000, 96000
+  Interface 2
+    Altset 4
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000, 96000
+
+------------------------------------------------------------------------------
+While jackd runs:
+
+Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
+Audio
+
+Playback:
+  Status: Running
+    Interface = 1
+    Altset = 1
+    URBs = 5 [ 1 1 1 1 1 ]
+    Packet Size = 243
+    Momentary freq = 48000 Hz
+  Interface 1
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 10 OUT (ASYNC)
+    Rates: 44100, 48000, 96000
+  Interface 1
+    Altset 2
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 10 OUT (ASYNC)
+    Rates: 44100, 48000, 96000
+
+Capture:
+  Status: Running
+    Interface = 2
+    Altset = 1
+    URBs = 5 [ 1 1 1 1 1 ]
+    Packet Size = 588
+    Momentary freq = 48000 Hz
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000
+  Interface 2
+    Altset 2
+    Format: S24_3LE
+    Channels: 6
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000, 96000
+  Interface 2
+    Altset 4
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000, 96000
+
+-------------------------------------------------------------------------------
+while arecord runs:
+
+Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
+Audio
+
+Playback:
+  Status: Stop
+  Interface 1
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 10 OUT (ASYNC)
+    Rates: 44100, 48000, 96000
+  Interface 1
+    Altset 2
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 10 OUT (ASYNC)
+    Rates: 44100, 48000, 96000
+
+Capture:
+  Status: Running
+    Interface = 2
+    Altset = 3
+    URBs = 5 [ 1 1 1 1 1 ]
+    Packet Size = 243
+    Momentary freq = 48000 Hz
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000
+  Interface 2
+    Altset 2
+    Format: S24_3LE
+    Channels: 6
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000, 96000
+  Interface 2
+    Altset 4
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 12 IN (ASYNC)
+    Rates: 44100, 48000, 96000
+
+------------------------------------------------------------------------------
+
+I tried both 24 bit, where alsa says that the device supports S24_3LE, and
+16 bit (jackd ... --shorts). In both cases, jack works and arecord
+doesn't.
+
+One thing I realized: If I open the device capture-only with "jackd ...
+-C", the recording results are equal to the results of pure arecord. Maybe
+it has something to do with that.
+You can see the difference in the sections above.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-11-05 14:32 Robert_Schulze New Issue                                    
-07-11-05 14:32 Robert_Schulze Distribution              => my own          
-07-11-05 14:32 Robert_Schulze Kernel Version            => 2.6.12.2        
-07-11-05 16:08 Clemens LadischNote Added: 0005447                          
-07-12-05 17:18 Robert_Schulze Note Added: 0005455                          
+07-11-05 14:39 Robert_Schulze New Issue                                    
+07-11-05 16:20 Clemens LadischNote Added: 0005448                          
+07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
+07-12-05 12:52 Clemens LadischNote Added: 0005453                          
+07-12-05 17:29 Robert_Schulze Note Added: 0005456                          
 ======================================================================
 
 
