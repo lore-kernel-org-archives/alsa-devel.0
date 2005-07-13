@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Wed, 13 Jul 2005 04:57:17 +0200
-Message-ID: <1825af8a3fd330a57b16f8c009e460dd@bugtrack.alsa-project.org>
+Date: Wed, 13 Jul 2005 04:59:50 +0200
+Message-ID: <5f3a2154d4c5c68b8aba9fb8fe674f64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09F4C1C2
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 04:57:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCF8C171
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 04:59:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-13-2005 04:57 CEST
+Last Modified:              07-13-2005 04:59 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,26 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 07-13-05 04:46 
-----------------------------------------------------------------------
-Enabling the headphone amp would probably make the front channel produce
-audio of equal amplitude as the rest of the output channels.
-
-I can give you no good answer to why your sound is all that bad. One
-possible reason can be that the sound is simply to loud and the sound is
-disorted. But I've failed to reproduce such an even on my own card without
-the HP amp on.
-
-Just thought of one possibly source for noise. Currently, the front
-channel is mixed with an analogue AUX input channel on the WM8770 chip, as
-this was nessesary to hear sound from line in etc. on the other cards,
-however this is not the case with the rest of the output channels.
-
-Now it COULD be a combination of both the disortion and the analogue
-mixer. I know that it may be a difficult question to answer, but is the
-front and rear output channels equally bad, if you follow me?
-
-----------------------------------------------------------------------
  Demosthenes - 07-13-05 04:57 
 ----------------------------------------------------------------------
 I think it is possible that the front channel breaks up and crackles more
@@ -94,6 +74,12 @@ the vastly differing volume levels tho it is difficult to tell, I
 certainly can't hear any breaking up through the headphones when I try to
 get the volume low enough to match the front channel, however you do get
 distortion.
+
+----------------------------------------------------------------------
+ Demosthenes - 07-13-05 04:59 
+----------------------------------------------------------------------
+It seems to be the front left that is doing 90% of the breaking
+up/crackling.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -190,6 +176,7 @@ Hedgehog)
 07-13-05 04:28 Demosthenes    Note Added: 0005460                          
 07-13-05 04:46 ungod          Note Added: 0005461                          
 07-13-05 04:57 Demosthenes    Note Added: 0005462                          
+07-13-05 04:59 Demosthenes    Note Added: 0005463                          
 ======================================================================
 
 
