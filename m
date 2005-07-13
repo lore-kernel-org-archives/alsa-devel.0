@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001256]: surround51: Master Volume control and Mute only have effect on FrontLeft & FrontRight channels.
-Date: Wed, 13 Jul 2005 18:51:22 +0200
-Message-ID: <b397c4f15d101fa8692ca5ee3070f3e5@bugtrack.alsa-project.org>
+Date: Wed, 13 Jul 2005 18:54:23 +0200
+Message-ID: <bca6876a024c7b65788d9db8aece04e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7998A1CD
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 18:51:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 090D71CD
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 18:54:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             07-13-2005 18:11 CEST
-Last Modified:              07-13-2005 18:51 CEST
+Last Modified:              07-13-2005 18:54 CEST
 ======================================================================
 Summary:                    surround51: Master Volume control and Mute only have
 effect on FrontLeft & FrontRight channels.
@@ -62,6 +62,11 @@ known bug, I believe it's
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=164 if you are using the
 emu10k1 driver.
 
+----------------------------------------------------------------------
+ rlrevell - 07-13-05 18:54 
+----------------------------------------------------------------------
+Sorry, its https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -69,6 +74,7 @@ Date Modified  Username       Field                    Change
 07-13-05 18:11 Manolo         Distribution              => Ubuntu          
 07-13-05 18:11 Manolo         Kernel Version            => 2.6.11          
 07-13-05 18:51 rlrevell       Note Added: 0005464                          
+07-13-05 18:54 rlrevell       Note Added: 0005465                          
 ======================================================================
 
 
