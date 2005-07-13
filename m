@@ -1,13 +1,14 @@
-From: peter plessas <plessas@mur.at>
-Subject: Re: hdsp oss emulation and sync
-Date: Thu, 14 Jul 2005 10:16:41 +0200 (CEST)
-Message-ID: <Pine.LNX.4.56L0.0507141015420.15784@hornet.mur.at>
-References: <42C17BBC.1070402@mur.at> <s5hbr5p7bq7.wl%tiwai@suse.de>
- <42C2782A.7060308@mur.at> <s5h64vx78h2.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000913]: subwoofer not working
+Date: Thu, 14 Jul 2005 01:28:43 +0200
+Message-ID: <4b535b6053447384520b3809cc594b17@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h64vx78h2.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B02F51DE
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 01:28:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi, List,
 
-Thanks for the second patch,
-i have no hdsp with me for another 6 weeks, but i'll be happy to try it 
-once i return home.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=913> 
+======================================================================
+Reported By:                matteo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   913
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               debian/sarge
+Kernel Version:             2.6.11-rc4
+======================================================================
+Date Submitted:             02-16-2005 19:39 CET
+Last Modified:              07-14-2005 01:28 CEST
+======================================================================
+Summary:                    subwoofer not working
+Description: 
+hi, i got a ASUS W1000 laptop, sound's working now after the latest patch
+but i still can't get the subwoofer channel working, any suggestion ?
+I can hear it if i play a cd, but not from the pcm!
 
-Thanks!
+thx in advance
 
-Peter P.
+Matteo
+
+======================================================================
+
+----------------------------------------------------------------------
+ matteo - 02-17-05 22:47 
+----------------------------------------------------------------------
+it works from the speakers, but not from the subwoofer :\
+another thing in the alsamixer i got the "master mono" as integer and
+"master" as boolean, is it normal ?
+thx in advance!
+
+Matteo
+
+----------------------------------------------------------------------
+ scoutme - 07-14-05 01:28 
+----------------------------------------------------------------------
+same problem here.
+
+I heard we should redirect and mix stereo output to the center; actually,
+we need some guru's help, since it's not easy at all
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-16-05 19:39 matteo         New Issue                                    
+02-16-05 19:39 matteo         File Added: ac97registers                    
+02-16-05 19:39 matteo         Distribution              => debian/sarge    
+02-16-05 19:39 matteo         Kernel Version            => 2.6.11-rc4      
+02-17-05 20:31 tiwai          Note Added: 0003637                          
+02-17-05 22:47 matteo         Note Added: 0003645                          
+07-14-05 01:28 scoutme        Note Added: 0005467                          
+======================================================================
+
 
 
 
