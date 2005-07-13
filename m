@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
-Date: Tue, 12 Jul 2005 17:29:24 +0200
-Message-ID: <89d471013c0cd9528c577d4a9b923866@bugtrack.alsa-project.org>
+From: Smery <luca_ing@libero.it>
+Subject: USB Audio - Silence
+Date: Wed, 13 Jul 2005 00:19:54 +0000
+Message-ID: <200507130019.56200.luca_ing@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA8311B5
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2005 17:29:24 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,248 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
+        I have an USB device with one Audio Class interface.
+snd_usb_audio detects it and register the corresponding card:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
-======================================================================
-Reported By:                Robert_Schulze
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1251
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-11-2005 14:39 CEST
-Last Modified:              07-12-2005 17:29 CEST
-======================================================================
-Summary:                    emagic a62m: maybe bug: arecord doesn't record
-anything, jack+jackrec work
-Description: 
-When I want to record something from my emi a62m audiointerface, arecord
-doesn't work:
+#amixer -c 3
+Simple mixer control 'PCM',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Mono
+  Limits: Capture 0 - 3
+  Mono: Capture 3 [100%] [on]
 
-"arecord -D emi -f cd > test.wav"
-when issuing "aplay -vvv test.wav", the histogram shows up a permanent
-peak of 36% during the whole file, no sound hearable.
+Also recording sems to work fine:
+$ arecord -f dat -d 10 -D hw:3,0 foobar.wav
+Recording WAVE 'foobar.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+$ ls -l foobar.wav
+-rw-r--r--  1 foo foo 1920044 13 lug 00:16 foobar.wav
 
-Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
-alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
+The problem is that I obtain a file does not contain anything other than a
+sequence of "40 00" (hex) bytes.
 
-.asoundrc:
+Any idea on what happens?
 
-pcm.emi 
- {
- type hw
- card 1 
- }
-
-ctl.emi
- {
- type hw
- card 1
- }
-
-Card 0 is a solo1.
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 07-12-05 12:52 
-----------------------------------------------------------------------
-The difference may be that Jack uses a different bit depth.  Does this
-device support 24 bit sample?  Please show the contents of
-/proc/asound/card1/stream0.
-
-----------------------------------------------------------------------
- Robert_Schulze - 07-12-05 17:29 
-----------------------------------------------------------------------
-While nothing runs:
-
-Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
-Audio
-
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 1
-    Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 2
-    Format: S24_3LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 2
-    Altset 4
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-
-------------------------------------------------------------------------------
-While jackd runs:
-
-Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
-Audio
-
-Playback:
-  Status: Running
-    Interface = 1
-    Altset = 1
-    URBs = 5 [ 1 1 1 1 1 ]
-    Packet Size = 243
-    Momentary freq = 48000 Hz
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 1
-    Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-
-Capture:
-  Status: Running
-    Interface = 2
-    Altset = 1
-    URBs = 5 [ 1 1 1 1 1 ]
-    Packet Size = 588
-    Momentary freq = 48000 Hz
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 2
-    Format: S24_3LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 2
-    Altset 4
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-
--------------------------------------------------------------------------------
-while arecord runs:
-
-Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
-Audio
-
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 1
-    Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-
-Capture:
-  Status: Running
-    Interface = 2
-    Altset = 3
-    URBs = 5 [ 1 1 1 1 1 ]
-    Packet Size = 243
-    Momentary freq = 48000 Hz
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 2
-    Format: S24_3LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 2
-    Altset 4
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-
-------------------------------------------------------------------------------
-
-I tried both 24 bit, where alsa says that the device supports S24_3LE, and
-16 bit (jackd ... --shorts). In both cases, jack works and arecord
-doesn't.
-
-One thing I realized: If I open the device capture-only with "jackd ...
--C", the recording results are equal to the results of pure arecord. Maybe
-it has something to do with that.
-You can see the difference in the sections above.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-11-05 14:39 Robert_Schulze New Issue                                    
-07-11-05 16:20 Clemens LadischNote Added: 0005448                          
-07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
-07-12-05 12:52 Clemens LadischNote Added: 0005453                          
-07-12-05 17:29 Robert_Schulze Note Added: 0005456                          
-======================================================================
-
-
+Best regards
 
 
 -------------------------------------------------------
