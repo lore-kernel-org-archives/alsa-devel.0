@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Wed, 13 Jul 2005 04:28:14 +0200
-Message-ID: <9c7a72ed7f1dc123fb9ff0f237d4b90b@bugtrack.alsa-project.org>
+Date: Wed, 13 Jul 2005 04:46:20 +0200
+Message-ID: <2da7f50b862d746fbd070248b7047ef1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB5321B2
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 04:28:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 183FA1B5
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 04:46:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-13-2005 04:28 CEST
+Last Modified:              07-13-2005 04:46 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,21 +66,31 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 07-13-05 04:24 
-----------------------------------------------------------------------
-The gpio tool works behind the back of the driver, so the driver probably
-won't recognize any change. I don't know exactly what effect the external
-amp have on the LT model, but on the ordinary version it is quite a
-significant increase of sound volume.
-
-If you have Windows installed, you could check the differences.
-
-----------------------------------------------------------------------
  Demosthenes - 07-13-05 04:28 
 ----------------------------------------------------------------------
 I have noticed that the sound volume is incredibly low on the front
 channel, the headphone (back speakers) channel seems to be of reasonable
 volume.  The quality of the sound out of both is very bad.
+
+----------------------------------------------------------------------
+ ungod - 07-13-05 04:46 
+----------------------------------------------------------------------
+Enabling the headphone amp would probably make the front channel produce
+audio of equal amplitude as the rest of the output channels.
+
+I can give you no good answer to why your sound is all that bad. One
+possible reason can be that the sound is simply to loud and the sound is
+disorted. But I've failed to reproduce such an even on my own card without
+the HP amp on.
+
+Just thought of one possibly source for noise. Currently, the front
+channel is mixed with an analogue AUX input channel on the WM8770 chip, as
+this was nessesary to hear sound from line in etc. on the other cards,
+however this is not the case with the rest of the output channels.
+
+Now it COULD be a combination of both the disortion and the analogue
+mixer. I know that it may be a difficult question to answer, but is the
+front and rear output channels equally bad, if you follow me?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -175,6 +185,7 @@ Hedgehog)
 07-13-05 04:12 Demosthenes    Note Added: 0005458                          
 07-13-05 04:24 ungod          Note Added: 0005459                          
 07-13-05 04:28 Demosthenes    Note Added: 0005460                          
+07-13-05 04:46 ungod          Note Added: 0005461                          
 ======================================================================
 
 
