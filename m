@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Wed, 13 Jul 2005 03:57:38 +0200
-Message-ID: <80a5193ac52ad0c98828fd6db0079202@bugtrack.alsa-project.org>
+Date: Wed, 13 Jul 2005 04:12:18 +0200
+Message-ID: <fb14efc470fe4ccaeedf87f16f830071@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29AF11B5
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 03:57:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 650EE1AB
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 04:12:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-13-2005 03:57 CEST
+Last Modified:              07-13-2005 04:12 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -64,12 +64,6 @@ support.
 
 I would be very happy to give any further information needed.
 ======================================================================
-
-----------------------------------------------------------------------
- ungod - 07-08-05 22:52 
-----------------------------------------------------------------------
-Oh sorry. Completely forgot about that.
-I am on vacation now, but I'll get home this Sunday.
 
 ----------------------------------------------------------------------
  ungod - 07-13-05 03:57 
@@ -98,6 +92,14 @@ WM8770 chip) util you find that the external amplifier is toggled on.
 On the ordinary Prodigy, the amp was controlled by a relay which clicks
 when toggled on/off, however it didn't seem to be the case with the LT
 model, judging from the photos.
+
+----------------------------------------------------------------------
+ Demosthenes - 07-13-05 04:12 
+----------------------------------------------------------------------
+I tried playing a wav and toggling every pin from 0-22 (except 8,9,10) high
+and low but I didnt notice anything whilst doing so, should I have?  What
+is the effect of the external amp?  The external amp is always reported as
+on in alsamixer, I dont know if this is of any relevance.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -188,6 +190,8 @@ Hedgehog)
 07-06-05 19:19 Demosthenes    Note Added: 0005392                          
 07-08-05 22:52 ungod          Note Added: 0005437                          
 07-13-05 03:57 ungod          Note Added: 0005457                          
+07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
+07-13-05 04:12 Demosthenes    Note Added: 0005458                          
 ======================================================================
 
 
