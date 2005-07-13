@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001256]: surround51: Master Volume control and Mute only have effect on FrontLeft & FrontRight channels.
-Date: Wed, 13 Jul 2005 18:54:23 +0200
-Message-ID: <bca6876a024c7b65788d9db8aece04e6@bugtrack.alsa-project.org>
+Date: Wed, 13 Jul 2005 18:56:06 +0200
+Message-ID: <bac1eac7390d9aa2870786286f14e02f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 090D71CD
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 18:54:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1BB91CD
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 18:56:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as DUPLICATE OF issue 0000154.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1256> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             07-13-2005 18:11 CEST
-Last Modified:              07-13-2005 18:54 CEST
+Last Modified:              07-13-2005 18:56 CEST
 ======================================================================
 Summary:                    surround51: Master Volume control and Mute only have
 effect on FrontLeft & FrontRight channels.
@@ -52,6 +52,10 @@ obvious that I must be doing something wrong. Please help!
 I am newbie here. Is there a search tool to look for bugs/issues?
 
 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000154 Master volume only controls front outpu...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -75,6 +79,7 @@ Date Modified  Username       Field                    Change
 07-13-05 18:11 Manolo         Kernel Version            => 2.6.11          
 07-13-05 18:51 rlrevell       Note Added: 0005464                          
 07-13-05 18:54 rlrevell       Note Added: 0005465                          
+07-13-05 18:56 rlrevell       Relationship added       duplicate of 0000154
 ======================================================================
 
 
