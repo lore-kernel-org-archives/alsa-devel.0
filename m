@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Wed, 13 Jul 2005 18:56:15 +0200
-Message-ID: <9a097ea66846f102b99f8be7b59c8986@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Wed, 13 Jul 2005 19:39:30 +0200
+Message-ID: <028bcca1d6187d753f71919ebefe467d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D26CC1CD
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 18:56:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C9941CD
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2005 19:39:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,280 +22,166 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001256 has been set as DUPLICATE OF the following issue.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
+Reported By:                Demosthenes
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   2_mixer
+Project:                    ALSA - driver
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              05-20-2005 22:05 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              07-13-2005 19:39 CEST
 ======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
+
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
+
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
+
+I would be very happy to give any further information needed.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-has duplicate       0000786 Master can't handle all channel
-has duplicate       0001256 surround51: Master Volume control and M...
-related to          0000172 Master volume control only controls fro...
-related to          0000919 Master volume doesn't control rear spea...
-======================================================================
 
 ----------------------------------------------------------------------
- djtm - 03-26-04 20:21 
+ Demosthenes - 07-13-05 05:00 
 ----------------------------------------------------------------------
-Also applies to the intel8x0-driver.
-
-----------------------------------------------------------------------
- delmonico - 05-24-04 22:51 
-----------------------------------------------------------------------
-I wrote this little, dirty workaround-script that works just fine for me.
-Anyway I would love to see a really working Master-Slider in a new
-alsa-version :)
-
-File uploading didn't work so i'll just post it:
-#!/bin/sh
-#SB Live! global volume control by Christoph 'delmonico' Neuroth
-#License: GNU General Public License
-#PCM will not go over 75% because higher values sound crappy.
-
-PCM=`amixer get PCM | grep "Front Left: Playback" | awk '{print $5 }' | tr
- -d '\[' | tr -d '%\]'`
-
-case "$1" in
-up)
-        amixer -q set 'Master' 5%+
-        if test $PCM -lt 75
-                then amixer -q set 'PCM' 5%+
-        fi
-        amixer -q set 'Wave Center' 5%+
-        amixer -q set 'Wave LFE' 5%+
-        amixer -q set 'Wave Surround' 5%+
-        amixer -q set 'EMU10K1 PCM' 5%+
-;;
-
-down)
-        amixer -q set 'Master' 5%-
-        amixer -q set 'PCM' 5%-
-        amixer -q set 'Wave Center' 5%-
-        amixer -q set 'Wave LFE' 5%-
-        amixer -q set 'Wave Surround' 5%-
-        amixer -q set 'EMU10K1 PCM' 5%-
-;;
-
-mute)
-        amixer -q set 'Master' 0
-        amixer -q set 'PCM' 0
-        amixer -q set 'Wave Center' 0
-        amixer -q set 'Wave LFE' 0
-        amixer -q set 'Wave Surround' 0
-        amixer -q set 'EMU10K1 PCM' 0
-;;
+It seems to be the front left that is doing 90% of the breaking
+up/crackling, I dont know why that should be.
 
 
-*)
-        amixer -q set 'Master' $1%
-        if test $1 -lt 75
-                then amixer -q set 'PCM' $1%
-                else amixer -q set 'PCM' 75%
-        fi
-        amixer -q set 'Wave Center' $1%
-        amixer -q set 'Wave LFE' $1%
-        amixer -q set 'Wave Surround' $1%
-        amixer -q set 'EMU10K1 PCM' $1%
-;;
-esac
 
 ----------------------------------------------------------------------
- djtm - 10-23-04 01:10 
+ Demosthenes - 07-13-05 19:39 
 ----------------------------------------------------------------------
-An improved script based on delmonico's but with function and variable
-channel names. PCM volume restriction does not yet work though. I'd
-appreciate if someone finds the bug. and thanks to delmonico!
-
-see alsavol.sh!!
-
-edited on: 10-23-04 01:10
-
-----------------------------------------------------------------------
- Miwer - 01-04-05 21:01 
-----------------------------------------------------------------------
-Any news on this one?
-
-----------------------------------------------------------------------
- rlrevell - 01-04-05 21:11 
-----------------------------------------------------------------------
-It's not really a question of "finding the bug", these controls are simply
-not implemented yet.  As you can see, it does not make sense to further
-bloat the drivers by fixing it there.
-
-Since the problem can obviously be solved in userspace, and affects more
-than one driver, it seems the fix should be implemented in alsa-lib.  All
-we need is a way to define new controls and link others to them.
-
-----------------------------------------------------------------------
- pzad - 01-04-05 21:29 
-----------------------------------------------------------------------
-But something can be fixed in driver (and this bug can be partially fixed
-in driver for emu10k1, and this is simpler solution).
-
-----------------------------------------------------------------------
- rlrevell - 01-04-05 21:38 
-----------------------------------------------------------------------
-Peter,
-
-So the fix for SBLive is to just create an extra control in the driver,
-and have it change the values of all the per channel controls?  IOW, do
-exactly what the alsavol.sh script does, but inside the driver?
-
-I might try to implement this.  Does it need to be fixed for SBLive and
-Audigy too?
-
-----------------------------------------------------------------------
- pzad - 01-04-05 22:30 
-----------------------------------------------------------------------
-Audigy is OK - this was fixed in past.
-
-SB Live is worse, because there is not one signal path from analog inputs
-to front speakers, but two (audigy has only one).
-
-If you are interested in fixing this, I can send you how SB Live alsa
-mixer looks now and how it should look after.
-
-This will fix - partially "master" control (this bug repport), spdif
-volume controls (for digital speakers) (another bug report) and signal
-distortion when using bass and treble controls (another bug report).
-
-----------------------------------------------------------------------
- rlrevell - 01-04-05 22:38 
-----------------------------------------------------------------------
-Yes, please send me this info, and I'll try to fix the driver.
-
-----------------------------------------------------------------------
- adamk75 - 01-27-05 01:00 
-----------------------------------------------------------------------
-pzad, could you send me this info as well?
-
-----------------------------------------------------------------------
- adamk75 - 02-01-05 22:57 
-----------------------------------------------------------------------
-pzad, please? :-)
-
-----------------------------------------------------------------------
- rlrevell - 02-03-05 20:20 
-----------------------------------------------------------------------
-Peter Zubaj and Mikael Magnusson have provided me with all the necessary
-info to implement a proper master volume for the SBLive.  I should have
-this working real soon now.
-
-----------------------------------------------------------------------
- adamk75 - 02-17-05 22:01 
-----------------------------------------------------------------------
-Just checking to see if there's an update on the status of this bug yet?
-
-Adam
-
-----------------------------------------------------------------------
- rlrevell - 02-17-05 22:59 
-----------------------------------------------------------------------
-Please check the recent postings for alsa-user and alsa-devel lists before
-asking this question.  If you read them you would know that yes, it's
-being worked on,  and no, it's not fixed yet.
-
-If you want to pay me to work on this, please mail me privately. 
-Otherwise be patient.
-
-----------------------------------------------------------------------
- adamk75 - 02-17-05 23:28 
-----------------------------------------------------------------------
-I've been waiting since early last year.  I thought I was being patient
-:-)
-
-Anyway, I was only asking because the thread back and forth on alsa-devel
-and alsa-user about the problem stopped almost a week ago.  Since the
-volume levels of alsa-devel and alsa-user are way too high for me, I
-figured I'd check up here.
-
-Anyway, the driver has been broken for so long, I can certainly wait a
-little longer.
-
-----------------------------------------------------------------------
- Miwer - 05-20-05 22:02 
-----------------------------------------------------------------------
-adamk75 I agree with you - we've been waiting for this problem to be fixed
-for a LONG time now. This has been a problem for at least 18 months now,
-according to various forum posts.
-
-rlrevell why is it taking so long? You say that it's beeing worked on, but
-that's not what it looks like when reading alsa-user or alsa-devel. You
-tell us to be patient, but it's not easy when nothing's happening. I don't
-mean to disrespect you, but when you make a statement like "I should have
-this working real soon now", then why is this still open after yet another
-4 months?
-
-----------------------------------------------------------------------
- rlrevell - 05-20-05 22:05 
-----------------------------------------------------------------------
-Sorry, I don't have time to work on this.  Please bug the ALSA developers
-to get the abstract mixer layer finished.
+When I try connecting my Hi-Fi up to the headphone channel and setting the
+pcm volume down a little I get reasonable quality sound at a reasonable
+volume level, it seems possible that it is just the front channel having
+trouble with volume and  quality.  The quality problems may just be caused
+by the fact that the volume is maxed on all the settings to get any
+audible sound at all, I can't really confirm this since if you lower the
+levels even a little I struggle to hear any sound.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
-01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
-01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
-01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
-01-27-05 01:00 adamk75        Note Added: 0003418                          
-02-01-05 22:57 adamk75        Note Added: 0003475                          
-02-03-05 20:20 rlrevell       Note Added: 0003493                          
-02-17-05 22:01 adamk75        Note Added: 0003642                          
-02-17-05 22:59 rlrevell       Note Added: 0003646                          
-02-17-05 23:28 adamk75        Note Added: 0003647                          
-02-22-05 09:56 perex          Relationship added       related to 0000919  
-05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
-05-20-05 22:02 Miwer          Note Added: 0004699                          
-05-20-05 22:05 rlrevell       Note Added: 0004700                          
-07-13-05 18:56 rlrevell       Relationship added       has duplicate 0001256
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
+07-01-05 16:09 baesyspem      Note Added: 0005335                          
+07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
+         
+07-01-05 20:43 ungod          Note Added: 0005339                          
+07-01-05 22:08 Demosthenes    Note Added: 0005341                          
+07-01-05 22:46 ungod          Note Added: 0005342                          
+07-01-05 23:09 Demosthenes    Note Added: 0005344                          
+07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
+07-02-05 03:29 ungod          Note Added: 0005350                          
+07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
+07-02-05 03:37 ungod          Note Edited: 0005350                         
+07-02-05 16:50 Demosthenes    Note Added: 0005353                          
+07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 18:27 ungod          Note Added: 0005354                          
+07-02-05 18:36 Demosthenes    Note Added: 0005355                          
+07-02-05 20:20 ungod          Note Added: 0005358                          
+07-02-05 20:59 Demosthenes    Note Added: 0005359                          
+07-02-05 21:43 ungod          File Added: peak.tar.gz                      
+07-02-05 21:44 ungod          Note Added: 0005360                          
+07-02-05 22:30 Demosthenes    Note Added: 0005362                          
+07-03-05 00:21 ungod          Note Added: 0005363                          
+07-03-05 01:49 Demosthenes    Note Added: 0005364                          
+07-03-05 01:55 ungod          Note Added: 0005365                          
+07-03-05 02:46 Demosthenes    Note Added: 0005366                          
+07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
+07-03-05 03:18 Demosthenes    Note Added: 0005367                          
+07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
+07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
+         
+07-03-05 11:47 ungod          Note Added: 0005373                          
+07-03-05 15:29 Demosthenes    Note Added: 0005377                          
+07-03-05 17:06 ungod          Note Added: 0005379                          
+07-04-05 14:34 miljan         Issue Monitored: miljan                      
+07-04-05 14:35 miljan         Issue End Monitor: miljan                    
+07-04-05 14:35 miljan         Issue Monitored: miljan                      
+07-06-05 19:19 Demosthenes    Note Added: 0005392                          
+07-08-05 22:52 ungod          Note Added: 0005437                          
+07-13-05 03:57 ungod          Note Added: 0005457                          
+07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
+07-13-05 04:12 Demosthenes    Note Added: 0005458                          
+07-13-05 04:24 ungod          Note Added: 0005459                          
+07-13-05 04:28 Demosthenes    Note Added: 0005460                          
+07-13-05 04:46 ungod          Note Added: 0005461                          
+07-13-05 04:57 Demosthenes    Note Added: 0005462                          
+07-13-05 04:59 Demosthenes    Note Added: 0005463                          
+07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
+07-13-05 19:39 Demosthenes    Note Added: 0005466                          
 ======================================================================
 
 
