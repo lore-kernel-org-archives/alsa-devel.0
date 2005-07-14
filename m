@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Thu, 14 Jul 2005 13:31:58 +0200
-Message-ID: <85d6040884f92b823990634a137db493@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: =?GB2312?B?uePW3cnMzvHTysjtvP4=?= <hk.888@tom.com>
+Subject: =?GB2312?B?xPq5q8u+svrGt9PQyMvWqrXAwvA/08q8/si6t6LG97/J0tSw78T6w6Yh?=
+Date: Thu, 14 Jul 2005 19:40:24 +0800
+Message-ID: <E1Dt24u-0004OH-2P@sc8-sf-mx2.sourceforge.net>
+Reply-To: hk.888@tom.com
+Content-Type: text/html;charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E7DF173
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 13:31:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,176 +15,108 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+<html>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
-======================================================================
-Reported By:                Demosthenes
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-14-2005 13:31 CEST
-======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
-Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dgb2312"=
+>
+<title>=B9=BA=C2=F2=D3=CA=D6=B7 =C3=E2=B7=D1=D4=F9=CB=CD =D3=CA=BC=FE=C8=BA=
+=B7=A2=BC=B0=CB=D1=CB=F7=C8=ED=BC=FE</title>
+</head>
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+<body>
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
+<table border=3D"1" width=3D"100%" id=3D"table2" bgcolor=3D"#C0C0C0" bord=
+ercolor=3D"#FF00FF">
+	<tr>
+		<td bordercolor=3D"#FF00FF" bgcolor=3D"#FFFFFF">
+		<span style=3D"background-color: #FFFFFF">
+		<font face=3D"=CB=CE=CC=E5" size=3D"6" color=3D"#FF0000">=D7=F0=BE=B4=C5=
+=F3=D3=D1:</font><font face=3D"=CB=CE=CC=E5" size=3D"4" color=3D"#008000"=
+>=B3=E4=B7=D6=C0=FB=D3=C3=C4=E3=CF=D6=D3=D0=B5=E7=C4=D4=BA=CD=CD=F8=C2=E7
+		=D7=CA=D4=B4,=CA=C7=C3=F7=D6=C7=B5=C4=D1=A1=D4=F1,=CA=B9=D3=C3=D3=CA=BC=
+=FE=C8=BA=B7=A2=C0=B4=CD=C6=B9=E3=C4=E3=B5=C4=CD=F8=D5=BE=A1=A2=CD=F8=D2=B3=
+=C1=AC=BD=D3=A1=A2=B7=A2=B2=BC=C9=CC=D2=B5=D0=C5=CF=A2=A1=A2=B9=AB=CB=BE=B2=
+=FA=C6=B7=CA=C7=D2=BB=CF=EE=CA=CA=BA=CF=B4=F3=B6=E0=CA=FD=C8=CB=B5=C4=CD=F8=
+=C2=E7=D3=AA=CF=FA=B7=BD=CA=BD,=CC=D8=B1=F0=CA=C7=CF=D6=D4=DA=B5=E7=C4=D4=
+=B5=C4=C6=D5=BC=B0,=C9=CF=CD=F8=C8=CB=CA=FD=B5=C4=B1=B6=D4=F6,=B8=F8=CD=F8=
+=C2=E7=D3=AA=CF=FA=B4=F8=C0=B4=C1=CB=D0=C2=B5=C4=BB=FA=D3=F6,=C8=E7=BA=CE=
+=B7=A2=BB=D3=C4=E3=B5=C4=B4=CF=C3=F7=B2=C5=D6=C7,=D3=CA=BC=FE=C8=BA=B7=A2=
+=B0=EF=C4=E3=C3=A6,=CE=D2=C3=C7=CC=E1=B9=A905=C4=EA=D0=C2=CB=D1=CB=F7=B5=C4=
+=D2=BB=D2=DA=B0=CB=C7=AA=CD=F2=C9=CC=CE=F1=D3=CA=D6=B7,=D4=F9=CB=CD=C1=F9=
+=CC=D7=D3=CA=BC=FE=C8=BA=B7=A2=BA=CD=CB=D1=CB=F7=C8=ED=BC=FE,=D6=FA=C4=E3=
+=CA=C2=D2=B5=D0=CB=CD=FA=B7=A2=B4=EF=A1=A3</font><font face=3D"=CB=CE=CC=E5=
+" size=3D"4"><font color=3D"#FF0000">=D2=BB=D2=DA=B0=CB=C7=AA=CD=F2=D3=CA=
+=D6=B7200=D4=AA,=C3=BF=D4=C2=D3=D0200=CD=F2--300=CD=F2=D3=CA=D6=B7=B8=FC=D0=
+=C2,</font></font></span><font color=3D"#FF0000" face=3D"=CB=CE=CC=E5" si=
+ze=3D"4"><span style=3D"background-color: #FFFFFF">=B9=E3=D6=DD=CA=D0=C9=CF=
+=C3=C5=B0=B4=D7=B0(=CD=E2=B5=D8=D3=C3=BB=A7=BF=C9=CE=AF=CD=D0=B9=E3=D6=DD=
+=C5=F3=D3=D1=D1=E9=CA=D5),=B2=A2=BD=CC=BB=E1=CA=B9=D3=C3,</span></font><s=
+pan style=3D"background-color: #FFFFFF"><font face=3D"=CB=CE=CC=E5" size=3D=
+"4"><font color=3D"#FF0000">=B1=A3=D6=A4=D3=CA=BC=FE=C8=BA=B7=A2=BC=B0=CB=
+=D1=CB=F7=B3=C9=B9=A6,=C2=FA=D2=E2
+		=C4=FA=B2=C5=B8=B6=B7=D1,</font><font color=3D"#008000">=C3=E2=B7=D1=D4=
+=F9=CB=CD=D3=CA=BC=FE=C8=BA=B7=A2=BC=B0=CB=D1=CB=F7=C8=ED=BC=FE=C1=F9=CC=D7=
+</font><a href=3D"http://yanqi.ys168.com/"><font color=3D"#008000">,</fon=
+t></a><font color=3D"#008000">=C8=ED=BC=FE=CA=B9=D3=C3=B7=BD=B7=A8=C2=BC=CF=
+=F1,=D3=D0=CD=BC=CF=F1=D3=D0=C9=F9=D2=F4,=D2=BB=BF=B4=BE=CD=B6=AE=BB=E1=CA=
+=B9=D3=C3.=CF=C2=D4=D8</font><a href=3D"http://yanqi.ys168.com/"><font co=
+lor=3D"#008000">http://</font></a></font></span><font face=3D"=CB=CE=CC=E5=
+" size=3D"4"><a href=3D"http://yanqi.ys168.com/"><span style=3D"backgroun=
+d-color: #FFFFFF"><font color=3D"#008000">yanqi.ys168.com/</font></span><=
+/a><span style=3D"background-color: #FFFFFF"><font color=3D"#008000">&lt;=
+=C7=EB=CE=F0=D6=B1=BD=D3=BB=D8=B8=B4=B1=BE=D3=CA=BC=FE=A3=A1&gt;=D0=E8=D2=
+=AA=C7=EB=C1=AA=CF=B5,=B5=E7=BB=B0:020-88154460(8-24=B5=E3=BD=D3=CC=FD),(=
+QQ261368943=BF=C9=D4=DA=CF=DF=D1=DD=CA=BE=C8=ED=BC=FE=CA=B9=D3=C3=B7=BD=B7=
+=A8),=D3=CA=CF=E4=B5=D8=D6=B7:</font><font color=3D"#FF0000"><a href=3D"m=
+ailto:ehusoft@21cn.com"><font color=3D"#008000">ehusoft@21cn.com</font></=
+a></font><font color=3D"#008000">.=B9=E3=D6=DD=C9=CC=CE=F1=D3=CA=C8=ED=BC=
+=FE=B9=AB=CB=BE,=B9=E3=D6=DD=CA=D0=CC=A9=C9=B3=C2=B746=BA=C5,=D0=A4=C9=FA=
+=20
+		=B5=E7=BB=B0:020-84073107</font></span></font></td>
+	</tr>
+</table>
+<table border=3D"1" width=3D"762" height=3D"30" bgcolor=3D"#FFFFFF">
+	<tr>
+		<td height=3D"24" width=3D"198" bgcolor=3D"#C0C0C0"><font face=3D"=CB=CE=
+=CC=E5" size=3D"4">
+		<a href=3D"http://yanqi.ys168.com/"><font color=3D"#008000">http://yanq=
+i.ys168.com/</font></a></font></td>
+		<td height=3D"24" width=3D"548" bgcolor=3D"#C0C0C0">
+		<font face=3D"=CB=CE=CC=E5" size=3D"4" color=3D"#008000">=CF=C2=D4=D8=D3=
+=CA=BC=FE=C8=BA=B7=A2=C1=F9=CC=D7=BC=B0=C8=BA=B7=A2=BA=CD=CB=D1=CB=F7=C8=ED=
+=BC=FE=CA=B9=D3=C3=B7=BD=B7=A8=C2=BC=CF=F1,=D3=D0=CD=BC=CF=F1=D3=D0=C9=F9=
+=D2=F4,=D2=BB=BF=B4=BE=CD=BB=E1=D3=C3</font></td>
+	</tr>
+	<tr>
+		<td height=3D"24" width=3D"198" bgcolor=3D"#C0C0C0">
+		<a href=3D"http://88154460.ys168.com">http://88154460.ys168.com</a></td=
+>
+		<td height=3D"24" width=3D"548" bgcolor=3D"#C0C0C0">
+		<span lang=3D"zh-cn"><font face=3D"=CB=CE=CC=E5" size=3D"4" color=3D"#0=
+08000">=CD=F8</font></span><font face=3D"=CB=CE=CC=E5" size=3D"4" color=3D=
+"#008000"><span lang=3D"zh-cn">=C9=CF=D1=DD=CA=BE,</span>=C8=BA=B7=A2=BA=CD=
+=CB=D1=CB=F7=C8=ED=BC=FE=CA=B9=D3=C3=B7=BD=B7=A8=C2=BC=CF=F1,=D3=D0=CD=BC=
+=CF=F1=D3=D0=C9=F9=D2=F4,</font></td>
+	</tr>
+</table>
 
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
+<p>=C8=E7=B9=FB=C4=E3=B2=BB=D2=AA=D5=E2=D3=CA=BC=FE,=C7=EB=B8=E6=CB=DF=CE=
+=D2=C3=C7=C9=BE=B3=FD=D3=CA=D6=B7,=D6=F7=CC=E2=C7=EB=D0=B4:=C9=BE=B3=FD=D5=
+=E2=D3=CA=CF=E4=B5=D8=D6=B7.=D0=BB=D0=BB</p>
 
-I would be very happy to give any further information needed.
-======================================================================
+</body>
 
-----------------------------------------------------------------------
- ungod - 07-14-05 13:19 
-----------------------------------------------------------------------
-Strange... Personally I have always have all volumes to max, and then
-adjust the volume on my HiFi. Anyway, took a closer look at the driver and
-it actually seems that I was smart enough to avoid the analogue mixing in
-the WM8770 chip, when the card is the LT model. So this can't be the
-source of the noise (which is anoying, because now I don't know what to
-do)
-
-----------------------------------------------------------------------
- Demosthenes - 07-14-05 13:31 
-----------------------------------------------------------------------
-If I do try Windows and turn all the volume levels up to max it sounds good
-and it also comes out very loud.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-05-10-05 09:36 ungod          Note Added: 0004632                          
-05-10-05 15:50 Demosthenes    Note Added: 0004633                          
-05-14-05 15:18 Demosthenes    Note Added: 0004658                          
-05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
-06-14-05 16:02 baesyspem      Note Added: 0005018                          
-06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
-06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
-06-14-05 18:30 Demosthenes    Note Added: 0005019                          
-06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
-06-14-05 21:26 ungod          Note Added: 0005020                          
-06-14-05 21:27 ungod          Note Edited: 0005020                         
-06-29-05 18:30 Demosthenes    Note Added: 0005307                          
-06-30-05 01:03 ungod          Note Added: 0005321                          
-06-30-05 01:08 ungod          Issue Monitored: ungod                       
-06-30-05 01:46 baesyspem      Note Added: 0005322                          
-06-30-05 02:27 Demosthenes    Note Added: 0005323                          
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
-06-30-05 21:21 ungod          Note Added: 0005328                          
-07-01-05 14:25 baesyspem      Note Added: 0005333                          
-07-01-05 16:09 baesyspem      Note Added: 0005335                          
-07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
-         
-07-01-05 20:43 ungod          Note Added: 0005339                          
-07-01-05 22:08 Demosthenes    Note Added: 0005341                          
-07-01-05 22:46 ungod          Note Added: 0005342                          
-07-01-05 23:09 Demosthenes    Note Added: 0005344                          
-07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
-07-02-05 03:29 ungod          Note Added: 0005350                          
-07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
-07-02-05 03:37 ungod          Note Edited: 0005350                         
-07-02-05 16:50 Demosthenes    Note Added: 0005353                          
-07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 18:27 ungod          Note Added: 0005354                          
-07-02-05 18:36 Demosthenes    Note Added: 0005355                          
-07-02-05 20:20 ungod          Note Added: 0005358                          
-07-02-05 20:59 Demosthenes    Note Added: 0005359                          
-07-02-05 21:43 ungod          File Added: peak.tar.gz                      
-07-02-05 21:44 ungod          Note Added: 0005360                          
-07-02-05 22:30 Demosthenes    Note Added: 0005362                          
-07-03-05 00:21 ungod          Note Added: 0005363                          
-07-03-05 01:49 Demosthenes    Note Added: 0005364                          
-07-03-05 01:55 ungod          Note Added: 0005365                          
-07-03-05 02:46 Demosthenes    Note Added: 0005366                          
-07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
-07-03-05 03:18 Demosthenes    Note Added: 0005367                          
-07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
-07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
-         
-07-03-05 11:47 ungod          Note Added: 0005373                          
-07-03-05 15:29 Demosthenes    Note Added: 0005377                          
-07-03-05 17:06 ungod          Note Added: 0005379                          
-07-04-05 14:34 miljan         Issue Monitored: miljan                      
-07-04-05 14:35 miljan         Issue End Monitor: miljan                    
-07-04-05 14:35 miljan         Issue Monitored: miljan                      
-07-06-05 19:19 Demosthenes    Note Added: 0005392                          
-07-08-05 22:52 ungod          Note Added: 0005437                          
-07-13-05 03:57 ungod          Note Added: 0005457                          
-07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
-07-13-05 04:12 Demosthenes    Note Added: 0005458                          
-07-13-05 04:24 ungod          Note Added: 0005459                          
-07-13-05 04:28 Demosthenes    Note Added: 0005460                          
-07-13-05 04:46 ungod          Note Added: 0005461                          
-07-13-05 04:57 Demosthenes    Note Added: 0005462                          
-07-13-05 04:59 Demosthenes    Note Added: 0005463                          
-07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
-07-13-05 19:39 Demosthenes    Note Added: 0005466                          
-07-14-05 13:19 ungod          Note Added: 0005472                          
-07-14-05 13:31 Demosthenes    Note Added: 0005473                          
-======================================================================
-
-
+</html>
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by the 'Do More With Dual!' webinar happening
+This SF.Net email is sponsored by the 'Do More With Dual!' webinar happen=
+ing
 July 14 at 8am PDT/11am EDT. We invite you to explore the latest in dual
-core and dual graphics technology at this free one hour event hosted by HP, 
+core and dual graphics technology at this free one hour event hosted by H=
+P,=20
 AMD, and NVIDIA.  To register visit http://www.hp.com/go/dualwebinar
