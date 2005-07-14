@@ -1,12 +1,14 @@
-From: Brian Black <BlackBsd@Mountain.net>
-Subject: Im not getting my digest.
-Date: Thu, 14 Jul 2005 11:50:55 -0400
-Message-ID: <42D689DF.7020800@Mountain.net>
-Reply-To: BlackBsd@Mountain.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - plugins 0001257]: 'Sample format non available' when using jack-plugin
+Date: Thu, 14 Jul 2005 17:50:23 +0200
+Message-ID: <ee6908498468f4314603ff270140d2af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A2E71EE
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 17:50:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-hi, i have been subcribed for some time now and for the past week i have
-noticed that i am not getting my digest.  is anyone else having this
-problem?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1257> 
+======================================================================
+Reported By:                Robert_Schulze
+Assigned To:                
+======================================================================
+Project:                    ALSA - plugins
+Issue ID:                   1257
+Category:                   PCM - jack
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-14-2005 17:50 CEST
+Last Modified:              07-14-2005 17:50 CEST
+======================================================================
+Summary:                    'Sample format non available' when using jack-plugin
+Description: 
+1. Start Jackd:
 
-brian
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+/usr/local/jack/bin/jackd -vd alsa -d emi -S
 
-iD8DBQFC1onfI9Y/1VIS+jgRApjrAJ0Sa1+h5dEAXgpcZVmU8buF6SSXrgCghk+W
-d3pGZnhUFarZLn8fVFx0GxQ=
-=+aIH
------END PGP SIGNATURE-----
+2. Start arecord:
+
+arecord -D "emijack12" -t wav -f S16_LE -c 2 -r 48000 > test.wav
+
+gives: "arecord: set_params:882: Sample format non available"
+
+arecord -D "emijack12" > test.wav
+
+gives the same.
+
+my .asoundr:
+
+pcm.emijack12
+    {
+    type jack
+    playback_ports
+        {
+        0 alsa_pcm:playback_1
+        1 alsa_pcm:playback_2
+        }
+    capture_ports
+        {
+        0 alsa_pcm:capture_1
+        1 alsa_pcm:capture_2
+        }
+    }
+
+ctl.emi
+    {
+    type hw
+    card 1
+    }
+
+pcm.emi
+    {
+    type hw
+    card 1
+    }
+
+emi is a Emagic a62m USB-Audiointerface
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-14-05 17:50 Robert_Schulze New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
