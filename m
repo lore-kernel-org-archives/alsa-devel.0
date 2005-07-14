@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Thu, 14 Jul 2005 13:19:13 +0200
-Message-ID: <c2a0c73458b05c5be14b0692794cf267@bugtrack.alsa-project.org>
+Date: Thu, 14 Jul 2005 13:31:58 +0200
+Message-ID: <85d6040884f92b823990634a137db493@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61ACB1DE
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 13:19:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E7DF173
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 13:31:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-14-2005 13:19 CEST
+Last Modified:              07-14-2005 13:31 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,17 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 07-13-05 19:39 
-----------------------------------------------------------------------
-When I try connecting my Hi-Fi up to the headphone channel and setting the
-pcm volume down a little I get reasonable quality sound at a reasonable
-volume level, it seems possible that it is just the front channel having
-trouble with volume and  quality.  The quality problems may just be caused
-by the fact that the volume is maxed on all the settings to get any
-audible sound at all, I can't really confirm this since if you lower the
-levels even a little I struggle to hear any sound.
-
-----------------------------------------------------------------------
  ungod - 07-14-05 13:19 
 ----------------------------------------------------------------------
 Strange... Personally I have always have all volumes to max, and then
@@ -85,6 +74,12 @@ it actually seems that I was smart enough to avoid the analogue mixing in
 the WM8770 chip, when the card is the LT model. So this can't be the
 source of the noise (which is anoying, because now I don't know what to
 do)
+
+----------------------------------------------------------------------
+ Demosthenes - 07-14-05 13:31 
+----------------------------------------------------------------------
+If I do try Windows and turn all the volume levels up to max it sounds good
+and it also comes out very loud.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -185,6 +180,7 @@ Hedgehog)
 07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
 07-13-05 19:39 Demosthenes    Note Added: 0005466                          
 07-14-05 13:19 ungod          Note Added: 0005472                          
+07-14-05 13:31 Demosthenes    Note Added: 0005473                          
 ======================================================================
 
 
