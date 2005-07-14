@@ -1,17 +1,16 @@
-From: Tomko <tomko@avantwave.com>
-Subject: How can i unsubscibe from this mailing list ?
-Date: Thu, 14 Jul 2005 10:15:15 +0800
-Message-ID: <42D5CAB3.40207@avantwave.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: How can i unsubscibe from this mailing list ?
+Date: Wed, 13 Jul 2005 22:30:22 -0400
+Message-ID: <1121308223.4435.134.camel@mindpipe>
+References: <42D5CAB3.40207@avantwave.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.avantwave.com (mail.avantwave.com [210.17.210.210])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D120118D
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 04:15:19 +0200 (MEST)
-Received: from [172.16.11.197] ([172.16.11.197])
-	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id j6E2DLUH011382
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 10:13:22 +0800
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D58A01B2
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 04:30:24 +0200 (MEST)
+In-Reply-To: <42D5CAB3.40207@avantwave.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,10 +20,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Tomko <tomko@avantwave.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-as topic
+On Thu, 2005-07-14 at 10:15 +0800, Tomko wrote:
+> as topic
+
+Check the link at the bottom of every list message.
+
+Lee
+
 
 
 -------------------------------------------------------
