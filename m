@@ -1,26 +1,14 @@
-From: Jan Buchholz <derteta@gmx.de>
+From: Tom Watson <sdc695@yahoo.com>
 Subject: Re: spam and this list
-Date: Thu, 14 Jul 2005 11:06:33 +0200
-Message-ID: <45B51F09-463A-4CE5-B480-339B23AE91C5@gmx.de>
-References: <20050714144842.170F.NICK@rout.co.nz>
- <1121310167.4435.138.camel@mindpipe>
+Date: Thu, 14 Jul 2005 02:14:24 -0700 (PDT)
+Message-ID: <20050714091424.34049.qmail@web60816.mail.yahoo.com>
+References: <20050714090953.8864212FF0@sc8-sf-spam2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ms-dienst.rz.rwth-aachen.de (ms-1.rz.RWTH-Aachen.DE [134.130.3.130])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F12411CE
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 11:08:10 +0200 (MEST)
-Received: from r220-1 (r220-1.rz.RWTH-Aachen.DE [134.130.3.31])
- by ms-dienst.rz.rwth-aachen.de
- (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
- with ESMTP id <0IJM007QL1DMM7@ms-dienst.rz.rwth-aachen.de> for
- alsa-devel@alsa-project.org; Thu, 14 Jul 2005 11:08:10 +0200 (MEST)
-Received: from [137.226.56.76]
- (montgomery.informatik.RWTH-Aachen.DE [137.226.56.76])
-	by relay.rwth-aachen.de (8.13.3/8.13.3/1) with ESMTP id j6E988Hv007845	for
- <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 11:08:08 +0200 (MEST)
-In-reply-to: <1121310167.4435.138.camel@mindpipe>
+In-Reply-To: <20050714090953.8864212FF0@sc8-sf-spam2.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -30,33 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
-
-On Jul 14, 2005, at 5:02 AM, Lee Revell wrote:
-
+> Message: 1
+> Subject: Re: [Alsa-devel] spam and this list
+> From: Lee Revell <rlrevell@joe-job.com>
+> To: Nick Rout <nick@rout.co.nz>
+> Cc: alsa-devel@alsa-project.org
+> Date: Wed, 13 Jul 2005 23:02:47 -0400
+>=20
 > On Thu, 2005-07-14 at 14:51 +1200, Nick Rout wrote:
->
->> Why does this list get so much spam? Does it accept email from
->> non-subscribers?
-
+> > Why does this list get so much spam? Does it accept email from
+> > non-subscribers?
+> >=20
+> > If it does, it bloody well shouldn't!
+> >=20
+>=20
 > Yes, it has to so people on the kernel list can cc: this list without
-> having to be subscribed.  And it actually gets very little spam,  
-> like a
+> having to be subscribed.  And it actually gets very little spam, like a
 > handful of messages a day.
+>=20
+> Finally, every list message has headers like this:
+>=20
+> X-Spam-Score: 1.0 (+)
+> X-Spam-Report: Spam Filtering performed by sourceforge.net. See
+> http://spamassassin.org/tag/ for more details. Report problems to
+> http://sf.net/tracker/?func=3Dadd&group_id=3D1&atid=3D200001 1.0
+> FORGED_RCVD_HELO Received: contains a forged HELO 0.0
+> SF_CHICKENPOX_MINUS    BODY: Text interparsed with - 0.0
+> SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with ' -0.0 AWL
+> AWL: From: address is in the auto white-list
+>=20
+> Lee
+>=20
+>=20
 
-But isn't it possible to add this list as a second set of possible  
-senders?
-I'm not really familiar with the management of mailing-lists...
+Yes, the messages have spam headers, EXCEPT when received in digest form.=
+  Then
+again, we had this discussion a long time ago, and determined that the sp=
+am
+wasn't that bad.  Of course, it could be improved, but that is a subject
+that I'll leave to others to duke it out.
+(*SIGH*)
 
-Jan, new to the list
 
+--=20
+Tom Watson
+tsw@johana.com
+
+
+	=09
+__________________________________=20
+Yahoo! Mail for Mobile=20
+Take Yahoo! Mail with you! Check email on your mobile phone.=20
+http://mobile.yahoo.com/learn/mail=20
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by the 'Do More With Dual!' webinar happening
+This SF.Net email is sponsored by the 'Do More With Dual!' webinar happen=
+ing
 July 14 at 8am PDT/11am EDT. We invite you to explore the latest in dual
-core and dual graphics technology at this free one hour event hosted by HP, 
+core and dual graphics technology at this free one hour event hosted by H=
+P,=20
 AMD, and NVIDIA.  To register visit http://www.hp.com/go/dualwebinar
