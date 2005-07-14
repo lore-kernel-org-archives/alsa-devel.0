@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Thu, 14 Jul 2005 13:54:43 +0200
-Message-ID: <2bf13d1cc6e387402d766df54c256c14@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
+Date: Thu, 14 Jul 2005 15:50:37 +0200
+Message-ID: <1821340f572638a06bf2f4a0980879da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E2D61DE
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 13:54:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C20D71E8
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 15:50:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,163 +24,216 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
 ======================================================================
-Reported By:                Demosthenes
+Reported By:                Mimosius
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
+Issue ID:                   839
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
+Distribution:               SuSE 9.2
+Kernel Version:             2.6.8-24.10 + 2.6.10
 ======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-14-2005 13:54 CEST
+Date Submitted:             01-21-2005 03:12 CET
+Last Modified:              07-14-2005 15:50 CEST
 ======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
+Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
+CS4299
 Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+Audio-mode via SPDIF works fine but I can't get any non-audio passthru
+working.
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
+AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
+there seems to arrive no decodeable signal on receiver side.
+There are no errors or warnings after loading soundrivers and there are no
+other soundcards plugged in (notebook).
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
 
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
+here are some system informations:
 
-I would be very happy to give any further information needed.
+# cat /etc/modprobe.d/sound
+alias snd-card-0 snd-intel8x0
+options snd-ac97-codec
+options snd-intel8x0 enable=1 index=0
+
+
+# cat /proc/asound/pcm' 
+00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
+00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
+00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
+00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
+
+
+# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
+ac3dec -C)
+0-0/0: Cirrus Logic CS4299 rev 4
+
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : Crystal Semi 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : Mic
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
+Extended status  : VRA
+PCM front DAC    : 48000Hz
+PCM ADC          : 48000Hz
+SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
+Enabled
+
+
+# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
+ac3dec -C)
+0:00 = 1990
+0:02 = 3f3f
+0:04 = 9f1f
+0:06 = 801f
+0:08 = 0000
+0:0a = 801e
+0:0c = 801f
+0:0e = 8000
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 8000
+0:1a = 0606
+0:1c = 0f0f
+0:1e = 0000
+0:20 = 0200
+0:22 = 0000
+0:24 = 0000
+0:26 = 800f
+0:28 = 0201
+0:2a = 0001
+0:2c = bb80
+0:2e = 0000
+0:30 = 0000
+0:32 = bb80
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 0000
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0404
+0:5c = 0000
+0:5e = 0080
+0:60 = 0022
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 8826
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 003f
+0:7a = 0000
+0:7c = 4352
+0:7e = 5934
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 07-14-05 13:31 
+ Mimosius - 06-22-05 18:58 
 ----------------------------------------------------------------------
-If I do try Windows and turn all the volume levels up to max it sounds good
-and it also comes out very loud.
+Hi tiwai,
+
+>Well, two possibilities can be counted:
+>1. the SPDIF signal is sent through a wrong channel or recoded somehow
+>wrongly, so the non-audio data is broken
+>2. the SPDIF non-audio status bit is not set. Some receivers are so
+sentive >that they don't accept SPDIF signals with that.
+
+I tried to play an AC3-file with mplayer using alsa-driver with hwac3
+output and "ac3dec -C". Each test gives the same result, the value in
+register 0x68 changed from 0x8824 to 0x8826, which shows that the
+non-audio bit was set correctly.
+ 
+>The latter happens more often, but I'm not sure which one (or both?) in
+your case. The former one would be either:
+> - you passed the data through the normal DMA via slot3/4, or
+
+The AC Mode Control Register 0x5e is set to 0x80 which indicates slot
+assignment L3/R4 (Page 30 and Crystals Documentation). Maybe the DDM bit
+should also be set?
+
+from Documentation:
+"DDM: (DAC direct mode) This bit controls the source to the line and
+alternate line output drivers. When 'set' the L/R DACs directly drive the
+line and alternate line outputs by bypassing the audio mixer. When 'clear'
+the audio mixer is the source for the line and alternate line outputs."
+
+> - wrong sample rate, not supported by the codec, or
+
+PCM Front Rate Register 0x2c is set to 0xbb80 (48KHz) 
+
+
+As you said, there are maybe some recodings of the non-audio data. Is
+there any way to grab these data? (I still have a desktop system using a
+Hoontech with YMF754 and S/PDIF in.)
+Is there a simple way to grab the AC97 registers of the Win32 Driver?
+
+Regards
+Glen
 
 ----------------------------------------------------------------------
- Demosthenes - 07-14-05 13:54 
+ mrbox - 07-14-05 15:50 
 ----------------------------------------------------------------------
-Hopefully if we can sort out the volume the quality will sort itself out,
-when I use that gpio tool changing the values on any of the pins seems to
-have no effect on the sound from either the front speakers or the
-headphone socket.  Is their anything else that you want me to try or
-anyway to find out from the board which pin I want?
+I have got exactly the same problem(s) only with a :
+I82801CA-ICH3 with CS4205
+
+the register also changes from 8820 to 8826 when playing ac3 file but i
+only get a "chopper" sound out of my speaker system (creative DTT 2500 ).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-05-10-05 09:36 ungod          Note Added: 0004632                          
-05-10-05 15:50 Demosthenes    Note Added: 0004633                          
-05-14-05 15:18 Demosthenes    Note Added: 0004658                          
-05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
-06-14-05 16:02 baesyspem      Note Added: 0005018                          
-06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
-06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
-06-14-05 18:30 Demosthenes    Note Added: 0005019                          
-06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
-06-14-05 21:26 ungod          Note Added: 0005020                          
-06-14-05 21:27 ungod          Note Edited: 0005020                         
-06-29-05 18:30 Demosthenes    Note Added: 0005307                          
-06-30-05 01:03 ungod          Note Added: 0005321                          
-06-30-05 01:08 ungod          Issue Monitored: ungod                       
-06-30-05 01:46 baesyspem      Note Added: 0005322                          
-06-30-05 02:27 Demosthenes    Note Added: 0005323                          
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
-06-30-05 21:21 ungod          Note Added: 0005328                          
-07-01-05 14:25 baesyspem      Note Added: 0005333                          
-07-01-05 16:09 baesyspem      Note Added: 0005335                          
-07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
-         
-07-01-05 20:43 ungod          Note Added: 0005339                          
-07-01-05 22:08 Demosthenes    Note Added: 0005341                          
-07-01-05 22:46 ungod          Note Added: 0005342                          
-07-01-05 23:09 Demosthenes    Note Added: 0005344                          
-07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
-07-02-05 03:29 ungod          Note Added: 0005350                          
-07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
-07-02-05 03:37 ungod          Note Edited: 0005350                         
-07-02-05 16:50 Demosthenes    Note Added: 0005353                          
-07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 18:27 ungod          Note Added: 0005354                          
-07-02-05 18:36 Demosthenes    Note Added: 0005355                          
-07-02-05 20:20 ungod          Note Added: 0005358                          
-07-02-05 20:59 Demosthenes    Note Added: 0005359                          
-07-02-05 21:43 ungod          File Added: peak.tar.gz                      
-07-02-05 21:44 ungod          Note Added: 0005360                          
-07-02-05 22:30 Demosthenes    Note Added: 0005362                          
-07-03-05 00:21 ungod          Note Added: 0005363                          
-07-03-05 01:49 Demosthenes    Note Added: 0005364                          
-07-03-05 01:55 ungod          Note Added: 0005365                          
-07-03-05 02:46 Demosthenes    Note Added: 0005366                          
-07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
-07-03-05 03:18 Demosthenes    Note Added: 0005367                          
-07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
-07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
-         
-07-03-05 11:47 ungod          Note Added: 0005373                          
-07-03-05 15:29 Demosthenes    Note Added: 0005377                          
-07-03-05 17:06 ungod          Note Added: 0005379                          
-07-04-05 14:34 miljan         Issue Monitored: miljan                      
-07-04-05 14:35 miljan         Issue End Monitor: miljan                    
-07-04-05 14:35 miljan         Issue Monitored: miljan                      
-07-06-05 19:19 Demosthenes    Note Added: 0005392                          
-07-08-05 22:52 ungod          Note Added: 0005437                          
-07-13-05 03:57 ungod          Note Added: 0005457                          
-07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
-07-13-05 04:12 Demosthenes    Note Added: 0005458                          
-07-13-05 04:24 ungod          Note Added: 0005459                          
-07-13-05 04:28 Demosthenes    Note Added: 0005460                          
-07-13-05 04:46 ungod          Note Added: 0005461                          
-07-13-05 04:57 Demosthenes    Note Added: 0005462                          
-07-13-05 04:59 Demosthenes    Note Added: 0005463                          
-07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
-07-13-05 19:39 Demosthenes    Note Added: 0005466                          
-07-14-05 13:19 ungod          Note Added: 0005472                          
-07-14-05 13:31 Demosthenes    Note Added: 0005473                          
-07-14-05 13:54 Demosthenes    Note Added: 0005474                          
+01-21-05 03:12 Mimosius       New Issue                                    
+01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
+01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
+01-21-05 03:13 Mimosius       Issue Monitored: Mimosius                    
+03-01-05 11:31 Mimosius       Note Added: 0003758                          
+03-15-05 21:37 Mimosius       Note Added: 0003917                          
+03-16-05 12:47 tiwai          Note Added: 0003945                          
+03-16-05 12:47 tiwai          Note Added: 0003946                          
+03-17-05 01:00 Mimosius       Note Added: 0003975                          
+06-22-05 13:08 Mimosius       Note Added: 0005132                          
+06-22-05 17:56 tiwai          Note Added: 0005137                          
+06-22-05 18:58 Mimosius       Note Added: 0005143                          
+07-14-05 15:50 mrbox          Note Added: 0005475                          
 ======================================================================
 
 
