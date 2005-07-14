@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
-Date: Thu, 14 Jul 2005 11:02:23 +0200
-Message-ID: <2bdf94a021c3a5befc04c235a8e95fe7@bugtrack.alsa-project.org>
+Date: Thu, 14 Jul 2005 11:06:13 +0200
+Message-ID: <6e7b3224c559a5b9dc6482fc2fa267a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F10D17C
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 11:02:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96BE11CE
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 11:06:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-11-2005 14:39 CEST
-Last Modified:              07-14-2005 11:02 CEST
+Last Modified:              07-14-2005 11:06 CEST
 ======================================================================
 Summary:                    emagic a62m: maybe bug: arecord doesn't record
 anything, jack+jackrec work
@@ -71,178 +71,6 @@ Card 0 is a solo1.
 ======================================================================
 
 ----------------------------------------------------------------------
- Robert_Schulze - 07-12-05 17:29 
-----------------------------------------------------------------------
-While nothing runs:
-
-Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
-Audio
-
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 1
-    Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 2
-    Format: S24_3LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 2
-    Altset 4
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-
-------------------------------------------------------------------------------
-While jackd runs:
-
-Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
-Audio
-
-Playback:
-  Status: Running
-    Interface = 1
-    Altset = 1
-    URBs = 5 [ 1 1 1 1 1 ]
-    Packet Size = 243
-    Momentary freq = 48000 Hz
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 1
-    Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-
-Capture:
-  Status: Running
-    Interface = 2
-    Altset = 1
-    URBs = 5 [ 1 1 1 1 1 ]
-    Packet Size = 588
-    Momentary freq = 48000 Hz
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 2
-    Format: S24_3LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 2
-    Altset 4
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-
--------------------------------------------------------------------------------
-while arecord runs:
-
-Emagic GmbH Emagic EMI 6|2 m at usb-0000:00:07.2-1.1, full speed : USB
-Audio
-
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 1
-    Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-
-Capture:
-  Status: Running
-    Interface = 2
-    Altset = 3
-    URBs = 5 [ 1 1 1 1 1 ]
-    Packet Size = 243
-    Momentary freq = 48000 Hz
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 2
-    Format: S24_3LE
-    Channels: 6
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-  Interface 2
-    Altset 4
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-
-------------------------------------------------------------------------------
-
-I tried both 24 bit, where alsa says that the device supports S24_3LE, and
-16 bit (jackd ... --shorts). In both cases, jack works and arecord
-doesn't.
-
-One thing I realized: If I open the device capture-only with "jackd ...
--C", the recording results are equal to the results of pure arecord. Maybe
-it has something to do with that.
-You can see the difference in the sections above.
-
-----------------------------------------------------------------------
  Clemens Ladisch - 07-14-05 11:02 
 ----------------------------------------------------------------------
 The difference is that arecord uses two channels, while Jack records from
@@ -259,6 +87,14 @@ According to your tests so far, the last two should work.
 
 What is the output of "xxd -g1 test_2_16_96.wav | head"?
 
+----------------------------------------------------------------------
+ Robert_Schulze - 07-14-05 11:06 
+----------------------------------------------------------------------
+The difference may also be that jack opens the device duplex-like (Capture
++ Playback running) mode.
+
+I'll try your suggestions, when I'm at home.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -268,6 +104,7 @@ Date Modified  Username       Field                    Change
 07-12-05 12:52 Clemens LadischNote Added: 0005453                          
 07-12-05 17:29 Robert_Schulze Note Added: 0005456                          
 07-14-05 11:02 Clemens LadischNote Added: 0005469                          
+07-14-05 11:06 Robert_Schulze Note Added: 0005470                          
 ======================================================================
 
 
