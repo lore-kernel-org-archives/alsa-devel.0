@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
-Date: Thu, 14 Jul 2005 21:13:58 +0200
-Message-ID: <3ab13b3b37e4e3812e9da08424945e93@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: domen@coderock.org
+Subject: [patch 1/1] alsa: Fix "nocast type" warnings
+Date: Thu, 14 Jul 2005 23:43:29 +0200
+Message-ID: <20050714214329.423569000@homer>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 159411E9
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 21:13:58 +0200 (MEST)
+Received: from trashy.coderock.org (coderock.org [193.77.147.115])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50B0E1E9
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 23:43:56 +0200 (MEST)
+Content-Disposition: inline; filename=sparse-sound_core_memalloc
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,192 +16,178 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, Victor Fusco <victor@cetuc.puc-rio.br>, domen@coderock.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
-======================================================================
-Reported By:                Mimosius
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   839
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.2
-Kernel Version:             2.6.8-24.10 + 2.6.10
-======================================================================
-Date Submitted:             01-21-2005 03:12 CET
-Last Modified:              07-14-2005 21:13 CEST
-======================================================================
-Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
-CS4299
-Description: 
-Audio-mode via SPDIF works fine but I can't get any non-audio passthru
-working.
-
-Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
-AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
-there seems to arrive no decodeable signal on receiver side.
-There are no errors or warnings after loading soundrivers and there are no
-other soundcards plugged in (notebook).
+From: Victor Fusco <victor@cetuc.puc-rio.br>
 
 
-here are some system informations:
+Fix the sparse warning "implicit cast to nocast type"
 
-# cat /etc/modprobe.d/sound
-alias snd-card-0 snd-intel8x0
-options snd-ac97-codec
-options snd-intel8x0 enable=1 index=0
+File/Subsystem:sound/core
 
+Signed-off-by: Victor Fusco <victor@cetuc.puc-rio.br>
+Signed-off-by: Domen Puncer <domen@coderock.org>
 
-# cat /proc/asound/pcm' 
-00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
+--
 
+---
+ include/sound/core.h              |    6 +++---
+ include/sound/driver.h            |    2 +-
+ sound/core/memalloc.c             |    3 ++-
+ sound/core/memory.c               |    8 ++++----
+ sound/core/seq/instr/ainstr_gf1.c |    3 ++-
+ sound/core/seq/instr/ainstr_iw.c  |    8 +++++---
+ sound/core/wrappers.c             |    2 +-
+ 7 files changed, 18 insertions(+), 14 deletions(-)
 
-# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
-ac3dec -C)
-0-0/0: Cirrus Logic CS4299 rev 4
+Index: quilt/sound/core/memalloc.c
+===================================================================
+--- quilt.orig/sound/core/memalloc.c
++++ quilt/sound/core/memalloc.c
+@@ -105,7 +105,8 @@ struct snd_mem_list {
+  */
+ 
+ static void *snd_dma_hack_alloc_coherent(struct device *dev, size_t size,
+-					 dma_addr_t *dma_handle, int flags)
++					 dma_addr_t *dma_handle,
++					 unsigned int __nocast flags)
+ {
+ 	void *ret;
+ 	u64 dma_mask, coherent_dma_mask;
+Index: quilt/sound/core/wrappers.c
+===================================================================
+--- quilt.orig/sound/core/wrappers.c
++++ quilt/sound/core/wrappers.c
+@@ -27,7 +27,7 @@
+ #include <linux/fs.h>
+ 
+ #ifdef CONFIG_SND_DEBUG_MEMORY
+-void *snd_wrapper_kmalloc(size_t size, int flags)
++void *snd_wrapper_kmalloc(size_t size, unsigned int __nocast flags)
+ {
+ 	return kmalloc(size, flags);
+ }
+Index: quilt/include/sound/core.h
+===================================================================
+--- quilt.orig/include/sound/core.h
++++ quilt/include/sound/core.h
+@@ -287,12 +287,12 @@ void snd_memory_init(void);
+ void snd_memory_done(void);
+ int snd_memory_info_init(void);
+ int snd_memory_info_done(void);
+-void *snd_hidden_kmalloc(size_t size, int flags);
+-void *snd_hidden_kcalloc(size_t n, size_t size, int flags);
++void *snd_hidden_kmalloc(size_t size, unsigned int __nocast flags);
++void *snd_hidden_kcalloc(size_t n, size_t size, unsigned int __nocast flags);
+ void snd_hidden_kfree(const void *obj);
+ void *snd_hidden_vmalloc(unsigned long size);
+ void snd_hidden_vfree(void *obj);
+-char *snd_hidden_kstrdup(const char *s, int flags);
++char *snd_hidden_kstrdup(const char *s, unsigned int __nocast flags);
+ #define kmalloc(size, flags) snd_hidden_kmalloc(size, flags)
+ #define kcalloc(n, size, flags) snd_hidden_kcalloc(n, size, flags)
+ #define kfree(obj) snd_hidden_kfree(obj)
+Index: quilt/include/sound/driver.h
+===================================================================
+--- quilt.orig/include/sound/driver.h
++++ quilt/include/sound/driver.h
+@@ -51,7 +51,7 @@
+ #ifdef CONFIG_SND_DEBUG_MEMORY
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+-void *snd_wrapper_kmalloc(size_t, int);
++void *snd_wrapper_kmalloc(size_t, unsigned int __nocast);
+ #undef kmalloc
+ void snd_wrapper_kfree(const void *);
+ #undef kfree
+Index: quilt/sound/core/memory.c
+===================================================================
+--- quilt.orig/sound/core/memory.c
++++ quilt/sound/core/memory.c
+@@ -89,7 +89,7 @@ void snd_memory_done(void)
+ 	}
+ }
+ 
+-static void *__snd_kmalloc(size_t size, int flags, void *caller)
++static void *__snd_kmalloc(size_t size, unsigned int __nocast flags, void *caller)
+ {
+ 	unsigned long cpu_flags;
+ 	struct snd_alloc_track *t;
+@@ -111,12 +111,12 @@ static void *__snd_kmalloc(size_t size, 
+ }
+ 
+ #define _snd_kmalloc(size, flags) __snd_kmalloc((size), (flags), __builtin_return_address(0));
+-void *snd_hidden_kmalloc(size_t size, int flags)
++void *snd_hidden_kmalloc(size_t size, unsigned int __nocast flags)
+ {
+ 	return _snd_kmalloc(size, flags);
+ }
+ 
+-void *snd_hidden_kcalloc(size_t n, size_t size, int flags)
++void *snd_hidden_kcalloc(size_t n, size_t size, unsigned int __nocast flags)
+ {
+ 	void *ret = NULL;
+ 	if (n != 0 && size > INT_MAX / n)
+@@ -184,7 +184,7 @@ void snd_hidden_vfree(void *obj)
+ 	snd_wrapper_vfree(obj);
+ }
+ 
+-char *snd_hidden_kstrdup(const char *s, int flags)
++char *snd_hidden_kstrdup(const char *s, unsigned int __nocast flags)
+ {
+ 	int len;
+ 	char *buf;
+Index: quilt/sound/core/seq/instr/ainstr_gf1.c
+===================================================================
+--- quilt.orig/sound/core/seq/instr/ainstr_gf1.c
++++ quilt/sound/core/seq/instr/ainstr_gf1.c
+@@ -50,7 +50,8 @@ static int snd_seq_gf1_copy_wave_from_st
+ {
+ 	gf1_wave_t *wp, *prev;
+ 	gf1_xwave_t xp;
+-	int err, gfp_mask;
++	int err;
++	unsigned int gfp_mask;
+ 	unsigned int real_size;
+ 	
+ 	gfp_mask = atomic ? GFP_ATOMIC : GFP_KERNEL;
+Index: quilt/sound/core/seq/instr/ainstr_iw.c
+===================================================================
+--- quilt.orig/sound/core/seq/instr/ainstr_iw.c
++++ quilt/sound/core/seq/instr/ainstr_iw.c
+@@ -58,7 +58,7 @@ static int snd_seq_iwffff_copy_env_from_
+ 					       iwffff_xenv_t *ex,
+ 					       char __user **data,
+ 					       long *len,
+-					       int gfp_mask)
++					       unsigned int __nocast gfp_mask)
+ {
+ 	__u32 stype;
+ 	iwffff_env_record_t *rp, *rp_last;
+@@ -128,7 +128,8 @@ static int snd_seq_iwffff_copy_wave_from
+ {
+ 	iwffff_wave_t *wp, *prev;
+ 	iwffff_xwave_t xp;
+-	int err, gfp_mask;
++	int err;
++	unsigned int gfp_mask;
+ 	unsigned int real_size;
+ 	
+ 	gfp_mask = atomic ? GFP_ATOMIC : GFP_KERNEL;
+@@ -234,7 +235,8 @@ static int snd_seq_iwffff_put(void *priv
+ 	iwffff_xinstrument_t ix;
+ 	iwffff_layer_t *lp, *prev_lp;
+ 	iwffff_xlayer_t lx;
+-	int err, gfp_mask;
++	int err;
++	unsigned int gfp_mask;
+ 
+ 	if (cmd != SNDRV_SEQ_INSTR_PUT_CMD_CREATE)
+ 		return -EINVAL;
 
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Crystal Semi 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : Mic
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
-Extended status  : VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
-Enabled
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
-ac3dec -C)
-0:00 = 1990
-0:02 = 3f3f
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 8000
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 8000
-0:1a = 0606
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0200
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0201
-0:2a = 0001
-0:2c = bb80
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0404
-0:5c = 0000
-0:5e = 0080
-0:60 = 0022
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 8826
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 003f
-0:7a = 0000
-0:7c = 4352
-0:7e = 5934
-
-======================================================================
-
-----------------------------------------------------------------------
- mrbox - 07-14-05 15:50 
-----------------------------------------------------------------------
-I have got exactly the same problem(s) only with a :
-I82801CA-ICH3 with CS4205
-
-the register also changes from 8820 to 8826 when playing ac3 file but i
-only get a "chopper" sound out of my speaker system (creative DTT 2500 ).
-
-----------------------------------------------------------------------
- Mimosius - 07-14-05 21:13 
-----------------------------------------------------------------------
-It's seems that these non-audio data gets converted or simply wrong routed.
-I'm not familar with the alsa-system so i need some hints from the
-developers (maybe tiwai) where i can start debugging the whole thing. It
-should be possible to get it working because on the "other OS" it runs
-flawlessly.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-21-05 03:12 Mimosius       New Issue                                    
-01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
-01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
-01-21-05 03:13 Mimosius       Issue Monitored: Mimosius                    
-03-01-05 11:31 Mimosius       Note Added: 0003758                          
-03-15-05 21:37 Mimosius       Note Added: 0003917                          
-03-16-05 12:47 tiwai          Note Added: 0003945                          
-03-16-05 12:47 tiwai          Note Added: 0003946                          
-03-17-05 01:00 Mimosius       Note Added: 0003975                          
-06-22-05 13:08 Mimosius       Note Added: 0005132                          
-06-22-05 17:56 tiwai          Note Added: 0005137                          
-06-22-05 18:58 Mimosius       Note Added: 0005143                          
-07-14-05 15:50 mrbox          Note Added: 0005475                          
-07-14-05 21:13 Mimosius       Note Added: 0005479                          
-======================================================================
-
-
+--
 
 
 -------------------------------------------------------
