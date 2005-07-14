@@ -1,16 +1,17 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: How can i unsubscibe from this mailing list ?
-Date: Wed, 13 Jul 2005 22:30:22 -0400
-Message-ID: <1121308223.4435.134.camel@mindpipe>
-References: <42D5CAB3.40207@avantwave.com>
+From: Nick Rout <nick@rout.co.nz>
+Subject: spam and this list
+Date: Thu, 14 Jul 2005 14:51:06 +1200
+Message-ID: <20050714144842.170F.NICK@rout.co.nz>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D58A01B2
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 04:30:24 +0200 (MEST)
-In-Reply-To: <42D5CAB3.40207@avantwave.com>
+Received: from www.rout.co.nz (203-79-82-53.adsl-wns.paradise.net.nz [203.79.82.53])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64699181
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 04:52:27 +0200 (MEST)
+Received: from [192.168.1.2] (nick.rout.co.nz [192.168.1.2])
+	by www.rout.co.nz (Postfix) with ESMTP id 4F40611C782
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 14:51:06 +1200 (NZST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,16 +21,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tomko <tomko@avantwave.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-07-14 at 10:15 +0800, Tomko wrote:
-> as topic
+Why does this list get so much spam? Does it accept email from
+non-subscribers?
 
-Check the link at the bottom of every list message.
+If it does, it bloody well shouldn't!
 
-Lee
+-- 
+Nick Rout
 
 
 
