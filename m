@@ -1,14 +1,26 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
-Date: Thu, 14 Jul 2005 11:06:13 +0200
-Message-ID: <6e7b3224c559a5b9dc6482fc2fa267a2@bugtrack.alsa-project.org>
+From: Jan Buchholz <derteta@gmx.de>
+Subject: Re: spam and this list
+Date: Thu, 14 Jul 2005 11:06:33 +0200
+Message-ID: <45B51F09-463A-4CE5-B480-339B23AE91C5@gmx.de>
+References: <20050714144842.170F.NICK@rout.co.nz>
+ <1121310167.4435.138.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96BE11CE
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 11:06:13 +0200 (MEST)
+Received: from ms-dienst.rz.rwth-aachen.de (ms-1.rz.RWTH-Aachen.DE [134.130.3.130])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F12411CE
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 11:08:10 +0200 (MEST)
+Received: from r220-1 (r220-1.rz.RWTH-Aachen.DE [134.130.3.31])
+ by ms-dienst.rz.rwth-aachen.de
+ (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+ with ESMTP id <0IJM007QL1DMM7@ms-dienst.rz.rwth-aachen.de> for
+ alsa-devel@alsa-project.org; Thu, 14 Jul 2005 11:08:10 +0200 (MEST)
+Received: from [137.226.56.76]
+ (montgomery.informatik.RWTH-Aachen.DE [137.226.56.76])
+	by relay.rwth-aachen.de (8.13.3/8.13.3/1) with ESMTP id j6E988Hv007845	for
+ <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 11:08:08 +0200 (MEST)
+In-reply-to: <1121310167.4435.138.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,92 +33,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
-======================================================================
-Reported By:                Robert_Schulze
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1251
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-11-2005 14:39 CEST
-Last Modified:              07-14-2005 11:06 CEST
-======================================================================
-Summary:                    emagic a62m: maybe bug: arecord doesn't record
-anything, jack+jackrec work
-Description: 
-When I want to record something from my emi a62m audiointerface, arecord
-doesn't work:
+On Jul 14, 2005, at 5:02 AM, Lee Revell wrote:
 
-"arecord -D emi -f cd > test.wav"
-when issuing "aplay -vvv test.wav", the histogram shows up a permanent
-peak of 36% during the whole file, no sound hearable.
+> On Thu, 2005-07-14 at 14:51 +1200, Nick Rout wrote:
+>
+>> Why does this list get so much spam? Does it accept email from
+>> non-subscribers?
 
-Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
-alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
+> Yes, it has to so people on the kernel list can cc: this list without
+> having to be subscribed.  And it actually gets very little spam,  
+> like a
+> handful of messages a day.
 
-.asoundrc:
+But isn't it possible to add this list as a second set of possible  
+senders?
+I'm not really familiar with the management of mailing-lists...
 
-pcm.emi 
- {
- type hw
- card 1 
- }
-
-ctl.emi
- {
- type hw
- card 1
- }
-
-Card 0 is a solo1.
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 07-14-05 11:02 
-----------------------------------------------------------------------
-The difference is that arecord uses two channels, while Jack records from
-all six channels.
-
-Please try the following arecord commands:
-
-arecord -D emi -f S16_LE  -c 2 -r 96  > test_2_16_96.wav
-arecord -D emi -f S24_3LE -c 2 -r 96  > test_2_24_96.wav
-arecord -D emi -f S16_LE  -c 6 -r 48  > test_6_16_48.wav
-arecord -D emi -f S24_3LE -c 6 -r 48  > test_6_24_48.wav
-
-According to your tests so far, the last two should work.
-
-What is the output of "xxd -g1 test_2_16_96.wav | head"?
-
-----------------------------------------------------------------------
- Robert_Schulze - 07-14-05 11:06 
-----------------------------------------------------------------------
-The difference may also be that jack opens the device duplex-like (Capture
-+ Playback running) mode.
-
-I'll try your suggestions, when I'm at home.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-11-05 14:39 Robert_Schulze New Issue                                    
-07-11-05 16:20 Clemens LadischNote Added: 0005448                          
-07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
-07-12-05 12:52 Clemens LadischNote Added: 0005453                          
-07-12-05 17:29 Robert_Schulze Note Added: 0005456                          
-07-14-05 11:02 Clemens LadischNote Added: 0005469                          
-07-14-05 11:06 Robert_Schulze Note Added: 0005470                          
-======================================================================
-
+Jan, new to the list
 
 
 
