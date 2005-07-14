@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001257]: 'Sample format non available' when using jack-plugin
-Date: Thu, 14 Jul 2005 18:03:11 +0200
-Message-ID: <efd822da6710490963616218788423b6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
+Date: Thu, 14 Jul 2005 18:04:56 +0200
+Message-ID: <9693f89598b204afdc7d7f4e22c67bc2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A51891EE
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 18:03:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D1481EE
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 18:04:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1257> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
 ======================================================================
 Reported By:                Robert_Schulze
 Assigned To:                
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1257
-Category:                   PCM - jack
+Project:                    ALSA - utils
+Issue ID:                   1251
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             07-14-2005 17:50 CEST
-Last Modified:              07-14-2005 18:03 CEST
+Date Submitted:             07-11-2005 14:39 CEST
+Last Modified:              07-14-2005 18:04 CEST
 ======================================================================
-Summary:                    'Sample format non available' when using jack-plugin
+Summary:                    emagic a62m: maybe bug: arecord doesn't record
+anything, jack+jackrec work
 Description: 
-1. Start Jackd:
+When I want to record something from my emi a62m audiointerface, arecord
+doesn't work:
 
-/usr/local/jack/bin/jackd -vd alsa -d emi -S
+"arecord -D emi -f cd > test.wav"
+when issuing "aplay -vvv test.wav", the histogram shows up a permanent
+peak of 36% during the whole file, no sound hearable.
 
-2. Start arecord:
+Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
+alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
 
-arecord -D "emijack12" -t wav -f S16_LE -c 2 -r 48000 > test.wav
+.asoundrc:
 
-gives: "arecord: set_params:882: Sample format non available"
-
-arecord -D "emijack12" > test.wav
-
-gives the same.
-
-my .asoundr:
-
-pcm.emijack12
-    {
-    type jack
-    playback_ports
-        {
-        0 alsa_pcm:playback_1
-        1 alsa_pcm:playback_2
-        }
-    capture_ports
-        {
-        0 alsa_pcm:capture_1
-        1 alsa_pcm:capture_2
-        }
-    }
+pcm.emi 
+ {
+ type hw
+ card 1 
+ }
 
 ctl.emi
-    {
-    type hw
-    card 1
-    }
+ {
+ type hw
+ card 1
+ }
 
-pcm.emi
-    {
-    type hw
-    card 1
-    }
-
-emi is a Emagic a62m USB-Audiointerface
-
-
+Card 0 is a solo1.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-14-05 18:03 
+ Robert_Schulze - 07-14-05 17:06 
 ----------------------------------------------------------------------
-Does it work with "arecord -D plug:emijack12 -f dat -vv test.wav"?  If so,
-what is the sample format of the Jack plugin that it outputs?
+Hmm,
+none of the described calls of arecord worked.
+
+Here is the output of 'xxd -g1 test_2_16_96.wav | head':
+
+0000000: 52 49 46 46 24 80 2d 00 57 41 56 45 66 6d 74 20  RIFF$.-.WAVEfmt
+0000010: 10 00 00 00 01 00 02 00 00 77 01 00 00 dc 05 00 
+.........w......
+0000020: 04 00 10 00 64 61 74 61 00 80 2d 00 5f 5f 5f 5f 
+....data..-.____
+0000030: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000040: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000050: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000060: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000070: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000080: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000090: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f  ________________
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-14-05 18:04 
+----------------------------------------------------------------------
+Do the following work?
+arecord -D emi -f S16_LE -c 2 -r 48 > test_2_16_48.wav
+arecord -D emi -f S24_3LE -c 2 -r 48 > test_2_24_48.wav
+
+Could you post the output of the xxd for the other non-working files?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-14-05 17:50 Robert_Schulze New Issue                                    
-07-14-05 18:03 Clemens LadischNote Added: 0005477                          
+07-11-05 14:39 Robert_Schulze New Issue                                    
+07-11-05 16:20 Clemens LadischNote Added: 0005448                          
+07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
+07-12-05 12:52 Clemens LadischNote Added: 0005453                          
+07-12-05 17:29 Robert_Schulze Note Added: 0005456                          
+07-14-05 11:02 Clemens LadischNote Added: 0005469                          
+07-14-05 11:06 Robert_Schulze Note Added: 0005470                          
+07-14-05 17:06 Robert_Schulze Note Added: 0005476                          
+07-14-05 18:04 Clemens LadischNote Added: 0005478                          
 ======================================================================
 
 
