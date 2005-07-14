@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - plugins 0001257]: 'Sample format non available' when using jack-plugin
-Date: Thu, 14 Jul 2005 17:50:23 +0200
-Message-ID: <ee6908498468f4314603ff270140d2af@bugtrack.alsa-project.org>
+Date: Thu, 14 Jul 2005 18:03:11 +0200
+Message-ID: <efd822da6710490963616218788423b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A2E71EE
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 17:50:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A51891EE
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 18:03:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1257> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-14-2005 17:50 CEST
-Last Modified:              07-14-2005 17:50 CEST
+Last Modified:              07-14-2005 18:03 CEST
 ======================================================================
 Summary:                    'Sample format non available' when using jack-plugin
 Description: 
@@ -90,10 +90,17 @@ emi is a Emagic a62m USB-Audiointerface
 
 ======================================================================
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-14-05 18:03 
+----------------------------------------------------------------------
+Does it work with "arecord -D plug:emijack12 -f dat -vv test.wav"?  If so,
+what is the sample format of the Jack plugin that it outputs?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-14-05 17:50 Robert_Schulze New Issue                                    
+07-14-05 18:03 Clemens LadischNote Added: 0005477                          
 ======================================================================
 
 
