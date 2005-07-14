@@ -1,13 +1,13 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: spam and this list
-Date: Thu, 14 Jul 2005 10:25:17 -0400
-Message-ID: <1121351117.4535.7.camel@mindpipe>
-References: <20050714091424.34049.qmail@web60816.mail.yahoo.com>
+Subject: Re: USB Audio - Silence
+Date: Thu, 14 Jul 2005 10:27:48 -0400
+Message-ID: <1121351269.4535.9.camel@mindpipe>
+References: <Pine.HPX.4.33n.0507141549090.16721-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050714091424.34049.qmail@web60816.mail.yahoo.com>
+In-Reply-To: <Pine.HPX.4.33n.0507141549090.16721-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +17,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Smery <luca_ing@libero.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-07-14 at 02:14 -0700, Tom Watson wrote:
-> Yes, the messages have spam headers, EXCEPT when received in digest
-> form.  Then
-> again, we had this discussion a long time ago, and determined that the
-> spam
-> wasn't that bad.  Of course, it could be improved, but that is a
-> subject
-> that I'll leave to others to duke it out.
-> (*SIGH*)
+On Thu, 2005-07-14 at 16:21 +0200, Clemens Ladisch wrote:
+> Please note that ALSA versions earlier than 1.0.9 might synchronize
+> with a wrong sample rate with USB 2.0 devices, and that Linux kernels
+> earlier than 2.6.13 
 
-Well, you have to admit the spam problem has improved a lot since we
-first opened the list.
-
-And, you're still welcome to complain to Sourceforge.
+Do you really mean 2.6.12, or the not yet released 2.6.13?
 
 Lee
 
