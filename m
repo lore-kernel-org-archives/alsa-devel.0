@@ -1,12 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Ali5461
-Date: Thu, 14 Jul 2005 17:34:25 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507141625090.29646-100000@studcom.urz.uni-halle.de>
-References: <42D269D0.1000303@gmx.net>
+From: Brian Black <BlackBsd@Mountain.net>
+Subject: Im not getting my digest.
+Date: Thu, 14 Jul 2005 11:50:55 -0400
+Message-ID: <42D689DF.7020800@Mountain.net>
+Reply-To: BlackBsd@Mountain.net
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42D269D0.1000303@gmx.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,22 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dirk <noisyb@gmx.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dirk wrote:
-> Are thee any plans for supporting Ali5461 (AC97/"Alizia")?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Never heard of this chip, neither have Google or the ALi website.  Do
-you have a datasheet, or at least a PCI ID?  Is it compatible with
-other ALi AC'97 controllers?  Is the Azalia part compatible with Intel
-HDA controllers?
+hi, i have been subcribed for some time now and for the past week i have
+noticed that i am not getting my digest.  is anyone else having this
+problem?
 
+brian
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-Regards,
-Clemens
-
+iD8DBQFC1onfI9Y/1VIS+jgRApjrAJ0Sa1+h5dEAXgpcZVmU8buF6SSXrgCghk+W
+d3pGZnhUFarZLn8fVFx0GxQ=
+=+aIH
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
