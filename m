@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio - Silence
-Date: Thu, 14 Jul 2005 16:33:46 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507141632060.29646-100000@studcom.urz.uni-halle.de>
-References: <1121351269.4535.9.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
+Date: Thu, 14 Jul 2005 17:06:43 +0200
+Message-ID: <a9bfbcb90528cce4bbc279e571a33ca9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1121351269.4535.9.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC9F91EE
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2005 17:06:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,26 +18,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Smery <luca_ing@libero.it>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Thu, 2005-07-14 at 16:21 +0200, Clemens Ladisch wrote:
-> > Please note that ALSA versions earlier than 1.0.9 might synchronize
-> > with a wrong sample rate with USB 2.0 devices, and that Linux kernels
-> > earlier than 2.6.13
->
-> Do you really mean 2.6.12, or the not yet released 2.6.13?
 
-The latter.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
+======================================================================
+Reported By:                Robert_Schulze
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1251
+Category:                   aplay/arecord
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-11-2005 14:39 CEST
+Last Modified:              07-14-2005 17:06 CEST
+======================================================================
+Summary:                    emagic a62m: maybe bug: arecord doesn't record
+anything, jack+jackrec work
+Description: 
+When I want to record something from my emi a62m audiointerface, arecord
+doesn't work:
 
-It's this patch:
-http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=blobdiff;h=c2104cad4033ec58f2ec650c78b58b1cebd44934;hp=2fa1ffee5ff3bfea6428d4fb488dff8e1ab32fec;hb=77078570abe0848c3076b4f7d42f79b1407f3e8f;f=drivers/usb/host/ehci-sched.c
+"arecord -D emi -f cd > test.wav"
+when issuing "aplay -vvv test.wav", the histogram shows up a permanent
+peak of 36% during the whole file, no sound hearable.
 
+Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
+alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
 
-Regards,
-Clemens
+.asoundrc:
+
+pcm.emi 
+ {
+ type hw
+ card 1 
+ }
+
+ctl.emi
+ {
+ type hw
+ card 1
+ }
+
+Card 0 is a solo1.
+======================================================================
+
+----------------------------------------------------------------------
+ Robert_Schulze - 07-14-05 11:06 
+----------------------------------------------------------------------
+The difference may also be that jack opens the device duplex-like (Capture
++ Playback running) mode.
+
+I'll try your suggestions, when I'm at home.
+
+----------------------------------------------------------------------
+ Robert_Schulze - 07-14-05 17:06 
+----------------------------------------------------------------------
+Hmm,
+none of the described calls of arecord worked.
+
+Here is the output of 'xxd -g1 test_2_16_96.wav | head':
+
+0000000: 52 49 46 46 24 80 2d 00 57 41 56 45 66 6d 74 20  RIFF$.-.WAVEfmt
+0000010: 10 00 00 00 01 00 02 00 00 77 01 00 00 dc 05 00 
+.........w......
+0000020: 04 00 10 00 64 61 74 61 00 80 2d 00 5f 5f 5f 5f 
+....data..-.____
+0000030: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000040: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000050: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000060: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000070: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000080: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000090: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f  ________________
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-11-05 14:39 Robert_Schulze New Issue                                    
+07-11-05 16:20 Clemens LadischNote Added: 0005448                          
+07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
+07-12-05 12:52 Clemens LadischNote Added: 0005453                          
+07-12-05 17:29 Robert_Schulze Note Added: 0005456                          
+07-14-05 11:02 Clemens LadischNote Added: 0005469                          
+07-14-05 11:06 Robert_Schulze Note Added: 0005470                          
+07-14-05 17:06 Robert_Schulze Note Added: 0005476                          
+======================================================================
+
 
 
 
