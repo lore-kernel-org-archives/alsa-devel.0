@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Fri, 15 Jul 2005 19:49:47 +0200
-Message-ID: <5d915b1cfc768a9542416da41e112d64@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Wendy" <info@verybest-onthenet.info>
+Subject: UK Smokes Price Crash
+Date: Fri, 15 Jul 2005 12:54:01 -0500
+Message-ID: <20050715175400.0A1401DE@alsa.jcu.cz>
+Reply-To: info@verybest-onthenet.info
+Content-Type: text/html;
+	charset="us-ascii"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 219351DE
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 19:49:48 +0200 (MEST)
+Received: from verybest-onthenet.info (verybest-onthenet.info [72.26.223.40])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A1401DE
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 19:54:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,52 +21,71 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html><body bgcolor="#993300" text="#000000" link="#0000ff" vlink="#0000ff" alink="#0000ff"
+leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" rightmargin="0" bottommargin="0"><center>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
-======================================================================
-Reported By:                iq79
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1259
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.12-gentoo-r1
-======================================================================
-Date Submitted:             07-15-2005 18:18 CEST
-Last Modified:              07-15-2005 19:49 CEST
-======================================================================
-Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
-from AUX in
-Description: 
-I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+<table bgcolor="#CC3300" border="0" cellpadding="9" cellspacing="0">
+	<tr>
+		<td align="center">
 
-- I played around with all (Playback/Capture) mixer settings in alsamixer
-but I couldn't find a configuration which gives me sound from AUX-in.
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td valign="top" bgcolor="#FF9900" width="508" valign="top" align="center">
 
-- I tried loading emu10k1 module with several extin/exout combinations.
-That didn't help, too.
-======================================================================
+						<img src="http://www.verybestonthenet.com/images/email-orange.jpg" width="508" height="162"><br>
 
-----------------------------------------------------------------------
- pzad - 07-15-05 19:49 
-----------------------------------------------------------------------
-Did you try se "Aux" and "Analog Mix" volume ?
+						<table bgcolor="#FF9900" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="480">
+									<br><font face=arial size=2>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-15-05 18:18 iq79           New Issue                                    
-07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
-07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
-07-15-05 19:49 pzad           Note Added: 0005483                          
-======================================================================
+
+<center><h2>	HALF-PRICE CIGARETTES & TOBACCO		</h2>
+
+<b>
+We've done it again! <br><br>
+A company that LEGALLY supplies half-price cigarettes,<br>
+cigars and tobacco to the UK from mainland europe.<br><br>
+All your FAVOURITE BRANDS, shipped DIRECT to YOUR DOOR!<br><br>
+THOUSANDS OF SATISFIED BRITISH CUSTOMERS! <br><br>
+And they've been in business for years...<br>
+it's the best kept secret on the web for British Smokers.<br><br>
+</b>
+
+
+
+									<font size=1><br>
+									Please note; that by clicking the link below, you have automatically opted-in<br> and have agreed to view their website.
+									<br><br></font>
+									<h2>
+
+<a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E4046410E400E404B46414540460E08.aspx'>
+
+									Click here to visit their website
+									</a></h2>
+									<br>
+
+									Thank you for taking the time to read this special report <br><br>
+
+									Regards, <br><b> The Web Reporter </b><br> The very best on the net	<br><br>
+
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+
+
+<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
+<div align='center'><a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E4046410E08.aspx'><img src='http://verybest-onthenet.info/img.gif' width='531' height='80' border='0'></a>
+<font size='1' face='Arial, Helvetica, sans-serif'><br><img src='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E4046410E430E420E08.aspx'>
+</font><font color="#999999" face="arial, verdana" size="2">Webworld S.L. &#183; Edificio Jupiter, Avendida El Gamonal 12 &#183; Benalmadena Costa, Malaga 29630 Spain<br>This e-mail message is an advertisement and/or solicitation.</font></p></td></tr></table></body>
+</html>
 
 
 
