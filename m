@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 15 Jul 2005 15:08:26 +0200
-Message-ID: <15563f63374595ae2b853484bd03f144@bugtrack.alsa-project.org>
+Date: Fri, 15 Jul 2005 15:17:02 +0200
+Message-ID: <c87d8ce03d50a212c4f85cb435e70d99@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A31416F
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 15:08:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27C7316F
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 15:17:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-15-2005 15:08 CEST
+Last Modified:              07-15-2005 15:17 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,21 +66,26 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 07-14-05 13:54 
-----------------------------------------------------------------------
-Hopefully if we can sort out the volume the quality will sort itself out,
-when I use that gpio tool changing the values on any of the pins seems to
-have no effect on the sound from either the front speakers or the
-headphone socket.  Is their anything else that you want me to try or
-anyway to find out from the board which pin I want?
-
-----------------------------------------------------------------------
  ungod - 07-15-05 15:08 
 ----------------------------------------------------------------------
 No, I have no good idears. I WOULD like to know how the driver works with
 baesyspem though.
 
 Btw. are front and headphone two different outputs?
+
+----------------------------------------------------------------------
+ Demosthenes - 07-15-05 15:17 
+----------------------------------------------------------------------
+Yes, sorry I should have mentioned that.  The back speakers on the 7.1 can
+function as a Headphone output (I think there is a sort of basic Headphone
+amp in there maybe).  I have had my actual speakers connected to this for
+a day or so now and reducing the pcm volume to 70 and keeping all the
+other levels max produces good sound at good volume.  I have noticed the
+same thing with the pcm volume for my oboard sound as well, a high pcm
+volume seems to make for bad sound in my experience.
+I don't know how it is that I would choose to use the output for actual
+back speakers if I so desired, but I am going to use them for my
+headphones (currently my speakers) anyway so to me it doesn't matter.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -184,6 +189,7 @@ Hedgehog)
 07-14-05 13:31 Demosthenes    Note Added: 0005473                          
 07-14-05 13:54 Demosthenes    Note Added: 0005474                          
 07-15-05 15:08 ungod          Note Added: 0005481                          
+07-15-05 15:17 Demosthenes    Note Added: 0005482                          
 ======================================================================
 
 
