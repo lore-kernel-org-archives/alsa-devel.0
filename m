@@ -1,12 +1,14 @@
-From: cundongyang@ece.unm.edu
-Subject: How to use alsa API in kernel space?
-Date: Fri, 15 Jul 2005 15:02:53 -0600
-Message-ID: <1121461373.cc20dfa69147c@webmail.ece.unm.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Fri, 15 Jul 2005 23:40:51 +0200
+Message-ID: <a7b5547f43d99a55973ed4f928fa4edf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0ACFE181
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 23:40:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi:
-  Now I just want to call these alsa-API such as snd_pcm_open,
-snd_pcm_close,snd_pcm_mmap_writei,snd_pcm_hw_params_alloca,
-snd_pcm_access_mask_allocain kernel space?
-  Is my idea feasible? If not, how could I call alsa-API in
-kernel space?
 
-  Thanks a lot.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+======================================================================
+Reported By:                iq79
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1259
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
+======================================================================
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              07-15-2005 23:40 CEST
+======================================================================
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
+Description: 
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
+
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
+======================================================================
+
+----------------------------------------------------------------------
+ pzad - 07-15-05 19:50 
+----------------------------------------------------------------------
+Did you try to set "Aux" and "Analog Mix" volume ?
 
 
---cundong
+
+----------------------------------------------------------------------
+ iq79 - 07-15-05 23:40 
+----------------------------------------------------------------------
+Yes, I did set both "Aux" and "AnalogMix" to 100%. I also tried to set Aux2
+to 100% with no success.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
