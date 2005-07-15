@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Fri, 15 Jul 2005 18:18:59 +0200
-Message-ID: <57e8e9b7de8d350bacdb7f803d038e69@bugtrack.alsa-project.org>
+Date: Fri, 15 Jul 2005 19:49:47 +0200
+Message-ID: <5d915b1cfc768a9542416da41e112d64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55F951C3
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 18:18:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 219351DE
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 19:49:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.12-gentoo-r1
 ======================================================================
 Date Submitted:             07-15-2005 18:18 CEST
-Last Modified:              07-15-2005 18:18 CEST
+Last Modified:              07-15-2005 19:49 CEST
 ======================================================================
 Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
 from AUX in
@@ -54,12 +54,18 @@ but I couldn't find a configuration which gives me sound from AUX-in.
 That didn't help, too.
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 07-15-05 19:49 
+----------------------------------------------------------------------
+Did you try se "Aux" and "Analog Mix" volume ?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-15-05 18:18 iq79           New Issue                                    
 07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
 07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
 ======================================================================
 
 
