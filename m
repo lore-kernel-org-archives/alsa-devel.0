@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001258]: it doesn't work
-Date: Fri, 15 Jul 2005 09:29:13 +0200
-Message-ID: <c28822186537d0acff8c9d0fb1904132@bugtrack.alsa-project.org>
+Date: Fri, 15 Jul 2005 10:36:07 +0200
+Message-ID: <325ec916c3bf7a697b0140c4867cf3d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C5EB15A
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 09:29:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2050179
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2005 10:36:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1258> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               fedora
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-15-2005 09:29 CEST
-Last Modified:              07-15-2005 09:29 CEST
+Last Modified:              07-15-2005 10:36 CEST
 ======================================================================
 Summary:                    it doesn't work
 Description: 
@@ -154,11 +154,17 @@ ca0106, exiting!
 
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 07-15-05 10:36 
+----------------------------------------------------------------------
+Use alsa-driver 1.0.9 and not alsa-driver 1.0.5
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-15-05 09:29 huxark         New Issue                                    
 07-15-05 09:29 huxark         Distribution              => fedora          
+07-15-05 10:36 jcdutton       Note Added: 0005480                          
 ======================================================================
 
 
