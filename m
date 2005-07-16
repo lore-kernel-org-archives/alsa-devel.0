@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001261]: poor recording with emu10k1
-Date: Sat, 16 Jul 2005 09:28:25 +0200
-Message-ID: <2597fa65be8465ed2b59334ce87829c5@bugtrack.alsa-project.org>
+Date: Sat, 16 Jul 2005 09:31:08 +0200
+Message-ID: <7e2915ea09052eb9916d81ba3a46a1e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C6DD19A
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 09:28:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36B35194
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 09:31:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1261> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             all 2.6 versions
 ======================================================================
 Date Submitted:             07-16-2005 09:28 CEST
-Last Modified:              07-16-2005 09:28 CEST
+Last Modified:              07-16-2005 09:31 CEST
 ======================================================================
 Summary:                    poor recording with emu10k1
 Description: 
@@ -53,11 +53,19 @@ linux because of it.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ mal - 07-16-05 09:31 
+----------------------------------------------------------------------
+URL https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144940 somehow is
+not printed right in bug tracking system. Anyway this is bug 144940 in
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144940
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-16-05 09:28 mal            New Issue                                    
 07-16-05 09:28 mal            Kernel Version            => all 2.6 versions
+07-16-05 09:31 mal            Note Added: 0005485                          
 ======================================================================
 
 
