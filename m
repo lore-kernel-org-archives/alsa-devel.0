@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001261]: poor recording with emu10k1
-Date: Sat, 16 Jul 2005 11:00:20 +0200
-Message-ID: <0ed59e243b406ba45869a16dc3270fd5@bugtrack.alsa-project.org>
+Date: Sat, 16 Jul 2005 11:08:18 +0200
+Message-ID: <0d85a85ac917b165dfc29258f4046d1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E51A7198
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 11:00:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 157AF198
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 11:08:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             all 2.6 versions
 ======================================================================
 Date Submitted:             07-16-2005 09:28 CEST
-Last Modified:              07-16-2005 11:00 CEST
+Last Modified:              07-16-2005 11:08 CEST
 ======================================================================
 Summary:                    poor recording with emu10k1
 Description: 
@@ -54,21 +54,6 @@ linux because of it.
 ======================================================================
 
 ----------------------------------------------------------------------
- mal - 07-16-05 10:52 
-----------------------------------------------------------------------
-arecord -c2 -r 44100 t44100.wav
-Recording WAVE 't44100.wav' : Unsigned 8 bit, Rate 44100 Hz, Stereo
-Aborted by signal Interrupt...
-[mal@localhost ~]$ aplay t44100.wav
-Playing WAVE 't44100.wav' : Unsigned 8 bit, Rate 44100 Hz, Stereo
-[mal@localhost ~]$ arecord -c2 -r 44100 t44100_stereo.wav
-Recording WAVE 't44100_stereo.wav' : Unsigned 8 bit, Rate 44100 Hz,
-Stereo
-Aborted by signal Interrupt...
-[mal@localhost ~]$ aplay t44100_stereo.wav
-Playing WAVE 't44100_stereo.wav' : Unsigned 8 bit, Rate 44100 Hz, Stereo
-
-----------------------------------------------------------------------
  mal - 07-16-05 11:00 
 ----------------------------------------------------------------------
 Comparing  attached t44100.wav and t44100_stereo.wav obtained as 
@@ -77,6 +62,16 @@ and
  arecord -c2 -r 44100 t44100_stereo.wav
 respectively the background noise is about the same, but volume is very
 different.
+
+----------------------------------------------------------------------
+ mal - 07-16-05 11:08 
+----------------------------------------------------------------------
+Attached 
+arecord -f cd t_cd.wav
+Recording WAVE 't_cd.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+
+looks does not have a backgrouns noise
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +88,8 @@ Date Modified  Username       Field                    Change
 07-16-05 10:52 mal            Note Added: 0005490                          
 07-16-05 10:53 mal            File Added: t44100_stereo.wav                    
 07-16-05 11:00 mal            Note Added: 0005491                          
+07-16-05 11:07 mal            File Added: t_cd.wav                         
+07-16-05 11:08 mal            Note Added: 0005492                          
 ======================================================================
 
 
