@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
-Date: Sat, 16 Jul 2005 19:58:58 +0200
-Message-ID: <e49ac6eea005d2a69b67ade29649459e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000441]: Master volume not doing anything
+Date: Sat, 16 Jul 2005 21:19:50 +0200
+Message-ID: <07bb370ba82b9ea9f62c2e1dfc367b48@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5971198
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 19:58:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 827C21A1
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 21:19:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=441> 
 ======================================================================
-Reported By:                iljaguaro
-Assigned To:                tiwai
+Reported By:                Simon
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1192
-Category:                   PCI - cmipci
+Issue ID:                   441
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Testing "Etch"
-Kernel Version:             kernel-image-2.6.11-1-k7
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.
 ======================================================================
-Date Submitted:             06-15-2005 11:38 CEST
-Last Modified:              07-16-2005 19:58 CEST
+Date Submitted:             08-14-2004 20:49 CEST
+Last Modified:              07-16-2005 21:19 CEST
 ======================================================================
-Summary:                    Microphone doesn't work in record and/or Skype
+Summary:                    Master volume not doing anything
 Description: 
-The microphone input doesnt work well, the volume are too low and the noisy
-is to high, when you record it.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000183 Mic boost boosts mic playback and not r...
-related to          0000653 poor microphone recording quality on pc...
+I have sound, everything works, but the master volume control doesn't have
+any effect on the actual volume output.
+
+Running Soundblaster Live! 5.1 dolby surround system
 ======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 06-26-05 23:21 
+ jdthood - 07-16-05 17:14 
 ----------------------------------------------------------------------
-Look above, against  "Attached Files":  cmipci-mic-boost2.diff,
-its URL is:
-
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=744&type=bug
-.
+Submitter: Is there any improvement in more recent ALSA releases?
 
 ----------------------------------------------------------------------
- mlehto - 07-16-05 19:58 
+ Simon - 07-16-05 21:19 
 ----------------------------------------------------------------------
-I have tried the cmipci-mic-boost2.diff patch and it seems to work.
-Before mic was really silent but after using the patch and enabling
-new settings in alsa mixer, mic is working ok. 
-
-I'm using CMI8738-MC6 intergrated in motherboard.
+It works now for only the subwoofer and the left front and rear... it's an
+improvement
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 11:38 iljaguaro      New Issue                                    
-06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
-06-15-05 11:38 iljaguaro      Kernel Version            =>
-kernel-image-2.6.11-1-k7
-06-24-05 08:11 iljaguaro      Note Added: 0005203                          
-06-24-05 15:00 tiwai          Note Added: 0005224                          
-06-24-05 15:01 tiwai          File Added: cmipci-mic-boost2.diff                
-   
-06-26-05 11:46 iljaguaro      Note Added: 0005262                          
-06-26-05 23:21 sst4           Note Added: 0005269                          
-06-27-05 15:57 tiwai          Relationship added       related to 0000183  
-06-27-05 15:58 tiwai          Relationship added       related to 0000653  
-07-16-05 19:58 mlehto         Note Added: 0005501                          
+08-14-04 20:49 Simon          New Issue                                    
+08-14-04 20:49 Simon          Distribution              => Slackware       
+08-14-04 20:49 Simon          Kernel Version            => 2.              
+07-16-05 17:14 jdthood        Note Added: 0005499                          
+07-16-05 21:19 Simon          Note Added: 0005502                          
 ======================================================================
 
 
