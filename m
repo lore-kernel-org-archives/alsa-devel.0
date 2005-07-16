@@ -1,16 +1,14 @@
-From: Lars Heineken <Lars.Heineken@gmx.de>
-Subject: Re: DMixer
-Date: Sat, 16 Jul 2005 13:09:18 +0200
-Message-ID: <42D8EADE.4080205@gmx.de>
-References: <20050715161901.90015.qmail@web30713.mail.mud.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Sat, 16 Jul 2005 16:31:10 +0200
+Message-ID: <3e420ef2ed5999a9b1ad5102b9151554@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7DC0D14F
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 13:09:29 +0200 (MEST)
-In-Reply-To: <20050715161901.90015.qmail@web30713.mail.mud.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA7E6184
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 16:31:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,53 +21,63 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Suja,
 
-I'm not 100 percent certain, but I would take a look at the "pcm_dmix_*"
-files in the "src" folder of the alsa library. They contain generic and
-optimized mixing code for different platforms.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+======================================================================
+Reported By:                iq79
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1259
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
+======================================================================
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              07-16-2005 16:31 CEST
+======================================================================
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
+Description: 
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
 
-Regards,
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
 
-Lars.
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
+======================================================================
 
-SUJA JAMES wrote:
+----------------------------------------------------------------------
+ iq79 - 07-15-05 23:40 
+----------------------------------------------------------------------
+Yes, I did set both "Aux" and "AnalogMix" to 100%. I also tried to set Aux2
+to 100% with no success.
 
->Hi All,
->
->I am looking for a software based mixer
->implementation. Then,I came to know that ALSA has one
->DMIX. Please let me know from where I will get the
->source code for the same. I download the ALSA Driver
->and Lib-plugins 1.0.9. But I am unable to find out the
->source code. 
->
->Can any one pin point the exact source code
->location.(Not the mixer application, the Mixer
->implementation)
->
->Thanks,
->Suja.
->
->__________________________________________________
->Do You Yahoo!?
->Tired of spam?  Yahoo! Mail has the best spam protection around 
->http://mail.yahoo.com 
->
->
->-------------------------------------------------------
->SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
->from IBM. Find simple to follow Roadmaps, straightforward articles,
->informative Webcasts and more! Get everything you need to get up to
->speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
->  
->
+----------------------------------------------------------------------
+ jdthood - 07-16-05 16:31 
+----------------------------------------------------------------------
+Unmute "Line".
+
+Send the output of the amixer command.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+07-16-05 16:31 jdthood        Note Added: 0005496                          
+======================================================================
 
 
 
