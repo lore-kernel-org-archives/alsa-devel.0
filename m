@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001256]: surround51: Master Volume control and Mute only have effect on FrontLeft & FrontRight channels.
-Date: Sat, 16 Jul 2005 17:10:38 +0200
-Message-ID: <fdd2e1f193acda68e716384ae9eed930@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001071]: Help with Volume Controls
+Date: Sat, 16 Jul 2005 17:11:50 +0200
+Message-ID: <03f0220e1566982e5bd1d14dc83dae75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AC6B192
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 17:10:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD790192
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 17:11:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,36 +22,31 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+The following issue has been set as DUPLICATE OF issue 0000154.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1256> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1071> 
 ======================================================================
-Reported By:                Manolo
-Assigned To:                perex
+Reported By:                snekiepete
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1256
-Category:                   1_OTHERS
+Issue ID:                   1071
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Ubuntu
+Status:                     assigned
+Distribution:               
 Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             07-13-2005 18:11 CEST
-Last Modified:              07-16-2005 17:10 CEST
+Date Submitted:             04-23-2005 07:05 CEST
+Last Modified:              07-16-2005 17:11 CEST
 ======================================================================
-Summary:                    surround51: Master Volume control and Mute only have
-effect on FrontLeft & FrontRight channels.
+Summary:                    Help with Volume Controls
 Description: 
-The need for a common Volume Control for the surround51 6 channels is so
-obvious that I must be doing something wrong. Please help!
-
-
-I am newbie here. Is there a search tool to look for bugs/issues?
-
-
+I am looking for help configuring this card to have the ability to adjust
+"Front" and "Surround" volumes with one control instead of two. Is this
+possible and how?
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
@@ -59,31 +54,27 @@ duplicate of        0000154 Master volume only controls front outpu...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-13-05 18:51 
+ adamk75 - 04-24-05 13:46 
 ----------------------------------------------------------------------
-Yes, the same tool you used to file this bug report.  And yes, this is a
-known bug, I believe it's
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=164 if you are using the
-emu10k1 driver.
+This seems to be related to the folllwing bugs, which are for different
+soundcards:
 
-----------------------------------------------------------------------
- rlrevell - 07-13-05 18:54 
-----------------------------------------------------------------------
-Sorry, its https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=919
+
+Seems that Alsa doesn't necessary have a master volume control on all
+cards that actually controls the volume of all output..  I know Lee Revell
+is working on this for Live! cards but I have no idea if his solution will
+be able to be used for other cards/drivers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-05 18:11 Manolo         New Issue                                    
-07-13-05 18:11 Manolo         Distribution              => Ubuntu          
-07-13-05 18:11 Manolo         Kernel Version            => 2.6.11          
-07-13-05 18:51 rlrevell       Note Added: 0005464                          
-07-13-05 18:54 rlrevell       Note Added: 0005465                          
-07-13-05 18:56 rlrevell       Relationship added       duplicate of 0000154
-07-16-05 17:10 jdthood        Assigned To               => perex           
-07-16-05 17:10 jdthood        Status                   new => acknowledged 
-07-16-05 17:10 jdthood        Resolution               open => duplicate   
-07-16-05 17:10 jdthood        Additional Information Updated                    
+04-23-05 07:05 snekiepete     New Issue                                    
+04-23-05 07:05 snekiepete     Kernel Version            => 2.6.11          
+04-24-05 13:46 adamk75        Note Added: 0004566                          
+07-16-05 17:11 jdthood        Relationship added       duplicate of 0000154
 ======================================================================
 
 
