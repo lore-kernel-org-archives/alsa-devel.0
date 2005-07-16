@@ -1,14 +1,11 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Sat, 16 Jul 2005 16:31:10 +0200
-Message-ID: <3e420ef2ed5999a9b1ad5102b9151554@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Date: Sat, 16 Jul 2005 16:32:00 +0200
+Message-ID: <20050716143200.8C3C3184@alsa.jcu.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA7E6184
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 16:31:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C3C3184
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 16:32:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,62 +18,95 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
+Message-ID: <6646fcedeae230ae50154a2b348618fa@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 
-A NOTE has been added to this issue.
+
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
 ======================================================================
-Reported By:                iq79
+Reported By:                hodgesw
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1259
+Issue ID:                   773
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.12-gentoo-r1
+Status:                     resolved
+Distribution:               1.08rc1
+Kernel Version:             2.6.10
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-15-2005 18:18 CEST
+Date Submitted:             01-01-2005 01:21 CET
 Last Modified:              07-16-2005 16:31 CEST
 ======================================================================
-Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
-from AUX in
+Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
+(12/30/2004)
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
 Description: 
-I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Audigy2 Value - SB0400 card
+After trying many modprobe.preload/modprobe.conf alternatives I
+manually loaded driver  using  "modprobe -v snd-emu10k1"
+with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
+After setting alsamixer volumes
+"speakertest" works; "aplay" produces good sound; mic produces good
+sound;
+"line in" does not work; "auxin" does nor work.
+kde configure plays sound.
+xmms cannot find sound card.
 
-- I played around with all (Playback/Capture) mixer settings in alsamixer
-but I couldn't find a configuration which gives me sound from AUX-in.
-
-- I tried loading emu10k1 module with several extin/exout combinations.
-That didn't help, too.
 ======================================================================
 
 ----------------------------------------------------------------------
- iq79 - 07-15-05 23:40 
+ jdthood - 04-18-05 23:20 
 ----------------------------------------------------------------------
-Yes, I did set both "Aux" and "AnalogMix" to 100%. I also tried to set Aux2
-to 100% with no success.
+Submitter: Try setting the levels with gamix.
+
+Can you please summarize the remaining problems?
 
 ----------------------------------------------------------------------
- jdthood - 07-16-05 16:31 
+ jdthood - 07-16-05 16:29 
 ----------------------------------------------------------------------
-Unmute "Line".
+> Close the issue.
 
-Send the output of the amixer command.
+OK
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-05 18:18 iq79           New Issue                                    
-07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
-07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
-07-15-05 19:49 pzad           Note Added: 0005483                          
-07-15-05 19:50 pzad           Note Edited: 0005483                         
-07-15-05 23:40 iq79           Note Added: 0005484                          
-07-16-05 16:31 jdthood        Note Added: 0005496                          
+01-01-05 01:21 hodgesw        New Issue                                    
+01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
+01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
+01-01-05 02:27 rlrevell       Note Added: 0003029                          
+01-01-05 16:13 hodgesw        Note Added: 0003032                          
+01-01-05 18:44 rlrevell       Note Added: 0003033                          
+01-01-05 20:35 pzad           Note Added: 0003035                          
+01-01-05 21:51 hodgesw        Note Added: 0003036                          
+01-01-05 22:01 rlrevell       Note Added: 0003037                          
+01-01-05 23:02 pzad           Note Added: 0003040                          
+01-02-05 00:30 hodgesw        Note Added: 0003042                          
+01-02-05 04:00 hodgesw        Note Added: 0003043                          
+01-02-05 09:20 pzad           Note Added: 0003044                          
+01-02-05 23:21 hodgesw        File Added: test.state                       
+01-03-05 22:48 hodgesw        Note Added: 0003075                          
+01-04-05 19:50 pzad           Note Added: 0003079                          
+01-05-05 02:07 hodgesw        Note Added: 0003088                          
+04-18-05 23:20 jdthood        Note Added: 0004517                          
+07-16-05 16:29 jdthood        Note Added: 0005495                          
+07-16-05 16:31 jdthood        Status                   new => resolved     
+07-16-05 16:31 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
