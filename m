@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001263]: Mixer does not work properly with Delta44 at 96000 Hz sampling rate
-Date: Sat, 16 Jul 2005 19:25:41 +0200
-Message-ID: <ab277e2afd22d1864790f5152566b3a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001192]: Microphone doesn't work in record and/or Skype
+Date: Sat, 16 Jul 2005 19:58:58 +0200
+Message-ID: <e49ac6eea005d2a69b67ade29649459e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9754198
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 19:25:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5971198
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 19:58:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1263> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1192> 
 ======================================================================
-Reported By:                w3sz
-Assigned To:                
+Reported By:                iljaguaro
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1263
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1192
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian Testing "Etch"
+Kernel Version:             kernel-image-2.6.11-1-k7
 ======================================================================
-Date Submitted:             07-16-2005 19:25 CEST
-Last Modified:              07-16-2005 19:25 CEST
+Date Submitted:             06-15-2005 11:38 CEST
+Last Modified:              07-16-2005 19:58 CEST
 ======================================================================
-Summary:                    Mixer does not work properly with Delta44 at 96000
-Hz sampling rate
+Summary:                    Microphone doesn't work in record and/or Skype
 Description: 
-There have been several reports to me, and I have confirmed, that when
-alsamixer is used with the MAudio Delta 44 soundcard at 96000 Hz sampling
-rate, the sliders used to control adc adc1 adc2 adc3 adc4 do not affect
-the input sensitivity of the Delta44.  The sliders appear to move, and
-alsamixer saves their new positions, but moving them has NO effect on the
-input signal to the Delta44.  
-
-This is a major problem, as those using the Delta44 in certain
-applications need maximal dynamic range, and this defect in alsamixer
-prevents this.
-
-OSS works fine with the Delta44 with a variety of OS's and has NOT
-demonstrated this malfunction on the same hardware, with the same OS that
-this ALSA defect appears.
+The microphone input doesnt work well, the volume are too low and the noisy
+is to high, when you record it.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000183 Mic boost boosts mic playback and not r...
+related to          0000653 poor microphone recording quality on pc...
+======================================================================
+
+----------------------------------------------------------------------
+ sst4 - 06-26-05 23:21 
+----------------------------------------------------------------------
+Look above, against  "Attached Files":  cmipci-mic-boost2.diff,
+its URL is:
+
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=744&type=bug
+.
+
+----------------------------------------------------------------------
+ mlehto - 07-16-05 19:58 
+----------------------------------------------------------------------
+I have tried the cmipci-mic-boost2.diff patch and it seems to work.
+Before mic was really silent but after using the patch and enabling
+new settings in alsa mixer, mic is working ok. 
+
+I'm using CMI8738-MC6 intergrated in motherboard.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-05 19:25 w3sz           New Issue                                    
+06-15-05 11:38 iljaguaro      New Issue                                    
+06-15-05 11:38 iljaguaro      Distribution              => Debian Testing "Etch"
+06-15-05 11:38 iljaguaro      Kernel Version            =>
+kernel-image-2.6.11-1-k7
+06-24-05 08:11 iljaguaro      Note Added: 0005203                          
+06-24-05 15:00 tiwai          Note Added: 0005224                          
+06-24-05 15:01 tiwai          File Added: cmipci-mic-boost2.diff                
+   
+06-26-05 11:46 iljaguaro      Note Added: 0005262                          
+06-26-05 23:21 sst4           Note Added: 0005269                          
+06-27-05 15:57 tiwai          Relationship added       related to 0000183  
+06-27-05 15:58 tiwai          Relationship added       related to 0000653  
+07-16-05 19:58 mlehto         Note Added: 0005501                          
 ======================================================================
 
 
