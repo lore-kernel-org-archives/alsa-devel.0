@@ -1,11 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: CVS compile issue
-Date: Fri, 15 Jul 2005 22:49:26 -0400
-Message-ID: <1121482166.12420.80.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001260]: No support for VIA (VT)1617A codec
+Date: Sat, 16 Jul 2005 05:08:21 +0200
+Message-ID: <968ec6e9a3ba84484ce6fa51d4c8f4be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4020B1E8
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 05:08:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,26 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Kernel is 2.6.12-RT-V0.7.51-28.
 
-  CC [M]  /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o
-In file included from /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.c:1:
-/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c: In function 'snd_ac97_resume':
-/smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:644: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
-/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:2252: sorry, unimplemented: called from here
-/smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:644: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
-/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:2264: sorry, unimplemented: called from here
-make[4]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o] Error 1
-make[3]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97] Error 2
-make[2]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci] Error 2
-make[1]: *** [_module_/smb/rlrevell/cvs/alsa/alsa-driver] Error 2
-make[1]: Leaving directory `/smb/rlrevell/kernel-source/linux-2.6.12-c3'
-make: *** [compile] Error 2
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1260> 
+======================================================================
+Reported By:                PhilipP
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1260
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             07-16-2005 05:08 CEST
+Last Modified:              07-16-2005 05:08 CEST
+======================================================================
+Summary:                    No support for VIA (VT)1617A codec
+Description: 
+Although the VT1612 and VT1616 codecs are supported, the more current (and
+somewhat more capable) variant of them as the 1617A is not.
 
-Lee
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-05 05:08 PhilipP        New Issue                                    
+======================================================================
+
 
 
 
