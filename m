@@ -1,11 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Sat, 16 Jul 2005 16:32:00 +0200
-Message-ID: <20050716143200.8C3C3184@alsa.jcu.cz>
+Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
+Date: Sat, 16 Jul 2005 16:42:57 +0200
+Message-ID: <865ce354c02c190cedea094c7cfd2b35@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C3C3184
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 16:32:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6944210A
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 16:42:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,95 +21,81 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <6646fcedeae230ae50154a2b348618fa@bugtrack.alsa-project.org>
-X-Priority: 3
-X-Mailer: PHPMailer [version 1.72]
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
 
-
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
 ======================================================================
-Reported By:                hodgesw
-Assigned To:                
+Reported By:                ignition
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   773
-Category:                   PCI - emu10k1
+Issue ID:                   664
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               1.08rc1
-Kernel Version:             2.6.10
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     feedback
+Distribution:               GNU/Linux Slackware 10.0
+Kernel Version:             2.4.28
 ======================================================================
-Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              07-16-2005 16:31 CEST
+Date Submitted:             11-22-2004 18:29 CET
+Last Modified:              07-16-2005 16:42 CEST
 ======================================================================
-Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
-(12/30/2004)
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
+Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
+have sound from the headphones, only internal speakers work.
 Description: 
-Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Audigy2 Value - SB0400 card
-After trying many modprobe.preload/modprobe.conf alternatives I
-manually loaded driver  using  "modprobe -v snd-emu10k1"
-with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
-After setting alsamixer volumes
-"speakertest" works; "aplay" produces good sound; mic produces good
-sound;
-"line in" does not work; "auxin" does nor work.
-kde configure plays sound.
-xmms cannot find sound card.
+module: intel8x0
+card: SiS SI7012
+chip: Realtek ALC202 rev 0
 
+All ok but when I plug a jack from the headphones (or hi-fi system), there
+is no sound.
+And when I plug a jack halfway, I hear mono sound with bad quality from
+internal speaker AND from the headphones.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000014 No sound from external speakers (laptop)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-18-05 23:20 
+ jdthood - 03-23-05 15:41 
 ----------------------------------------------------------------------
-Submitter: Try setting the levels with gamix.
-
-Can you please summarize the remaining problems?
+This issue wasn't actually resolved.
 
 ----------------------------------------------------------------------
- jdthood - 07-16-05 16:29 
+ jdthood - 07-16-05 16:42 
 ----------------------------------------------------------------------
-> Close the issue.
+> All ok but when I plug a jack from the headphones (or hi-fi system),
+> there is no sound.  And when I plug a jack halfway, I hear mono sound
+> with bad quality from internal speaker AND from the headphones.
 
-OK
+Switch off "Headphone Jack Sense"?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-01-05 01:21 hodgesw        New Issue                                    
-01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
-01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
-01-01-05 02:27 rlrevell       Note Added: 0003029                          
-01-01-05 16:13 hodgesw        Note Added: 0003032                          
-01-01-05 18:44 rlrevell       Note Added: 0003033                          
-01-01-05 20:35 pzad           Note Added: 0003035                          
-01-01-05 21:51 hodgesw        Note Added: 0003036                          
-01-01-05 22:01 rlrevell       Note Added: 0003037                          
-01-01-05 23:02 pzad           Note Added: 0003040                          
-01-02-05 00:30 hodgesw        Note Added: 0003042                          
-01-02-05 04:00 hodgesw        Note Added: 0003043                          
-01-02-05 09:20 pzad           Note Added: 0003044                          
-01-02-05 23:21 hodgesw        File Added: test.state                       
-01-03-05 22:48 hodgesw        Note Added: 0003075                          
-01-04-05 19:50 pzad           Note Added: 0003079                          
-01-05-05 02:07 hodgesw        Note Added: 0003088                          
-04-18-05 23:20 jdthood        Note Added: 0004517                          
-07-16-05 16:29 jdthood        Note Added: 0005495                          
-07-16-05 16:31 jdthood        Status                   new => resolved     
-07-16-05 16:31 jdthood        Resolution               open => not an issue
+11-22-04 18:29 ignition       New Issue                                    
+11-22-04 18:29 ignition       File Added: report                           
+11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
+10.0
+11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
+11-22-04 18:48 tiwai          Relationship added       duplicate of 0000014
+11-22-04 18:48 tiwai          Duplicate ID             0 => 14             
+11-22-04 18:48 tiwai          Status                   new => resolved     
+11-22-04 18:48 tiwai          Resolution               open => duplicate   
+11-22-04 18:48 tiwai          Assigned To               => tiwai           
+11-22-04 18:48 tiwai          Note Added: 0002510                          
+11-22-04 18:51 ignition       Issue Monitored: ignition                    
+11-22-04 18:52 ignition       Issue End Monitor: ignition                    
+12-06-04 14:58 dale           Issue Monitored: dale                        
+01-20-05 18:52 jorge2         Issue Monitored: jorge2                      
+03-23-05 15:41 jdthood        Status                   resolved => feedback
+03-23-05 15:41 jdthood        Resolution               duplicate => reopened
+03-23-05 15:41 jdthood        Note Added: 0004163                          
+06-14-05 21:16 graf_eichbaum  Issue Monitored: graf_eichbaum                    
+07-16-05 16:42 jdthood        Note Added: 0005497                          
 ======================================================================
 
 
