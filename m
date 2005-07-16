@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001262]: Sound-related /dev entries disappear after each reboot
-Date: Sat, 16 Jul 2005 18:16:02 +0200
-Message-ID: <ab137f447ee23c31d76476576ddaa2ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Sat, 16 Jul 2005 18:38:13 +0200
+Message-ID: <ef474fbaa7935c3837ddc8b947dee460@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6951518D
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 18:16:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D868B198
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 18:38:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1262> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
 ======================================================================
-Reported By:                loungelizard
+Reported By:                iq79
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1262
-Category:                   1_OTHERS
+Issue ID:                   1259
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.6.12.2
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
 ======================================================================
-Date Submitted:             07-16-2005 18:16 CEST
-Last Modified:              07-16-2005 18:16 CEST
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              07-16-2005 18:38 CEST
 ======================================================================
-Summary:                    Sound-related /dev entries disappear after each
-reboot
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
 Description: 
-/dev/snd and other sound-related entries in /dev (created by snddevices)
-disappear after each reboot, so I must run snddevices again and again.
-With kernel 2.4.31 everything is OK, but I need kernel 2.6.12.2.
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
+
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 07-16-05 16:31 
+----------------------------------------------------------------------
+Unmute "Line".
+
+Send the output of the amixer command.
+
+----------------------------------------------------------------------
+ iq79 - 07-16-05 18:38 
+----------------------------------------------------------------------
+Unmuting "Line" or "Line2" doesn't help.
+I've uploaded the output from amixer.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-05 18:16 loungelizard   New Issue                                    
-07-16-05 18:16 loungelizard   Distribution              => Slackware       
-07-16-05 18:16 loungelizard   Kernel Version            => 2.6.12.2        
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+07-16-05 16:31 jdthood        Note Added: 0005496                          
+07-16-05 18:36 iq79           File Added: amixer_output                    
+07-16-05 18:38 iq79           Note Added: 0005500                          
 ======================================================================
 
 
