@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001261]: poor recording with emu10k1
-Date: Sat, 16 Jul 2005 10:32:11 +0200
-Message-ID: <8965a174100772461c8fce7916a4db69@bugtrack.alsa-project.org>
+Date: Sat, 16 Jul 2005 10:34:44 +0200
+Message-ID: <4a9f227c4fed75404dce33a7eace17b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB803198
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 10:32:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2CE73198
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 10:34:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             all 2.6 versions
 ======================================================================
 Date Submitted:             07-16-2005 09:28 CEST
-Last Modified:              07-16-2005 10:32 CEST
+Last Modified:              07-16-2005 10:34 CEST
 ======================================================================
 Summary:                    poor recording with emu10k1
 Description: 
@@ -52,14 +52,6 @@ This problem has ben an issue for a while. People can not use sound on
 linux because of it.
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 07-16-05 09:49 
-----------------------------------------------------------------------
-Please post the output of lsmod, amixer, and the contents of
-/proc/asound/cards and /proc/asound/version.
-
-Also, do you have the same problem if you use arecord?
 
 ----------------------------------------------------------------------
  mal - 07-16-05 10:32 
@@ -427,6 +419,19 @@ Advanced Linux Sound Architecture Driver Version 1.0.9rc2  (Thu Mar 24
 NMI:          0
 ERR:          0
 
+----------------------------------------------------------------------
+ mal - 07-16-05 10:34 
+----------------------------------------------------------------------
+I also attached a file obtained as:
+[mal@localhost tmp]$ arecord tsts.wav
+Recording WAVE 'tsts.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+Aborted by signal Interrupt...
+[mal@localhost tmp]$ aplay tsts.wav
+Playing WAVE 'tsts.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+[mal@localhost tmp]$
+
+You can hear noise in background and overall quality is poor
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -435,6 +440,7 @@ Date Modified  Username       Field                    Change
 07-16-05 09:31 mal            Note Added: 0005485                          
 07-16-05 09:49 rlrevell       Note Added: 0005486                          
 07-16-05 10:32 mal            Note Added: 0005487                          
+07-16-05 10:34 mal            Note Added: 0005488                          
 ======================================================================
 
 
