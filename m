@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Sat, 16 Jul 2005 18:38:13 +0200
-Message-ID: <ef474fbaa7935c3837ddc8b947dee460@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001263]: Mixer does not work properly with Delta44 at 96000 Hz sampling rate
+Date: Sat, 16 Jul 2005 19:25:41 +0200
+Message-ID: <ab277e2afd22d1864790f5152566b3a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D868B198
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 18:38:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9754198
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 19:25:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1263> 
 ======================================================================
-Reported By:                iq79
+Reported By:                w3sz
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1259
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   1263
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.12-gentoo-r1
 ======================================================================
-Date Submitted:             07-15-2005 18:18 CEST
-Last Modified:              07-16-2005 18:38 CEST
+Date Submitted:             07-16-2005 19:25 CEST
+Last Modified:              07-16-2005 19:25 CEST
 ======================================================================
-Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
-from AUX in
+Summary:                    Mixer does not work properly with Delta44 at 96000
+Hz sampling rate
 Description: 
-I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+There have been several reports to me, and I have confirmed, that when
+alsamixer is used with the MAudio Delta 44 soundcard at 96000 Hz sampling
+rate, the sliders used to control adc adc1 adc2 adc3 adc4 do not affect
+the input sensitivity of the Delta44.  The sliders appear to move, and
+alsamixer saves their new positions, but moving them has NO effect on the
+input signal to the Delta44.  
 
-- I played around with all (Playback/Capture) mixer settings in alsamixer
-but I couldn't find a configuration which gives me sound from AUX-in.
+This is a major problem, as those using the Delta44 in certain
+applications need maximal dynamic range, and this defect in alsamixer
+prevents this.
 
-- I tried loading emu10k1 module with several extin/exout combinations.
-That didn't help, too.
+OSS works fine with the Delta44 with a variety of OS's and has NOT
+demonstrated this malfunction on the same hardware, with the same OS that
+this ALSA defect appears.
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 07-16-05 16:31 
-----------------------------------------------------------------------
-Unmute "Line".
-
-Send the output of the amixer command.
-
-----------------------------------------------------------------------
- iq79 - 07-16-05 18:38 
-----------------------------------------------------------------------
-Unmuting "Line" or "Line2" doesn't help.
-I've uploaded the output from amixer.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-05 18:18 iq79           New Issue                                    
-07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
-07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
-07-15-05 19:49 pzad           Note Added: 0005483                          
-07-15-05 19:50 pzad           Note Edited: 0005483                         
-07-15-05 23:40 iq79           Note Added: 0005484                          
-07-16-05 16:31 jdthood        Note Added: 0005496                          
-07-16-05 18:36 iq79           File Added: amixer_output                    
-07-16-05 18:38 iq79           Note Added: 0005500                          
+07-16-05 19:25 w3sz           New Issue                                    
 ======================================================================
 
 
