@@ -1,16 +1,14 @@
-From: Alexander Sirotkin <demiourgos@gmail.com>
-Subject: Re: sound recording
-Date: Sat, 16 Jul 2005 23:37:04 +0300
-Message-ID: <c4357ccd0507161337104a0be0@mail.gmail.com>
-References: <c4357ccd05070413083e0d00d5@mail.gmail.com>
-	 <Pine.HPX.4.33n.0507051348540.21969-100000@studcom.urz.uni-halle.de>
-Reply-To: Alexander Sirotkin <demiourgos@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001264]: Mixer defaults to mute when computer reboots.
+Date: Sat, 16 Jul 2005 22:40:55 +0200
+Message-ID: <499eb8e06e03e446714ddd78023d6bb9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0507051348540.21969-100000@studcom.urz.uni-halle.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7346D191
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 22:40:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,37 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
 
-I guess you hoped not to hear from me again, but unfortunately alsa
-1.0.9 did not help much. I also did not find any new controls in the
-mixer.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1264> 
+======================================================================
+Reported By:                92b16vx
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1264
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4
+======================================================================
+Date Submitted:             07-16-2005 22:40 CEST
+Last Modified:              07-16-2005 22:40 CEST
+======================================================================
+Summary:                    Mixer defaults to mute when computer reboots.
+Description: 
+When computer reboots, Alsamixer is reset to mute. Fix is opening the mixer
+through command line, and unmuting, and turning up volumes.
+======================================================================
 
-Any more ideas/suggestions ?
-
-BTW, I'm willing (and capable) to debug the driver, if it may help...
-
-On 7/5/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Alexander Sirotkin wrote:
-> > Unfortunately it did not help much.
-> > Still recording does not work...
->=20
-> Please try ALSA 1.0.9, it has another mixer control for front panel
-> mics that might help.
->=20
->=20
-> HTH
-> Clemens
->=20
->=20
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-05 22:40 92b16vx        New Issue                                    
+07-16-05 22:40 92b16vx        Distribution              => Fedora Core 4   
+07-16-05 22:40 92b16vx        Kernel Version            => 2.6.11-1.1369_FC4
+======================================================================
 
 
---=20
-Alexander Sirotkin
 
 
 -------------------------------------------------------
