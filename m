@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001260]: No support for VIA (VT)1617A codec
-Date: Sat, 16 Jul 2005 05:08:21 +0200
-Message-ID: <968ec6e9a3ba84484ce6fa51d4c8f4be@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Porfirio " <Darlene_@aesdana.com>
+Subject: Want to have fun tonight?
+Date: Fri, 15 Jul 2005 21:18:50 -0800
+Message-ID: <24131762070317.GA6135@jwales.EINTR.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4020B1E8
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 05:08:21 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D29D4171
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 06:18:51 +0200 (MEST)
+Received: from c-24-14-77-22.hsd1.il.comcast.net (c-24-14-77-22.hsd1.il.comcast.net [24.14.77.22])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id CB45582640
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2005 06:18:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,41 +21,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Have you gotten laid recently?
+Checkout the website that has a bunch of sexaholics ;)
+Over 68 percent of people who join this website get some action!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1260> 
-======================================================================
-Reported By:                PhilipP
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1260
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-16-2005 05:08 CEST
-Last Modified:              07-16-2005 05:08 CEST
-======================================================================
-Summary:                    No support for VIA (VT)1617A codec
-Description: 
-Although the VT1612 and VT1616 codecs are supported, the more current (and
-somewhat more capable) variant of them as the 1617A is not.
+With a massive community, you're bound to meet someone special.
+Oh, I forgot to mention, it's free for everyone!
 
-======================================================================
+Find out who's waiting for you...
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-05 05:08 PhilipP        New Issue                                    
-======================================================================
-
-
+http://www.getsometonight.com/
 
 
 -------------------------------------------------------
