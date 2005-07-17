@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 22:21:27 +0200
-Message-ID: <16adc2901548056edccf2c1937813651@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 23:28:23 +0200
+Message-ID: <c724b713aba31a4e0ec8bb8e766d6739@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 562A21A6
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 22:21:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED54A1A6
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 23:28:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 22:21 CEST
+Last Modified:              07-17-2005 23:28 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,11 +50,6 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-
-----------------------------------------------------------------------
- Hetfield - 07-17-05 21:23 
-----------------------------------------------------------------------
-added new strace output. 600k...i hope you can find something interesting
 
 ----------------------------------------------------------------------
  rlrevell - 07-17-05 22:21 
@@ -122,6 +117,20 @@ checked, so the app just assumes the timer was started.
 Of course it's also completely broken for the app to keep opening
 non-existent /dev/dsp* in a loop like that.
 
+----------------------------------------------------------------------
+ Hetfield - 07-17-05 23:28 
+----------------------------------------------------------------------
+ok ok, but maybe you missed my point:
+why it work perfectly with plain oss and not with aoss?
+
+that's the same issue for skype..aoss is not a FULLY transparent bridge
+between apps and driver translation.
+
+apart some fatal bugs (seg fault fixed in this thread) there seems to be
+some hidden little holes to fill.
+
+i'll be happy to test any patch or fix
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -156,6 +165,7 @@ Date Modified  Username       Field                    Change
 07-17-05 21:22 Hetfield       File Added: log2                             
 07-17-05 21:23 Hetfield       Note Added: 0005513                          
 07-17-05 22:21 rlrevell       Note Added: 0005514                          
+07-17-05 23:28 Hetfield       Note Added: 0005515                          
 ======================================================================
 
 
