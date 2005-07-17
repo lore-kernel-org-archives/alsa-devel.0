@@ -1,12 +1,13 @@
-From: "MRS. E. HERYATI" <heryati22@yahoo.it>
-Subject: PLEASE  READ!!!  It is for your Financial Prosperity
-Date: Sat, 16 Jul 2005 22:58:39 +0000
-Message-ID: <E1DtvcM-0007Ee-Ct@sc8-sf-mx1.sourceforge.net>
-Reply-To: erry@heryati.com
+From: Geoff Beasley <songshop@bizmedia.com.au>
+Subject: compile error in wine
+Date: Sun, 17 Jul 2005 12:44:45 +0000
+Message-ID: <1121604285.8251.10.camel@localhost>
+References: <20050716204029.53076898E7@sc8-sf-spam1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20050716204029.53076898E7@sc8-sf-spam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,27 +20,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-FROM=3B MRS=2E ERRY HERYATI
-TELEFAX N=B0=3A +44 709 202 5297
-EMAIL=3A erry=40heryati=2Ecom
-UNITED KINGDOM=2E
+G'day folks. Trying to build wine 20040505 (and several other releases
+as well) on my new gentoo 2.6.12 r4 install using alsa 1.0.9.a I get the
+following error:
 
-I have access to an amount in excess of US$6=2E5 M=2C which I seek your partnership in accommodating for me=2E You will be rewarded with 30% of the total sum for your partnership=2E Can you be my partner on this=3F
+make[2]: Entering directory
+`/home/geoff/wine-20040505/dlls/winmm/winealsa'
+gcc -c -I. -I. -I../../../include -I../../../include  -D__WINESRC__
+-D_REENTRANT -fPIC -Wall -pipe -mpreferred-stack-boundary=2
+-fno-strict-aliasing -gstabs+ -Wpointer-arith  -g -O2 -o audio.o audio.c
+In file included from /usr/include/alsa/asoundlib.h:48,
+                 from alsa.h:23,
+                 from audio.c:59:
+/usr/include/alsa/conf.h:189: error: syntax error before "struct"
+make[2]: *** [audio.o] Error 1
+make[2]: Leaving directory
+`/home/geoff/wine-20040505/dlls/winmm/winealsa'
+make[1]: *** [winmm/winealsa] Error 2
+make[1]: Leaving directory `/home/geoff/wine-20040505/dlls'
+make: *** [dlls] Error 2
 
-I am Mrs=2E ERRY HERYATI =28an Indonesian by birth=29=2C I am the personal secretary to Mr=2E Alexei Pichugin who was the former security Chief of YUKOS OIL company of Russia =28Russian Most Largest Oil Company=29=2C but unfortunately he was charged on fake charges and has just been sentenced to 20 years imprisonment for murder he did not commit and is still facing new charges in Russia=2E Until recently I was living in Moscow=2C but had to relocate and go into exile in London where I am currently recovering from the injuries inflicted on me during the raiding of our offices in Moscow and  Samara=2C Penza=2C Voronezh=2C Orel=2C Bryansk=2C Tambov=2C Lipetsk=2C and Ulyanovsk Regions of Central Russia=2E Since the Russian government's attacks  started on our company - Yukos Oil Co=2E=2C my life has been thrown into severe mystery=2C I lost all I had=2C and today=2C I am in a secret private 
- home recovering from very fatal injuries and I have lost my ability to talk and to hear cl
- early based on the severe torture I underwent in the hands of agents of state=2E
+Compilation failed, aborting install.
 
-The document of the above funds in question was handed over to me by Mr=2E Alexei Pichugin to be used in payment for his last oil deal with Yukos Oil Co=2E Already the funds have been deposited with a prime Bank where the final crediting is expected to be carried out=2E While I was on this process=2C my boss=2C Mr=2E Alexei Pichugin got arrested for his involvement in politics which poses treat to President Vladimir Putin second tenure as Russian president=2E 
 
-All I need from you is to stand as the beneficiary of the above quoted sum and I will present to you the documentation which will enable this prime Bank transfer the sum to you=2E I have decided to use my share of this funds to invest and relocate to your country so we need to conclude in the shortest possible time=2E
+Is there something that needs to be edited in /usr/include/alsa/conf.h ?
+Is this a wine specific problem ?
 
-You can only reach me through this dedicated fax number in South London where I am hiding in exile as all phones calls to the residence where I am are bugged and been monitored=2C the fax number is=3A +447092025297 or email address- erry=40heryati=2Ecom=2C I will not be able to speak with you on phone for now as I found it difficult to speak=2C but you can always drop a voice message on this number and I will get back to you either by fax or email=2E As soon as I get your willingness to cooperate with me I shall give you more details=2E
+thanks for any help !
 
-Thank you very much and God bless you=2E
-
-MRS=2E ERRY HERYATI
-
+Cheers,
+Geoff.
 
 
 
