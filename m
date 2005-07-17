@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 21:23:34 +0200
-Message-ID: <bacc888009e9ac8f67ba0c3a039b0e49@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 22:21:27 +0200
+Message-ID: <16adc2901548056edccf2c1937813651@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8191E19C
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 21:23:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 562A21A6
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 22:21:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 21:23 CEST
+Last Modified:              07-17-2005 22:21 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,16 +52,75 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-17-05 21:14 
-----------------------------------------------------------------------
-That log starts at /dev/dsp697.  Presumably it tried to open 0 through 696
-before this.  So you need to get an strace of when the process first
-starts up.
-
-----------------------------------------------------------------------
  Hetfield - 07-17-05 21:23 
 ----------------------------------------------------------------------
 added new strace output. 600k...i hope you can find something interesting
+
+----------------------------------------------------------------------
+ rlrevell - 07-17-05 22:21 
+----------------------------------------------------------------------
+Something (either in alsa-lib or the app) does not seem to be handling a
+timer correctly.
+
+After opening /dev/dsp, it tries to open some type of timer:
+
+open("/dev/snd/timer", O_RDONLY|O_NONBLOCK) = 9
+ioctl(9, 0x80045400, 0xbf822ecc)        = 0
+ioctl(9, TIOCSPGRP, 0xbf822ed0)         = 0
+ioctl(9, 0x80045400, 0xbf8232fc)        = 0
+
+Then the ioctl to start the timer returns -EBUSY:
+
+ioctl(9, SNDCTL_TMR_START or TCSETS, 0x82676e8) = -1 EBUSY (Device or
+resource busy)
+
+Then it does some more ioctls on the timer:
+
+ioctl(9, TIOCSTI, 0xbf8234d0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, TIOCSTI, 0xbf823630)           = 0
+ioctl(9, 0x54a1, 0xb729aa08)            = 0
+read(9, "\0\0\0\0\0\0\0\0", 8)          = 8
+
+Then we get EAGAIN trying to read the timer, which causes it to give up
+and try /dev/dsp1, and so on.
+
+read(9, 0xbf8239c0, 8)                  = -1 EAGAIN (Resource temporarily
+unavailable)
+close(9)                                = 0
+
+But this also fails because it performs the exact same sequence of
+operations on the timer.
+
+I suspect that the return value of the ioctl to start the timer was not
+checked, so the app just assumes the timer was started.
+
+Of course it's also completely broken for the app to keep opening
+non-existent /dev/dsp* in a loop like that.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +155,7 @@ Date Modified  Username       Field                    Change
 07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
 07-17-05 21:22 Hetfield       File Added: log2                             
 07-17-05 21:23 Hetfield       Note Added: 0005513                          
+07-17-05 22:21 rlrevell       Note Added: 0005514                          
 ======================================================================
 
 
