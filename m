@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: compile error in wine
-Date: Sat, 16 Jul 2005 23:21:10 -0400
-Message-ID: <1121570471.13990.6.camel@mindpipe>
-References: <20050716204029.53076898E7@sc8-sf-spam1.sourceforge.net>
-	 <1121604285.8251.10.camel@localhost>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: CVS compile issue
+Date: Sun, 17 Jul 2005 11:58:00 +0800
+Message-ID: <42D9D747.6090702@netvigator.com>
+References: <1121482166.12420.80.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1121604285.8251.10.camel@localhost>
+In-Reply-To: <1121482166.12420.80.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Geoff Beasley <songshop@bizmedia.com.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-07-17 at 12:44 +0000, Geoff Beasley wrote:
-> Is there something that needs to be edited
-> in /usr/include/alsa/conf.h ?
 
-Does this patch help?
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/pci/au88x0/au88x0.c?r1=1.6&r2=1.7&sortby=date&diff_format=u
+* fixed the DMA allocation.
+   pci_set_dma_mask() is called together with pci_set_consistent_dma_mask().
+   also clean up the double check of mask.
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/pci/au88x0/au88x0.c?r1=1.8&r2=1.9&sortby=date&diff_format=u
+* added snd_card_set_dev() macro.
+* sysfsfied more pci, isapnp and usb drivers.
 
---- /usr/include/alsa/conf.h~	2005-07-02 19:49:11.000000000 -0400
-+++ /usr/include/alsa/conf.h	2005-07-16 23:19:16.000000000 -0400
-@@ -173,19 +173,19 @@
- /* Names functions */
- 
- /**
-- * Device-name list element
-- */
--typedef struct snd_devname snd_devname_t;
--
--/**
-  * Device-name list element (definition)
-  */
- struct snd_devname {
- 	char *name;	/**< Device name string */
- 	char *comment;	/**< Comments */
--	snd_devname_t *next;	/**< Next pointer */
-+	struct snd_devname *next;	/**< Next pointer */
- };
- 
-+/**
-+ * Device-name list element
-+ */
-+typedef struct snd_devname snd_devname_t;
-+
- int snd_names_list(const char *iface, snd_devname_t **list);
- void snd_names_list_free(snd_devname_t *list);
- 
 
+These patches to alsa-driver (related to kernel 2.6) are missing when 
+the au88x0 merged into alsa-kernel.
+
+http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-kernel/pci/au88x0/au88x0.c?rev=1.18
+
+
+Lee Revell wrote:
+> Kernel is 2.6.12-RT-V0.7.51-28.
+> 
+>   CC [M]  /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o
+> In file included from /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.c:1:
+> /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c: In function 'snd_ac97_resume':
+> /smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:644: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
+> /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:2252: sorry, unimplemented: called from here
+> /smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:644: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
+> /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:2264: sorry, unimplemented: called from here
+> make[4]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o] Error 1
+> make[3]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97] Error 2
+> make[2]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci] Error 2
+> make[1]: *** [_module_/smb/rlrevell/cvs/alsa/alsa-driver] Error 2
+> make[1]: Leaving directory `/smb/rlrevell/kernel-source/linux-2.6.12-c3'
+> make: *** [compile] Error 2
+> 
 
 
 
