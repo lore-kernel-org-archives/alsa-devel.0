@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 10:25:59 +0200
-Message-ID: <47d81a0b9c3cd5476df5af55f9eb5173@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 10:29:22 +0200
+Message-ID: <6c8921ac9ebbfdbcbd1d71290211c800@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 262E719D
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 10:26:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B09D9149
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 10:29:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 10:25 CEST
+Last Modified:              07-17-2005 10:29 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,13 +50,6 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-
-----------------------------------------------------------------------
- Hetfield - 07-08-05 12:27 
-----------------------------------------------------------------------
-i think i configured that in a wrong way.
-
-but i don't want mono sound, that's why i didn't search a lot.
 
 ----------------------------------------------------------------------
  Hetfield - 07-17-05 10:25 
@@ -72,6 +65,11 @@ seems an endless loop.
 i waited some mins, nothing change.
 
 another issue with aoss so :(
+
+----------------------------------------------------------------------
+ rlrevell - 07-17-05 10:29 
+----------------------------------------------------------------------
+PortAudio can use ALSA too.  Otherwise it would not be very portable...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +92,7 @@ Date Modified  Username       Field                    Change
 07-08-05 12:16 tiwai          Note Added: 0005417                          
 07-08-05 12:27 Hetfield       Note Added: 0005418                          
 07-17-05 10:25 Hetfield       Note Added: 0005503                          
+07-17-05 10:29 rlrevell       Note Added: 0005504                          
 ======================================================================
 
 
