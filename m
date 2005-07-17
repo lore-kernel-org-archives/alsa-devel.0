@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 19:50:03 +0200
-Message-ID: <a901a41f2f4a201213f59ab255982426@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 20:21:19 +0200
+Message-ID: <2f7caa3aa082c546f441f70cfe0743b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BF861A3
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 19:50:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 508FA1A3
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 20:21:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 19:50 CEST
+Last Modified:              07-17-2005 20:21 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,22 +52,19 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-17-05 19:41 
+ rlrevell - 07-17-05 19:51 
 ----------------------------------------------------------------------
-What does "file /dev/dsp" tell you?
+OK, try to use strace to capture what happens when it tries to open
+/dev/dsp.
 
 ----------------------------------------------------------------------
- Hetfield - 07-17-05 19:50 
+ Hetfield - 07-17-05 20:21 
 ----------------------------------------------------------------------
-root@blight ~ # file /dev/dsp
-/dev/dsp: symbolic link to `sound/dsp'
-root@blight ~ # file /dev/s
-Display all 137 possibilities? (y or n)
-root@blight ~ # file /dev/sound/dsp
-/dev/sound/dsp: character special (14/3)
-root@blight ~ #              
+sorry, bu i already attached a log file.
 
-alsa 1.0.9 kernel 2.6.13-rc3
+check log.tar.gz
+
+what else do you need?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +93,8 @@ Date Modified  Username       Field                    Change
 07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
 07-17-05 19:41 rlrevell       Note Added: 0005508                          
 07-17-05 19:50 Hetfield       Note Added: 0005509                          
+07-17-05 19:51 rlrevell       Note Added: 0005510                          
+07-17-05 20:21 Hetfield       Note Added: 0005511                          
 ======================================================================
 
 
