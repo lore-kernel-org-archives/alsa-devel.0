@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 10:29:22 +0200
-Message-ID: <6c8921ac9ebbfdbcbd1d71290211c800@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 10:46:26 +0200
+Message-ID: <aec2ae9032838b0f0c6fad282caace0f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B09D9149
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 10:29:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4129D2
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 10:46:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 10:29 CEST
+Last Modified:              07-17-2005 10:46 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,24 +52,16 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 07-17-05 10:25 
-----------------------------------------------------------------------
-another problem found:
-
-kiax ( http://kiax.sf.net ), another voip client, doesn't work with aoss.
-it uses portaudio library ( oss support only).
-
-when i start with "aoss kiax" program starts, but show nothing, cpu usage
-is 100%.
-seems an endless loop.
-i waited some mins, nothing change.
-
-another issue with aoss so :(
-
-----------------------------------------------------------------------
  rlrevell - 07-17-05 10:29 
 ----------------------------------------------------------------------
 PortAudio can use ALSA too.  Otherwise it would not be very portable...
+
+----------------------------------------------------------------------
+ rlrevell - 07-17-05 10:46 
+----------------------------------------------------------------------
+Actually this might be useful, if it's the same problem affecting skype.
+
+What does strace -p PID show you, where PID is the kiax PID?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +85,7 @@ Date Modified  Username       Field                    Change
 07-08-05 12:27 Hetfield       Note Added: 0005418                          
 07-17-05 10:25 Hetfield       Note Added: 0005503                          
 07-17-05 10:29 rlrevell       Note Added: 0005504                          
+07-17-05 10:46 rlrevell       Note Added: 0005505                          
 ======================================================================
 
 
