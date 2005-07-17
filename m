@@ -1,14 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [ALSA - driver 0001025]: kernel panic when trying to load module
- snd-au8830
-Date: Sun, 17 Jul 2005 12:15:47 +0800
-Message-ID: <42D9DB73.7070400@netvigator.com>
-References: <2407912799486cb54fbd13ab25aa8c3d@bugtrack.alsa-project.org>	<42B02D7C.7040000@netvigator.com> <s5hekb3y9t2.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Sun, 17 Jul 2005 10:25:59 +0200
+Message-ID: <47d81a0b9c3cd5476df5af55f9eb5173@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hekb3y9t2.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 262E719D
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 10:26:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +18,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In Capture view, beside Red (LR Catpure) can be toogled on/off at Line,
-CD, Mic, Video, Phone, Aux, Mix and Mix Mono, it can also be toggled 
-on/off at the Capture Volume Control? ( another feature or bug )
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
+======================================================================
+Reported By:                Hetfield
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1224
+Category:                   PCI - ens1370
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.x
+======================================================================
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              07-17-2005 10:25 CEST
+======================================================================
+Summary:                    artsd-like style
+Description: 
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-According to page 42 of AC97 2.1 specification.
+that could be very important for example using skype voip and listening
+music at the same time.
+======================================================================
 
-Record Control Select Register (index 1A h)
-Use to select the record source independently for left and right.
+----------------------------------------------------------------------
+ Hetfield - 07-08-05 12:27 
+----------------------------------------------------------------------
+i think i configured that in a wrong way.
 
+but i don't want mono sound, that's why i didn't search a lot.
 
-Does it mean that the AC97 specification allow capture Left/Righ
-channels from different source ? (i.e. Right channel of Mic and Left
-channel of Aux )
+----------------------------------------------------------------------
+ Hetfield - 07-17-05 10:25 
+----------------------------------------------------------------------
+another problem found:
 
+kiax ( http://kiax.sf.net ), another voip client, doesn't work with aoss.
+it uses portaudio library ( oss support only).
 
-Takashi Iwai wrote:
-> At Wed, 15 Jun 2005 21:30:36 +0800,
-> Raymond wrote:
-> 
->>Alien wrote:
->>
->>>Op dinsdag 7 juni 2005 15:44, schreef Raymond:
->>>
->>>
->>>>From your png, it seem that you are not using the alsamixer in the
->>>>latest version of alsa-utils.
->>>
->>>
->>>since i'm using alsa CVS for driver, kernel and lib; i'll use utils 
->>>from CVS as well...
->>
->>It seem that there are bugs in alsamixer 1.0.9a ( even CVS Rev 1.88 )
->>
->>alsamixer -V capture
->>
->>1) The volume (Line,CD,Mic,Video,Home,Aux,Mix,Mix Mono) cannot be 
->>changed in view capture.
-> 
-> 
-> They have no "capture" volumes.
-> 
-> 
->>2) The Mic Select(Mic1,Mic2) and Mono Out(Mix,Mic) controls are missing 
->>in view capture.
-> 
-> 
-> It's a so-called feature :)
-> All enum controls belong to playback view, so far.
-> 
+when i start with "aoss kiax" program starts, but show nothing, cpu usage
+is 100%.
+seems an endless loop.
+i waited some mins, nothing change.
 
+another issue with aoss so :(
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
+07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
+07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
+07-02-05 21:47 pzad           Note Added: 0005361                          
+07-03-05 09:25 Hetfield       Note Added: 0005370                          
+07-03-05 14:09 pzad           Note Added: 0005376                          
+07-03-05 15:57 Hetfield       Note Added: 0005378                          
+07-04-05 11:49 pzad           File Added: aoss.patch                       
+07-04-05 11:53 pzad           Note Added: 0005384                          
+07-04-05 14:02 Hetfield       Note Added: 0005385                          
+07-08-05 12:16 tiwai          Note Added: 0005417                          
+07-08-05 12:27 Hetfield       Note Added: 0005418                          
+07-17-05 10:25 Hetfield       Note Added: 0005503                          
+======================================================================
 
 
 
