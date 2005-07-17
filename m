@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 23:28:23 +0200
-Message-ID: <c724b713aba31a4e0ec8bb8e766d6739@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 23:43:42 +0200
+Message-ID: <3f686150cb464f4928304ff7e01756d5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED54A1A6
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 23:28:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE2E41A6
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 23:43:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 23:28 CEST
+Last Modified:              07-17-2005 23:43 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,72 +50,6 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 07-17-05 22:21 
-----------------------------------------------------------------------
-Something (either in alsa-lib or the app) does not seem to be handling a
-timer correctly.
-
-After opening /dev/dsp, it tries to open some type of timer:
-
-open("/dev/snd/timer", O_RDONLY|O_NONBLOCK) = 9
-ioctl(9, 0x80045400, 0xbf822ecc)        = 0
-ioctl(9, TIOCSPGRP, 0xbf822ed0)         = 0
-ioctl(9, 0x80045400, 0xbf8232fc)        = 0
-
-Then the ioctl to start the timer returns -EBUSY:
-
-ioctl(9, SNDCTL_TMR_START or TCSETS, 0x82676e8) = -1 EBUSY (Device or
-resource busy)
-
-Then it does some more ioctls on the timer:
-
-ioctl(9, TIOCSTI, 0xbf8234d0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf8235f0)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, TIOCSTI, 0xbf823630)           = 0
-ioctl(9, 0x54a1, 0xb729aa08)            = 0
-read(9, "\0\0\0\0\0\0\0\0", 8)          = 8
-
-Then we get EAGAIN trying to read the timer, which causes it to give up
-and try /dev/dsp1, and so on.
-
-read(9, 0xbf8239c0, 8)                  = -1 EAGAIN (Resource temporarily
-unavailable)
-close(9)                                = 0
-
-But this also fails because it performs the exact same sequence of
-operations on the timer.
-
-I suspect that the return value of the ioctl to start the timer was not
-checked, so the app just assumes the timer was started.
-
-Of course it's also completely broken for the app to keep opening
-non-existent /dev/dsp* in a loop like that.
 
 ----------------------------------------------------------------------
  Hetfield - 07-17-05 23:28 
@@ -130,6 +64,22 @@ apart some fatal bugs (seg fault fixed in this thread) there seems to be
 some hidden little holes to fill.
 
 i'll be happy to test any patch or fix
+
+----------------------------------------------------------------------
+ rlrevell - 07-17-05 23:43 
+----------------------------------------------------------------------
+Well, it's not a bug-for-bug compatible emulation.  There are always areas
+in any API that are ambiguous or implementation dependent.  The fact that
+it works with another OSS implementation does not rule out an application
+bug.
+
+Most of the cases we have seen so far where aoss breaks something involve
+buggy apps, that just happen to work with OSS or the in kernel emulation. 
+They are just as likely to fail under a different OSS implementation.  For
+example skype assumes it gets 48KHz stereo, even though the stream is
+mono.  Although this particular case is due to a quirk of dmix, it would
+also fail if the hardware only supported 48Khz mono.  They just didn't
+bother to test it under an OSS implementation where this can happen.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -166,6 +116,7 @@ Date Modified  Username       Field                    Change
 07-17-05 21:23 Hetfield       Note Added: 0005513                          
 07-17-05 22:21 rlrevell       Note Added: 0005514                          
 07-17-05 23:28 Hetfield       Note Added: 0005515                          
+07-17-05 23:43 rlrevell       Note Added: 0005516                          
 ======================================================================
 
 
