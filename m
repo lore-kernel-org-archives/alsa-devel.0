@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000014]: Sound from internal speakers but not from headphones -- Acer272xv
-Date: Sun, 17 Jul 2005 13:18:24 +0200
-Message-ID: <c2036f88d6e2679184f67ecd6bd6106f@bugtrack.alsa-project.org>
+From: takayama@venusnetwoerk.cx
+Subject: =?iso-2022-jp?B?UmU6GyRCJD0kJiQkJCgkUBsoQg==?=
+Date: Sun, 17 Jul 2005 19:31:55 +0200 (MEST)
+Message-ID: <10545.7188598395$1121621640@news.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF27618E
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 13:18:24 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B29B81A3
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 19:31:56 +0200 (MEST)
+Received: from sxw549741-second854.fitjoy.system1.cc (pl747.nas932.k-tokyo.nttpc.ne.jp [202.229.208.235])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 2BE7E82809
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 19:31:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,122 +25,95 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+$B#Q#1!%:G6a3Z$7$$$3$H$,L5$$!#(B
+$B!!!!!!-!$O$$!!-"$$$$$((B
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14> 
-======================================================================
-Reported By:                -VoltagE-
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   14
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     confirmed
-Distribution:               Debian Sid updated
-Kernel Version:             2.4.24-ck1
-======================================================================
-Date Submitted:             01-29-2004 20:15 CET
-Last Modified:              07-17-2005 13:18 CEST
-======================================================================
-Summary:                    Sound from internal speakers but not from headphones
--- Acer272xv
-Description: 
-On my laptop (acer272xv) I can't use external output with my Creative 2.1,
-because I can't hear anything.
-I've tryied with other external speaker and with other releases of
-alsa-driver, but there's no difference.
+$B#Q#2!%<+J,$K<+?.$,L5$$!#(B
+$B!!!!!!-!$O$$!!-"$$$$$((B
+
+$B#Q#3!%F|$4$m$N@83h$KK~B-$7$F$$$J$$!#(B
+$B!!!!!!-!$O$$!!-"$$$$$(!!(B
+
+$B#Q#4!%J?K^$JKhF|$K!"B`6~$7$F$k!#(B
+$B!!!!!!-!$O$$!!-"$$$$$((B
+
+$B#Q#5!%=P2q$$$r5a$a$?%Q!<%F%#!<$K;22C$7$?$3$H$,$"$j$^$9$+!#(B
+$B!!!!!!-!$O$$!!-"$$$$$((B
+
+$B#Q#6!%=P2q$$7O%5%$%H$rMxMQ$7$?$3$H$,$"$j$^$9$+!#(B
+$B!!!!!!-!$O$$!!-"$$$$$((B
+
+$B#Q#7!%qY$5$l$?;v$,$"$k!#(B
+$B!!!!!!-!$O$$!!-"$$$$$((B
+
+$B0J>e$NCf$K!V-!$O$$!W$,#1$D$G$b8+$D$+$C$?J}$O2<5-$X$*?J$_2<$5$$!#(B
+
+$BFMA3$N%a!<%k$K6C$$$?$+$H;W$$$^$9$,!"(B
+VenusNetwork$B!Z%t%#!<%J%9!&%M%C%H%o!<%/![BeI=IYED$f$+$j$H?=$7$^$9!#(B
+$B?7$?$JL$Mh$r%5%]!<%H$9$k%/%i%V$r@_N)$7$F$*$j$^$9!#(B
+
+$B4JC1$J<+8J>R2p$r$5$;$FD:$-$^$9$H!"(B
+$B;d$O!"%"%a%j%+N13X(B $B5"9q8e!"(B $B30;q7O4k6H$K6PL3(B
+
+$B#2#4:P$G@$$K8@$&!V$M$k$H$s%Q!<%F%#!<!W7?%$%Y%s%H2q<R$KE>?&(B
+
+$BF12q<R$,#5G/8e=P2q$$7O%5%$%H$K7A$rJQ$($k$b$N$N!"(B
+$B<B:]$K=P2q$($k$^$G$,1s2s$j$G$"$k;v$K5?Ld$r;}$A$O$8$a!"(B
+$B=w@->R2p%/%i%V$NN)$A>e$2$K;j$C$F$*$j$^$9!#(B
+
+$B;d$,BN83$7$^$7$?!"<+$i$N7P83$r@8$+$7!"(B
+$B:#$^$G=P2q$($J$+$C$?Bt;3$NJ}!9$N%5%]!<%H$r9T$C$F$*$j$^$9!#(B
+
+$B;d$O!"<+$i$N<L??!&%W%m%U%#!<%k$r=P$7$F$$$^$9$N$G!"0l@Z13$O?=$7$^$;$s!#(B
+$BEv%/%i%V$O!"=w@-$r$4>R2p$9$k$KEv$?$C$F0l@Z$NNA6b$bD:$$$F$*$j$^$;$s!#(B
+$B$=$l$O!"=w@-2q0wMM$+$i$N$4M;;q$G$^$+$J$C$F$*$j$^$9$N$G$*5$7Z$K$4MxMQ2<$5$$!#(B
+
+$B$J$<$3$NMM$J%/%i%V$rN)$A>e$2$?$+$H?=$7$^$9$H!"(B
+$B;d$O3$30N13X$d!"MM!9$J;E;v$r9T$C$F$-$?$3$H$b$"$j!"(B
+$B8rN.$,I}9-$/!"8rM'4X78$,$H$F$bB?$/$"$j$^$9!#(B
+$BA0?&6HJA$N$;$$$+!"B?$/$N=w@-$+$i!H=P2q$$!I$NAjCL$,@d$($^$;$s!#(B
+
+$B$=$3$G!"<+$i%/%i%V$rN)$A>e$2$^$7$?!#(B
+
+$BEv%/%i%V$N=w@-2q0wMM$O!"%;%l%V$JJ}$bB?$/$$$i$C$7$c$$$^$7$F!"$*6b$r(B
+$B=P$7$F$^$G$bCK@-$HCN$j9g$$$?$$$H;W$C$F$$$kJ}$bB?!9$$$i$C$7$c$$$^$9!#(B
+
+$B??7u$K7k:'$r9M$($F$$$kJ}!"Nx?M$rC5$7$F$$$kJ}!"(B
+$BHkL)$G;I7c$r5a$a$F$$$kJ}$b?tB?$/$$$i$C$7$c$$$^$9!#(B
+
+$B@'Hs!"$3$N5!2q$K!";I7cE*$J@83h$r5a$a$F$_$^$;$s$+!#(B
 
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000664 ac97_quirk with SIS 7012 [ALC202] don't...
-======================================================================
+$B$=$l$G$O!"(B
+$B%"%s%1!<%H$N0UL#$b9~$a$^$7$F!"5$7Z$J5$;}$A$G2<5-$N<ALd$K$*Ez$(2<$5$$!#(B
 
-----------------------------------------------------------------------
- graf_eichbaum - 07-07-05 18:05 
-----------------------------------------------------------------------
-Hi all,
+$B#Q#1!%5.J}$N$*=;$^$$$b$7$/$O!"2q$$$?$$ETF;I\8)$r$*65$(2<$5$$!#(B
 
-I have an Acer Travelmate 273XC with the same Headphone problem when using
-Linux. Recently I re-installed my Windows XP and installed the Windows
-Driver for the SIS 7012 chipset. Suddenly I had the same problem as under
-Linux (no sound from external speakers, just internal speakers). I than
-took a look at the old audio driver, that is being offered by Acer. I then
-discovered, that this is a Realtek driver. So I used the current Realtek
-Windows Audio Driver which works just fine (even with headphones plugged
-in). So it seems, that the Acer notebooks do not have SIS Sound Chips
-built-in, but Realtek chips. No clue, if this information might help.
 
-----------------------------------------------------------------------
- jorge2 - 07-17-05 13:18 
-----------------------------------------------------------------------
-Ehm.. I think there's a little mistake :D 
-I've opened this issue many month ago with another username (jorge), but
-few days after account creation, I wasn't able to login with it (I don't
-know why), so I've created another one (jorge2).
-Anyway, no good news for this issue yet... :(
-Regards.
+$B#Q#2!%Ev%/%i%V$r$4MxMQ$5$l$k$K$"$?$C$F$N4uK>(B
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-04 20:15 user74         New Issue                                    
-01-29-04 20:15 user74         File Added: details.txt                      
-01-30-04 12:44 tiwai          Note Added: 0000049                          
-01-30-04 17:56 sparkyva       Note Added: 0000063                          
-01-30-04 17:56 sparkyva       Issue Monitored: sparkyva                    
-01-30-04 20:41 sparkyva       Note Added: 0000070                          
-01-30-04 22:01 jorge2         Note Added: 0000071                          
-02-02-04 19:37 jorge2         Note Added: 0000119                          
-02-04-04 20:00 tiwai          Note Added: 0000165                          
-02-04-04 20:01 tiwai          Note Added: 0000166                          
-02-04-04 20:52 jorge2         Note Added: 0000169                          
-02-04-04 20:52 jorge2         Note Added: 0000170                          
-02-04-04 20:53 jorge2         Note Deleted: 0000169                        
-02-05-04 13:52 matsgora       Note Added: 0000181                          
-02-05-04 14:05 dale           Note Added: 0000182                          
-02-26-04 13:07 rocco          Note Added: 0000347                          
-02-26-04 18:16 matsgora       Note Added: 0000358                          
-02-26-04 18:20 tiwai          Note Added: 0000359                          
-03-01-04 10:31 dale           Note Added: 0000401                          
-03-05-04 19:49 tiwai          Note Added: 0000513                          
-03-05-04 20:37 jorge2         Note Added: 0000515                          
-03-06-04 18:20 matsgora       Note Added: 0000520                          
-03-07-04 16:30 dale           Note Added: 0000524                          
-03-09-04 15:15 tiwai          Note Added: 0000547                          
-03-09-04 18:12 matsgora       Note Added: 0000551                          
-06-08-04 20:25 jorge2         Note Added: 0001296                          
-06-15-04 15:00 mcbridematt    Note Added: 0001308                          
-11-22-04 18:48 tiwai          Relationship added       has duplicate 0000664
-02-02-05 14:25 dale           Note Added: 0003488                          
-02-04-05 13:18 tiwai          Note Added: 0003504                          
-02-04-05 13:19 tiwai          File Added: ac97-alc-fix.diff                    
-02-04-05 18:03 jorge2         Note Added: 0003512                          
-02-05-05 13:27 jorge2         Issue Monitored: jorge2                      
-02-21-05 09:16 dale           Note Added: 0003678                          
-02-23-05 09:54 dale           Issue Monitored: dale                        
-06-14-05 21:20 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-06-20-05 06:48 wenton         Note Added: 0005093                          
-06-22-05 19:50 dale           Note Added: 0005145                          
-06-24-05 08:54 wenton         Note Added: 0005204                          
-06-28-05 10:50 dale           Note Added: 0005294                          
-07-07-05 18:05 graf_eichbaum  Note Added: 0005400                          
-07-16-05 16:55 jdthood        Reporter                 user74 => -VoltagE- 
-07-16-05 16:55 jdthood        Status                   new => confirmed    
-07-16-05 16:55 jdthood        version                  1.0.2 => 1.0.8      
-07-16-05 16:55 jdthood        Summary                  No sound from external
-speakers (laptop) => Sound from internal speakers but not from headphones --
-Acer272xv
-07-16-05 16:55 jdthood        Description Updated                          
-07-16-05 19:27 dale           Issue End Monitor: dale                      
-07-16-05 19:28 dale           Issue Monitored: dale                        
-07-17-05 13:18 jorge2         Note Added: 0005507                          
-======================================================================
+$B!!!!!!-!!T??LLL\$J8r:]!U(B
+$B!!!!!!!!!!7k:'Aj<j!&Nx?M$rC5$9!#(B
+
+$B!!!!!!-"!T%5%]!<%H!U(B
+$B!!!!!!!!!!$*6b$KM>M5$N$"$k%;%l%V$NJ}$+$i$N%5%]!<%H!#(B
+
+$B!!!!!!-#!T3d$j@Z$j8r:]!U(B
+$B!!!!!!!!!!HkL)87<i$G0)$&!#;I7cE*$J8r:]!#(B
+
+$B-$!T#4#0:P0J>e$N8r:]!U(B
+$B!!!!!!!!!!#4#0:P0J>e$+$i;O$^$k8r:]!#(B
+
+$B%a!<%kJV?.$G>e5-$N<ALd$K$*Ez$(D:$1$l$P!"$3$A$i$G4uK>$K9g$C$?=w@-$r(B
+$B$4>R2p:9$7>e$2$^$9!#(B
+
+$B$3$N%a!<%k$O0JA0$4O"Mm$N$"$C$?3'MM$K$4JV?.$7$F$*$j$^$9$,!"K|$,0l(B
+$B8+3P$($,$J$$!"$^$?$O$3$N%a!<%k$r?.$8$l$J$$!#IT?3$K;W$&$H$$$&J}$O!"(B
+$B$=$N$^$^GK4~$5$l$k$+!VG[?.ITMW!W$H$*=q$-$K$J$j!"$4JV?.D:$-$^$9MM(B
+$B$*4j$$CW$7$^$9!#(B
+
+$B!X(BVenusNetwork$B!YBeI=(B $BIYED$f$+$j(B 
+
 
 
 
