@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 10:46:26 +0200
-Message-ID: <aec2ae9032838b0f0c6fad282caace0f@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 11:10:43 +0200
+Message-ID: <85c1e60a19b110ab178e6d1ca97e4b5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4129D2
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 10:46:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A493191
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 11:10:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 10:46 CEST
+Last Modified:              07-17-2005 11:10 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,16 +52,37 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-17-05 10:29 
-----------------------------------------------------------------------
-PortAudio can use ALSA too.  Otherwise it would not be very portable...
-
-----------------------------------------------------------------------
  rlrevell - 07-17-05 10:46 
 ----------------------------------------------------------------------
 Actually this might be useful, if it's the same problem affecting skype.
 
 What does strace -p PID show you, where PID is the kiax PID?
+
+----------------------------------------------------------------------
+ Hetfield - 07-17-05 11:10 
+----------------------------------------------------------------------
+rlrevell, for alsa/portaudio:
+http://sourceforge.net/forum/forum.php?thread_id=1276778&forum_id=448020
+
+i attached a long log. please check.
+
+however:
+cat log|grep dsp
+stat64("/dev/dsp697", 0xbfbcb3a0)       = -1 ENOENT (No such file or
+directory)
+stat64("/dev/dsp698", 0xbfbcb3a0)       = -1 ENOENT (No such file or
+directory)
+stat64("/dev/dsp699", 0xbfbcb3a0)       = -1 ENOENT (No such file or
+directory)
+stat64("/dev/dsp700", 0xbfbcb3a0)       = -1 ENOENT (No such file or
+directory)
+stat64("/dev/dsp701", 0xbfbcb3a0)       = -1 ENOENT (No such file or
+directory)
+
+
+it's abvoius it keeps searching for free dsp.
+(in log you'll find it searches in proc too...)
+even if dsp is unused.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +107,7 @@ Date Modified  Username       Field                    Change
 07-17-05 10:25 Hetfield       Note Added: 0005503                          
 07-17-05 10:29 rlrevell       Note Added: 0005504                          
 07-17-05 10:46 rlrevell       Note Added: 0005505                          
+07-17-05 11:10 Hetfield       Note Added: 0005506                          
 ======================================================================
 
 
