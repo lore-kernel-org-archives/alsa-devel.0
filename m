@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 20:21:19 +0200
-Message-ID: <2f7caa3aa082c546f441f70cfe0743b0@bugtrack.alsa-project.org>
+Date: Sun, 17 Jul 2005 21:14:35 +0200
+Message-ID: <37290e18893628f2edf3060bc5b97b5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 508FA1A3
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 20:21:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3AABB19C
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 21:14:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 20:21 CEST
+Last Modified:              07-17-2005 21:14 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,12 +52,6 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-17-05 19:51 
-----------------------------------------------------------------------
-OK, try to use strace to capture what happens when it tries to open
-/dev/dsp.
-
-----------------------------------------------------------------------
  Hetfield - 07-17-05 20:21 
 ----------------------------------------------------------------------
 sorry, bu i already attached a log file.
@@ -65,6 +59,13 @@ sorry, bu i already attached a log file.
 check log.tar.gz
 
 what else do you need?
+
+----------------------------------------------------------------------
+ rlrevell - 07-17-05 21:14 
+----------------------------------------------------------------------
+That log starts at /dev/dsp697.  Presumably it tried to open 0 through 696
+before this.  So you need to get an strace of when the process first
+starts up.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +96,7 @@ Date Modified  Username       Field                    Change
 07-17-05 19:50 Hetfield       Note Added: 0005509                          
 07-17-05 19:51 rlrevell       Note Added: 0005510                          
 07-17-05 20:21 Hetfield       Note Added: 0005511                          
+07-17-05 21:14 rlrevell       Note Added: 0005512                          
 ======================================================================
 
 
