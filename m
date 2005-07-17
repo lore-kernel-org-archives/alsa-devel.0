@@ -1,13 +1,13 @@
 From: Raymond <rayau@netvigator.com>
-Subject: Re: CVS compile issue
-Date: Sun, 17 Jul 2005 11:58:00 +0800
-Message-ID: <42D9D747.6090702@netvigator.com>
-References: <1121482166.12420.80.camel@mindpipe>
+Subject: Re: AC97 codec odd behaviour (STAC9708/11) / Aureal Card IS SUPPORTED!
+Date: Sun, 17 Jul 2005 12:12:05 +0800
+Message-ID: <42D9DA95.3050002@netvigator.com>
+References: <1055454710.889.30.camel@localhost>	<3EEFF6A5.6060102@boosthardware.com> <s5hptlb4kg3.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1121482166.12420.80.camel@mindpipe>
+In-Reply-To: <s5hptlb4kg3.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,41 +18,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
-
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/pci/au88x0/au88x0.c?r1=1.6&r2=1.7&sortby=date&diff_format=u
-* fixed the DMA allocation.
-   pci_set_dma_mask() is called together with pci_set_consistent_dma_mask().
-   also clean up the double check of mask.
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/pci/au88x0/au88x0.c?r1=1.8&r2=1.9&sortby=date&diff_format=u
-* added snd_card_set_dev() macro.
-* sysfsfied more pci, isapnp and usb drivers.
-
-
-These patches to alsa-driver (related to kernel 2.6) are missing when 
-the au88x0 merged into alsa-kernel.
-
-http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-kernel/pci/au88x0/au88x0.c?rev=1.18
-
-
-Lee Revell wrote:
-> Kernel is 2.6.12-RT-V0.7.51-28.
+Takashi Iwai wrote:
+> At 12 Jun 2003 17:51:50 -0400,
+> Manuel Jander wrote:
 > 
->   CC [M]  /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o
-> In file included from /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.c:1:
-> /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c: In function 'snd_ac97_resume':
-> /smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:644: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
-> /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:2252: sorry, unimplemented: called from here
-> /smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:644: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
-> /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:2264: sorry, unimplemented: called from here
-> make[4]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o] Error 1
-> make[3]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97] Error 2
-> make[2]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci] Error 2
-> make[1]: *** [_module_/smb/rlrevell/cvs/alsa/alsa-driver] Error 2
-> make[1]: Leaving directory `/smb/rlrevell/kernel-source/linux-2.6.12-c3'
-> make: *** [compile] Error 2
+>>Hi everyone,
+>>
+>>I'm facing some odd things with a Aureal MX300 with a
+>>AC97 codec. For some reason the AC97 interface doesnt
+>>set the EAPD (external amp enable) bit correctly, and i have 
+>>to set it explicitly after calling the ac97  mixer initializer.
+>>
+>>Maybe, that the AC97 codec write function actually implemented
+>>for the Aureal cards "misses" some writes, but i just want to be sure
+>>if this bit works for other cards with a STAC9708/11 or similar
+>>codec that need this bit by default, or if i really need to set it
+>>myself ??
 > 
+> 
+> i recommend you to do this in the card driver level.
+> 
+> the use of EAPD is dependent upon the devices.  also, some uses EAPD
+> pin for different purposes...
+> 
+> 
+> 
+According to datasheet of STAC9708, the general purpose register (0x20)
+has 3D, MIX, MS, LPBK bits.
+
+Is "POP" a undocumented feature of STAC9708 ?
+
+Simple mixer control 'PCM Out Path & Mute',0
+   Capabilities: enum
+   Items: 'pre 3D' 'post 3D'
+   Item0: 'post 3D'
+
+0-0/0: SigmaTel STAC9708,11
+
+Capabilities     : -headphone out-
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : post 3D        <-------------------------
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 SDAC DSA=0
+Extended status  : SDAC
+
+numid=43,iface=MIXER,name='PCM Out Path & Mute'
+   ; type=ENUMERATED,access=rw---,values=1,items=2
+   ; Item #0 'pre 3D'
+   ; Item #1 'post 3D'
+   : values=0
+
+
+STAC9708 on other sound cards such as Soundblaster 4.1
+
+http://thread.gmane.org/gmane.linux.alsa.devel/4818
+
 
 
 
