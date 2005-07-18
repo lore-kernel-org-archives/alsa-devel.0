@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Mon, 18 Jul 2005 03:33:24 +0200
-Message-ID: <bb01a39425fe18e085895661dd5fb254@bugtrack.alsa-project.org>
+Date: Mon, 18 Jul 2005 06:04:09 +0200
+Message-ID: <548016bc5b96582fe3087652ca7c979f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFBB81AA
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 03:33:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A693A1B8
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 06:04:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-18-2005 03:33 CEST
+Last Modified:              07-18-2005 06:04 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -52,22 +52,6 @@ music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-17-05 23:43 
-----------------------------------------------------------------------
-Well, it's not a bug-for-bug compatible emulation.  There are always areas
-in any API that are ambiguous or implementation dependent.  The fact that
-it works with another OSS implementation does not rule out an application
-bug.
-
-Most of the cases we have seen so far where aoss breaks something involve
-buggy apps, that just happen to work with OSS or the in kernel emulation. 
-They are just as likely to fail under a different OSS implementation.  For
-example skype assumes it gets 48KHz stereo, even though the stream is
-mono.  Although this particular case is due to a quirk of dmix, it would
-also fail if the hardware only supported 48Khz mono.  They just didn't
-bother to test it under an OSS implementation where this can happen.
-
-----------------------------------------------------------------------
  rlrevell - 07-18-05 03:33 
 ----------------------------------------------------------------------
 That being said, after looking at the code a bit this is almost certainly a
@@ -75,6 +59,18 @@ dmix bug.
 
 It would be nice to know what all those ioctls are.  Any idea why strace
 can't resolve them?
+
+----------------------------------------------------------------------
+ rlrevell - 07-18-05 06:04 
+----------------------------------------------------------------------
+I was not able to reproduce the bug; even when I had enabled dmix, the
+emu10k1 driver allocated separate voices for esd and kiax.
+
+But, I did find that the sound is terribly choppy with aoss, which did not
+happen with the in kernel OSS emulation.
+
+Also, I had to apply the alsa-oss patches from this bug report, otherwise
+kiax crashed on startup.  These should be applied to CVS ASAP.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +109,7 @@ Date Modified  Username       Field                    Change
 07-17-05 23:28 Hetfield       Note Added: 0005515                          
 07-17-05 23:43 rlrevell       Note Added: 0005516                          
 07-18-05 03:33 rlrevell       Note Added: 0005517                          
+07-18-05 06:04 rlrevell       Note Added: 0005518                          
 ======================================================================
 
 
