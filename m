@@ -1,16 +1,9 @@
-From: SUJA JAMES <sujamoljames@yahoo.com>
-Subject: GPL or LGPL
-Date: Mon, 18 Jul 2005 06:42:54 -0700 (PDT)
-Message-ID: <20050718134254.12319.qmail@web30707.mail.mud.yahoo.com>
-References: <42D8EADE.4080205@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: =?GB2312?B?wO7J+g==?= <aonaeken@tom.com>
+Subject: =?GB2312?B?uNDQu8T6ttRlzajN+LXE1qez1qOh?=
+Date: Mon, 18 Jul 2005 22:09:00 +0800
+Message-ID: <E1DuWIk-00058i-7C@sc8-sf-mx1.sourceforge.net>
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web30707.mail.mud.yahoo.com (web30707.mail.mud.yahoo.com [68.142.200.140])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4166A18C
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 15:42:56 +0200 (MEST)
-In-Reply-To: <42D8EADE.4080205@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,29 +13,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
-I have one questain on ALSA license.
-Whether it comes under GPL or LGPL. All the ALSA
-module has MODULE_LICENSE("GPL") property.
-
-I plan to write an ALSA driver and I need to keep my
-hardware (DSP)communication/details as properitry.For
-that I am making the DSP part a libarary and publish
-that LIB in GPL.
-
-Is this possible?
-
-Thanks,
-Suja
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around=20
-http://mail.yahoo.com=20
+感谢您对e通网的支持！                                              
+祝工作顺利！ 
+ 
+                企业e化  始于e通网
+ ===============================================  
+深圳市奥纳科技有限公司   
+渠道支持：梁小姐  QQ:30531139 309791171
+Email:info@aonae.com
+-------------------------------------------------
+ 电话(Tel)：0755-83729232 技术支持：李生  
+ 传真(Fax)：0755-83729232
+ 公司网址:http://www.aonae.com
 
 
 -------------------------------------------------------
