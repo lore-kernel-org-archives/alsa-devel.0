@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Mon, 18 Jul 2005 06:04:09 +0200
-Message-ID: <548016bc5b96582fe3087652ca7c979f@bugtrack.alsa-project.org>
+Date: Mon, 18 Jul 2005 07:33:48 +0200
+Message-ID: <319acf0f30b3bffc549d915b79027275@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A693A1B8
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 06:04:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48F041BC
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 07:33:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-18-2005 06:04 CEST
+Last Modified:              07-18-2005 07:33 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,15 +50,6 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 07-18-05 03:33 
-----------------------------------------------------------------------
-That being said, after looking at the code a bit this is almost certainly a
-dmix bug.
-
-It would be nice to know what all those ioctls are.  Any idea why strace
-can't resolve them?
 
 ----------------------------------------------------------------------
  rlrevell - 07-18-05 06:04 
@@ -71,6 +62,27 @@ happen with the in kernel OSS emulation.
 
 Also, I had to apply the alsa-oss patches from this bug report, otherwise
 kiax crashed on startup.  These should be applied to CVS ASAP.
+
+----------------------------------------------------------------------
+ rlrevell - 07-18-05 07:33 
+----------------------------------------------------------------------
+Maybe this is related (from the dmix docs).  Do you have an .asoundrc or
+/etc/asound.conf?
+
+For using the dmix plugin for OSS emulation device, you have to set
+the period and the buffer sizes in power of two.  For example,
+\code
+pcm.dmixoss {
+        type dmix
+        ipc_key 321456  # any unique value
+        ipc_key_add_uid true
+        slave {
+                pcm "hw:0"
+                period_time 0
+                period_size 1024  # must be power of 2
+                buffer_size 8192  # ditto
+        }
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +122,7 @@ Date Modified  Username       Field                    Change
 07-17-05 23:43 rlrevell       Note Added: 0005516                          
 07-18-05 03:33 rlrevell       Note Added: 0005517                          
 07-18-05 06:04 rlrevell       Note Added: 0005518                          
+07-18-05 07:33 rlrevell       Note Added: 0005519                          
 ======================================================================
 
 
