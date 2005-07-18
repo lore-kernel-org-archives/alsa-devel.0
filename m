@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 17 Jul 2005 23:43:42 +0200
-Message-ID: <3f686150cb464f4928304ff7e01756d5@bugtrack.alsa-project.org>
+Date: Mon, 18 Jul 2005 03:33:24 +0200
+Message-ID: <bb01a39425fe18e085895661dd5fb254@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE2E41A6
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2005 23:43:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFBB81AA
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 03:33:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-17-2005 23:43 CEST
+Last Modified:              07-18-2005 03:33 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,20 +50,6 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-
-----------------------------------------------------------------------
- Hetfield - 07-17-05 23:28 
-----------------------------------------------------------------------
-ok ok, but maybe you missed my point:
-why it work perfectly with plain oss and not with aoss?
-
-that's the same issue for skype..aoss is not a FULLY transparent bridge
-between apps and driver translation.
-
-apart some fatal bugs (seg fault fixed in this thread) there seems to be
-some hidden little holes to fill.
-
-i'll be happy to test any patch or fix
 
 ----------------------------------------------------------------------
  rlrevell - 07-17-05 23:43 
@@ -80,6 +66,15 @@ example skype assumes it gets 48KHz stereo, even though the stream is
 mono.  Although this particular case is due to a quirk of dmix, it would
 also fail if the hardware only supported 48Khz mono.  They just didn't
 bother to test it under an OSS implementation where this can happen.
+
+----------------------------------------------------------------------
+ rlrevell - 07-18-05 03:33 
+----------------------------------------------------------------------
+That being said, after looking at the code a bit this is almost certainly a
+dmix bug.
+
+It would be nice to know what all those ioctls are.  Any idea why strace
+can't resolve them?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -117,6 +112,7 @@ Date Modified  Username       Field                    Change
 07-17-05 22:21 rlrevell       Note Added: 0005514                          
 07-17-05 23:28 Hetfield       Note Added: 0005515                          
 07-17-05 23:43 rlrevell       Note Added: 0005516                          
+07-18-05 03:33 rlrevell       Note Added: 0005517                          
 ======================================================================
 
 
