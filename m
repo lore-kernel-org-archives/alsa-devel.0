@@ -1,9 +1,14 @@
-From: =?GB2312?B?wO7J+g==?= <aonaeken@tom.com>
-Subject: =?GB2312?B?uNDQu8T6ttRlzajN+LXE1qez1qOh?=
-Date: Mon, 18 Jul 2005 22:09:00 +0800
-Message-ID: <E1DuWIk-00058i-7C@sc8-sf-mx1.sourceforge.net>
-Content-Type: text/plain;charset="GB2312"
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001264]: Mixer defaults to mute when computer reboots.
+Date: Mon, 18 Jul 2005 16:26:33 +0200
+Message-ID: <2ec90029d73e29d967a4f6026fbde916@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAED31C6
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 16:26:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,21 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-感谢您对e通网的支持！                                              
-祝工作顺利！ 
- 
-                企业e化  始于e通网
- ===============================================  
-深圳市奥纳科技有限公司   
-渠道支持：梁小姐  QQ:30531139 309791171
-Email:info@aonae.com
--------------------------------------------------
- 电话(Tel)：0755-83729232 技术支持：李生  
- 传真(Fax)：0755-83729232
- 公司网址:http://www.aonae.com
+
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1264> 
+======================================================================
+Reported By:                92b16vx
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1264
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     closed
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4
+Resolution:                 not an issue
+Fixed in Version:           
+======================================================================
+Date Submitted:             07-16-2005 22:40 CEST
+Last Modified:              07-18-2005 16:26 CEST
+======================================================================
+Summary:                    Mixer defaults to mute when computer reboots.
+Description: 
+When computer reboots, Alsamixer is reset to mute. Fix is opening the mixer
+through command line, and unmuting, and turning up volumes.
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 07-18-05 16:26 
+----------------------------------------------------------------------
+This is working as intended.
+
+Use alsactl to save mixer levels before you shut down and
+to restore them after you reboot.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-05 22:40 92b16vx        New Issue                                    
+07-16-05 22:40 92b16vx        Distribution              => Fedora Core 4   
+07-16-05 22:40 92b16vx        Kernel Version            => 2.6.11-1.1369_FC4
+07-18-05 16:26 jdthood        Note Added: 0005521                          
+07-18-05 16:26 jdthood        Status                   new => closed       
+07-18-05 16:26 jdthood        Resolution               open => not an issue
+======================================================================
+
+
 
 
 -------------------------------------------------------
