@@ -1,7 +1,7 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] echoaudio, fix driver name overflow.
-Date: Tue, 19 Jul 2005 00:16:48 +0200
-Message-ID: <20050719001648.54e266af.pochini@shiny.it>
+Subject: [PATCH] echomixer, update driver name
+Date: Tue, 19 Jul 2005 00:18:44 +0200
+Message-ID: <20050719001844.63635a65.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -19,24 +19,22 @@ To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-- Driver name is only 16 bytes long. This patch fixes a string overflow in
-the driver of some cards.
+- Updates echomixer according to the new driver name.
 
 
 Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
---- alsa-driver/pci/echoaudio/echoaudio.c__orig	Mon Jul 18 23:49:12 2005
-+++ alsa-driver/pci/echoaudio/echoaudio.c	Mon Jul 18 23:50:00 2005
-@@ -1878,7 +1878,7 @@
- 		return err;
- 	}
- 
--	strcpy(card->driver, "Echoaudio " ECHOCARD_NAME);
-+	strcpy(card->driver, "Echo_" ECHOCARD_NAME);
- 	strcpy(card->shortname, chip->card_name);
- 
- 	dsp = "56301";
-
+--- alsa-tools/echomixer/echomixer.c__orig	Mon Jul 18 23:58:19 2005
++++ alsa-tools/echomixer/echomixer.c	Mon Jul 18 23:59:08 2005
+@@ -1889,7 +1889,7 @@
+       continue;
+     }
+     if ((err=snd_ctl_card_info(ctlhandle, hw_info))>=0) {
+-      if (!strncmp(snd_ctl_card_info_get_driver(hw_info), "Echoaudio", 9)) {
++      if (!strncmp(snd_ctl_card_info_get_driver(hw_info), "Echo_", 5)) {
+         strncpy(card, hwname, 7);
+         hwname[7]=0;
+         strncpy(cardname, snd_ctl_card_info_get_name(hw_info), 31);
 
 
 --
