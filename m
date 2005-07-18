@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001264]: Mixer defaults to mute when computer reboots.
-Date: Mon, 18 Jul 2005 16:26:33 +0200
-Message-ID: <2ec90029d73e29d967a4f6026fbde916@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001262]: Sound-related /dev entries disappear after each reboot
+Date: Mon, 18 Jul 2005 20:19:41 +0200
+Message-ID: <f99715efeb15c3e157ae3117252f7103@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAED31C6
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 16:26:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3E7B1C6
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 20:19:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1264> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1262> 
 ======================================================================
-Reported By:                92b16vx
+Reported By:                loungelizard
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1264
+Issue ID:                   1262
 Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.6.12.2
 ======================================================================
-Date Submitted:             07-16-2005 22:40 CEST
-Last Modified:              07-18-2005 16:26 CEST
+Date Submitted:             07-16-2005 18:16 CEST
+Last Modified:              07-18-2005 20:19 CEST
 ======================================================================
-Summary:                    Mixer defaults to mute when computer reboots.
+Summary:                    Sound-related /dev entries disappear after each
+reboot
 Description: 
-When computer reboots, Alsamixer is reset to mute. Fix is opening the mixer
-through command line, and unmuting, and turning up volumes.
+/dev/snd and other sound-related entries in /dev (created by snddevices)
+disappear after each reboot, so I must run snddevices again and again.
+With kernel 2.4.31 everything is OK, but I need kernel 2.6.12.2.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 07-18-05 16:26 
+ Henne - 07-18-05 20:19 
 ----------------------------------------------------------------------
-This is working as intended.
-
-Use alsactl to save mixer levels before you shut down and
-to restore them after you reboot.
+Maybe you have DEVFS_FS enabled?
+Reconfigure the kernel with DEVFS_FS disabled, install it and look what
+happens.
+DEVFS_FS will be removed from the kernel in near future.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-05 22:40 92b16vx        New Issue                                    
-07-16-05 22:40 92b16vx        Distribution              => Fedora Core 4   
-07-16-05 22:40 92b16vx        Kernel Version            => 2.6.11-1.1369_FC4
-07-18-05 16:26 jdthood        Note Added: 0005521                          
-07-18-05 16:26 jdthood        Status                   new => closed       
-07-18-05 16:26 jdthood        Resolution               open => not an issue
+07-16-05 18:16 loungelizard   New Issue                                    
+07-16-05 18:16 loungelizard   Distribution              => Slackware       
+07-16-05 18:16 loungelizard   Kernel Version            => 2.6.12.2        
+07-18-05 20:19 Henne          Note Added: 0005522                          
 ======================================================================
 
 
