@@ -1,11 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] echomixer, update driver name
-Date: Tue, 19 Jul 2005 00:18:44 +0200
-Message-ID: <20050719001844.63635a65.pochini@shiny.it>
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: GPL or LGPL
+Date: Mon, 18 Jul 2005 18:05:53 -0500
+Message-ID: <20050718230553.GD15158@dbz.icequake.net>
+References: <42D8EADE.4080205@gmx.de> <20050718134254.12319.qmail@web30707.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20050718134254.12319.qmail@web30707.mail.mud.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,30 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-- Updates echomixer according to the new driver name.
+On Mon, Jul 18, 2005 at 06:42:54AM -0700, SUJA JAMES wrote:
+> Hi All,
+> I have one questain on ALSA license.
+> Whether it comes under GPL or LGPL. All the ALSA
+> module has MODULE_LICENSE("GPL") property.
+> 
+> I plan to write an ALSA driver and I need to keep my
+> hardware (DSP)communication/details as properitry.For
+> that I am making the DSP part a libarary and publish
+> that LIB in GPL.
 
+This doesn't make any sense.  How would you both keep your DSP details
+proprietary *and* put them in a GPL library?  The result would be
+undistributable.  No code that does not satisfy the requirements of the
+GPL can be included in the ALSA driver that runs on the host PC, and
+that would include any code for which the source is not available.
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+The best thing to do, if for some reason you can't put the DSP code in a
+ROM on the card, and you can't release the DSP source, is to publish a
+binary image of the DSP program and use the kernel firmware loader
+(request_firmware() and friends) to load it at runtime.  There are
+several ALSA drivers which already do this (and their firmwares are
+included in the alsa-firmware package).  Note that this is still useless
+if you do not include a license with your binary firmware image granting
+full redistribution rights, so please do that.
 
---- alsa-tools/echomixer/echomixer.c__orig	Mon Jul 18 23:58:19 2005
-+++ alsa-tools/echomixer/echomixer.c	Mon Jul 18 23:59:08 2005
-@@ -1889,7 +1889,7 @@
-       continue;
-     }
-     if ((err=snd_ctl_card_info(ctlhandle, hw_info))>=0) {
--      if (!strncmp(snd_ctl_card_info_get_driver(hw_info), "Echoaudio", 9)) {
-+      if (!strncmp(snd_ctl_card_info_get_driver(hw_info), "Echo_", 5)) {
-         strncpy(card, hwname, 7);
-         hwname[7]=0;
-         strncpy(cardname, snd_ctl_card_info_get_name(hw_info), 31);
-
-
---
-Giuliano.
+-- 
+Ryan Underwood, <nemesis@icequake.net>
 
 
 -------------------------------------------------------
