@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001262]: Sound-related /dev entries disappear after each reboot
-Date: Mon, 18 Jul 2005 20:41:02 +0200
-Message-ID: <0ca186b9ac58c7ff4421af917e0f0221@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Mon, 18 Jul 2005 22:08:40 +0200
+Message-ID: <55ffd060b0bb422af7531baba70e76c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BAB8BB
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 20:41:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEB0F1BF
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 22:08:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,104 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1262> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
-Reported By:                loungelizard
+Reported By:                Hetfield
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1262
-Category:                   1_OTHERS
+Issue ID:                   1224
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.6.12.2
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             07-16-2005 18:16 CEST
-Last Modified:              07-18-2005 20:41 CEST
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              07-18-2005 22:08 CEST
 ======================================================================
-Summary:                    Sound-related /dev entries disappear after each
-reboot
+Summary:                    artsd-like style
 Description: 
-/dev/snd and other sound-related entries in /dev (created by snddevices)
-disappear after each reboot, so I must run snddevices again and again.
-With kernel 2.4.31 everything is OK, but I need kernel 2.6.12.2.
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
+
+that could be very important for example using skype voip and listening
+music at the same time.
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 07-18-05 20:19 
+ Hetfield - 07-18-05 09:23 
 ----------------------------------------------------------------------
-Maybe you have DEVFS_FS enabled?
-Reconfigure the kernel with DEVFS_FS disabled, install it and look what
-happens.
-DEVFS_FS will be removed from the kernel in near future.
+you have hardware mixing, so no problem for you.
+
+i'll attach my .asoundrc file, but i copied it from some howtos, so i
+guess it's clean
 
 ----------------------------------------------------------------------
- jdthood - 07-18-05 20:41 
+ rlrevell - 07-18-05 22:08 
 ----------------------------------------------------------------------
-Ensure that ALSA modules are loaded on reboot.
+I cannot reproduce the problem as aoss + dmix does not use a timer on my
+system, due to hardware mixing being present.  It actually seems to work
+(the choppiness was due to running under gdb), but for some reason it
+always gets 8000Hz for the sample rate, even if I comment it out of the
+sapleRates table, and set "rate 48000" in dmix.conf.
 
-You are probably using udev but it is not configured correctly.
+Try running with ALSA_OSS_DEBUG=1 and post the output.
+
+Also uncomment these lines and recompile to enable debug output from
+kiax:
+
+kiax-0.8.4/lib/portaudio/pa_common/pa_lib.c~:#define DBUG(x)  /* PRINT(x)
+*/
+kiax-0.8.4/lib/unixfuncs.c~://#define DBUG(...) fprintf(stderr,
+__VA_ARGS__)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-05 18:16 loungelizard   New Issue                                    
-07-16-05 18:16 loungelizard   Distribution              => Slackware       
-07-16-05 18:16 loungelizard   Kernel Version            => 2.6.12.2        
-07-18-05 20:19 Henne          Note Added: 0005522                          
-07-18-05 20:41 jdthood        Note Added: 0005523                          
-07-18-05 20:41 jdthood        Status                   new => closed       
-07-18-05 20:41 jdthood        Resolution               open => not an issue
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
+07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
+07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
+07-02-05 21:47 pzad           Note Added: 0005361                          
+07-03-05 09:25 Hetfield       Note Added: 0005370                          
+07-03-05 14:09 pzad           Note Added: 0005376                          
+07-03-05 15:57 Hetfield       Note Added: 0005378                          
+07-04-05 11:49 pzad           File Added: aoss.patch                       
+07-04-05 11:53 pzad           Note Added: 0005384                          
+07-04-05 14:02 Hetfield       Note Added: 0005385                          
+07-08-05 12:16 tiwai          Note Added: 0005417                          
+07-08-05 12:27 Hetfield       Note Added: 0005418                          
+07-17-05 10:25 Hetfield       Note Added: 0005503                          
+07-17-05 10:29 rlrevell       Note Added: 0005504                          
+07-17-05 10:46 rlrevell       Note Added: 0005505                          
+07-17-05 11:10 Hetfield       Note Added: 0005506                          
+07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
+07-17-05 19:41 rlrevell       Note Added: 0005508                          
+07-17-05 19:50 Hetfield       Note Added: 0005509                          
+07-17-05 19:51 rlrevell       Note Added: 0005510                          
+07-17-05 20:21 Hetfield       Note Added: 0005511                          
+07-17-05 21:14 rlrevell       Note Added: 0005512                          
+07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
+07-17-05 21:22 Hetfield       File Added: log2                             
+07-17-05 21:23 Hetfield       Note Added: 0005513                          
+07-17-05 22:21 rlrevell       Note Added: 0005514                          
+07-17-05 23:28 Hetfield       Note Added: 0005515                          
+07-17-05 23:43 rlrevell       Note Added: 0005516                          
+07-18-05 03:33 rlrevell       Note Added: 0005517                          
+07-18-05 06:04 rlrevell       Note Added: 0005518                          
+07-18-05 07:33 rlrevell       Note Added: 0005519                          
+07-18-05 09:23 Hetfield       Note Added: 0005520                          
+07-18-05 09:24 Hetfield       File Added: asoundrc                         
+07-18-05 22:08 rlrevell       Note Added: 0005524                          
 ======================================================================
 
 
