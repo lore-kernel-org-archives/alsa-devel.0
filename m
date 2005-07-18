@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001262]: Sound-related /dev entries disappear after each reboot
-Date: Mon, 18 Jul 2005 20:19:41 +0200
-Message-ID: <f99715efeb15c3e157ae3117252f7103@bugtrack.alsa-project.org>
+Date: Mon, 18 Jul 2005 20:41:02 +0200
+Message-ID: <0ca186b9ac58c7ff4421af917e0f0221@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3E7B1C6
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 20:19:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BAB8BB
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 20:41:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1262> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
 Distribution:               Slackware
 Kernel Version:             2.6.12.2
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-16-2005 18:16 CEST
-Last Modified:              07-18-2005 20:19 CEST
+Last Modified:              07-18-2005 20:41 CEST
 ======================================================================
 Summary:                    Sound-related /dev entries disappear after each
 reboot
@@ -58,6 +60,13 @@ Reconfigure the kernel with DEVFS_FS disabled, install it and look what
 happens.
 DEVFS_FS will be removed from the kernel in near future.
 
+----------------------------------------------------------------------
+ jdthood - 07-18-05 20:41 
+----------------------------------------------------------------------
+Ensure that ALSA modules are loaded on reboot.
+
+You are probably using udev but it is not configured correctly.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -65,6 +74,9 @@ Date Modified  Username       Field                    Change
 07-16-05 18:16 loungelizard   Distribution              => Slackware       
 07-16-05 18:16 loungelizard   Kernel Version            => 2.6.12.2        
 07-18-05 20:19 Henne          Note Added: 0005522                          
+07-18-05 20:41 jdthood        Note Added: 0005523                          
+07-18-05 20:41 jdthood        Status                   new => closed       
+07-18-05 20:41 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
