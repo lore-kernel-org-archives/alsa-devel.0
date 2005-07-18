@@ -1,12 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to use alsa API in kernel space?
-Date: Mon, 18 Jul 2005 15:32:55 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507181532290.27956-100000@studcom.urz.uni-halle.de>
-References: <1121461373.cc20dfa69147c@webmail.ece.unm.edu>
+From: SUJA JAMES <sujamoljames@yahoo.com>
+Subject: GPL or LGPL
+Date: Mon, 18 Jul 2005 06:42:54 -0700 (PDT)
+Message-ID: <20050718134254.12319.qmail@web30707.mail.mud.yahoo.com>
+References: <42D8EADE.4080205@gmx.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1121461373.cc20dfa69147c@webmail.ece.unm.edu>
+Received: from web30707.mail.mud.yahoo.com (web30707.mail.mud.yahoo.com [68.142.200.140])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4166A18C
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2005 15:42:56 +0200 (MEST)
+In-Reply-To: <42D8EADE.4080205@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,19 +20,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: cundongyang@ece.unm.edu
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-cundongyang@ece.unm.edu wrote:
-> how could I call alsa-API in kernel space?
+Hi All,
+I have one questain on ALSA license.
+Whether it comes under GPL or LGPL. All the ALSA
+module has MODULE_LICENSE("GPL") property.
 
-Have a look at how the OSS emulation uses the native ALSA code.
+I plan to write an ALSA driver and I need to keep my
+hardware (DSP)communication/details as properitry.For
+that I am making the DSP part a libarary and publish
+that LIB in GPL.
+
+Is this possible?
+
+Thanks,
+Suja
 
 
-HTH
-Clemens
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
 
 -------------------------------------------------------
