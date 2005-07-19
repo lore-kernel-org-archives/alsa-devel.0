@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001257]: 'Sample format non available' when using jack-plugin
-Date: Tue, 19 Jul 2005 17:21:41 +0200
-Message-ID: <df978814494f2fc9f195652d03cc111e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001251]: emagic a62m: maybe bug: arecord doesn't record anything, jack+jackrec work
+Date: Tue, 19 Jul 2005 17:32:49 +0200
+Message-ID: <bf012a341d2a9f73e452390cd5383833@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E5B41D5
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2005 17:21:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B4591AA
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2005 17:32:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,195 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1257> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1251> 
 ======================================================================
 Reported By:                Robert_Schulze
 Assigned To:                
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1257
-Category:                   PCM - jack
+Project:                    ALSA - utils
+Issue ID:                   1251
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             07-14-2005 17:50 CEST
-Last Modified:              07-19-2005 17:21 CEST
+Date Submitted:             07-11-2005 14:39 CEST
+Last Modified:              07-19-2005 17:32 CEST
 ======================================================================
-Summary:                    'Sample format non available' when using jack-plugin
+Summary:                    emagic a62m: maybe bug: arecord doesn't record
+anything, jack+jackrec work
 Description: 
-1. Start Jackd:
+When I want to record something from my emi a62m audiointerface, arecord
+doesn't work:
 
-/usr/local/jack/bin/jackd -vd alsa -d emi -S
+"arecord -D emi -f cd > test.wav"
+when issuing "aplay -vvv test.wav", the histogram shows up a permanent
+peak of 36% during the whole file, no sound hearable.
 
-2. Start arecord:
+Starting "jackd -d alsa -D emi" and issuing "jackrec -f test.wav -d 5
+alsa_pcm:capture_1 alsa_pcm:capture_2" does record a valid file.
 
-arecord -D "emijack12" -t wav -f S16_LE -c 2 -r 48000 > test.wav
+.asoundrc:
 
-gives: "arecord: set_params:882: Sample format non available"
-
-arecord -D "emijack12" > test.wav
-
-gives the same.
-
-my .asoundr:
-
-pcm.emijack12
-    {
-    type jack
-    playback_ports
-        {
-        0 alsa_pcm:playback_1
-        1 alsa_pcm:playback_2
-        }
-    capture_ports
-        {
-        0 alsa_pcm:capture_1
-        1 alsa_pcm:capture_2
-        }
-    }
+pcm.emi 
+ {
+ type hw
+ card 1 
+ }
 
 ctl.emi
-    {
-    type hw
-    card 1
-    }
+ {
+ type hw
+ card 1
+ }
 
-pcm.emi
-    {
-    type hw
-    card 1
-    }
-
-emi is a Emagic a62m USB-Audiointerface
-
-
+Card 0 is a solo1.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-14-05 18:03 
+ Clemens Ladisch - 07-14-05 18:04 
 ----------------------------------------------------------------------
-Does it work with "arecord -D plug:emijack12 -f dat -vv test.wav"?  If so,
-what is the sample format of the Jack plugin that it outputs?
+Do the following work?
+arecord -D emi -f S16_LE -c 2 -r 48 > test_2_16_48.wav
+arecord -D emi -f S24_3LE -c 2 -r 48 > test_2_24_48.wav
+
+Could you post the output of the xxd for the other non-working files?
 
 ----------------------------------------------------------------------
- Robert_Schulze - 07-19-05 17:21 
+ Robert_Schulze - 07-19-05 17:32 
 ----------------------------------------------------------------------
-Yes that does indeed. But I'm unable to kill the task (arecord) with
-ctrl+c, only a killall -KILL arecord works...
+xxd -g1 test_2_24_98.wav:
 
-The format of the ALSA <-> JACK PCM I/O PLugin is FLOAT_LE.
-Do I have to convert to INT in my .asoundrc?
+0000000: 52 49 46 46 a0 3b 48 00 57 41 56 45 66 6d 74 20  RIFF.;H.WAVEfmt
+0000010: 10 00 00 00 01 00 02 00 00 77 01 00 00 ca 08 00 
+.........w......
+0000020: 06 00 18 00 64 61 74 61 7c 3b 48 00 5f 5f 5f 5f 
+....data|;H.____
+0000030: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000040: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000050: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000060: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000070: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000080: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000090: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+
+xxd -g1 test_6_16_48.wav:
+
+0000000: 52 49 46 46 1c 7f 10 00 57 41 56 45 66 6d 74 20  RIFF....WAVEfmt
+0000010: 10 00 00 00 01 00 06 00 80 bb 00 00 00 ca 08 00 
+................
+0000020: 0c 00 10 00 64 61 74 61 f8 7e 10 00 5f 5f 5f 5f 
+....data.~..____
+0000030: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000040: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000050: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000060: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000070: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000080: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000090: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+
+xxd -g1 test_6_24_48.wav:
+0000000: 52 49 46 46 20 38 80 00 57 41 56 45 66 6d 74 20  RIFF 8..WAVEfmt
+0000010: 10 00 00 00 01 00 06 00 80 bb 00 00 00 2f 0d 00 
+............./..
+0000020: 12 00 18 00 64 61 74 61 fc 37 80 00 5f 5f 5f 5f 
+....data.7..____
+0000030: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000040: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000050: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000060: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000070: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000080: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+0000090: 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 
+________________
+
+The other two don't also work:
+
+xxd -g1 test_2_16_48.wav:
+
+0000000: 52 49 46 46 24 00 13 00 57 41 56 45 66 6d 74 20  RIFF$...WAVEfmt
+0000010: 10 00 00 00 01 00 02 00 80 bb 00 00 00 ee 02 00 
+................
+0000020: 04 00 10 00 64 61 74 61 00 00 13 00 2f 2f 2f 2f 
+....data....////
+0000030: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000040: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000050: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000060: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000070: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000080: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000090: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+
+xxd -g1 test_2_24_48.wav:
+
+0000000: 52 49 46 46 ac 7e 17 00 57 41 56 45 66 6d 74 20  RIFF.~..WAVEfmt
+0000010: 10 00 00 00 01 00 02 00 80 bb 00 00 00 65 04 00 
+.............e..
+0000020: 06 00 18 00 64 61 74 61 88 7e 17 00 2f 2f 2f 2f 
+....data.~..////
+0000030: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000040: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000050: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000060: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000070: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000080: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+0000090: 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 2f 
+////////////////
+
+
+I noticed one more thing:
+
+If I call:
+> arecord -D emi -f cd | tee test.wav | aplay -D emi
+the file "test.wav" contains valid recording data!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-14-05 17:50 Robert_Schulze New Issue                                    
-07-14-05 18:03 Clemens LadischNote Added: 0005477                          
-07-19-05 17:21 Robert_Schulze Note Added: 0005528                          
+07-11-05 14:39 Robert_Schulze New Issue                                    
+07-11-05 16:20 Clemens LadischNote Added: 0005448                          
+07-12-05 11:57 Robert_Schulze Note Added: 0005452                          
+07-12-05 12:52 Clemens LadischNote Added: 0005453                          
+07-12-05 17:29 Robert_Schulze Note Added: 0005456                          
+07-14-05 11:02 Clemens LadischNote Added: 0005469                          
+07-14-05 11:06 Robert_Schulze Note Added: 0005470                          
+07-14-05 17:06 Robert_Schulze Note Added: 0005476                          
+07-14-05 18:04 Clemens LadischNote Added: 0005478                          
+07-19-05 17:32 Robert_Schulze Note Added: 0005529                          
 ======================================================================
 
 
