@@ -1,10 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH] AC97 bus interface for ad-hoc drivers
-Date: Tue, 19 Jul 2005 13:20:24 +0100
-Message-ID: <1121775624.14604.14.camel@cearnarfon>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0001234]: ESI Miditerminal M4U / M8U fully supported
+Date: Tue, 19 Jul 2005 15:39:32 +0200
+Message-ID: <302cf09a45ca0a8be79912c0ab082c84@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-lfbar7NFta+QW/R8Z4zK"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CB421C3
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2005 15:39:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,118 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Bill Gatliff <bgat@billgatliff.com>, Nicolas Pitre <nico@cam.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-lfbar7NFta+QW/R8Z4zK
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1234> 
+======================================================================
+Reported By:                metasymbol
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   1234
+Category:                   soundcard matrix
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     closed
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             07-06-2005 10:04 CEST
+Last Modified:              07-19-2005 15:39 CEST
+======================================================================
+Summary:                    ESI Miditerminal M4U / M8U fully supported
+Description: 
+These mididevices are fully supported as device compilant usb.
 
-This patch adds support for ad-hoc AC97 device drivers (e.g WM97xx and
-UCB touchscreen drivers) and was originally posted to the list by
-Nicolas Pitre as an RFC. 
+Please make a mark for 
 
-Changes from RFC version :-
+ESI Miditerminal M4U
+ESI Miditerminal M8U
 
-  o Now matches codec name within codec group.
-  o Added ac97_dev_release() to stop kernel complaining about no release
-method for device.
+in the ALSA database.
+======================================================================
 
-Liam
-
-Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Signed-off-by: Nicolas Pitre <nico@cam.org>
-
-
---=-lfbar7NFta+QW/R8Z4zK
-Content-Disposition: attachment; filename=ac97-bus.diff
-Content-Type: text/x-patch; name=ac97-bus.diff; charset=UTF-8
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQvYWM5N19jb2RlYy5oIGIvaW5jbHVkZS9zb3VuZC9h
-Yzk3X2NvZGVjLmgNCi0tLSBhL2luY2x1ZGUvc291bmQvYWM5N19jb2RlYy5oDQorKysgYi9pbmNs
-dWRlL3NvdW5kL2FjOTdfY29kZWMuaA0KQEAgLTI2LDYgKzI2LDcgQEANCiAgKi8NCiANCiAjaW5j
-bHVkZSA8bGludXgvYml0b3BzLmg+DQorI2luY2x1ZGUgPGxpbnV4L2RldmljZS5oPg0KICNpbmNs
-dWRlICJwY20uaCINCiAjaW5jbHVkZSAiY29udHJvbC5oIg0KICNpbmNsdWRlICJpbmZvLmgiDQpA
-QCAtNTIwLDYgKzUyMSw3IEBAIHN0cnVjdCBfc25kX2FjOTcgew0KIAkvKiBqYWNrLXNoYXJpbmcg
-aW5mbyAqLw0KIAl1bnNpZ25lZCBjaGFyIGluZGVwX3N1cnJvdW5kOw0KIAl1bnNpZ25lZCBjaGFy
-IGNoYW5uZWxfbW9kZTsNCisJc3RydWN0IGRldmljZSBkZXY7DQogfTsNCiANCiAvKiBjb25kaXRp
-b25zICovDQpAQCAtNTk5LDQgKzYwMSw4IEBAIHN0cnVjdCBhYzk3X2VudW0gew0KIAl1bnNpZ25l
-ZCBzaG9ydCBtYXNrOw0KIAljb25zdCBjaGFyICoqdGV4dHM7DQogfTsNCisNCisvKiBhZCBob2Mg
-QUM5NyBkZXZpY2UgZHJpdmVyIGFjY2VzcyAqLw0KK2V4dGVybiBzdHJ1Y3QgYnVzX3R5cGUgYWM5
-N19idXNfdHlwZTsNCisNCiAjZW5kaWYgLyogX19TT1VORF9BQzk3X0NPREVDX0ggKi8NCmRpZmYg
-LS1naXQgYS9zb3VuZC9wY2kvYWM5Ny9NYWtlZmlsZSBiL3NvdW5kL3BjaS9hYzk3L01ha2VmaWxl
-DQotLS0gYS9zb3VuZC9wY2kvYWM5Ny9NYWtlZmlsZQ0KKysrIGIvc291bmQvcGNpL2FjOTcvTWFr
-ZWZpbGUNCkBAIC0xMiw3ICsxMiw3IEBAIGVuZGlmDQogc25kLWFrNDUzMS1jb2RlYy1vYmpzIDo9
-IGFrNDUzMV9jb2RlYy5vDQogDQogIyBUb3BsZXZlbCBNb2R1bGUgRGVwZW5kZW5jeQ0KLW9iai0k
-KENPTkZJR19TTkRfQUM5N19DT0RFQykgKz0gc25kLWFjOTctY29kZWMubw0KK29iai0kKENPTkZJ
-R19TTkRfQUM5N19DT0RFQykgKz0gc25kLWFjOTctY29kZWMubyBhYzk3X2J1cy5vDQogb2JqLSQo
-Q09ORklHX1NORF9FTlMxMzcwKSArPSBzbmQtYWs0NTMxLWNvZGVjLm8NCiANCiBvYmotbSA6PSAk
-KHNvcnQgJChvYmotbSkpDQpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2FjOTcvYWM5N19idXMuYyBi
-L3NvdW5kL3BjaS9hYzk3L2FjOTdfYnVzLmMNCm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQotLS0gL2Rl
-di9udWxsDQorKysgYi9zb3VuZC9wY2kvYWM5Ny9hYzk3X2J1cy5jDQpAQCAtMCwwICsxLDgzIEBA
-DQorLyoNCisgKiBMaW51eCBkcml2ZXIgbW9kZWwgQUM5NyBidXMgaW50ZXJmYWNlDQorICoNCisg
-KiBBdXRob3I6CU5pY29sYXMgUGl0cmUNCisgKiBDcmVhdGVkOglKYW4gMTQsIDIwMDUNCisgKiBD
-b3B5cmlnaHQ6CShDKSBNb250YVZpc3RhIFNvZnR3YXJlIEluYy4NCisgKg0KKyAqIFRoaXMgcHJv
-Z3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9k
-aWZ5DQorICogaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGlj
-ZW5zZSBhcyBwdWJsaXNoZWQgYnkNCisgKiB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBl
-aXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcg0KKyAqIChhdCB5b3VyIG9wdGlvbikg
-YW55IGxhdGVyIHZlcnNpb24uDQorICovDQorDQorI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0K
-KyNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQorI2luY2x1ZGUgPGxpbnV4L2RldmljZS5oPg0KKyNp
-bmNsdWRlIDxsaW51eC9zdHJpbmcuaD4NCisNCisjaW5jbHVkZSA8c291bmQvZHJpdmVyLmg+DQor
-I2luY2x1ZGUgPHNvdW5kL2NvcmUuaD4NCisjaW5jbHVkZSA8c291bmQvYWM5N19jb2RlYy5oPg0K
-Kw0KKy8qDQorICogQ29kZWMgZmFtaWxpZXMgaGF2ZSBuYW1lcyBzZXBlcmF0ZWQgYnkgY29tbWFz
-LCBzbyB3ZSBzZWFyY2ggZm9yIGFuDQorICogaW5kaXZpZHVhbCBjb2RlYyBuYW1lIHdpdGhpbiB0
-aGUgZmFtaWx5IHN0cmluZy4gDQorICovDQorc3RhdGljIGludCBhYzk3X2J1c19tYXRjaChzdHJ1
-Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2VfZHJpdmVyICpkcnYpDQorew0KKwlyZXR1cm4g
-KHN0cnN0cihkZXYtPmJ1c19pZCwgZHJ2LT5uYW1lKSAhPSBOVUxMKTsNCit9DQorDQorc3RhdGlj
-IGludCBhYzk3X2J1c19zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldiwgcG1fbWVzc2FnZV90IHN0
-YXRlKQ0KK3sNCisJaW50IHJldCA9IDA7DQorDQorCWlmIChkZXYtPmRyaXZlciAmJiBkZXYtPmRy
-aXZlci0+c3VzcGVuZCkgew0KKwkJcmV0ID0gZGV2LT5kcml2ZXItPnN1c3BlbmQoZGV2LCBzdGF0
-ZSwgU1VTUEVORF9ESVNBQkxFKTsNCisJCWlmIChyZXQgPT0gMCkNCisJCQlyZXQgPSBkZXYtPmRy
-aXZlci0+c3VzcGVuZChkZXYsIHN0YXRlLCBTVVNQRU5EX1NBVkVfU1RBVEUpOw0KKwkJaWYgKHJl
-dCA9PSAwKQ0KKwkJCXJldCA9IGRldi0+ZHJpdmVyLT5zdXNwZW5kKGRldiwgc3RhdGUsIFNVU1BF
-TkRfUE9XRVJfRE9XTik7DQorCX0NCisJcmV0dXJuIHJldDsNCit9DQorDQorc3RhdGljIGludCBh
-Yzk3X2J1c19yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQ0KK3sNCisJaW50IHJldCA9IDA7DQor
-DQorCWlmIChkZXYtPmRyaXZlciAmJiBkZXYtPmRyaXZlci0+cmVzdW1lKSB7DQorCQlyZXQgPSBk
-ZXYtPmRyaXZlci0+cmVzdW1lKGRldiwgUkVTVU1FX1BPV0VSX09OKTsNCisJCWlmIChyZXQgPT0g
-MCkNCisJCQlyZXQgPSBkZXYtPmRyaXZlci0+cmVzdW1lKGRldiwgUkVTVU1FX1JFU1RPUkVfU1RB
-VEUpOw0KKwkJaWYgKHJldCA9PSAwKQ0KKwkJCXJldCA9IGRldi0+ZHJpdmVyLT5yZXN1bWUoZGV2
-LCBSRVNVTUVfRU5BQkxFKTsNCisJfQ0KKwlyZXR1cm4gcmV0Ow0KK30NCisNCitzdHJ1Y3QgYnVz
-X3R5cGUgYWM5N19idXNfdHlwZSA9IHsNCisJLm5hbWUJCT0gImFjOTciLA0KKwkubWF0Y2gJCT0g
-YWM5N19idXNfbWF0Y2gsDQorCS5zdXNwZW5kCT0gYWM5N19idXNfc3VzcGVuZCwNCisJLnJlc3Vt
-ZQkJPSBhYzk3X2J1c19yZXN1bWUsDQorfTsNCisNCitzdGF0aWMgaW50IF9faW5pdCBhYzk3X2J1
-c19pbml0KHZvaWQpDQorew0KKwlyZXR1cm4gYnVzX3JlZ2lzdGVyKCZhYzk3X2J1c190eXBlKTsN
-Cit9DQorDQorc3Vic3lzX2luaXRjYWxsKGFjOTdfYnVzX2luaXQpOw0KKw0KK3N0YXRpYyB2b2lk
-IF9fZXhpdCBhYzk3X2J1c19leGl0KHZvaWQpDQorew0KKwlidXNfdW5yZWdpc3RlcigmYWM5N19i
-dXNfdHlwZSk7DQorfQ0KKw0KK21vZHVsZV9leGl0KGFjOTdfYnVzX2V4aXQpOw0KKw0KK0VYUE9S
-VF9TWU1CT0woYWM5N19idXNfdHlwZSk7DQorDQorTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOw0KZGlm
-ZiAtLWdpdCBhL3NvdW5kL3BjaS9hYzk3L2FjOTdfY29kZWMuYyBiL3NvdW5kL3BjaS9hYzk3L2Fj
-OTdfY29kZWMuYw0KLS0tIGEvc291bmQvcGNpL2FjOTcvYWM5N19jb2RlYy5jDQorKysgYi9zb3Vu
-ZC9wY2kvYWM5Ny9hYzk3X2NvZGVjLmMNCkBAIC05OTIsNiArOTkyLDggQEAgc3RhdGljIGludCBz
-bmRfYWM5N19mcmVlKGFjOTdfdCAqYWM5NykNCiB7DQogCWlmIChhYzk3KSB7DQogCQlzbmRfYWM5
-N19wcm9jX2RvbmUoYWM5Nyk7DQorCQlpZiAoYWM5Ny0+ZGV2LmJ1cykNCisJCQlkZXZpY2VfdW5y
-ZWdpc3RlcigmYWM5Ny0+ZGV2KTsNCiAJCWlmIChhYzk3LT5idXMpIHsNCiAJCQlhYzk3LT5idXMt
-PmNvZGVjW2FjOTctPm51bV0gPSBOVUxMOw0KIAkJCWlmIChhYzk3LT5idXMtPnNoYXJlZF90eXBl
-KSB7DQpAQCAtMTAwNyw2ICsxMDA5LDExIEBAIHN0YXRpYyBpbnQgc25kX2FjOTdfZnJlZShhYzk3
-X3QgKmFjOTcpDQogCXJldHVybiAwOw0KIH0NCiANCisvKiBTdG9wcyBubyBkZXYgcmVsZWFzZSB3
-YXJuaW5nICovDQorc3RhdGljIHZvaWQgYWM5N19kZXZfcmVsZWFzZShzdHJ1Y3QgZGV2aWNlICog
-ZGV2KQ0KK3sNCit9DQorDQogc3RhdGljIGludCBzbmRfYWM5N19kZXZfZnJlZShzbmRfZGV2aWNl
-X3QgKmRldmljZSkNCiB7DQogCWFjOTdfdCAqYWM5NyA9IGRldmljZS0+ZGV2aWNlX2RhdGE7DQpA
-QCAtMjExNyw2ICsyMTI0LDE0IEBAIGludCBzbmRfYWM5N19taXhlcihhYzk3X2J1c190ICpidXMs
-IGFjOTcNCiAJCXNuZF9hYzk3X2ZyZWUoYWM5Nyk7DQogCQlyZXR1cm4gZXJyOw0KIAl9DQorDQor
-CWFjOTctPmRldi5idXMgPSAmYWM5N19idXNfdHlwZTsNCisJYWM5Ny0+ZGV2LnBhcmVudCA9IGFj
-OTctPmJ1cy0+Y2FyZC0+ZGV2Ow0KKwlhYzk3LT5kZXYucGxhdGZvcm1fZGF0YSA9IGFjOTc7DQor
-CWFjOTctPmRldi5yZWxlYXNlID0gYWM5N19kZXZfcmVsZWFzZTsNCisJc3RybmNweShhYzk3LT5k
-ZXYuYnVzX2lkLCBzbmRfYWM5N19nZXRfc2hvcnRfbmFtZShhYzk3KSwgQlVTX0lEX1NJWkUpOw0K
-KwlpZiAoKGVyciA9IGRldmljZV9yZWdpc3RlcigmYWM5Ny0+ZGV2KSkgPCAwKQ0KKwkJcmV0dXJu
-IGVycjsNCiAJKnJhYzk3ID0gYWM5NzsNCiANCiAJaWYgKGJ1cy0+c2hhcmVkX3R5cGUpIHsNCg==
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-06-05 10:04 metasymbol     New Issue                                    
+07-06-05 10:04 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
+07-06-05 10:04 metasymbol     Kernel Version            => 2.6.xx          
+07-06-05 10:19 Clemens LadischProject                  ALSA - driver => ALSA -
+WWW server
+07-06-05 10:20 Clemens LadischAssigned To              Clemens Ladisch => perex
+07-06-05 10:20 Clemens LadischCategory                 USB - usb-audio =>
+soundcard matrix
+07-19-05 15:39 Clemens LadischAssigned To              perex => Clemens Ladisch
+07-19-05 15:39 Clemens LadischStatus                   assigned => closed  
+07-19-05 15:39 Clemens LadischResolution               open => fixed       
+======================================================================
 
 
---=-lfbar7NFta+QW/R8Z4zK--
 
 
 -------------------------------------------------------
