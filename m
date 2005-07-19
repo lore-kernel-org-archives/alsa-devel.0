@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001234]: ESI Miditerminal M4U / M8U fully supported
-Date: Tue, 19 Jul 2005 15:39:32 +0200
-Message-ID: <302cf09a45ca0a8be79912c0ab082c84@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001120]: Add "Lexicon Omega Desktop Studio" to supported list
+Date: Tue, 19 Jul 2005 15:48:17 +0200
+Message-ID: <02b627969d96cb75e1c4a647215e43b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CB421C3
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2005 15:39:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 202391C3
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2005 15:48:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1234> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1120> 
 ======================================================================
-Reported By:                metasymbol
+Reported By:                snickell
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   1234
+Issue ID:                   1120
 Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   minor
@@ -39,35 +39,24 @@ Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-06-2005 10:04 CEST
-Last Modified:              07-19-2005 15:39 CEST
+Date Submitted:             05-20-2005 20:52 CEST
+Last Modified:              07-19-2005 15:48 CEST
 ======================================================================
-Summary:                    ESI Miditerminal M4U / M8U fully supported
+Summary:                    Add "Lexicon Omega Desktop Studio" to supported list
 Description: 
-These mididevices are fully supported as device compilant usb.
-
-Please make a mark for 
-
-ESI Miditerminal M4U
-ESI Miditerminal M8U
-
-in the ALSA database.
+The Lexicon "Omega Desktop Studio", an external USB audio device, works
+using snd-usb-audio without any modification. As far as I can tell all
+features are supported at the full sampling rate (works great with Ardour,
+etc).
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-05 10:04 metasymbol     New Issue                                    
-07-06-05 10:04 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
-07-06-05 10:04 metasymbol     Kernel Version            => 2.6.xx          
-07-06-05 10:19 Clemens LadischProject                  ALSA - driver => ALSA -
-WWW server
-07-06-05 10:20 Clemens LadischAssigned To              Clemens Ladisch => perex
-07-06-05 10:20 Clemens LadischCategory                 USB - usb-audio =>
-soundcard matrix
-07-19-05 15:39 Clemens LadischAssigned To              perex => Clemens Ladisch
-07-19-05 15:39 Clemens LadischStatus                   assigned => closed  
-07-19-05 15:39 Clemens LadischResolution               open => fixed       
+05-20-05 20:52 snickell       New Issue                                    
+07-19-05 15:48 Clemens LadischAssigned To               => Clemens Ladisch 
+07-19-05 15:48 Clemens LadischStatus                   new => closed       
+07-19-05 15:48 Clemens LadischResolution               open => fixed       
 ======================================================================
 
 
