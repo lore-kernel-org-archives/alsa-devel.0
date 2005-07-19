@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001266]: Does not detect my sound card as valid
-Date: Tue, 19 Jul 2005 06:37:35 +0200
-Message-ID: <c056931895ff9a77c7f074911d1c3592@bugtrack.alsa-project.org>
+Date: Tue, 19 Jul 2005 06:39:24 +0200
+Message-ID: <d385f41eb09e70f94d6e61de00868d22@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A4A51C2
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2005 06:37:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F9D1148
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2005 06:39:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1266> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-19-2005 06:37 CEST
-Last Modified:              07-19-2005 06:37 CEST
+Last Modified:              07-19-2005 06:39 CEST
 ======================================================================
 Summary:                    Does not detect my sound card as valid
 Description: 
@@ -62,11 +62,23 @@ lsmod shows the module loaded and using all the normal stuff.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ darins - 07-19-05 06:39 
+----------------------------------------------------------------------
+uname -a output:
+
+Linux coruscant 2.6.11-1.27_FC3
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue May 17 20:27:37 EDT
+2005 i686
+athlon i386 GNU/Linux
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-19-05 06:37 darins         New Issue                                    
 07-19-05 06:37 darins         Distribution              => Fedora Core 3   
+07-19-05 06:38 darins         Issue Monitored: darins                      
+07-19-05 06:39 darins         Note Added: 0005525                          
 ======================================================================
 
 
