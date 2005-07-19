@@ -1,11 +1,14 @@
-From: Mr.Lucky SILLA <silla_lu@yahoo.com>
-Subject: Sir,Good day from Mr. Lucky
-Date: Tue, 19 Jul 2005 23:26:49 +0200
-Message-ID: <E1Dv1Sk-0002c7-NH@sc8-sf-mx2.sourceforge.net>
-Reply-To: silla_lu@hotmail.com
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Wed, 20 Jul 2005 01:37:56 +0200
+Message-ID: <308a76b81e0defef0bdc3f5fdaf9d7b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="4be1fd93-f128-4fa1-9b27-d829702bfa95"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 731C2183
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2005 01:37:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,44 +18,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-This is a multi-part message in MIME format
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+======================================================================
+Reported By:                vedran
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1083
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
+======================================================================
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              07-20-2005 01:37 CEST
+======================================================================
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Description: 
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
 
---4be1fd93-f128-4fa1-9b27-d829702bfa95
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
 
-Dear Sir, 
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
 
-Compliment of the day.
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
 
-I'm sorry to disturb you, I got your contact while searching for investment =
-assistance. I am Mr. Lucky SILLA, a Sudanese.I am the only son of Cap. =
-Ibrahim SILLA. a rebel leader of the Revolutionary United Front of Sudan, who =
-died,at battle field on 21st May 2004 during the United Nation peace keeping =
-intervention at the in Darfur western Sudan last year.
- 
-Before my father death, he deposited an amount of seven million two hundred =
-thousand American dollars(U.S.$6.500,000)in a private finance firm in =
-Senegal. 
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
 
-My reason of contacting is that i want you to help me so that i will transfer =
-this fund out of Senegal to your private bank account, so that you can help =
-me to invest it and also to help me acquire naturalization status in your =
-country.I will give you 10% as your reward and also 10%as miscellaneous =
-expenses.I need your reply urgently to enable me forward the necessary =
-information which protects the documents which are with me as the =
-beneficiary/next kin of the above fund. 
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001094 nforce4 - optical spdif out not working
+======================================================================
 
-I hope to hear from you.
+----------------------------------------------------------------------
+ tiwai - 06-27-05 16:56 
+----------------------------------------------------------------------
+nforce chip is the DMA engine and controls the connected ac97 chip(s). 
+AC97 chip only converts the signal (that's why called "codec"), and isn't
+responsible for DMA.
+Although AC97 can support SPDIF, but some onboard controller chips don't
+require AC97 for SPDIF I/O but do by themselves, e.g. ATIIXP and ALI5455.
 
-Yours Truly,
+----------------------------------------------------------------------
+ gilesjuk - 07-20-05 01:37 
+----------------------------------------------------------------------
+Fixing the output to 48Khz allows me to play mp3s fine.
 
-Lucky Silla.   
---4be1fd93-f128-4fa1-9b27-d829702bfa95--
+Eg.
+
+mplayer -ao alsa:device=hw=0,2 -srate 48000 <file>
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+05-30-05 13:21 vedran         Note Added: 0004809                          
+06-01-05 16:53 tiwai          Note Added: 0004862                          
+06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
+06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
+06-03-05 00:31 Human          Note Added: 0004880                          
+06-03-05 00:32 Human          Issue Monitored: Human                       
+06-06-05 23:30 Human          Note Added: 0004910                          
+06-08-05 15:01 tiwai          Note Added: 0004928                          
+06-10-05 18:07 Human          Note Added: 0004984                          
+06-19-05 16:07 gilesjuk       Note Added: 0005090                          
+06-21-05 00:50 gilesjuk       Note Added: 0005099                          
+06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
+06-21-05 11:19 tiwai          Note Added: 0005102                          
+06-26-05 13:18 gilesjuk       Note Added: 0005263                          
+06-26-05 13:19 gilesjuk       Note Edited: 0005263                         
+06-27-05 16:56 tiwai          Note Added: 0005280                          
+07-20-05 01:37 gilesjuk       Note Added: 0005531                          
+======================================================================
+
 
 
 
