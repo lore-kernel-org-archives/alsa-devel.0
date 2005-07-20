@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Wed, 20 Jul 2005 01:37:56 +0200
-Message-ID: <308a76b81e0defef0bdc3f5fdaf9d7b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Wed, 20 Jul 2005 05:32:58 +0200
+Message-ID: <2f46d74aab693e1dc5716d5573681dbc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 731C2183
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2005 01:37:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EEB61BC
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2005 05:32:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,98 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
 ======================================================================
-Reported By:                vedran
+Reported By:                iq79
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Issue ID:                   1259
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              07-20-2005 01:37 CEST
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              07-20-2005 05:32 CEST
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
 
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
 
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
-
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
-
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001094 nforce4 - optical spdif out not working
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 16:56 
+ iq79 - 07-16-05 18:38 
 ----------------------------------------------------------------------
-nforce chip is the DMA engine and controls the connected ac97 chip(s). 
-AC97 chip only converts the signal (that's why called "codec"), and isn't
-responsible for DMA.
-Although AC97 can support SPDIF, but some onboard controller chips don't
-require AC97 for SPDIF I/O but do by themselves, e.g. ATIIXP and ALI5455.
+Unmuting "Line" or "Line2" doesn't help.
+I've uploaded the output from amixer.
 
 ----------------------------------------------------------------------
- gilesjuk - 07-20-05 01:37 
+ jcdutton - 07-20-05 05:32 
 ----------------------------------------------------------------------
-Fixing the output to 48Khz allows me to play mp3s fine.
-
-Eg.
-
-mplayer -ao alsa:device=hw=0,2 -srate 48000 <file>
+I will look at this in a few weeks time, as I am away from home at the
+moment.
+I have an Audigy4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
-06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
-06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
-06-03-05 00:31 Human          Note Added: 0004880                          
-06-03-05 00:32 Human          Issue Monitored: Human                       
-06-06-05 23:30 Human          Note Added: 0004910                          
-06-08-05 15:01 tiwai          Note Added: 0004928                          
-06-10-05 18:07 Human          Note Added: 0004984                          
-06-19-05 16:07 gilesjuk       Note Added: 0005090                          
-06-21-05 00:50 gilesjuk       Note Added: 0005099                          
-06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
-06-21-05 11:19 tiwai          Note Added: 0005102                          
-06-26-05 13:18 gilesjuk       Note Added: 0005263                          
-06-26-05 13:19 gilesjuk       Note Edited: 0005263                         
-06-27-05 16:56 tiwai          Note Added: 0005280                          
-07-20-05 01:37 gilesjuk       Note Added: 0005531                          
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+07-16-05 16:31 jdthood        Note Added: 0005496                          
+07-16-05 18:36 iq79           File Added: amixer_output                    
+07-16-05 18:38 iq79           Note Added: 0005500                          
+07-20-05 05:32 jcdutton       Note Added: 0005532                          
 ======================================================================
 
 
