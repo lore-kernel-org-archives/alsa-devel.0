@@ -1,8 +1,8 @@
-From: Christopher Egner <disciplezero@syrrax.com>
+From: Christopher Egner <disciplezero-nl@syrrax.com>
 Subject: Enumeration of Devices
-Date: Wed, 20 Jul 2005 09:41:44 -0500
-Message-ID: <1121870504.9389.8.camel@oxcil>
-Reply-To: disciplezero@syrrax.com
+Date: Wed, 20 Jul 2005 09:42:26 -0500
+Message-ID: <1121870546.9353.10.camel@oxcil>
+Reply-To: disciplezero-nl@syrrax.com
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -32,6 +32,7 @@ and what inputs are available.
 
 Thanks for your time,
 Christopher
+
 
 
 
