@@ -1,15 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: 0x10b9:0x5461 not supported?
-Date: Wed, 20 Jul 2005 21:42:26 +0200
-Message-ID: <1121888547.2970.6.camel@localhost.localdomain>
-References: <Pine.HPX.4.33n.0507201607110.21951-100000@studcom.urz.uni-halle.de>
-	 <42DE990A.6020702@gmx.net> <1121882838.2970.1.camel@localhost.localdomain>
-	 <42DE98E9.2010204@gmx.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - firmware 0000209]: Sometimes XMMS stop playing songs (dmix used)
+Date: Thu, 21 Jul 2005 01:03:57 +0200
+Message-ID: <95f62b28001f1d08665a7aa3691947f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42DE98E9.2010204@gmx.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 161301BA
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 01:03:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,139 +18,123 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dirk <noisyb@gmx.net>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This looks like old alsa version. Could you try alsa CVS version ?
 
-Peter Zubaj
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=209> 
+======================================================================
+Reported By:                srr
+Assigned To:                
+======================================================================
+Project:                    ALSA - firmware
+Issue ID:                   209
+Category:                   
+Reproducibility:            sometimes
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             04-14-2004 11:41 CEST
+Last Modified:              07-21-2005 01:03 CEST
+======================================================================
+Summary:                    Sometimes XMMS stop playing songs (dmix used)
+Description: 
+Sometimes XMMS stop playing songs and show message that says "Audio device
+not
+properly configured or busy". It happends when new song just start
+playing. If I click on Play button, songs continued playing. 
+
+I can't repeat this bug, it happends 3-5 times in day.
+
+If i start mpg123 and xmms they are play simultaniously (even if i start
+10
+copies of mpg123)
+
+This is output from xmms:
+
+ALSA lib pcm_hw.c:1057:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
+Device
+or resource busy
+ALSA lib pcm_dmix.c:868:(snd_pcm_dmix_open) unable to open slave
+ 
+** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
+or
+resource busy
 
 
-On Wed, 2005-07-20 at 20:33 +0200, Dirk wrote:
-> Hey!
-> I tried that right now (Kernel 2.6.12.3).
-> 
-> sound/pci/hda/hda_intel.c
-> 
-> /* PCI IDs */
-> static struct pci_device_id azx_ids[] = {
->         { 0x8086, 0x2668, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 }, /* ICH6 */
->         { 0x8086, 0x27d8, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 }, /* ICH7 */
->         { 0x8086, 0x269a, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 }, /* ESB2 */
->         { 0x10b9, 0x5461, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 }, /* test */
->         { 0, }
-> };
-> 
-> 
-> and after reloading the module it says
-> 
-> ALSA sound/pci/hda/hda_intel.c:442: azx_get_response timeout
-> ALSA sound/pci/hda/hda_intel.c:442: azx_get_response timeout
-> ALSA sound/pci/hda/hda_intel.c:442: azx_get_response timeout
-> ALSA sound/pci/hda/hda_intel.c:442: azx_get_response timeout
-> ALSA sound/pci/hda/hda_intel.c:442: azx_get_response timeout
-> ALSA sound/pci/hda/hda_intel.c:442: azx_get_response timeout
-> [...]
-> 
-> and it doesn't look like it will stop anytime soon...
-> 
-> Dirk
-> 
-> 
-> 
-> >Hi,
-> >
-> >Did you try to add this pci id in pci_device_id azx_ids table in file
-> >hda_intel.c ?
-> >
-> >Peter Zubaj
-> >
-> >On Wed, 2005-07-20 at 20:33 +0200, Dirk wrote:
-> >  
-> >
-> >>Clemens Ladisch wrote:
-> >>
-> >>    
-> >>
-> >>>Dirk wrote:
-> >>> 
-> >>>
-> >>>      
-> >>>
-> >>>>http://pciids.sourceforge.net/iii/?i=10b95461
-> >>>>
-> >>>>Doesn't work with snd_hda_intel or anything else I tried...
-> >>>>   
-> >>>>
-> >>>>        
-> >>>>
-> >>>We don't have any documentation for this chip.
-> >>>
-> >>>The CVS version of this driver assumes that this chip is compatible
-> >>>with the Intel HDA controller; please test it.
-> >>> 
-> >>>
-> >>>      
-> >>>
-> >>That's exactly what I tried. I also tried the hacked alsa-driver from
-> >>the download pages of Realtek and the Mainboard manufacturer. But
-> >>nothing worked. The driver loads fine but there is no mixer and no sound.
-> >>
-> >>The mainboard description
-> >>(http://www.asus.com/prog/spec.asp?m=P5RD1-V&langs=01) says it's a
-> >>Realtek ALC 861... but "lspci -n" identifies (0x10b9) ALi and not
-> >>RealTek... :-/
-> >>
-> >>ALi's site doesn't list this card or chip (I looked for "5461" and
-> >>"M5461") at all. So I guess the mainboard description is right and lspci
-> >>is "wrong"... Dunno..
-> >>
-> >>Dirk
-> >>
-> >>
-> >>
-> >>-------------------------------------------------------
-> >>SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-> >>from IBM. Find simple to follow Roadmaps, straightforward articles,
-> >>informative Webcasts and more! Get everything you need to get up to
-> >>speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-> >>_______________________________________________
-> >>Alsa-devel mailing list
-> >>Alsa-devel@lists.sourceforge.net
-> >>https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> >>
-> >>    
-> >>
-> >
-> >
-> >
-> >-------------------------------------------------------
-> >SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-> >from IBM. Find simple to follow Roadmaps, straightforward articles,
-> >informative Webcasts and more! Get everything you need to get up to
-> >speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-> >_______________________________________________
-> >Alsa-devel mailing list
-> >Alsa-devel@lists.sourceforge.net
-> >https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> >
-> >
-> >  
-> >
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-> from IBM. Find simple to follow Roadmaps, straightforward articles,
-> informative Webcasts and more! Get everything you need to get up to
-> speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 16:54 
+----------------------------------------------------------------------
+It's likely a problem of xmms alsa output plugin.
+Try the attached patch.
+
+----------------------------------------------------------------------
+ Steve Fink - 07-21-05 01:03 
+----------------------------------------------------------------------
+I have a very similar problem with mplayer (mplayer-1.0pre3try2). I set the
+default device to go through dmix. After some combination of starting and
+stopping mplayers (some of them overlap in time), I will end up with an
+mplayer that sits and sleeps for half a second, over and over again.
+
+That kind of sucks, but it's an mplayer problem. My real problem is that
+then when I start up the next program that uses ALSA (another mplayer, my
+application, aplay, or whatever), it gets the "open /dev/snd/pcmC0D0p
+failed: Device or resource busy" error.
+
+If I kill the offending mplayer process, it fixes it.
+
+I am using alsa-driver 1.0.8 and alsa-lib 1.0.8. I tried compiling a 1.0.9
+(or something calling itself that) and using it, but it didn't help.
+
+Could anyone tell me what sort of thing is happening? I thought that if
+everything went through dmix, you should never be able to get into an
+EBUSY state. But it seems that the kernel driver is doing something behind
+the pcmC?D?p device that can get into this state? (I see similar output
+when I have a user play an ALSA sound app, and then try to play something
+from the root account. So it does seem like some state is sticking to the
+device somehow.) Is there anything that will dump out the state of a
+device? Where can I read more about how this all works?
+
+I don't have a simple test script that shows the problem yet. How I
+actually see it is that I start up my application (which itself opens up
+the pcm device, via SDL with SDL_AUDIODRIVER=alsa), and it forks off an
+mplayer (with -ao sdl:alsa). Then I flip rapidly between two different
+movies, where each flip kill -TERM's the old mplayer and starts up a new
+one. Oddly, every one of these mplayers is able to play sound. Then I shut
+down my app, and wait for the mplayers to stop. If I get the bug, which I
+do 80% of the time, then one of them will never stop, and when I try to
+restart my app (or aplay, or mplayer), it gives me the error message and
+fails to play sound.
+
+fuser /dev/snd/pcmC0D0p shows only the mplayer processes (when my app has
+exited and there is an mplayer lurking around.)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-14-04 11:41 srr            New Issue                                    
+04-16-04 11:54 tiwai          Note Added: 0000832                          
+04-20-04 07:39 srr            Note Added: 0000869                          
+04-20-04 07:41 srr            Issue Monitored: srr                         
+10-14-04 22:40 chtephan       Note Added: 0002160                          
+10-20-04 20:42 martin         Note Added: 0002218                          
+11-28-04 18:33 martin         Note Added: 0002626                          
+01-12-05 10:41 leahcim        Note Added: 0003161                          
+01-12-05 10:41 leahcim        Issue Monitored: leahcim                     
+01-12-05 20:26 Dawid Gajownik Issue Monitored: Dawid Gajownik                   
+
+01-19-05 16:54 tiwai          Note Added: 0003296                          
+01-19-05 16:54 tiwai          File Added: xmms-1.2.10-alsa-multithread.diff     
+              
+07-20-05 17:34 Steve Fink     Issue Monitored: Steve Fink                    
+07-21-05 01:03 Steve Fink     Note Added: 0005536                          
+======================================================================
+
 
 
 
