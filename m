@@ -1,7 +1,7 @@
 From: Dirk <noisyb@gmx.net>
 Subject: Re: 0x10b9:0x5461 not supported?
-Date: Thu, 21 Jul 2005 13:20:39 +0200
-Message-ID: <42DF8507.5060908@gmx.net>
+Date: Thu, 21 Jul 2005 16:36:18 +0200
+Message-ID: <42DFB2E2.7000603@gmx.net>
 References: <Pine.HPX.4.33n.0507211046210.19476-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -44,10 +44,17 @@ Clemens Ladisch wrote:
 >
 >Regards,
 >Clemens
+>
 >  
 >
 
-Ok, just let me know then if I can be of any help...
+One last thing...
+
+Maybe this does help a little:
+http://dlsvr01.asus.com/pub/ASUS/mb/socket775/P5RD1-V/Audio_Linux.zip
+
+It's the driver (with sources) from the mainboard manufacturer (It
+didn't work for me though....)
 
 Dirk
 
