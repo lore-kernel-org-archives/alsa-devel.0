@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Thu, 21 Jul 2005 01:25:13 +0200
-Message-ID: <306c9cb6d4b247a38ca3f8e5f40c1534@bugtrack.alsa-project.org>
+Date: Thu, 21 Jul 2005 02:01:08 +0200
+Message-ID: <d0f0935ae4764794c078e1696827726c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8518F1E5
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 01:25:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0420D1E1
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 02:01:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-21-2005 01:25 CEST
+Last Modified:              07-21-2005 02:01 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -64,28 +64,6 @@ support.
 
 I would be very happy to give any further information needed.
 ======================================================================
-
-----------------------------------------------------------------------
- Demosthenes - 07-20-05 21:04 
-----------------------------------------------------------------------
-I have sound coming out yes, however from the front speakers socket the
-sound is extremely quiet, out of the headphone socket the sound seems
-pretty reasonable.  We have had trouble with the external amp and I am not
-sure if this would be the reason for the sound issues, Ungod will probably
-give you a better insight than I have.
-
-I have not tried the digital outs, it is possible that I could if ever it
-was needed but not without a small amount of difficulty.
-
-It will be good to have another person to test the driver and someone else
-who knows what they are doing as far as the code is concerned can't hurt.
-
-P.S. I am not sure what you mean by you have been using precompiled
-drivers and now you will use the source, it was my impression that only
-the module for the ice1724 needed to be compiled from cvs with the patch
-applied.
-
-
 
 ----------------------------------------------------------------------
  darins - 07-21-05 01:25 
@@ -138,6 +116,12 @@ control bus would've been easier.  Maybe they do control by bit-banging
 some GPIOs, since there are plenty of them around?
 
 Interesting.  I'll let you know as soon as I have something.
+
+----------------------------------------------------------------------
+ Demosthenes - 07-21-05 02:01 
+----------------------------------------------------------------------
+It was I who reported the Texas logo but my number was 3AZ6D5J not the
+number reported by baesyspem.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -248,6 +232,7 @@ Hedgehog)
 07-20-05 20:56 Demosthenes    Note Added: 0005535                          
 07-20-05 21:04 Demosthenes    Note Edited: 0005535                         
 07-21-05 01:25 darins         Note Added: 0005537                          
+07-21-05 02:01 Demosthenes    Note Added: 0005538                          
 ======================================================================
 
 
