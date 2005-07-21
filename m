@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Thu, 21 Jul 2005 19:55:17 +0200
-Message-ID: <0ca681f4f9d7026200cbdeedf8bfa138@bugtrack.alsa-project.org>
+Date: Thu, 21 Jul 2005 19:56:11 +0200
+Message-ID: <24db57ed839947a533043dee5c3ba9c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B4BE1D8
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 19:55:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 163011D8
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 19:56:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-21-2005 19:55 CEST
+Last Modified:              07-21-2005 19:56 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,25 +50,6 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 07-18-05 22:08 
-----------------------------------------------------------------------
-I cannot reproduce the problem as aoss + dmix does not use a timer on my
-system, due to hardware mixing being present.  It actually seems to work
-(the choppiness was due to running under gdb), but for some reason it
-always gets 8000Hz for the sample rate, even if I comment it out of the
-sapleRates table, and set "rate 48000" in dmix.conf.
-
-Try running with ALSA_OSS_DEBUG=1 and post the output.
-
-Also uncomment these lines and recompile to enable debug output from
-kiax:
-
-kiax-0.8.4/lib/portaudio/pa_common/pa_lib.c~:#define DBUG(x)  /* PRINT(x)
-*/
-kiax-0.8.4/lib/unixfuncs.c~://#define DBUG(...) fprintf(stderr,
-__VA_ARGS__)
 
 ----------------------------------------------------------------------
  Hetfield - 07-21-05 19:55 
@@ -599,6 +580,35 @@ ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
 ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
 ioctl(8,
 
+----------------------------------------------------------------------
+ Hetfield - 07-21-05 19:56 
+----------------------------------------------------------------------
+without aoss
+
+Pa_OpenStream( 0x810dd6c, 0, 1, 2, (nil), /* input */
+               0, 1, 2, (nil), /* output */
+               8000, 80, 0, 0x0, , (nil) )
+Pa_StartStream: PaHost_StartInput returned = 0x0.
+Pa_StartStream: PaHost_StartOutput returned = 0x0.
+Pa_StartStream: PaHost_StartEngine returned = 0x0.
+Pa_StopStream().
+Pa_StopStream: PaHost_StopEngine returned = 0x0.
+Pa_StopStream: PaHost_StopInput returned = 0x0.
+Pa_StopStream: PaHost_StopOutput returned = 0x0.
+Pa_CloseStream()
+Pa_StopStream().
+Pa_StopStream: PaHost_StopEngine returned = 0x0.
+Pa_StopStream: PaHost_StopInput returned = 0x0.
+Pa_StopStream: PaHost_StopOutput returned = 0x0.
+gio lug 21 19:55:35 2005 IaxWrapper::iaxc_initialize() result = 0
+gio lug 21 19:55:35 2005 IaxWrapper::start_iax_client() starting
+processing thread..
+gio lug 21 19:55:35 2005 IaxWrapper::iaxc_start_processing_thread() result
+= 0
+gio lug 21 19:55:35 2005 IaxWrapper::registerMultipleAccounts()
+registering accounts..
+prioboost: only superuser can use real-time priority.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -642,6 +652,7 @@ Date Modified  Username       Field                    Change
 07-18-05 09:24 Hetfield       File Added: asoundrc                         
 07-18-05 22:08 rlrevell       Note Added: 0005524                          
 07-21-05 19:55 Hetfield       Note Added: 0005540                          
+07-21-05 19:56 Hetfield       Note Added: 0005541                          
 ======================================================================
 
 
