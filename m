@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Thu, 21 Jul 2005 19:56:11 +0200
-Message-ID: <24db57ed839947a533043dee5c3ba9c9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Thu, 21 Jul 2005 21:06:35 +0200
+Message-ID: <a2abc3eca2e5ec7fe62fb3006f33cee5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 163011D8
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 19:56:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5B371F1
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 21:06:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,635 +24,177 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                Hetfield
+Reported By:                Demosthenes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              07-21-2005 19:56 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              07-21-2005 21:06 CEST
 ======================================================================
-Summary:                    artsd-like style
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-that could be very important for example using skype voip and listening
-music at the same time.
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
+
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
+
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
+
+I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 07-21-05 19:55 
+ Demosthenes - 07-21-05 02:01 
 ----------------------------------------------------------------------
-i enabled both debug..here is result..hope you can debug it...
-
-
-
-
-ALSA_OSS_DEBUG=1 aoss ../bin/kiax
-gio lug 21 19:53:39 2005 Using IAXClient ver. CVS-2005/07/21-19:08
-Opened PCM dsp0 for stream 0 (result = 0)
-open("/dev/dsp", 2049, -1218923258) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp1 for stream 0 (result = -2)
-Opened PCM default:1 for stream 0 (result = 0)
-open("/dev/dsp1", 2049, 137403300) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp2 for stream 0 (result = -2)
-Opened PCM default:2 for stream 0 (result = 0)
-open("/dev/dsp2", 2049, 137399604) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp3 for stream 0 (result = -2)
-Opened PCM default:3 for stream 0 (result = 0)
-open("/dev/dsp3", 2049, 137402964) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp4 for stream 0 (result = -2)
-Opened PCM default:4 for stream 0 (result = 0)
-open("/dev/dsp4", 2049, 136903268) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp5 for stream 0 (result = -2)
-Opened PCM default:5 for stream 0 (result = 0)
-open("/dev/dsp5", 2049, 136903428) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp6 for stream 0 (result = -2)
-Opened PCM default:6 for stream 0 (result = 0)
-open("/dev/dsp6", 2049, 137399916) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp7 for stream 0 (result = -2)
-Opened PCM default:7 for stream 0 (result = 0)
-open("/dev/dsp7", 2049, 136369340) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp8 for stream 0 (result = -2)
-Opened PCM default:8 for stream 0 (result = 0)
-open("/dev/dsp8", 2049, 137404044) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp9 for stream 0 (result = -2)
-Opened PCM default:9 for stream 0 (result = 0)
-open("/dev/dsp9", 2049, 137400516) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp10 for stream 0 (result = -2)
-Opened PCM default:10 for stream 0 (result = 0)
-open("/dev/dsp10", 2049, 137400188) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp11 for stream 0 (result = -2)
-Opened PCM default:11 for stream 0 (result = 0)
-open("/dev/dsp11", 2049, 137403740) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp12 for stream 0 (result = -2)
-Opened PCM default:12 for stream 0 (result = 0)
-open("/dev/dsp12", 2049, 137401012) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp13 for stream 0 (result = -2)
-Opened PCM default:13 for stream 0 (result = 0)
-open("/dev/dsp13", 2049, 137400676) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp14 for stream 0 (result = -2)
-Opened PCM default:14 for stream 0 (result = 0)
-open("/dev/dsp14", 2049, 136370876) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp15 for stream 0 (result = -2)
-Opened PCM default:15 for stream 0 (result = 0)
-open("/dev/dsp15", 2049, 136370276) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
-close(8) -> 0
-Opened PCM dsp16 for stream 0 (result = -2)
-Opened PCM default:16 for stream 0 (result = 0)
-open("/dev/dsp16", 2049, 137340812) -> 8
-ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
-ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
-ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
-ioctl(8,
+It was I who reported the Texas logo but my number was 3AZ6D5J not the
+number reported by baesyspem.
 
 ----------------------------------------------------------------------
- Hetfield - 07-21-05 19:56 
+ baesyspem - 07-21-05 21:06 
 ----------------------------------------------------------------------
-without aoss
-
-Pa_OpenStream( 0x810dd6c, 0, 1, 2, (nil), /* input */
-               0, 1, 2, (nil), /* output */
-               8000, 80, 0, 0x0, , (nil) )
-Pa_StartStream: PaHost_StartInput returned = 0x0.
-Pa_StartStream: PaHost_StartOutput returned = 0x0.
-Pa_StartStream: PaHost_StartEngine returned = 0x0.
-Pa_StopStream().
-Pa_StopStream: PaHost_StopEngine returned = 0x0.
-Pa_StopStream: PaHost_StopInput returned = 0x0.
-Pa_StopStream: PaHost_StopOutput returned = 0x0.
-Pa_CloseStream()
-Pa_StopStream().
-Pa_StopStream: PaHost_StopEngine returned = 0x0.
-Pa_StopStream: PaHost_StopInput returned = 0x0.
-Pa_StopStream: PaHost_StopOutput returned = 0x0.
-gio lug 21 19:55:35 2005 IaxWrapper::iaxc_initialize() result = 0
-gio lug 21 19:55:35 2005 IaxWrapper::start_iax_client() starting
-processing thread..
-gio lug 21 19:55:35 2005 IaxWrapper::iaxc_start_processing_thread() result
-= 0
-gio lug 21 19:55:35 2005 IaxWrapper::registerMultipleAccounts()
-registering accounts..
-prioboost: only superuser can use real-time priority.
+Ungod,
+I finally got sound! I get sound from the B.S.(H.P) port and the front
+port.  The front speakers play at a lower level than the BS port, but it
+is clear nonetheless.  Right now I have to use "alsamixer" to set the
+Multitrak frequency before entering "aplay -D prodigy wavefile.wav" or
+else the file plays at the wrong speed.  I am using "type play" as
+recommended.  Has anyone tried to record a .wav file?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-07-04-05 11:49 pzad           File Added: aoss.patch                       
-07-04-05 11:53 pzad           Note Added: 0005384                          
-07-04-05 14:02 Hetfield       Note Added: 0005385                          
-07-08-05 12:16 tiwai          Note Added: 0005417                          
-07-08-05 12:27 Hetfield       Note Added: 0005418                          
-07-17-05 10:25 Hetfield       Note Added: 0005503                          
-07-17-05 10:29 rlrevell       Note Added: 0005504                          
-07-17-05 10:46 rlrevell       Note Added: 0005505                          
-07-17-05 11:10 Hetfield       Note Added: 0005506                          
-07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
-07-17-05 19:41 rlrevell       Note Added: 0005508                          
-07-17-05 19:50 Hetfield       Note Added: 0005509                          
-07-17-05 19:51 rlrevell       Note Added: 0005510                          
-07-17-05 20:21 Hetfield       Note Added: 0005511                          
-07-17-05 21:14 rlrevell       Note Added: 0005512                          
-07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
-07-17-05 21:22 Hetfield       File Added: log2                             
-07-17-05 21:23 Hetfield       Note Added: 0005513                          
-07-17-05 22:21 rlrevell       Note Added: 0005514                          
-07-17-05 23:28 Hetfield       Note Added: 0005515                          
-07-17-05 23:43 rlrevell       Note Added: 0005516                          
-07-18-05 03:33 rlrevell       Note Added: 0005517                          
-07-18-05 06:04 rlrevell       Note Added: 0005518                          
-07-18-05 07:33 rlrevell       Note Added: 0005519                          
-07-18-05 09:23 Hetfield       Note Added: 0005520                          
-07-18-05 09:24 Hetfield       File Added: asoundrc                         
-07-18-05 22:08 rlrevell       Note Added: 0005524                          
-07-21-05 19:55 Hetfield       Note Added: 0005540                          
-07-21-05 19:56 Hetfield       Note Added: 0005541                          
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
+07-01-05 16:09 baesyspem      Note Added: 0005335                          
+07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
+         
+07-01-05 20:43 ungod          Note Added: 0005339                          
+07-01-05 22:08 Demosthenes    Note Added: 0005341                          
+07-01-05 22:46 ungod          Note Added: 0005342                          
+07-01-05 23:09 Demosthenes    Note Added: 0005344                          
+07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
+07-02-05 03:29 ungod          Note Added: 0005350                          
+07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
+07-02-05 03:37 ungod          Note Edited: 0005350                         
+07-02-05 16:50 Demosthenes    Note Added: 0005353                          
+07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 18:27 ungod          Note Added: 0005354                          
+07-02-05 18:36 Demosthenes    Note Added: 0005355                          
+07-02-05 20:20 ungod          Note Added: 0005358                          
+07-02-05 20:59 Demosthenes    Note Added: 0005359                          
+07-02-05 21:43 ungod          File Added: peak.tar.gz                      
+07-02-05 21:44 ungod          Note Added: 0005360                          
+07-02-05 22:30 Demosthenes    Note Added: 0005362                          
+07-03-05 00:21 ungod          Note Added: 0005363                          
+07-03-05 01:49 Demosthenes    Note Added: 0005364                          
+07-03-05 01:55 ungod          Note Added: 0005365                          
+07-03-05 02:46 Demosthenes    Note Added: 0005366                          
+07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
+07-03-05 03:18 Demosthenes    Note Added: 0005367                          
+07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
+07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
+         
+07-03-05 11:47 ungod          Note Added: 0005373                          
+07-03-05 15:29 Demosthenes    Note Added: 0005377                          
+07-03-05 17:06 ungod          Note Added: 0005379                          
+07-04-05 14:34 miljan         Issue Monitored: miljan                      
+07-04-05 14:35 miljan         Issue End Monitor: miljan                    
+07-04-05 14:35 miljan         Issue Monitored: miljan                      
+07-06-05 19:19 Demosthenes    Note Added: 0005392                          
+07-08-05 22:52 ungod          Note Added: 0005437                          
+07-13-05 03:57 ungod          Note Added: 0005457                          
+07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
+07-13-05 04:12 Demosthenes    Note Added: 0005458                          
+07-13-05 04:24 ungod          Note Added: 0005459                          
+07-13-05 04:28 Demosthenes    Note Added: 0005460                          
+07-13-05 04:46 ungod          Note Added: 0005461                          
+07-13-05 04:57 Demosthenes    Note Added: 0005462                          
+07-13-05 04:59 Demosthenes    Note Added: 0005463                          
+07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
+07-13-05 19:39 Demosthenes    Note Added: 0005466                          
+07-14-05 13:19 ungod          Note Added: 0005472                          
+07-14-05 13:31 Demosthenes    Note Added: 0005473                          
+07-14-05 13:54 Demosthenes    Note Added: 0005474                          
+07-15-05 15:08 ungod          Note Added: 0005481                          
+07-15-05 15:17 Demosthenes    Note Added: 0005482                          
+07-15-05 15:23 Demosthenes    Note Edited: 0005474                         
+07-20-05 18:01 darins         Issue Monitored: darins                      
+07-20-05 19:07 darins         Note Added: 0005534                          
+07-20-05 20:56 Demosthenes    Note Added: 0005535                          
+07-20-05 21:04 Demosthenes    Note Edited: 0005535                         
+07-21-05 01:25 darins         Note Added: 0005537                          
+07-21-05 02:01 Demosthenes    Note Added: 0005538                          
+07-21-05 02:16 Demosthenes    Note Edited: 0004618                         
+07-21-05 02:17 Demosthenes    Note Edited: 0004618                         
+07-21-05 21:06 baesyspem      Note Added: 0005542                          
 ======================================================================
 
 
