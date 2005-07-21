@@ -1,18 +1,14 @@
-From: Kaushik Kumar <kaukum@gmail.com>
-Subject: Re: sound application needed...
-Date: Thu, 21 Jul 2005 12:46:54 +1000
-Message-ID: <e2033af505072019467779417e@mail.gmail.com>
-References: <e2033af5050720024951dd4324@mail.gmail.com>
-	 <e2033af50507200252492b24ab@mail.gmail.com>
-	 <e2033af505072003082d113097@mail.gmail.com>
-	 <20050720113614.GA3597@bitglue.com>
-Reply-To: Kaushik Kumar <kaukum@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001270]: "External amplifier" consistently mis-configured on upgrade, breaks sound
+Date: Thu, 21 Jul 2005 09:10:16 +0200
+Message-ID: <62a3318836ac151c96166be0fbc74974@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050720113614.GA3597@bitglue.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F2E91ED
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 09:10:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,35 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Phil Frost <indigo@bitglue.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi phil,
 
-I am actually implementing an user level sound driver.. which is still
-in its rudimentary stages. It does *not* use the /proc interface. I
-have a simple driver API which the application needs to use. And I
-need to basically test it.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1270> 
+======================================================================
+Reported By:                eyequeue
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1270
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu (breezy)
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             07-21-2005 09:10 CEST
+Last Modified:              07-21-2005 09:10 CEST
+======================================================================
+Summary:                    "External amplifier" consistently mis-configured on
+upgrade, breaks sound
+Description: 
+Each time the ALSA packages are upgraded, sound becomes inoperative.
 
-Any further help would be appreciated.
+To fix, I have to run alsamixer as root, and DISable the "External
+amplifier" setting, which somehow keeps getting turned on, upon package
+upgrade.
 
-Thanx!
-kaushik
+This is a laptop, so there is no "external" anything, and turning this
+setting off again allows sound to once again work.
 
-On 7/20/05, Phil Frost <indigo@bitglue.com> wrote:
-> On Wed, Jul 20, 2005 at 08:08:18PM +1000, Kaushik Kumar wrote:
-> > I need a simple sound application to test my sound driver which does
-> > *not* use the  alsa user lib API.
->=20
-> You can cat files to /dev/dsp, like so:
->=20
->   cat /proc/kcore > /dev/dsp
->=20
-> You can also read from it, then play it again:
->=20
->   cat /dev/dsp > tmp; cat tmp > /dev/dsp  # hit ^C to stop recording
->
+Upon asking advice on IRC i was told this was an upstream "AC97 codec bug"
+if that phrase helps you in any way.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-21-05 09:10 eyequeue       New Issue                                    
+07-21-05 09:10 eyequeue       Distribution              => Ubuntu (breezy) 
+07-21-05 09:10 eyequeue       Kernel Version            => 2.6.12          
+======================================================================
+
+
 
 
 -------------------------------------------------------
