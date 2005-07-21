@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001271]: Changes in ALSA driver between 2.6.11.10 and 2.6.12.3 mean echo-cancelling mics fail
-Date: Thu, 21 Jul 2005 18:50:40 +0200
-Message-ID: <894e3b64d116799f42d92b28b6d3f3d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Thu, 21 Jul 2005 19:55:17 +0200
+Message-ID: <0ca681f4f9d7026200cbdeedf8bfa138@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 270121BC
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 18:50:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B4BE1D8
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2005 19:55:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,626 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1271> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
-Reported By:                dcpiper
+Reported By:                Hetfield
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1271
-Category:                   PCI - emu10k1
+Issue ID:                   1224
+Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.12.3
+Distribution:               
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             07-21-2005 18:50 CEST
-Last Modified:              07-21-2005 18:50 CEST
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              07-21-2005 19:55 CEST
 ======================================================================
-Summary:                    Changes in ALSA driver between 2.6.11.10 and
-2.6.12.3 mean echo-cancelling mics fail
+Summary:                    artsd-like style
 Description: 
-Under 2.6.12.3, terrible feedback happens when the echo-cancelling
-microphone (A ClearOne AccuMic II) is enabled. No matter if the microphone
-is set to mute or not through alsamixer or gnome-volume-control there is
-persistent feedback that howls increasingly louder until the microphone's
-own enable button is turned off again.
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-Rebooting solved nothing, as did resetting the power on the microphone.
-Reboot to 2.6.11.10 and the problem is gone again. Something changed in
-ALSA somewhere between those kernel versions.
+that could be very important for example using skype voip and listening
+music at the same time.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 07-18-05 22:08 
+----------------------------------------------------------------------
+I cannot reproduce the problem as aoss + dmix does not use a timer on my
+system, due to hardware mixing being present.  It actually seems to work
+(the choppiness was due to running under gdb), but for some reason it
+always gets 8000Hz for the sample rate, even if I comment it out of the
+sapleRates table, and set "rate 48000" in dmix.conf.
+
+Try running with ALSA_OSS_DEBUG=1 and post the output.
+
+Also uncomment these lines and recompile to enable debug output from
+kiax:
+
+kiax-0.8.4/lib/portaudio/pa_common/pa_lib.c~:#define DBUG(x)  /* PRINT(x)
+*/
+kiax-0.8.4/lib/unixfuncs.c~://#define DBUG(...) fprintf(stderr,
+__VA_ARGS__)
+
+----------------------------------------------------------------------
+ Hetfield - 07-21-05 19:55 
+----------------------------------------------------------------------
+i enabled both debug..here is result..hope you can debug it...
+
+
+
+
+ALSA_OSS_DEBUG=1 aoss ../bin/kiax
+gio lug 21 19:53:39 2005 Using IAXClient ver. CVS-2005/07/21-19:08
+Opened PCM dsp0 for stream 0 (result = 0)
+open("/dev/dsp", 2049, -1218923258) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp1 for stream 0 (result = -2)
+Opened PCM default:1 for stream 0 (result = 0)
+open("/dev/dsp1", 2049, 137403300) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp2 for stream 0 (result = -2)
+Opened PCM default:2 for stream 0 (result = 0)
+open("/dev/dsp2", 2049, 137399604) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp3 for stream 0 (result = -2)
+Opened PCM default:3 for stream 0 (result = 0)
+open("/dev/dsp3", 2049, 137402964) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp4 for stream 0 (result = -2)
+Opened PCM default:4 for stream 0 (result = 0)
+open("/dev/dsp4", 2049, 136903268) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp5 for stream 0 (result = -2)
+Opened PCM default:5 for stream 0 (result = 0)
+open("/dev/dsp5", 2049, 136903428) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp6 for stream 0 (result = -2)
+Opened PCM default:6 for stream 0 (result = 0)
+open("/dev/dsp6", 2049, 137399916) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp7 for stream 0 (result = -2)
+Opened PCM default:7 for stream 0 (result = 0)
+open("/dev/dsp7", 2049, 136369340) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp8 for stream 0 (result = -2)
+Opened PCM default:8 for stream 0 (result = 0)
+open("/dev/dsp8", 2049, 137404044) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp9 for stream 0 (result = -2)
+Opened PCM default:9 for stream 0 (result = 0)
+open("/dev/dsp9", 2049, 137400516) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp10 for stream 0 (result = -2)
+Opened PCM default:10 for stream 0 (result = 0)
+open("/dev/dsp10", 2049, 137400188) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp11 for stream 0 (result = -2)
+Opened PCM default:11 for stream 0 (result = 0)
+open("/dev/dsp11", 2049, 137403740) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp12 for stream 0 (result = -2)
+Opened PCM default:12 for stream 0 (result = 0)
+open("/dev/dsp12", 2049, 137401012) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp13 for stream 0 (result = -2)
+Opened PCM default:13 for stream 0 (result = 0)
+open("/dev/dsp13", 2049, 137400676) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp14 for stream 0 (result = -2)
+Opened PCM default:14 for stream 0 (result = 0)
+open("/dev/dsp14", 2049, 136370876) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp15 for stream 0 (result = -2)
+Opened PCM default:15 for stream 0 (result = 0)
+open("/dev/dsp15", 2049, 136370276) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[48000]) -> [48000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[44100]) -> [44100]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[32000]) -> [32000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[24000]) -> [24000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[22050]) -> [22050]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[16000]) -> [16000]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[11025]) -> [11025]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[8000]) -> [8000]
+close(8) -> 0
+Opened PCM dsp16 for stream 0 (result = -2)
+Opened PCM default:16 for stream 0 (result = 0)
+open("/dev/dsp16", 2049, 137340812) -> 8
+ioctl(8, SNDCTL_DSP_GETFMTS, 0xbfbc244c) -> [511]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[1]) -> [1]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[2]) -> [2]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[3]) -> [3]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[4]) -> [4]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[5]) -> [5]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[6]) -> [6]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[7]) -> [7]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[8]) -> [8]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[9]) -> [9]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[10]) -> [10]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[11]) -> [11]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[12]) -> [12]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[13]) -> [13]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[14]) -> [14]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[15]) -> [15]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2448[16]) -> [16]
+ioctl(8, SNDCTL_DSP_CHANNELS, 0xbfbc2440[2]) -> [2]
+ioctl(8, SNDCTL_DSP_SPEED, 0xbfbc243c[96000]) -> [96000]
+ioctl(8,
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-21-05 18:50 dcpiper        New Issue                                    
-07-21-05 18:50 dcpiper        Distribution              => Debian Sarge    
-07-21-05 18:50 dcpiper        Kernel Version            => 2.6.12.3        
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
+07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
+07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
+07-02-05 21:47 pzad           Note Added: 0005361                          
+07-03-05 09:25 Hetfield       Note Added: 0005370                          
+07-03-05 14:09 pzad           Note Added: 0005376                          
+07-03-05 15:57 Hetfield       Note Added: 0005378                          
+07-04-05 11:49 pzad           File Added: aoss.patch                       
+07-04-05 11:53 pzad           Note Added: 0005384                          
+07-04-05 14:02 Hetfield       Note Added: 0005385                          
+07-08-05 12:16 tiwai          Note Added: 0005417                          
+07-08-05 12:27 Hetfield       Note Added: 0005418                          
+07-17-05 10:25 Hetfield       Note Added: 0005503                          
+07-17-05 10:29 rlrevell       Note Added: 0005504                          
+07-17-05 10:46 rlrevell       Note Added: 0005505                          
+07-17-05 11:10 Hetfield       Note Added: 0005506                          
+07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
+07-17-05 19:41 rlrevell       Note Added: 0005508                          
+07-17-05 19:50 Hetfield       Note Added: 0005509                          
+07-17-05 19:51 rlrevell       Note Added: 0005510                          
+07-17-05 20:21 Hetfield       Note Added: 0005511                          
+07-17-05 21:14 rlrevell       Note Added: 0005512                          
+07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
+07-17-05 21:22 Hetfield       File Added: log2                             
+07-17-05 21:23 Hetfield       Note Added: 0005513                          
+07-17-05 22:21 rlrevell       Note Added: 0005514                          
+07-17-05 23:28 Hetfield       Note Added: 0005515                          
+07-17-05 23:43 rlrevell       Note Added: 0005516                          
+07-18-05 03:33 rlrevell       Note Added: 0005517                          
+07-18-05 06:04 rlrevell       Note Added: 0005518                          
+07-18-05 07:33 rlrevell       Note Added: 0005519                          
+07-18-05 09:23 Hetfield       Note Added: 0005520                          
+07-18-05 09:24 Hetfield       File Added: asoundrc                         
+07-18-05 22:08 rlrevell       Note Added: 0005524                          
+07-21-05 19:55 Hetfield       Note Added: 0005540                          
 ======================================================================
 
 
