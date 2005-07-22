@@ -1,16 +1,15 @@
-From: Chuckles <chuckleberryfinn@gmail.com>
-Subject: Re: Alsa Mixer api documentation.
-Date: Mon, 25 Jul 2005 13:33:17 +0200
-Message-ID: <29d8345905072504337b900491@mail.gmail.com>
-References: <29d8345905072416467aa8dc4d@mail.gmail.com>
-	 <1122254407.31270.1.camel@mindpipe>
-Reply-To: Chuckles <chuckleberryfinn@gmail.com>
+From: Cesar Hernandez <chernandez@genos.es>
+Subject: maximum voices/channels
+Date: Fri, 22 Jul 2005 16:46:51 +0200
+Message-ID: <1122043610.5724.6.camel@tordera.genos.intranet>
+Reply-To: chernandez@genos.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1122254407.31270.1.camel@mindpipe>
-Content-Disposition: inline
+Received: from genos.genos.es (7.red-62-57-110.user.auna.net [62.57.110.7])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 362E817B
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 14:13:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,31 +19,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-So that's a no then. I had been looking at the source for amixer.c but
-what can I tell ya? Pouring over 1500 lines of uncommented, (mostly)
-static methods written in C is hardly the best way to learn an api now
-is it? (Do linux developers hate c++/oo programming or do they just
-willfully ignore it?) Apart from the opening few lines about the gnu
-gpl there are 3 (count 'em) 3, one line comments in a source file of
-over 1500 lines. But if the alsa developers can't be bothered to write
-the docs I suppose I don't have much choice.
+Hi.
 
-Cathal
+I have a question on using alsa sequencer. I am working on a kind of
+piano program, and I want to know what is the maximum number of notes or
+sampled voices (mapped to a note) that I can play at the same time...
+I know that two or three notes may sound at the same sequencer channel,
+but I don't know what is the maximum. 
+Is there a maximum number of voices/notes per sequencer channel? Or it's
+a maximum number counting all the channels...? Or it depends on the midi
+output (timidity, midi keyboard...)
 
-On 7/25/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> On Mon, 2005-07-25 at 01:46 +0200, Chuckles wrote:
-> > So...is there? If anyone can even give me a simple "open mixer, set
-> > pcm to 50%, close mixer" example that'd be great.
->=20
-> Why don't you look at the source to xmms or mplayer?
->=20
-> Lee
->=20
->
+Thanks
+
+
+-- 
+Cesar Hernandez
+chernandez@genos.es
+Genos Open Source S.L.
+
+
+http://genos.es
+http://www.genos.org
+
 
 
 -------------------------------------------------------
