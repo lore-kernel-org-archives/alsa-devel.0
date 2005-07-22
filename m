@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000833]: [snd_via82xx] setting ac97_clock greater than 48000 should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
-Date: Fri, 22 Jul 2005 02:46:52 +0200
-Message-ID: <569bb693c7ca4de3be9ce9186bb530af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001272]: sys_open symbol not known
+Date: Fri, 22 Jul 2005 10:06:07 +0200
+Message-ID: <8e0615198936b7be7434c1bd7575e9d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E49961AC
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 02:46:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23C841A7
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 10:06:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1272> 
 ======================================================================
-Reported By:                t35t0r
+Reported By:                arturl
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   833
-Category:                   PCI - via82xx
+Issue ID:                   1272
+Category:                   ISA - wavefront
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.10-gentoo-r5 (but error is reproducible in stock
-kernels also)
+Distribution:               Fedora 4
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             01-18-2005 17:35 CET
-Last Modified:              07-22-2005 02:46 CEST
+Date Submitted:             07-22-2005 10:06 CEST
+Last Modified:              07-22-2005 10:06 CEST
 ======================================================================
-Summary:                    [snd_via82xx] setting ac97_clock greater than 48000
-should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
+Summary:                    sys_open symbol not known
 Description: 
-Please read: http://bugs.gentoo.org/show_bug.cgi?id=78327
+The wavefront driver uses sys_open from kernel and this symbol is for
+unknown reason not exported. As a consequence module cannot be loaded.
+The sys_open function lack of export directive and after adding it all
+works OK.
+In fact this is not ALSA bug but...
 
-Forwarded email below
-
-From: Jaroslav Kysela <perex@suse.cz>
-To: t35t0r@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 18 Jan 2005 10:40:56 +0100 (CET)
-Subject: Re: snd_via82xx ac97_clock=96000 parameter doesn't work for
-kernels >= linux-2.6.9 (fwd)
-
-> > Dear sir:
-> >
-> > If you get a chance can you look at
-> > http://bugs.gentoo.org/show_bug.cgi?id=78327 . It seems that setting
-> > ac97_clock=96000 no longer works for kernels >= linux-2.6.9. I didn't
-> > try any other ac97_clock settings since the 96000 setting was working
-> > for a 2.6.7 and 2.6.8.1 kernel. The url has some of my hardware
-> > specifications.
-
-It seems that the no-sound bug is caused with the AC'97 codec
-initialization. Specifying 96000 as ac97_clock parameter won't help,
-because this value must be from 8000 to 48000 otherwise it is ignored.
-Please, fill a bug to our bugtrack system.
-
-                                               Jaroslav
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-18-05 17:44 
-----------------------------------------------------------------------
-I guess your problem has nothing to do with ac97_clock.  Setting
-ac97_clock=96000 is simply wrong.  If this really works, then something
-else is broken...
-
-----------------------------------------------------------------------
- connolly - 07-22-05 02:46 
-----------------------------------------------------------------------
-I see this problem on Ubuntu also. My motherboard has onboard sound;
-lspci says:
-
-0000:00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II]
-(rev 78)
-
-it works fine with ubuntu's linux-image-2.6.8.1-3-386 but not with
-any of
-linux-image-2.6.10-5-386, linux-image-2.6.10-5-686, nor
-linux-image-2.6.10-5-k7
-
-Is it ordinary for a bug to remain in "new" state this long? Anything I
-can do to help?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-18-05 17:35 t35t0r         New Issue                                    
-01-18-05 17:35 t35t0r         Distribution              => gentoo          
-01-18-05 17:35 t35t0r         Kernel Version            => 2.6.10-gentoo-r5 (but
-error is reproducible in stock kernels also)
-01-18-05 17:44 tiwai          Note Added: 0003252                          
-07-22-05 02:46 connolly       Note Added: 0005544                          
+07-22-05 10:06 arturl         New Issue                                    
+07-22-05 10:06 arturl         Distribution              => Fedora 4        
+07-22-05 10:06 arturl         Kernel Version            => 2.6.12          
 ======================================================================
 
 
