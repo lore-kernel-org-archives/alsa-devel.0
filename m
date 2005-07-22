@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Fri, 22 Jul 2005 10:57:28 +0200
-Message-ID: <1910a1c59c66288718ab21d573426030@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
+Date: Fri, 22 Jul 2005 12:24:52 +0200
+Message-ID: <692130f14f02ec7a0b0d3bbe7935722a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 876581A2
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 10:57:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44F7419C
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 12:24:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
 ======================================================================
-Reported By:                Gildoniel
-Assigned To:                tiwai
+Reported By:                JKnife
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1162
-Category:                   PCI - atiixp
+Issue ID:                   1052
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               SuSe Linux 9.3 Professional
-Kernel Version:             2.6.11.4.20a
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              07-22-2005 10:57 CEST
+Date Submitted:             04-13-2005 21:59 CEST
+Last Modified:              07-22-2005 12:24 CEST
 ======================================================================
-Summary:                    no sound on speakers, low volume on the headphones
+Summary:                    Riptide/Context Audio Drivers
 Description: 
-Problem diagnosis:
- 
-* Sound card is detected and automatically configured, but no sound can be
-heard.
-* It is possible to hear _faint_ sound (very low volume) through
-headphones.
-* Headphone volume is 0 and I can still hear low volume sound (maybe
-master/headphone switched?)
-* It seems to be possible to record voice on the microphone (I see the
-amplitude when talking into the mic)
- 
-Solution attempts so far:
- 
-* used alsamixer to turn up and unmute all channels (failed: no sound on
-speakers, very low volume on headphones)
-* use the "quirk" option of the driver -1 through 7 (failed - no bettering
-and error messages with certain settings)
-* tried other sounddrivers (intel, via and others - didn't try them all)
-(failed - error loading modules on those I tried)
+there is a set but its only for the 2.4 kernel.
+i would like you toinclude them in alsa.
+the 2.4 drivers can be found here
+http://www.linuxant.com/drivers/
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-21-05 11:20 
+ tiwai - 07-08-05 14:57 
 ----------------------------------------------------------------------
-This might be quite dependent on BIOS.
+Can anyone test the patch?
 
 ----------------------------------------------------------------------
- vitja - 07-22-05 10:57 
+ nokos - 07-22-05 12:24 
 ----------------------------------------------------------------------
-Hi all!
-
-I have the same problem with my notebook. Codec is alc655. Thats nice I
-found this thread. Now it seems sound will work :)
+I have tested the patch with a 2.6.12 kernel and removed all warning
+messages.
+It works for my Riptide chipset (hotplug needs the firmware "riptide.hex"
+somewhere)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 18:54 Gildoniel      New Issue                                    
-06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
-06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
-Professional
-06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
-06-07-05 17:52 Gildoniel      Note Added: 0004913                          
-06-08-05 14:35 tiwai          Note Added: 0004922                          
-06-08-05 14:43 Gildoniel      File Added: asound.state                     
-06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+04-13-05 21:59 JKnife         New Issue                                    
+04-13-05 22:01 JKnife         Note Added: 0004479                          
+06-06-05 10:51 perex          Assigned To              perex =>            
+06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
+extreme, interwave) => OTHERS
+06-08-05 15:15 tiwai          Note Added: 0004932                          
+06-08-05 23:25 JKnife         Note Added: 0004976                          
+06-15-05 14:41 nokos          Note Added: 0005027                          
+06-23-05 12:07 tiwai          Note Added: 0005176                          
+06-23-05 15:10 nokos          Note Added: 0005187                          
+06-23-05 15:21 tiwai          Note Added: 0005188                          
+06-23-05 15:26 tiwai          Note Added: 0005189                          
+06-23-05 15:35 nokos          Note Added: 0005190                          
+06-24-05 15:09 tiwai          Note Added: 0005226                          
+06-26-05 22:48 JKnife         Note Added: 0005268                          
+06-27-05 18:35 nokos          Note Added: 0005285                          
+07-08-05 14:57 tiwai          Note Added: 0005430                          
+07-19-05 11:27 nokos          Note Edited: 0005285                         
+07-19-05 11:27 nokos          File Added: riptide-alsa-1.0.9b.patch.gz          
          
-06-08-05 14:52 Gildoniel      Note Added: 0004924                          
-06-08-05 14:59 Gildoniel      Note Added: 0004927                          
-06-08-05 15:08 tiwai          Note Added: 0004929                          
-06-08-05 15:29 Gildoniel      Note Added: 0004933                          
-06-08-05 15:31 Gildoniel      Note Added: 0004934                          
-06-08-05 15:36 pzad           Note Added: 0004935                          
-06-08-05 16:13 Gildoniel      Note Added: 0004948                          
-06-08-05 16:21 pzad           Note Added: 0004949                          
-06-08-05 16:39 Gildoniel      Note Added: 0004954                          
-06-08-05 16:41 tiwai          Note Added: 0004955                          
-06-08-05 16:42 pzad           Note Added: 0004956                          
-06-08-05 16:43 tiwai          Note Added: 0004957                          
-06-08-05 16:45 pzad           Note Added: 0004958                          
-06-08-05 16:52 Gildoniel      Note Added: 0004959                          
-06-08-05 16:57 pzad           Note Added: 0004960                          
-06-08-05 17:03 tiwai          Note Added: 0004961                          
-06-08-05 17:13 Gildoniel      Note Added: 0004963                          
-06-08-05 17:31 Gildoniel      Note Added: 0004964                          
-06-08-05 17:35 tiwai          Note Added: 0004965                          
-06-08-05 18:03 Gildoniel      Note Added: 0004967                          
-06-08-05 18:39 Gildoniel      Note Added: 0004970                          
-06-17-05 11:54 Gildoniel      Note Added: 0005068                          
-06-17-05 14:20 tiwai          Note Added: 0005069                          
-06-20-05 23:31 Gildoniel      Note Added: 0005098                          
-06-21-05 11:20 tiwai          Note Added: 0005103                          
-07-22-05 10:57 vitja          Note Added: 0005547                          
+07-19-05 11:28 nokos          Note Edited: 0005187                         
+07-22-05 12:14 nokos          Issue Monitored: nokos                       
+07-22-05 12:24 nokos          Note Added: 0005548                          
 ======================================================================
 
 
