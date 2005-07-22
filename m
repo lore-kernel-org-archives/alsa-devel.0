@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001275]: easly no sound [fm801]
-Date: Fri, 22 Jul 2005 21:15:52 +0200
-Message-ID: <e06d1b204acd64f62949f0171b0c82b6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
+Date: Fri, 22 Jul 2005 22:13:38 +0200
+Message-ID: <a03bae77fd52f1c2169dfe9589d5f675@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 670FB190
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 21:15:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7FFB192
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 22:13:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1275> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
 ======================================================================
-Reported By:                jsz
+Reported By:                colding
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1275
-Category:                   1_OTHERS
+Issue ID:                   1276
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.4.29
+Distribution:               Gentoo AMD64 2005.0
+Kernel Version:             Linux omc-2 2.6.12-gentoo-r6
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP Fri Jul 22 20:12:38
+CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
-Date Submitted:             07-22-2005 21:15 CEST
-Last Modified:              07-22-2005 21:15 CEST
+Date Submitted:             07-22-2005 22:13 CEST
+Last Modified:              07-22-2005 22:13 CEST
 ======================================================================
-Summary:                    easly no sound [fm801]
+Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
+playing any sound.
 Description: 
-Dear alsa users, 
-i really don't know what else i should to do for my audio system.
-I have Fortemedia fm801 soundcard and i really followed the steps
-descripted in specific tutorial. 
-I remember that the default driver (alsa 1.0.8), after alsaconf &
-alsamixer, was function, but so i had not run #alsactl store, so i
-installed 1.0.9b to resolve the problem that i believe exists...
--how can i restore the default 1.0.8 drivers? 
+I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
+I have enabled ALSA and OSS emulation in the kernel. I have tried as
+compiled in, no modules, and as module. The card is correctly detected on
+boot-up
+and apparently activated. 
 
--why the 1.0.9b don't functions? this i'have done:
-#./configure; make; make install; alsaconf; alsamixer; ./snddevices; 
-and everything is well done: driver installed and card present in
-/proc/asound/cards.
-Of course, the alsamixer settings are all unmuted, created .asoundrc in
-home and modules.conf has been modified by alsaconf.
-I tried also rebooting after install, but nothing.
+Everything seems to be configured correctly according to the alsa guide
+for Gentoo and all I could find at alsa-project and for Gnome. 
 
-Please help me.
+The problem is that I am only hearing cyclically repeating clicks, with
+weak static noise in-between, when I am trying to play music. I have a
+set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
+analog output jack (Line Out 1) on the card.
 
+It seems that my problems are the same as in this former post to the
+list:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+
+That thread concluded with no solution but to revert to OSS.
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 21:15 jsz            New Issue                                    
-07-22-05 21:15 jsz            Kernel Version            => 2.4.29          
+07-22-05 22:13 colding        New Issue                                    
+07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
+07-22-05 22:13 colding        Kernel Version            => Linux omc-2
+2.6.12-gentoo-r6 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
+Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD
+GNU/Linux
 ======================================================================
 
 
