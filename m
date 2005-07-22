@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 22 Jul 2005 02:28:42 +0200
-Message-ID: <f08e38f478f227bd44d1a9de6fff2da5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000833]: [snd_via82xx] setting ac97_clock greater than 48000 should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
+Date: Fri, 22 Jul 2005 02:46:52 +0200
+Message-ID: <569bb693c7ca4de3be9ce9186bb530af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5187199
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 02:28:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E49961AC
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 02:46:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,202 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=833> 
 ======================================================================
-Reported By:                Demosthenes
+Reported By:                t35t0r
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
+Issue ID:                   833
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
+Distribution:               gentoo
+Kernel Version:             2.6.10-gentoo-r5 (but error is reproducible in stock
+kernels also)
 ======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              07-22-2005 02:28 CEST
+Date Submitted:             01-18-2005 17:35 CET
+Last Modified:              07-22-2005 02:46 CEST
 ======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
+Summary:                    [snd_via82xx] setting ac97_clock greater than 48000
+should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
 Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+Please read: http://bugs.gentoo.org/show_bug.cgi?id=78327
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+Forwarded email below
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
+From: Jaroslav Kysela <perex@suse.cz>
+To: t35t0r@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>
+Date: Tue, 18 Jan 2005 10:40:56 +0100 (CET)
+Subject: Re: snd_via82xx ac97_clock=96000 parameter doesn't work for
+kernels >= linux-2.6.9 (fwd)
 
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
+> > Dear sir:
+> >
+> > If you get a chance can you look at
+> > http://bugs.gentoo.org/show_bug.cgi?id=78327 . It seems that setting
+> > ac97_clock=96000 no longer works for kernels >= linux-2.6.9. I didn't
+> > try any other ac97_clock settings since the 96000 setting was working
+> > for a 2.6.7 and 2.6.8.1 kernel. The url has some of my hardware
+> > specifications.
 
-I would be very happy to give any further information needed.
+It seems that the no-sound bug is caused with the AC'97 codec
+initialization. Specifying 96000 as ac97_clock parameter won't help,
+because this value must be from 8000 to 48000 otherwise it is ignored.
+Please, fill a bug to our bugtrack system.
+
+                                               Jaroslav
 ======================================================================
 
 ----------------------------------------------------------------------
- baesyspem - 07-21-05 21:06 
+ tiwai - 01-18-05 17:44 
 ----------------------------------------------------------------------
-Ungod,
-I finally got sound! I get sound from the B.S.(H.P) port and the front
-port.  The front speakers play at a lower level than the BS port, but it
-is clear nonetheless.  Right now I have to use "alsamixer" to set the
-Multitrak frequency before entering "aplay -D prodigy wavefile.wav" or
-else the file plays at the wrong speed.  I am using "type play" as
-recommended.  Has anyone tried to record a .wav file?
+I guess your problem has nothing to do with ac97_clock.  Setting
+ac97_clock=96000 is simply wrong.  If this really works, then something
+else is broken...
 
 ----------------------------------------------------------------------
- ungod - 07-22-05 02:28 
+ connolly - 07-22-05 02:46 
 ----------------------------------------------------------------------
-Yes, we use SPI to communicate with the WM8770 chip in the driver.
-Communication is done manually with GPIO pins, and now that you are
-mentioning I2C, the Terratec Aureon 7.1 had an I2C controlled SPDIF chip,
-but this didn't stop Terratec from also using GPIO for that (the same
-GPIO's as with the WM8770).
+I see this problem on Ubuntu also. My motherboard has onboard sound;
+lspci says:
 
-The ordinary Audiotrak Prodigy 7.1 and the Terratec Aureon 7.1 series also
-have amps on each channel, however there is the possibility of bypassing
-the amp on one of the channels (fron channel on the Aureon), and
-apparently this is the default. Asserting a specific GPIO pin on the
-ICE1724 high, toggles a relay (an actual big clicking relay) which enables
-the amp.
+0000:00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II]
+(rev 78)
 
-As you might have figured darins, I don't have the Prodigy 7.1 LT model
-myself and I haven't been able to get good crystal clear photos of the
-card on the net, which complicates everything, but it seems like you have
-some knowledge of electronics and driver development, so we may be able to
-speed things up now :)
+it works fine with ubuntu's linux-image-2.6.8.1-3-386 but not with
+any of
+linux-image-2.6.10-5-386, linux-image-2.6.10-5-686, nor
+linux-image-2.6.10-5-k7
 
-SPDIF may actually be working already. The ICE1724 chip have inbuilt SPDIF
-transmitter so there is no need for an external chip. The external SPDIF
-chip on the Aureon 7.1 and the ordinary Prodigy 7.1 was for receiving
-only.
-
-Oh, and if you need datasheets, you can always look at
-http://www.alsa-project.org/alsa/ftp/datasheets/
+Is it ordinary for a bug to remain in "new" state this long? Anything I
+can do to help?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-05-10-05 09:36 ungod          Note Added: 0004632                          
-05-10-05 15:50 Demosthenes    Note Added: 0004633                          
-05-14-05 15:18 Demosthenes    Note Added: 0004658                          
-05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
-06-14-05 16:02 baesyspem      Note Added: 0005018                          
-06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
-06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
-06-14-05 18:30 Demosthenes    Note Added: 0005019                          
-06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
-06-14-05 21:26 ungod          Note Added: 0005020                          
-06-14-05 21:27 ungod          Note Edited: 0005020                         
-06-29-05 18:30 Demosthenes    Note Added: 0005307                          
-06-30-05 01:03 ungod          Note Added: 0005321                          
-06-30-05 01:08 ungod          Issue Monitored: ungod                       
-06-30-05 01:46 baesyspem      Note Added: 0005322                          
-06-30-05 02:27 Demosthenes    Note Added: 0005323                          
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
-06-30-05 21:21 ungod          Note Added: 0005328                          
-07-01-05 14:25 baesyspem      Note Added: 0005333                          
-07-01-05 16:09 baesyspem      Note Added: 0005335                          
-07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
-         
-07-01-05 20:43 ungod          Note Added: 0005339                          
-07-01-05 22:08 Demosthenes    Note Added: 0005341                          
-07-01-05 22:46 ungod          Note Added: 0005342                          
-07-01-05 23:09 Demosthenes    Note Added: 0005344                          
-07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
-07-02-05 03:29 ungod          Note Added: 0005350                          
-07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
-07-02-05 03:37 ungod          Note Edited: 0005350                         
-07-02-05 16:50 Demosthenes    Note Added: 0005353                          
-07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 18:27 ungod          Note Added: 0005354                          
-07-02-05 18:36 Demosthenes    Note Added: 0005355                          
-07-02-05 20:20 ungod          Note Added: 0005358                          
-07-02-05 20:59 Demosthenes    Note Added: 0005359                          
-07-02-05 21:43 ungod          File Added: peak.tar.gz                      
-07-02-05 21:44 ungod          Note Added: 0005360                          
-07-02-05 22:30 Demosthenes    Note Added: 0005362                          
-07-03-05 00:21 ungod          Note Added: 0005363                          
-07-03-05 01:49 Demosthenes    Note Added: 0005364                          
-07-03-05 01:55 ungod          Note Added: 0005365                          
-07-03-05 02:46 Demosthenes    Note Added: 0005366                          
-07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
-07-03-05 03:18 Demosthenes    Note Added: 0005367                          
-07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
-07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
-         
-07-03-05 11:47 ungod          Note Added: 0005373                          
-07-03-05 15:29 Demosthenes    Note Added: 0005377                          
-07-03-05 17:06 ungod          Note Added: 0005379                          
-07-04-05 14:34 miljan         Issue Monitored: miljan                      
-07-04-05 14:35 miljan         Issue End Monitor: miljan                    
-07-04-05 14:35 miljan         Issue Monitored: miljan                      
-07-06-05 19:19 Demosthenes    Note Added: 0005392                          
-07-08-05 22:52 ungod          Note Added: 0005437                          
-07-13-05 03:57 ungod          Note Added: 0005457                          
-07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
-07-13-05 04:12 Demosthenes    Note Added: 0005458                          
-07-13-05 04:24 ungod          Note Added: 0005459                          
-07-13-05 04:28 Demosthenes    Note Added: 0005460                          
-07-13-05 04:46 ungod          Note Added: 0005461                          
-07-13-05 04:57 Demosthenes    Note Added: 0005462                          
-07-13-05 04:59 Demosthenes    Note Added: 0005463                          
-07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
-07-13-05 19:39 Demosthenes    Note Added: 0005466                          
-07-14-05 13:19 ungod          Note Added: 0005472                          
-07-14-05 13:31 Demosthenes    Note Added: 0005473                          
-07-14-05 13:54 Demosthenes    Note Added: 0005474                          
-07-15-05 15:08 ungod          Note Added: 0005481                          
-07-15-05 15:17 Demosthenes    Note Added: 0005482                          
-07-15-05 15:23 Demosthenes    Note Edited: 0005474                         
-07-20-05 18:01 darins         Issue Monitored: darins                      
-07-20-05 19:07 darins         Note Added: 0005534                          
-07-20-05 20:56 Demosthenes    Note Added: 0005535                          
-07-20-05 21:04 Demosthenes    Note Edited: 0005535                         
-07-21-05 01:25 darins         Note Added: 0005537                          
-07-21-05 02:01 Demosthenes    Note Added: 0005538                          
-07-21-05 02:16 Demosthenes    Note Edited: 0004618                         
-07-21-05 02:17 Demosthenes    Note Edited: 0004618                         
-07-21-05 21:06 baesyspem      Note Added: 0005542                          
-07-22-05 02:28 ungod          Note Added: 0005543                          
+01-18-05 17:35 t35t0r         New Issue                                    
+01-18-05 17:35 t35t0r         Distribution              => gentoo          
+01-18-05 17:35 t35t0r         Kernel Version            => 2.6.10-gentoo-r5 (but
+error is reproducible in stock kernels also)
+01-18-05 17:44 tiwai          Note Added: 0003252                          
+07-22-05 02:46 connolly       Note Added: 0005544                          
 ======================================================================
 
 
