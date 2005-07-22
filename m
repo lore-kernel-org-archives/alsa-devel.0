@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
-Date: Fri, 22 Jul 2005 12:24:52 +0200
-Message-ID: <692130f14f02ec7a0b0d3bbe7935722a@bugtrack.alsa-project.org>
+From: Joern Seger <j.seger@gmx.de>
+Subject: recording from ATI IXP150
+Date: Fri, 22 Jul 2005 15:54:10 +0200
+Message-ID: <200507221554.10806.j.seger@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44F7419C
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 12:24:52 +0200 (MEST)
+Received: from unimail.uni-dortmund.de (mx1.HRZ.Uni-Dortmund.DE [129.217.128.51])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7345F19F
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 15:56:44 +0200 (MEST)
+Received: from [129.217.186.77] ([129.217.186.77])
+	(authenticated bits=0)
+	by unimail.uni-dortmund.de (8.13.4/8.13.4) with ESMTP id j6MDtURr002135
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2005 15:55:35 +0200 (CEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,76 +28,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
-======================================================================
-Reported By:                JKnife
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1052
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             04-13-2005 21:59 CEST
-Last Modified:              07-22-2005 12:24 CEST
-======================================================================
-Summary:                    Riptide/Context Audio Drivers
-Description: 
-there is a set but its only for the 2.4 kernel.
-i would like you toinclude them in alsa.
-the 2.4 drivers can be found here
-http://www.linuxant.com/drivers/
-======================================================================
+within my project, I recently decided to write an alsa driver.
 
-----------------------------------------------------------------------
- tiwai - 07-08-05 14:57 
-----------------------------------------------------------------------
-Can anyone test the patch?
+I used some example code from the alsa pages (I request a descripor to rais=
+e,=20
+whenever x soundsamples are available and handle it in my select loop).=20
+Everything works fine on almost all chipsets I have available.
 
-----------------------------------------------------------------------
- nokos - 07-22-05 12:24 
-----------------------------------------------------------------------
-I have tested the patch with a 2.6.12 kernel and removed all warning
-messages.
-It works for my Riptide chipset (hotplug needs the firmware "riptide.hex"
-somewhere)
+However, the ATI IXP 150 seems to call the descriptor, even when there is n=
+o=20
+data available (this call will take place 20 times per ms!) so my app is=20
+slowed down a bit :-/. Some samples are ok, but it's really not nice handli=
+ng=20
+hundreds of unneccessary calls.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-13-05 21:59 JKnife         New Issue                                    
-04-13-05 22:01 JKnife         Note Added: 0004479                          
-06-06-05 10:51 perex          Assigned To              perex =>            
-06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
-extreme, interwave) => OTHERS
-06-08-05 15:15 tiwai          Note Added: 0004932                          
-06-08-05 23:25 JKnife         Note Added: 0004976                          
-06-15-05 14:41 nokos          Note Added: 0005027                          
-06-23-05 12:07 tiwai          Note Added: 0005176                          
-06-23-05 15:10 nokos          Note Added: 0005187                          
-06-23-05 15:21 tiwai          Note Added: 0005188                          
-06-23-05 15:26 tiwai          Note Added: 0005189                          
-06-23-05 15:35 nokos          Note Added: 0005190                          
-06-24-05 15:09 tiwai          Note Added: 0005226                          
-06-26-05 22:48 JKnife         Note Added: 0005268                          
-06-27-05 18:35 nokos          Note Added: 0005285                          
-07-08-05 14:57 tiwai          Note Added: 0005430                          
-07-19-05 11:27 nokos          Note Edited: 0005285                         
-07-19-05 11:27 nokos          File Added: riptide-alsa-1.0.9b.patch.gz          
-         
-07-19-05 11:28 nokos          Note Edited: 0005187                         
-07-22-05 12:14 nokos          Issue Monitored: nokos                       
-07-22-05 12:24 nokos          Note Added: 0005548                          
-======================================================================
+Does anyone has had a similar problem? And: does anyone knows a workaround =
+for=20
+that problem?=20
 
+BTW: My system is a Suse 9.3 (Kernel 2.6.4-11) alsa 1.0.9.
+
+Thanks in advanced - J=F6rn
 
 
 
