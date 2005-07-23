@@ -1,13 +1,13 @@
 From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/core/memalloc.c: fix PROC_FS=n compilation
-Date: Sat, 23 Jul 2005 19:08:11 +0200
-Message-ID: <20050723170811.GH3160@stusta.de>
+Subject: Device supported by the OSS trident driver not supported by ALSA
+Date: Sat, 23 Jul 2005 22:04:17 +0200
+Message-ID: <20050723200417.GI3160@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D39A618A
-	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 19:08:16 +0200 (MEST)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2BD76178
+	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 22:04:24 +0200 (MEST)
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,47 +18,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: perex@suse.cz, mulix@mulix.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Alan Cox <alan@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the following compile error with CONFIG_PROC_FS=n:
 
-<--  snip  -->
-
-...
-  CC      sound/core/memalloc.o
-sound/core/memalloc.c: In function 'snd_mem_exit':
-sound/core/memalloc.c:657: error: 'snd_mem_proc' undeclared (first use in this function)
-sound/core/memalloc.c:657: error: (Each undeclared identifier is reported only once
-sound/core/memalloc.c:657: error: for each function it appears in.)
-make[2]: *** [sound/core/memalloc.o] Error 1
-
-<--  snip  -->
+I'm currently creating a list of OSS drivers where all the hardware 
+supported by them is also supported by ALSA. The goal is to schedule 
+them for removal (except someone tells that for one or more of them ALSA 
+support is inferior).
 
 
-Since snd_mem_proc was needlessly global, I've also made it static.
+The OSS trident driver has 5 different pci_device_id entries.
+
+For 4 of them there seems to be similar ALSA support, but I can't find 
+any ALSA equivalent for the following entry:
+        {PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_5050,
+         PCI_ANY_ID, PCI_ANY_ID, 0, 0, CYBER5050},
+
+Can anyone tell my why this device is supported by the OSS trident 
+driver but not by ALSA?
 
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+TIA
+Adrian
 
---- linux-2.6.13-rc3-mm1-full/sound/core/memalloc.c.old	2005-07-23 01:25:03.000000000 +0200
-+++ linux-2.6.13-rc3-mm1-full/sound/core/memalloc.c	2005-07-23 01:30:35.000000000 +0200
-@@ -505,13 +505,13 @@
- 	up(&list_mutex);
- }
- 
-+static struct proc_dir_entry *snd_mem_proc;
- 
- #ifdef CONFIG_PROC_FS
- /*
-  * proc file interface
-  */
- #define SND_MEM_PROC_FILE	"driver/snd-page-alloc"
--struct proc_dir_entry *snd_mem_proc;
- 
- static int snd_mem_proc_read(char *page, char **start, off_t off,
- 			     int count, int *eof, void *data)
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
