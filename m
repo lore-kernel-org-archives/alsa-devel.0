@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Sat, 23 Jul 2005 16:09:45 +0200
-Message-ID: <70304f914b2be9eeb6bed38c4c708aae@bugtrack.alsa-project.org>
+Date: Sat, 23 Jul 2005 16:52:36 +0200
+Message-ID: <7de24c9e2ba295eef2e2923bf9fb152b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7655C186
-	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 16:09:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A46C177
+	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 16:52:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSe Linux 9.3 Professional
 Kernel Version:             2.6.11.4.20a
 ======================================================================
 Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              07-23-2005 16:09 CEST
+Last Modified:              07-23-2005 16:52 CEST
 ======================================================================
 Summary:                    no sound on speakers, low volume on the headphones
 Description: 
@@ -66,20 +66,15 @@ and error messages with certain settings)
 ======================================================================
 
 ----------------------------------------------------------------------
- vitja - 07-22-05 23:46 
-----------------------------------------------------------------------
-I have one idea. When I load pcspkr instead of snd-atiixp driver. Pcspeaker
-works just fine on dynamics & phones. After loading ixp driver I don't
-hear it anymore(only in phones) so I guess some inital settings of device
-are correct.. May be I should to take dump of ixp & ac97's registers to
-understand what is going on?.. My attempts to do this wasn't successful I
-get core dump after loading module. Is there a way to do this?
-
-----------------------------------------------------------------------
  vitja - 07-23-05 16:09 
 ----------------------------------------------------------------------
 Uploaded files dmesg+desc & after contain register dumps before(actually in
 time) and after snd-atiixp driver loading...
+
+----------------------------------------------------------------------
+ vitja - 07-23-05 16:52 
+----------------------------------------------------------------------
+Oh my god it worked!!!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -125,6 +120,7 @@ Professional
 07-23-05 16:07 vitja          File Added: dmesg+desk                       
 07-23-05 16:08 vitja          File Added: after                            
 07-23-05 16:09 vitja          Note Added: 0005554                          
+07-23-05 16:52 vitja          Note Added: 0005555                          
 ======================================================================
 
 
