@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
-Date: Sat, 23 Jul 2005 16:52:36 +0200
-Message-ID: <7de24c9e2ba295eef2e2923bf9fb152b@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001278]: fails to read volume for software volume control
+Date: Sat, 23 Jul 2005 18:23:02 +0200
+Message-ID: <bfdc1644ef80aa6a7171f2eb465ddfd9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A46C177
-	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 16:52:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35FA8188
+	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 18:23:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,105 +22,140 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1278> 
 ======================================================================
-Reported By:                Gildoniel
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1162
-Category:                   PCI - atiixp
+Project:                    ALSA - liboss
+Issue ID:                   1278
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSe Linux 9.3 Professional
-Kernel Version:             2.6.11.4.20a
+Status:                     new
 ======================================================================
-Date Submitted:             06-06-2005 18:54 CEST
-Last Modified:              07-23-2005 16:52 CEST
+Date Submitted:             07-23-2005 18:23 CEST
+Last Modified:              07-23-2005 18:23 CEST
 ======================================================================
-Summary:                    no sound on speakers, low volume on the headphones
+Summary:                    fails to read volume for software volume control
 Description: 
-Problem diagnosis:
- 
-* Sound card is detected and automatically configured, but no sound can be
-heard.
-* It is possible to hear _faint_ sound (very low volume) through
-headphones.
-* Headphone volume is 0 and I can still hear low volume sound (maybe
-master/headphone switched?)
-* It seems to be possible to record voice on the microphone (I see the
-amplitude when talking into the mic)
- 
-Solution attempts so far:
- 
-* used alsamixer to turn up and unmute all channels (failed: no sound on
-speakers, very low volume on headphones)
-* use the "quirk" option of the driver -1 through 7 (failed - no bettering
-and error messages with certain settings)
-* tried other sounddrivers (intel, via and others - didn't try them all)
-(failed - error loading modules on those I tried)
+From: http://bugs.debian.org/319628:
+
+Package: alsa-oss
+Version: 1.0.8-1
+
+Hi,
+
+My MacMini's audio chip seems to have no hardware volume control (or it 
+is unsupported in the kernel I use), so I use software volume control, 
+with the attached .asoundrc. (I'm still a newbie about alsa, there may 
+be some mistakes in my .soundrc file.)
+
+While trying to use hotkeys (that only understands oss) with aoss, I 
+discovered that aoss did not allow to read the volume control, while it 
+can write it flawlessly.
+
+After a few tests, I discovered that it was related to the failing 
+snd_mixer_selem_get_playback_switch function call, and I could 
+workaround the issue with the attached trivial quick&dirty patch.
+
+
+Cheers,
+
+Nicolas Boullis
+
+
+-- System Information:
+Debian Release: 3.1
+Architecture: powerpc (ppc)
+Kernel: Linux 2.6.12-irma
+Locale: LANG=C, LC_CTYPE=C (charmap=ANSI_X3.4-1968)
+
+Versions of packages alsa-oss depends on:
+ii  libasound2                  1.0.8-3      ALSA library
+ii  libc6                       2.3.2.ds1-22 GNU C Library: Shared
+libraries an
+
+-- no debconf information
+
+
+
+pcm.!default {
+  type plug
+  slave {
+    pcm {
+      type softvol
+      slave {
+        pcm {
+	  type dmix
+	  ipc_key 7666
+	  slave {
+	    pcm "hw:0,0"
+	    period_time 0
+	    period_size 1024
+	    buffer_size 8192
+	    rate 44100
+	  }
+	}
+      }
+      control {
+        name Master
+        card 0
+      }
+    }
+  }
+}
+
+pcm.dsp0 {
+  type plug
+  slave.pcm "!default"
+}
+
+
+
+
+only in patch2:
+unchanged:
+--- alsa-oss-1.0.8.orig/alsa/mixer.c
++++ alsa-oss-1.0.8/alsa/mixer.c
+@@ -487,9 +487,7 @@
+ 				break;
+ 			}
+ 			err = snd_mixer_selem_get_playback_switch(elem,
+SND_MIXER_SCHN_FRONT_LEFT, &sw);
+-			if (err < 0) 
+-				break;
+-			if (sw) {
++			if ((err < 0) || (sw)) {
+ 				err = snd_mixer_selem_get_playback_volume(elem,
+SND_MIXER_SCHN_FRONT_LEFT, &lvol);
+ 				if (err < 0) 
+ 					break;
+@@ -499,9 +497,7 @@
+ 				rvol = lvol;
+ 			} else {
+ 				err = snd_mixer_selem_get_playback_switch(elem,
+SND_MIXER_SCHN_FRONT_RIGHT, &sw);
+-				if (err < 0) 
+-					break;
+-				if (sw) {
++				if ((err < 0) || (sw)) { 
+ 					err = snd_mixer_selem_get_playback_volume(elem,
+SND_MIXER_SCHN_FRONT_RIGHT, &rvol);
+ 					if (err < 0) 
+ 						break;
+
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- vitja - 07-23-05 16:09 
-----------------------------------------------------------------------
-Uploaded files dmesg+desc & after contain register dumps before(actually in
-time) and after snd-atiixp driver loading...
-
-----------------------------------------------------------------------
- vitja - 07-23-05 16:52 
-----------------------------------------------------------------------
-Oh my god it worked!!!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-05 18:54 Gildoniel      New Issue                                    
-06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
-06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
-Professional
-06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
-06-07-05 17:52 Gildoniel      Note Added: 0004913                          
-06-08-05 14:35 tiwai          Note Added: 0004922                          
-06-08-05 14:43 Gildoniel      File Added: asound.state                     
-06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
-         
-06-08-05 14:52 Gildoniel      Note Added: 0004924                          
-06-08-05 14:59 Gildoniel      Note Added: 0004927                          
-06-08-05 15:08 tiwai          Note Added: 0004929                          
-06-08-05 15:29 Gildoniel      Note Added: 0004933                          
-06-08-05 15:31 Gildoniel      Note Added: 0004934                          
-06-08-05 15:36 pzad           Note Added: 0004935                          
-06-08-05 16:13 Gildoniel      Note Added: 0004948                          
-06-08-05 16:21 pzad           Note Added: 0004949                          
-06-08-05 16:39 Gildoniel      Note Added: 0004954                          
-06-08-05 16:41 tiwai          Note Added: 0004955                          
-06-08-05 16:42 pzad           Note Added: 0004956                          
-06-08-05 16:43 tiwai          Note Added: 0004957                          
-06-08-05 16:45 pzad           Note Added: 0004958                          
-06-08-05 16:52 Gildoniel      Note Added: 0004959                          
-06-08-05 16:57 pzad           Note Added: 0004960                          
-06-08-05 17:03 tiwai          Note Added: 0004961                          
-06-08-05 17:13 Gildoniel      Note Added: 0004963                          
-06-08-05 17:31 Gildoniel      Note Added: 0004964                          
-06-08-05 17:35 tiwai          Note Added: 0004965                          
-06-08-05 18:03 Gildoniel      Note Added: 0004967                          
-06-08-05 18:39 Gildoniel      Note Added: 0004970                          
-06-17-05 11:54 Gildoniel      Note Added: 0005068                          
-06-17-05 14:20 tiwai          Note Added: 0005069                          
-06-20-05 23:31 Gildoniel      Note Added: 0005098                          
-06-21-05 11:20 tiwai          Note Added: 0005103                          
-07-22-05 10:57 vitja          Note Added: 0005547                          
-07-22-05 20:59 jcdutton       Note Added: 0005549                          
-07-22-05 23:46 vitja          Note Added: 0005550                          
-07-23-05 16:07 vitja          File Added: dmesg+desk                       
-07-23-05 16:08 vitja          File Added: after                            
-07-23-05 16:09 vitja          Note Added: 0005554                          
-07-23-05 16:52 vitja          Note Added: 0005555                          
+07-23-05 18:23 jdthood        New Issue                                    
 ======================================================================
 
 
