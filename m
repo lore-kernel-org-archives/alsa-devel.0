@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: spam
-Date: Sat, 23 Jul 2005 16:24:28 -0400
-Message-ID: <1122150269.16788.14.camel@mindpipe>
+Date: Sat, 23 Jul 2005 16:30:26 -0400
+Message-ID: <1122150627.16788.18.camel@mindpipe>
 References: <20050723201849.19505.qmail@web60822.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -22,14 +22,15 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Sat, 2005-07-23 at 13:18 -0700, Tom Watson wrote:
-> Now if we could get rid of ALL HTML mail that would be (Martha Stewart
-> voice here) "a good thing".  Alas that isn't going to happen anytime
-> soon (*SIGH*)
-> 
+> 2)  A notice should be posted.  Some people have their mailers configured
+>     to send HTML as well as plain text (why is a big question to me).
+> 3)  Perhaps a 'bounce' if the message is in HTML (I'm kinda iffy on this
+>     one).
 
-I'd be happy just to purge it from developer mailing lists.  But
-unfortunately, HTML mail is tolerated on many of those (don't ask me
-why).
+I think we need to just drop it on the floor.  A bounce would just sit
+in the outbound queue forever because most spammers don't take bounces.
+It's not worth the trouble for the tiny percentage of non-spam html
+mail.
 
 Lee
 
