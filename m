@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Sat, 23 Jul 2005 15:47:55 +0200
-Message-ID: <c90a9c1dc9e8f205297dfc24bad917c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001162]: no sound on speakers, low volume on the headphones
+Date: Sat, 23 Jul 2005 16:09:45 +0200
+Message-ID: <70304f914b2be9eeb6bed38c4c708aae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4EB6175
-	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 15:47:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7655C186
+	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 16:09:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,107 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162> 
 ======================================================================
-Reported By:                colding
-Assigned To:                
+Reported By:                Gildoniel
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1276
-Category:                   PCI - emu10k1
+Issue ID:                   1162
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo AMD64 2005.0
-Kernel Version:             Linux omc-2 2.6.12-gentoo-r6
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP Fri Jul 22 20:12:38
-CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
+Status:                     assigned
+Distribution:               SuSe Linux 9.3 Professional
+Kernel Version:             2.6.11.4.20a
 ======================================================================
-Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              07-23-2005 15:47 CEST
+Date Submitted:             06-06-2005 18:54 CEST
+Last Modified:              07-23-2005 16:09 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
-playing any sound.
+Summary:                    no sound on speakers, low volume on the headphones
 Description: 
-I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
-I have enabled ALSA and OSS emulation in the kernel. I have tried as
-compiled in, no modules, and as module. The card is correctly detected on
-boot-up
-and apparently activated. 
-
-Everything seems to be configured correctly according to the alsa guide
-for Gentoo and all I could find at alsa-project and for Gnome. 
-
-The problem is that I am only hearing cyclically repeating clicks, with
-weak static noise in-between, when I am trying to play music. I have a
-set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
-analog output jack (Line Out 1) on the card.
-
-It seems that my problems are the same as in this former post to the
-list:
-
-http://sourceforge.net/mailarchive/message.php?msg_id=11662616
-
-That thread concluded with no solution but to revert to OSS.
-
+Problem diagnosis:
+ 
+* Sound card is detected and automatically configured, but no sound can be
+heard.
+* It is possible to hear _faint_ sound (very low volume) through
+headphones.
+* Headphone volume is 0 and I can still hear low volume sound (maybe
+master/headphone switched?)
+* It seems to be possible to record voice on the microphone (I see the
+amplitude when talking into the mic)
+ 
+Solution attempts so far:
+ 
+* used alsamixer to turn up and unmute all channels (failed: no sound on
+speakers, very low volume on headphones)
+* use the "quirk" option of the driver -1 through 7 (failed - no bettering
+and error messages with certain settings)
+* tried other sounddrivers (intel, via and others - didn't try them all)
+(failed - error loading modules on those I tried)
 ======================================================================
 
 ----------------------------------------------------------------------
- colding - 07-23-05 15:47 
+ vitja - 07-22-05 23:46 
 ----------------------------------------------------------------------
-"Fixed" by downgrading to OSS. Not exactly what I had in mind, but now I
-have sound.
+I have one idea. When I load pcspkr instead of snd-atiixp driver. Pcspeaker
+works just fine on dynamics & phones. After loading ixp driver I don't
+hear it anymore(only in phones) so I guess some inital settings of device
+are correct.. May be I should to take dump of ixp & ac97's registers to
+understand what is going on?.. My attempts to do this wasn't successful I
+get core dump after loading module. Is there a way to do this?
+
+----------------------------------------------------------------------
+ vitja - 07-23-05 16:09 
+----------------------------------------------------------------------
+Uploaded files dmesg+desc & after contain register dumps before(actually in
+time) and after snd-atiixp driver loading...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 22:13 colding        New Issue                                    
-07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
-07-22-05 22:13 colding        Kernel Version            => Linux omc-2
-2.6.12-gentoo-r6 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
-Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD
-GNU/Linux
-07-23-05 12:53 colding        Issue Monitored: colding                     
-07-23-05 15:47 colding        Note Added: 0005553                          
+06-06-05 18:54 Gildoniel      New Issue                                    
+06-06-05 18:54 Gildoniel      File Added: qta0733a.inf                     
+06-06-05 18:54 Gildoniel      Distribution              => SuSe Linux 9.3
+Professional
+06-06-05 18:54 Gildoniel      Kernel Version            => 2.6.11.4.20a    
+06-07-05 17:52 Gildoniel      Note Added: 0004913                          
+06-08-05 14:35 tiwai          Note Added: 0004922                          
+06-08-05 14:43 Gildoniel      File Added: asound.state                     
+06-08-05 14:50 Gildoniel      File Added: proc-asound-card-codec97.txt          
+         
+06-08-05 14:52 Gildoniel      Note Added: 0004924                          
+06-08-05 14:59 Gildoniel      Note Added: 0004927                          
+06-08-05 15:08 tiwai          Note Added: 0004929                          
+06-08-05 15:29 Gildoniel      Note Added: 0004933                          
+06-08-05 15:31 Gildoniel      Note Added: 0004934                          
+06-08-05 15:36 pzad           Note Added: 0004935                          
+06-08-05 16:13 Gildoniel      Note Added: 0004948                          
+06-08-05 16:21 pzad           Note Added: 0004949                          
+06-08-05 16:39 Gildoniel      Note Added: 0004954                          
+06-08-05 16:41 tiwai          Note Added: 0004955                          
+06-08-05 16:42 pzad           Note Added: 0004956                          
+06-08-05 16:43 tiwai          Note Added: 0004957                          
+06-08-05 16:45 pzad           Note Added: 0004958                          
+06-08-05 16:52 Gildoniel      Note Added: 0004959                          
+06-08-05 16:57 pzad           Note Added: 0004960                          
+06-08-05 17:03 tiwai          Note Added: 0004961                          
+06-08-05 17:13 Gildoniel      Note Added: 0004963                          
+06-08-05 17:31 Gildoniel      Note Added: 0004964                          
+06-08-05 17:35 tiwai          Note Added: 0004965                          
+06-08-05 18:03 Gildoniel      Note Added: 0004967                          
+06-08-05 18:39 Gildoniel      Note Added: 0004970                          
+06-17-05 11:54 Gildoniel      Note Added: 0005068                          
+06-17-05 14:20 tiwai          Note Added: 0005069                          
+06-20-05 23:31 Gildoniel      Note Added: 0005098                          
+06-21-05 11:20 tiwai          Note Added: 0005103                          
+07-22-05 10:57 vitja          Note Added: 0005547                          
+07-22-05 20:59 jcdutton       Note Added: 0005549                          
+07-22-05 23:46 vitja          Note Added: 0005550                          
+07-23-05 16:07 vitja          File Added: dmesg+desk                       
+07-23-05 16:08 vitja          File Added: after                            
+07-23-05 16:09 vitja          Note Added: 0005554                          
 ======================================================================
 
 
