@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001246]: Sound card loops and doesn't play any more
-Date: Sat, 23 Jul 2005 13:38:16 +0200
-Message-ID: <4408e0fbfd51565407231ed7a31cab26@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
+Date: Sat, 23 Jul 2005 15:47:55 +0200
+Message-ID: <c90a9c1dc9e8f205297dfc24bad917c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96A38179
-	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 13:38:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4EB6175
+	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 15:47:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1246> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
 ======================================================================
-Reported By:                syberdave
+Reported By:                colding
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1246
-Category:                   ISA - es18xx
+Issue ID:                   1276
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Testing
-Kernel Version:             2.6.7-grsec
+Distribution:               Gentoo AMD64 2005.0
+Kernel Version:             Linux omc-2 2.6.12-gentoo-r6
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP Fri Jul 22 20:12:38
+CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
-Date Submitted:             07-09-2005 17:04 CEST
-Last Modified:              07-23-2005 13:38 CEST
+Date Submitted:             07-22-2005 22:13 CEST
+Last Modified:              07-23-2005 15:47 CEST
 ======================================================================
-Summary:                    Sound card loops and doesn't play any more
+Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
+playing any sound.
 Description: 
-I installed a second sound card (ESS 1868 F/ISA) and when I send data to
-it, it plays the first second or so and starts repeating it and it doesn't
-move on. I notice that when I make the sound mono and bring the bitrate
-down, the data that it repeats becomes longer: mpg321 --wav - music.mp3
-|sox -t wav - -t ossdsp -c 1 -r 4096 /dev/dsp1
+I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
+I have enabled ALSA and OSS emulation in the kernel. I have tried as
+compiled in, no modules, and as module. The card is correctly detected on
+boot-up
+and apparently activated. 
 
-And when I try to play it with ALSA, this command works for my first sound
-card:
-mpg321 --wav - music.mp3 |aplay -D hw:0,0
-But this command doesn't - it does that loop thing again:
-mpg321 --wav - music.mp3 |aplay -D hw:1,0
+Everything seems to be configured correctly according to the alsa guide
+for Gentoo and all I could find at alsa-project and for Gnome. 
 
-This is my results for lsmod:
-Module                  Size  Used by
-snd_es18xx             29100  0 
-snd_cs4231_lib         21280  0 
-snd_sb16_dsp            8064  0 
-snd_sb_common          13152  1 snd_sb16_dsp
-snd_ymfpci             54084  1 
-snd_ac97_codec         60356  1 snd_ymfpci
-snd_opl3_lib            8320  2 snd_es18xx,snd_ymfpci
-snd_hwdep               7136  1 snd_opl3_lib
-snd_mpu401_uart         5824  2 snd_es18xx,snd_ymfpci
-snd_rawmidi            19872  1 snd_mpu401_uart
+The problem is that I am only hearing cyclically repeating clicks, with
+weak static noise in-between, when I am trying to play music. I have a
+set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
+analog output jack (Line Out 1) on the card.
 
-Any help would be appreciated.
+It seems that my problems are the same as in this former post to the
+list:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+
+That thread concluded with no solution but to revert to OSS.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- syberdave - 07-10-05 06:49 
+ colding - 07-23-05 15:47 
 ----------------------------------------------------------------------
-Never mind - I found the Sound FAQ and it says that it's because of an IRQ
-conflict. I'll fix that... somehow.
-
-----------------------------------------------------------------------
- twhitehead - 07-23-05 13:38 
-----------------------------------------------------------------------
-Are you sure it's because of an IRQ conflict.  I had this problem on my
-Alpha PWS 500au, and it turned out to be the interupt detection code.
-
-There are two versions of the detection code in the source.  The second
-one (which I understand to be the old one) is commented out.  Uncommenting
-it (and re-commenting the first) did the trick for me.
-
-I'm attached a patch if you want to give it a go.
+"Fixed" by downgrading to OSS. Not exactly what I had in mind, but now I
+have sound.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-05 17:04 syberdave      New Issue                                    
-07-09-05 17:04 syberdave      Distribution              => Debian Testing  
-07-09-05 17:04 syberdave      Kernel Version            => 2.6.7-grsec     
-07-09-05 17:04 syberdave      Issue Monitored: syberdave                    
-07-10-05 06:49 syberdave      Note Added: 0005441                          
-07-23-05 13:38 twhitehead     Note Added: 0005552                          
+07-22-05 22:13 colding        New Issue                                    
+07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
+07-22-05 22:13 colding        Kernel Version            => Linux omc-2
+2.6.12-gentoo-r6 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
+Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD
+GNU/Linux
+07-23-05 12:53 colding        Issue Monitored: colding                     
+07-23-05 15:47 colding        Note Added: 0005553                          
 ======================================================================
 
 
