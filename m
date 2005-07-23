@@ -1,13 +1,14 @@
-From: Thomas Mintel <tmintel@gmail.com>
-Subject: Audigy pcmcia
-Date: Sat, 23 Jul 2005 00:19:12 -0400
-Message-ID: <26868fae050722211959fd73a0@mail.gmail.com>
-Reply-To: Thomas Mintel <tmintel@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001277]: Choosing of default playback device on the fly
+Date: Sat, 23 Jul 2005 10:42:27 +0200
+Message-ID: <309b67c63c0876d7ae95f5e5c1a05ac4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24412178
+	for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2005 10:42:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,18 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hey James, its me again.  I asked you about Audigy pcmcia support a
-little while back.  Sorry i have absolutely no driver experience, and I
-think the pcmcia core would be a bad place to start.  I was wondering if
-you knew anything about it, and maybe if I could offer some kind of
-compensation.. (money?) for you to work on it.  It would really be of
-great benefit to me if I could get this card working, and I would try to
-do anything to help get it working; Not just for me, but for the whole
-community.  Sorry that I have no programming experience in drivers and
-cannot help in a more beneficial manner.  Thanks.
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1277> 
+======================================================================
+Reported By:                oldium
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1277
+Category:                   0_general
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-23-2005 10:42 CEST
+Last Modified:              07-23-2005 10:42 CEST
+======================================================================
+Summary:                    Choosing of default playback device on the fly
+Description: 
+Situation: There is on-board sound card and one pluggable (USB/PCMCIA)
+sound card which is preferred to play the sound.
+
+Problem: If the preferred sound card is plugged-in before the boot time,
+it is taken as the default output card (as of snd-card-0 settings and
+driver is loaded first), but when the sound card is plugged after the
+boot, it gets index 1 and is not the default.
+
+Suggestion: Please consider creating plugin to use preferred sound card as
+default output whenever it is plugged in and use fallback card whenever it
+is not available, or let the user space program (shell script) decide
+which card is default.
+
+Usage: This is good for laptops using external sound card at home and
+built-in on the way.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-23-05 10:42 oldium         New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
