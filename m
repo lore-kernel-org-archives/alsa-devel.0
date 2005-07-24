@@ -1,12 +1,14 @@
-From: =?windows-1251?B?MjcgLSAzMSAg6P7r/yAyMDA1IOPu5OA=?= <anyone@excite.co.jp>
-Subject: =?windows-1251?B?z9DAytLI18XRysjJIMrT0NEgxMvfINPP0MDCy9/e2cXDziDMwMPAx8jNzsw=?=
-Date: Sat, 23 Jul 2005 21:13:08 +0000
-Message-ID: <dcdd01c58fcb$33304958$2bf49969@excite.co.jp>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001279]: Audigy2 NX produces crackles on USB2, fine on USB1
+Date: Sun, 24 Jul 2005 07:03:16 +0200
+Message-ID: <4f59ff546ec2a7dfd54e43446099fff2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_2A17F436.719FAFE1"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C0F3168
+	for <alsa-devel@alsa-project.org>; Sun, 24 Jul 2005 07:03:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,193 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_2A17F436.719FAFE1
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_2A18E820.4A533BDB"
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1279> 
+======================================================================
+Reported By:                bluebottle
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1279
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.12.2
+======================================================================
+Date Submitted:             07-24-2005 07:03 CEST
+Last Modified:              07-24-2005 07:03 CEST
+======================================================================
+Summary:                    Audigy2 NX produces crackles on USB2, fine on USB1
+Description: 
+I recently upgraded to a 2.6.12.2 kernel (from 2.6.12) and now the Audigy2
+NX is detected as a fully-fledged USB2 device. :)
 
+But... it produces crackles in the sound that fade in and out over about a
+two second period, continuously, upon trying to play any sound. The sound
+does play, but has all those crackles in it. :(
 
-------=_NextPart_001_0001_2A18E820.4A533BDB
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+If I go into BIOS and disable USB2, making my Audigy a USB1 device again,
+it works very well indeed. :)
+======================================================================
 
-=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=20
-=C4=CB=DF =D3=CF=D0=C0=C2=CB=DF=DE=D9=C5=C3=CE =CC=C0=C3=C0=C7=C8=CD=CE=CC
-
-27 - 31  =E8=FE=EB=FF 2005 =E3=EE=E4=E0
-
-
-=D7=F2=EE =E7=ED=E0=F7=E8=F2 =E1=FB=F2=FC =F5=EE=F0=EE=F8=E8=EC =F3=EF=F0=
-=E0=E2=EB=FF=FE=F9=E8=EC =EC=E0=E3=E0=E7=E8=ED=E0? =D7=F2=EE =EE=EF=F0=E5=
-=E4=E5=EB=FF=E5=F2 =E5=E3=EE =EF=F0=EE=F4=E5=F1=F1=E8=EE=ED=E0=EB=FC=ED=F3=
-=FE
-=EA=EE=EC=EF=E5=F2=E5=ED=F2=ED=EE=F1=F2=FC? =D7=F2=EE =EE=ED =E4=EE=EB=E6=
-=E5=ED =E7=ED=E0=F2=FC =E8 =F3=EC=E5=F2=FC, =F7=F2=EE=E1=FB =FD=F4=F4=E5=EA=
-=F2=E8=E2=ED=EE =E2=FB=EF=EE=EB=ED=FF=F2=FC
-=E2=EE=E7=EB=EE=E6=E5=ED=ED=FB=E5 =ED=E0 =ED=E5=E3=EE =EE=E1=FF=E7=E0=ED=ED=
-=EE=F1=F2=E8?
-
-=CA=EE=EC=EF=EB=E5=EA=F1=ED=FB=E9 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E9 =F1=
-=E5=EC=E8=ED=E0=F0 =E7=E0=F1=F2=E0=E2=EB=FF=E5=F2 =E7=E0=E4=F3=EC=E0=F2=FC=
-=F1=FF =EE =ED=E0=F1=F2=EE=FF=F9=E5=EC =E8 =E1=F3=E4=F3=F9=E5=EC
-=F1=E2=EE=E5=E3=EE =EC=E0=E3=E0=E7=E8=ED=E0 =E8 =F1=ED=E0=E1=E6=E0=E5=F2 =
-=E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=E0=EC=E8 =E4=EB=FF =FD=F4=F4=E5=EA=F2=E8=E2=
-=ED=EE=E3=EE =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =E8=EC.
-
-
-=CF=F0=EE=E3=F0=E0=EC=EC=E0 =EA=F3=F0=F1=E0 =EE=F5=E2=E0=F2=FB=E2=E0=E5=F2=
- =F1=EB=E5=E4=F3=FE=F9=E8=E5 =F2=E5=EC=FB: =EA=EB=E8=E5=ED=F2=EE=EE=F0=E8=
-=E5=ED=F2=E8=F0=EE=E2=E0=ED=ED=FB=E9 =EF=EE=E4=F5=EE=E4
-=E2 =F0=E0=E1=EE=F2=E5 =F0=EE=E7=ED=E8=F7=ED=EE=E3=EE =EF=F0=E5=E4=EF=F0=E8=
-=FF=F2=E8=FF, =F0=E5=EA=EB=E0=EC=E0 =E8 =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=FB=
- =F1=F2=E8=EC=F3=EB=E8=F0=EE=E2=E0=ED=E8=E5 =EF=F0=EE=E4=E0=E6
-=E2 =EC=E0=E3=E0=E7=E8=ED=E5, =F2=F0=E5=F5=F3=F0=EE=E2=ED=E5=E2=E0=FF =EA=
-=EE=ED=F6=E5=EF=F6=E8=FF =EC=E5=F0=F7=E5=ED=E4=E0=E9=E7=E8=ED=E3=E0, =E2=ED=
-=F3=F2=F0=E5=ED=ED=FF=FF =E1=EE=F0=FC=E1=E0 =E7=E0
-=F0=E5=ED=F2=E0=E1=E5=EB=FC=ED=EE=F1=F2=FC, =EE=F2=E4=E5=EB=FC=ED=FB=E5 =E2=
-=EE=EF=F0=EE=F1=FB =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =E0=F1=F1=EE=F0=F2=E8=EC=
-=E5=ED=F2=EE=EC, =F3=EF=F0=E0=E2=EB=E5=ED=E8=E5
-=EF=E5=F0=F1=EE=ED=E0=EB=EE=EC =E8 =F1=F2=E0=ED=E4=E0=F0=F2=FB =EE=E1=F1=EB=
-=F3=E6=E8=E2=E0=ED=E8=FF =EF=EE=EA=F3=EF=E0=F2=E5=EB=E5=E9.=20
-
-=CF=EE=EB=F3=F7=E8=F2=FC =ED=E5=EE=E1=F5=EE=E4=E8=EC=FB=E5 =E7=ED=E0=ED=E8=
-=FF =E8 =F3=EC=E5=ED=E8=FF =E4=EB=FF =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E3=EE=
- =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =F0=EE=E7=ED=E8=F7=ED=FB=EC
-=EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E5=EC =E8 =EE=F2=F0=E0=E1=EE=F2=E0=F2=FC =E8=
-=F5 =E2 =F5=EE=E4=E5 =F1=EF=E5=F6=E8=E0=EB=FC=ED=FB=F5 =EF=F0=E0=EA=F2=E8=
-=F7=E5=F1=EA=E8=F5 =E7=E0=E4=E0=ED=E8=E9 =E2=FB
-=F1=EC=EE=E6=E5=F2=E5 =ED=E0 =EF=FF=F2=E8=E4=ED=E5=E2=ED=EE=EC =F1=E5=EC=E8=
-=ED=E0=F0=E5-=EF=F0=E0=EA=F2=E8=EA=F3=EC=E5:
-
-
-=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=20
-=C4=CB=DF =D3=CF=D0=C0=C2=CB=DF=DE=D9=C5=C3=CE =CC=C0=C3=C0=C7=C8=CD=CE=CC
-
-27 - 31  =E8=FE=EB=FF 2005 =E3=EE=E4=E0
-
-
-=D6=E5=EB=E5=E2=E0=FF =E0=F3=E4=E8=F2=EE=F0=E8=FF: =E2=EB=E0=E4=E5=EB=FC=F6=
-=FB =EC=E0=EB=EE=E3=EE =F0=EE=E7=ED=E8=F7=ED=EE=E3=EE =E1=E8=E7=ED=E5=F1=E0=
-, =E4=E8=F0=E5=EA=F2=EE=F0=E0 =EE=F2=E4=E5=EB=FC=ED=EE
-=F1=F2=EE=FF=F9=E8=F5 =E8 =F1=E5=F2=E5=E2=FB=F5 =EC=E0=E3=E0=E7=E8=ED=EE=E2=
- =E8 =E8=F5 =E7=E0=EC=E5=F1=F2=E8=F2=E5=EB=E8, =E4=E8=F0=E5=EA=F2=EE=F0=E0=
- =EF=EE =F0=EE=E7=ED=E8=F6=E5, =F1=EE=F2=F0=F3=E4=ED=E8=EA=E8
-=E8=E7 =EA=E0=E4=F0=EE=E2=EE=E3=EE =F0=E5=E7=E5=F0=E2=E0 =F0=EE=E7=ED=E8=F7=
-=ED=FB=F5 =EA=EE=EC=EF=E0=ED=E8=E9.=20
-
-=D6=E5=EB=FC =F0=E0=E1=EE=F2=FB =EF=F0=EE=E5=EA=F2=E0 - =EF=F0=E5=E4=EE=F1=
-=F2=E0=E2=E8=F2=FC =F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF=EC =E8 =F1=EE=F2=F0=
-=F3=E4=ED=E8=EA=E0=EC =EA=EE=EC=EF=E0=ED=E8=E9
-=F0=EE=E7=ED=E8=F7=ED=EE=E9 =F2=EE=F0=E3=EE=E2=EB=E8 =EC=E0=EA=F1=E8=EC=F3=
-=EC =E2=EE=E7=EC=EE=E6=ED=EE=F1=F2=E5=E9 =E4=EB=FF =EF=EE=E2=FB=F8=E5=ED=E8=
-=FF =F1=EE=E1=F1=F2=E2=E5=ED=ED=EE=E3=EE =EF=F0=EE=F4=E5=F1=F1=E8=EE=ED=E0=
-=EB=E8=E7=EC=E0
-=E8 =F0=E5=F8=E5=ED=E8=FF =F0=E0=E7=ED=EE=E3=EE =F0=EE=E4=E0 =F0=E0=E1=EE=
-=F7=E8=F5 =F1=E8=F2=F3=E0=F6=E8=E9.
-
-=D2=E5=EB=E5=F4=EE=ED =E4=EB=FF =F1=EF=F0=E0=E2=EE=EA: (O95) 98O-65-I6 =20
-
-
-  =20
-------=_NextPart_001_0001_2A18E820.4A533BDB
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
-251">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
-<BODY text=3D#000000 bgColor=3D#ffffff><P align=3Dcenter><FONT face=3DAri=
-al size=3D5><b>=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1 <br>
-=C4=CB=DF =D3=CF=D0=C0=C2=CB=DF=DE=D9=C5=C3=CE =CC=C0=C3=C0=C7=C8=CD=CE=CC=
-</b></FONT></P>
-<P align=3Dcenter><FONT face=3DArial><b>27 - 31&nbsp; =E8=FE=EB=FF 2005 =E3=
-=EE=E4=E0</b><br>
-</P>
-
-<P align=3Djustify></FONT><FONT face=3DArial>=D7=F2=EE =E7=ED=E0=F7=E8=F2=
- =E1=FB=F2=FC =F5=EE=F0=EE=F8=E8=EC =F3=EF=F0=E0=E2=EB=FF=FE=F9=E8=EC =EC=
-=E0=E3=E0=E7=E8=ED=E0? =D7=F2=EE =EE=EF=F0=E5=E4=E5=EB=FF=E5=F2 =E5=E3=EE=
- =EF=F0=EE=F4=E5=F1=F1=E8=EE=ED=E0=EB=FC=ED=F3=FE =EA=EE=EC=EF=E5=F2=E5=ED=
-=F2=ED=EE=F1=F2=FC? =D7=F2=EE =EE=ED =E4=EE=EB=E6=E5=ED =E7=ED=E0=F2=FC =E8=
- =F3=EC=E5=F2=FC, =F7=F2=EE=E1=FB =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE =E2=FB=EF=
-=EE=EB=ED=FF=F2=FC =E2=EE=E7=EB=EE=E6=E5=ED=ED=FB=E5 =ED=E0 =ED=E5=E3=EE =
-=EE=E1=FF=E7=E0=ED=ED=EE=F1=F2=E8?<br>
-<br>
-=CA=EE=EC=EF=EB=E5=EA=F1=ED=FB=E9 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E9 =F1=
-=E5=EC=E8=ED=E0=F0 =E7=E0=F1=F2=E0=E2=EB=FF=E5=F2 =E7=E0=E4=F3=EC=E0=F2=FC=
-=F1=FF =EE =ED=E0=F1=F2=EE=FF=F9=E5=EC =E8 =E1=F3=E4=F3=F9=E5=EC =F1=E2=EE=
-=E5=E3=EE =EC=E0=E3=E0=E7=E8=ED=E0 =E8 =F1=ED=E0=E1=E6=E0=E5=F2 =E8=ED=F1=
-=F2=F0=F3=EC=E5=ED=F2=E0=EC=E8 =E4=EB=FF =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E3=
-=EE =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =E8=EC. <br>
-<br>
-=CF=F0=EE=E3=F0=E0=EC=EC=E0 =EA=F3=F0=F1=E0 =EE=F5=E2=E0=F2=FB=E2=E0=E5=F2=
- =F1=EB=E5=E4=F3=FE=F9=E8=E5 =F2=E5=EC=FB: =EA=EB=E8=E5=ED=F2=EE=EE=F0=E8=
-=E5=ED=F2=E8=F0=EE=E2=E0=ED=ED=FB=E9 =EF=EE=E4=F5=EE=E4 =E2 =F0=E0=E1=EE=F2=
-=E5 =F0=EE=E7=ED=E8=F7=ED=EE=E3=EE =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=FF, =F0=
-=E5=EA=EB=E0=EC=E0 =E8 =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=FB =F1=F2=E8=EC=F3=EB=
-=E8=F0=EE=E2=E0=ED=E8=E5 =EF=F0=EE=E4=E0=E6 =E2 =EC=E0=E3=E0=E7=E8=ED=E5,=
- =F2=F0=E5=F5=F3=F0=EE=E2=ED=E5=E2=E0=FF =EA=EE=ED=F6=E5=EF=F6=E8=FF =EC=E5=
-=F0=F7=E5=ED=E4=E0=E9=E7=E8=ED=E3=E0, =E2=ED=F3=F2=F0=E5=ED=ED=FF=FF =E1=EE=
-=F0=FC=E1=E0 =E7=E0 =F0=E5=ED=F2=E0=E1=E5=EB=FC=ED=EE=F1=F2=FC, =EE=F2=E4=
-=E5=EB=FC=ED=FB=E5 =E2=EE=EF=F0=EE=F1=FB =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =E0=
-=F1=F1=EE=F0=F2=E8=EC=E5=ED=F2=EE=EC, =F3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =EF=E5=
-=F0=F1=EE=ED=E0=EB=EE=EC =E8 =F1=F2=E0=ED=E4=E0=F0=F2=FB =EE=E1=F1=EB=F3=E6=
-=E8=E2=E0=ED=E8=FF =EF=EE=EA=F3=EF=E0=F2=E5=EB=E5=E9. <br>
-<br>
-=CF=EE=EB=F3=F7=E8=F2=FC =ED=E5=EE=E1=F5=EE=E4=E8=EC=FB=E5 =E7=ED=E0=ED=E8=
-=FF =E8 =F3=EC=E5=ED=E8=FF =E4=EB=FF =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E3=EE=
- =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =F0=EE=E7=ED=E8=F7=ED=FB=EC =EF=F0=E5=E4=EF=
-=F0=E8=FF=F2=E8=E5=EC =E8 =EE=F2=F0=E0=E1=EE=F2=E0=F2=FC =E8=F5 =E2 =F5=EE=
-=E4=E5 =F1=EF=E5=F6=E8=E0=EB=FC=ED=FB=F5 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=
-=F5 =E7=E0=E4=E0=ED=E8=E9 =E2=FB =F1=EC=EE=E6=E5=F2=E5 =ED=E0 =EF=FF=F2=E8=
-=E4=ED=E5=E2=ED=EE=EC =F1=E5=EC=E8=ED=E0=F0=E5-=EF=F0=E0=EA=F2=E8=EA=F3=EC=
-=E5:<br>
-</P>
-
-<P align=3Dcenter></FONT><FONT face=3DArial size=3D5><b>=CF=D0=C0=CA=D2=C8=
-=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1 <br>
-=C4=CB=DF =D3=CF=D0=C0=C2=CB=DF=DE=D9=C5=C3=CE =CC=C0=C3=C0=C7=C8=CD=CE=CC=
-</b></FONT></P>
-<P align=3Dcenter><FONT face=3DArial><b>27 - 31&nbsp; =E8=FE=EB=FF 2005 =E3=
-=EE=E4=E0</b><br>
-</P>
-
-<P align=3Djustify></FONT><FONT face=3DArial><b>=D6=E5=EB=E5=E2=E0=FF =E0=
-=F3=E4=E8=F2=EE=F0=E8=FF:&nbsp;</b>=E2=EB=E0=E4=E5=EB=FC=F6=FB =EC=E0=EB=EE=
-=E3=EE =F0=EE=E7=ED=E8=F7=ED=EE=E3=EE =E1=E8=E7=ED=E5=F1=E0, =E4=E8=F0=E5=
-=EA=F2=EE=F0=E0 =EE=F2=E4=E5=EB=FC=ED=EE =F1=F2=EE=FF=F9=E8=F5 =E8 =F1=E5=
-=F2=E5=E2=FB=F5 =EC=E0=E3=E0=E7=E8=ED=EE=E2 =E8 =E8=F5 =E7=E0=EC=E5=F1=F2=
-=E8=F2=E5=EB=E8, =E4=E8=F0=E5=EA=F2=EE=F0=E0 =EF=EE =F0=EE=E7=ED=E8=F6=E5=
-, =F1=EE=F2=F0=F3=E4=ED=E8=EA=E8 =E8=E7 =EA=E0=E4=F0=EE=E2=EE=E3=EE =F0=E5=
-=E7=E5=F0=E2=E0 =F0=EE=E7=ED=E8=F7=ED=FB=F5 =EA=EE=EC=EF=E0=ED=E8=E9. </F=
-ONT></P>
-<P align=3Djustify><FONT face=3DArial><b>=D6=E5=EB=FC =F0=E0=E1=EE=F2=FB =
-=EF=F0=EE=E5=EA=F2=E0 </b>- =EF=F0=E5=E4=EE=F1=F2=E0=E2=E8=F2=FC =F0=F3=EA=
-=EE=E2=EE=E4=E8=F2=E5=EB=FF=EC =E8 =F1=EE=F2=F0=F3=E4=ED=E8=EA=E0=EC =EA=EE=
-=EC=EF=E0=ED=E8=E9 =F0=EE=E7=ED=E8=F7=ED=EE=E9 =F2=EE=F0=E3=EE=E2=EB=E8 =EC=
-=E0=EA=F1=E8=EC=F3=EC =E2=EE=E7=EC=EE=E6=ED=EE=F1=F2=E5=E9 =E4=EB=FF =EF=EE=
-=E2=FB=F8=E5=ED=E8=FF =F1=EE=E1=F1=F2=E2=E5=ED=ED=EE=E3=EE =EF=F0=EE=F4=E5=
-=F1=F1=E8=EE=ED=E0=EB=E8=E7=EC=E0 =E8 =F0=E5=F8=E5=ED=E8=FF =F0=E0=E7=ED=EE=
-=E3=EE =F0=EE=E4=E0 =F0=E0=E1=EE=F7=E8=F5 =F1=E8=F2=F3=E0=F6=E8=E9.</FONT=
-></P>
-
-
-<P align=3Dcenter></FONT><FONT face=3DArial>=D2=E5=EB=E5=F4=EE=ED =E4=EB=FF=
- =F1=EF=F0=E0=E2=EE=EA: (O95) 98O-65-I6&nbsp; <br>
-</P></FONT>
-</BODY>
-</HTML>
-
-------=_NextPart_001_0001_2A18E820.4A533BDB--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-24-05 07:03 bluebottle     New Issue                                    
+07-24-05 07:03 bluebottle     Distribution              => Ubuntu          
+07-24-05 07:03 bluebottle     Kernel Version            => 2.6.12.2        
+======================================================================
 
 
 
-------=_NextPart_000_0000_2A17F436.719FAFE1--
+
+-------------------------------------------------------
+SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
+from IBM. Find simple to follow Roadmaps, straightforward articles,
+informative Webcasts and more! Get everything you need to get up to
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
