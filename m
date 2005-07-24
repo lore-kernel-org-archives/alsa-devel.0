@@ -1,14 +1,20 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: spam
-Date: Sun, 24 Jul 2005 18:44:35 -0400
-Message-ID: <1122245075.27064.1.camel@mindpipe>
-References: <20050723201849.19505.qmail@web60822.mail.yahoo.com>
-	 <1122150627.16788.18.camel@mindpipe>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: Device supported by the OSS trident driver not supported by
+ ALSA
+Date: Mon, 25 Jul 2005 00:42:49 +0100
+Message-ID: <1122248569.10835.22.camel@localhost.localdomain>
+References: <20050723200417.GI3160@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1122150627.16788.18.camel@mindpipe>
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A14741BA
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 01:18:02 +0200 (MEST)
+Received: from localhost.localdomain (unknown [81.2.110.250])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id DB6478450D
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 01:18:01 +0200 (MEST)
+In-Reply-To: <20050723200417.GI3160@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,28 +24,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Adrian Bunk <bunk@stusta.de>
+Cc: perex@suse.cz, mulix@mulix.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Alan Cox <alan@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-07-23 at 16:30 -0400, Lee Revell wrote:
-> On Sat, 2005-07-23 at 13:18 -0700, Tom Watson wrote:
-> > 2)  A notice should be posted.  Some people have their mailers configured
-> >     to send HTML as well as plain text (why is a big question to me).
-> > 3)  Perhaps a 'bounce' if the message is in HTML (I'm kinda iffy on this
-> >     one).
+On Sad, 2005-07-23 at 22:04 +0200, Adrian Bunk wrote:
+> The OSS trident driver has 5 different pci_device_id entries.
 > 
-> I think we need to just drop it on the floor.  A bounce would just sit
-> in the outbound queue forever because most spammers don't take bounces.
-> It's not worth the trouble for the tiny percentage of non-spam html
-> mail.
+> For 4 of them there seems to be similar ALSA support, but I can't find 
+> any ALSA equivalent for the following entry:
+>         {PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_5050,
+>          PCI_ANY_ID, PCI_ANY_ID, 0, 0, CYBER5050},
 > 
+> Can anyone tell my why this device is supported by the OSS trident 
+> driver but not by ALSA?
 
-I opened a trouble ticket for the spam problem:
+The OSS driver supports the CyberPro T-squared core integrated into the
+cyberpro chipset while the ALSA driver only supports the others. Should
+be easy for someone to resolve. I don't have any 5000 hardware to test
+it however.
 
-http://sourceforge.net/tracker/index.php?func=detail&aid=1244105&group_id=1&atid=200001
-
-Lee
+Alan
 
 
 
