@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001279]: Audigy2 NX produces crackles on USB2, fine on USB1
-Date: Sun, 24 Jul 2005 09:58:26 +0200
-Message-ID: <83e2195b3df77efeb244d60506e280f8@bugtrack.alsa-project.org>
+From: Bodo Eggert <7eggert@gmx.de>
+Subject: Re: [2.6 patch] sound drivers select'ing ISAPNP must depend on PNP
+ && ISA
+Date: Sun, 24 Jul 2005 11:39:52 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0507241112150.5658@be1.lrz>
+References: <Pine.LNX.4.58.0507171702030.12446@be1.lrz> <20050719163640.GK5031@stusta.de>
+ <Pine.LNX.4.58.0507192232230.4182@be1.lrz> <20050723164801.GE3160@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 246851B4
-	for <alsa-devel@alsa-project.org>; Sun, 24 Jul 2005 09:58:27 +0200 (MEST)
+Received: from mail-in-05.arcor-online.net (mail-in-05.arcor-online.net [151.189.21.45])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28C2F1B4
+	for <alsa-devel@alsa-project.org>; Sun, 24 Jul 2005 11:38:39 +0200 (MEST)
+In-Reply-To: <20050723164801.GE3160@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +21,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Bodo Eggert <7eggert@gmx.de>, perex@suse.cz, akpm@osdl.org, torvalds@osdl.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 23 Jul 2005, Adrian Bunk wrote:
+> On Tue, Jul 19, 2005 at 10:50:53PM +0200, Bodo Eggert wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1279> 
-======================================================================
-Reported By:                bluebottle
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1279
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.12.2
-======================================================================
-Date Submitted:             07-24-2005 07:03 CEST
-Last Modified:              07-24-2005 09:58 CEST
-======================================================================
-Summary:                    Audigy2 NX produces crackles on USB2, fine on USB1
-Description: 
-I recently upgraded to a 2.6.12.2 kernel (from 2.6.12) and now the Audigy2
-NX is detected as a fully-fledged USB2 device. :)
+> > OTOH, the build system
+> > should automatically propagate the dependencies. I asume that should be
+> > easy, except for having the time to implement that.
+> >...
+> 
+> There are nontrivial problems:
+> E.g. what should happen if you select option A that depends on (B || C)?
 
-But... it produces crackles in the sound that fade in and out over about a
-two second period, continuously, upon trying to play any sound. The sound
-does play, but has all those crackles in it. :(
-
-If I go into BIOS and disable USB2, making my Audigy a USB1 device again,
-it works very well indeed. :)
-======================================================================
-
-----------------------------------------------------------------------
- bluebottle - 07-24-05 09:58 
-----------------------------------------------------------------------
-I should add that this is with a compiled-from-source ALSA, using the
-latest tarballs from the front page. The only difference I can see is
-/proc & /sys information that the Audigy is fully-USB2 with the new
-kernel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-24-05 07:03 bluebottle     New Issue                                    
-07-24-05 07:03 bluebottle     Distribution              => Ubuntu          
-07-24-05 07:03 bluebottle     Kernel Version            => 2.6.12.2        
-07-24-05 09:58 bluebottle     Note Added: 0005557                          
-======================================================================
+You should in effect depend on ($original_depends) && (B || C). You'll 
+just need to append all (recursive) dependencies in the selecting option.
 
 
+last_length:=-1; /* impossible value */
+while |options_with_unresolved_selects| > 0 do begin
+	if |options_with_unresolved_selects| == last_length
+	then goto circular_recursion_detected;
+	last_length:=|options_with_unresolved_selects|;
+
+	for i in options_with_unresolved_selects do begin
+		for s in i->unresolved_selects do
+			if 0 == |s->unresolved_selects|
+			then begin
+				add(i->depends, s->depends)
+				delete_from(i->unresolved_selects, s)
+			end
+		if 0 == |i->unresolved_selects|
+		then delete_from(options_with_unresolved_selects, i);
+	end
+end
+
+> There's one opinion that options should be either select'able _or_ user 
+> visible.
+
+That would only result in ugly workarounds. Think about the kernel 
+libraries. You'll want to manually select them, and you'll want to 
+automatically select them, and you want both to be visible.
+
+-- 
+Funny quotes:
+22. When everything's going your way, you're in the wrong lane and and going
+    the wrong way.
 
 
 -------------------------------------------------------
