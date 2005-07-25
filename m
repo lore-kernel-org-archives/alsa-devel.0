@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Alsa Mixer api documentation.
-Date: Sun, 24 Jul 2005 21:20:06 -0400
-Message-ID: <1122254407.31270.1.camel@mindpipe>
-References: <29d8345905072416467aa8dc4d@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001279]: Audigy2 NX produces crackles on USB2, fine on USB1
+Date: Mon, 25 Jul 2005 11:03:01 +0200
+Message-ID: <3d2a5ebd7782fc7f4c023cd6e27bda1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <29d8345905072416467aa8dc4d@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BA56168
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 11:03:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,17 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chuckles <chuckleberryfinn@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-07-25 at 01:46 +0200, Chuckles wrote:
-> So...is there? If anyone can even give me a simple "open mixer, set
-> pcm to 50%, close mixer" example that'd be great.
 
-Why don't you look at the source to xmms or mplayer?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1279> 
+======================================================================
+Reported By:                bluebottle
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1279
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.12.2
+======================================================================
+Date Submitted:             07-24-2005 07:03 CEST
+Last Modified:              07-25-2005 11:03 CEST
+======================================================================
+Summary:                    Audigy2 NX produces crackles on USB2, fine on USB1
+Description: 
+I recently upgraded to a 2.6.12.2 kernel (from 2.6.12) and now the Audigy2
+NX is detected as a fully-fledged USB2 device. :)
 
-Lee
+But... it produces crackles in the sound that fade in and out over about a
+two second period, continuously, upon trying to play any sound. The sound
+does play, but has all those crackles in it. :(
+
+If I go into BIOS and disable USB2, making my Audigy a USB1 device again,
+it works very well indeed. :)
+======================================================================
+
+----------------------------------------------------------------------
+ bluebottle - 07-24-05 09:58 
+----------------------------------------------------------------------
+I should add that this is with a compiled-from-source ALSA, using the
+latest tarballs from the front page. The only difference I can see is
+/proc & /sys information that the Audigy is fully-USB2 with the new
+kernel.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-25-05 11:03 
+----------------------------------------------------------------------
+ALSA 1.0.9 doesn't yet contain all USB2 fixes; you have to use the CVS
+version.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-24-05 07:03 bluebottle     New Issue                                    
+07-24-05 07:03 bluebottle     Distribution              => Ubuntu          
+07-24-05 07:03 bluebottle     Kernel Version            => 2.6.12.2        
+07-24-05 09:58 bluebottle     Note Added: 0005557                          
+07-25-05 11:03 Clemens LadischNote Added: 0005561                          
+======================================================================
+
 
 
 
