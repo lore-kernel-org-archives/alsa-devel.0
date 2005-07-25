@@ -1,18 +1,15 @@
-From: Chuckles <chuckleberryfinn@gmail.com>
-Subject: Re: Alsa Mixer api documentation. (Damn u C programmers!)
-Date: Mon, 25 Jul 2005 16:20:38 +0200
-Message-ID: <29d8345905072507201fb8d044@mail.gmail.com>
-References: <29d8345905072416467aa8dc4d@mail.gmail.com>
-	 <1122254407.31270.1.camel@mindpipe>
-	 <29d8345905072504337b900491@mail.gmail.com>
-	 <Pine.LNX.4.61.0507251508500.8412@tm8103.perex-int.cz>
-Reply-To: Chuckles <chuckleberryfinn@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Volume per voices
+Date: Mon, 25 Jul 2005 16:22:31 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507251620540.23061-100000@studcom.urz.uni-halle.de>
+References: <1122296568.42e4e2f8904f8@mail.e4a.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0507251508500.8412@tm8103.perex-int.cz>
-Content-Disposition: inline
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AC6413A
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 16:22:32 +0200 (MEST)
+In-Reply-To: <1122296568.42e4e2f8904f8@mail.e4a.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,32 +19,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Dino <dino@e4a.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> The amixer code cannot be easier, but I agree that C++ programmer will=20
-> have trouble with it, because functions contains more than 10 lines ;-)
+Dino wrote:
+>    i'm looking for setting a volume per voice(pcm stream) but it seems to be
+> impossible. I've found only a plugin to do it in software but i'd like to do it
+> in Hardware. Is it a feature not supported by alsa?
 
-I can see my eternal damnation now, an eternity sorting through
-uncommented C programs in hell's ironic punishment department.  :op
+The Emu10k1 and VIA82xxx drivers have volume controls for each
+hardware PCM stream.  Most other hardware cannot do this.
 
-> Write some docs in doxygen, we'll include it to our repository.
->=20
-> =09=09=09=09=09=09Jaroslav
 
-No probs. I'd be more than willing to write some docs for the mixer
-api, if I could work out how to use it. So can you answer some
-questions about it? I'm confused as to why its necessary to use
-elements, simple elements and a high level control interface to set
-sound levels on the mixer. I have done some mixer programming with
-OSS, but this is very different. I see the snd_mixer_open function
-opens an empty mixer, fine, does this imply that a software mixer has
-to be built from the ground up? As in you add a pcm element, a master
-element, a cd element depending on what is available on your
-particular sound card to this empty mixer?
+HTH
+Clemens
 
-Cathal
 
 
 -------------------------------------------------------
