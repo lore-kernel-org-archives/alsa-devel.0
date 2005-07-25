@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Volume per voices
-Date: Mon, 25 Jul 2005 17:02:08 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507251659070.23061-100000@studcom.urz.uni-halle.de>
-References: <42E4FBEA.9030002@e4a.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
+Date: Mon, 25 Jul 2005 17:43:39 +0200
+Message-ID: <7963f23f8c82ffe308dc6a18c4f94a8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42E4FBEA.9030002@e4a.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49C6719E
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 17:43:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,34 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dino Puller <dino@e4a.it>
-Cc: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dino Puller wrote:
 
-> Clemens Ladisch wrote:
->
-> >The Emu10k1 and VIA82xxx drivers have volume controls for each
-> >hardware PCM stream.  Most other hardware cannot do this.
->
-> But with emu10k1 or via82xxx can i access to volume controls in a
-> standard manner provided by alsa?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
+======================================================================
+Reported By:                gflash
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   927
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-20-2005 08:53 CET
+Last Modified:              07-25-2005 17:43 CEST
+======================================================================
+Summary:                    Support for Creative SB Audigy 2 ZS Notebook
+Description: 
+Is this PCMCIA Souncard supported or will it be supported in the next time?
+I haven't heard any positive reports yet...
 
-You can access them like any other mixer control.
+Thank you!
+======================================================================
 
-There is no ALSA function to map from a PCM stream to this control.
+----------------------------------------------------------------------
+ jcdutton - 02-20-05 14:47 
+----------------------------------------------------------------------
+Get my email address from the source code of the ca0106 driver.
+The card cost about 90 (UK pounds) here.
+I already have 10 donated.
+Any you add would help toward getting this card.
 
-> How can i know if my device supports this volume control?
-
-Check if you're running with these drivers.
-
-There should be a common API for all hardware/software mixing
-implementations, but currently there isn't.
 
 
-Regards,
-Clemens
+----------------------------------------------------------------------
+ dale - 07-25-05 17:43 
+----------------------------------------------------------------------
+Hi, i was just wondering what the status of this is?
+I see from the card matrix:
+
+"Card delivered to developers. Bug found in Linux Kernel PCMCIA code, but
+bug fix not found yet."
+
+Are the linux kernel PCMCIA developers aware of this bug?
+
+Thanks,
+
+Dale
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-20-05 08:53 gflash         New Issue                                    
+02-20-05 12:32 jcdutton       Note Added: 0003673                          
+02-20-05 14:06 gflash         Note Added: 0003674                          
+02-20-05 14:39 jcdutton       Note Added: 0003675                          
+02-20-05 14:47 jcdutton       Note Edited: 0003675                         
+07-25-05 17:43 dale           Note Added: 0005564                          
+======================================================================
+
 
 
 
