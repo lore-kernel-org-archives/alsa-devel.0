@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Mon, 25 Jul 2005 17:43:39 +0200
-Message-ID: <7963f23f8c82ffe308dc6a18c4f94a8e@bugtrack.alsa-project.org>
+From: "Alfredo" <alfredo@vida-software.com>
+Subject: ALSA and event notification schemas
+Date: Mon, 25 Jul 2005 19:09:14 +0200
+Message-ID: <0416c7e824e16a44987863eda70d4199@vida-software.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_15724_00019169.00026500"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49C6719E
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 17:43:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +15,216 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+------_=_NextPart_15724_00019169.00026500
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
-======================================================================
-Reported By:                gflash
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              07-25-2005 17:43 CEST
-======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
-Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+Hello, I'm involved in a development project consisting of a
+multimedia/networked component using event driven model in a C++ Linux
+environment (1 thread than manages all the events using an event loop).
 
-Thank you!
-======================================================================
+ 
 
-----------------------------------------------------------------------
- jcdutton - 02-20-05 14:47 
-----------------------------------------------------------------------
-Get my email address from the source code of the ca0106 driver.
-The card cost about 90 (UK pounds) here.
-I already have 10 donated.
-Any you add would help toward getting this card.
+The events that the component must handle are:
+
+1. Sockets events.
+
+2. Timer events.
+
+3. Audio events ( event =3D when the next buffer is filled with audio from
+the user, notify the component. Then the component will transfer the
+audio buffer using a udp socket to another distributed component).
+
+4. Key press and release events (Push To Talk key)
+
+ 
+
+What is the best way to handle all this events in a Linux environment?
+
+I have found that libevent is a very interesting library:
+http://www.monkey.org/~provos/libevent/
+
+"The libevent API provides a mechanism to execute a callback function
+when a specific event occurs on a file descriptor or after a timeout has
+been reached".
+
+This resolves the sockets and timer events. I'm not sure if this
+approach works well with ALSA (for audio events). I have read that ALSA
+provides asynch IO (and callbacks mechanishm), but I don't know if it
+fits well with libevent approach.
+
+Is there any way use ALSA to handle audio events (like buffer is filled
+with audio from the microphone) and handle the rest of the events in the
+same process in a Linux environment?
+
+ 
+
+Another question: Does ALSA support AMR or GSM codecs?
+
+ 
+
+Your help is really very apreciated.
 
 
 
-----------------------------------------------------------------------
- dale - 07-25-05 17:43 
-----------------------------------------------------------------------
-Hi, i was just wondering what the status of this is?
-I see from the card matrix:
 
-"Card delivered to developers. Bug found in Linux Kernel PCMCIA code, but
-bug fix not found yet."
+------_=_NextPart_15724_00019169.00026500
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Are the linux kernel PCMCIA developers aware of this bug?
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-Thanks,
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii"=
+>
 
-Dale
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-02-20-05 14:47 jcdutton       Note Edited: 0003675                         
-07-25-05 17:43 dale           Note Added: 0005564                          
-======================================================================
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 3.0cm 70.85pt 3.0cm;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DES link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Hello, I'm involved in a development project
+consisting of a multimedia/networked component using event driven model in =
+a
+C++ Linux environment (1 thread than manages all the events using an event
+loop).<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>The events that the component must handle are:<o:=
+p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>1. Sockets events.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>2. Timer events.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>3. Audio events ( event =3D when the next buffer =
+is
+filled with audio from the user, notify the component. Then the component w=
+ill
+transfer the audio buffer using a udp socket to another distributed compone=
+nt).<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>4. Key press and release events (Push To Talk key=
+)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>What is the best way to handle all this events in=
+ a
+Linux environment?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>I have found that libevent is a very interesting
+library: http://www.monkey.org/~provos/libevent/<o:p></o:p></span></font></=
+p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>&quot;The libevent API provides a mechanism to ex=
+ecute
+a callback function when a specific event occurs on a file descriptor or af=
+ter
+a timeout has been reached&quot;.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>This resolves the sockets and timer events. I'm n=
+ot
+sure if this approach works well with ALSA (for audio events). I have read =
+that
+ALSA provides asynch IO (and callbacks mechanishm), but I don't know if it =
+fits
+well with libevent approach.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Is there any way use ALSA to handle audio events
+(like buffer is filled with audio from the microphone) and handle the rest =
+of
+the events in the same process in a Linux environment?<o:p></o:p></span></f=
+ont></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Another question: Does ALSA support AMR or GSM
+codecs?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
+=3D'font-size:
+10.0pt;font-family:Arial'>Your help is really very apreciated.<o:p></o:p></=
+span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+
+------_=_NextPart_15724_00019169.00026500--
 
 
 
