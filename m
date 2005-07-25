@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001280]: intel8x0m module causes "codec semaphore" errors when alsa is started
-Date: Mon, 25 Jul 2005 21:54:10 +0200
-Message-ID: <c6ab1f707db2675dff8e84d777ed9f45@bugtrack.alsa-project.org>
+Date: Mon, 25 Jul 2005 21:56:33 +0200
+Message-ID: <f9248a76e421bb418c0239542621ae33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 237801A0
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 21:54:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0B0719E
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 21:56:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1280> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0m
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Debian (unstable)
 Kernel Version:             2.6.12
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-24-2005 17:52 CEST
-Last Modified:              07-25-2005 21:54 CEST
+Last Modified:              07-25-2005 21:56 CEST
 ======================================================================
 Summary:                    intel8x0m module causes "codec semaphore" errors
 when alsa is started
@@ -58,42 +60,14 @@ The same problem occurrs with earlier kernels.
 ======================================================================
 
 ----------------------------------------------------------------------
- fjpop - 07-25-05 21:02 
-----------------------------------------------------------------------
-Hi,
-Thanks for the quick response.
-
-I grabbed the following files from CVS :
-intel8x0.c  (1.204)
-intel8x0m.c (1.33)
-
-Was that what you intended?
-
-I had to rip out all the .vendor => .subvendor and .device => .subdevice
-changes out of intel8x0.c, but after that it compiled fine with my Debian
-2.6.12 kernel.
-
-After booting the kernel I noticed this message in the boot log when
-/etc/init.d/alsa was started:
-Setting up ALSA.../etc/init.d/alsa: Warning: 'alsactl restore' failed with
-error message 'alsactl: set_control:873: failed to obtain info for control
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 (No such file or
-directory)'. done.
-However, on '/etc/init.d/alsa restart' that message was gone. I guess just
-due to a change in the driver?
-
-The original error message about codec_semaphore was gone. Nice :-)
-I played a few sound files without problems.
-I have not tried to use the modem device.
-
-Hope this helps.
-
-
-
-----------------------------------------------------------------------
  sashak - 07-25-05 21:54 
 ----------------------------------------------------------------------
 Thanks. I think modem should work as well.
+
+----------------------------------------------------------------------
+ sashak - 07-25-05 21:56 
+----------------------------------------------------------------------
+Fixed in CVS and likely in alsa-driver-1.0.9b
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +79,9 @@ Date Modified  Username       Field                    Change
 07-25-05 21:01 fjpop          Note Added: 0005565                          
 07-25-05 21:02 fjpop          Note Edited: 0005565                         
 07-25-05 21:54 sashak         Note Added: 0005566                          
+07-25-05 21:56 sashak         Status                   assigned => resolved
+07-25-05 21:56 sashak         Resolution               open => fixed       
+07-25-05 21:56 sashak         Note Added: 0005567                          
 ======================================================================
 
 
