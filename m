@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: maximum voices/channels
-Date: Mon, 25 Jul 2005 15:07:49 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507251454480.23061-100000@studcom.urz.uni-halle.de>
+Date: Mon, 25 Jul 2005 15:08:41 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0507251506490.8412@tm8103.perex-int.cz>
 References: <1122043610.5724.6.camel@tordera.genos.intranet>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACDBD18D
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 15:07:50 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4776F18D
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 15:08:43 +0200 (MEST)
 In-Reply-To: <1122043610.5724.6.camel@tordera.genos.intranet>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -23,20 +23,30 @@ To: Cesar Hernandez <chernandez@genos.es>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cesar Hernandez wrote:
-> I want to know what is the maximum number of notes or sampled
-> voices (mapped to a note) that I can play at the same time...
+On Fri, 22 Jul 2005, Cesar Hernandez wrote:
 
-This depends on the synthesizer.  If you're using an external device,
-there is almost no possibility to know how many voices it has.  Most
-internal wavetable synthesizers share their voices with the PCM output
-streams, and you cannot know how many voices a note uses without
-looking into the soundfont.
+> Hi.
+> 
+> I have a question on using alsa sequencer. I am working on a kind of
+> piano program, and I want to know what is the maximum number of notes or
+> sampled voices (mapped to a note) that I can play at the same time...
+> I know that two or three notes may sound at the same sequencer channel,
+> but I don't know what is the maximum. 
+> Is there a maximum number of voices/notes per sequencer channel? Or it's
+> a maximum number counting all the channels...? Or it depends on the midi
+> output (timidity, midi keyboard...)
 
+See 'snd_seq_port_info_get_midi_voices()' function.... It returns total 
+number of voices allocated for the midi emulation and this value is not 
+available for external synths, of course. The voice allocation is 
+driver/sequencer client specific.
 
-HTH
-Clemens
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
