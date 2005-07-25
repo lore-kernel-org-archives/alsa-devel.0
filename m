@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001280]: intel8x0m module causes "codec semaphore" errors when alsa is started
-Date: Mon, 25 Jul 2005 21:01:54 +0200
-Message-ID: <4be83805f332539c87d6573424521c78@bugtrack.alsa-project.org>
+Date: Mon, 25 Jul 2005 21:54:10 +0200
+Message-ID: <c6ab1f707db2675dff8e84d777ed9f45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B39A6192
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 21:01:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 237801A0
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 21:54:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian (unstable)
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             07-24-2005 17:52 CEST
-Last Modified:              07-25-2005 21:01 CEST
+Last Modified:              07-25-2005 21:54 CEST
 ======================================================================
 Summary:                    intel8x0m module causes "codec semaphore" errors
 when alsa is started
@@ -58,17 +58,12 @@ The same problem occurrs with earlier kernels.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 07-24-05 19:52 
-----------------------------------------------------------------------
-Should be fixed in CVS. Could you check?
-
-----------------------------------------------------------------------
- fjpop - 07-25-05 21:01 
+ fjpop - 07-25-05 21:02 
 ----------------------------------------------------------------------
 Hi,
 Thanks for the quick response.
 
-I grabbed the following files from CVS:
+I grabbed the following files from CVS :
 intel8x0.c  (1.204)
 intel8x0m.c (1.33)
 
@@ -93,6 +88,13 @@ I have not tried to use the modem device.
 
 Hope this helps.
 
+
+
+----------------------------------------------------------------------
+ sashak - 07-25-05 21:54 
+----------------------------------------------------------------------
+Thanks. I think modem should work as well.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -101,6 +103,8 @@ Date Modified  Username       Field                    Change
 07-24-05 17:52 fjpop          Kernel Version            => 2.6.12          
 07-24-05 19:52 sashak         Note Added: 0005559                          
 07-25-05 21:01 fjpop          Note Added: 0005565                          
+07-25-05 21:02 fjpop          Note Edited: 0005565                         
+07-25-05 21:54 sashak         Note Added: 0005566                          
 ======================================================================
 
 
