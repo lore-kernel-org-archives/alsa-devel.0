@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001279]: Audigy2 NX produces crackles on USB2, fine on USB1
-Date: Mon, 25 Jul 2005 11:03:01 +0200
-Message-ID: <3d2a5ebd7782fc7f4c023cd6e27bda1d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001226]: Ego Sys NEON
+Date: Mon, 25 Jul 2005 11:05:39 +0200
+Message-ID: <4446dfd41dbf062697e97ec0fc651e07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BA56168
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 11:03:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BED5F102
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 11:05:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1279> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1226> 
 ======================================================================
-Reported By:                bluebottle
+Reported By:                nictuku
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1279
+Issue ID:                   1226
 Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.12.2
+Distribution:               Slackware Current
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             07-24-2005 07:03 CEST
-Last Modified:              07-25-2005 11:03 CEST
+Date Submitted:             07-01-2005 21:21 CEST
+Last Modified:              07-25-2005 11:05 CEST
 ======================================================================
-Summary:                    Audigy2 NX produces crackles on USB2, fine on USB1
+Summary:                    Ego Sys NEON
 Description: 
-I recently upgraded to a 2.6.12.2 kernel (from 2.6.12) and now the Audigy2
-NX is detected as a fully-fledged USB2 device. :)
-
-But... it produces crackles in the sound that fade in and out over about a
-two second period, continuously, upon trying to play any sound. The sound
-does play, but has all those crackles in it. :(
-
-If I go into BIOS and disable USB2, making my Audigy a USB1 device again,
-it works very well indeed. :)
+hi, i have a ESI NeON (
+http://www.esi-pro.com/viewProduct.php?pid=42&page=1 ) i've tryed to make
+it work with alsa with no success, but strangely on the oss the 24-bit
+audio interface works. I just send this bug report to know if there's a
+way to make it work or if it's planned to put support on this hardware. if
+you need to test it feel free to contactme (nictuku@gmail.com)
+thanx
 ======================================================================
 
 ----------------------------------------------------------------------
- bluebottle - 07-24-05 09:58 
+ nictuku - 07-23-05 00:32 
 ----------------------------------------------------------------------
-I should add that this is with a compiled-from-source ALSA, using the
-latest tarballs from the front page. The only difference I can see is
-/proc & /sys information that the Audigy is fully-USB2 with the new
-kernel.
+hi, i recieved no notice.. i put the lsusb output, may i ask you what's
+going to be done or something?
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-25-05 11:03 
+ Clemens Ladisch - 07-25-05 11:05 
 ----------------------------------------------------------------------
-ALSA 1.0.9 doesn't yet contain all USB2 fixes; you have to use the CVS
-version.
+This device should work with the ALSA driver.
+
+Please make sure that the snd-usb-audio module is loaded, and that the
+audio module is _not_ loaded.  All supported sample format should be
+listed in /proc/asound/cardX/stream0.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-24-05 07:03 bluebottle     New Issue                                    
-07-24-05 07:03 bluebottle     Distribution              => Ubuntu          
-07-24-05 07:03 bluebottle     Kernel Version            => 2.6.12.2        
-07-24-05 09:58 bluebottle     Note Added: 0005557                          
-07-25-05 11:03 Clemens LadischNote Added: 0005561                          
+07-01-05 21:21 nictuku        New Issue                                    
+07-01-05 21:21 nictuku        Distribution              => Slackware Current
+07-01-05 21:21 nictuku        Kernel Version            => 2.4             
+07-04-05 09:23 Clemens LadischNote Added: 0005382                          
+07-06-05 23:04 nictuku        Issue Monitored: nictuku                     
+07-06-05 23:06 nictuku        Note Added: 0005395                          
+07-06-05 23:09 nictuku        Issue End Monitor: nictuku                    
+07-23-05 00:32 nictuku        Note Added: 0005551                          
+07-25-05 11:05 Clemens LadischNote Added: 0005562                          
 ======================================================================
 
 
