@@ -1,11 +1,14 @@
-From: "Alfredo" <alfredo@vida-software.com>
-Subject: ALSA and event notification schemas
-Date: Mon, 25 Jul 2005 19:09:14 +0200
-Message-ID: <0416c7e824e16a44987863eda70d4199@vida-software.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001280]: intel8x0m module causes "codec semaphore" errors when alsa is started
+Date: Mon, 25 Jul 2005 21:01:54 +0200
+Message-ID: <4be83805f332539c87d6573424521c78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_15724_00019169.00026500"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B39A6192
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 21:01:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,216 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------_=_NextPart_15724_00019169.00026500
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-Hello, I'm involved in a development project consisting of a
-multimedia/networked component using event driven model in a C++ Linux
-environment (1 thread than manages all the events using an event loop).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1280> 
+======================================================================
+Reported By:                fjpop
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1280
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian (unstable)
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             07-24-2005 17:52 CEST
+Last Modified:              07-25-2005 21:01 CEST
+======================================================================
+Summary:                    intel8x0m module causes "codec semaphore" errors
+when alsa is started
+Description: 
+On my Toshiba Satellite A40, the intel8x0m module somehow conflicts with
+running alsa-utils.
+The kern.log shows repeated errors on boot and shutdown (when
+/etc/init.d/alsa start/stop is run):
+kernel: codec_semaphore: semaphore is not ready [0x1][0x701300]
+kernel: codec_write 1: semaphore is not ready for register 0x54
 
- 
+If I do not load the intel8x0m module, the errors disappear.
+The same problem occurrs with earlier kernels.
 
-The events that the component must handle are:
+======================================================================
 
-1. Sockets events.
+----------------------------------------------------------------------
+ sashak - 07-24-05 19:52 
+----------------------------------------------------------------------
+Should be fixed in CVS. Could you check?
 
-2. Timer events.
+----------------------------------------------------------------------
+ fjpop - 07-25-05 21:01 
+----------------------------------------------------------------------
+Hi,
+Thanks for the quick response.
 
-3. Audio events ( event =3D when the next buffer is filled with audio from
-the user, notify the component. Then the component will transfer the
-audio buffer using a udp socket to another distributed component).
+I grabbed the following files from CVS:
+intel8x0.c  (1.204)
+intel8x0m.c (1.33)
 
-4. Key press and release events (Push To Talk key)
+Was that what you intended?
 
- 
+I had to rip out all the .vendor => .subvendor and .device => .subdevice
+changes out of intel8x0.c, but after that it compiled fine with my Debian
+2.6.12 kernel.
 
-What is the best way to handle all this events in a Linux environment?
+After booting the kernel I noticed this message in the boot log when
+/etc/init.d/alsa was started:
+Setting up ALSA.../etc/init.d/alsa: Warning: 'alsactl restore' failed with
+error message 'alsactl: set_control:873: failed to obtain info for control
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 (No such file or
+directory)'. done.
+However, on '/etc/init.d/alsa restart' that message was gone. I guess just
+due to a change in the driver?
 
-I have found that libevent is a very interesting library:
-http://www.monkey.org/~provos/libevent/
+The original error message about codec_semaphore was gone. Nice :-)
+I played a few sound files without problems.
+I have not tried to use the modem device.
 
-"The libevent API provides a mechanism to execute a callback function
-when a specific event occurs on a file descriptor or after a timeout has
-been reached".
+Hope this helps.
 
-This resolves the sockets and timer events. I'm not sure if this
-approach works well with ALSA (for audio events). I have read that ALSA
-provides asynch IO (and callbacks mechanishm), but I don't know if it
-fits well with libevent approach.
-
-Is there any way use ALSA to handle audio events (like buffer is filled
-with audio from the microphone) and handle the rest of the events in the
-same process in a Linux environment?
-
- 
-
-Another question: Does ALSA support AMR or GSM codecs?
-
- 
-
-Your help is really very apreciated.
-
-
-
-
-------_=_NextPart_15724_00019169.00026500
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
-hemas-microsoft-com:office:word" xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii"=
->
-
-
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DES link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>Hello, I'm involved in a development project
-consisting of a multimedia/networked component using event driven model in =
-a
-C++ Linux environment (1 thread than manages all the events using an event
-loop).<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>The events that the component must handle are:<o:=
-p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>1. Sockets events.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>2. Timer events.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>3. Audio events ( event =3D when the next buffer =
-is
-filled with audio from the user, notify the component. Then the component w=
-ill
-transfer the audio buffer using a udp socket to another distributed compone=
-nt).<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>4. Key press and release events (Push To Talk key=
-)<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>What is the best way to handle all this events in=
- a
-Linux environment?<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>I have found that libevent is a very interesting
-library: http://www.monkey.org/~provos/libevent/<o:p></o:p></span></font></=
-p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>&quot;The libevent API provides a mechanism to ex=
-ecute
-a callback function when a specific event occurs on a file descriptor or af=
-ter
-a timeout has been reached&quot;.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>This resolves the sockets and timer events. I'm n=
-ot
-sure if this approach works well with ALSA (for audio events). I have read =
-that
-ALSA provides asynch IO (and callbacks mechanishm), but I don't know if it =
-fits
-well with libevent approach.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>Is there any way use ALSA to handle audio events
-(like buffer is filled with audio from the microphone) and handle the rest =
-of
-the events in the same process in a Linux environment?<o:p></o:p></span></f=
-ont></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>Another question: Does ALSA support AMR or GSM
-codecs?<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB style=
-=3D'font-size:
-10.0pt;font-family:Arial'>Your help is really very apreciated.<o:p></o:p></=
-span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-
-------_=_NextPart_15724_00019169.00026500--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-24-05 17:52 fjpop          New Issue                                    
+07-24-05 17:52 fjpop          Distribution              => Debian (unstable)
+07-24-05 17:52 fjpop          Kernel Version            => 2.6.12          
+07-24-05 19:52 sashak         Note Added: 0005559                          
+07-25-05 21:01 fjpop          Note Added: 0005565                          
+======================================================================
 
 
 
