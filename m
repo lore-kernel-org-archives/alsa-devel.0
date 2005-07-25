@@ -1,14 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001239]: forgotten __init and __exit in memory.c
-Date: Mon, 25 Jul 2005 14:54:41 +0200
-Message-ID: <23d0128a84da05446f450d12b09f1093@bugtrack.alsa-project.org>
+From: Dino <dino@e4a.it>
+Subject: Volume per voices
+Date: Mon, 25 Jul 2005 15:02:48 +0200
+Message-ID: <1122296568.42e4e2f8904f8@mail.e4a.it>
+References: <1122043610.5724.6.camel@tordera.genos.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B51A18D
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 14:54:41 +0200 (MEST)
+Received: from adhara-ng.e4a.it (adhara-ng.e4a.it [80.79.48.66])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6526153
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 15:02:43 +0200 (MEST)
+Received: from localhost (localhost [127.0.0.1])
+	by adhara-ng.e4a.it (Postfix) with ESMTP id EB68FAEC00C
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 15:02:59 +0200 (CEST)
+Received: from adhara-ng.e4a.it ([80.79.48.66])
+	by localhost (mail.e4a.it [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 01648-04 for <alsa-devel@alsa-project.org>;
+	Mon, 25 Jul 2005 15:02:48 +0200 (CEST)
+In-Reply-To: <1122043610.5724.6.camel@tordera.genos.intranet>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,61 +30,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi there,
+   i'm looking for setting a volume per voice(pcm stream) but it seems to=
+ be
+impossible. I've found only a plugin to do it in software but i'd like to=
+ do it
+in Hardware. Is it a feature not supported by alsa? If so, can i open a f=
+eature
+request? I think it's an easy thing to do and even if a sound card couldn=
+'t do
+it  a simple multiplication in software does the job.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1239> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1239
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-07-2005 10:37 CEST
-Last Modified:              07-25-2005 14:54 CEST
-======================================================================
-Summary:                    forgotten __init and __exit in memory.c
-Description: 
-I think that snd_memory_init() should get an __init,
-and snd_memory_exit() an __exit, cause that __init
-function isn't called again and can be removed from the memory.
-That doesn't save too much space, but it's cleaner and mekes more sense
-.
-The patch I added will fix it and is made for the current cvs
-version(memory.c 1.38). 
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 07-08-05 11:52 
-----------------------------------------------------------------------
-__exit can't be applied since it's called from init function, too.
-Could you regenerate the patch?
-
-----------------------------------------------------------------------
- Henne - 07-25-05 14:54 
-----------------------------------------------------------------------
-Here is the new one!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-07-05 10:37 Henne          New Issue                                    
-07-07-05 10:37 Henne          File Added: memory_c.diff                    
-07-08-05 11:52 tiwai          Note Added: 0005410                          
-07-12-05 11:41 Henne          File Added: memory_c_1.diff                    
-07-25-05 14:54 Henne          Note Added: 0005563                          
-======================================================================
+tnx,
+   Dino Puller
 
 
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
 
 
 -------------------------------------------------------
