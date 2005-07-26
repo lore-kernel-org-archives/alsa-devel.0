@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA and event notification schemas
-Date: Tue, 26 Jul 2005 09:17:24 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507260913110.8285-100000@studcom.urz.uni-halle.de>
-References: <0416c7e824e16a44987863eda70d4199@vida-software.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001279]: Audigy2 NX produces crackles on USB2, fine on USB1
+Date: Tue, 26 Jul 2005 09:52:37 +0200
+Message-ID: <9f6df3c2f65c99893fc500182ed1958a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <0416c7e824e16a44987863eda70d4199@vida-software.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBA4818A
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 09:52:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,50 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alfredo <alfredo@vida-software.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alfredo wrote:
-> Hello, I'm involved in a development project consisting of a
-> multimedia/networked component using event driven model in a C++ Linux
-> environment (1 thread than manages all the events using an event loop).
->
-> The events that the component must handle are:
->
-> 1. Sockets events.
->
-> 2. Timer events.
->
-> 3. Audio events ( event = when the next buffer is filled with audio from
-> the user, notify the component. Then the component will transfer the
-> audio buffer using a udp socket to another distributed component).
->
-> 4. Key press and release events (Push To Talk key)
->
-> What is the best way to handle all this events in a Linux environment?
 
-poll()
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1279> 
+======================================================================
+Reported By:                bluebottle
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1279
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.12.2
+======================================================================
+Date Submitted:             07-24-2005 07:03 CEST
+Last Modified:              07-26-2005 09:52 CEST
+======================================================================
+Summary:                    Audigy2 NX produces crackles on USB2, fine on USB1
+Description: 
+I recently upgraded to a 2.6.12.2 kernel (from 2.6.12) and now the Audigy2
+NX is detected as a fully-fledged USB2 device. :)
 
-> I have found that libevent is a very interesting library:
-> http://www.monkey.org/~provos/libevent/
->
-> "The libevent API provides a mechanism to execute a callback function
-> when a specific event occurs on a file descriptor or after a timeout has
-> been reached".
->
-> This resolves the sockets and timer events. I'm not sure if this
-> approach works well with ALSA (for audio events).
+But... it produces crackles in the sound that fade in and out over about a
+two second period, continuously, upon trying to play any sound. The sound
+does play, but has all those crackles in it. :(
 
-The above page says that libevent supports poll().
+If I go into BIOS and disable USB2, making my Audigy a USB1 device again,
+it works very well indeed. :)
+======================================================================
 
-> Another question: Does ALSA support AMR or GSM codecs?
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-25-05 11:03 
+----------------------------------------------------------------------
+ALSA 1.0.9 doesn't yet contain all USB2 fixes; you have to use the CVS
+version.
 
-There is no such built-in codec.
+----------------------------------------------------------------------
+ bluebottle - 07-26-05 09:52 
+----------------------------------------------------------------------
+OK, I compiled the CVS drivers (libraries won't compile - error 1) and now
+it works again but in USB1 mode despite me enabling USB2 in the BIOS. At
+least my other devices are USB2 again. :)
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-24-05 07:03 bluebottle     New Issue                                    
+07-24-05 07:03 bluebottle     Distribution              => Ubuntu          
+07-24-05 07:03 bluebottle     Kernel Version            => 2.6.12.2        
+07-24-05 09:58 bluebottle     Note Added: 0005557                          
+07-25-05 11:03 Clemens LadischNote Added: 0005561                          
+07-26-05 09:52 bluebottle     Note Added: 0005569                          
+======================================================================
 
-HTH
-Clemens
 
 
 
