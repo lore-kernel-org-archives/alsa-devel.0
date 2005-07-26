@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001281]: Sound support for onboard ASUS P5GD1-VM sound?
-Date: Tue, 26 Jul 2005 09:00:21 +0200
-Message-ID: <098ca62751fb3da68976ee02c81e3348@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA and event notification schemas
+Date: Tue, 26 Jul 2005 09:17:24 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507260913110.8285-100000@studcom.urz.uni-halle.de>
+References: <0416c7e824e16a44987863eda70d4199@vida-software.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2DCA1B5
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 09:00:21 +0200 (MEST)
+In-Reply-To: <0416c7e824e16a44987863eda70d4199@vida-software.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +16,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alfredo <alfredo@vida-software.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Alfredo wrote:
+> Hello, I'm involved in a development project consisting of a
+> multimedia/networked component using event driven model in a C++ Linux
+> environment (1 thread than manages all the events using an event loop).
+>
+> The events that the component must handle are:
+>
+> 1. Sockets events.
+>
+> 2. Timer events.
+>
+> 3. Audio events ( event = when the next buffer is filled with audio from
+> the user, notify the component. Then the component will transfer the
+> audio buffer using a udp socket to another distributed component).
+>
+> 4. Key press and release events (Push To Talk key)
+>
+> What is the best way to handle all this events in a Linux environment?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1281> 
-======================================================================
-Reported By:                keith
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1281
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             
-======================================================================
-Date Submitted:             07-26-2005 08:18 CEST
-Last Modified:              07-26-2005 09:00 CEST
-======================================================================
-Summary:                    Sound support for onboard ASUS P5GD1-VM sound?
-Description: 
-I've tried using the intel-8x0 drivers, but I cannot get sound working on
-my ASUS P5GD1-VM mobo. I was wondering if anyone was working on making
-sound available on this mobo.  It's a pretty serious issue to me, and it's
-preventing a complete migration to the OS.
-======================================================================
+poll()
 
-----------------------------------------------------------------------
- Grazy - 07-26-05 09:00 
-----------------------------------------------------------------------
-Try the intel-hda driver instead of the intel-8x0 one.
+> I have found that libevent is a very interesting library:
+> http://www.monkey.org/~provos/libevent/
+>
+> "The libevent API provides a mechanism to execute a callback function
+> when a specific event occurs on a file descriptor or after a timeout has
+> been reached".
+>
+> This resolves the sockets and timer events. I'm not sure if this
+> approach works well with ALSA (for audio events).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-26-05 08:18 keith          New Issue                                    
-07-26-05 08:18 keith          Distribution              => Ubuntu          
-07-26-05 09:00 Grazy          Note Added: 0005568                          
-======================================================================
+The above page says that libevent supports poll().
 
+> Another question: Does ALSA support AMR or GSM codecs?
+
+There is no such built-in codec.
+
+
+HTH
+Clemens
 
 
 
