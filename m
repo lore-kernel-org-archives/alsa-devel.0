@@ -1,17 +1,15 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: More on spam
-Date: Tue, 26 Jul 2005 10:51:26 -0600
-Message-ID: <42E66A0E.6020702@redfish-solutions.com>
+From: Cesar Hernandez <chernandez@genos.es>
+Subject: note on /off at same time
+Date: Tue, 26 Jul 2005 18:51:43 +0200
+Message-ID: <1122396703.2224.63.camel@tordera.genos.intranet>
+Reply-To: chernandez@genos.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.redfish-solutions.com (mail.redfish-solutions.com [71.36.29.88])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF8A91C1
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 18:51:29 +0200 (MEST)
-Received: from [192.168.1.5] ([192.168.1.5])
-	by mail.redfish-solutions.com (8.13.1/8.13.1) with ESMTP id j6QGpRvg029852
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 10:51:27 -0600
+Received: from genos.genos.es (7.red-62-57-110.user.auna.net [62.57.110.7])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5C7AF1C1
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 18:51:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +22,30 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Can we also automatically purge mail containing .scr, .exe, or
-.zip attachments?  None of those would be useful to us, since they
-all apply to Windows and not Linux or BSD.
+Hi.
+I have some questions about sending noteon and noteoff events. 
+-If I first send a noteon and then a noteoff to the same channel, note,
+and timetick, what happens? Will the note play? I've been playing with
+this and I can't hear anything... but using aseqview it seems to play a
+very short note. If I send first the noteoff and then noteon, what
+happens?
 
-I would probably delete email containing various Windows
-character sets, such as 1255, etc.
+-If I send two noteon with the same timetick, channel and note, will it
+play only one note? And then, must I send two noteoff to stop them ? Or
+it's only needed one noteon?
 
--Philip
+Thanks
+
+
+-- 
+Cesar Hernandez
+chernandez@genos.es
+Genos Open Source S.L.
+Tarragona, 100. 08015 Barcelona
+Tel. 932 282 231
+
+http://genos.es
+http://www.genos.org
 
 
 
