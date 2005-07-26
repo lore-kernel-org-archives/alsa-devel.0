@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001281]: Sound support for onboard ASUS P5GD1-VM sound?
-Date: Tue, 26 Jul 2005 08:18:30 +0200
-Message-ID: <6b464d6f9dc57b2b4933e9f500af7ef8@bugtrack.alsa-project.org>
+Date: Tue, 26 Jul 2005 09:00:21 +0200
+Message-ID: <098ca62751fb3da68976ee02c81e3348@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC8751B1
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 08:18:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2DCA1B5
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 09:00:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1281> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-26-2005 08:18 CEST
-Last Modified:              07-26-2005 08:18 CEST
+Last Modified:              07-26-2005 09:00 CEST
 ======================================================================
 Summary:                    Sound support for onboard ASUS P5GD1-VM sound?
 Description: 
@@ -50,11 +50,17 @@ sound available on this mobo.  It's a pretty serious issue to me, and it's
 preventing a complete migration to the OS.
 ======================================================================
 
+----------------------------------------------------------------------
+ Grazy - 07-26-05 09:00 
+----------------------------------------------------------------------
+Try the intel-hda driver instead of the intel-8x0 one.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-26-05 08:18 keith          New Issue                                    
 07-26-05 08:18 keith          Distribution              => Ubuntu          
+07-26-05 09:00 Grazy          Note Added: 0005568                          
 ======================================================================
 
 
