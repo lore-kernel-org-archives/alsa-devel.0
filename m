@@ -1,11 +1,14 @@
-From: Dirk Jagdmann <doj@cubic.org>
-Subject: [patch] envy24control save state of LRGang button in config file
-Date: Tue, 26 Jul 2005 19:11:38 +0200
-Message-ID: <42E66ECA.10407@cubic.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
+Date: Tue, 26 Jul 2005 20:08:37 +0200
+Message-ID: <2b6830f0bfe5a10f22e50f22687f52dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000802010205080600070903"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F45F127
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 20:08:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,222 +18,197 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000802010205080600070903
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello Developers,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
+======================================================================
+Reported By:                Mimosius
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   839
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE 9.2
+Kernel Version:             2.6.8-24.10 + 2.6.10
+======================================================================
+Date Submitted:             01-21-2005 03:12 CET
+Last Modified:              07-26-2005 20:08 CEST
+======================================================================
+Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
+CS4299
+Description: 
+Audio-mode via SPDIF works fine but I can't get any non-audio passthru
+working.
 
-this patch saves the state of the "LR Gang" buttons in a config/pref 
-file, because this button's state is not preserved throughout runs of 
-envy24control. At present it only works, when envy24control is compiled 
-with GTK2 as I have used routines which were introduced with Glib2.
+Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
+AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
+there seems to arrive no decodeable signal on receiver side.
+There are no errors or warnings after loading soundrivers and there are no
+other soundcards plugged in (notebook).
 
-While this works fine I think we should discuss if envy24control 
-could/should be compiled with gtk2 by default (currently gtk1 is 
-default). As I think all Linux distributions now ship with Gtk2 and most 
-other software uses gtk2 by now, I think it would be a reasonable thing 
-for the next release of Alsa. This would also mean, that this patch will 
-work with the default configuration :)
 
--- 
----> doj / cubic
-----> http://cubic.org/~doj
------> http://llg.cubic.org
+here are some system informations:
 
---------------000802010205080600070903
-Content-Type: text/plain;
- name="envy24control-stereosave.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="envy24control-stereosave.patch"
+# cat /etc/modprobe.d/sound
+alias snd-card-0 snd-intel8x0
+options snd-ac97-codec
+options snd-intel8x0 enable=1 index=0
 
-Index: Makefile.am
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/Makefile.am,v
-retrieving revision 1.15
-diff -u -r1.15 Makefile.am
---- Makefile.am	21 Dec 2004 17:15:01 -0000	1.15
-+++ Makefile.am	26 Jul 2005 16:58:10 -0000
-@@ -3,8 +3,8 @@
- man_MANS = envy24control.1
- envy24control_SOURCES = envy24control.c envy24control.h levelmeters.c midi.c \
-                         mixer.c patchbay.c hardware.c driverevents.c volume.c \
--			profiles.c profiles.h midi.h
-+			profiles.c profiles.h midi.h config.c config.h
- envy24control_LDFLAGS = @ENVY24CONTROL_LIBS@
- EXTRA_DIST = envy24control.1 depcomp configure.in-gtk2 \
- 	     strstr_icase_blank.c new_process.c README.profiles
-Index: envy24control.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/envy24control.c,v
-retrieving revision 1.35
-diff -u -r1.35 envy24control.c
---- envy24control.c	24 May 2005 16:52:18 -0000	1.35
-+++ envy24control.c	26 Jul 2005 16:58:11 -0000
-@@ -22,6 +22,7 @@
- 
- #include "envy24control.h"
- #include "midi.h"
-+#include "config.h"
- #define _GNU_SOURCE
- #include <getopt.h>
- 
-@@ -244,7 +244,9 @@
- 	gtk_widget_show(toggle);
- 	gtk_box_pack_end(GTK_BOX(vbox), toggle, FALSE, FALSE, 0);
- 	/* gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), TRUE); */
--	
-+	gtk_signal_connect(GTK_OBJECT(toggle), "toggled",
-+			   GTK_SIGNAL_FUNC(config_set_stereo), (gpointer)stream-1);
-+
- 	hbox = gtk_hbox_new(TRUE, 6);
- 	gtk_widget_show(hbox);
- 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-@@ -2116,6 +2117,7 @@
- 	}
- 
- 	/* Initialize code */
-+	config_open();
- 	level_meters_init();
- 	mixer_init();
- 	patchbay_init();
-@@ -2185,6 +2187,7 @@
- 
- 	snd_ctl_close(ctl);
- 	midi_close();
-+	config_close();
- 
- 	return EXIT_SUCCESS;
- }
-Index: mixer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/mixer.c,v
-retrieving revision 1.11
-diff -u -r1.11 mixer.c
---- mixer.c	26 Jul 2005 11:37:11 -0000	1.11
-+++ mixer.c	26 Jul 2005 16:58:11 -0000
-@@ -19,6 +19,7 @@
- 
- #include "envy24control.h"
- #include "midi.h"
-+#include "config.h"
- 
- #define	MULTI_PLAYBACK_SWITCH		"Multi Playback Switch"
- #define MULTI_PLAYBACK_VOLUME		"Multi Playback Volume"
-@@ -263,4 +269,6 @@
- 		if (stream_is_active[stream - 1])
- 			mixer_update_stream(stream, 1, 1);
- 	}
-+
-+	config_restore_stereo();
- }
 
---------------000802010205080600070903
-Content-Type: text/plain;
- name="config.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="config.c"
+# cat /proc/asound/pcm' 
+00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
+00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
+00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
+00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
 
-#include <gtk/gtk.h>
-#include "envy24control.h"
 
-#if GLIB_CHECK_VERSION(2,2,0)
+# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
+ac3dec -C)
+0-0/0: Cirrus Logic CS4299 rev 4
 
-#if GLIB_CHECK_VERSION(2,8,0)
-#define MYMKDIR g_mkdir_with_parents
-#else
-#include <sys/stat.h>
-#include <sys/types.h>
-#define MYMKDIR mkdir
-#endif
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : Crystal Semi 3D Stereo Enhancement
 
-GKeyFile *config_file;
-gboolean config_stereo[20];
-gchar *config_filename;
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : Mic
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
+Extended status  : VRA
+PCM front DAC    : 48000Hz
+PCM ADC          : 48000Hz
+SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
+Enabled
 
-void config_open()
-{
-  config_filename=g_strdup_printf("%s/%s", g_get_user_config_dir(), "envy24control");
-  config_file=g_key_file_new();
-  g_key_file_load_from_file(config_file, config_filename, G_KEY_FILE_KEEP_COMMENTS, NULL);
-}
 
-void config_close()
-{
-  gsize len=0;
-  gchar *s;
-  g_key_file_set_boolean_list(config_file, "mixer", "stereo",
-			      config_stereo, sizeof(config_stereo)/sizeof(config_stereo[0]));
-  s=g_key_file_to_data(config_file, &len, NULL);
-  if(s && len)
-    {
-      MYMKDIR(g_get_user_config_dir(), 0700);
-      FILE *f=fopen(config_filename, "wb");
-      if(f)
-	{
-	  fwrite(s, len, 1, f);
-	  fclose(f);
-	}
-    }
+# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
+ac3dec -C)
+0:00 = 1990
+0:02 = 3f3f
+0:04 = 9f1f
+0:06 = 801f
+0:08 = 0000
+0:0a = 801e
+0:0c = 801f
+0:0e = 8000
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 8000
+0:1a = 0606
+0:1c = 0f0f
+0:1e = 0000
+0:20 = 0200
+0:22 = 0000
+0:24 = 0000
+0:26 = 800f
+0:28 = 0201
+0:2a = 0001
+0:2c = bb80
+0:2e = 0000
+0:30 = 0000
+0:32 = bb80
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 0000
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0404
+0:5c = 0000
+0:5e = 0080
+0:60 = 0022
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 8826
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 003f
+0:7a = 0000
+0:7c = 4352
+0:7e = 5934
 
-  g_free(config_filename); config_filename=0;
-  g_key_file_free(config_file); config_file=0;
-}
+======================================================================
 
-void config_set_stereo(GtkWidget *but, gpointer data)
-{
-  gint i=(gint)data;
-  config_stereo[i]=GTK_TOGGLE_BUTTON(but)->active;
-}
+----------------------------------------------------------------------
+ Mimosius - 07-14-05 21:13 
+----------------------------------------------------------------------
+It's seems that these non-audio data gets converted or simply wrong routed.
+I'm not familar with the alsa-system so i need some hints from the
+developers (maybe tiwai) where i can start debugging the whole thing. It
+should be possible to get it working because on the "other OS" it runs
+flawlessly.
 
-void config_restore_stereo()
-{
-  gint i;
-  gsize len=0;
-  gboolean *s=g_key_file_get_boolean_list(config_file, "mixer", "stereo", &len, NULL);
-  if(s)
-      for(i=0; i!=len; ++i)
-	{
-	  config_stereo[i]=s[i];
-	  if(mixer_stereo_toggle[i])
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mixer_stereo_toggle[i]), s[i]);
-	}
-}
+----------------------------------------------------------------------
+ rziai - 07-26-05 20:08 
+----------------------------------------------------------------------
+Hello,
 
-#else
+I just wanted to add that I have the exact same problem as Mimosius with
+the same card. I've been messing with different versions of ALSA and
+different client programs but no luck whatsoever. The same experiments
+with USB Soundblaster MP3+ brought immediate success.
 
-/* to be done */
-void config_open() { }
-void config_close() { }
-void config_set_stereo(GtkWidget *but, gpointer data) { }
-void config_restore_stereo() { }
+If there's anything I can do to help fixing this, let me know.
 
-#endif
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-21-05 03:12 Mimosius       New Issue                                    
+01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
+01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
+01-21-05 03:13 Mimosius       Issue Monitored: Mimosius                    
+03-01-05 11:31 Mimosius       Note Added: 0003758                          
+03-15-05 21:37 Mimosius       Note Added: 0003917                          
+03-16-05 12:47 tiwai          Note Added: 0003945                          
+03-16-05 12:47 tiwai          Note Added: 0003946                          
+03-17-05 01:00 Mimosius       Note Added: 0003975                          
+06-22-05 13:08 Mimosius       Note Added: 0005132                          
+06-22-05 17:56 tiwai          Note Added: 0005137                          
+06-22-05 18:58 Mimosius       Note Added: 0005143                          
+07-14-05 15:50 mrbox          Note Added: 0005475                          
+07-14-05 21:13 Mimosius       Note Added: 0005479                          
+07-26-05 20:02 rziai          Issue Monitored: rziai                       
+07-26-05 20:08 rziai          Note Added: 0005571                          
+======================================================================
 
---------------000802010205080600070903
-Content-Type: text/plain;
- name="config.h"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="config.h"
 
-#ifndef CONFIG__H
-#define CONFIG__H
-
-void config_open();
-void config_close();
-void config_set_stereo(GtkWidget *but, gpointer data);
-void config_restore_stereo();
-
-#endif
-
---------------000802010205080600070903--
 
 
 -------------------------------------------------------
