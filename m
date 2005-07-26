@@ -1,20 +1,12 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: [PATCH] 2.6.13-rc3-git5: fix Bug #4416 (0/2)
-Date: Tue, 26 Jul 2005 12:47:05 +0200
-Message-ID: <200507261247.05684.rjw__30020.7618195147$1122375577$gmane$org@sisk.pl>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: envy24control midi updates
+Date: Tue, 26 Jul 2005 13:37:35 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0507261337160.8190@tm8103-a.perex-int.cz>
+References: <42E58773.2020609@cubic.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.sisk.pl (grendel.sisk.pl [217.67.200.140])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 93C9B1C1
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 12:58:30 +0200 (MEST)
-Received: from mail.sisk.pl ([127.0.0.1])
- by localhost (grendel [127.0.0.1]) (amavisd-new, port 10024) with SMTP
- id 30188-02 for <alsa-devel@alsa-project.org>;
- Tue, 26 Jul 2005 12:50:31 +0200 (CEST)
-Content-Disposition: inline
+In-Reply-To: <42E58773.2020609@cubic.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,36 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: ACPI mailing list <acpi-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
+To: Dirk Jagdmann <doj@cubic.org>
+Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, 26 Jul 2005, Dirk Jagdmann wrote:
 
-The following two patches are necessary to prevent my box (Asus L5D) from
-hanging solid during resume from disk.
+> Hello developers,
+> 
+> I have enhanced the midi control of envy24control.
+> 
+> 1) I have fixed midi feedback, where issuing a controller event resulted in
+> the controller value beeing sent to the midi port again.
+> 
+> 2) I have added midi controllers for the "mute" buttons, which can now be
+> controller via midi.
+> 
+> 3) and while rewriting the midi code to support the mute buttons several
+> off-by-one errors have been fixed.
 
-The problem is that, apparently, some out-of-order interrupts may be
-generated during resume and if some drivers do not call free_irq() on
-suspend, these interrupts are mishandled.  For reference please see
-http://bugzilla.kernel.org/show_bug.cgi?id=4416
-and
-http://sourceforge.net/mailarchive/message.php?msg_id=12448907
+Applied to CVS. Thanks.
 
-The first patch adds free_irq() and request_irq() to the suspend and resume
-routines, respectively, in the snd_intel8x0 driver.
+						Jaroslav
 
-The second one adds basic suspend/resume support to the sk98lin driver.
-
-Please consider for applying,
-Rafael
-
-
--- 
-- Would you tell me, please, which way I ought to go from here?
-- That depends a good deal on where you want to get to.
-		-- Lewis Carroll "Alice's Adventures in Wonderland"
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
