@@ -1,13 +1,14 @@
-From: Alan H <alan@horstmann.fsworld.co.uk>
-Subject: Envy24control -SPDIF bug and maybe improvements?
-Date: Tue, 26 Jul 2005 21:09:54 +0100
-Message-ID: <200507262109.54095.alan@horstmann.fsworld.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001282]: LFE Volumne Control & Mute/Unmute not working
+Date: Tue, 26 Jul 2005 23:59:00 +0200
+Message-ID: <361fa1fe47eda3d154a5a24eff83d340@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C1041D1
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 23:59:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Recently I reported a bug with DMX6fire and SPDIF inputs (bugtrack alsa-tools 
-0001214), and then, as reported there, happened to find the problem myself 
-when perusing the source code.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1282> 
+======================================================================
+Reported By:                notz
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1282
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             07-26-2005 23:58 CEST
+Last Modified:              07-26-2005 23:58 CEST
+======================================================================
+Summary:                    LFE Volumne Control & Mute/Unmute not working
+Description: 
+if try to set lfe volume or unmute lfe control with alsamixer or amixer, my
+changes always will be reverted and so i never geht any lfe output. if
+have an aopen i915GM-HFS motherboard and use alsa kernel from 2005-07-12
+(nitro5 kernel).
 
-As a user of the DMX6fire and an electronics engineer, I am newish to Linux 
-and software.  However, as I had ended up looking at the source code and had 
-ideas for improvements to the controls and usability of 'e24c', I altered it 
-in stages, and resulted in a neater, easier version for me to use.
+also capture volumne seems to work not ok. i have set it 11 percent. it's
+the maxmium for me. higher values produces oddly noises.
 
-How can this alternative be considered/made available for others -for example 
-where could I put a tarball of the 3 major version stages of the changed 
-files?  These versions are all up to date with the released alsa-1.0.9.
+======================================================================
 
-Is there a better way to approach such development, if I am considering other 
-improvements?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-26-05 23:58 notz           New Issue                                    
+07-26-05 23:58 notz           Kernel Version            => 2.6.12          
+======================================================================
 
-Regards
-
-Alan Horstmann
 
 
 
