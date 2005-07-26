@@ -1,14 +1,8 @@
-From: Bill Gatliff <bgat@billgatliff.com>
-Subject: Re: Lots of noob questions on writing an ALSA driver
- for SM501
-Date: Tue, 26 Jul 2005 10:42:41 -0500
-Message-ID: <42E659F1.9090807@billgatliff.com>
-References: <42E645CE.609@billgatliff.com> <Pine.LNX.4.61.0507261633110.8190@tm8103-a.perex-int.cz> <42E656B8.9090406@billgatliff.com> <Pine.LNX.4.61.0507261733340.8190@tm8103-a.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+From: clement.moreau@inventel.fr
+Subject: Automated reply to : Re: important
+Date: Tue, 26 Jul 2005 17:44:32 +0200
+Message-ID: <E1DxRbc-0006gN-00@externserver.inventel.fr>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0507261733340.8190@tm8103-a.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +12,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav:
+I am on vacation from 30 June - 29 July, and will 
+not be reading my email during this time. 
 
-Jaroslav Kysela wrote:
+You may contact Inventel at : 
++33 1 42 17 45 45
 
->On Tue, 26 Jul 2005, Bill Gatliff wrote:
->
->Or leave everything in drivers/sm501 for this time - we can move it later.
->  
->
-
-Ok.
-
-
-b.g.
+Regards, 
 
 -- 
-Bill Gatliff
-bgat@billgatliff.com
-
-You have the capacity to learn from mistakes.
-You'll learn a lot today.
+Clement Moreau
 
 
 
