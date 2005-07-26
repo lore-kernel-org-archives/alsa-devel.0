@@ -1,14 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Alsa Mixer api documentation. (Damn u C programmers!)
-Date: Tue, 26 Jul 2005 15:12:17 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0507261505340.8190@tm8103-a.perex-int.cz>
-References: <29d8345905072416467aa8dc4d@mail.gmail.com>  <1122254407.31270.1.camel@mindpipe>
-  <29d8345905072504337b900491@mail.gmail.com>  <Pine.LNX.4.61.0507251508500.8412@tm8103.perex-int.cz>
- <29d8345905072507201fb8d044@mail.gmail.com>
+From: Bill Gatliff <bgat@billgatliff.com>
+Subject: Lots of noob questions on writing an ALSA driver for SM501
+Date: Tue, 26 Jul 2005 09:16:46 -0500
+Message-ID: <42E645CE.609@billgatliff.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <29d8345905072507201fb8d044@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +15,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chuckles <chuckleberryfinn@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 Jul 2005, Chuckles wrote:
+Guys:
 
-> > Write some docs in doxygen, we'll include it to our repository.
-> > 
-> > 						Jaroslav
-> 
-> No probs. I'd be more than willing to write some docs for the mixer
-> api, if I could work out how to use it. So can you answer some
-> questions about it? I'm confused as to why its necessary to use
-> elements, simple elements and a high level control interface to set
-> sound levels on the mixer.
 
-Please, choose only one method. You can access directly the universal 
-control elements (direct mapping to driver) or use more simple interface 
-(snd_mixer_selem* function / defines).
+I'm attempting to write my first ALSA driver.  My objective is to get 
+sounds to emerge through a UCB1400 connected to an SM501's AC97-link 
+controller, and to receive sounds coming from the UCB1400's audio input(s).
 
-> I have done some mixer programming with OSS, but this is very different. 
-> I see the snd_mixer_open function opens an empty mixer, fine, does this 
-> imply that a software mixer has to be built from the ground up? As in 
-> you add a pcm element, a master element, a cd element depending on what 
-> is available on your particular sound card to this empty mixer?
+I'm going over Takashi Iwai's "Writing an ALSA Driver" document, but 
+there are a few things I just don't understand yet.  I'm hoping that 
+someone here will be able to set me straight.
 
-The alsa-lib does all this work. You need only enumerate (see selems() 
-function in amixer.c) and write/read values (see sset() function in 
-amixer.c) from such elements. Also note that all elements might be dynamic 
-(removed / added on the fly).
+The SM501 has an AC97-Link controller, but nothing else related to audio 
+as far as I can tell.  In my hardware the SM501 is memory-mapped, and is 
+not a PCI device.  The host processor is an AT91RM9200 (ARM).
 
-Basically, you need only to create a connection between driver (universal 
-control interface) and the more abstract layer in the initialization 
-phase.
+As far as I can tell, I need a "PCM Interface" driver to provide a PCM 
+device file to userspace.  It also looks like I need an "AC97 Interface" 
+driver to provide access to the UCB1400 during playback and recording.  
+Is this right?
 
-						Jaroslav
+I'm hoping someone will set me straight here.  Thanks!!
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+b.g.
+
+-- 
+Bill Gatliff
+bgat@billgatliff.com
+
+The true Southern watermelon is a boon apart, and not to be mentioned
+with commoner things.  It is chief of the world's luxuries, king by
+the grace of God over all the fruits of the earth.  When one has
+tasted it, he knows what the angels eat.  It was not a Southern
+watermelon that Eve took; we know it because she repented.
+                -- Mark Twain, "Pudd'nhead Wilson's Calendar"
+
 
 
 -------------------------------------------------------
