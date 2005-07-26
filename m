@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: More on spam
-Date: Tue, 26 Jul 2005 12:55:09 -0400
-Message-ID: <1122396909.18884.36.camel@mindpipe>
-References: <42E66A0E.6020702@redfish-solutions.com>
+From: Dirk Jagdmann <doj@cubic.org>
+Subject: [patch] envy24control midi bugfix
+Date: Tue, 26 Jul 2005 19:02:28 +0200
+Message-ID: <42E66CA4.6060202@cubic.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------000302070604030307040602"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A277D1C1
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 18:55:11 +0200 (MEST)
-In-Reply-To: <42E66A0E.6020702@redfish-solutions.com>
+Received: from roasted.cubic.org (roasted.cubic.org [193.108.181.130])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23CE015A
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 19:02:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,22 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-07-26 at 10:51 -0600, Philip Prindeville wrote:
-> Can we also automatically purge mail containing .scr, .exe, or
-> .zip attachments?  None of those would be useful to us, since they
-> all apply to Windows and not Linux or BSD.
-> 
-> I would probably delete email containing various Windows
-> character sets, such as 1255, etc.
+This is a multi-part message in MIME format.
+--------------000302070604030307040602
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Please add this request to the sourceforge trouble ticket that I opened.
+Hello developers,
 
-Lee
+this patch is a bugfix for the midi patch I posted yesterday. This patch 
+fixes the "mute" button when driven via midi and the "LR Gang" button is 
+set.
 
+-- 
+---> doj / cubic
+----> http://cubic.org/~doj
+-----> http://llg.cubic.org
+
+--------------000302070604030307040602
+Content-Type: text/plain;
+ name="envy24control-midi-bugfix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="envy24control-midi-bugfix.patch"
+
+Index: mixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/envy24control/mixer.c,v
+retrieving revision 1.11
+diff -u -r1.11 mixer.c
+--- mixer.c	26 Jul 2005 11:37:11 -0000	1.11
++++ mixer.c	26 Jul 2005 14:58:58 -0000
+@@ -133,10 +133,15 @@
+ 
+ void mixer_set_mute(int stream, int left, int right)
+ {
+-	if (left >= 0)
++	int stereo = is_active(mixer_stereo_toggle[stream-1]) ? 1 : 0;
++	if (left >= 0 || stereo) {
+ 		toggle_set(mixer_mute_toggle[stream-1][0], left ? TRUE : FALSE);
+-	if (right >= 0)
++		if(stereo && left<0) left=right;
++	}
++	if (right >= 0 || stereo) {
+ 		toggle_set(mixer_mute_toggle[stream-1][1], right ? TRUE : FALSE);
++		if(stereo && right<0) right=left;
++	}
+ 	set_switch1(stream, left, right);
+ }
+ 
+
+--------------000302070604030307040602--
 
 
 -------------------------------------------------------
