@@ -1,11 +1,21 @@
-From: Dirk Jagdmann <doj@cubic.org>
-Subject: envy24control midi updates
-Date: Tue, 26 Jul 2005 02:44:35 +0200
-Message-ID: <42E58773.2020609@cubic.org>
+From: Andrew Haninger <ahaning@gmail.com>
+Subject: Re: BUG: Yamaha OPL3SA2 does not work with ALSA on 2.6 kernels.
+Date: Tue, 26 Jul 2005 01:37:37 -0400
+Message-ID: <105c793f050725223733964f55@mail.gmail.com>
+References: <105c793f05072507315cfd1878@mail.gmail.com>
+	 <20050725232604.GH3160@stusta.de>
+Reply-To: Andrew Haninger <ahaning@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070401030804060509020605"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from rproxy.gmail.com (rproxy.gmail.com [64.233.170.193])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43070192
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2005 07:37:38 +0200 (MEST)
+Received: by rproxy.gmail.com with SMTP id z35so589543rne
+        for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2005 22:37:37 -0700 (PDT)
+In-Reply-To: <20050725232604.GH3160@stusta.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,280 +25,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070401030804060509020605
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On 7/25/05, Adrian Bunk <bunk@stusta.de> wrote:
+> Does the OSS driver work in 2.6?
+I was able to get the OSS module (opl3sa2) installed in 2.6 and I was
+able to get some nice hiss when doing 'cat /dev/urandom > /dev/dsp'. I
+used the following modprobe line:
 
-Hello developers,
+modprobe opl3sa2 io=3D0x370 irq=3D11 dma=3D0 dma2=3D1 mss_io=3D0x530 isapnp=
+=3D0
 
-I have enhanced the midi control of envy24control.
+the isapnp=3D0 part appeared to be required. The following showed up in
+dmesg upon inserting the OSS module:
 
-1) I have fixed midi feedback, where issuing a controller event resulted 
-in the controller value beeing sent to the midi port again.
+opl3sa2: Chipset version =3D 0x7
+opl3sa2: Found OPL3-SA3 (YMF715E or YMF719E)
 
-2) I have added midi controllers for the "mute" buttons, which can now 
-be controller via midi.
+However, when I try to rmmod the opl3sa2 module, I get an Oops:
 
-3) and while rewriting the midi code to support the mute buttons several 
-off-by-one errors have been fixed.
+Unable to handle kernel NULL pointer dereference at virtual address 0000000=
+0
+ printing eip:
+c037ae01
+*pde =3D 00000000
+Oops: 0002 [#1]
+PREEMPT
+Modules linked in: opl3sa2 ad1848 mpu401 sound soundcore vfat fat
+sd_mod usb_storage lp parport ide_scsi rtc
+CPU:    0
+EIP:    0060:[<c037ae01>]    Not tainted VLI
+EFLAGS: 00010046   (2.6.12.2)
+EIP is at wait_for_completion+0x71/0xf0
+eax: cca91180   ebx: c52ea000   ecx: c52ebf20   edx: 00000000
+esi: c52ea000   edi: cca9117c   ebp: c52ebf40   esp: c52ebef4
+ds: 007b   es: 007b   ss: 0068
+Process rmmod (pid: 11277, threadinfo=3Dc52ea000 task=3Dc79ce550)
+Stack: 00000000 c79ce550 c0113cf0 00000000 00000000 c52ea000 c0e899e0 c0209=
+ffe
+       00000001 c79ce550 c0113cf0 cca91180 00000114 00000001 00000000 cca91=
+174
+       00000114 00000001 00000000 c52ea000 cca8f964 cca91174 00000000 cca91=
+200
+Call Trace:
+ [<c0113cf0>] default_wake_function+0x0/0x20
+ [<c0209ffe>] kobject_put+0x1e/0x30
+ [<c0113cf0>] default_wake_function+0x0/0x20
+ [<cca8f964>] cleanup_opl3sa2+0x74/0x8c [opl3sa2]
+ [<c0131bc8>] sys_delete_module+0x178/0x1b0
+ [<c015b2c0>] sys_munmap+0x50/0x80
+ [<c0103205>] syscall_call+0x7/0xb
+Code: 00 00 8b 03 c7 45 d4 01 00 00 00 c7 45 bc f0 3c 11 c0 c7 45 dc
+f0 3c 11 c0 89 45 b8 89 45 d8 8d 47 04 8b 50 04 89 45 e0 89 48 04 <89>
+0a 89 55 e4 8d 76 00 8d bc 27 00 00 00 00 8b 03 c7 00 02 00
+ <6>note: rmmod[11277] exited with preempt_count 1
 
--- 
----> doj / cubic
-----> http://cubic.org/~doj
------> http://llg.cubic.org
+and now when I try to rmmod the module again, I get:
 
---------------070401030804060509020605
-Content-Type: text/plain;
- name="envy24control-buttons.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="envy24control-buttons.patch"
+ERROR: Removing 'opl3sa2': Device or resource busy
 
-Index: midi.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/midi.c,v
-retrieving revision 1.2
-diff -u -r1.2 midi.c
---- midi.c	27 Dec 2004 14:54:42 -0000	1.2
-+++ midi.c	26 Jul 2005 00:37:00 -0000
-@@ -1,7 +1,7 @@
- /*****************************************************************************
-    envy24control.c - Env24 chipset (ICE1712) control utility
-    midi controller code
--   (c) 2004 by Dirk Jagdmann <doj@cubic.org>
-+   (c) 2004, 2005 by Dirk Jagdmann <doj@cubic.org>
- 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-@@ -27,13 +27,12 @@
- static snd_seq_t *seq=0;
- static int client, clientId, port, ch;
- static char *portname=0, *appname=0;
--static int nofeedback=-1;
- static int maxstreams=0;
--static uint8_t currentvalues[128];
-+static int currentvalue[128];
- 
- void midi_maxstreams(int m)
- {
--  maxstreams=(m-1)*2;
-+  maxstreams=m*2;
- }
- 
- int midi_close()
-@@ -56,6 +55,10 @@
- {
-   snd_seq_event_t ev;
-   if(!seq) return;
-+  if(currentvalue[c]==v) return;
-+#if 0
-+  fprintf(stderr, "do_controller(%i,%i)\n",c,v);
-+#endif
-   snd_seq_ev_clear(&ev);
-   snd_seq_ev_set_source(&ev, port);
-   snd_seq_ev_set_subs(&ev);
-@@ -63,21 +66,34 @@
-   snd_seq_ev_set_controller(&ev,ch,c,v);
-   snd_seq_event_output(seq, &ev);
-   snd_seq_drain_output(seq);
-+
-+  currentvalue[c]=v;
- }
- 
- int midi_controller(int c, int v)
- {
--  if(c==nofeedback) return 0;
-   if(c<0 || c>127) return 0;
- 
-   v*=127; v/=96;
-   if(v<0) v=0;
-   if(v>127) v=127;
--  currentvalues[c]=v;
-+#if 0
-+  fprintf(stderr, "midi_controller(%i,%i)\n",c,v);
-+#endif
-+  if(currentvalue[c]==v-1 || currentvalue[c]==v-2) return 0; /* because of 96to127 conversion values can differ up to two integers */
-   do_controller(c,v);
-   return 0;
- }
- 
-+int midi_button(int b, int v)
-+{
-+  if(b<0) return 0;
-+  b+=maxstreams;
-+  if(b>127) return 0;
-+  do_controller(b, v?127:0);
-+  return 0;
-+}
-+
- int midi_init(char *appname, int channel)
- {
-   snd_seq_client_info_t *clientinfo;
-@@ -87,6 +103,9 @@
-   if(seq)
-     return 0;
- 
-+  for(npfd=0; npfd!=128; ++npfd)
-+    currentvalue[npfd]=-1;
-+
-   ch=channel;
- 
-   if(snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, SND_SEQ_NONBLOCK) < 0)
-@@ -139,6 +158,7 @@
- }
- 
- void mixer_adjust(GtkAdjustment *adj, gpointer data);
-+void mixer_set_mute(int stream, int left, int right);
- 
- void midi_process(gpointer data, gint source, GdkInputCondition condition)
- {
-@@ -158,15 +178,27 @@
- 	  fprintf(stderr, "Channel %02d: Controller %03d: Value:%d\n",
- 		  ev->data.control.channel, ev->data.control.param, ev->data.control.value);
- #endif
--	  if(ev->data.control.channel == ch && ev->data.control.param < maxstreams)
-+	  if(ev->data.control.channel == ch)
- 	    {
--	      int stream=ev->data.control.param+1;
--	      long data=((stream/2)<<16)|(stream&1);
--	      int v=ev->data.control.value; v*=96; v/=127;
--	      gtk_adjustment_set_value(adj, 96-v);
--	      nofeedback=ev->data.control.param;
--	      mixer_adjust(adj, (gpointer)data);
--	      nofeedback=-1;
-+	      currentvalue[ev->data.control.param]=ev->data.control.value;
-+	      if(ev->data.control.param < maxstreams)
-+		{
-+		  int stream=ev->data.control.param;
-+		  long data=((stream/2+1)<<16)|(stream&1);
-+		  int v=ev->data.control.value; v*=96; v/=127;
-+		  gtk_adjustment_set_value(adj, 96-v);
-+		  mixer_adjust(adj, (gpointer)data);
-+		}
-+	      else if(ev->data.control.param < maxstreams*2)
-+		{
-+		  int b=ev->data.control.param-maxstreams;
-+		  int left=-1, right=-1;
-+		  if(b&1)
-+		    right=ev->data.control.value;
-+		  else
-+		    left=ev->data.control.value;
-+		  mixer_set_mute(b/2+1, left, right);
-+		}
- 	    }
- 	  break;
- 
-@@ -178,8 +210,14 @@
- 	  if(ev->data.connect.dest.client!=clientId)
- 	    {
- 	      int i;
--	      for(i=0; i<sizeof(currentvalues); ++i)
--		do_controller(i, currentvalues[i]);
-+	      for(i=0; i!=128; ++i)
-+		if(currentvalue[i] >= 0)
-+		  {
-+		    /* set currentvalue[i] to a fake value, so the check in do_controller does not trigger */
-+		    int v=currentvalue[i];
-+		    currentvalue[i]=-1;
-+		    do_controller(i, v);
-+		  }
- 	    }
- 	  break;
- 	}
-Index: midi.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/midi.h,v
-retrieving revision 1.1
-diff -u -r1.1 midi.h
---- midi.h	17 Nov 2004 11:41:57 -0000	1.1
-+++ midi.h	26 Jul 2005 00:37:00 -0000
-@@ -8,5 +8,6 @@
- void midi_maxstreams(int);
- int midi_controller(int c, int v);
- void midi_process(gpointer data, gint source, GdkInputCondition condition);
-+int midi_button(int b, int v);
- 
- #endif
-Index: mixer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/mixer.c,v
-retrieving revision 1.10
-diff -u -r1.10 mixer.c
---- mixer.c	17 Nov 2004 11:41:57 -0000	1.10
-+++ mixer.c	26 Jul 2005 00:37:00 -0000
-@@ -63,8 +63,8 @@
- 			toggle_set(mixer_stereo_toggle[stream-1], FALSE);
- 		gtk_adjustment_set_value(GTK_ADJUSTMENT(mixer_adj[stream-1][0]), 96 - v[0]);
- 		gtk_adjustment_set_value(GTK_ADJUSTMENT(mixer_adj[stream-1][1]), 96 - v[1]);
--		midi_controller(stream*2-1, v[0]);
--		midi_controller(stream*2,   v[1]);
-+		midi_controller((stream-1)*2,   v[0]);
-+		midi_controller((stream-1)*2+1, v[1]);
- 	}
- 	if (sw_flag) {
- 		snd_ctl_elem_value_t *sw;
-@@ -81,6 +81,8 @@
- 			toggle_set(mixer_stereo_toggle[stream-1], FALSE);
- 		toggle_set(mixer_mute_toggle[stream-1][0], !v[0] ? TRUE : FALSE);
- 		toggle_set(mixer_mute_toggle[stream-1][1], !v[1] ? TRUE : FALSE);
-+		midi_button((stream-1)*2, v[0]);
-+		midi_button((stream-1)*2+1, v[1]);
- 	}
- }
- 
-@@ -98,10 +100,12 @@
- 	if (left >= 0 && left != snd_ctl_elem_value_get_boolean(sw, 0)) {
- 		snd_ctl_elem_value_set_boolean(sw, 0, left);
- 		changed = 1;
-+		midi_button((stream-1)*2, left);
- 	}
- 	if (right >= 0 && right != snd_ctl_elem_value_get_boolean(sw, 1)) {
- 		snd_ctl_elem_value_set_boolean(sw, 1, right);
- 		changed = 1;
-+		midi_button((stream-1)*2+1, right);
- 	}
- 	if (changed) {
- 		err = snd_ctl_elem_write(ctl, sw);
-@@ -127,12 +131,21 @@
- 	set_switch1(stream, vol[0], vol[1]);
- }
- 
-+void mixer_set_mute(int stream, int left, int right)
-+{
-+  if(left>=0)
-+    toggle_set(mixer_mute_toggle[stream-1][0], left ? TRUE : FALSE);
-+  if(right>=0)
-+    toggle_set(mixer_mute_toggle[stream-1][1], right ? TRUE : FALSE);
-+  set_switch1(stream, left, right);
-+}
-+
- static void set_volume1(int stream, int left, int right)
- {
- 	snd_ctl_elem_value_t *vol;
- 	int change = 0;
- 	int err;
-@@ -142,12 +155,12 @@
- 	if (left >= 0) {
- 		change |= (snd_ctl_elem_value_get_integer(vol, 0) != left);
- 		snd_ctl_elem_value_set_integer(vol, 0, left);
--		midi_controller(stream*2-1, left);
-+		midi_controller((stream-1)*2, left);
- 	}
- 	if (right >= 0) {
- 		change |= (snd_ctl_elem_value_get_integer(vol, 1) != right);
- 		snd_ctl_elem_value_set_integer(vol, 1, right);
--		midi_controller(stream*2, right);
-+		midi_controller((stream-1)*2+1, right);
- 	}
- 	if (change) {
- 		if ((err = snd_ctl_elem_write(ctl, vol)) < 0 && err != -EBUSY)
+So, yes, given the correct parameters, the OSS module (just like the
+ALSA module) works with the occasional Oops. I guess the Oopses are
+acceptable for now; it's the ALSA detection routines that are broken
+themselves or that are broken by something in the 2.6 kernel (remember
+that they work fine in 2.4).
 
---------------070401030804060509020605--
+Thanks.
+
+-Andy
 
 
 -------------------------------------------------------
