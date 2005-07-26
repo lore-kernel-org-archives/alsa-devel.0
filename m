@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Bill Gatliff <bgat@billgatliff.com>
 Subject: Re: Lots of noob questions on writing an ALSA driver
  for SM501
-Date: Tue, 26 Jul 2005 17:40:26 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0507261733340.8190@tm8103-a.perex-int.cz>
-References: <42E645CE.609@billgatliff.com> <Pine.LNX.4.61.0507261633110.8190@tm8103-a.perex-int.cz>
- <42E656B8.9090406@billgatliff.com>
+Date: Tue, 26 Jul 2005 10:42:41 -0500
+Message-ID: <42E659F1.9090807@billgatliff.com>
+References: <42E645CE.609@billgatliff.com> <Pine.LNX.4.61.0507261633110.8190@tm8103-a.perex-int.cz> <42E656B8.9090406@billgatliff.com> <Pine.LNX.4.61.0507261733340.8190@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42E656B8.9090406@billgatliff.com>
+In-Reply-To: <Pine.LNX.4.61.0507261733340.8190@tm8103-a.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +18,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bill Gatliff <bgat@billgatliff.com>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 26 Jul 2005, Bill Gatliff wrote:
+Jaroslav:
 
-> But the sm501 stuff won't be ARM-specific--- it'll be tested on ARM and SH, at
-> least.  So where should the source for sm501-pcm.c and sm501-ac97 be placed?
+Jaroslav Kysela wrote:
 
-Good question. I think drivers/sm501 directory might be ok for the common 
-stuff (library) and place the toplevel modules for architectures to arm/ 
-and new sh/ directories. If the toplevel code will be very common, 
-something like
+>On Tue, 26 Jul 2005, Bill Gatliff wrote:
+>
+>Or leave everything in drivers/sm501 for this time - we can move it later.
+>  
+>
 
-#define ARCH_SH
-#include "../arm/sm501-ac97.c"
+Ok.
 
-might be used in the sh/ directory.
 
-Or leave everything in drivers/sm501 for this time - we can move it later.
+b.g.
 
-						Jaroslav
+-- 
+Bill Gatliff
+bgat@billgatliff.com
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+You have the capacity to learn from mistakes.
+You'll learn a lot today.
+
 
 
 -------------------------------------------------------
