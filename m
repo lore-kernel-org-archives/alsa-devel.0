@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001285]: Live! Value [CT4832] high pitched tone instead of sound and interrupt errors
-Date: Wed, 27 Jul 2005 22:02:44 +0200
-Message-ID: <a149fac80fb74c2cfbee3a9208439e5c@bugtrack.alsa-project.org>
+From: Pavel Machek <pavel@suse.cz>
+Subject: Re: [ACPI] Re: [PATCH] 2.6.13-rc3-git5: fix Bug #4416 (1/2)
+Date: Wed, 27 Jul 2005 22:52:49 +0200
+Message-ID: <20050727205249.GA708@openzaurus.ucw.cz>
+References: <200507261247.05684.rjw@sisk.pl> <200507261251.48291.rjw@sisk.pl> <s5hmzo8ljf6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44EAB1DD
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 22:02:45 +0200 (MEST)
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz [195.113.31.123])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35D101CE
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 23:23:23 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hmzo8ljf6.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,107 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, LKML <linux-kernel@vger.kernel.org>, ACPI mailing list <acpi-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1285> 
-======================================================================
-Reported By:                pilophae
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1285
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             gentoo-sources-2.6.12-r6
-======================================================================
-Date Submitted:             07-27-2005 20:30 CEST
-Last Modified:              07-27-2005 22:02 CEST
-======================================================================
-Summary:                    Live! Value [CT4832] high pitched tone instead of
-sound and interrupt errors
-Description: 
-Specs:
-ASUS A8N-SLI Deluxe Motherboard
-AMD Athlon64 3200+
-2GB PC3200 DDR
+> > The following patch adds free_irq() and request_irq() to the suspend and
+> > resume, respectively, routines in the snd_intel8x0 driver.
+> 
+> The patch looks OK to me although I have some concerns.
+> 
+> - The error in resume can't be handled properly.
+> 
+>   What should we do for the error of request_irq()?
+> 
+> - Adding this to all drivers seem too much.
 
-Problem:
-Whenever I play a sound, wether direct via ALSA or OSS emulation, a high
-pitched tone is heard through the speakers. This sound can be lowered with
-a mixer. Also, just invoking aplay with an unknown format, causes it to
-play an 8kHz tone, which is noticably lower, so I'm guessing the tone is
-based on the output sampling frequency.
+There's probably no other way. Talk to Len Brown.
 
-This problem only occurs in this configuration, the sound card works fine
-in my old computer and another tested computer, even together with another
-emu10k1-based card. In Gentoo linux on one, and Windows on the latter.
+>   We just need to stop the irq processing until resume, so something
+>   like suspend_irq(irq, dev_id) and resume_irq(irq, dev_id) would be
+>   more uesful?
 
-Also, with kernel 2.6.10 through 2.6.11 I receive different kind of
-interrupt errors when trying to play sound:
-
-2.6.10-vanilla:
-   interrupt: PCI error
-   emu10k1: unhandled interrupt: 0xe7400000
-
-2.6.11-gentoo-r9:
-   interrupt: PCI error
-(using OSS driver emu10k1:
-   emu10k1: Warning, unhandled interrupt: 0xe763fc7f)
-
-2.6.12-gentoo-r[46]:
-   (no messages, some new interrupt patch was applied to this kernel,
-apparently)
-
-During the first attempt at using this card, the second built in NIC on
-the motherboard shared interrupt with the soundcard and when I tried to
-play sounds, the NIC was disabled and spat this at me:
-skge hardware error detected (status 0x400)
-
-I have tried compiling the driver as a module, disabling the onboard audio
-chip, enabling MSI/MSI-X, disabling the conflicting on-board LAN (not
-conflicting anymore?), disabling APIC (both in bios and in kernel),
-swapping between PCI-slots and using OSS module emu10k1, with no avail.
-
-I will try to use another emu10k1-based card in this same setup, to rule
-out specific incompabilities.
-
-Any ideas?
-======================================================================
-
-----------------------------------------------------------------------
- pilophae - 07-27-05 20:56 
-----------------------------------------------------------------------
-Okay, this is strange. Using a Live! 5.1 there are no issues with sound or
-IRQ. My report still stands, but I'm a tad inclined to investigate the
-health of the Live! Value.
-
-----------------------------------------------------------------------
- pilophae - 07-27-05 22:02 
-----------------------------------------------------------------------
-I just tested the problematic Live Value! in another computer, with kernel
-2.6.11 and ALSA 1.0.8, and it works flawlessly. This must be due to a rare
-combination.
-I have seen this issue on a forum also, but that guy said his motherboard
-was broken, but mine most surely is not.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-27-05 20:30 pilophae       New Issue                                    
-07-27-05 20:30 pilophae       Kernel Version            =>
-gentoo-sources-2.6.12-r6
-07-27-05 20:56 pilophae       Note Added: 0005574                          
-07-27-05 22:02 pilophae       Note Added: 0005575                          
-======================================================================
-
+Its more complex than that. Irq numbers may change during resume.
+-- 
+64 bytes from 195.113.31.123: icmp_seq=28 ttl=51 time=448769.1 ms         
 
 
 
