@@ -1,7 +1,7 @@
 From: Dino <dino@e4a.it>
 Subject: RE: Volume per voices [Feature Request]
-Date: Wed, 27 Jul 2005 10:34:06 +0200
-Message-ID: <1122453246.42e746feeaa5a@mail.e4a.it>
+Date: Wed, 27 Jul 2005 10:34:07 +0200
+Message-ID: <1122453247.42e746ffbc446@mail.e4a.it>
 References: <XFMail.20050727094742.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
