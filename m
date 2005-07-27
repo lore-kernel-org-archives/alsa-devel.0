@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001285]: Live! Value [CT4832] high pitched tone instead of sound and interrupt errors
-Date: Wed, 27 Jul 2005 20:56:44 +0200
-Message-ID: <15ecd156481a2369f4b8c11800492fd6@bugtrack.alsa-project.org>
+Date: Wed, 27 Jul 2005 22:02:44 +0200
+Message-ID: <a149fac80fb74c2cfbee3a9208439e5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE87B1DD
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 20:56:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44EAB1DD
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 22:02:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             gentoo-sources-2.6.12-r6
 ======================================================================
 Date Submitted:             07-27-2005 20:30 CEST
-Last Modified:              07-27-2005 20:56 CEST
+Last Modified:              07-27-2005 22:02 CEST
 ======================================================================
 Summary:                    Live! Value [CT4832] high pitched tone instead of
 sound and interrupt errors
@@ -100,6 +100,15 @@ Okay, this is strange. Using a Live! 5.1 there are no issues with sound or
 IRQ. My report still stands, but I'm a tad inclined to investigate the
 health of the Live! Value.
 
+----------------------------------------------------------------------
+ pilophae - 07-27-05 22:02 
+----------------------------------------------------------------------
+I just tested the problematic Live Value! in another computer, with kernel
+2.6.11 and ALSA 1.0.8, and it works flawlessly. This must be due to a rare
+combination.
+I have seen this issue on a forum also, but that guy said his motherboard
+was broken, but mine most surely is not.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -107,6 +116,7 @@ Date Modified  Username       Field                    Change
 07-27-05 20:30 pilophae       Kernel Version            =>
 gentoo-sources-2.6.12-r6
 07-27-05 20:56 pilophae       Note Added: 0005574                          
+07-27-05 22:02 pilophae       Note Added: 0005575                          
 ======================================================================
 
 
