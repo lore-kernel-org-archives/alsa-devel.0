@@ -1,15 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: note on /off at same time
-Date: Wed, 27 Jul 2005 09:58:39 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507270951430.16586-100000@studcom.urz.uni-halle.de>
-References: <1122396703.2224.63.camel@tordera.genos.intranet>
+Subject: Re: Volume per voices [Feature Request]
+Date: Wed, 27 Jul 2005 10:17:51 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507271011440.16586-100000@studcom.urz.uni-halle.de>
+References: <XFMail.20050727094742.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.Uni-Halle.DE [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A03551BB
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 09:58:41 +0200 (MEST)
-In-Reply-To: <1122396703.2224.63.camel@tordera.genos.intranet>
+In-Reply-To: <XFMail.20050727094742.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,41 +16,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Cesar Hernandez <chernandez@genos.es>
-Cc: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Dino Puller <dino@e4a.it>, Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Cesar Hernandez wrote:
-> -If I first send a noteon and then a noteoff to the same channel, note,
-> and timetick, what happens?
+Giuliano Pochini wrote:
+> On 26-Jul-2005 Dino Puller wrote:
+> > It's should be very useful to have a standard way/function to map volume
+> > per PCM stream. For now seems that only emu10k1 and via82xxx has a
+> > volume control for each PCM streams, probably because a lack on the
+> > others drivers. Where the HW/driver doesn't support this control, it's
+> > should be emulated via software.
+>
+> Most cards have hw volume, but ALSA cannot answer this simple question:
+> given this PCM handle, what numid:index control controls the gain of its
+> Nth channel ?
 
-The ALSA sequencer doesn't reorder events, even those with the same
-timestamp, so both events will be delivered in that order to the
-synthesizer.
+But it would be very easy for the driver to answer this question, and
+to extend ALSA accordingly.
 
-What happens then depends on the synthesizer, but on most devices, the
-note off will shut off the earlier note on.  Some devices can be
-configured to ignore all note off events (regardless of their time
-relative to the note on), and some do this by default for notes on the
-drum channel.
+> That question is not as simple as it may seem at first glance. The ctl
+> may not exist at all if the cards do not support it
 
-> If I send first the noteoff and then noteon, what happens?
+The ALSA library could add a software volume plugin in this case.
 
-The note off will be ignored.  The note on will start a note.
+> or if the PCM is not an hardware PCM (eg. is uses dmix). Even if
+> the card has a simple 1:1 relation between a PCM device and an hw
+> control, some plugins (route, multi or any combination of any
+> plugins) may have shuffled things...
 
-> -If I send two noteon with the same timetick, channel and note, will it
-> play only one note? And then, must I send two noteoff to stop them ?
-
-It doesn't matter that the events are sent at the same time, the
-synthesizer will handle them one ofter the other.
-
-The handling of duplicate notes depends on the synthesizer.  GS and XG
-devices can be configured to kill earlier notes with the same note
-number, or to play both notes.  However, with most devices, a note off
-will shut off all notes with the same note number.
+These plugins would pass through the information from the slave
+plugin, if appropriate.  If not, we have the same case as when there
+is no hardware control.
 
 
-HTH
+Regards,
 Clemens
 
 
