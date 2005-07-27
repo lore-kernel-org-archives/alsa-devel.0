@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001283]: Allegro-1 does not generate interrupts - but does on linux 2.4.27
-Date: Wed, 27 Jul 2005 03:51:03 +0200
-Message-ID: <ca99e018b33da468645e855bdd9bd648@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001284]: Soundfont notes problem - notes cut off too soon.
+Date: Wed, 27 Jul 2005 06:36:56 +0200
+Message-ID: <b3ab898bc7e359c9f7118d7308f1918c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8A591DF
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 03:51:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 697041E7
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 06:36:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,37 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1283> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1284> 
 ======================================================================
-Reported By:                sclark46
-Assigned To:                tiwai
+Reported By:                terminator356
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1283
-Category:                   PCI - maestro3
+Issue ID:                   1284
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398_FC4
+Status:                     new
+Distribution:               Mandrake
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-27-2005 03:51 CEST
-Last Modified:              07-27-2005 03:51 CEST
+Date Submitted:             07-27-2005 06:36 CEST
+Last Modified:              07-27-2005 06:36 CEST
 ======================================================================
-Summary:                    Allegro-1 does not generate interrupts - but does on
-linux 2.4.27
+Summary:                    Soundfont notes problem - notes cut off too soon.
 Description: 
-Aplay fails with a write error and the following error message:
-Jul 26 21:06:14 joker4 kernel: ALSA
-/home/sclark/alsa-driver-1.0.9rc4a/acore/pcm_native.c:1442: playback drain
-error (DMA or IRQ trouble?)
-
-The sound clip plays repeatedly until that error pops up.
-
-I booted a Knoppix CD to verify the HW worked and sound played correctly.
-The Knoppix kernel was 2.4.27
-
-
+Playing a midi keyboard or a file, a note played twice will cut off 
+ other notes.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 03:51 sclark46       New Issue                                    
-07-27-05 03:51 sclark46       Distribution              => Fedora Core 4   
-07-27-05 03:51 sclark46       Kernel Version            => 2.6.12-1.1398_FC4
+07-27-05 06:36 terminator356  New Issue                                    
+07-27-05 06:36 terminator356  File Added: drumtrack-test.mid                    
+07-27-05 06:36 terminator356  Distribution              => Mandrake        
+07-27-05 06:36 terminator356  Kernel Version            => 2.6.10          
 ======================================================================
 
 
