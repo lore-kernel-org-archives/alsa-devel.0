@@ -1,13 +1,12 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [patch] envy24control save state of LRGang button
- in config file
-Date: Wed, 27 Jul 2005 08:56:36 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0507270855510.8129@tm8103.perex-int.cz>
-References: <42E66ECA.10407@cubic.org>
+Subject: Re: Envy24control -SPDIF bug and maybe improvements?
+Date: Wed, 27 Jul 2005 09:04:19 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0507270902130.8129@tm8103.perex-int.cz>
+References: <200507262109.54095.alan@horstmann.fsworld.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42E66ECA.10407@cubic.org>
+In-Reply-To: <200507262109.54095.alan@horstmann.fsworld.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +16,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dirk Jagdmann <doj@cubic.org>
+To: Alan H <alan@horstmann.fsworld.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 26 Jul 2005, Dirk Jagdmann wrote:
+On Tue, 26 Jul 2005, Alan H wrote:
 
-> Hello Developers,
+> Hi,
 > 
-> this patch saves the state of the "LR Gang" buttons in a config/pref 
-> file, because this button's state is not preserved throughout runs of 
-> envy24control. At present it only works, when envy24control is compiled 
-> with GTK2 as I have used routines which were introduced with Glib2.
+> Recently I reported a bug with DMX6fire and SPDIF inputs (bugtrack 
+> alsa-tools 0001214), and then, as reported there, happened to find the 
+> problem myself when perusing the source code.
+> 
+> As a user of the DMX6fire and an electronics engineer, I am newish to 
+> Linux and software.  However, as I had ended up looking at the source 
+> code and had ideas for improvements to the controls and usability of 
+> 'e24c', I altered it in stages, and resulted in a neater, easier version 
+> for me to use.
+> 
+> How can this alternative be considered/made available for others -for 
+> example where could I put a tarball of the 3 major version stages of the 
+> changed files?  These versions are all up to date with the released 
+> alsa-1.0.9.
+> 
+> Is there a better way to approach such development, if I am considering 
+> other improvements?
 
-Applied to CVS.
+Please, provide us a patch against ALSA 1.0.9 or better against ALSA CVS..
+Patch can be generated via this command:
 
-> While this works fine I think we should discuss if envy24control 
-> could/should be compiled with gtk2 by default (currently gtk1 is 
-> default). As I think all Linux distributions now ship with Gtk2 and most 
-> other software uses gtk2 by now, I think it would be a reasonable thing 
-> for the next release of Alsa. This would also mean, that this patch will 
-> work with the default configuration :)
+diff -ru <old_dir> <new_dir>
 
-Any objections from others?
+We will review the patch and if it's ok, we'll apply it to ALSA 
+mainstream.
 
-					Jaroslav
+						Jaroslav
 
 -----
 Jaroslav Kysela <perex@suse.cz>
