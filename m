@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001279]: Audigy2 NX produces crackles on USB2, fine on USB1
-Date: Wed, 27 Jul 2005 16:42:23 +0200
-Message-ID: <0e4f35ad97864af1f423d83a005363d5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001285]: Live! Value [CT4832] high pitched tone instead of sound and interrupt errors
+Date: Wed, 27 Jul 2005 20:30:32 +0200
+Message-ID: <cce5b331f87d4b18e9ee53e8da268c97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5BD36162
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 16:42:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4C071C5
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 20:30:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1279> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1285> 
 ======================================================================
-Reported By:                bluebottle
-Assigned To:                Clemens Ladisch
+Reported By:                pilophae
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1279
-Category:                   USB - usb-audio
+Issue ID:                   1285
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.12.2
+Status:                     new
+Distribution:               
+Kernel Version:             gentoo-sources-2.6.12-r6
 ======================================================================
-Date Submitted:             07-24-2005 07:03 CEST
-Last Modified:              07-27-2005 16:42 CEST
+Date Submitted:             07-27-2005 20:30 CEST
+Last Modified:              07-27-2005 20:30 CEST
 ======================================================================
-Summary:                    Audigy2 NX produces crackles on USB2, fine on USB1
+Summary:                    Live! Value [CT4832] high pitched tone instead of
+sound and interrupt errors
 Description: 
-I recently upgraded to a 2.6.12.2 kernel (from 2.6.12) and now the Audigy2
-NX is detected as a fully-fledged USB2 device. :)
+Specs:
+ASUS A8N-SLI Deluxe Motherboard
+AMD Athlon64 3200+
+2GB PC3200 DDR
 
-But... it produces crackles in the sound that fade in and out over about a
-two second period, continuously, upon trying to play any sound. The sound
-does play, but has all those crackles in it. :(
+Problem:
+Whenever I play a sound, wether direct via ALSA or OSS emulation, a high
+pitched tone is heard through the speakers. This sound can be lowered with
+a mixer. Also, just invoking aplay with an unknown format, causes it to
+play an 8kHz tone, which is noticably lower, so I'm guessing the tone is
+based on the output sampling frequency.
 
-If I go into BIOS and disable USB2, making my Audigy a USB1 device again,
-it works very well indeed. :)
+This problem only occurs in this configuration, the sound card works fine
+in my old computer and another tested computer, even together with another
+emu10k1-based card. In Gentoo linux on one, and Windows on the latter.
+
+Also, with kernel 2.6.10 through 2.6.11 I receive different kind of
+interrupt errors when trying to play sound:
+
+2.6.10-vanilla:
+   interrupt: PCI error
+   emu10k1: unhandled interrupt: 0xe7400000
+
+2.6.11-gentoo-r9:
+   interrupt: PCI error
+(using OSS driver emu10k1:
+   emu10k1: Warning, unhandled interrupt: 0xe763fc7f)
+
+2.6.12-gentoo-r[46]:
+   (no messages, some new interrupt patch was applied to this kernel,
+apparently)
+
+During the first attempt at using this card, the second built in NIC on
+the motherboard shared interrupt with the soundcard and when I tried to
+play sounds, the NIC was disabled and spat this at me:
+skge hardware error detected (status 0x400)
+
+I have tried compiling the driver as a module, disabling the onboard audio
+chip, enabling MSI/MSI-X, disabling the conflicting on-board LAN (not
+conflicting anymore?), disabling APIC (both in bios and in kernel),
+swapping between PCI-slots and using OSS module emu10k1, with no avail.
+
+I will try to use another emu10k1-based card in this same setup, to rule
+out specific incompabilities.
+
+Any ideas?
 ======================================================================
-
-----------------------------------------------------------------------
- bluebottle - 07-27-05 10:53 
-----------------------------------------------------------------------
-Yep, that patch did the trick. Works great now in USB2 mode. Cool to edit
-the device driver. :)
-
-I've uploaded the output of my alsa-libs compile - I did that with the
-cvscompile script because the "./build prep" script dies with
-"src/Makefile.am:21: invalid unused variable name: `AM_LDFLAGS'", but I
-don't know how valid my autoconf/automake environment is. Autoconf is
-2.59a, automake is 1.4. Something wrong with my system could explain the
-link failure, I guess.
-
-Thank you for your time.
-
-----------------------------------------------------------------------
- Clemens Ladisch - 07-27-05 16:42 
-----------------------------------------------------------------------
-automake 1.4 is from 1999, please try something newer.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-24-05 07:03 bluebottle     New Issue                                    
-07-24-05 07:03 bluebottle     Distribution              => Ubuntu          
-07-24-05 07:03 bluebottle     Kernel Version            => 2.6.12.2        
-07-24-05 09:58 bluebottle     Note Added: 0005557                          
-07-25-05 11:03 Clemens LadischNote Added: 0005561                          
-07-26-05 09:52 bluebottle     Note Added: 0005569                          
-07-26-05 10:16 Clemens LadischFile Added: itd.patch                        
-07-26-05 10:19 Clemens LadischNote Added: 0005570                          
-07-27-05 10:09 bluebottle     File Added: libs-compile-error.txt                
-   
-07-27-05 10:53 bluebottle     Note Added: 0005572                          
-07-27-05 16:42 Clemens LadischNote Added: 0005573                          
+07-27-05 20:30 pilophae       New Issue                                    
+07-27-05 20:30 pilophae       Kernel Version            =>
+gentoo-sources-2.6.12-r6
 ======================================================================
 
 
