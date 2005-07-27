@@ -1,12 +1,12 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Envy24control -SPDIF bug and maybe improvements?
-Date: Wed, 27 Jul 2005 09:04:19 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0507270902130.8129@tm8103.perex-int.cz>
-References: <200507262109.54095.alan@horstmann.fsworld.co.uk>
+Subject: Re: 2.6.12 sound problem
+Date: Wed, 27 Jul 2005 09:14:18 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0507270912370.8129@tm8103.perex-int.cz>
+References: <42E6C89C.1060009@earthlink.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200507262109.54095.alan@horstmann.fsworld.co.uk>
+In-Reply-To: <42E6C89C.1060009@earthlink.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,39 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan H <alan@horstmann.fsworld.co.uk>
+To: sclark46@earthlink.net
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 26 Jul 2005, Alan H wrote:
+On Tue, 26 Jul 2005, Stephen Clark wrote:
 
-> Hi,
+> Hello List,
 > 
-> Recently I reported a bug with DMX6fire and SPDIF inputs (bugtrack 
-> alsa-tools 0001214), and then, as reported there, happened to find the 
-> problem myself when perusing the source code.
 > 
-> As a user of the DMX6fire and an electronics engineer, I am newish to 
-> Linux and software.  However, as I had ended up looking at the source 
-> code and had ideas for improvements to the controls and usability of 
-> 'e24c', I altered it in stages, and resulted in a neater, easier version 
-> for me to use.
-> 
-> How can this alternative be considered/made available for others -for 
-> example where could I put a tarball of the 3 major version stages of the 
-> changed files?  These versions are all up to date with the released 
-> alsa-1.0.9.
-> 
-> Is there a better way to approach such development, if I am considering 
-> other improvements?
+> I recently upgraded my laptop, HP Pavilion N5430, from a 2.4.21 kernel
+> to 2.6.12. As a result of
+> doing this my sound no longer works correctly. It plays the same thing
+> repeatedly some number
+> of times - if it plays at all.
 
-Please, provide us a patch against ALSA 1.0.9 or better against ALSA CVS..
-Patch can be generated via this command:
-
-diff -ru <old_dir> <new_dir>
-
-We will review the patch and if it's ok, we'll apply it to ALSA 
-mainstream.
+It looks like an interrupt problem. Try acpi=off and some other switches 
+like pci=biosirq etc.
 
 						Jaroslav
 
