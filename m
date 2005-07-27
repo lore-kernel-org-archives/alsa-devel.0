@@ -1,16 +1,14 @@
-From: Nicolas GRAZIANO <nicolas.graziano@wanadoo.fr>
-Subject: Re: [PATCH] hda driver, correct bug in model "auto"
-Date: Wed, 27 Jul 2005 20:32:24 +0200
-Message-ID: <42E7D338.60904@wanadoo.fr>
-References: <42DD71DC.1090002@wanadoo.fr> <s5hirywlhdf.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001285]: Live! Value [CT4832] high pitched tone instead of sound and interrupt errors
+Date: Wed, 27 Jul 2005 20:56:44 +0200
+Message-ID: <15ecd156481a2369f4b8c11800492fd6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix3-1.free.fr (postfix3-1.free.fr [213.228.0.44])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6A141C5
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 20:32:25 +0200 (MEST)
-In-Reply-To: <s5hirywlhdf.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE87B1DD
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2005 20:56:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,48 +18,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai a =E9crit :
 
->At Tue, 19 Jul 2005 23:34:20 +0200,
->Nicolas GRAZIANO wrote:
-> =20
->
->>- Correct the channels order in model autodetection (not sure of this
->>part, I need validation)
->>   =20
->>
->
->I think this is not correct (although I'm not 100% sure, too).
->The association order is front/clfe/surround/side.
->(The comment in hda_codec.c is wrong.)
->
-> =20
->
-I make the modification because I was thinking than the order was
-front/clfe/side/back (aka surround ?) and the text on back panel of my
-motherboard (ASUS P5AD2) make me more confident (with my modification
-the channels are at the right place). Can we check with an other
-card/codec ?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1285> 
+======================================================================
+Reported By:                pilophae
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1285
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             gentoo-sources-2.6.12-r6
+======================================================================
+Date Submitted:             07-27-2005 20:30 CEST
+Last Modified:              07-27-2005 20:56 CEST
+======================================================================
+Summary:                    Live! Value [CT4832] high pitched tone instead of
+sound and interrupt errors
+Description: 
+Specs:
+ASUS A8N-SLI Deluxe Motherboard
+AMD Athlon64 3200+
+2GB PC3200 DDR
 
-an another question : the model full_dig correspond to the position on
-back panel of my motherboard, can we make the selection of model automati=
-c ?
+Problem:
+Whenever I play a sound, wether direct via ALSA or OSS emulation, a high
+pitched tone is heard through the speakers. This sound can be lowered with
+a mixer. Also, just invoking aplay with an unknown format, causes it to
+play an 8kHz tone, which is noticably lower, so I'm guessing the tone is
+based on the output sampling frequency.
 
-lspci -vn for my card :
+This problem only occurs in this configuration, the sound card works fine
+in my old computer and another tested computer, even together with another
+emu10k1-based card. In Gentoo linux on one, and Windows on the latter.
 
-0000:00:1b.0 0403: 8086:2668 (rev 03)
-        Subsystem: 1043:813d
+Also, with kernel 2.6.10 through 2.6.11 I receive different kind of
+interrupt errors when trying to play sound:
 
-thanks in advance,
-Nicolas
+2.6.10-vanilla:
+   interrupt: PCI error
+   emu10k1: unhandled interrupt: 0xe7400000
+
+2.6.11-gentoo-r9:
+   interrupt: PCI error
+(using OSS driver emu10k1:
+   emu10k1: Warning, unhandled interrupt: 0xe763fc7f)
+
+2.6.12-gentoo-r[46]:
+   (no messages, some new interrupt patch was applied to this kernel,
+apparently)
+
+During the first attempt at using this card, the second built in NIC on
+the motherboard shared interrupt with the soundcard and when I tried to
+play sounds, the NIC was disabled and spat this at me:
+skge hardware error detected (status 0x400)
+
+I have tried compiling the driver as a module, disabling the onboard audio
+chip, enabling MSI/MSI-X, disabling the conflicting on-board LAN (not
+conflicting anymore?), disabling APIC (both in bios and in kernel),
+swapping between PCI-slots and using OSS module emu10k1, with no avail.
+
+I will try to use another emu10k1-based card in this same setup, to rule
+out specific incompabilities.
+
+Any ideas?
+======================================================================
+
+----------------------------------------------------------------------
+ pilophae - 07-27-05 20:56 
+----------------------------------------------------------------------
+Okay, this is strange. Using a Live! 5.1 there are no issues with sound or
+IRQ. My report still stands, but I'm a tad inclined to investigate the
+health of the Live! Value.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-27-05 20:30 pilophae       New Issue                                    
+07-27-05 20:30 pilophae       Kernel Version            =>
+gentoo-sources-2.6.12-r6
+07-27-05 20:56 pilophae       Note Added: 0005574                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
-SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-from IBM. Find simple to follow Roadmaps, straightforward articles,
-informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+SF.Net email is Sponsored by the Better Software Conference & EXPO September
+19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
