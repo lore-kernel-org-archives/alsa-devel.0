@@ -1,12 +1,13 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: Volume per voices [Feature Request]
-Date: Wed, 27 Jul 2005 18:16:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0507271750440.10303@denise.shiny.it>
-References: <Pine.HPX.4.33n.0507271709230.25935-100000@studcom.urz.uni-halle.de>
+From: Dave Phillips <dlphilp@linux-sound.org>
+Subject: Re: problem with ALSA 1.09 and 2.6 kernel (AGNULA/Demudi)
+Date: Wed, 27 Jul 2005 11:44:00 -0400
+Message-ID: <42E7ABC0.4010909@linux-sound.org>
+References: <42E77F45.9090307@linux-sound.org> <s5hd5p4v3hw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0507271709230.25935-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <s5hd5p4v3hw.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,56 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Dino Puller <dino@e4a.it>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi:
 
+  Some updates: I now have the CS4232, the PDAudioCF (Thank you!), and 
+the Midisport 2x2 working with Demudi 1.2.1 and ALSA 1.0.9rc2. My final 
+hurdle shouldn't be too difficult to get over:
 
-On Wed, 27 Jul 2005, Clemens Ladisch wrote:
+    demudi:/home/dlphilp# modprobe snd-virmidi
+    FATAL: Error inserting snd_virmidi
+    
+(/lib/modules/2.6.12-3-multimedia-686/kernel/sound/drivers/snd-virmidi.ko): 
+No such device
 
-> > Well, I mean, we have no API for providing this information.
-> > Not only PCM but other controls (e.g. effects like chorus/reverb)
-> > would be bound to a PCM voice, so only defining consistent control
-> > names wouldn't suffice.
-> >
-> > I believe PCM iface attribute could be used for such a purpose,
+  The snd-seq-virmidi module is loaded. What am I missing ?
+
+Best,
+
+dp
+
+Takashi Iwai wrote:
+
+>At Wed, 27 Jul 2005 08:34:13 -0400,
+>Dave Phillips wrote:
+>  
 >
-> As far as I see, the iface/device/subdevice fields were designed for
-> exactly this purpose, i.e., associating a control with a specific
-> (sub)device.
-
-How do they work ?
-
-
-> > but unfortunately, the situation is confusing.  Some drivers
-> > already use PCM iface for different purposes (e.g. hdsp) and some
-> > use mixer iface for exactly this purpose (e.g. emu10k1)...
+>>/proc/asound/cards' reports no soundcards in the system. Ditto if I load 
+>>the snd-pcaudiocf module. Still no soundcard. I'll try loading the 
+>>Midisport after I get basic services working. :)
+>>    
+>>
 >
-> Then I'd consider these drivers buggy.
+>pdaudiocf is a pccard driver.  It's usually loaded via cardmgr.
+>Adding a config file pdaudiocf.conf (found in alsa-drivers) to
+>/etc/pcmcia should work.  2.6.13 kernel will require even no longer
+>such a config file.
 >
-> I'll write a patch unless anybody objects ...
+>
+>Takashi
+>
+>  
+>
 
-The tutorial says nothing about control names, interfaces and their
-arrangement and expecially how they are meant to be sorted out. In my
-driver we have A analog channels and D digital channels. The driver
-registers a "PCM Playback Volume" control as an array of A+D integers,
-where each element is the gain (-128..+6) of each channel, but they don't
-map directly to the PCM channels because the driver exports analog and
-digital channels as two separate devices (this feature can be removed
-easily). So pcmvol[0..A-1] controls the volume of hw:0,0 and
-pcmvol[A..A+D-1] controls the volume of hw:0,1. Furthermore, the user
-can open hw:0,0,x to address the xth channel.
-The driver also has other controls that are quite hw-specific and I don't
-think a generic application would be able to use them. Those controls are
-not a problem, because I wrote echomixer to manage them. It is important
-that apps can access basic controls, though.
-
-If the way I arranged things is wrong, let me know...
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
