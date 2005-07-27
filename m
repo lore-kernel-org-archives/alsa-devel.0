@@ -1,13 +1,16 @@
-From: Dave Phillips <dlphilp@linux-sound.org>
-Subject: Re: problem with ALSA 1.09 and 2.6 kernel (AGNULA/Demudi)
-Date: Wed, 27 Jul 2005 11:44:00 -0400
-Message-ID: <42E7ABC0.4010909@linux-sound.org>
-References: <42E77F45.9090307@linux-sound.org> <s5hd5p4v3hw.wl%tiwai@suse.de>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH] AC97 bus interface for ad-hoc drivers
+Date: Wed, 27 Jul 2005 14:43:28 +0100
+Message-ID: <1122471808.3135.41.camel@localhost.localdomain>
+References: <1121775624.14604.14.camel@cearnarfon>
+	 <s5hbr4old2a.wl%tiwai@suse.de>
+	 <Pine.LNX.4.63.0507270856510.21762@localhost.localdomain>
+	 <s5hack8v136.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd5p4v3hw.wl%tiwai@suse.de>
+In-Reply-To: <s5hack8v136.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +21,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Nicolas Pitre <nico@cam.org>, alsa-devel@lists.sourceforge.net, Bill Gatliff <bgat@billgatliff.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi:
+On Wed, 2005-07-27 at 15:18 +0200, Takashi Iwai wrote:
+> At Wed, 27 Jul 2005 09:05:33 -0400 (EDT),
+> Nicolas Pitre wrote:
+> > 
+> > On Wed, 27 Jul 2005, Takashi Iwai wrote:
+> > 
+> > > At Tue, 19 Jul 2005 13:20:24 +0100,
+> > > Liam Girdwood wrote:
+> > > > 
+> > > > This patch adds support for ad-hoc AC97 device drivers (e.g WM97xx and
+> > > > UCB touchscreen drivers) and was originally posted to the list by
+> > > > Nicolas Pitre as an RFC. 
+> > > > 
+> > > > Changes from RFC version :-
+> > > > 
+> > > >   o Now matches codec name within codec group.
+> > > >   o Added ac97_dev_release() to stop kernel complaining about no release
+> > > > method for device.
+> > > 
+> > > Thanks for the patch.  The idea is fine, and the code looks almost
+> > > OK except for the below.
+> > > 
+> > > Could you describe the full changelog (or paste Nicolas' RFC) ?
+> > > 
+> > > 
+> > > > diff --git a/sound/pci/ac97/Makefile b/sound/pci/ac97/Makefile
+> > > > --- a/sound/pci/ac97/Makefile
+> > > > +++ b/sound/pci/ac97/Makefile
+> > > > @@ -12,7 +12,7 @@ endif
+> > > >  snd-ak4531-codec-objs := ak4531_codec.o
+> > > >  
+> > > >  # Toplevel Module Dependency
+> > > > -obj-$(CONFIG_SND_AC97_CODEC) += snd-ac97-codec.o
+> > > > +obj-$(CONFIG_SND_AC97_CODEC) += snd-ac97-codec.o ac97_bus.o
+> > > 
+> > > Better to keep snd- prefix for ac97_bus module (although it can be
+> > > used independently from ALSA)...?  It's an open question.
+> > 
+> > The idea is to be able to use ALSA as modules and the extra function 
+> > driver linked in, or vice versa.  Therefore ac97_bus.o should probably 
+> > be selected with its own config symbol allowing for things like:
+> > 
+> > config UCB1400_TS
+> > 	tristate "UCB1400 touchscreen interface"
+> > 	select AC97_BUS
+> > 
+> > 
+> > And similarly:
+> > 
+> > config SND_AC97_CODEC
+> > 	...
+> > 	select AC97_BUS
+> > 
+> > This way there is no hard linkage depedency between ALSA and any ad-hoc 
+> > codec function driver.
+> 
+> Yes, I understand the purpose.  My concern was whether we keep a
+> consistent module name rule for the modules in sound directory, or
+> simply use as it is.  I have no special preference here, and would
+> like to hear from others.
+> 
 
-  Some updates: I now have the CS4232, the PDAudioCF (Thank you!), and 
-the Midisport 2x2 working with Demudi 1.2.1 and ALSA 1.0.9rc2. My final 
-hurdle shouldn't be too difficult to get over:
+We should probably stick with the snd- naming convention because the
+ad-hoc bus module does require the sound drivers to be loaded before any
+ad-hoc driver will work. This does not mean the sound modules or bus
+module needs to be loaded before the ad-hoc driver, it just means the
+ad-hoc driver has a functional dependency on the others. 
 
-    demudi:/home/dlphilp# modprobe snd-virmidi
-    FATAL: Error inserting snd_virmidi
-    
-(/lib/modules/2.6.12-3-multimedia-686/kernel/sound/drivers/snd-virmidi.ko): 
-No such device
-
-  The snd-seq-virmidi module is loaded. What am I missing ?
-
-Best,
-
-dp
-
-Takashi Iwai wrote:
-
->At Wed, 27 Jul 2005 08:34:13 -0400,
->Dave Phillips wrote:
->  
->
->>/proc/asound/cards' reports no soundcards in the system. Ditto if I load 
->>the snd-pcaudiocf module. Still no soundcard. I'll try loading the 
->>Midisport after I get basic services working. :)
->>    
->>
->
->pdaudiocf is a pccard driver.  It's usually loaded via cardmgr.
->Adding a config file pdaudiocf.conf (found in alsa-drivers) to
->/etc/pcmcia should work.  2.6.13 kernel will require even no longer
->such a config file.
->
->
->Takashi
->
->  
->
+Liam
 
 
 
