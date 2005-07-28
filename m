@@ -1,22 +1,13 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: [ACPI] Re: [PATCH] 2.6.13-rc3-git5: fix Bug #4416 (1/2)
-Date: Thu, 28 Jul 2005 13:18:56 +0200
-Message-ID: <200507281318.57011.rjw__11935.6250310831$1122549369$gmane$org@sisk.pl>
-References: <200507261247.05684.rjw@sisk.pl> <200507281043.14697.rjw@sisk.pl> <1122540486.2903.8.camel@linux-hp.sh.intel.com>
+From: Dave Phillips <dlphilp@linux-sound.org>
+Subject: Re: problem with ALSA 1.09 and 2.6 kernel (AGNULA/Demudi)
+Date: Thu, 28 Jul 2005 10:05:21 -0400
+Message-ID: <42E8E621.7010206@linux-sound.org>
+References: <Pine.HPX.4.33n.0507280957410.9785-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.sisk.pl (grendel.sisk.pl [217.67.200.140])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C629B17C
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 13:13:58 +0200 (MEST)
-Received: from mail.sisk.pl ([127.0.0.1])
- by localhost (grendel [127.0.0.1]) (amavisd-new, port 10024) with SMTP
- id 15096-02 for <alsa-devel@alsa-project.org>;
- Thu, 28 Jul 2005 13:13:00 +0200 (CEST)
-In-Reply-To: <1122540486.2903.8.camel@linux-hp.sh.intel.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0507280957410.9785-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,64 +17,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Shaohua Li <shaohua.li@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Pavel Machek <pavel@suse.cz>, LKML <linux-kernel@vger.kernel.org>, ACPI mailing list <acpi-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, AGNULA Users <users@lists.agnula.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, 28 of July 2005 10:48, Shaohua Li wrote:
-> On Thu, 2005-07-28 at 10:43 +0200, Rafael J. Wysocki wrote:
-> > Hi,
-> > 
-> > On Thursday, 28 of July 2005 10:06, Takashi Iwai wrote:
-> > > At Wed, 27 Jul 2005 22:52:49 +0200,
-> > > Pavel Machek wrote:
-> > > > 
-> > > > Hi!
-> > > > 
-> > > > > > The following patch adds free_irq() and request_irq() to the suspend and
-> > > > > > resume, respectively, routines in the snd_intel8x0 driver.
-> > > > > 
-> > > > > The patch looks OK to me although I have some concerns.
-> > > > > 
-> > > > > - The error in resume can't be handled properly.
-> > > > > 
-> > > > >   What should we do for the error of request_irq()?
-> > > > > 
-> > > > > - Adding this to all drivers seem too much.
-> > > > 
-> > > > There's probably no other way. Talk to Len Brown.
-> > > > 
-> > > > >   We just need to stop the irq processing until resume, so something
-> > > > >   like suspend_irq(irq, dev_id) and resume_irq(irq, dev_id) would be
-> > > > >   more uesful?
-> > > > 
-> > > > Its more complex than that. Irq numbers may change during resume.
-> > > 
-> > > Hmm, then the patch looks wrong.  It assumes that the irq number is
-> > > as same as before suspend.
-> > 
-> > Well, that''s the theory, but frankly I don't see a practical reason.  I have never
-> > seen this happening.  Practically, for this to happen, you'll have to reconfigure
-> > the BIOS accross suspend/resume which is dangerous anyway.
-> From my understanding, we should not have such assumption. Say all
-> device drivers with the same ioapic pin have freed irq. We might mask
-> the ioapic pin and even free the vector. Then after you request_irq
-> again, the interrupt might get different vector. If you enable MSI, then
-> it's broken.
-> In IA64, we already have such staff (mask ioapic pin and free vector).
+Greetings:
 
-All right then.  Still the patch is urgently needed for some systems that do
-not have MSI and IMO the detection of the IRQ change can be implemented
-on top of it.
+  No helpful message in /var/log/syslog.
 
-Greets,
-Rafael
+  From the reports of other users I've concluded that snd-virmidi is 
+broken in 2.6.12. I added this line to /etc/modprobe.d/alsa-base :
+
+install snd-virmidi modprobe --ignore-install snd-virmidi && 
+/lib/alsa/modprobe-post-install snd-virmidi
+
+  I ran update-modules and tried 'modprobe snd-virmidi' again but 
+received the same error.
+
+  If this is a known problem is there a patch for recompiling ALSA for 
+the 2.6.12 kernel ?
+
+Best regards,
+
+dp
 
 
--- 
-- Would you tell me, please, which way I ought to go from here?
-- That depends a good deal on where you want to get to.
-		-- Lewis Carroll "Alice's Adventures in Wonderland"
+
+
+Clemens Ladisch wrote:
+
+>Dave Phillips wrote:
+>  
+>
+>>  Some updates: I now have the CS4232, the PDAudioCF (Thank you!), and
+>>the Midisport 2x2 working with Demudi 1.2.1 and ALSA 1.0.9rc2. My final
+>>hurdle shouldn't be too difficult to get over:
+>>
+>>    demudi:/home/dlphilp# modprobe snd-virmidi
+>>    FATAL: Error inserting snd_virmidi
+>>
+>>(/lib/modules/2.6.12-3-multimedia-686/kernel/sound/drivers/snd-virmidi.ko):
+>>No such device
+>>    
+>>
+>
+>Any error message in the system log?
+>
+>Probably the index option isn't set correctly?  How does your
+>modprobe.conf (or whatever Demudi uses) look now?
+>
+>
+>Regards,
+>Clemens
+>
+>  
+>
+
 
 
 -------------------------------------------------------
