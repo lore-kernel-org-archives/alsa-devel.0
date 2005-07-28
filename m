@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001286]: SB PCI 512: Rear channels are inverted
-Date: Thu, 28 Jul 2005 04:28:01 +0200
-Message-ID: <c22f186aee36b8e2dce310745a95439e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Thu, 28 Jul 2005 05:17:34 +0200
+Message-ID: <d6a82f4fb95bba26714e4474a23c791c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D8501C9
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 04:28:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11D3A1C7
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 05:17:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1286> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                roothorick
+Reported By:                iive
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1286
-Category:                   PCI - emu10k1
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             07-28-2005 04:27 CEST
-Last Modified:              07-28-2005 04:28 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              07-28-2005 05:17 CEST
 ======================================================================
-Summary:                    SB PCI 512: Rear channels are inverted
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-On my SoundBlaster PCI 512 (essentially a cheap SB Live!) the rear channels
-are always inverted, even when using real 4-channel and 6-channel apps
-such as Unreal Tournament 2004 with custom OpenAL. This causes my speaker
-system's subwoofer to not respond correctly when using the front and rear
-channels together in any kind of configuration, unless I manually invert
-the channels before sending them to the soundcard (impossible for ALSA
-apps, as I STILL can't get the LADSPA plug to work and there's no other
-way to simply invert the signal).
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
 
-I also have an nForce 2 onboard chip for which this doesn't happen unless
-I enable the "Duplicate Front" switch. For apps with 4 or more real
-channels, this chip produces an appropriate signal and I get good bass
-from my speaker system (Cambridge SoundWorks FPS1800).
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
+
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
+
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- roothorick - 07-28-05 04:28 
+ jdthood - 07-09-05 11:14 
 ----------------------------------------------------------------------
-forgot lspci -v stuffs.
+See also: https://bugzilla.ubuntu.com/show_bug.cgi?id=5456
 
-0000:01:08.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
-(rev 08)
-        Subsystem: Creative Labs CT4790 SoundBlaster PCI512
-        Flags: bus master, medium devsel, latency 32, IRQ 17
-        I/O ports at d000 [size=32]
-        Capabilities: [dc] Power Management version 1
+----------------------------------------------------------------------
+ ahaning - 07-28-05 05:17 
+----------------------------------------------------------------------
+Is there any news on this? I see on LKML that there is a move to remove
+"obsolete" OSS drivers from the kernel. This could be fairly disasterous
+for people who don't know how to configure their OPL3SA2 card in 2.6
+kernels with the ALSA driver, since alsaconf will not detect those cards
+correctly on 2.6 kernels.
 
-0000:01:08.1 Input device controller: Creative Labs SB Live! MIDI/Game
-Port (rev 08)
-        Subsystem: Creative Labs Gameport Joystick
-        Flags: bus master, medium devsel, latency 32
-        I/O ports at d400 [size=8]
-        Capabilities: [dc] Power Management version 1
+I was told to file a bug report, which I may do eventually, but I figured
+maybe it would be best to keep everything in one place. And since I'd
+already posted what I know in this bug, I didn't think it would be worth
+writing up another bug report.
+
+Anyway, just wanting to see what may have been done to get OPL3SA2 cards
+detected and working well on 2.6 kernels. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-28-05 04:27 roothorick     New Issue                                    
-07-28-05 04:28 roothorick     Note Added: 0005576                          
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
 ======================================================================
 
 
