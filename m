@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001286]: SB PCI 512: Rear channels are inverted
-Date: Thu, 28 Jul 2005 04:27:11 +0200
-Message-ID: <ba0865e3d22991eb721b3d04f154935d@bugtrack.alsa-project.org>
+Date: Thu, 28 Jul 2005 04:28:01 +0200
+Message-ID: <c22f186aee36b8e2dce310745a95439e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19F131C7
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 04:27:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D8501C9
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 04:28:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1286> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-28-2005 04:27 CEST
-Last Modified:              07-28-2005 04:27 CEST
+Last Modified:              07-28-2005 04:28 CEST
 ======================================================================
 Summary:                    SB PCI 512: Rear channels are inverted
 Description: 
@@ -59,10 +59,30 @@ channels, this chip produces an appropriate signal and I get good bass
 from my speaker system (Cambridge SoundWorks FPS1800).
 ======================================================================
 
+----------------------------------------------------------------------
+ roothorick - 07-28-05 04:28 
+----------------------------------------------------------------------
+forgot lspci -v stuffs.
+
+0000:01:08.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 08)
+        Subsystem: Creative Labs CT4790 SoundBlaster PCI512
+        Flags: bus master, medium devsel, latency 32, IRQ 17
+        I/O ports at d000 [size=32]
+        Capabilities: [dc] Power Management version 1
+
+0000:01:08.1 Input device controller: Creative Labs SB Live! MIDI/Game
+Port (rev 08)
+        Subsystem: Creative Labs Gameport Joystick
+        Flags: bus master, medium devsel, latency 32
+        I/O ports at d400 [size=8]
+        Capabilities: [dc] Power Management version 1
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-28-05 04:27 roothorick     New Issue                                    
+07-28-05 04:28 roothorick     Note Added: 0005576                          
 ======================================================================
 
 
