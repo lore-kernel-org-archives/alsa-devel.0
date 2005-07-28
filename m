@@ -1,19 +1,22 @@
-From: Shaohua Li <shaohua.li@intel.com>
-Subject: Re: [ACPI] Re: [PATCH] 2.6.13-rc3-git5: fix Bug #4416
-	(1/2)
-Date: Thu, 28 Jul 2005 16:37:29 +0800
-Message-ID: <1122539849.2903.3.camel@linux-hp.sh.intel.com>
-References: <200507261247.05684.rjw@sisk.pl>
-	 <200507261251.48291.rjw@sisk.pl> <s5hmzo8ljf6.wl%tiwai@suse.de>
-	 <20050727205249.GA708@openzaurus.ucw.cz>  <s5hr7djtkvo.wl%tiwai@suse.de>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: [ACPI] Re: [PATCH] 2.6.13-rc3-git5: fix Bug #4416 (1/2)
+Date: Thu, 28 Jul 2005 10:43:13 +0200
+Message-ID: <200507281043.14697.rjw@sisk.pl>
+References: <200507261247.05684.rjw@sisk.pl> <20050727205249.GA708@openzaurus.ucw.cz> <s5hr7djtkvo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from orsfmr004.jf.intel.com (fmr19.intel.com [134.134.136.18])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03D3C17E
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 10:37:22 +0200 (MEST)
+Received: from mail.sisk.pl (grendel.sisk.pl [217.67.200.140])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DE23F17B
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 10:38:18 +0200 (MEST)
+Received: from mail.sisk.pl ([127.0.0.1])
+ by localhost (grendel [127.0.0.1]) (amavisd-new, port 10024) with SMTP
+ id 12505-06 for <alsa-devel@alsa-project.org>;
+ Thu, 28 Jul 2005 10:37:17 +0200 (CEST)
 In-Reply-To: <s5hr7djtkvo.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,10 +27,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Pavel Machek <pavel@suse.cz>, "Rafael J. Wysocki" <rjw@sisk.pl>, LKML <linux-kernel@vger.kernel.org>, ACPI mailing list <acpi-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
+Cc: Pavel Machek <pavel@suse.cz>, LKML <linux-kernel@vger.kernel.org>, ACPI mailing list <acpi-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-07-28 at 10:06 +0200, Takashi Iwai wrote:
+Hi,
+
+On Thursday, 28 of July 2005 10:06, Takashi Iwai wrote:
 > At Wed, 27 Jul 2005 22:52:49 +0200,
 > Pavel Machek wrote:
 > > 
@@ -54,16 +59,19 @@ On Thu, 2005-07-28 at 10:06 +0200, Takashi Iwai wrote:
 > 
 > Hmm, then the patch looks wrong.  It assumes that the irq number is
 > as same as before suspend.
-> 
-> Sorry for ignorance, but, is only irq affected?  Are the other
-> resources like ioport consistent after resume?
-Resource changes might be helpful for resource balance (device hotplug).
-But suspend/resume doesn't use it. So resources are consistent after
-resume except irq to me.
 
-Thanks,
-Shaohua
+Well, that''s the theory, but frankly I don't see a practical reason.  I have never
+seen this happening.  Practically, for this to happen, you'll have to reconfigure
+the BIOS accross suspend/resume which is dangerous anyway.
 
+Greets,
+Rafael
+
+
+-- 
+- Would you tell me, please, which way I ought to go from here?
+- That depends a good deal on where you want to get to.
+		-- Lewis Carroll "Alice's Adventures in Wonderland"
 
 
 -------------------------------------------------------
