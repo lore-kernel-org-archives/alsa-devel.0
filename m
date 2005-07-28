@@ -2,7 +2,7 @@ From: Shaohua Li <shaohua.li@intel.com>
 Subject: Re: [ACPI] Re: [PATCH] 2.6.13-rc3-git5: fix Bug #4416
 	(1/2)
 Date: Thu, 28 Jul 2005 16:48:06 +0800
-Message-ID: <1122540486.2903.8.camel__47427.5971683257$1122540809$gmane$org@linux-hp.sh.intel.com>
+Message-ID: <1122540486.2903.8.camel__33347.5220985294$1122540809$gmane$org@linux-hp.sh.intel.com>
 References: <200507261247.05684.rjw@sisk.pl>
 	 <20050727205249.GA708@openzaurus.ucw.cz> <s5hr7djtkvo.wl%tiwai@suse.de>
 	 <200507281043.14697.rjw@sisk.pl>
@@ -10,9 +10,9 @@ Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from orsfmr004.jf.intel.com (fmr19.intel.com [134.134.136.18])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7845D16D
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 10:51:57 +0200 (MEST)
+Received: from orsfmr005.jf.intel.com (fmr20.intel.com [134.134.136.19])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CDA416D
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 10:52:40 +0200 (MEST)
 In-Reply-To: <200507281043.14697.rjw@sisk.pl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
