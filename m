@@ -1,13 +1,12 @@
-From: Dino <dino@e4a.it>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Volume per voices [Feature Request]
-Date: Thu, 28 Jul 2005 10:39:48 +0200
-Message-ID: <1122539988.42e899d4498f2@mail.e4a.it>
-References: <Pine.HPX.4.33n.0507280926040.9785-100000@studcom.urz.uni-halle.de> <Pine.LNX.4.61.0507281030580.8458@tm8103.perex-int.cz>
+Date: Thu, 28 Jul 2005 10:48:45 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507281045470.9785-100000@studcom.urz.uni-halle.de>
+References: <s5hll3rtjd8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0507281030580.8458@tm8103.perex-int.cz>
+In-Reply-To: <s5hll3rtjd8.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +16,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Giuliano Pochini <pochini@denise.shiny.it>, Dino Puller <dino@e4a.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   i'm glad about this interest over this feature. Now i have only a
-question(probably a stupid question): Will be there a problem for a >=3D
-surround40 device?
+Takashi Iwai wrote:
 
-tnx,
-   Dino
+> Jaroslav wrote:
+> >
+> > On Thu, 28 Jul 2005, Clemens Ladisch wrote:
+> >
+> > > As far as I can see, no driver actually uses the subdevice (substream)
+> > > field for PCM substreams; probably because this would require a
+> > > separate control for each substream instead of using an array.
+> >
+> > See emu10k1, trident .... They define controls in this way, but the
+> > interface is set to MIXER (and should be really changed to PCM).
+>
+> IIRC, they use the index field, not subdevice.
+
+A quick grep shows that the i2c drivers are the only ones to set the
+subdevice field.
+
+Shouldn't the other drivers be changed to use separate controls with
+appropriate subdevice fields, instead of having .count > 0 ?
 
 
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
