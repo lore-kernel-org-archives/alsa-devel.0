@@ -1,12 +1,16 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: Volume per voices [Feature Request]
-Date: Thu, 28 Jul 2005 19:51:16 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0507281927310.14095@denise.shiny.it>
-References: <Pine.HPX.4.33n.0507280926040.9785-100000@studcom.urz.uni-halle.de>
+From: Nicolas GRAZIANO <nicolas.graziano@wanadoo.fr>
+Subject: Re: [PATCH] hda driver, correct bug in model "auto"
+Date: Thu, 28 Jul 2005 20:32:41 +0200
+Message-ID: <42E924C9.6070602@wanadoo.fr>
+References: <42DD71DC.1090002@wanadoo.fr>	<s5hirywlhdf.wl%tiwai@suse.de>	<42E7D338.60904@wanadoo.fr> <s5hk6jbti30.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0507280926040.9785-100000@studcom.urz.uni-halle.de>
+Received: from postfix4-2.free.fr (postfix4-2.free.fr [213.228.0.176])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5663E15D
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 20:32:44 +0200 (MEST)
+In-Reply-To: <s5hk6jbti30.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,70 +20,142 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Dino Puller <dino@e4a.it>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai a =E9crit :
 
-
-On Thu, 28 Jul 2005, Clemens Ladisch wrote:
-
-> Giuliano Pochini wrote:
-> >
-> > On Wed, 27 Jul 2005, Clemens Ladisch wrote:
-> >
-> > > As far as I see, the iface/device/subdevice fields were designed for
-> > > exactly this purpose, i.e., associating a control with a specific
-> > > (sub)device.
-> >
-> > How do they work ?
+>At Wed, 27 Jul 2005 20:32:24 +0200,
+>Nicolas GRAZIANO wrote:
+> =20
 >
-> Set iface to the type of the ALSA device (HWDEP, PCM, RAWMIDI, TIMER,
-> SEQUENCER), and set device/subdevice to the device/subdevice numbers
-> (or device/substream numbers for PCM).
-
-Nope, I can't make them match.
-
-
-> > In my driver we have A analog channels and D digital channels. The
-> > driver registers a "PCM Playback Volume" control as an array of
-> > A+D integers, where each element is the gain (-128..+6) of each
-> > channel, but they don't map directly to the PCM channels because
-> > the driver exports analog and digital channels as two separate
-> > devices (this feature can be removed easily). So pcmvol[0..A-1]
-> > controls the volume of hw:0,0 and pcmvol[A..A+D-1] controls the
-> > volume of hw:0,1. Furthermore, the user can open hw:0,0,x to
-> > address the xth channel.
+>>Takashi Iwai a =E9crit :
+>>   =20
+>>
+>>>At Tue, 19 Jul 2005 23:34:20 +0200,
+>>>Nicolas GRAZIANO wrote:
+>>>     =20
+>>>
+>>>>- Correct the channels order in model autodetection (not sure of this
+>>>>part, I need validation)
+>>>>  =20
+>>>>
+>>>>       =20
+>>>>
+>>>I think this is not correct (although I'm not 100% sure, too).
+>>>The association order is front/clfe/surround/side.
+>>>(The comment in hda_codec.c is wrong.)
+>>>
+>>>     =20
+>>>
+>>I make the modification because I was thinking than the order was
+>>front/clfe/side/back (aka surround ?) and the text on back panel of my
+>>motherboard (ASUS P5AD2) make me more confident (with my modification
+>>the channels are at the right place). Can we check with an other
+>>card/codec ?
+>>   =20
+>>
 >
-> As far as I can see, no driver actually uses the subdevice (substream)
-> field for PCM substreams; probably because this would require a
-> separate control for each substream instead of using an array.
-
-My case is even more compicated because one ctl controls the volume of two
-devices. A callback that gets snd_pcm_substream_t* and returns {int numid,
-firstindex, lastindex} or sort of would make things much simpler wrt hw
-controls. In case there are both hw volume and softvol, which has
-priority ? :)
-Without that callback, I perhaps can make it work splitting those controls
-or merging the pcm devices. The former is better. It would not work
-anyway if the user opens a subdevice !=0 (quite rare case).
-
-
-> > The driver also has other controls that are quite hw-specific and
-> > I don't think a generic application would be able to use them.
-> > Those controls are not a problem, because I wrote echomixer to
-> > manage them. It is important that apps can access basic controls,
-> > though.
+>Hmm, interesting.  So, on your board, the association 3 (4th)
+>corresponds to a surround jack?
 >
-> alsamixer shows only controls with MIXER interface.
+> =20
+>
+I am not sure to understand what you mean.=20
+But perhaps the following information will help.
+On the back pannel the inscription are :
+Green ()-> Front
+Orange ()-> Ctr Bass
+Black ()-> Side SPK
+Grey ()-> Rear SPK
 
-I was talking eg. about vmixer (mixes n PCM "voices" to m outputs) and
-monitor mixer (mixes n inputs to m outputs). I don't think we should worry
-about such complex controls.
+Extract of the /proc/asound/Intel/codec#0 order by the sequence number
+(last byte of Pincap):
+
+Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
+    Conn =3D 1/8, Color =3D Green
+
+Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01016012: [Jack] Line Out at Ext Rear
+    Conn =3D 1/8, Color =3D Orange
+
+Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x081033f: IN OUT HP
+  Pin Default 0x01011014: [Jack] Line Out at Ext Rear
+    Conn =3D 1/8, Color =3D Black
+
+Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01012016: [Jack] Line Out at Ext Rear
+    Conn =3D 1/8, Color =3D Grey
 
 
---
-Giuliano.
+with my modification :
+
+$speaker-test -D hw:0,0 -c8
+ 0 - Front Left  --> Green Jack
+ 4 - Center    --> Orange left
+ 1 - Front Right  --> Green Jack
+ 7 - Side Right   --> Black Jack
+ 3 - Rear Right  --> Grey Jack
+ 2 - Rear Left   --> Grey Jack
+ 6 - Side Left  --> Black Jack
+ 5 - LFE   --> nothing
+
+without  my modification (actual cvs code):
+
+$speaker-test -D hw:0,0 -c8
+ 0 - Front Left  -->  Green Jack
+ 4 - Center    --> black Jack
+ 1 - Front Right  -->  Grenn Jack
+ 7 - Side Right   -->   nothing
+ 3 - Rear Right  --> orange Jack
+ 2 - Rear Left   --> orange Jack
+ 6 - Side Left  -->  Grey Jack
+ 5 - LFE   --> black Jack
+
+I hope this information will help.
+
+
+>Sure, just add a hda_board_config entry for the corresponding pci
+>subids.  See patch_realtek.c.
+>
+> =20
+>
+I try the following path for my ASUS P5AD2 and it's working.
+thanks
+
+Nicolas
+
+Index: pci/hda/patch_cmedia.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/patch_cmedia.c,v
+retrieving revision 1.11
+diff -u -r1.11 patch_cmedia.c
+--- pci/hda/patch_cmedia.c      27 Jul 2005 16:25:08 -0000      1.11
++++ pci/hda/patch_cmedia.c      28 Jul 2005 18:22:45 -0000
+@@ -647,6 +647,8 @@
+        { .modelname =3D "min_fp", .config =3D CMI_MIN_FP },
+        { .modelname =3D "full", .config =3D CMI_FULL },
+        { .modelname =3D "full_dig", .config =3D CMI_FULL_DIG },
++       { .pci_subvendor =3D 0x1043, .pci_subdevice =3D 0x813d, .config =3D
+CMI_FULL_DIG },
++
+        { .modelname =3D "allout", .config =3D CMI_ALLOUT },
+        { .modelname =3D "auto", .config =3D CMI_AUTO },
+        {} /* terminator */
+
+
+
+
+
+
 
 
 -------------------------------------------------------
