@@ -1,24 +1,15 @@
-From: Nicolas GRAZIANO <nicolas.graziano@wanadoo.fr>
-Subject: [PATCH] correct bug  [ALSA - driver 0001282] hda-intel driver, LFE
- mute does not work
-Date: Thu, 28 Jul 2005 22:15:58 +0200
-Message-ID: <42E93CFE.5000503@wanadoo.fr>
-References: <361fa1fe47eda3d154a5a24eff83d340@bugtrack.alsa-project.org>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH] AC97 bus interface for ad-hoc drivers
+Date: Thu, 28 Jul 2005 21:26:39 +0100
+Message-ID: <1122582399.5371.90.camel@localhost.localdomain>
+References: <1121775624.14604.14.camel@cearnarfon>
+	 <s5hbr4old2a.wl%tiwai@suse.de>
+	 <Pine.LNX.4.63.0507270856510.21762@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix3-1.free.fr (postfix3-1.free.fr [213.228.0.44])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B462515D
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 22:15:59 +0200 (MEST)
-Received: from localhost.localdomain (rob92-2-82-66-38-107.fbx.proxad.net [82.66.38.107])
-	by postfix3-1.free.fr (Postfix) with ESMTP id 2576E1734E5
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 22:15:58 +0200 (CEST)
-Received: from localhost.localdomain ([127.0.0.1])
-	by localhost.localdomain with esmtp (Exim 4.52)
-	id 1DyEnO-0006Al-Mc
-	for alsa-devel@alsa-project.org; Thu, 28 Jul 2005 22:15:58 +0200
-In-Reply-To: <361fa1fe47eda3d154a5a24eff83d340@bugtrack.alsa-project.org>
+In-Reply-To: <Pine.LNX.4.63.0507270856510.21762@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,34 +19,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@alsa-project.org
+To: Nicolas Pitre <nico@cam.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Bill Gatliff <bgat@billgatliff.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch correct the bug of updating mute switch of LFE 
+On Wed, 2005-07-27 at 09:05 -0400, Nicolas Pitre wrote:
+> On Wed, 27 Jul 2005, Takashi Iwai wrote:
+> > 
+> > Better to keep snd- prefix for ac97_bus module (although it can be
+> > used independently from ALSA)...?  It's an open question.
+> 
+> The idea is to be able to use ALSA as modules and the extra function 
+> driver linked in, or vice versa.  Therefore ac97_bus.o should probably 
+> be selected with its own config symbol allowing for things like:
+> 
+> config UCB1400_TS
+> 	tristate "UCB1400 touchscreen interface"
+> 	select AC97_BUS
+> 
+> 
+> And similarly:
+> 
+> config SND_AC97_CODEC
+> 	...
+> 	select AC97_BUS
+> 
+> This way there is no hard linkage depedency between ALSA and any ad-hoc 
+> codec function driver.
 
-Signed-off-by: Nicolas Graziano <nicolas.graziano@wanadoo.fr>
+I've just unsuccessfully tried to create this dependency in the Kconfig
+system. It looks like you cannot do:-
 
-cf bug : <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1282> 
+config SND_SOME_DRIVER
+	tristate "some driver"
+	select SND_AC97_CODEC
 
+config SND_AC97_CODEC
+	tristate 
+	select SND_PCM
+	select SND_AC97_BUS
 
-Index: pci/hda/hda_codec.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_codec.c,v
-retrieving revision 1.20
-diff -u -r1.20 hda_codec.c
---- pci/hda/hda_codec.c	13 Jun 2005 13:16:39 -0000	1.20
-+++ pci/hda/hda_codec.c	28 Jul 2005 20:04:22 -0000
-@@ -801,7 +801,8 @@
- 						  0x80, *valp ? 0 : 0x80);
- 	if (chs & 2)
- 		change |= snd_hda_codec_amp_update(codec, nid, 1, dir, idx,
--						   0x80, valp[1] ? 0 : 0x80);
-+						   0x80, valp[chs==3 ? 1 : 0 ] ? 0 : 0x80);
-+	
- 	return change;
- }
+config SND_AC97_BUS
+	tristate
 
+In this scenario SND_SOME_DRIVER selects SND_AC97_CODEC selects
+SND_AC97_BUS and I could never get a SND_AC97_BUS=m or otherwise in
+my .config. I was only ever successful by adding the select SND_AC97_BUS
+line to SND_SOME_DRIVER.
 
+I now don't think that the "select SND_PCM" is having any effect in the
+AC97_CODEC config, although it still builds fine when remove it.
+
+With this in mind (I'm not sure if this is intentional in the build
+system or not), it might be better to stick with the original Makefile
+and rename the module with a snd- prefix.
+
+Liam
+
+ 
+
+  
 
 
 
