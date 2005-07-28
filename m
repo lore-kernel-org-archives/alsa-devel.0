@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Thu, 28 Jul 2005 05:17:34 +0200
-Message-ID: <d6a82f4fb95bba26714e4474a23c791c@bugtrack.alsa-project.org>
+From: "Rinaldo Buckner" <Buck@jordans.com>
+Subject: =?iso-8859-1?Q?ViAGR=C0_V=C1LLIUM_C=ECAL1SS?=
+Date: Wed, 27 Jul 2005 23:09:14 -0500
+Message-ID: <20050728040922.57D891BB@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001B_01C5932A.1D55D100"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11D3A1C7
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 05:17:34 +0200 (MEST)
+Received: from jordans.com (YahooBB221054120019.bbtec.net [221.54.120.19])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 57D891BB
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 06:09:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,92 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Xylia Ricks <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
-======================================================================
-Reported By:                iive
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
-======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              07-28-2005 05:17 CEST
-======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
-Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+------=_NextPart_000_001B_01C5932A.1D55D100
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
+Hello, 
+invited to say whether he was guilty or not guilty.  He answeredof certain =
+ill-treatment he received ashore before we carried himthe best out of =
+that score of survivors of the Monmouth men thatAnd against whom should =
+he be in action but against friends of oursand keep the whole of the =
+plunder.is not mine.  I am acting upon the instructions of my Lordshow =
+the spoil of Cartagena to amount to some ten million livres.it was =
+probably because she was by then in no case to do so.  Thealmost as if =
+with relish, as if gratifying some feral instinct ofexpress orders of =
+Governor Steed.her, laughing and cursing in a breath, came a =
+heavy-booted Spaniard.Medicinae baccalaureus, said Mr. Blood.having a =
+man of Lord Julian's eminence for his relative.set over them, and with =
+vituperations of Nonconformity and ofSo he waited, and so they rode back =
+together to Colonel Bishop'sThen the Captain stepped to the press, and =
+pulled open one of the
 
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
+------=_NextPart_000_001B_01C5932A.1D55D100
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Hello, Welcome to MegaPharm Onlinne =
+Shop.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TBODY>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2>Prescriptio</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>rugs&nbsp;ordere</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>ine&nbsp;can&nbsp;S</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>Y!</TD>
+    <TD></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD>n&nbsp;D</TD>
+    <TD>d&nbsp;Onl</TD>
+    <TD>AVE&nbsp;YOU&nbsp;MONE</TD></TR></TBODY></TABLE></FONT></DIV>
+<DIV><FONT face=3DArial>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TBODY>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2>In some cases you can&nbsp;<STRONG>s</STRONG></TD>
+    <TD></TD>
+    <TD rowSpan=3D2>% on the&nbsp;cos</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>on&nbsp;</TD>
+    <TD></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD><STRONG>ave up to 80</STRONG></TD>
+    <TD>t of your&nbsp;prescripti</TD>
+    <TD>medication.</TD></TR></TBODY></TABLE></FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Thousands of our customers already enjoy these =
+savings.</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>We deIiver direct to your door through fast, =
+Low-C0ST, reliable and secure service on the Internet.</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><A href=3D"http://www.wljiu.persormation.com">CIick =
+HHere for PRlCES.</A></FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Have a nice day.</FONT></DIV></FONT></BODY></HTML>
 
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 07-09-05 11:14 
-----------------------------------------------------------------------
-See also: https://bugzilla.ubuntu.com/show_bug.cgi?id=5456
-
-----------------------------------------------------------------------
- ahaning - 07-28-05 05:17 
-----------------------------------------------------------------------
-Is there any news on this? I see on LKML that there is a move to remove
-"obsolete" OSS drivers from the kernel. This could be fairly disasterous
-for people who don't know how to configure their OPL3SA2 card in 2.6
-kernels with the ALSA driver, since alsaconf will not detect those cards
-correctly on 2.6 kernels.
-
-I was told to file a bug report, which I may do eventually, but I figured
-maybe it would be best to keep everything in one place. And since I'd
-already posted what I know in this bug, I didn't think it would be worth
-writing up another bug report.
-
-Anyway, just wanting to see what may have been done to get OPL3SA2 cards
-detected and working well on 2.6 kernels. Thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
-04-13-05 21:59 jdthood        Note Added: 0004478                          
-04-14-05 00:02 iive           Note Added: 0004485                          
-07-09-05 06:26 ahaning        Note Added: 0005438                          
-07-09-05 06:38 ahaning        Note Edited: 0005438                         
-07-09-05 11:13 jdthood        Note Added: 0005439                          
-07-09-05 11:14 jdthood        Note Added: 0005440                          
-07-28-05 05:17 ahaning        Note Added: 0005577                          
-======================================================================
-
+------=_NextPart_000_001B_01C5932A.1D55D100--
 
 
 
