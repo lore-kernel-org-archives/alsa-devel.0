@@ -1,13 +1,12 @@
-From: Raymond <rayau@netvigator.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Volume per voices [Feature Request]
-Date: Thu, 28 Jul 2005 15:31:41 +0800
-Message-ID: <42E889DD.2070808@netvigator.com>
-References: <s5hll3slj32.wl%tiwai@suse.de> <Pine.HPX.4.33n.0507271709230.25935-100000@studcom.urz.uni-halle.de>
+Date: Thu, 28 Jul 2005 09:42:48 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507280926040.9785-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0507271750440.10303@denise.shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0507271709230.25935-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <Pine.LNX.4.58.0507271750440.10303@denise.shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,74 +16,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: Giuliano Pochini <pochini@denise.shiny.it>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Dino Puller <dino@e4a.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Giuliano Pochini wrote:
+>
+> On Wed, 27 Jul 2005, Clemens Ladisch wrote:
+>
+> > As far as I see, the iface/device/subdevice fields were designed for
+> > exactly this purpose, i.e., associating a control with a specific
+> > (sub)device.
+>
+> How do they work ?
 
-In theory, and sound cards with hardware mixing can support this kind of
-volume control.
+Set iface to the type of the ALSA device (HWDEP, PCM, RAWMIDI, TIMER,
+SEQUENCER), and set device/subdevice to the device/subdevice numbers
+(or device/substream numbers for PCM).
 
-au88x0 driver may provide this kind of volume control on playing PCM
-streams by using hardware mixers.
+> The tutorial says nothing about control names, interfaces and their
+> arrangement and expecially how they are meant to be sorted out.
 
-However the hardware mixers are dynamically allocated in routine
-snd_vortex_pcm_hw_params(), this means that the kcontrol can be put/get
-only between snd_pcm_hw_params() (return no error) and
-snd_pcm_hw_free()/snd_pcm_close().
+This may be the reason why the drivers don't use these fields in any
+consistent manner ...
 
-Is there any flag in kcontrol which enable/disable the put/get from
-mixer application ?
+> In my driver we have A analog channels and D digital channels. The
+> driver registers a "PCM Playback Volume" control as an array of
+> A+D integers, where each element is the gain (-128..+6) of each
+> channel, but they don't map directly to the PCM channels because
+> the driver exports analog and digital channels as two separate
+> devices (this feature can be removed easily). So pcmvol[0..A-1]
+> controls the volume of hw:0,0 and pcmvol[A..A+D-1] controls the
+> volume of hw:0,1. Furthermore, the user can open hw:0,0,x to
+> address the xth channel.
 
-How do the alsa mixer application get notification when a PCM stream is
-play by another alsa application ?
+As far as I can see, no driver actually uses the subdevice (substream)
+field for PCM substreams; probably because this would require a
+separate control for each substream instead of using an array.
 
-May be the volume controls can only be accessed by the alsa application
-which open the PCM stream. (e.g. The hardware acclerated version of
-openal http://www.lost.org.uk/openal.html or sound mixing/recording
-application )
+> The driver also has other controls that are quite hw-specific and
+> I don't think a generic application would be able to use them.
+> Those controls are not a problem, because I wrote echomixer to
+> manage them. It is important that apps can access basic controls,
+> though.
 
-Is there any limitation of ctlid if the kcontrol is dynamically created
-on snd_vortex_pcm_hw_params() and deleted on snd_vortex_pcm_hw_free() ?
+alsamixer shows only controls with MIXER interface.
 
-There is no need for alsactl to store/restore the values of these kind
-of volume controls.
 
-Clemens Ladisch wrote:
-> Takashi Iwai wrote:
-> 
-> 
->>At Wed, 27 Jul 2005 10:30:36 +0200,
->>I wrote:
->>
->>>The problem is that it's not clearly defined how to find the bound
->>>control for the currently opened pcm.  We may assume that the index
->>>number corresponds to the substream index, but this may be different
->>>on drivers.
->>
->>Well, I mean, we have no API for providing this information.
->>Not only PCM but other controls (e.g. effects like chorus/reverb)
->>would be bound to a PCM voice, so only defining consistent control
->>names wouldn't suffice.
->>
->>I believe PCM iface attribute could be used for such a purpose,
-> 
-> 
-> As far as I see, the iface/device/subdevice fields were designed for
-> exactly this purpose, i.e., associating a control with a specific
-> (sub)device.
-> 
-> 
->>but unfortunately, the situation is confusing.  Some drivers
->>already use PCM iface for different purposes (e.g. hdsp) and some
->>use mixer iface for exactly this purpose (e.g. emu10k1)...
-> 
-> 
-> Then I'd consider these drivers buggy.
-> 
-> I'll write a patch unless anybody objects ...
-> 
-> 
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
