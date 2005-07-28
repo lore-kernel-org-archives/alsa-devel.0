@@ -1,12 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Volume per voices [Feature Request]
-Date: Thu, 28 Jul 2005 10:48:45 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507281045470.9785-100000@studcom.urz.uni-halle.de>
-References: <s5hll3rtjd8.wl%tiwai@suse.de>
+From: Shaohua Li <shaohua.li@intel.com>
+Subject: Re: [ACPI] Re: [PATCH] 2.6.13-rc3-git5: fix Bug #4416
+	(1/2)
+Date: Thu, 28 Jul 2005 16:48:06 +0800
+Message-ID: <1122540486.2903.8.camel__47427.5971683257$1122540809$gmane$org@linux-hp.sh.intel.com>
+References: <200507261247.05684.rjw@sisk.pl>
+	 <20050727205249.GA708@openzaurus.ucw.cz> <s5hr7djtkvo.wl%tiwai@suse.de>
+	 <200507281043.14697.rjw@sisk.pl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hll3rtjd8.wl%tiwai@suse.de>
+Received: from orsfmr004.jf.intel.com (fmr19.intel.com [134.134.136.18])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7845D16D
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 10:51:57 +0200 (MEST)
+In-Reply-To: <200507281043.14697.rjw@sisk.pl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,34 +23,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, Giuliano Pochini <pochini@denise.shiny.it>, Dino Puller <dino@e4a.it>, alsa-devel@lists.sourceforge.net
+To: "Rafael J. Wysocki" <rjw@sisk.pl>
+Cc: Takashi Iwai <tiwai@suse.de>, Pavel Machek <pavel@suse.cz>, LKML <linux-kernel@vger.kernel.org>, ACPI mailing list <acpi-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Thu, 2005-07-28 at 10:43 +0200, Rafael J. Wysocki wrote:
+> Hi,
+> 
+> On Thursday, 28 of July 2005 10:06, Takashi Iwai wrote:
+> > At Wed, 27 Jul 2005 22:52:49 +0200,
+> > Pavel Machek wrote:
+> > > 
+> > > Hi!
+> > > 
+> > > > > The following patch adds free_irq() and request_irq() to the suspend and
+> > > > > resume, respectively, routines in the snd_intel8x0 driver.
+> > > > 
+> > > > The patch looks OK to me although I have some concerns.
+> > > > 
+> > > > - The error in resume can't be handled properly.
+> > > > 
+> > > >   What should we do for the error of request_irq()?
+> > > > 
+> > > > - Adding this to all drivers seem too much.
+> > > 
+> > > There's probably no other way. Talk to Len Brown.
+> > > 
+> > > >   We just need to stop the irq processing until resume, so something
+> > > >   like suspend_irq(irq, dev_id) and resume_irq(irq, dev_id) would be
+> > > >   more uesful?
+> > > 
+> > > Its more complex than that. Irq numbers may change during resume.
+> > 
+> > Hmm, then the patch looks wrong.  It assumes that the irq number is
+> > as same as before suspend.
+> 
+> Well, that''s the theory, but frankly I don't see a practical reason.  I have never
+> seen this happening.  Practically, for this to happen, you'll have to reconfigure
+> the BIOS accross suspend/resume which is dangerous anyway.
+>From my understanding, we should not have such assumption. Say all
+device drivers with the same ioapic pin have freed irq. We might mask
+the ioapic pin and even free the vector. Then after you request_irq
+again, the interrupt might get different vector. If you enable MSI, then
+it's broken.
+In IA64, we already have such staff (mask ioapic pin and free vector).
 
-> Jaroslav wrote:
-> >
-> > On Thu, 28 Jul 2005, Clemens Ladisch wrote:
-> >
-> > > As far as I can see, no driver actually uses the subdevice (substream)
-> > > field for PCM substreams; probably because this would require a
-> > > separate control for each substream instead of using an array.
-> >
-> > See emu10k1, trident .... They define controls in this way, but the
-> > interface is set to MIXER (and should be really changed to PCM).
->
-> IIRC, they use the index field, not subdevice.
-
-A quick grep shows that the i2c drivers are the only ones to set the
-subdevice field.
-
-Shouldn't the other drivers be changed to use separate controls with
-appropriate subdevice fields, instead of having .count > 0 ?
-
-
-Regards,
-Clemens
+Thanks,
+Shaohua
 
 
 
