@@ -1,17 +1,15 @@
-From: "Alien" <alien999999999@users.sourceforge.net>
-Subject: Re: [Openvortex-dev] Re: Re: Volume per voices
-     [Feature Request]
-Date: Thu, 28 Jul 2005 16:29:55 +0200 (CEST)
-Message-ID: <48192.62.59.249.250.1122560995.squirrel@62.59.249.250>
-References: <42E889DD.2070808@netvigator.com>
-    <Pine.HPX.4.33n.0507280943050.9785-100000@studcom.urz.uni-halle.de>
-    <47103.62.59.249.250.1122548343.squirrel@62.59.249.250>
-    <21ed1c37050728045725f76ac@mail.gmail.com>
+From: Thorsten Knabe <linux@thorsten-knabe.de>
+Subject: Re: [2.6 patch] schedule obsolete OSS drivers for removal
+Date: Thu, 28 Jul 2005 17:04:20 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0507281636040.20815__35647.4114968025$1122563250$gmane$org@tek01.intern.thorsten-knabe.de>
+References: <20050726150837.GT3160@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <21ed1c37050728045725f76ac@mail.gmail.com>
+Received: from mail.thorsten-knabe.de (mail.thorsten-knabe.de [82.141.44.28])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A757F18E
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2005 17:04:22 +0200 (MEST)
+In-Reply-To: <20050726150837.GT3160@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,69 +19,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manuel Jander <manuel.jander@gmail.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Raymond <rayau@netvigator.com>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net
+To: Adrian Bunk <bunk@stusta.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> Hi,
->
-> On 7/28/05, Maarten Vanraes <maarten.vanraes@telenet.be> wrote:
->> > Raymond wrote:
->> >> There is no need for alsactl to store/restore the values of these
->> kind
->> >> of volume controls.
->> >
->> > Indeed.  Most applications just get the first free substream.
->> > Allowing the user to change 16 (or 32) different volume controls jus=
-t
->> > doesn't make sense in this context.
->>
->> maybe an application should only change it's own volume control (not t=
-he
->> master volume control); if there is no such thing, it can make it in
->> software.
->
-> I totally agree with that. Such a interface should handle not only
-> volume (gain) IMHO. There are many other caracteristics that would be
-> "very" interesting to make available to applications. Hopefuly one
-> should be able to do gain or whatever settings using the PCM device
-> handle, without requiring to figure out control names. Just like
-> setting hwparams, but something that is possible to do in while the
-> PCM device is running. By the way, why cant hwparams be set while the
-> PCM device is running ? Many cards support changing samplerate and
-> such while running (doppler effect simulation).
->
->> but! shouldn't it also be possible to make an application that can
->> change
->> all these volume controls? like a switchboard or something?
->
-> There is a problem with that, because you never know, which
-> application is using which subdevice. Even if you know that, many
-> application open the PCM device just for the amount of time required
-> to do playback/recording. That means that you wont be fast enough
-> trying to catch a gain setting with your mouse or keyboard. And for
-> the next time a application makes use of a PCM device, it could be a
-> different one, and the question arrises, how do you remember the
-> setting of a application on a specific device ?
->
-> Better let each application handle that kind of controls/settings. If
-> they don't do, then its the applications fault.
+On Tue, 26 Jul 2005, Adrian Bunk wrote:
 
-you have a good point there, but it might be usefull anyway...
+> This patch schedules obsolete OSS drivers (with ALSA drivers that
+> support the same hardware) for removal.
 
-at start, show only the ones used at that time, if there are added, add
-them; if there are deleted, don't delete them, but remember and hold,
-cause if new ones start, these get used anyway, and you can force it on
-the newly started application as a default value, if the appl does it
-himself, it just gets changed, one could even reset it or deny the appl t=
-o
-change it...
+Hello Adrian.
+
+I'm the maintainer of the OSS AD1816 sound driver. I'm aware of two 
+problems of the ALSA AD1816 driver, that do not show up with the OSS 
+driver:
+- According to my own experience and user reports audio is choppy with 
+some VoIP Softphones like gnophone at least when used with the ALSA OSS 
+emulation layer, whereas the OSS driver is crystal clear.
+- Users reported, that on some HP Kayak systems the on-board AD1816A 
+was not properly detected by the ALSA driver or was detected, but 
+there was no audio output. I'm not sure if the problem is still present in 
+the current ALSA driver, as I do not own such a system.
+
+Maybe the OSS driver should stay in the kernel, until those problems are 
+fixed in the ALSA driver.
+
+Regards
+Thorsten
+
+-- 
+___
+  |        | /                 E-Mail: linux@thorsten-knabe.de
+  |horsten |/\nabe                WWW: http://linux.thorsten-knabe.de
 
 
 -------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO Septem=
-ber
+SF.Net email is Sponsored by the Better Software Conference & EXPO September
 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
-A
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
