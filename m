@@ -1,12 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: Volume per voices [Feature Request]
-Date: Thu, 28 Jul 2005 09:57:04 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0507280943050.9785-100000@studcom.urz.uni-halle.de>
-References: <42E889DD.2070808@netvigator.com>
+Subject: Re: problem with ALSA 1.09 and 2.6 kernel (AGNULA/Demudi)
+Date: Thu, 28 Jul 2005 09:59:49 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0507280957410.9785-100000@studcom.urz.uni-halle.de>
+References: <42E7ABC0.4010909@linux-sound.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42E889DD.2070808@netvigator.com>
+In-Reply-To: <42E7ABC0.4010909@linux-sound.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,43 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>
-Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org
+To: Dave Phillips <dlphilp@linux-sound.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Raymond wrote:
-> In theory, and sound cards with hardware mixing can support this kind of
-> volume control.
+Dave Phillips wrote:
+>   Some updates: I now have the CS4232, the PDAudioCF (Thank you!), and
+> the Midisport 2x2 working with Demudi 1.2.1 and ALSA 1.0.9rc2. My final
+> hurdle shouldn't be too difficult to get over:
 >
-> au88x0 driver may provide this kind of volume control on playing PCM
-> streams by using hardware mixers.
+>     demudi:/home/dlphilp# modprobe snd-virmidi
+>     FATAL: Error inserting snd_virmidi
 >
-> However the hardware mixers are dynamically allocated in routine
-> snd_vortex_pcm_hw_params(), this means that the kcontrol can be put/get
-> only between snd_pcm_hw_params() (return no error) and
-> snd_pcm_hw_free()/snd_pcm_close().
+> (/lib/modules/2.6.12-3-multimedia-686/kernel/sound/drivers/snd-virmidi.ko):
+> No such device
 
-The driver could save the value and apply it when a stream is opened.
+Any error message in the system log?
 
-> Is there any flag in kcontrol which enable/disable the put/get from
-> mixer application ?
-
-Controls can be locked.
-
-> How do the alsa mixer application get notification when a PCM stream is
-> play by another alsa application ?
-
-There are notifications when the control status changes, or when
-controls are added/deleted.  (But I don't think these controls should
-be added dynamically; it would be useful to know that they exist
-before a PCM substream is opened.)
-
-> There is no need for alsactl to store/restore the values of these kind
-> of volume controls.
-
-Indeed.  Most applications just get the first free substream.
-Allowing the user to change 16 (or 32) different volume controls just
-doesn't make sense in this context.
+Probably the index option isn't set correctly?  How does your
+modprobe.conf (or whatever Demudi uses) look now?
 
 
 Regards,
