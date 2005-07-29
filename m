@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001291]: random system crash afer 1h-4h of sound playing
-Date: Fri, 29 Jul 2005 19:41:29 +0200
-Message-ID: <90dbe364d67709419bbd7337fe944efe@bugtrack.alsa-project.org>
+Date: Fri, 29 Jul 2005 19:45:34 +0200
+Message-ID: <e909fabd7e0e29bab1c9e22ec3c144bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC9A0197
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 19:41:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF774197
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 19:45:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1291> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               PCLinuxOS  P9.1
 Kernel Version:             2.6.11-oci12
 ======================================================================
 Date Submitted:             07-29-2005 19:41 CEST
-Last Modified:              07-29-2005 19:41 CEST
+Last Modified:              07-29-2005 19:45 CEST
 ======================================================================
 Summary:                    random system crash afer 1h-4h of sound playing
 Description: 
@@ -68,12 +68,20 @@ If I can offer other details, just tell me
 
 ======================================================================
 
+----------------------------------------------------------------------
+ bubbleguuum - 07-29-05 19:45 
+----------------------------------------------------------------------
+link to changelog is bad, here's the good one:
+
+"http://www.pclinuxfiles.com/ocilent1/kernel/2.6.X-oci-kernel-changelog"
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-29-05 19:41 bubbleguuum    New Issue                                    
 07-29-05 19:41 bubbleguuum    Distribution              => PCLinuxOS  P9.1 
 07-29-05 19:41 bubbleguuum    Kernel Version            => 2.6.11-oci12    
+07-29-05 19:45 bubbleguuum    Note Added: 0005586                          
 ======================================================================
 
 
