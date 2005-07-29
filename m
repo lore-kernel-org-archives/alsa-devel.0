@@ -1,14 +1,17 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] Support for AD1889 PCI Soundchip
-Date: Fri, 29 Jul 2005 21:20:12 +0200
-Message-ID: <20050729212012.331a692d@Tatooine.r3z0>
-References: <20050729211634.566f5343@Tatooine.r3z0>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: More on spam
+Date: Fri, 29 Jul 2005 16:15:45 -0400
+Message-ID: <1122668146.9381.23.camel@mindpipe>
+References: <42E66A0E.6020702@redfish-solutions.com>
+	 <1122396909.18884.36.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
- boundary="Signature_Fri__29_Jul_2005_21_20_12_+0200_=8HpQnl4oD4cWRP=";
- protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050729211634.566f5343@Tatooine.r3z0>
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C62C7199
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 22:15:48 +0200 (MEST)
+In-Reply-To: <1122396909.18884.36.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +21,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@lists.sourceforge.net, parisc-linux@lists.parisc-linux.org, kyle@parisc-linux.org
+To: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Signature_Fri__29_Jul_2005_21_20_12_+0200_=8HpQnl4oD4cWRP=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2005-07-26 at 12:55 -0400, Lee Revell wrote:
+> On Tue, 2005-07-26 at 10:51 -0600, Philip Prindeville wrote:
+> > Can we also automatically purge mail containing .scr, .exe, or
+> > .zip attachments?  None of those would be useful to us, since they
+> > all apply to Windows and not Linux or BSD.
+> > 
+> > I would probably delete email containing various Windows
+> > character sets, such as 1255, etc.
+> 
+> Please add this request to the sourceforge trouble ticket that I opened.
 
-On Fri, 29 Jul 2005 21:16:34 +0200
-Thibaut VARENE <T-Bone@parisc-linux.org> wrote:
+I got a response from Sourceforge.  They say that they are planning to
+upgrade their Mailman installation to be able to do this.
 
-> Here's the diffstat summary:
->=20
->  MAINTAINERS        |    9
->  sound/pci/Kconfig  |   12
->  sound/pci/Makefile |    2
->  sound/pci/ad1889.c | 1166
-> +++++++++++++++++++++++++++++++++++++++++++++++++++++
->  sound/pci/ad1889.h |  187 ++++++++
->  5 files changed, 1376 insertions(+)
->=20
+Lee
 
-Sorry for replying to myself, forgot the:
-
-Signed-off-by: Thibaut VARENE <varenet@parisc-linux.org>
-
-HTH
-
-Thibaut VARENE
-The PA/Linux Team
-http://www.pateam.org/
-
---Signature_Fri__29_Jul_2005_21_20_12_+0200_=8HpQnl4oD4cWRP=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFC6oFxHjLD2rfS8GMRAtJ6AJ0U3CXYbAtFGp8tI3R2bf6F1h+wBQCgtu4Z
-zYDch5ahVrfDKKs1NT0PXGY=
-=M3+A
------END PGP SIGNATURE-----
-
---Signature_Fri__29_Jul_2005_21_20_12_+0200_=8HpQnl4oD4cWRP=--
 
 
 -------------------------------------------------------
