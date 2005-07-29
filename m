@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001288]: Current alsa-driver/alsa-kernel CVS 29-7-2005 fails to build.
-Date: Fri, 29 Jul 2005 01:09:23 +0200
-Message-ID: <1c4605a0ff3fabf3fc1352360ed84be4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001289]: I fixed Bug 0001284.  Please reinstate line 86 in emux_synth.c !
+Date: Fri, 29 Jul 2005 04:36:15 +0200
+Message-ID: <d33e7111909529eb70ec825ed74b4b6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A80D616E
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 01:09:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7C5916B
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 04:36:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1288> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1289> 
 ======================================================================
-Reported By:                jcdutton
-Assigned To:                perex
+Reported By:                terminator356
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1288
-Category:                   0_compilation problem_!!!
+Issue ID:                   1289
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             Linux new 2.6.13-rc3-mm1
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP PREEMPT Thu Jul 28
-23:46:58 BST 2005 i686 Intel(R) Pentium(R) 4 CPU 2.80GHz GenuineIntel GNU/Linux
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-29-2005 01:09 CEST
-Last Modified:              07-29-2005 01:09 CEST
+Date Submitted:             07-29-2005 04:36 CEST
+Last Modified:              07-29-2005 04:36 CEST
 ======================================================================
-Summary:                    Current alsa-driver/alsa-kernel CVS 29-7-2005 fails
-to build.
+Summary:                    I fixed Bug 0001284.  Please reinstate line 86 in
+emux_synth.c !
 Description: 
-./cvscompile --with-cards=ca0106 --with-debug=basic
-make -C /lib/modules/2.6.13-rc3-mm1/source SUBDIRS=/u/alsacvs/alsa-driver
-O=/lib/modules/2.6.13-rc3-mm1/build modules
-make[1]: Entering directory `/usr/src/linux-2.6.13-rc3-mm1'
-  CC [M]  /u/alsacvs/alsa-driver/acore/memalloc.o
-In file included from /u/alsacvs/alsa-driver/acore/memalloc.c:24:
-/u/alsacvs/alsa-driver/acore/memalloc.inc:4:40: missing binary operator
-before token "("
-make[4]: *** [/u/alsacvs/alsa-driver/acore/memalloc.o] Error 1
-make[3]: *** [/u/alsacvs/alsa-driver/acore] Error 2
-make[2]: *** [_module_/u/alsacvs/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13-rc3-mm1'
-make: *** [compile] Error 2
+I fixed Bug 0001284. Please reinstate line 86 in emux_synth.c !
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-05 01:09 jcdutton       New Issue                                    
-07-29-05 01:09 jcdutton       Kernel Version            => Linux new
-2.6.13-rc3-mm1 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
-PREEMPT Thu Jul 28 23:46:58 BST 2005 i686 Intel(R) Pentium(R) 4 CPU 2.80GHz
-GenuineIntel GNU/Lin
+07-29-05 04:36 terminator356  New Issue                                    
 ======================================================================
 
 
