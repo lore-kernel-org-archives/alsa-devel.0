@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001278]: fails to read volume for software volume control
-Date: Fri, 29 Jul 2005 18:02:26 +0200
-Message-ID: <809b45383bfa93ea79f5ae54ca1394c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001052]: Riptide/Context Audio Drivers
+Date: Fri, 29 Jul 2005 18:48:19 +0200
+Message-ID: <3c8438d2edceed70642ab6e072e59452@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2647E197
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 18:02:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AC1C197
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 18:48:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,146 +22,99 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1278> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1052> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                JKnife
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1278
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1052
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-23-2005 18:23 CEST
-Last Modified:              07-29-2005 18:02 CEST
+Date Submitted:             04-13-2005 21:59 CEST
+Last Modified:              07-29-2005 18:48 CEST
 ======================================================================
-Summary:                    fails to read volume for software volume control
+Summary:                    Riptide/Context Audio Drivers
 Description: 
-From: http://bugs.debian.org/319628:
-
-Package: alsa-oss
-Version: 1.0.8-1
-
-Hi,
-
-My MacMini's audio chip seems to have no hardware volume control (or it 
-is unsupported in the kernel I use), so I use software volume control, 
-with the attached .asoundrc. (I'm still a newbie about alsa, there may 
-be some mistakes in my .soundrc file.)
-
-While trying to use hotkeys (that only understands oss) with aoss, I 
-discovered that aoss did not allow to read the volume control, while it 
-can write it flawlessly.
-
-After a few tests, I discovered that it was related to the failing 
-snd_mixer_selem_get_playback_switch function call, and I could 
-workaround the issue with the attached trivial quick&dirty patch.
-
-
-Cheers,
-
-Nicolas Boullis
-
-
--- System Information:
-Debian Release: 3.1
-Architecture: powerpc (ppc)
-Kernel: Linux 2.6.12-irma
-Locale: LANG=C, LC_CTYPE=C (charmap=ANSI_X3.4-1968)
-
-Versions of packages alsa-oss depends on:
-ii  libasound2                  1.0.8-3      ALSA library
-ii  libc6                       2.3.2.ds1-22 GNU C Library: Shared
-libraries an
-
--- no debconf information
-
-
-
-pcm.!default {
-  type plug
-  slave {
-    pcm {
-      type softvol
-      slave {
-        pcm {
-	  type dmix
-	  ipc_key 7666
-	  slave {
-	    pcm "hw:0,0"
-	    period_time 0
-	    period_size 1024
-	    buffer_size 8192
-	    rate 44100
-	  }
-	}
-      }
-      control {
-        name Master
-        card 0
-      }
-    }
-  }
-}
-
-pcm.dsp0 {
-  type plug
-  slave.pcm "!default"
-}
-
-
-
-
-only in patch2:
-unchanged:
---- alsa-oss-1.0.8.orig/alsa/mixer.c
-+++ alsa-oss-1.0.8/alsa/mixer.c
-@@ -487,9 +487,7 @@
- 				break;
- 			}
- 			err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &sw);
--			if (err < 0) 
--				break;
--			if (sw) {
-+			if ((err < 0) || (sw)) {
- 				err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &lvol);
- 				if (err < 0) 
- 					break;
-@@ -499,9 +497,7 @@
- 				rvol = lvol;
- 			} else {
- 				err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &sw);
--				if (err < 0) 
--					break;
--				if (sw) {
-+				if ((err < 0) || (sw)) { 
- 					err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &rvol);
- 					if (err < 0) 
- 						break;
-
-
-
+there is a set but its only for the 2.4 kernel.
+i would like you toinclude them in alsa.
+the 2.4 drivers can be found here
+http://www.linuxant.com/drivers/
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-29-05 18:02 
+ nokos - 07-25-05 13:27 
 ----------------------------------------------------------------------
-Isn't is already fixed in 1.0.9?
+I have tested the patch with a 2.6.12 kernel and removed all warning
+messages.
+It works for my Riptide chipset (hotplug needs the firmware "riptide.hex"
+somewhere)
+
+riptide.tar.bz2 contains 2 diffs, one for alsa-driver-1.0.9b and the other
+for a recent 2.6 kernel ...
+
+# lspci
+0000:00:06.0 Multimedia audio controller: Rockwell International: Unknown
+device 4310
+0000:00:06.1 Communication controller: Rockwell International Riptide HSF
+56k PCI Modem
+0000:00:06.2 Input device controller: Rockwell International: Unknown
+device 4312
+
+
+
+----------------------------------------------------------------------
+ tiwai - 07-29-05 18:48 
+----------------------------------------------------------------------
+Thanks.
+The riptide driver was added to alsa-driver tree (not alsa-kernel tree
+yet).
+Will be pushd to alsa-kernel (e.g. linux kernel) tree once after the
+driver is confirmed to work fine with the latest environment.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-23-05 18:23 jdthood        New Issue                                    
-07-29-05 18:02 tiwai          Note Added: 0005584                          
+04-13-05 21:59 JKnife         New Issue                                    
+04-13-05 22:01 JKnife         Note Added: 0004479                          
+06-06-05 10:51 perex          Assigned To              perex =>            
+06-06-05 10:51 perex          Category                 ISA - GUS (classic, max,
+extreme, interwave) => OTHERS
+06-08-05 15:15 tiwai          Note Added: 0004932                          
+06-08-05 23:25 JKnife         Note Added: 0004976                          
+06-15-05 14:41 nokos          Note Added: 0005027                          
+06-23-05 12:07 tiwai          Note Added: 0005176                          
+06-23-05 15:10 nokos          Note Added: 0005187                          
+06-23-05 15:21 tiwai          Note Added: 0005188                          
+06-23-05 15:26 tiwai          Note Added: 0005189                          
+06-23-05 15:35 nokos          Note Added: 0005190                          
+06-24-05 15:09 tiwai          Note Added: 0005226                          
+06-26-05 22:48 JKnife         Note Added: 0005268                          
+06-27-05 18:35 nokos          Note Added: 0005285                          
+07-08-05 14:57 tiwai          Note Added: 0005430                          
+07-19-05 11:27 nokos          Note Edited: 0005285                         
+07-19-05 11:27 nokos          File Added: riptide-alsa-1.0.9b.patch.gz          
+         
+07-19-05 11:28 nokos          Note Edited: 0005187                         
+07-22-05 12:14 nokos          Issue Monitored: nokos                       
+07-22-05 12:24 nokos          Note Added: 0005548                          
+07-22-05 12:25 nokos          File Added: riptide.tar.bz2                    
+07-22-05 12:26 nokos          Note Edited: 0005548                         
+07-25-05 13:27 nokos          Note Edited: 0005548                         
+07-29-05 18:48 tiwai          Status                   assigned => resolved
+07-29-05 18:48 tiwai          Resolution               open => fixed       
+07-29-05 18:48 tiwai          Assigned To               => tiwai           
+07-29-05 18:48 tiwai          Note Added: 0005585                          
 ======================================================================
 
 
