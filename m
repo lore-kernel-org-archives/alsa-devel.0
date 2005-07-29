@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001289]: I fixed Bug 0001284.  Please reinstate line 86 in emux_synth.c !
-Date: Fri, 29 Jul 2005 04:36:15 +0200
-Message-ID: <d33e7111909529eb70ec825ed74b4b6b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001290]: Re: Bug 0001284 + 0001289: Sorry, my fix now makes pops and clicks...
+Date: Fri, 29 Jul 2005 05:34:53 +0200
+Message-ID: <5d3e9f51c6cdbb648bc3fc9addbf56cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7C5916B
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 04:36:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C1C6183
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 05:34:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1289> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1290> 
 ======================================================================
 Reported By:                terminator356
 Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1289
+Issue ID:                   1290
 Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
@@ -39,20 +39,22 @@ Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             07-29-2005 04:36 CEST
-Last Modified:              07-29-2005 04:36 CEST
+Date Submitted:             07-29-2005 05:34 CEST
+Last Modified:              07-29-2005 05:34 CEST
 ======================================================================
-Summary:                    I fixed Bug 0001284.  Please reinstate line 86 in
-emux_synth.c !
+Summary:                    Re: Bug 0001284 + 0001289: Sorry, my fix now makes
+pops and clicks...
 Description: 
-I fixed Bug 0001284. Please reinstate line 86 in emux_synth.c !
+Sorry my fix now makes pops and clicks if the
+ same note is played more than once because
+ the note is reset and used over again.
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-05 04:36 terminator356  New Issue                                    
+07-29-05 05:34 terminator356  New Issue                                    
 ======================================================================
 
 
