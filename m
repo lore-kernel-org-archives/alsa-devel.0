@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001239]: forgotten __init and __exit in memory.c
-Date: Fri, 29 Jul 2005 17:59:44 +0200
-Message-ID: <9fff416a99f6334b69dd78f0f47a34e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001274]: alc655: low volume
+Date: Fri, 29 Jul 2005 18:01:32 +0200
+Message-ID: <479fac6a68910da0788a3a1e4ae56498@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3104A197
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 17:59:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B042E197
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 18:01:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,122 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1239> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1274> 
 ======================================================================
-Reported By:                Henne
+Reported By:                vitja
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1239
-Category:                   1_OTHERS
+Issue ID:                   1274
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             07-07-2005 10:37 CEST
-Last Modified:              07-29-2005 17:59 CEST
+Date Submitted:             07-22-2005 10:46 CEST
+Last Modified:              07-29-2005 18:01 CEST
 ======================================================================
-Summary:                    forgotten __init and __exit in memory.c
+Summary:                    alc655: low volume
 Description: 
-I think that snd_memory_init() should get an __init,
-and snd_memory_exit() an __exit, cause that __init
-function isn't called again and can be removed from the memory.
-That doesn't save too much space, but it's cleaner and mekes more sense
-.
-The patch I added will fix it and is made for the current cvs
-version(memory.c 1.38). 
-
+I have ATI IXP400 sound in my notebook. codec is realtek's alc655. The
+problem is I couldn't hear anything from internal speaker. When I plug
+earphones in I hear very-very low music signal, so driver actually works
+but. By the way under xp with realtek's drivers thats all right.. Is there
+a way to see dump of ac97's registers under xp? May be XP driver uses some
+proprietary features of alc655?
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 07-25-05 14:54 
+ vitja - 07-24-05 22:19 
 ----------------------------------------------------------------------
-Here is the new one!
+temporarily solution:
+I hop this will help
+
+cat > /proc/asound/IXP/codec97#0/ac97#0-0+regs <<EOF
+00 0000
+02 0a0a
+04 0000
+06 8000
+08 0000
+0a 0000
+0c 8008
+0e 8008
+10 8808
+12 8808
+14 0000
+16 8808
+18 8808
+1a 0000
+1c 8000
+1e 0000
+20 0400
+22 0000
+24 0000
+26 000f
+28 09c4
+2a 05f0
+2c bb80
+2e bb80
+30 bb80
+32 bb80
+34 0000
+36 8080
+38 8080
+3a 2000
+3c 0000
+3e 0000
+40 0000
+42 0000
+44 0000
+46 0000
+48 0000
+4a 0000
+4c 0000
+4e 0000
+50 0000
+52 0000
+54 0000
+56 0000
+58 0000
+5a 0000
+5c 0000
+5e 0000
+60 0000
+62 0000
+64 0808
+66 0808
+68 0aea
+6a 0040
+6c 0000
+6e 0025
+70 81e0
+72 22e8
+74 8000
+76 0000
+78 0007
+7a 2090
+7c 414c
+7e 4760
+EOF
 
 ----------------------------------------------------------------------
- tiwai - 07-29-05 17:59 
+ tiwai - 07-29-05 18:01 
 ----------------------------------------------------------------------
-Thanks, applied to CVS.
+What do you mean "temporarily solution"?  Does the command sequence above
+solve your problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-07-05 10:37 Henne          New Issue                                    
-07-07-05 10:37 Henne          File Added: memory_c.diff                    
-07-08-05 11:52 tiwai          Note Added: 0005410                          
-07-12-05 11:41 Henne          File Added: memory_c_1.diff                    
-07-25-05 14:54 Henne          Note Added: 0005563                          
-07-29-05 17:59 tiwai          Status                   new => resolved     
-07-29-05 17:59 tiwai          Resolution               open => fixed       
-07-29-05 17:59 tiwai          Assigned To               => tiwai           
-07-29-05 17:59 tiwai          Note Added: 0005582                          
+07-22-05 10:46 vitja          New Issue                                    
+07-22-05 20:32 vitja          File Added: codec                            
+07-24-05 22:19 vitja          Note Added: 0005560                          
+07-29-05 18:01 tiwai          Note Added: 0005583                          
 ======================================================================
 
 
