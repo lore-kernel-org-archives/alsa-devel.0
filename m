@@ -1,13 +1,11 @@
-From: Dirk Jagdmann <doj@cubic.org>
-Subject: Re: [patch] envy24control save state of LRGang button in config file
-Date: Sat, 30 Jul 2005 16:14:00 +0200
-Message-ID: <42EB8B28.1040404@cubic.org>
-References: <42E66ECA.10407@cubic.org>
+From: Julian Scheel <julian@jusst.de>
+Subject: Updated ICE1724.conf
+Date: Sat, 30 Jul 2005 16:15:18 +0200
+Message-ID: <200507301615.18765.julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------090600020306070804070509"
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_2t46C0Y06x4pDpe"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42E66ECA.10407@cubic.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,116 +15,217 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090600020306070804070509
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hello,
-
-The last mail I sent for this topic contained a non functional patch, 
-which has not been included in CVS yet.
-I resend the patch, which should now work.
-
--- 
----> doj / cubic
-----> http://cubic.org/~doj
------> http://llg.cubic.org
-
---------------090600020306070804070509
+--Boundary-00=_2t46C0Y06x4pDpe
 Content-Type: text/plain;
- name="envy24control-stereosave.patch"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="envy24control-stereosave.patch"
+Content-Disposition: inline
 
-Index: Makefile.am
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/Makefile.am,v
-retrieving revision 1.15
-diff -u -r1.15 Makefile.am
---- Makefile.am	21 Dec 2004 17:15:01 -0000	1.15
-+++ Makefile.am	26 Jul 2005 16:58:10 -0000
-@@ -3,8 +3,8 @@
- man_MANS = envy24control.1
- envy24control_SOURCES = envy24control.c envy24control.h levelmeters.c midi.c \
-                         mixer.c patchbay.c hardware.c driverevents.c volume.c \
--			profiles.c profiles.h midi.h
-+			profiles.c profiles.h midi.h config.c config.h
- envy24control_LDFLAGS = @ENVY24CONTROL_LIBS@
- EXTRA_DIST = envy24control.1 depcomp configure.in-gtk2 \
- 	     strstr_icase_blank.c new_process.c README.profiles
- 
-Index: envy24control.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/envy24control.c,v
-retrieving revision 1.35
-diff -u -r1.35 envy24control.c
---- envy24control.c	24 May 2005 16:52:18 -0000	1.35
-+++ envy24control.c	26 Jul 2005 16:58:11 -0000
-@@ -22,6 +22,7 @@
- 
- #include "envy24control.h"
- #include "midi.h"
-+#include "config.h"
- #define _GNU_SOURCE
- #include <getopt.h>
- 
-@@ -244,7 +244,9 @@
- 	gtk_widget_show(toggle);
- 	gtk_box_pack_end(GTK_BOX(vbox), toggle, FALSE, FALSE, 0);
- 	/* gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), TRUE); */
--	
-+	gtk_signal_connect(GTK_OBJECT(toggle), "toggled",
-+			   GTK_SIGNAL_FUNC(config_set_stereo), (gpointer)stream-1);
-+
- 	hbox = gtk_hbox_new(TRUE, 6);
- 	gtk_widget_show(hbox);
- 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-@@ -2116,6 +2117,7 @@
- 	}
- 
- 	/* Initialize code */
-+	config_open();
- 	level_meters_init();
- 	mixer_init();
- 	patchbay_init();
-@@ -2185,6 +2187,7 @@
- 
- 	snd_ctl_close(ctl);
- 	midi_close();
-+	config_close();
- 
- 	return EXIT_SUCCESS;
- }
-Index: mixer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/mixer.c,v
-retrieving revision 1.11
-diff -u -r1.11 mixer.c
---- mixer.c	26 Jul 2005 11:37:11 -0000	1.11
-+++ mixer.c	26 Jul 2005 16:58:11 -0000
-@@ -19,6 +19,7 @@
- 
- #include "envy24control.h"
- #include "midi.h"
-+#include "config.h"
- 
- #define	MULTI_PLAYBACK_SWITCH		"Multi Playback Switch"
- #define MULTI_PLAYBACK_VOLUME		"Multi Playback Volume"
-@@ -263,4 +269,6 @@
- 		if (stream_is_active[stream - 1])
- 			mixer_update_stream(stream, 1, 1);
- 	}
-+
-+	config_restore_stereo();
- }
+Hi all,
 
---------------090600020306070804070509--
+attached is an updated ICE1724.conf - I have added channels X parameters to 
+the .pcm.surroundXX-fields, because otherwise it's for example not possible 
+to play a 5.1-stream on surround51 and a stereo-stream on side simultaneous.
+I need this feature to do multiroom-sound through one single sound-card (one 
+room playing a DVD with 5.1, another room playing some MP3s through channels 
+7 and 8).
+I hope you could follow my explanations and will add this to the tree.
+
+Cheers,
+Julian
+
+--Boundary-00=_2t46C0Y06x4pDpe
+Content-Type: text/plain;
+  charset="us-ascii";
+  name="ICE1724.conf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="ICE1724.conf"
+
+#
+# Configuration for the ICE1724 (Envy24HT) chip
+#
+
+<confdir:pcm/front.conf>
+
+ICE1724.pcm.front.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hw
+	card $CARD
+}	
+
+<confdir:pcm/rear.conf>
+
+ICE1724.pcm.rear.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hw
+	card $CARD
+	device 2
+	subdevice 0
+}	
+
+<confdir:pcm/center_lfe.conf>
+
+ICE1724.pcm.center_lfe.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hw
+	card $CARD
+	device 2
+	subdevice 1
+}	
+
+<confdir:pcm/side.conf>
+
+ICE1724.pcm.side.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hw
+	card $CARD
+	device 2
+	subdevice 2
+}
+
+<confdir:pcm/surround40.conf>
+
+ICE1724.pcm.surround40.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type route
+	ttable.0.0 1
+	ttable.1.1 1
+	ttable.2.4 1
+	ttable.3.5 1
+	slave {
+		channels 4
+		pcm {
+			type hw
+			card $CARD
+		}
+	}
+}	
+
+<confdir:pcm/surround41.conf>
+<confdir:pcm/surround50.conf>
+<confdir:pcm/surround51.conf>
+
+ICE1724.pcm.surround51.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type route
+	ttable.0.0 1
+	ttable.1.1 1
+	ttable.2.4 1
+	ttable.3.5 1
+	ttable.4.2 1
+	ttable.5.3 1
+	slave {
+		channels 6
+                pcm {
+			type hw
+	 		card $CARD
+		}
+	}
+}
+
+<confdir:pcm/surround71.conf>
+
+ICE1724.pcm.surround71.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type route
+	ttable.0.0 1
+	ttable.1.1 1
+	ttable.2.4 1
+	ttable.3.5 1
+	ttable.4.2 1
+	ttable.5.3 1
+	ttable.6.6 1
+	ttable.7.7 1
+	slave {
+		channels 8
+		pcm {
+			type hw
+			card $CARD
+		}
+	}
+}
+
+<confdir:pcm/iec958.conf>
+
+ICE1724.pcm.iec958.0 {
+	@args [ CARD AES0 AES1 AES2 AES3 ]
+	@args.CARD {
+		type string
+	}
+	@args.AES0 {
+		type integer
+	}
+	@args.AES1 {
+		type integer
+	}
+	@args.AES2 {
+		type integer
+	}
+	@args.AES3 {
+		type integer
+	}
+	type asym
+	playback.pcm {
+		type hooks
+		slave.pcm {
+			type hw
+			card $CARD
+			device 1
+		}
+		hooks.0 {
+			type ctl_elems
+			hook_args [
+				{
+					interface MIXER
+					name "IEC958 Output Switch"
+					lock true
+					preserve true
+					value true
+				}
+				{
+					interface PCM
+					name "IEC958 Playback Default"
+					device 1
+					lock true
+					preserve true
+					value [ $AES0 $AES1 $AES2 $AES3 ]
+				}
+			]
+		}
+	}
+	capture.pcm {
+		type hw
+		card $CARD
+		device 1
+	}
+}
+
+--Boundary-00=_2t46C0Y06x4pDpe--
 
 
 -------------------------------------------------------
