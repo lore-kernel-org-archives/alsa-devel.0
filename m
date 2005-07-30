@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001292]: Audigy 2 ZS Notebook initialization hangs kernel.
-Date: Fri, 29 Jul 2005 23:14:11 +0200
-Message-ID: <8c901b244bfdf4752604a38116b5d161@bugtrack.alsa-project.org>
+From: Stephen Clark <stephen.clark@earthlink.net>
+Subject: Re: 2.6.12 sound problem
+Date: Fri, 29 Jul 2005 23:05:00 -0400
+Message-ID: <42EAEE5C.8060907@earthlink.net>
+References: <4811572DEBA3F04E9E6C269B321042650105FE8A@bjsmsx402.ccr.corp.intel.com> <42EA2406.5000103@earthlink.net>
+Reply-To: sclark46@earthlink.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0CE68197
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2005 23:14:11 +0200 (MEST)
+In-Reply-To: <42EA2406.5000103@earthlink.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +18,210 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: sclark46@earthlink.net
+Cc: "Yuan, Hang" <hang.yuan@intel.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Stephen Clark wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1292> 
-======================================================================
-Reported By:                tomch
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1292
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable/experimental
-Kernel Version:             2.6.13-rc4
-======================================================================
-Date Submitted:             07-29-2005 23:14 CEST
-Last Modified:              07-29-2005 23:14 CEST
-======================================================================
-Summary:                    Audigy 2 ZS Notebook initialization hangs kernel.
-Description: 
-When Emu10k1 option in kernel is disabled, it boots just fine.
-If support is compiled in, boot hangs just after displaing: Audigy2
-value:Special config.
+>Yuan, Hang wrote:
+>
+> =20
+>
+>>-----Original Message-----
+>>From: alsa-devel-admin@lists.sourceforge.net [mailto:alsa-devel-admin@l=
+ists.sourceforge.net] On Behalf Of Stephen Clark
+>>Sent: 2005=C4=EA7=D4=C228=C8=D5 22:12
+>>To: alsa-devel@lists.sourceforge.net
+>>Subject: Re: [Alsa-devel] 2.6.12 sound problem
+>>
+>>Stephen Clark wrote:
+>>
+>>=20
+>>
+>>   =20
+>>
+>>>Hello List,
+>>>
+>>>
+>>>I recently upgraded my laptop, HP Pavilion N5430, from a 2.4.21 kernel
+>>>to 2.6.12. As a result of
+>>>doing this my sound no longer works correctly. It plays the same thing
+>>>repeatedly some number
+>>>of times - if it plays at all.
+>>>
+>>>Any ideas on how to debug this would be appreciated.
+>>>
+>>>Additional info I don't see any interrupts in /proc/interrupts for the=
+=20
+>>>Allegro which is on int 5.
+>>>I just tried the same laptop with knoppix and a 2.4.27 kernel and soun=
+d=20
+>>>works great and I do
+>>>see interrupts for Allegro on int 5.
+>>>
+>>>
+>>>Thanks,
+>>>Steve
+>>>
+>>>aplay -v and aadebug output follow.
+>>>
+>>>root@joker4 ~]# aplay -v /usr/share/apps/kget/sounds/started.wav
+>>>Playing WAVE '/usr/share/apps/kget/sounds/started.wav' : Unsigned 8 bi=
+t,
+>>>Rate 11128 Hz,Mono
+>>>Plug PCM: Hardware PCM card 0 'ESS Allegro PCI' device 0 subdevice 1
+>>>
+>>>Its setup is:
+>>>stream       : PLAYBACK
+>>>access       : RW_INTERLEAVED
+>>>format       : U8
+>>>subformat    : STD
+>>>channels     : 1
+>>>rate         : 11128
+>>>exact rate   : 11128 (11128/1)
+>>>msbits       : 8
+>>>buffer_size  : 5564
+>>>period_size  : 1391
+>>>period_time  : 125000
+>>>tick_time    : 1000
+>>>tstamp_mode  : NONE
+>>>period_step  : 1
+>>>sleep_min    : 0
+>>>avail_min    : 1391
+>>>xfer_align   : 1391
+>>>start_threshold  : 5564
+>>>stop_threshold   : 5564
+>>>silence_threshold: 0
+>>>silence_size : 0
+>>>boundary     : 1458569216
+>>>aplay: pcm_write:1171: write error: Input/output error
+>>>
+>>>aadebug output:
+>>>ALSA Audio Debug v0.0.9 - Mon Jul 25 14:49:10 EDT 2005
+>>>http://alsa.opensrc.org/?page=3Daadebug
+>>>
+>>>Kernel ----------------------------------------------------
+>>>Linux joker4.seclark.com 2.6.12-prep #1 Sun Jul 24 22:39:46 EDT 2005
+>>>i686 athlon i386 GNU/Linux
+>>>
+>>>Loaded Modules --------------------------------------------
+>>>snd_maestro3           25252  2
+>>>snd_ac97_codec         76408  1 snd_maestro3
+>>>snd_seq_dummy           3972  0
+>>>snd_seq_oss            37760  0
+>>>snd_seq_midi_event      9600  1 snd_seq_oss
+>>>snd_seq                62992  5 snd_seq_dummy,snd_seq_oss,snd_seq_midi=
+_event
+>>>snd_seq_device          9228  3 snd_seq_dummy,snd_seq_oss,snd_seq
+>>>snd_pcm_oss            51760  0
+>>>snd_mixer_oss          18304  1 snd_pcm_oss
+>>>snd_pcm               100744  4 snd_maestro3,snd_ac97_codec,snd_pcm_os=
+s
+>>>snd_timer              33924  2 snd_seq,snd_pcm
+>>>snd_page_alloc         10116  1 snd_pcm
+>>>snd                    57860  12
+>>>snd_maestro3,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm=
+_oss,snd_mixer_oss,snd_pcm,snd_timer
+>>>
+>>>Modprobe Conf ---------------------------------------------
+>>>alias snd-card-0 snd-maestro3
+>>>options snd-card-0 index=3D0
+>>>options snd-maestro3 index=3D0
+>>>remove snd-maestro3 { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ;
+>>>}; /sbin/modprobe -r --ignore-remove snd-maestro3
+>>>
+>>>Proc Asound -----------------------------------------------
+>>>Advanced Linux Sound Architecture Driver Version 1.0.9rc2  (Thu Mar 24
+>>>10:33:392005 UTC).
+>>>0 [PCI            ]: Allegro - ESS Allegro PCI
+>>>                     ESS Allegro PCI at 0x1400, irq 5
+>>>  1:       : sequencer
+>>> 16: [0- 0]: digital audio playback
+>>> 24: [0- 0]: digital audio capture
+>>>  0: [0- 0]: ctl
+>>> 33:       : timer
+>>>00-00: Allegro : Allegro : playback 2 : capture 1
+>>>
+>>>Dev Snd ---------------------------------------------------
+>>>controlC0  pcmC0D0c  pcmC0D0p  seq  timer
+>>>
+>>>CPU -------------------------------------------------------
+>>>model name      : mobile AMD Duron(tm) Processor
+>>>cpu MHz         : 299.999
+>>>
+>>>RAM -------------------------------------------------------
+>>>MemTotal:       255652 kB
+>>>SwapTotal:      524280 kB
+>>>
+>>>Hardware --------------------------------------------------
+>>>00:00.0 Host bridge: ALi Corporation M1647 Northbridge [MAGiK 1 /
+>>>MobileMAGiK 1] (rev 04)
+>>>00:08.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1
+>>>(rev 12)
+>>>
+>>>
+>>>
+>>>  =20
+>>>
+>>>     =20
+>>>
+>>I've downloaded the latest alsa 1.09rc4a and tried it with no success.=20
+>>Is there anything I can do
+>>to further troubleshoot this. I configured the sw --with-debug=3Dfull b=
+ut=20
+>>didn't see any additional output.
+>>I am willing to get my hands dirty if someone will give me some=20
+>>direction. This laptop is used by my teenage daughter and she has to=20
+>>have sound ;).
+>>
+>>Steve
+>>
+>>Is the kernel in UP mode? If so, try SMP mode or enable "local APIC sup=
+port", "I/O APIC support" and re-build UP kernel. I met the similar probl=
+em like you described and no interrupts were reported in /proc/interrupts=
+. I don't know the exact reason. But the workaround above can solve the p=
+roblem. Hope this method can also help you.
+>>
+>>- Henry
+>>
+>>=20
+>>
+>>   =20
+>>
+>Thanks Henry,
+>
+>I'll give it a try and report back my result. I am in the process of=20
+>switching from FC4 to gentoo, ( gentoo still supports 2.4 ).
+>
+>Steve
+>
+>
+>-------------------------------------------------------
+>SF.Net email is Sponsored by the Better Software Conference & EXPO Septe=
+mber
+>19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+>Agile & Plan-Driven Development * Managing Projects & Teams * Testing & =
+QA
+>Security * Process Improvement & Measurement * http://www.sqe.com/bsce5s=
+f
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+> =20
+>
+Hi Henry,
 
-I don't know anything about kernel programming, but i could help with
-additional informations or try to debug this.
-======================================================================
+That fixed my problem. How did you discover this?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-29-05 23:14 tomch          New Issue                                    
-07-29-05 23:14 tomch          Distribution              => Debian
-unstable/experimental
-07-29-05 23:14 tomch          Kernel Version            => 2.6.13-rc4      
-======================================================================
-
-
+Steve
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+speed, fast. http://ads.osdn.com/?ad_id=3D7477&alloc_id=3D16492&op=3Dclic=
+k
