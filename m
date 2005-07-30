@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001283]: Allegro-1 does not generate interrupts - but does on linux 2.4.27
-Date: Sat, 30 Jul 2005 05:21:46 +0200
-Message-ID: <d5cbceb0fab9b8b7b764fd811c715d9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001291]: random system crash afer 1h-4h of sound playing
+Date: Sat, 30 Jul 2005 09:02:10 +0200
+Message-ID: <b67ab26a632e1660d515d0e14b59963d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 409AE1A9
-	for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2005 05:21:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A6C51AD
+	for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2005 09:02:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1283> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1291> 
 ======================================================================
-Reported By:                sclark46
+Reported By:                bubbleguuum
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1283
-Category:                   PCI - maestro3
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1291
+Category:                   PCI - hda-intel
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398_FC4
+Distribution:               PCLinuxOS  P9.1
+Kernel Version:             2.6.11-oci12
 ======================================================================
-Date Submitted:             07-27-2005 03:51 CEST
-Last Modified:              07-30-2005 05:21 CEST
+Date Submitted:             07-29-2005 19:41 CEST
+Last Modified:              07-30-2005 09:02 CEST
 ======================================================================
-Summary:                    Allegro-1 does not generate interrupts - but does on
-linux 2.4.27
+Summary:                    random system crash afer 1h-4h of sound playing
 Description: 
-Aplay fails with a write error and the following error message:
-Jul 26 21:06:14 joker4 kernel: ALSA
-/home/sclark/alsa-driver-1.0.9rc4a/acore/pcm_native.c:1442: playback drain
-error (DMA or IRQ trouble?)
+Playing mp3 files in either amaroK using artsd or xmms using the alsa-xmms
+plugin crashes consistently the system (sound is looping), no recovery
+possible (machine is not pingable). No crash if there is no sound
+playing.
 
-The sound clip plays repeatedly until that error pops up.
+The chipset is Realtek ALC260.
+Kernel is a custom patched kernel used by PCLinuxOS P9.1 (2.6.11-oci12)
 
-I booted a Knoppix CD to verify the HW worked and sound played correctly.
-The Knoppix kernel was 2.4.27
+changelog of patches applied  : 
+http://www.pclinuxfiles.com/ocilent1/kernel/2.6.X-oci-kernel-changelog
+
+Another strange potential symptom: sometimes artsd takes 100% CPU usage
+and kills itself after displaying a popup. It can happend 5min after boot
+or never and after relaunching it, it never takes up 100% again.
+
+As you can see this is quite annoying as it prevent me from using this
+distro fulltime. I may add than I had this module working perfectly with
+Ubuntu Hoary which is using kernel 2.6.10 
+
+If I can offer other details, just tell me
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- sclark46 - 07-30-05 05:21 
+ bubbleguuum - 07-29-05 19:47 
 ----------------------------------------------------------------------
-Henry Yuan suggested I boot with lapic set and lo and behold this resolved
-the problem on my HP N5430 laptop - so I guess this is not and alsa
-problem
+well concat this two strings for the correct URL !
+
+www.pclinuxfiles.com/ocilent1/kernel/2.6.    X-oci-kernel-changelog
+
+----------------------------------------------------------------------
+ bubbleguuum - 07-30-05 09:02 
+----------------------------------------------------------------------
+Did some further test without sound and my notebook crashed, so it's not an
+alsa issue as I believed. YOu can close this bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 03:51 sclark46       New Issue                                    
-07-27-05 03:51 sclark46       Distribution              => Fedora Core 4   
-07-27-05 03:51 sclark46       Kernel Version            => 2.6.12-1.1398_FC4
-07-27-05 03:52 sclark46       Issue Monitored: sclark46                    
-07-27-05 03:52 sclark46       Issue End Monitor: sclark46                    
-07-30-05 05:21 sclark46       Note Added: 0005588                          
+07-29-05 19:41 bubbleguuum    New Issue                                    
+07-29-05 19:41 bubbleguuum    Distribution              => PCLinuxOS  P9.1 
+07-29-05 19:41 bubbleguuum    Kernel Version            => 2.6.11-oci12    
+07-29-05 19:45 bubbleguuum    Note Added: 0005586                          
+07-29-05 19:47 bubbleguuum    Note Added: 0005587                          
+07-30-05 09:02 bubbleguuum    Note Added: 0005589                          
 ======================================================================
 
 
