@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001283]: Allegro-1 does not generate interrupts - but does on linux 2.4.27
-Date: Sat, 30 Jul 2005 09:11:30 +0200
-Message-ID: <02acc5ded4f59b6de61d9a7f06aec1cd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001274]: alc655: low volume
+Date: Sat, 30 Jul 2005 09:11:34 +0200
+Message-ID: <2f6180bf019158651f4f915fc3cbd2a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E20051AD
-	for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2005 09:11:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 876271AD
+	for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2005 09:11:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1283> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1274> 
 ======================================================================
-Reported By:                sclark46
+Reported By:                vitja
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1283
-Category:                   PCI - maestro3
+Issue ID:                   1274
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398_FC4
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-27-2005 03:51 CEST
+Date Submitted:             07-22-2005 10:46 CEST
 Last Modified:              07-30-2005 09:11 CEST
 ======================================================================
-Summary:                    Allegro-1 does not generate interrupts - but does on
-linux 2.4.27
+Summary:                    alc655: low volume
 Description: 
-Aplay fails with a write error and the following error message:
-Jul 26 21:06:14 joker4 kernel: ALSA
-/home/sclark/alsa-driver-1.0.9rc4a/acore/pcm_native.c:1442: playback drain
-error (DMA or IRQ trouble?)
-
-The sound clip plays repeatedly until that error pops up.
-
-I booted a Knoppix CD to verify the HW worked and sound played correctly.
-The Knoppix kernel was 2.4.27
-
-
+I have ATI IXP400 sound in my notebook. codec is realtek's alc655. The
+problem is I couldn't hear anything from internal speaker. When I plug
+earphones in I hear very-very low music signal, so driver actually works
+but. By the way under xp with realtek's drivers thats all right.. Is there
+a way to see dump of ac97's registers under xp? May be XP driver uses some
+proprietary features of alc655?
 ======================================================================
 
 ----------------------------------------------------------------------
- sclark46 - 07-30-05 05:21 
+ tiwai - 07-29-05 18:01 
 ----------------------------------------------------------------------
-Henry Yuan suggested I boot with lapic set and lo and behold this resolved
-the problem on my HP N5430 laptop - so I guess this is not and alsa
-problem
+What do you mean "temporarily solution"?  Does the command sequence above
+solve your problem?
 
 ----------------------------------------------------------------------
- rlrevell - 07-30-05 09:11 
+ vitja - 07-30-05 09:11 
 ----------------------------------------------------------------------
-This should be reported to the kernel bugzilla.
+yeah... just before restoring alsa mixer levels I write this values to
+acl655...and it works I don't know why...These values are acl655 registers
+before audio modules is completly loaded..."temporarily solution" because
+it is not right way to make things work...
+
+else one: modem(sb400) doesn't work, module loads ok, slmodem ok...but
+when I run minicom and ttry to call system hangs(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 03:51 sclark46       New Issue                                    
-07-27-05 03:51 sclark46       Distribution              => Fedora Core 4   
-07-27-05 03:51 sclark46       Kernel Version            => 2.6.12-1.1398_FC4
-07-27-05 03:52 sclark46       Issue Monitored: sclark46                    
-07-27-05 03:52 sclark46       Issue End Monitor: sclark46                    
-07-30-05 05:21 sclark46       Note Added: 0005588                          
-07-30-05 09:11 rlrevell       Note Added: 0005590                          
+07-22-05 10:46 vitja          New Issue                                    
+07-22-05 20:32 vitja          File Added: codec                            
+07-24-05 22:19 vitja          Note Added: 0005560                          
+07-29-05 18:01 tiwai          Note Added: 0005583                          
+07-30-05 09:11 vitja          Note Added: 0005591                          
 ======================================================================
 
 
