@@ -1,11 +1,16 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Mixer volume dB settings.
-Date: Sun, 31 Jul 2005 13:13:21 +0100
-Message-ID: <42ECC061.9070104@superbug.demon.co.uk>
+From: Alien <alien999999999@users.sourceforge.net>
+Subject: Re: [Openvortex-dev] Re: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Sun, 31 Jul 2005 14:38:54 +0200
+Message-ID: <200507311438.59443.alien999999999@users.sourceforge.net>
+References: <50ce26d334ea87a34d7e9e58d1d69a87@bugtrack.alsa-project.org> <42EC84DE.4050306@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: multipart/signed;
+  boundary="nextPart1160399.SkouB7HbUq";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <42EC84DE.4050306@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,38 +20,185 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: openvortex-dev@nongnu.org
+Cc: Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--nextPart1160399.SkouB7HbUq
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I am thinking of a method to provide dB volume setting with alsamixer.
-My suggestion is to add another variable to the mixer control structure. 
-This variable will be an integer identifying the conversion function.
-If set to 0, no conversion function has been defined. If set to 1 or 
-above, use a lookup table in alsa-lib to select the conversion function.
-The user land api would then be:
-snd_mixer_convert_hardware_to_db( hardware_value, conversion_function, 
-&db_value);
-snd_mixer_convert_db_to_hardware( db_value, conversion_function, 
-hardware_value )
+I'm not too sure, but i _can_ tell you that lastly i had two weird errors=20
+about something adb, when snd-au8810 didn't play any sound anymore, i was=20
+able to kill all apps who use sound and modprobe -r snd-au8810, and modprob=
+e=20
+again, and without reboot i was able to get sound working again.
 
-The reason for this, is that it seems to me that only the hardware 
-driver will have full knowledge of what the conversion function should 
-be, and setting a simple integer for conversion_function_type would seem 
-the simplest solution.
+I must say that i haven't been on this PC much and haven't had much time to=
+=20
+test these things, allthough i'm planning too, (but i think i'll update CVS=
+=20
+first with these 2 patches who got lost accidentally before i test this. I=
+=20
+hope i'll get some time this week(end).
 
-The global conversion functions could then be defined in an alsa-lib 
-config file.
+thanks for all the help and info concerning snd-au8810 (in 64bit)
 
-This would also allow the application to increase/decrease the hardware 
-value, but display to the user the dB value.
+AL13N
 
-Any comments?
+Op zondag 31 juli 2005 09:59, schreef Raymond:
+> If there are 16 instances of aplay playing mono stream.
+>
+> What error will be returned by snd_pcm_open() for the 17th instance of
+> aplay ?
+>
+>
+>
+> alsa-kernel/pci/au88x0/au8810.h
+>
+> #define NR_ADB   0x10
+>
+> alsa-kernel/pci/au88x0/au8830.h
+>
+> #define NR_ADB   0x20
+>
+>
+> alsa-kernel/pci/au88x0/au88x0.c
+>
+> 	if ((err =3D snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
+> 		snd_card_free(card);
+> 		return err;
+> 	}
+>
+> bugtrack@alsa-project.org wrote:
+> > A NOTE has been added to this issue.
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1047>
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Reported By:                alien999999999
+> > Assigned To:                mjander
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Project:                    ALSA - driver
+> > Issue ID:                   1047
+> > Category:                   PCI - au88x0
+> > Reproducibility:            sometimes
+> > Severity:                   block
+> > Priority:                   normal
+> > Status:                     assigned
+> > Distribution:               Mandrake
+> > Kernel Version:             2.6.7
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Date Submitted:             04-12-2005 20:43 CEST
+> > Last Modified:              04-12-2005 20:51 CEST
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Summary:                    module hangs at seemingly random times
+> > Description:
+> > sometimes i start playing a song, and it starts playing a few second or
+> > so and hangs, then i kill the application and modprobe -r all sound
+> > modules and modprobe them again to make it work again.
+> >
+> > BUT: sometimes not only that happens, but also when i try to kill the
+> > apps it will not kill. when that happens, all kill, killall, top, ps aux
+> > commands hang at the command line and cannot be killed by CTRL-C or
+> > otherwise, i have been able to see that when i stopped my display
+> > managener I did an lsmod and it gave something like this:
+> >
+> > snd-pcm-oss            59752  11
+> > snd-mixer-oss          20480  1 snd-pcm-oss
+> > snd-au8810             43760  220
+> > snd-ac97-codec         83408  1 snd-au8810
+> > snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+> > snd-page-alloc         10384  1 snd-pcm
+> > gameport                3840  1 snd-au8810
+> > snd-mpu401-uart        11904  1 snd-au8810
+> >
+> >
+> > as you can see the snd-au8810 module seem to have an impossible number =
+of
+> > "dependencies" (i think has to do with the number of unclosed sound-apps
+> > trying to be played; this could be since gaim is programmed to execute =
+an
+> > 'aplay %s')
+> >
+> > i've had this major crash below only 3 times; and the logs didn't detect
+> > anything specific at the time. the only thing the logs mentioned at that
+> > time was an ntpd sync going on; so the only thing i can think of is that
+> > at a certain moment when a sync is going on, some kind of lock is holdi=
+ng
+> > cause this to happen... the only thing that i can do to fix this is
+> > reset...
+> >
+> > it is interesting to note that i also have an snd-emu10k1 as second car=
+d,
+> > which never gave problems like this, and i am always able to "modprobe =
+=2Dr
+> > snd-emu10k1" ...
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > ----------------------------------------------------------------------
+> >  alien999999999 - 04-12-05 20:48
+> > ----------------------------------------------------------------------
+> > i forgot to note that i have the mdk 10.1 x86_64 distro and my version
+> > has a few 64bit fixes to get past kernel hangs and kernel oopses
+> >
+> > ----------------------------------------------------------------------
+> >  alien999999999 - 04-12-05 20:51
+> > ----------------------------------------------------------------------
+> > i have attached the changed files (since i don't have a CVS version of
+> > alsa to diff against)
+> >
+> > these files are located in the alsa-driver-1.0.8/alsa-kernel/pci/au88x0/
+> > path
+> >
+> > Issue History
+> > Date Modified  Username       Field                    Change
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > 04-12-05 20:43 alien999999999 New Issue
+> > 04-12-05 20:43 alien999999999 Distribution              =3D> Mandrake
+> > 04-12-05 20:43 alien999999999 Kernel Version            =3D> 2.6.7
+> > 04-12-05 20:48 alien999999999 Note Added: 0004461
+> > 04-12-05 20:49 alien999999999 File Added: au88x0.c
+> > 04-12-05 20:49 alien999999999 File Added: au88x0.h
+> > 04-12-05 20:50 alien999999999 File Added: au88x0_core.c
+> > 04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c
+> > 04-12-05 20:51 alien999999999 Note Added: 0004462
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> _______________________________________________
+> Openvortex-dev mailing list
+> Openvortex-dev@nongnu.org
+> http://lists.nongnu.org/mailman/listinfo/openvortex-dev
 
-If this seems ok, I will start implementing it.
+--nextPart1160399.SkouB7HbUq
+Content-Type: application/pgp-signature
 
-James
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQBC7MZjuBWKXETrtdcRAt2YAKDgVSwwgvNSa+Q5LiE/7JUqYSxtQQCff4Z4
+86DxSSifIWsK4+eRy+oDkZI=
+=jEEC
+-----END PGP SIGNATURE-----
+
+--nextPart1160399.SkouB7HbUq--
 
 
 -------------------------------------------------------
