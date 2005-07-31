@@ -1,29 +1,20 @@
-From: Hynek Hanke <hanke@brailcom.org>
-Subject: The different STATES of ALSA
-Date: Sun, 31 Jul 2005 15:35:52 +0200
-Message-ID: <20050731133552.GA13386@brailcom.cz>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: [2.6 patch] schedule obsolete OSS drivers for removal
+Date: Sun, 31 Jul 2005 14:50:59 +0100
+Message-ID: <42ECD743.9010401@superbug.demon.co.uk>
+References: <20050726150837.GT3160@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp-out3.iol.cz (smtp-out3.iol.cz [194.228.2.91])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E7D31A1
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:03 +0200 (MEST)
-Received: from antivir3.iol.cz (unknown [192.168.30.206])
-	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 6DE2C3183B3
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:04 +0200 (CEST)
-Received: from localhost (antivir3.iol.cz [127.0.0.1])
-	by antivir3.iol.cz (Postfix) with ESMTP id 66B736DC003
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:04 +0200 (CEST)
-Received: from smtp-out3.iol.cz (unknown [192.168.30.28])
-	by antivir3.iol.cz (Postfix) with ESMTP id 57D086DC002
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:04 +0200 (CEST)
-Received: from chopin (unknown [80.188.214.108])
-	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 06CF53BF53
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:01 +0200 (CEST)
-Received: from hanke by chopin with local (Exim 3.36 #1 (Debian))
-	id 1DzDyr-0007Cn-00
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:35:53 +0200
-Content-Disposition: inline
+Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 070881B0
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:51:00 +0200 (MEST)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-34.mail.demon.net with esmtp (Exim 4.42)
+	id 1DzEDT-0000mv-Em
+	for alsa-devel@alsa-project.org; Sun, 31 Jul 2005 13:50:59 +0000
+In-Reply-To: <20050726150837.GT3160@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -36,40 +27,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian Bunk wrote:
+> This patch schedules obsolete OSS drivers (with ALSA drivers that 
+> support the same hardware) for removal.
+> 
+> 
+> Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> 
+> ---
+> 
+> I've Cc'ed the people listed in MAINTAINERS as being responsible for one 
+> or more of these drivers, and I've also Cc'ed the ALSA people.
+> 
 
-Hi everyone,
+I am happy for the emu10k1 OSS driver to go.
+The ALSA driver has considerably more features now.
 
-I'm having very much troubles programming an ALSA interface because the
-documentation is pretty poor. I'm very much confused about the different states
-in alsa-lib.
-
-(After I was told alsa-lib is not thread-safe and there is some bug in the kernel
-implementation of the underlaying calls of snd_pcm_writei(), I'm now running the
-non-blocking/polling approach).
-
-My questions:
-
-1) In which states am I allowed to call
-	a) snd_pcm_hw_params_any
-	b) snd_pcm_hw_params
-	c) snd_pcm_prepare
-	d) snd_pcm_drop and _drain
-
-2) Which states do they bring me to, if they don't return an error?
-
-3) How is it possible that snd_pcm_drain returns with a success value *and*
-   the snd_pcm_state() still reports SND_PCM_STATE_DRAINING ? Is this a bug?
-
-4) How is it possible, that the whole time a sound is played snd_pcm_writei()
-   never returns the value -EPIPE and still, when checking the state before
-   playing the next sound, I find the device in the SND_PCM_STATE_XRUN
-   (snd_pcm_drain() gets called in the meantime).
-
-The problems (3) and (4) seem to arrise only under some circumstances, possibly
-when more sounds are played in a quick succession.
-
-Thank you for help,
-Hynek Hanke
+James
 
 
 
