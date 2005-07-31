@@ -1,13 +1,14 @@
 From: Raymond <rayau@netvigator.com>
-Subject: Re: Volume per voices [Feature Request]
-Date: Mon, 01 Aug 2005 00:37:26 +0800
-Message-ID: <42ECFE46.9070201@netvigator.com>
-References: <s5hll3slj32.wl%tiwai@suse.de> <Pine.HPX.4.33n.0507271709230.25935-100000@studcom.urz.uni-halle.de> <42E889DD.2070808@netvigator.com> <Pine.LNX.4.61.0507281032400.8458@tm8103.perex-int.cz>
+Subject: Re: [Openvortex-dev] Re: [ALSA - driver 0001047]: module hangs at
+ seemingly random times
+Date: Mon, 01 Aug 2005 01:15:36 +0800
+Message-ID: <42ED0738.7090201@netvigator.com>
+References: <50ce26d334ea87a34d7e9e58d1d69a87@bugtrack.alsa-project.org> <42EC84DE.4050306@netvigator.com> <200507311438.59443.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0507281032400.8458@tm8103.perex-int.cz>
+In-Reply-To: <200507311438.59443.alien999999999@users.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,29 +19,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Thu, 28 Jul 2005, Raymond wrote:
+Although au8810, au8820 and au8830 have 16 Sample Rate Convertors.
+
+For au8820 and au8830 driver, snd_pcm_hw_params() will return "no more 
+mixer error" and "no more sample rate convertor error" before all 
+configured substreams are opened.
+
+It seem to me that au8810's problem is related to snd_pcm_open()
+after all configured substreams are opened.
+
+May be you can change NR_ADB from 0x10 to 0x20 (a dirty workaround) ?
+
+
+Alien wrote:
+> I'm not too sure, but i _can_ tell you that lastly i had two weird errors 
+> about something adb, when snd-au8810 didn't play any sound anymore, i was 
+> able to kill all apps who use sound and modprobe -r snd-au8810, and modprobe 
+> again, and without reboot i was able to get sound working again.
 > 
+
+In your case, if there are one or more stereo stream playing, 
+snd_pcm_hw_params() will return "no more sample rate convertor error" 
+before all configured substreams are opened.
+
+
+> I must say that i haven't been on this PC much and haven't had much time to 
+> test these things, allthough i'm planning too, (but i think i'll update CVS 
+> first with these 2 patches who got lost accidentally before i test this. I 
+> hope i'll get some time this week(end).
+
+Igor V. Kovalenko already include the two lost patches in his patch to 
+fix oopses on amd64
+
 > 
->>In theory, and sound cards with hardware mixing can support this kind of
->>volume control.
+> thanks for all the help and info concerning snd-au8810 (in 64bit)
+> 
+> AL13N
+> 
+> Op zondag 31 juli 2005 09:59, schreef Raymond:
+> 
+>>If there are 16 instances of aplay playing mono stream.
 >>
-> 
-> Nope. Please, define the controls at the driver initialization phase and 
-> make them inactive when the stream is not open. See emu10k1 or trident 
-> driver for hints. You must also map the voice volume with substream 
-> number.
-> 
-
-Beside volume control, Is it feasible to bind other controls (e.g.
-Interaural Time Difference, Interaural Level Difference and SAMPLE RATE 
-CONVERTOR - Doppler Effect ) to the substream ?
-
-
-How can the alsa application access those controls
-(SNDRV_CTL_ELEM_IFACE_PCM) using the handle return by snd_pcm_open() ?
+>>What error will be returned by snd_pcm_open() for the 17th instance of
+>>aplay ?
+>>
+>>
+>>
+>>alsa-kernel/pci/au88x0/au8810.h
+>>
+>>#define NR_ADB   0x10
+>>
+>>alsa-kernel/pci/au88x0/au8830.h
+>>
+>>#define NR_ADB   0x20
+>>
+>>
+>>alsa-kernel/pci/au88x0/au88x0.c
+>>
+>>	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
+>>		snd_card_free(card);
+>>		return err;
+>>	}
+>>
 
 
 
