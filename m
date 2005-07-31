@@ -1,14 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [Openvortex-dev] Re: [ALSA - driver 0001047]: module hangs at
- seemingly random times
-Date: Mon, 01 Aug 2005 01:15:36 +0800
-Message-ID: <42ED0738.7090201@netvigator.com>
-References: <50ce26d334ea87a34d7e9e58d1d69a87@bugtrack.alsa-project.org> <42EC84DE.4050306@netvigator.com> <200507311438.59443.alien999999999@users.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001293]: trident: device supported by OSS but not by ALSA
+Date: Sun, 31 Jul 2005 21:13:58 +0200
+Message-ID: <f667eb029fb3a9443df0d1299a5612d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200507311438.59443.alien999999999@users.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 755731C2
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 21:13:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Although au8810, au8820 and au8830 have 16 Sample Rate Convertors.
 
-For au8820 and au8830 driver, snd_pcm_hw_params() will return "no more 
-mixer error" and "no more sample rate convertor error" before all 
-configured substreams are opened.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1293> 
+======================================================================
+Reported By:                Adrian Bunk
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1293
+Category:                   PCI - trident
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.13-rc4-mm1
+======================================================================
+Date Submitted:             07-31-2005 21:13 CEST
+Last Modified:              07-31-2005 21:13 CEST
+======================================================================
+Summary:                    trident: device supported by OSS but not by ALSA
+Description: 
+I'm currently creating a list of OSS drivers where all the hardware
+supported by them is also supported by ALSA. The goal is to schedule
+them for removal (except someone tells that for one or more of them ALSA
+support is inferior). I do not have this hardware, but this is currently
+the reason why the old OSS driver can't be removed from the kernel.
 
-It seem to me that au8810's problem is related to snd_pcm_open()
-after all configured substreams are opened.
 
-May be you can change NR_ADB from 0x10 to 0x20 (a dirty workaround) ?
+The OSS trident driver has 5 different pci_device_id entries.
 
-
-Alien wrote:
-> I'm not too sure, but i _can_ tell you that lastly i had two weird errors 
-> about something adb, when snd-au8810 didn't play any sound anymore, i was 
-> able to kill all apps who use sound and modprobe -r snd-au8810, and modprobe 
-> again, and without reboot i was able to get sound working again.
-> 
-
-In your case, if there are one or more stereo stream playing, 
-snd_pcm_hw_params() will return "no more sample rate convertor error" 
-before all configured substreams are opened.
+For 4 of them there seems to be similar ALSA support, but I can't find
+any ALSA equivalent for the following entry:
+        {PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_5050,
+         PCI_ANY_ID, PCI_ANY_ID, 0, 0, CYBER5050},
 
 
-> I must say that i haven't been on this PC much and haven't had much time to 
-> test these things, allthough i'm planning too, (but i think i'll update CVS 
-> first with these 2 patches who got lost accidentally before i test this. I 
-> hope i'll get some time this week(end).
 
-Igor V. Kovalenko already include the two lost patches in his patch to 
-fix oopses on amd64
+Alan Cox said about this:
 
-> 
-> thanks for all the help and info concerning snd-au8810 (in 64bit)
-> 
-> AL13N
-> 
-> Op zondag 31 juli 2005 09:59, schreef Raymond:
-> 
->>If there are 16 instances of aplay playing mono stream.
->>
->>What error will be returned by snd_pcm_open() for the 17th instance of
->>aplay ?
->>
->>
->>
->>alsa-kernel/pci/au88x0/au8810.h
->>
->>#define NR_ADB   0x10
->>
->>alsa-kernel/pci/au88x0/au8830.h
->>
->>#define NR_ADB   0x20
->>
->>
->>alsa-kernel/pci/au88x0/au88x0.c
->>
->>	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
->>		snd_card_free(card);
->>		return err;
->>	}
->>
+The OSS driver supports the CyberPro T-squared core integrated into the
+cyberpro chipset while the ALSA driver only supports the others. Should
+be easy for someone to resolve. I don't have any 5000 hardware to test
+it however.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-31-05 21:13 Adrian Bunk    New Issue                                    
+07-31-05 21:13 Adrian Bunk    Kernel Version            => 2.6.13-rc4-mm1  
+======================================================================
+
 
 
 
