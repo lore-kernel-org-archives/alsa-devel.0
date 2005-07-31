@@ -1,16 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: The different STATES of ALSA
-Date: Sun, 31 Jul 2005 16:51:00 +0100
-Message-ID: <42ECF364.2010200@superbug.co.uk>
-References: <20050731133552.GA13386@brailcom.cz> <42ECDD88.5010805@superbug.co.uk> <20050731151755.GB13386@brailcom.cz> <42ECEEC1.3010701@superbug.co.uk> <20050731153812.GC13386@brailcom.cz>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Volume per voices [Feature Request]
+Date: Mon, 01 Aug 2005 00:37:26 +0800
+Message-ID: <42ECFE46.9070201@netvigator.com>
+References: <s5hll3slj32.wl%tiwai@suse.de> <Pine.HPX.4.33n.0507271709230.25935-100000@studcom.urz.uni-halle.de> <42E889DD.2070808@netvigator.com> <Pine.LNX.4.61.0507281032400.8458@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 936A11B0
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 17:51:05 +0200 (MEST)
-In-Reply-To: <20050731153812.GC13386@brailcom.cz>
+In-Reply-To: <Pine.LNX.4.61.0507281032400.8458@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,27 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hynek Hanke <hanke@brailcom.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hynek Hanke wrote:
->>>>>	d) snd_pcm_drop and _drain
->>>
->>>Calling the function in every other state is considered an error?
+Jaroslav Kysela wrote:
+> On Thu, 28 Jul 2005, Raymond wrote:
+> 
+> 
+>>In theory, and sound cards with hardware mixing can support this kind of
+>>volume control.
 >>
->>I don't know. But in any other state, it won't actually do anything.
 > 
+> Nope. Please, define the controls at the driver initialization phase and 
+> make them inactive when the stream is not open. See emu10k1 or trident 
+> driver for hints. You must also map the voice volume with substream 
+> number.
 > 
-> Can someone please clarify this?
-> 
-> With Regards,
-> Hynek
-> 
-> 
-You can read the documentation regarding this.
-e.g. The doxygen documentation should help.
-Alternatively, read the comments at the top of alsa-lib/src/pcm/pcm.c
+
+Beside volume control, Is it feasible to bind other controls (e.g.
+Interaural Time Difference, Interaural Level Difference and SAMPLE RATE 
+CONVERTOR - Doppler Effect ) to the substream ?
+
+
+How can the alsa application access those controls
+(SNDRV_CTL_ELEM_IFACE_PCM) using the handle return by snd_pcm_open() ?
 
 
 
