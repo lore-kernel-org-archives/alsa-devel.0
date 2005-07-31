@@ -1,16 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: Re: [2.6 patch] schedule obsolete OSS drivers for removal
-Date: Sun, 31 Jul 2005 21:39:22 +0200
-Message-ID: <20050731193922.GI3608__47015.0426765487$1122838900$gmane$org@stusta.de>
-References: <20050726150837.GT3160@stusta.de> <Pine.LNX.4.61.0507281636040.20815@tek01.intern.thorsten-knabe.de> <Pine.LNX.4.61.0507290849050.8400@tm8103.perex-int.cz> <Pine.LNX.4.61.0507291735500.31150@tek01.intern.thorsten-knabe.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001295]: async capture doesn't seem to work
+Date: Sun, 31 Jul 2005 22:28:28 +0200
+Message-ID: <ddb810ff2d4b52f003484f938c01177f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D84581C2
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 21:39:22 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0507291735500.31150@tek01.intern.thorsten-knabe.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F5BE164
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 22:28:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,40 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thorsten Knabe <linux@thorsten-knabe.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 29, 2005 at 05:58:18PM +0200, Thorsten Knabe wrote:
-> 
-> Hello Jaroslav.
-> 
-> I'll do some testing during the upcoming weekend to confirm, that the 
-> mentioned problems still exist with the current ALSA release. Last time I 
-> checked was sometime around Linux 2.6.10. I'll file a bug report of my 
-> findings to the ALSA bug tracking system and contact the author of the 
-> driver. Initially I had not spent much time on those problems, because I 
-> had an alternative working OSS driver, but since removal of the OSS seems 
-> to get closer, it's probably time to fix these issues now.
 
-Thanks a lot!
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1295> 
+======================================================================
+Reported By:                arunarunarun
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1295
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-31-2005 22:28 CEST
+Last Modified:              07-31-2005 22:28 CEST
+======================================================================
+Summary:                    async capture doesn't seem to work
+Description: 
+I've got a little program up at
+http://nemesis.accosted.net/misc/capture2.cpp that initialises pcm for
+capture, sets up an async callback and then busy-waits. The callback never
+gets called, even though everything else seems to be going fine. Any help
+would be appreciated.
+======================================================================
 
-Can you send me the bug numbers in the ALSA bug tracking system if you 
-have to send bug reports, so that I can track when these issues will be 
-resolved?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-31-05 22:28 arunarunarun   New Issue                                    
+07-31-05 22:28 arunarunarun   File Added: capture.cpp                      
+======================================================================
 
-> Regards
-> Thorsten
-
-TIA
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
 
 
 
