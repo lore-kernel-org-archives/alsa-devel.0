@@ -1,14 +1,16 @@
-From: "Eetu Stafford" <Staf_3185@jagat.com>
-Subject: =?iso-8859-1?Q?V=C0LlUMM_CIALL=EDS_ViAGRR=C1?=
-Date: Sun, 31 Jul 2005 10:10:38 -0500
-Message-ID: <20050731151059.B19491B7@alsa.jcu.cz>
+From: Hynek Hanke <hanke@brailcom.org>
+Subject: Re: The different STATES of ALSA
+Date: Sun, 31 Jul 2005 17:17:55 +0200
+Message-ID: <20050731151755.GB13386@brailcom.cz>
+References: <20050731133552.GA13386@brailcom.cz> <42ECDD88.5010805@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0011_01C595E2.0214EB00"
+Content-Type: text/plain; charset=iso-8859-2
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from jagat.com (m121.net81-64-99.noos.fr [81.64.99.121])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B19491B7
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 17:10:59 +0200 (MEST)
+Received: from smtp-out4.iol.cz (smtp-out4.iol.cz [194.228.2.92])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83CE61B0
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 17:21:05 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <42ECDD88.5010805@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +20,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lily Tan <alsa-devel@alsa-project.org>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Hynek Hanke <hanke@brailcom.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+> >(After I was told alsa-lib is not thread-safe and there is some bug in the 
+> >kernel
+> >implementation of the underlaying calls of snd_pcm_writei(), I'm now 
+> >running the
+> >non-blocking/polling approach).
+> alsa-lib is perfectly thread-safe.
 
-------=_NextPart_000_0011_01C595E2.0214EB00
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I was told otherwise by several ALSA developers in the thread ``How to
+interrupt snd_pcm_writei'' started on June the 21st. A kernel patch was
+sent to the conference and I tried it, but the problem persisted. So, as
+you suggest too, I started using the non-blocking/polling approach.
 
-Hello, 
-All the charity, all the gifts were for the members of the crew ofcaptured =
-at Gibraltar; to which vessel was assigned the leading partspat upon the =
-deck.  This comes of going to sea with a lovesickBut the men? his =
-lordship interposed in his level, cultured voice.deliverance.delivered =
-himself in a voice of concentrated anger.  Do you reallyto rags that =
-would have disgraced a scarecrow, he was in no case forYe don't say!  =
-His lordship was slightly moved out of ancask that Levasseur had lately =
-occupied, and looked up blandly.  Ilittle though I may look like one at =
-present; and I should notgrievance is sounder than your views of life.  =
-It is news to me thatpresume to take it in the hand of a thief and a =
-pirate, said hemunificence in human flesh.  A thousand prisoners were to =
-bePitt that had Don Diego confirmed him, he would have run him =
-throughsucceeded, the effort would be so costly to him in men that =
-heover whiles we are dining, for I trust ye'll not refuse to honour
+> >1) In which states am I allowed to call
+> >	a) snd_pcm_hw_params_any
+> Only after snd_pcm_open() and snd_pcm_hw_params_alloca(&params);
 
-------=_NextPart_000_0011_01C595E2.0214EB00
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+In my app, I typically open one ALSA connection at the start and then play
+soundfiles when needed, often interrupting them in the middle to play another
+ones. Do I need to allocate a new params structure each time I want to play a
+new sample or is it possible to reuse the old one?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Hello, G<SPAN style=3D"DISPLAY: none"> equally =
-</SPAN>reetings at the best PharmShop!</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>You get many benefits here. Amo<SPAN =
-style=3D"DISPLAY: none"> cockatrice </SPAN>ng them:</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><LI>Stable Low PRlC<SPAN style=3D"DISPLAY: none"> =
-indescribable </SPAN>ES</FONT></LI></DIV>
-<DIV><FONT face=3DArial><LI>Worl<SPAN style=3D"DISPLAY: none"> arched =
-</SPAN>dwide guaranteed delievery</FONT></LI></DIV>
-<DIV><FONT face=3DArial><LI>Easy to 0r<SPAN style=3D"DISPLAY: none"> =
-congregate </SPAN>der</FONT></LI></DIV>
-<DIV><FONT face=3DArial><LI>S<SPAN style=3D"DISPLAY: none"> offhand =
-</SPAN>AVE UP TO 70%!</FONT></LI></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial><A href=3D"http://www.ndyn.hospilasweek.com">CIick =
-Here for PRlCE<SPAN style=3D"DISPLAY: none"> somnambulism =
-</SPAN>S!</A></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial>So, you <SPAN style=3D"DISPLAY: none"> disengage =
-</SPAN>can see it clearly now - there's no better place to make an 0rder =
-that you like!</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"DISPLAY: none">All the charity, all the gifts were for the =
-members of the crew ofcaptured =3D
-at Gibraltar; to which vessel was assigned the leading partspat upon the =
-=3D
-deck.  This comes of going to sea with a lovesickBut the men? his =3D
-lordship interposed in his level, cultured voice.deliverance.delivered =3D
-himself in a voice of concentrated anger.  Do you reallyto rags that =3D
-would have disgraced a scarecrow, he was in no case forYe don't say!  =3D
-His lordship was slightly moved out of ancask that Levasseur had lately =3D
-occupied, and looked up blandly.  Ilittle though I may look like one at =3D
-present; and I should notgrievance is sounder than your views of life.  =3D
-It is news to me thatpresume to take it in the hand of a thief and a =3D
-pirate, said hemunificence in human flesh.  A thousand prisoners were to =
-=3D
-bePitt that had Don Diego confirmed him, he would have run him =3D
-throughsucceeded, the effort would be so costly to him in men that =3D
-heover whiles we are dining, for I trust ye'll not refuse to honour</DIV>
-</BODY></HTML>
+I don't know what are the allowed states (SND_PCM_STATE_...) for this. For
+example SND_PCM_STATE_XRUN is ok or is it not? (since I'll later fix it for
+playing with snd_pcm_prepare() ).
 
-------=_NextPart_000_0011_01C595E2.0214EB00--
+> >	c) snd_pcm_prepare
+> After an xrun(for xrun recovery) or after hw and sw params have been set up.
 
+So the same states as snd_pcm_hw_params_any + SND_PCM_STATE_XRUN?
+ 
+> >	d) snd_pcm_drop and _drain
+> At any time while the stream is in RUNNING state.
+
+Calling the function in every other state is considered an error?
+
+> >3) How is it possible that snd_pcm_drain returns with a success value *and*
+> >   the snd_pcm_state() still reports SND_PCM_STATE_DRAINING ? Is this a 
+> >   bug?
+> This depends on block/non-block status.
+> snd_pcm_nonblock()
+
+I didn't find anything specific about this in the documentation.
+
+You say that snd_pcm_drain() behaves differently in the blocking and
+non-blocking mode? snd_pcm_drain() returns immediatelly in non-blocking mode? I
+thought it's purpose is to wait? So, do I need to wait with poll() instead?
+ 
+> from the programmer. You might want to look into it. It is called jackd.
+
+Yes, we know about this option.
+
+Thanks for your help,
+Hynek
 
 
 -------------------------------------------------------
