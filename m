@@ -1,16 +1,13 @@
-From: Hynek Hanke <hanke@brailcom.org>
-Subject: Re: The different STATES of ALSA
-Date: Sun, 31 Jul 2005 17:38:12 +0200
-Message-ID: <20050731153812.GC13386@brailcom.cz>
-References: <20050731133552.GA13386@brailcom.cz> <42ECDD88.5010805@superbug.co.uk> <20050731151755.GB13386@brailcom.cz> <42ECEEC1.3010701@superbug.co.uk>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: ALSA memory allocator rants
+Date: Sun, 31 Jul 2005 16:46:44 +0100
+Message-ID: <42ECF264.80202@superbug.demon.co.uk>
+References: <20050731122713.GA24483@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp-out4.iol.cz (smtp-out4.iol.cz [194.228.2.92])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 385401B0
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 17:41:17 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <42ECEEC1.3010701@superbug.co.uk>
+In-Reply-To: <20050731122713.GA24483@lst.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,18 +17,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> >>>	d) snd_pcm_drop and _drain
-> >Calling the function in every other state is considered an error?
-> I don't know. But in any other state, it won't actually do anything.
+Hi,
 
-Can someone please clarify this?
+Here is a email I received as a result of talks I had at KS.
+The general point is that they want the memory alloc function calls in 
+alsa-kernel to not be calls to wrappers, but instead be proper kernel 
+2.6 function calls.
+The other general point is that some of the code we use should be 
+generalised so that other non-audio drivers can reuse it.
 
-With Regards,
-Hynek
+Comments please,
+
+James
+
+
+Christoph Hellwig wrote:
+> At KS I promised you to send you my rants about ALSA memory allocations,
+> so here we go finally.
+> 
+> First stance from me is that a subsystem needing it's own memory
+> allocation helpers is always a bug, either in the subsystem or in the
+> generic allocators.  In the ALSA case we have both..
+> 
+> sound/core/memalloc.c:
+> 
+>  - snd_dma_hack_alloc_coherent shouldn't exist, instead the arch
+>    dma_alloc_coherent should do hacks similar to it.  The
+>    kmalloc_dev/kmalloc_mask as proposed at KS should fix this
+>  - snd_malloc_pages is bogus.  the only additional thing it does over
+>    __get_free_pages is to set the page reserved which is the wrong
+>    thing to do (we're getting rid of PageReserved soon)
+>  - snd_malloc_dev_pages should be just dma_alloc_coherent, the
+>    __GFP_FLAG clearing should be in those, and playing PageReserved
+>    tricks with dma coherent memory is totally wrong in any case
+>  - dito for snd_malloc_sbus_pages, mid-term I'd love to see one of the
+>    sparc hackers to switch sparc to support sbus with dma_alloc_coherent
+>  - what's the point of snd_dma_alloc_pages()?  It supports very different
+>    kinds of memory allocations, and overloads the device field in
+>    non-trivial ways.  The code would get a lot cleaner by letting
+>    everyone call the allocator they actually need instead of adding such
+>    broken 'abstractions'.  Same thing can be said about struct
+>    snd_dma_buffer.
+>  - snd_dma_alloc_pages_fallback should go to generic dma code, it's not
+>    sound specific
+>  - preallocations should go into generic code or go away, it has no
+>    business in sound code
+>  - similar dma coherent stats should go into generic dma code
+> 
+> sound/core/memory.c
+> 
+>  - all this should happen at the slab level, not in some subsystem
+> 
+> sound/core/sgbuf.c
+> 
+>  - something like this should go into generic code, lots of video
+>    drivers need something like this.  They use streaming dma mappings,
+>    though while alsa wants consistant ones.  In general doing this on
+>    consistant ones can't be done in architecture-independent code, what
+>    alsa does now does lots of assumptions about how dma_alloc_coherent
+>    is implemented, and it can't work on arm for example.
+> 
+> sound/core/pcm_memory.c
+> 
+>  - same preallocation comment as above.
+> 
+> 
+
 
 
 -------------------------------------------------------
