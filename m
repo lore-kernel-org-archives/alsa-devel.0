@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001295]: async capture doesn't seem to work
-Date: Sun, 31 Jul 2005 22:28:28 +0200
-Message-ID: <ddb810ff2d4b52f003484f938c01177f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001294]: Alsa soundcard intel8xo does not compile properly with new compiled kernel
+Date: Sun, 31 Jul 2005 22:23:05 +0200
+Message-ID: <848dd129b3c78d3f8270166ab2c8e283@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F5BE164
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 22:28:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 595A415C
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 22:23:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,36 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1295> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1294> 
 ======================================================================
-Reported By:                arunarunarun
+Reported By:                tanman
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1295
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1294
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora4
+Kernel Version:             2.6.12.3
 ======================================================================
-Date Submitted:             07-31-2005 22:28 CEST
-Last Modified:              07-31-2005 22:28 CEST
+Date Submitted:             07-31-2005 22:23 CEST
+Last Modified:              07-31-2005 22:23 CEST
 ======================================================================
-Summary:                    async capture doesn't seem to work
+Summary:                    Alsa soundcard intel8xo does not compile properly
+with new compiled kernel
 Description: 
-I've got a little program up at
-http://nemesis.accosted.net/misc/capture2.cpp that initialises pcm for
-capture, sets up an async callback and then busy-waits. The callback never
-gets called, even though everything else seems to be going fine. Any help
-would be appreciated.
+The module snd-8x0 produces the following errors once I compiled the kernel
+linux-2.6.12.3:
+
+dmesg
+snd_intel8x0: Unknown parameter `'
+snd_intel8x0: Unknown parameter `'
+snd_intel8x0: Unknown parameter `'
+
+Is there anything I have to edit in the configuration files when migrating
+to the latest kernel?
+
+
+
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-05 22:28 arunarunarun   New Issue                                    
-07-31-05 22:28 arunarunarun   File Added: capture.cpp                      
+07-31-05 22:23 tanman         New Issue                                    
+07-31-05 22:23 tanman         Distribution              => Fedora4         
+07-31-05 22:23 tanman         Kernel Version            => 2.6.12.3        
 ======================================================================
 
 
