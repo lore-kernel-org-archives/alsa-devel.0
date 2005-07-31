@@ -1,15 +1,13 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Re: [2.6 patch] schedule obsolete OSS drivers for removal
-Date: Sun, 31 Jul 2005 17:09:39 +0200
-Message-ID: <200507311509.j6VF9dWa022536@www7.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Mixer volume dB settings.
+Date: Sun, 31 Jul 2005 16:07:22 +0100
+Message-ID: <42ECE92A.6070609@superbug.demon.co.uk>
+References: <42ECC061.9070104@superbug.demon.co.uk> <Pine.LNX.4.61.0507311641140.8921@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www7.pobox.sk (www7.pobox.sk [212.5.216.17])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48E9D1B0
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 16:56:58 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0507311641140.8921@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,22 +17,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Do you have a specific example?=20
+Jaroslav Kysela wrote:
+> On Sun, 31 Jul 2005, James Courtier-Dutton wrote:
+> 
+> 
+>>Hi,
+>>
+>>I am thinking of a method to provide dB volume setting with alsamixer. 
+>>My suggestion is to add another variable to the mixer control structure. 
+>>This variable will be an integer identifying the conversion function. If 
+>>set to 0, no conversion function has been defined. If set to 1 or above, 
+>>use a lookup table in alsa-lib to select the conversion function. The 
+>>user land api would then be: snd_mixer_convert_hardware_to_db( 
+>>hardware_value, conversion_function, &db_value); 
+>>snd_mixer_convert_db_to_hardware( db_value, conversion_function, 
+>>hardware_value )
+>>
+>>The reason for this, is that it seems to me that only the hardware 
+>>driver will have full knowledge of what the conversion function should 
+>>be, and setting a simple integer for conversion_function_type would seem 
+>>the simplest solution.
+>>
+>>The global conversion functions could then be defined in an alsa-lib 
+>>config file.
+>>
+>>This would also allow the application to increase/decrease the hardware 
+>>value, but display to the user the dB value.
+>>
+>>Any comments?
+> 
+> 
+> I already defined the interface in alsa-lib/include/mixer.h. Look for dB 
+> functions there.
+> 
+> Also, the skeleton of the new mixer with abstraction layer is quite 
+> finished. I need only implement a first real code for one driver as 
+> example and we can start adding the abstraction code for all cards.
+> 
+> 						Jaroslav
+> 
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D154
+Shall we pick a card we both have. I have a intel8x0 motherboard, and 
+most creative cards. Do you have either of those?
 
-and abstract mixer layer will not solve all problems (PCM volume
-control is after Tone control - should be before).
-
-Peter Zubaj
-
-=0A________________________________________________________________________=
-___=0APodte na navstevu k Wande - k najlepsej priatelke kazdej zeny na inte=
-rnete.=0Ahttp://www.wanda.sk/=0A
 
 
 -------------------------------------------------------
