@@ -1,16 +1,29 @@
-From: Alien <alien999999999@users.sourceforge.net>
-Subject: Re: [Openvortex-dev] Re: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Sun, 31 Jul 2005 14:38:54 +0200
-Message-ID: <200507311438.59443.alien999999999@users.sourceforge.net>
-References: <50ce26d334ea87a34d7e9e58d1d69a87@bugtrack.alsa-project.org> <42EC84DE.4050306@netvigator.com>
+From: Hynek Hanke <hanke@brailcom.org>
+Subject: The different STATES of ALSA
+Date: Sun, 31 Jul 2005 15:35:52 +0200
+Message-ID: <20050731133552.GA13386@brailcom.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1160399.SkouB7HbUq";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42EC84DE.4050306@netvigator.com>
+Received: from smtp-out3.iol.cz (smtp-out3.iol.cz [194.228.2.91])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E7D31A1
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:03 +0200 (MEST)
+Received: from antivir3.iol.cz (unknown [192.168.30.206])
+	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 6DE2C3183B3
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:04 +0200 (CEST)
+Received: from localhost (antivir3.iol.cz [127.0.0.1])
+	by antivir3.iol.cz (Postfix) with ESMTP id 66B736DC003
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:04 +0200 (CEST)
+Received: from smtp-out3.iol.cz (unknown [192.168.30.28])
+	by antivir3.iol.cz (Postfix) with ESMTP id 57D086DC002
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:04 +0200 (CEST)
+Received: from chopin (unknown [80.188.214.108])
+	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 06CF53BF53
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:39:01 +0200 (CEST)
+Received: from hanke by chopin with local (Exim 3.36 #1 (Debian))
+	id 1DzDyr-0007Cn-00
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 15:35:53 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,185 +33,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: openvortex-dev@nongnu.org
-Cc: Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1160399.SkouB7HbUq
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-I'm not too sure, but i _can_ tell you that lastly i had two weird errors=20
-about something adb, when snd-au8810 didn't play any sound anymore, i was=20
-able to kill all apps who use sound and modprobe -r snd-au8810, and modprob=
-e=20
-again, and without reboot i was able to get sound working again.
+Hi everyone,
 
-I must say that i haven't been on this PC much and haven't had much time to=
-=20
-test these things, allthough i'm planning too, (but i think i'll update CVS=
-=20
-first with these 2 patches who got lost accidentally before i test this. I=
-=20
-hope i'll get some time this week(end).
+I'm having very much troubles programming an ALSA interface because the
+documentation is pretty poor. I'm very much confused about the different states
+in alsa-lib.
 
-thanks for all the help and info concerning snd-au8810 (in 64bit)
+(After I was told alsa-lib is not thread-safe and there is some bug in the kernel
+implementation of the underlaying calls of snd_pcm_writei(), I'm now running the
+non-blocking/polling approach).
 
-AL13N
+My questions:
 
-Op zondag 31 juli 2005 09:59, schreef Raymond:
-> If there are 16 instances of aplay playing mono stream.
->
-> What error will be returned by snd_pcm_open() for the 17th instance of
-> aplay ?
->
->
->
-> alsa-kernel/pci/au88x0/au8810.h
->
-> #define NR_ADB   0x10
->
-> alsa-kernel/pci/au88x0/au8830.h
->
-> #define NR_ADB   0x20
->
->
-> alsa-kernel/pci/au88x0/au88x0.c
->
-> 	if ((err =3D snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
-> 		snd_card_free(card);
-> 		return err;
-> 	}
->
-> bugtrack@alsa-project.org wrote:
-> > A NOTE has been added to this issue.
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1047>
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Reported By:                alien999999999
-> > Assigned To:                mjander
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Project:                    ALSA - driver
-> > Issue ID:                   1047
-> > Category:                   PCI - au88x0
-> > Reproducibility:            sometimes
-> > Severity:                   block
-> > Priority:                   normal
-> > Status:                     assigned
-> > Distribution:               Mandrake
-> > Kernel Version:             2.6.7
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Date Submitted:             04-12-2005 20:43 CEST
-> > Last Modified:              04-12-2005 20:51 CEST
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Summary:                    module hangs at seemingly random times
-> > Description:
-> > sometimes i start playing a song, and it starts playing a few second or
-> > so and hangs, then i kill the application and modprobe -r all sound
-> > modules and modprobe them again to make it work again.
-> >
-> > BUT: sometimes not only that happens, but also when i try to kill the
-> > apps it will not kill. when that happens, all kill, killall, top, ps aux
-> > commands hang at the command line and cannot be killed by CTRL-C or
-> > otherwise, i have been able to see that when i stopped my display
-> > managener I did an lsmod and it gave something like this:
-> >
-> > snd-pcm-oss            59752  11
-> > snd-mixer-oss          20480  1 snd-pcm-oss
-> > snd-au8810             43760  220
-> > snd-ac97-codec         83408  1 snd-au8810
-> > snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-> > snd-page-alloc         10384  1 snd-pcm
-> > gameport                3840  1 snd-au8810
-> > snd-mpu401-uart        11904  1 snd-au8810
-> >
-> >
-> > as you can see the snd-au8810 module seem to have an impossible number =
-of
-> > "dependencies" (i think has to do with the number of unclosed sound-apps
-> > trying to be played; this could be since gaim is programmed to execute =
-an
-> > 'aplay %s')
-> >
-> > i've had this major crash below only 3 times; and the logs didn't detect
-> > anything specific at the time. the only thing the logs mentioned at that
-> > time was an ntpd sync going on; so the only thing i can think of is that
-> > at a certain moment when a sync is going on, some kind of lock is holdi=
-ng
-> > cause this to happen... the only thing that i can do to fix this is
-> > reset...
-> >
-> > it is interesting to note that i also have an snd-emu10k1 as second car=
-d,
-> > which never gave problems like this, and i am always able to "modprobe =
-=2Dr
-> > snd-emu10k1" ...
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> > ----------------------------------------------------------------------
-> >  alien999999999 - 04-12-05 20:48
-> > ----------------------------------------------------------------------
-> > i forgot to note that i have the mdk 10.1 x86_64 distro and my version
-> > has a few 64bit fixes to get past kernel hangs and kernel oopses
-> >
-> > ----------------------------------------------------------------------
-> >  alien999999999 - 04-12-05 20:51
-> > ----------------------------------------------------------------------
-> > i have attached the changed files (since i don't have a CVS version of
-> > alsa to diff against)
-> >
-> > these files are located in the alsa-driver-1.0.8/alsa-kernel/pci/au88x0/
-> > path
-> >
-> > Issue History
-> > Date Modified  Username       Field                    Change
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > 04-12-05 20:43 alien999999999 New Issue
-> > 04-12-05 20:43 alien999999999 Distribution              =3D> Mandrake
-> > 04-12-05 20:43 alien999999999 Kernel Version            =3D> 2.6.7
-> > 04-12-05 20:48 alien999999999 Note Added: 0004461
-> > 04-12-05 20:49 alien999999999 File Added: au88x0.c
-> > 04-12-05 20:49 alien999999999 File Added: au88x0.h
-> > 04-12-05 20:50 alien999999999 File Added: au88x0_core.c
-> > 04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c
-> > 04-12-05 20:51 alien999999999 Note Added: 0004462
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> _______________________________________________
-> Openvortex-dev mailing list
-> Openvortex-dev@nongnu.org
-> http://lists.nongnu.org/mailman/listinfo/openvortex-dev
+1) In which states am I allowed to call
+	a) snd_pcm_hw_params_any
+	b) snd_pcm_hw_params
+	c) snd_pcm_prepare
+	d) snd_pcm_drop and _drain
 
---nextPart1160399.SkouB7HbUq
-Content-Type: application/pgp-signature
+2) Which states do they bring me to, if they don't return an error?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
+3) How is it possible that snd_pcm_drain returns with a success value *and*
+   the snd_pcm_state() still reports SND_PCM_STATE_DRAINING ? Is this a bug?
 
-iD8DBQBC7MZjuBWKXETrtdcRAt2YAKDgVSwwgvNSa+Q5LiE/7JUqYSxtQQCff4Z4
-86DxSSifIWsK4+eRy+oDkZI=
-=jEEC
------END PGP SIGNATURE-----
+4) How is it possible, that the whole time a sound is played snd_pcm_writei()
+   never returns the value -EPIPE and still, when checking the state before
+   playing the next sound, I find the device in the SND_PCM_STATE_XRUN
+   (snd_pcm_drain() gets called in the meantime).
 
---nextPart1160399.SkouB7HbUq--
+The problems (3) and (4) seem to arrise only under some circumstances, possibly
+when more sounds are played in a quick succession.
+
+Thank you for help,
+Hynek Hanke
+
 
 
 -------------------------------------------------------
