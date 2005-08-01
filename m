@@ -1,17 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: The different STATES of ALSA
-Date: Mon, 1 Aug 2005 10:11:12 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0508011010310.8196@tm8103-a.perex-int.cz>
-References: <20050731133552.GA13386@brailcom.cz> <42ECDD88.5010805@superbug.co.uk>
- <20050731151755.GB13386@brailcom.cz> <42ECEEC1.3010701@superbug.co.uk>
- <20050731153812.GC13386@brailcom.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Mon, 1 Aug 2005 10:20:12 +0200
+Message-ID: <f94d2e08445262cdee4f991d908817e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0B03190
-	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 10:11:12 +0200 (MEST)
-In-Reply-To: <20050731153812.GC13386@brailcom.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D594191
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 10:20:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,27 +18,122 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hynek Hanke <hanke@brailcom.org>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 31 Jul 2005, Hynek Hanke wrote:
 
-> > >>>	d) snd_pcm_drop and _drain
-> > >Calling the function in every other state is considered an error?
-> > I don't know. But in any other state, it won't actually do anything.
-> 
-> Can someone please clarify this?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
+======================================================================
+Reported By:                Hetfield
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1224
+Category:                   PCI - ens1370
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.x
+======================================================================
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              08-01-2005 10:20 CEST
+======================================================================
+Summary:                    artsd-like style
+Description: 
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-drain function can be called at any time except immediately after open 
-(the hardware parameters must be set)...
+that could be very important for example using skype voip and listening
+music at the same time.
+======================================================================
 
-						Jaroslav
+----------------------------------------------------------------------
+ tiwai - 07-29-05 17:43 
+----------------------------------------------------------------------
+At first, make sure that you're using the latest alsa-lib.  Some
+100%-CPU-hog bugs were fixed in the recent release.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Also, remove ~/.asoundrc once.  The default configuration of dmix should
+be OK for aoss in the recent version, too.
+
+----------------------------------------------------------------------
+ Hetfield - 08-01-05 10:20 
+----------------------------------------------------------------------
+deleting my .asoundrc file i have no more 100% cpu usage.
+
+where the problem is? i attacched my config file.
+
+however kiax doesn't work...
+it starts but i get (debug disabled actually)
+
+PortAudio error at opening separate input stream: Invalid device ID.
+lun ago 1 10:16:06 2005 IaxWrapper::event_text() Message: Type=3
+Message=Can't start audio
+lun ago 1 10:16:06 2005 IaxWrapper::event_text() Message: Type=4
+Message=iaxclient audio: Can't open Audio Device, we tried 5 times. 
+Perhaps you do not have an input or output device?
+PortAudio error at opening separate input stream: Invalid device ID.
+PortAudio error at opening separate input stream: Invalid device ID.
+
+
+any other idea?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
+07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
+07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
+07-02-05 21:47 pzad           Note Added: 0005361                          
+07-03-05 09:25 Hetfield       Note Added: 0005370                          
+07-03-05 14:09 pzad           Note Added: 0005376                          
+07-03-05 15:57 Hetfield       Note Added: 0005378                          
+07-04-05 11:49 pzad           File Added: aoss.patch                       
+07-04-05 11:53 pzad           Note Added: 0005384                          
+07-04-05 14:02 Hetfield       Note Added: 0005385                          
+07-08-05 12:16 tiwai          Note Added: 0005417                          
+07-08-05 12:27 Hetfield       Note Added: 0005418                          
+07-17-05 10:25 Hetfield       Note Added: 0005503                          
+07-17-05 10:29 rlrevell       Note Added: 0005504                          
+07-17-05 10:46 rlrevell       Note Added: 0005505                          
+07-17-05 11:10 Hetfield       Note Added: 0005506                          
+07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
+07-17-05 19:41 rlrevell       Note Added: 0005508                          
+07-17-05 19:50 Hetfield       Note Added: 0005509                          
+07-17-05 19:51 rlrevell       Note Added: 0005510                          
+07-17-05 20:21 Hetfield       Note Added: 0005511                          
+07-17-05 21:14 rlrevell       Note Added: 0005512                          
+07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
+07-17-05 21:22 Hetfield       File Added: log2                             
+07-17-05 21:23 Hetfield       Note Added: 0005513                          
+07-17-05 22:21 rlrevell       Note Added: 0005514                          
+07-17-05 23:28 Hetfield       Note Added: 0005515                          
+07-17-05 23:43 rlrevell       Note Added: 0005516                          
+07-18-05 03:33 rlrevell       Note Added: 0005517                          
+07-18-05 06:04 rlrevell       Note Added: 0005518                          
+07-18-05 07:33 rlrevell       Note Added: 0005519                          
+07-18-05 09:23 Hetfield       Note Added: 0005520                          
+07-18-05 09:24 Hetfield       File Added: asoundrc                         
+07-18-05 22:08 rlrevell       Note Added: 0005524                          
+07-21-05 19:55 Hetfield       Note Added: 0005540                          
+07-21-05 19:56 Hetfield       Note Added: 0005541                          
+07-24-05 09:55 Hetfield       Note Added: 0005556                          
+07-24-05 19:10 rlrevell       Note Added: 0005558                          
+07-28-05 22:40 rlrevell       Note Added: 0005578                          
+07-29-05 17:43 tiwai          Note Added: 0005579                          
+08-01-05 10:20 Hetfield       Note Added: 0005595                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
