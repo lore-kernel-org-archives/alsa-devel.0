@@ -1,13 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Problem in testing ALSA
-Date: Tue, 02 Aug 2005 23:49:56 -0400
-Message-ID: <1123040996.6189.9.camel@mindpipe>
-References: <20050803033745.82284.qmail@web54605.mail.yahoo.com>
+From: "Hynek Hanke,,," <hanke@volny.cz>
+Subject: Re: snd_pcm_drain() always fails
+Date: Mon, 1 Aug 2005 20:04:17 +0200
+Message-ID: <20050801180417.GD10144@brailcom.cz>
+References: <20050801172719.GB10144@brailcom.cz> <Pine.LNX.4.61.0508011953060.12402@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050803033745.82284.qmail@web54605.mail.yahoo.com>
+Received: from smtp-out3.iol.cz (smtp-out3.iol.cz [194.228.2.91])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E86F3196
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 20:07:22 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0508011953060.12402@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,36 +20,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chow Raymond <usher_raymond82@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-08-02 at 20:37 -0700, Chow Raymond wrote:
-> --- Lee Revell <rlrevell@joe-job.com> wrote:
-> 
-> 
-> > No, that probably just means that the default pcm is
-> > not defined.  This
-> > is actually a userspace (alsa-lib) problem, it
-> > sounds like the kernel
-> > side might be OK.
-> 
-> I don't get it. Default pcm is not defined? How do i
-> define it then? Does it mean that aplay cannot find
-> the appropriate libraries? Besides, I do not know how
-> to configure my /etc/modules.conf too since Im using
-> Compulab ArmCore board. There is no built in
-> soundcard. It only has built in AC97 codec.
+> > Or, what is the correct way to wait until the rest of the sound is 
+> > played when I'm using the poll() approach?
+> Set the blocking mode before drain() is called (and return the mode back 
+> after it, if you want). 
 
-See /usr/share/alsa/alsa.conf.  Some devices can define their own
-default PCM in /usr/share/alsa/cards/*.  But I have no idea how the AC97
-codec on ARM fits into this scheme.
+Not possible. I'm waiting for other events (not comming from ALSA) too in the
+poll().
 
-Try aplay -D hw:0,0 file.wav.  And make sure alsa-lib is installed
-properly.
+> The better way might be setting sw_params to wakeup app after all frames are
+> played and use the standard poll() call to wait in app.
 
-Lee
+How do I do this or where can I read about it? Still, I need to receive other events
+too while waiting for the sound to stop playing.
 
+Thank you,
+Hynek Hanke
 
 
 -------------------------------------------------------
