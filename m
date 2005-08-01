@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001278]: fails to read volume for software volume control
-Date: Mon, 1 Aug 2005 08:09:03 +0200
-Message-ID: <172303d810b2a193d51d581272e9445a@bugtrack.alsa-project.org>
+From: thomas schorpp <t.schorpp@gmx.de>
+Subject: Re: snd-usb-audio hangs modprobe if switching dv camera
+ betw. webcam / usb mass storage mode
+Date: Mon, 01 Aug 2005 09:37:29 +0200
+Message-ID: <42EDD139.1000306@gmx.de>
+References: <42EC96D0.7050000@gmx.de> <42ECB0D7.4030409@gmx.de>
+Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C125F1AC
-	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 08:09:03 +0200 (MEST)
+In-Reply-To: <42ECB0D7.4030409@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,157 +19,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+thomas schorpp wrote:
+> thomas schorpp wrote:
+> 
+>>hello,
+>>
+>>this bug is in conjunction with the older
+>>"usb disconnect hangs keyboard" bug on lkml.
+>>
+>>module-init-tools / hotplug hangs with snd-usb-audio if i switch/remove
+>>usb camera as stated above, if  a client like kmix is attached.
+>>(strange, since this device has no mixers here).
+>>
+>>if its not unavoidable, pls fix soon, thx. vanilla kernel 2.6.12.0.
+>>
+>>Jul 31 10:35:58 tom1 kernel: usb 1-2: USB disconnect, address 3
+>>...
+>>killall kmix
+>>...
+>>
+>>Jul 31 10:42:08 tom1 kernel: usb 1-2: new full speed USB device using
+>>uhci_hcd and address 4
+>>Jul 31 10:42:08 tom1 kernel:
+>>/usr/src/spca5xx-20050701/drivers/usb/spca5xx.c: USB SPCA5XX camera
+>>found. Aiptek DV3500 Mpeg4
+>>Jul 31 10:42:08 tom1 kernel:
+>>/usr/src/spca5xx-20050701/drivers/usb/spca5xx.c: [spca5xx_probe:8652]
+>>Camera type JPEG
+>>Jul 31 10:42:08 tom1 kernel: ALSA sound/usb/usbaudio.c:2570: 4:3:1: add
+>>audio endpoint 0x86
+>>
+>>y
+>>tom
+>>
+> 
+> 
+> /*
+>  * Frees the device.
+>  */
+> static void usX2Y_usb_disconnect(struct usb_device* device, void* ptr)
+> {
+> 	if (ptr) {
+> 		usX2Ydev_t* usX2Y = usX2Y((snd_card_t*)ptr);
+> 		struct list_head* p;
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1278> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1278
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-23-2005 18:23 CEST
-Last Modified:              08-01-2005 08:09 CEST
-======================================================================
-Summary:                    fails to read volume for software volume control
-Description: 
-From: http://bugs.debian.org/319628:
-
-Package: alsa-oss
-Version: 1.0.8-1
-
-Hi,
-
-My MacMini's audio chip seems to have no hardware volume control (or it 
-is unsupported in the kernel I use), so I use software volume control, 
-with the attached .asoundrc. (I'm still a newbie about alsa, there may 
-be some mistakes in my .soundrc file.)
-
-While trying to use hotkeys (that only understands oss) with aoss, I 
-discovered that aoss did not allow to read the volume control, while it 
-can write it flawlessly.
-
-After a few tests, I discovered that it was related to the failing 
-snd_mixer_selem_get_playback_switch function call, and I could 
-workaround the issue with the attached trivial quick&dirty patch.
-
-
-Cheers,
-
-Nicolas Boullis
-
-
--- System Information:
-Debian Release: 3.1
-Architecture: powerpc (ppc)
-Kernel: Linux 2.6.12-irma
-Locale: LANG=C, LC_CTYPE=C (charmap=ANSI_X3.4-1968)
-
-Versions of packages alsa-oss depends on:
-ii  libasound2                  1.0.8-3      ALSA library
-ii  libc6                       2.3.2.ds1-22 GNU C Library: Shared
-libraries an
-
--- no debconf information
+xxx check busy here and return "-EIBUSY" xxx ?
 
 
+> 		usX2Y->chip.shutdown = 1;
+> 		usX2Y->chip_status = USX2Y_STAT_CHIP_HUP;
+> 		usX2Y_unlinkSeq(&usX2Y->AS04);
+> 		usb_kill_urb(usX2Y->In04urb);
+> 		snd_card_disconnect((snd_card_t*)ptr); <--- err handler? (1)
+> 		/* release the midi resources */
+> 		list_for_each(p, &usX2Y->chip.midi_list) {
+> 			snd_usbmidi_disconnect(p, &snd_usX2Y_usb_driver);
+> 		}
+> 		if (usX2Y->us428ctls_sharedmem)
+> 			wake_up(&usX2Y->us428ctls_wait_queue_head);
+> 		snd_card_free((snd_card_t*)ptr); <---- hang
+> 	}
+> }
+> 
 
-pcm.!default {
-  type plug
-  slave {
-    pcm {
-      type softvol
-      slave {
-        pcm {
-	  type dmix
-	  ipc_key 7666
-	  slave {
-	    pcm "hw:0,0"
-	    period_time 0
-	    period_size 1024
-	    buffer_size 8192
-	    rate 44100
-	  }
-	}
-      }
-      control {
-        name Master
-        card 0
-      }
-    }
-  }
-}
+> 	/* wait, until all devices are ready for the free operation */
+> 	wait_event(card->shutdown_sleep, card->files == NULL); <--- hang
+> 
 
-pcm.dsp0 {
-  type plug
-  slave.pcm "!default"
-}
+PEOPLE, i know its common unix behaviour not to remove busy drivers with
+files open,
+but You cant just hang the whole usb-system and modprobe then with an
+infinite signal wait.
+
+the driver *must not* enter the disconnection it must signal modprobe /
+hotplug to print a "busy" message and return.
+
+y
+tom
 
 
 
 
-only in patch2:
-unchanged:
---- alsa-oss-1.0.8.orig/alsa/mixer.c
-+++ alsa-oss-1.0.8/alsa/mixer.c
-@@ -487,9 +487,7 @@
- 				break;
- 			}
- 			err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &sw);
--			if (err < 0) 
--				break;
--			if (sw) {
-+			if ((err < 0) || (sw)) {
- 				err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &lvol);
- 				if (err < 0) 
- 					break;
-@@ -499,9 +497,7 @@
- 				rvol = lvol;
- 			} else {
- 				err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &sw);
--				if (err < 0) 
--					break;
--				if (sw) {
-+				if ((err < 0) || (sw)) { 
- 					err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &rvol);
- 					if (err < 0) 
- 						break;
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 07-29-05 18:02 
-----------------------------------------------------------------------
-Isn't is already fixed in 1.0.9?
-
-----------------------------------------------------------------------
- jdthood - 08-01-05 08:09 
-----------------------------------------------------------------------
-No, the submitter reports that the bug is still present in 1.0.9.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-23-05 18:23 jdthood        New Issue                                    
-07-29-05 18:02 tiwai          Note Added: 0005584                          
-08-01-05 08:09 jdthood        Note Added: 0005594                          
-======================================================================
 
 
 
