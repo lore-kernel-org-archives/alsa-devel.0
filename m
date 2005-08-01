@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001294]: Alsa soundcard intel8xo does not compile properly with new compiled kernel
-Date: Sun, 31 Jul 2005 22:23:05 +0200
-Message-ID: <848dd129b3c78d3f8270166ab2c8e283@bugtrack.alsa-project.org>
+From: "Yuan, Hang" <hang.yuan@intel.com>
+Subject: RE: 2.6.12 sound problem
+Date: Mon, 1 Aug 2005 11:06:51 +0800
+Message-ID: <4811572DEBA3F04E9E6C269B321042650106031B@bjsmsx402.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 595A415C
-	for <alsa-devel@alsa-project.org>; Sun, 31 Jul 2005 22:23:05 +0200 (MEST)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +17,122 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: sclark46@earthlink.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1294> 
-======================================================================
-Reported By:                tanman
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1294
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora4
-Kernel Version:             2.6.12.3
-======================================================================
-Date Submitted:             07-31-2005 22:23 CEST
-Last Modified:              07-31-2005 22:23 CEST
-======================================================================
-Summary:                    Alsa soundcard intel8xo does not compile properly
-with new compiled kernel
-Description: 
-The module snd-8x0 produces the following errors once I compiled the kernel
-linux-2.6.12.3:
-
-dmesg
-snd_intel8x0: Unknown parameter `'
-snd_intel8x0: Unknown parameter `'
-snd_intel8x0: Unknown parameter `'
-
-Is there anything I have to edit in the configuration files when migrating
-to the latest kernel?
-
-
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-31-05 22:23 tanman         New Issue                                    
-07-31-05 22:23 tanman         Distribution              => Fedora4         
-07-31-05 22:23 tanman         Kernel Version            => 2.6.12.3        
-======================================================================
-
-
+IA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogU3RlcGhlbiBDbGFyayBbbWFp
+bHRvOnN0ZXBoZW4uY2xhcmtAZWFydGhsaW5rLm5ldF0gDQpTZW50OiAyMDA15bm0N+aciDMw5pel
+IDExOjA1DQpUbzogc2NsYXJrNDZAZWFydGhsaW5rLm5ldA0KQ2M6IFl1YW4sIEhhbmc7IGFsc2Et
+ZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0DQpTdWJqZWN0OiBSZTogW0Fsc2EtZGV2ZWxdIDIu
+Ni4xMiBzb3VuZCBwcm9ibGVtDQoNClN0ZXBoZW4gQ2xhcmsgd3JvdGU6DQoNCj5ZdWFuLCBIYW5n
+IHdyb3RlOg0KPg0KPiAgDQo+DQo+Pi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+PkZyb206
+IGFsc2EtZGV2ZWwtYWRtaW5AbGlzdHMuc291cmNlZm9yZ2UubmV0IFttYWlsdG86YWxzYS1kZXZl
+bC1hZG1pbkBsaXN0cy5zb3VyY2Vmb3JnZS5uZXRdIE9uIEJlaGFsZiBPZiBTdGVwaGVuIENsYXJr
+DQo+PlNlbnQ6IDIwMDXDhMOqN8OUw4IyOMOIw5UgMjI6MTINCj4+VG86IGFsc2EtZGV2ZWxAbGlz
+dHMuc291cmNlZm9yZ2UubmV0DQo+PlN1YmplY3Q6IFJlOiBbQWxzYS1kZXZlbF0gMi42LjEyIHNv
+dW5kIHByb2JsZW0NCj4+DQo+PlN0ZXBoZW4gQ2xhcmsgd3JvdGU6DQo+Pg0KPj4gDQo+Pg0KPj4g
+ICAgDQo+Pg0KPj4+SGVsbG8gTGlzdCwNCj4+Pg0KPj4+DQo+Pj5JIHJlY2VudGx5IHVwZ3JhZGVk
+IG15IGxhcHRvcCwgSFAgUGF2aWxpb24gTjU0MzAsIGZyb20gYSAyLjQuMjEga2VybmVsDQo+Pj50
+byAyLjYuMTIuIEFzIGEgcmVzdWx0IG9mDQo+Pj5kb2luZyB0aGlzIG15IHNvdW5kIG5vIGxvbmdl
+ciB3b3JrcyBjb3JyZWN0bHkuIEl0IHBsYXlzIHRoZSBzYW1lIHRoaW5nDQo+Pj5yZXBlYXRlZGx5
+IHNvbWUgbnVtYmVyDQo+Pj5vZiB0aW1lcyAtIGlmIGl0IHBsYXlzIGF0IGFsbC4NCj4+Pg0KPj4+
+QW55IGlkZWFzIG9uIGhvdyB0byBkZWJ1ZyB0aGlzIHdvdWxkIGJlIGFwcHJlY2lhdGVkLg0KPj4+
+DQo+Pj5BZGRpdGlvbmFsIGluZm8gSSBkb24ndCBzZWUgYW55IGludGVycnVwdHMgaW4gL3Byb2Mv
+aW50ZXJydXB0cyBmb3IgdGhlIA0KPj4+QWxsZWdybyB3aGljaCBpcyBvbiBpbnQgNS4NCj4+Pkkg
+anVzdCB0cmllZCB0aGUgc2FtZSBsYXB0b3Agd2l0aCBrbm9wcGl4IGFuZCBhIDIuNC4yNyBrZXJu
+ZWwgYW5kIHNvdW5kIA0KPj4+d29ya3MgZ3JlYXQgYW5kIEkgZG8NCj4+PnNlZSBpbnRlcnJ1cHRz
+IGZvciBBbGxlZ3JvIG9uIGludCA1Lg0KPj4+DQo+Pj4NCj4+PlRoYW5rcywNCj4+PlN0ZXZlDQo+
+Pj4NCj4+PmFwbGF5IC12IGFuZCBhYWRlYnVnIG91dHB1dCBmb2xsb3cuDQo+Pj4NCj4+PnJvb3RA
+am9rZXI0IH5dIyBhcGxheSAtdiAvdXNyL3NoYXJlL2FwcHMva2dldC9zb3VuZHMvc3RhcnRlZC53
+YXYNCj4+PlBsYXlpbmcgV0FWRSAnL3Vzci9zaGFyZS9hcHBzL2tnZXQvc291bmRzL3N0YXJ0ZWQu
+d2F2JyA6IFVuc2lnbmVkIDggYml0LA0KPj4+UmF0ZSAxMTEyOCBIeixNb25vDQo+Pj5QbHVnIFBD
+TTogSGFyZHdhcmUgUENNIGNhcmQgMCAnRVNTIEFsbGVncm8gUENJJyBkZXZpY2UgMCBzdWJkZXZp
+Y2UgMQ0KPj4+DQo+Pj5JdHMgc2V0dXAgaXM6DQo+Pj5zdHJlYW0gICAgICAgOiBQTEFZQkFDSw0K
+Pj4+YWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQNCj4+PmZvcm1hdCAgICAgICA6IFU4DQo+
+Pj5zdWJmb3JtYXQgICAgOiBTVEQNCj4+PmNoYW5uZWxzICAgICA6IDENCj4+PnJhdGUgICAgICAg
+ICA6IDExMTI4DQo+Pj5leGFjdCByYXRlICAgOiAxMTEyOCAoMTExMjgvMSkNCj4+Pm1zYml0cyAg
+ICAgICA6IDgNCj4+PmJ1ZmZlcl9zaXplICA6IDU1NjQNCj4+PnBlcmlvZF9zaXplICA6IDEzOTEN
+Cj4+PnBlcmlvZF90aW1lICA6IDEyNTAwMA0KPj4+dGlja190aW1lICAgIDogMTAwMA0KPj4+dHN0
+YW1wX21vZGUgIDogTk9ORQ0KPj4+cGVyaW9kX3N0ZXAgIDogMQ0KPj4+c2xlZXBfbWluICAgIDog
+MA0KPj4+YXZhaWxfbWluICAgIDogMTM5MQ0KPj4+eGZlcl9hbGlnbiAgIDogMTM5MQ0KPj4+c3Rh
+cnRfdGhyZXNob2xkICA6IDU1NjQNCj4+PnN0b3BfdGhyZXNob2xkICAgOiA1NTY0DQo+Pj5zaWxl
+bmNlX3RocmVzaG9sZDogMA0KPj4+c2lsZW5jZV9zaXplIDogMA0KPj4+Ym91bmRhcnkgICAgIDog
+MTQ1ODU2OTIxNg0KPj4+YXBsYXk6IHBjbV93cml0ZToxMTcxOiB3cml0ZSBlcnJvcjogSW5wdXQv
+b3V0cHV0IGVycm9yDQo+Pj4NCj4+PmFhZGVidWcgb3V0cHV0Og0KPj4+QUxTQSBBdWRpbyBEZWJ1
+ZyB2MC4wLjkgLSBNb24gSnVsIDI1IDE0OjQ5OjEwIEVEVCAyMDA1DQo+Pj5odHRwOi8vYWxzYS5v
+cGVuc3JjLm9yZy8/cGFnZT1hYWRlYnVnDQo+Pj4NCj4+Pktlcm5lbCAtLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+Pj5MaW51eCBqb2tlcjQuc2Vj
+bGFyay5jb20gMi42LjEyLXByZXAgIzEgU3VuIEp1bCAyNCAyMjozOTo0NiBFRFQgMjAwNQ0KPj4+
+aTY4NiBhdGhsb24gaTM4NiBHTlUvTGludXgNCj4+Pg0KPj4+TG9hZGVkIE1vZHVsZXMgLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4+PnNuZF9tYWVzdHJvMyAg
+ICAgICAgICAgMjUyNTIgIDINCj4+PnNuZF9hYzk3X2NvZGVjICAgICAgICAgNzY0MDggIDEgc25k
+X21hZXN0cm8zDQo+Pj5zbmRfc2VxX2R1bW15ICAgICAgICAgICAzOTcyICAwDQo+Pj5zbmRfc2Vx
+X29zcyAgICAgICAgICAgIDM3NzYwICAwDQo+Pj5zbmRfc2VxX21pZGlfZXZlbnQgICAgICA5NjAw
+ICAxIHNuZF9zZXFfb3NzDQo+Pj5zbmRfc2VxICAgICAgICAgICAgICAgIDYyOTkyICA1IHNuZF9z
+ZXFfZHVtbXksc25kX3NlcV9vc3Msc25kX3NlcV9taWRpX2V2ZW50DQo+Pj5zbmRfc2VxX2Rldmlj
+ZSAgICAgICAgICA5MjI4ICAzIHNuZF9zZXFfZHVtbXksc25kX3NlcV9vc3Msc25kX3NlcQ0KPj4+
+c25kX3BjbV9vc3MgICAgICAgICAgICA1MTc2MCAgMA0KPj4+c25kX21peGVyX29zcyAgICAgICAg
+ICAxODMwNCAgMSBzbmRfcGNtX29zcw0KPj4+c25kX3BjbSAgICAgICAgICAgICAgIDEwMDc0NCAg
+NCBzbmRfbWFlc3RybzMsc25kX2FjOTdfY29kZWMsc25kX3BjbV9vc3MNCj4+PnNuZF90aW1lciAg
+ICAgICAgICAgICAgMzM5MjQgIDIgc25kX3NlcSxzbmRfcGNtDQo+Pj5zbmRfcGFnZV9hbGxvYyAg
+ICAgICAgIDEwMTE2ICAxIHNuZF9wY20NCj4+PnNuZCAgICAgICAgICAgICAgICAgICAgNTc4NjAg
+IDEyDQo+Pj5zbmRfbWFlc3RybzMsc25kX2FjOTdfY29kZWMsc25kX3NlcV9vc3Msc25kX3NlcSxz
+bmRfc2VxX2RldmljZSxzbmRfcGNtX29zcyxzbmRfbWl4ZXJfb3NzLHNuZF9wY20sc25kX3RpbWVy
+DQo+Pj4NCj4+Pk1vZHByb2JlIENvbmYgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tDQo+Pj5hbGlhcyBzbmQtY2FyZC0wIHNuZC1tYWVzdHJvMw0KPj4+b3B0aW9u
+cyBzbmQtY2FyZC0wIGluZGV4PTANCj4+Pm9wdGlvbnMgc25kLW1hZXN0cm8zIGluZGV4PTANCj4+
+PnJlbW92ZSBzbmQtbWFlc3RybzMgeyAvdXNyL3NiaW4vYWxzYWN0bCBzdG9yZSAwID4vZGV2L251
+bGwgMj4mMSB8fCA6IDsNCj4+Pn07IC9zYmluL21vZHByb2JlIC1yIC0taWdub3JlLXJlbW92ZSBz
+bmQtbWFlc3RybzMNCj4+Pg0KPj4+UHJvYyBBc291bmQgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4+PkFkdmFuY2VkIExpbnV4IFNvdW5kIEFyY2hpdGVj
+dHVyZSBEcml2ZXIgVmVyc2lvbiAxLjAuOXJjMiAgKFRodSBNYXIgMjQNCj4+PjEwOjMzOjM5MjAw
+NSBVVEMpLg0KPj4+MCBbUENJICAgICAgICAgICAgXTogQWxsZWdybyAtIEVTUyBBbGxlZ3JvIFBD
+SQ0KPj4+ICAgICAgICAgICAgICAgICAgICAgRVNTIEFsbGVncm8gUENJIGF0IDB4MTQwMCwgaXJx
+IDUNCj4+PiAgMTogICAgICAgOiBzZXF1ZW5jZXINCj4+PiAxNjogWzAtIDBdOiBkaWdpdGFsIGF1
+ZGlvIHBsYXliYWNrDQo+Pj4gMjQ6IFswLSAwXTogZGlnaXRhbCBhdWRpbyBjYXB0dXJlDQo+Pj4g
+IDA6IFswLSAwXTogY3RsDQo+Pj4gMzM6ICAgICAgIDogdGltZXINCj4+PjAwLTAwOiBBbGxlZ3Jv
+IDogQWxsZWdybyA6IHBsYXliYWNrIDIgOiBjYXB0dXJlIDENCj4+Pg0KPj4+RGV2IFNuZCAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4+PmNvbnRy
+b2xDMCAgcGNtQzBEMGMgIHBjbUMwRDBwICBzZXEgIHRpbWVyDQo+Pj4NCj4+PkNQVSAtLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+Pj5tb2Rl
+bCBuYW1lICAgICAgOiBtb2JpbGUgQU1EIER1cm9uKHRtKSBQcm9jZXNzb3INCj4+PmNwdSBNSHog
+ICAgICAgICA6IDI5OS45OTkNCj4+Pg0KPj4+UkFNIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4+Pk1lbVRvdGFsOiAgICAgICAyNTU2NTIg
+a0INCj4+PlN3YXBUb3RhbDogICAgICA1MjQyODAga0INCj4+Pg0KPj4+SGFyZHdhcmUgLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4+PjAwOjAwLjAg
+SG9zdCBicmlkZ2U6IEFMaSBDb3Jwb3JhdGlvbiBNMTY0NyBOb3J0aGJyaWRnZSBbTUFHaUsgMSAv
+DQo+Pj5Nb2JpbGVNQUdpSyAxXSAocmV2IDA0KQ0KPj4+MDA6MDguMCBNdWx0aW1lZGlhIGF1ZGlv
+IGNvbnRyb2xsZXI6IEVTUyBUZWNobm9sb2d5IEVTMTk4OCBBbGxlZ3JvLTENCj4+PihyZXYgMTIp
+DQo+Pj4NCj4+Pg0KPj4+DQo+Pj4gICANCj4+Pg0KPj4+ICAgICAgDQo+Pj4NCj4+SSd2ZSBkb3du
+bG9hZGVkIHRoZSBsYXRlc3QgYWxzYSAxLjA5cmM0YSBhbmQgdHJpZWQgaXQgd2l0aCBubyBzdWNj
+ZXNzLiANCj4+SXMgdGhlcmUgYW55dGhpbmcgSSBjYW4gZG8NCj4+dG8gZnVydGhlciB0cm91Ymxl
+c2hvb3QgdGhpcy4gSSBjb25maWd1cmVkIHRoZSBzdyAtLXdpdGgtZGVidWc9ZnVsbCBidXQgDQo+
+PmRpZG4ndCBzZWUgYW55IGFkZGl0aW9uYWwgb3V0cHV0Lg0KPj5JIGFtIHdpbGxpbmcgdG8gZ2V0
+IG15IGhhbmRzIGRpcnR5IGlmIHNvbWVvbmUgd2lsbCBnaXZlIG1lIHNvbWUgDQo+PmRpcmVjdGlv
+bi4gVGhpcyBsYXB0b3AgaXMgdXNlZCBieSBteSB0ZWVuYWdlIGRhdWdodGVyIGFuZCBzaGUgaGFz
+IHRvIA0KPj5oYXZlIHNvdW5kIDspLg0KPj4NCj4+U3RldmUNCj4+DQo+PklzIHRoZSBrZXJuZWwg
+aW4gVVAgbW9kZT8gSWYgc28sIHRyeSBTTVAgbW9kZSBvciBlbmFibGUgImxvY2FsIEFQSUMgc3Vw
+cG9ydCIsICJJL08gQVBJQyBzdXBwb3J0IiBhbmQgcmUtYnVpbGQgVVAga2VybmVsLiBJIG1ldCB0
+aGUgc2ltaWxhciBwcm9ibGVtIGxpa2UgeW91IGRlc2NyaWJlZCBhbmQgbm8gaW50ZXJydXB0cyB3
+ZXJlIHJlcG9ydGVkIGluIC9wcm9jL2ludGVycnVwdHMuIEkgZG9uJ3Qga25vdyB0aGUgZXhhY3Qg
+cmVhc29uLiBCdXQgdGhlIHdvcmthcm91bmQgYWJvdmUgY2FuIHNvbHZlIHRoZSBwcm9ibGVtLiBI
+b3BlIHRoaXMgbWV0aG9kIGNhbiBhbHNvIGhlbHAgeW91Lg0KPj4NCj4+LSBIZW5yeQ0KPj4NCj4+
+IA0KPj4NCj4+ICAgIA0KPj4NCj5UaGFua3MgSGVucnksDQo+DQo+SSdsbCBnaXZlIGl0IGEgdHJ5
+IGFuZCByZXBvcnQgYmFjayBteSByZXN1bHQuIEkgYW0gaW4gdGhlIHByb2Nlc3Mgb2YgDQo+c3dp
+dGNoaW5nIGZyb20gRkM0IHRvIGdlbnRvbywgKCBnZW50b28gc3RpbGwgc3VwcG9ydHMgMi40ICku
+DQo+DQo+U3RldmUNCj4NCj4NCj4tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tDQo+U0YuTmV0IGVtYWlsIGlzIFNwb25zb3JlZCBieSB0aGUgQmV0
+dGVyIFNvZnR3YXJlIENvbmZlcmVuY2UgJiBFWFBPIFNlcHRlbWJlcg0KPjE5LTIyLCAyMDA1ICog
+U2FuIEZyYW5jaXNjbywgQ0EgKiBEZXZlbG9wbWVudCBMaWZlY3ljbGUgUHJhY3RpY2VzDQo+QWdp
+bGUgJiBQbGFuLURyaXZlbiBEZXZlbG9wbWVudCAqIE1hbmFnaW5nIFByb2plY3RzICYgVGVhbXMg
+KiBUZXN0aW5nICYgUUENCj5TZWN1cml0eSAqIFByb2Nlc3MgSW1wcm92ZW1lbnQgJiBNZWFzdXJl
+bWVudCAqIGh0dHA6Ly93d3cuc3FlLmNvbS9ic2NlNXNmDQo+X19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18NCj5BbHNhLWRldmVsIG1haWxpbmcgbGlzdA0KPkFs
+c2EtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0DQo+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbA0KPg0KPiAgDQo+DQpIaSBIZW5yeSwNCg0K
+VGhhdCBmaXhlZCBteSBwcm9ibGVtLiBIb3cgZGlkIHlvdSBkaXNjb3ZlciB0aGlzPw0KDQpTdGV2
+ZQ0KDQpJIGp1c3QgaGFkIGEgdHJ5IGFuZCBkaWRuJ3Qga25vdyB3aHk6LSkNCg0KSGVucnkNCg==
 
 
 -------------------------------------------------------
