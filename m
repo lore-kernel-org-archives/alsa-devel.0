@@ -1,14 +1,31 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
-Date: Tue, 2 Aug 2005 16:56:16 +0200
-Message-ID: <f739c950f6f7490d5f6cab648b98ea95@bugtrack.alsa-project.org>
+From: Hynek Hanke <hanke@brailcom.org>
+Subject: Re: snd_pcm_drain() always fails
+Date: Mon, 1 Aug 2005 20:10:15 +0200
+Message-ID: <20050801181015.GE10144@brailcom.cz>
+References: <20050801172719.GB10144@brailcom.cz> <Pine.LNX.4.61.0508011953060.12402@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E8E91DF
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 16:56:16 +0200 (MEST)
+Received: from smtp-out3.iol.cz (smtp-out3.iol.cz [194.228.2.91])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98B61196
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 20:13:21 +0200 (MEST)
+Received: from antivir3.iol.cz (unknown [192.168.30.206])
+	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 89BD0318681
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 20:13:22 +0200 (CEST)
+Received: from localhost (antivir3.iol.cz [127.0.0.1])
+	by antivir3.iol.cz (Postfix) with ESMTP id 8210B6DC003
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 20:13:22 +0200 (CEST)
+Received: from smtp-out3.iol.cz (unknown [192.168.30.28])
+	by antivir3.iol.cz (Postfix) with ESMTP id 7172D6DC002
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 20:13:22 +0200 (CEST)
+Received: from chopin (unknown [80.188.214.108])
+	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 3249F3BF89
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 20:13:22 +0200 (CEST)
+Received: from hanke by chopin with local (Exim 3.36 #1 (Debian))
+	id 1Dzejw-000634-00
+	for <alsa-devel@alsa-project.org>; Mon, 01 Aug 2005 20:10:16 +0200
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0508011953060.12402@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,46 +38,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+> Nothing. If drain() is supposed to wait until all data are played and 
+> you're using the non-blocking mode, then it's definitely an error (thus 
+> -EAGAIN is returned - and it means from the driver perspective - I must 
+> wait and the application does not want this from me).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
-======================================================================
-Reported By:                tek01
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1300
-Category:                   ISA - ad1816a
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.12.3 and 2.6.13-rc4
-======================================================================
-Date Submitted:             08-02-2005 16:56 CEST
-Last Modified:              08-02-2005 16:56 CEST
-======================================================================
-Summary:                    modprobe goes into D-state when inserting
-snd-ad1816a
-Description: 
-Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
-causes the modprobe process to go into D-state forever. 
+The documentation is very unclear about this. My guess was that it should bring
+me to the state DRAINING which should remain until all frames are played.
+ 
+> Set the blocking mode before drain() is called (and return the mode back 
+> after it, if you want).
 
-Linux 2.6.11.12 has been tested and is working fine.
-======================================================================
+This is not possible. I'm using the non-blocking mode and poll() specifically
+because I need to receive external events (not comming from ALSA) too.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-02-05 16:56 tek01          New Issue                                    
-08-02-05 16:56 tek01          Distribution              => Debian Sarge    
-08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
-2.6.13-rc4
-======================================================================
+> The better way might be setting sw_params to wakeup app after all frames are
+> played and use the standard poll() call to wait in app.  
 
+How can I do this or where can I read about it? I still need to receive those
+external events on other file descriptors. Is it possible with this approach?
 
+With regards & thank you,
+Hynek Hanke
 
 
 -------------------------------------------------------
