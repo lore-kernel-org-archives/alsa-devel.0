@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Mon, 1 Aug 2005 14:27:35 +0200
-Message-ID: <2a4da3b590f458abb8e137e001d39761@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001298]: Creative Labs Sound Blaster Live! 24-bit not detected
+Date: Mon, 1 Aug 2005 15:15:28 +0200
+Message-ID: <9a7143a60265539e6bf828a8ae260b84@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CA3C1C9
-	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 14:27:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 862931C9
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 15:15:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1298> 
 ======================================================================
-Reported By:                hus
-Assigned To:                
+Reported By:                andrewvegan
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1297
-Category:                   PCI - emu10k1
+Issue ID:                   1298
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4 (mostly)
-Kernel Version:             2.6.12
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4smp
 ======================================================================
-Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              08-01-2005 14:27 CEST
+Date Submitted:             08-01-2005 15:15 CEST
+Last Modified:              08-01-2005 15:15 CEST
 ======================================================================
-Summary:                    driver can't initialise card
+Summary:                    Creative Labs Sound Blaster Live! 24-bit not
+detected
 Description: 
-My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
-box).
-The snd-emu10k1 module refuses to work for this card; the kernel logs:
+Unable to get the sound card detected in Fedora Core 4. PC is a Shuttle XPC
+SD31P which has an onboard "Creative Labs Sound Blaster Live! 24-bit EAX
+high-definition 7.1 audio processor".
 
-ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
-ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
-subsystem_vendor_id=0x80611102, subsystem_id=0x8061
-ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
-[Unknown], 
-vendor=0x1102, device=0x2, subsystem=0x80611102
-ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
-ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
+from dmesg:
 
-removing mixer.
-EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0x0], removing mixer.
+CA0106: probe of 0000:03:0b.0 failed with error -5
 
-lspci shows
-02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-07)
-        Subsystem: Creative Labs SBLive! Player 5.1
-        Flags: bus master, medium devsel, latency 64, IRQ 17
-        I/O ports at 30c0 [size=32]
-        Capabilities: [dc] Power Management version 1
-(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
+When I run lspci it lists a different card (Creative Labs SB Audigy LS):
+ 
+[root@localhost ~]# lspci
+00:00.0 Host bridge: Intel Corporation Memory Controller Hub (rev 02)
+00:01.0 PCI bridge: Intel Corporation PCI Express Graphics Port (rev 02)
+00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 1 (rev 01)
+00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 (rev 01)
+00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 (rev 01)
+00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 (rev 01)
+00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4 (rev 01)
+00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
+Controller (rev 01)
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev e1)
+00:1f.0 ISA bridge: Intel Corporation 82801GB/GR (ICH7 Family) LPC
+Interface Bridge (rev 01)
+00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 01)
+00:1f.2 IDE interface: Intel Corporation 82801GB/GR/GH (ICH7 Family)
+Serial ATA Storage Controllers cc=IDE (rev 01)
+00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
+(rev 01)
+01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce
+6600] (rev a2)
+02:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789
+Gigabit Ethernet PCI Express (rev 11)
+03:0a.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
+Controller (rev 80)
+03:0b.0 Multimedia audio controller: Creative Labs SB Audigy LS
 
 
-The only deviation from the ordinary I can think of is that my system is
-dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
-PCI-to-PCI bridge. That's one thing our systems might have in common, as
-your message shows the card on bus 03. Perhaps this is some strange kind
-of routing problem?
+
+
+
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-01-05 14:27 hus            New Issue                                    
-08-01-05 14:27 hus            Distribution              => Fedora Core 4
-(mostly)
-08-01-05 14:27 hus            Kernel Version            => 2.6.12          
+08-01-05 15:15 andrewvegan    New Issue                                    
+08-01-05 15:15 andrewvegan    Distribution              => Fedora Core 4   
+08-01-05 15:15 andrewvegan    Kernel Version            => 2.6.11-1.1369_FC4smp
 ======================================================================
 
 
