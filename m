@@ -1,15 +1,14 @@
-From: thomas schorpp <t.schorpp@gmx.de>
-Subject: Re: snd-usb-audio hangs modprobe if switching dv camera
- betw. webcam / usb mass storage mode
-Date: Mon, 01 Aug 2005 13:18:42 +0200
-Message-ID: <42EE0512.6050302@gmx.de>
-References: <42EC96D0.7050000@gmx.de> <42ECB0D7.4030409@gmx.de> <42EDD139.1000306@gmx.de>
-Reply-To: t.schorpp@gmx.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001297]: driver can't initialise card
+Date: Mon, 1 Aug 2005 14:27:35 +0200
+Message-ID: <2a4da3b590f458abb8e137e001d39761@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42EDD139.1000306@gmx.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CA3C1C9
+	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 14:27:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,79 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-thomas schorpp wrote:
-> thomas schorpp wrote:
-> 
->>thomas schorpp wrote:
->>
->>
->>>hello,
->>>
->>>this bug is in conjunction with the older
->>>"usb disconnect hangs keyboard" bug on lkml.
->>>
->>>module-init-tools / hotplug hangs with snd-usb-audio if i switch/remove
->>>usb camera as stated above, if  a client like kmix is attached.
->>>(strange, since this device has no mixers here).
->>>
 
-sorry wrong driver, done this:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
+======================================================================
+Reported By:                hus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1297
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4 (mostly)
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             08-01-2005 14:27 CEST
+Last Modified:              08-01-2005 14:27 CEST
+======================================================================
+Summary:                    driver can't initialise card
+Description: 
+My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
+box).
+The snd-emu10k1 module refuses to work for this card; the kernel logs:
 
-Aug  1 13:11:18 tom1 kernel: usb 1-2: USB disconnect, address 22
-Aug  1 13:11:18 tom1 kernel: ALSA sound/usb/usbaudio.c:3275:
-snd_usb_audio_disconnect
-Aug  1 13:11:18 tom1 kernel: ALSA sound/usb/usbaudio.c:3284: 1
-Aug  1 13:11:18 tom1 kernel: ALSA sound/usb/usbaudio.c:3289: 2
-Aug  1 13:11:18 tom1 kernel: ALSA sound/usb/usbaudio.c:3296: free
+ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
+ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
+subsystem_vendor_id=0x80611102, subsystem_id=0x8061
+ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
+[Unknown], 
+vendor=0x1102, device=0x2, subsystem=0x80611102
+ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
+ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
 
-... kill kmix ...
+removing mixer.
+EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
 
-Aug  1 13:12:51 tom1 kernel: ALSA sound/usb/usbaudio.c:3301: freed
-Aug  1 13:12:52 tom1 kernel: usb 1-2: new full speed USB device using
-uhci_hcd and address 23
-Aug  1 13:12:52 tom1 kernel: scsi9 : SCSI emulation for USB Mass Storage
-devices
+lspci shows
+02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+07)
+        Subsystem: Creative Labs SBLive! Player 5.1
+        Flags: bus master, medium devsel, latency 64, IRQ 17
+        I/O ports at 30c0 [size=32]
+        Capabilities: [dc] Power Management version 1
+(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
 
 
-static void snd_usb_audio_disconnect(struct usb_device *dev, void *ptr)
-{
-	snd_usb_audio_t *chip;
-	snd_card_t *card;
-	struct list_head *p;
+The only deviation from the ordinary I can think of is that my system is
+dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
+PCI-to-PCI bridge. That's one thing our systems might have in common, as
+your message shows the card on bus 03. Perhaps this is some strange kind
+of routing problem?
+======================================================================
 
-	if (ptr == (void *)-1L)
-		return;
-	
-	snd_printk(KERN_ERR "snd_usb_audio_disconnect\n");
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-01-05 14:27 hus            New Issue                                    
+08-01-05 14:27 hus            Distribution              => Fedora Core 4
+(mostly)
+08-01-05 14:27 hus            Kernel Version            => 2.6.12          
+======================================================================
 
-	chip = ptr;
-	card = chip->card;
-	down(&register_mutex);
-	chip->shutdown = 1;
-	chip->num_interfaces--;
-	if (chip->num_interfaces <= 0) {
-		snd_card_disconnect(card);
-	snd_printk(KERN_ERR "1\n");
-		/* release the pcm resources */
-		list_for_each(p, &chip->pcm_list) {
-			snd_usb_stream_disconnect(p, &usb_audio_driver);
-		}
-	snd_printk(KERN_ERR "2\n");
-		/* release the midi resources */
-		list_for_each(p, &chip->midi_list) {
-			snd_usbmidi_disconnect(p, &usb_audio_driver);
-		}
-		usb_chip[chip->index] = NULL;
-		up(&register_mutex);
-	snd_printk(KERN_ERR "free\n");
-		snd_card_free(card); <----- HANGS HERE
-	} else {
-		up(&register_mutex);
-	}
-	snd_printk(KERN_ERR "freed\n");
+
 
 
 -------------------------------------------------------
