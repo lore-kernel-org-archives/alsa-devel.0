@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001289]: I fixed Bug 0001284.  Please reinstate line 86 in emux_synth.c !
-Date: Wed, 3 Aug 2005 12:17:12 +0200
-Message-ID: <ab73fcddc438ee7d1c809494287f4edf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001299]: mixed sound drained about 20db at the line-out until removal of driver
+Date: Tue, 2 Aug 2005 10:42:53 +0200
+Message-ID: <412161a4b2710b6f9823ed983e3bb328@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3D0C195
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:17:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 791101AA
+	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 10:42:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1289> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1299> 
 ======================================================================
-Reported By:                terminator356
-Assigned To:                fmoraes
+Reported By:                schorpp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1289
-Category:                   PCI - emu10k1x
+Issue ID:                   1299
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               debian sarge-sid
+Kernel Version:             2.6.12.0
 ======================================================================
-Date Submitted:             07-29-2005 04:36 CEST
-Last Modified:              08-03-2005 12:17 CEST
+Date Submitted:             08-02-2005 10:42 CEST
+Last Modified:              08-02-2005 10:42 CEST
 ======================================================================
-Summary:                    I fixed Bug 0001284.  Please reinstate line 86 in
-emux_synth.c !
+Summary:                    mixed sound drained about 20db at the line-out until
+removal of driver
 Description: 
-I fixed Bug 0001284. Please reinstate line 86 in emux_synth.c !
+with the driver working, output volume is about 20db too low.
+
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001284 Soundfont notes problem - notes cut off...
-related to          0001290 Re: Bug 0001284 + 0001289: Sorry, my fi...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 08-03-05 12:17 
-----------------------------------------------------------------------
-This will terminate notes -- it sounds somehow contradictionary to your
-original report (the notes are cut off too early)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-05 04:36 terminator356  New Issue                                    
-08-03-05 11:31 perex          Relationship added       related to 0001284  
-08-03-05 11:31 perex          Relationship added       related to 0001290  
-08-03-05 12:17 tiwai          Note Added: 0005620                          
+08-02-05 10:42 schorpp        New Issue                                    
+08-02-05 10:42 schorpp        Distribution              => debian sarge-sid
+08-02-05 10:42 schorpp        Kernel Version            => 2.6.12.0        
 ======================================================================
 
 
