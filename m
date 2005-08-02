@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
-Date: Tue, 2 Aug 2005 22:26:02 +0200
-Message-ID: <c180166158c0fbde8ecacc2cb7b3bd81@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: =?GB2312?B?wO7J+g==?= <lq13928420331@21cn.com>
+Subject: =?GB2312?B?08W73bT6v6q3osax?=
+Date: Wed, 3 Aug 2005 07:38:49 +0800
+Message-ID: <E1E06Kq-000734-My@mail.sourceforge.net>
+Reply-To: lq13928420331@21cn.com
+Content-Type: text/plain;charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9BF6195
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 22:26:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +15,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
-======================================================================
-Reported By:                tek01
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1300
-Category:                   ISA - ad1816a
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.12.3 and 2.6.13-rc4
-======================================================================
-Date Submitted:             08-02-2005 16:56 CEST
-Last Modified:              08-02-2005 22:26 CEST
-======================================================================
-Summary:                    modprobe goes into D-state when inserting
-snd-ad1816a
-Description: 
-Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
-causes the modprobe process to go into D-state forever. 
-
-Linux 2.6.11.12 has been tested and is working fine.
-======================================================================
-
-----------------------------------------------------------------------
- perex - 08-02-05 22:26 
-----------------------------------------------------------------------
-It might be a pnp related problem. The driver code was not touched long
-time. Could you add some printk calls into snd_ad1816a_pnp_detect() /
-snd_card_ad1816a_probe() functions to know where the initialization stops?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-02-05 16:56 tek01          New Issue                                    
-08-02-05 16:56 tek01          Distribution              => Debian Sarge    
-08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
-2.6.13-rc4
-08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-02-05 22:26 perex          Note Added: 0005609                          
-======================================================================
-
-
+=B9=F3=B9=AB=CB=BE=BE=AD=C0=ED=A1=A2=B2=C6=CE=F1=A3=BA=C4=FA=BA=C3=A3=A1
+=CE=D2=B9=AB=CB=BE=D3=C9=D3=DA=BD=F8=CF=EE=B6=E0=A3=AC=CF=FB=CF=EE=C9=D9=A1=
+=A3=CF=D6=D3=D0=B6=EE=D3=E0=B5=C4=A3=A8=D4=F6=D6=B5=CB=B0=B7=A2=C6=B1=A1=A2=
+=C6=D5=CD=A8=B7=A2=C6=B1=A3=A9=B5=C8=BF=C9=B4=FA=CD=E2=D3=C5=BB=DD=B4=FA=BF=
+=AA=A3=AC=CB=B0=B5=E3=B4=D3=D3=C5=A1=A3=B9=F3=B9=AB=CB=BE=C8=E7=D3=D0=D0=E8=
+=D2=AA=A3=AC=BB=B6=D3=AD=C0=B4=B5=E7=B4=B9=D1=AF=A3=A1
+=CB=B3=D7=A3
+=C9=CC=EC=F7=A3=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1
+=A1=A1   =C9=EE=DB=DA=CA=D0=BD=F0=C0=FB=B7=E1=CA=B5=D2=B5=B7=A2=D5=B9=D3=D0=
+=CF=DE=B9=AB=CB=BE
+=A1=A1=A1=A1 =C1=AA=CF=B5=B5=E7=BB=B0:13928420331
+     =C1=AA =CF=B5 =C8=CB=A3=BA=C0=EE=C8=A8
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+speed, fast. http://ads.osdn.com/?ad_id=3D7477&alloc_id=3D16492&op=3Dclic=
+k
