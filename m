@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
-Date: Tue, 2 Aug 2005 21:21:37 +0200
-Message-ID: <d7805d08831b22acef0332235026b892@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Tue, 2 Aug 2005 22:14:05 +0200
+Message-ID: <78a9b2c2dddb78de8384d4ba0a6d6d45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5C831EF
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 21:21:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D09FF1FA
+	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 22:14:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,107 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                ignition
-Assigned To:                tiwai
+Reported By:                iive
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   664
-Category:                   PCI - intel8x0
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               GNU/Linux Slackware 10.0
-Kernel Version:             2.4.28
+Status:                     new
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             11-22-2004 18:29 CET
-Last Modified:              08-02-2005 21:21 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              08-02-2005 22:14 CEST
 ======================================================================
-Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
-have sound from the headphones, only internal speakers work.
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-module: intel8x0
-card: SiS SI7012
-chip: Realtek ALC202 rev 0
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
 
-All ok but when I plug a jack from the headphones (or hi-fi system), there
-is no sound.
-And when I plug a jack halfway, I hear mono sound with bad quality from
-internal speaker AND from the headphones.
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
+
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
+
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000014 Sound from internal speakers but not fr...
-======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 07-16-05 16:42 
+ ahaning - 08-02-05 03:05 
 ----------------------------------------------------------------------
-> All ok but when I plug a jack from the headphones (or hi-fi system),
-> there is no sound.  And when I plug a jack halfway, I hear mono sound
-> with bad quality from internal speaker AND from the headphones.
+FWIW, I tried 2.6.13-rc4 with ALSA 1.0.9 (driver 1.0.9b) and had no luck
+(surprise).
 
-Switch off "Headphone Jack Sense"?
+I tried having alsaconf brute force detect with several cs#### drivers and
+the opl3sa2 and it configured one of the cs#### drivers. It was wrong,
+though.
+
+I think the problem might have something to do with IRQs/ISA and the way
+that 2.6 handles them versus previous kernels. However, I'm not a coder or
+a kernel hacker, so I could be way off here. When alsaconf has managed to
+configure something (like in one of my previous comments) the IRQs were
+completely wrong, which I thought was odd.
+
+I'd also offer up a login to my notebook if someone would be willing to
+look into this. It would be the first time I'd done such a thing, though,
+so you'd probably have to tell me what software you need and how you'd
+like it set up.
+
+If there's anything else I can do, someone please say so. Like iive, I'm
+getting frustrated that my notebook is over 5 years old and is having
+driver regression issues. All drivers for this machine should work like a
+charm.
+
+-Andy
 
 ----------------------------------------------------------------------
- ignition - 08-02-05 21:21 
+ perex - 08-02-05 22:14 
 ----------------------------------------------------------------------
-In amixer, I have no "Headphone Jack Sense" but I tried `amixer set "Jack
-Detect" unmute` and the issue is the same.
+The alsaconf-isapnp-2.6.patch should fix the alsaconf probing problem.
+Please, confirm.
+
+Also, could you try remove 'options snd-opl3sa2' line from your
+modprobe.conf and try the command 'modprobe snd-opl3sa2' on fresh system
+(after boot)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-04 18:29 ignition       New Issue                                    
-11-22-04 18:29 ignition       File Added: report                           
-11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
-10.0
-11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
-11-22-04 18:48 tiwai          Relationship added       duplicate of 0000014
-11-22-04 18:48 tiwai          Duplicate ID             0 => 14             
-11-22-04 18:48 tiwai          Status                   new => resolved     
-11-22-04 18:48 tiwai          Resolution               open => duplicate   
-11-22-04 18:48 tiwai          Assigned To               => tiwai           
-11-22-04 18:48 tiwai          Note Added: 0002510                          
-11-22-04 18:51 ignition       Issue Monitored: ignition                    
-11-22-04 18:52 ignition       Issue End Monitor: ignition                    
-12-06-04 14:58 dale           Issue Monitored: dale                        
-01-20-05 18:52 jorge2         Issue Monitored: jorge2                      
-03-23-05 15:41 jdthood        Status                   resolved => feedback
-03-23-05 15:41 jdthood        Resolution               duplicate => reopened
-03-23-05 15:41 jdthood        Note Added: 0004163                          
-06-14-05 21:16 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-07-16-05 16:42 jdthood        Note Added: 0005497                          
-08-02-05 21:21 ignition       Note Added: 0005606                          
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
+08-02-05 00:02 iive           Note Added: 0005599                          
+08-02-05 03:00 ahaning        Note Added: 0005600                          
+08-02-05 03:05 ahaning        Note Added: 0005601                          
+08-02-05 03:05 ahaning        Note Deleted: 0005600                        
+08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
+      
+08-02-05 22:14 perex          Note Added: 0005607                          
 ======================================================================
 
 
