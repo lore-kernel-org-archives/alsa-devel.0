@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops working after a few seconds when used with VoIP softphones
-Date: Tue, 2 Aug 2005 17:16:16 +0200
-Message-ID: <95761fa875ac466472fc0bbb68354986@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001302]: Clicking noise when using kphone with the ALSA AD1816A sound driver
+Date: Tue, 2 Aug 2005 17:29:12 +0200
+Message-ID: <8bd539c4fc82767b53f35b18c24350ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 627811DF
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 17:16:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA0051DF
+	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 17:29:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,42 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1302> 
 ======================================================================
 Reported By:                tek01
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1301
+Issue ID:                   1302
 Category:                   ISA - ad1816a
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
 Distribution:               Debian Sarge
-Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
-2.6.8-2
+Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10, Debians 2.6.8-2
 ======================================================================
-Date Submitted:             08-02-2005 17:16 CEST
-Last Modified:              08-02-2005 17:16 CEST
+Date Submitted:             08-02-2005 17:29 CEST
+Last Modified:              08-02-2005 17:29 CEST
 ======================================================================
-Summary:                    Kernel OSS emulation stops working after a few
-seconds when used with VoIP softphones
+Summary:                    Clicking noise when using kphone with the ALSA
+AD1816A sound driver
 Description: 
-Kernel OSS emulation fails a few seconds after a call is established when
-used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
-process using strace reveals, that the file descriptor of the sound device
-is no longer listed in the readset or writeset when the select() syscall
-returns. Audio Playback using XMMS is working fine using the OSS API
- 
-Also the native OSS driver is working fine with both VoIP phones on the
-same system and kernel.
-
-
+Using kphone (VoIP softphone) with the ALSA native API and the AD1816A
+sound driver a continuous clicking noise is heard approximately 3 times
+per second. Using the OSS AD1816 with kphone(OSS API) sound driver on the
+same system and kernel audio is crystal clear. Also audio latency is much
+higher (0.3-0.5s guessed) compared to the OSS AD1816 (<0.1s, also guessed)
+sound driver.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-02-05 17:16 tek01          New Issue                                    
-08-02-05 17:16 tek01          Distribution              => Debian Sarge    
-08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
-vanilla 2.6.10 and Debians 2.6.8-2
+08-02-05 17:29 tek01          New Issue                                    
+08-02-05 17:29 tek01          Distribution              => Debian Sarge    
+08-02-05 17:29 tek01          Kernel Version            => vanilla 2.6.11.12,
+vanilla 2.6.10, Debians 2.6.8-2
 ======================================================================
 
 
