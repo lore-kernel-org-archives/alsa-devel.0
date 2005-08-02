@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001299]: mixed sound drained about 20db at the line-out until removal of driver
-Date: Tue, 2 Aug 2005 15:29:31 +0200
-Message-ID: <179f57f34698d038215300b8fb677516@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
+Date: Tue, 2 Aug 2005 16:56:16 +0200
+Message-ID: <f739c950f6f7490d5f6cab648b98ea95@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FA561D1
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 15:29:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E8E91DF
+	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 16:56:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1299> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
 ======================================================================
-Reported By:                schorpp
-Assigned To:                tiwai
+Reported By:                tek01
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1299
-Category:                   PCI - cmipci
+Issue ID:                   1300
+Category:                   ISA - ad1816a
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               debian sarge-sid
-Kernel Version:             2.6.12.0
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12.3 and 2.6.13-rc4
 ======================================================================
-Date Submitted:             08-02-2005 10:42 CEST
-Last Modified:              08-02-2005 15:29 CEST
+Date Submitted:             08-02-2005 16:56 CEST
+Last Modified:              08-02-2005 16:56 CEST
 ======================================================================
-Summary:                    mixed sound drained about 20db at the line-out until
-removal of driver
+Summary:                    modprobe goes into D-state when inserting
+snd-ad1816a
 Description: 
-with the driver working, output volume is about 20db too low.
+Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
+causes the modprobe process to go into D-state forever. 
 
-
+Linux 2.6.11.12 has been tested and is working fine.
 ======================================================================
-
-----------------------------------------------------------------------
- schorpp - 08-02-05 11:37 
-----------------------------------------------------------------------
-static int snd_cmipci_free(cmipci_t *cm)
-{
-...
-		/* reset mixer */
-		snd_cmipci_mixer_write(cm, 0, 0); <-- full volume back
-		printk(KERN_ERR "7\n");
-		mdelay(10000);
-
-----------------------------------------------------------------------
- schorpp - 08-02-05 15:29 
-----------------------------------------------------------------------
-CLOSED
-
-was a mixer problem.
-
-sry
-y
-tom
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-02-05 10:42 schorpp        New Issue                                    
-08-02-05 10:42 schorpp        Distribution              => debian sarge-sid
-08-02-05 10:42 schorpp        Kernel Version            => 2.6.12.0        
-08-02-05 10:54 schorpp        Note Added: 0005603                          
-08-02-05 11:37 schorpp        Note Added: 0005604                          
-08-02-05 15:29 schorpp        Note Added: 0005605                          
+08-02-05 16:56 tek01          New Issue                                    
+08-02-05 16:56 tek01          Distribution              => Debian Sarge    
+08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
+2.6.13-rc4
 ======================================================================
 
 
