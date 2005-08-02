@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001299]: mixed sound drained about 20db at the line-out until removal of driver
-Date: Tue, 2 Aug 2005 10:42:53 +0200
-Message-ID: <412161a4b2710b6f9823ed983e3bb328@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000424]: No mute control on Master Volume
+Date: Tue, 2 Aug 2005 10:19:38 +0200
+Message-ID: <b167f0fff12c00c3c9150fd2a8c6604b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 791101AA
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 10:42:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C9A0149
+	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 10:19:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1299> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=424> 
 ======================================================================
-Reported By:                schorpp
+Reported By:                marm
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1299
+Issue ID:                   424
 Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               debian sarge-sid
-Kernel Version:             2.6.12.0
+Distribution:               Debian unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-02-2005 10:42 CEST
-Last Modified:              08-02-2005 10:42 CEST
+Date Submitted:             08-05-2004 20:07 CEST
+Last Modified:              08-02-2005 10:19 CEST
 ======================================================================
-Summary:                    mixed sound drained about 20db at the line-out until
-removal of driver
+Summary:                    No mute control on Master Volume
 Description: 
-with the driver working, output volume is about 20db too low.
+Please add a mute control for the Master Volume on cmipci cards (I have a
+CMI8738-MC6), as it makes life difficult not having one when the phone
+rings ;)
 
-
+The Windows drivers support this, and indeed, I seem to recall earlier
+(0.9.something) versions of the alsa driver did too.
 ======================================================================
+
+----------------------------------------------------------------------
+ schorpp - 08-02-05 10:19 
+----------------------------------------------------------------------
+hi,
+
+got a trust dx514, cmi8738-mx (rev.10?)
+
+i would like to have it too, i will see what i can do.
+
+i am just on the code. 
+theres something wrong with general line out volume, 
+too, is about 20db too low...
+
+y
+tom
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-02-05 10:42 schorpp        New Issue                                    
-08-02-05 10:42 schorpp        Distribution              => debian sarge-sid
-08-02-05 10:42 schorpp        Kernel Version            => 2.6.12.0        
+08-05-04 20:07 marm           New Issue                                    
+08-05-04 20:07 marm           Distribution              => Debian unstable 
+08-05-04 20:07 marm           Kernel Version            => 2.6.7           
+08-02-05 10:19 schorpp        Note Added: 0005602                          
 ======================================================================
 
 
