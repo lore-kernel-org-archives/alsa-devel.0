@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Tue, 2 Aug 2005 22:14:05 +0200
-Message-ID: <78a9b2c2dddb78de8384d4ba0a6d6d45@bugtrack.alsa-project.org>
+Date: Tue, 2 Aug 2005 22:16:50 +0200
+Message-ID: <f09f137ddb2bd319ee3dead4446ccbf3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D09FF1FA
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 22:14:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E27E81FB
+	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 22:16:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10
 Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
 Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-02-2005 22:14 CEST
+Last Modified:              08-02-2005 22:16 CEST
 ======================================================================
 Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
 on 2.6.x kernels
@@ -66,35 +66,17 @@ reposting this bug here)
 ======================================================================
 
 ----------------------------------------------------------------------
- ahaning - 08-02-05 03:05 
-----------------------------------------------------------------------
-FWIW, I tried 2.6.13-rc4 with ALSA 1.0.9 (driver 1.0.9b) and had no luck
-(surprise).
-
-I tried having alsaconf brute force detect with several cs#### drivers and
-the opl3sa2 and it configured one of the cs#### drivers. It was wrong,
-though.
-
-I think the problem might have something to do with IRQs/ISA and the way
-that 2.6 handles them versus previous kernels. However, I'm not a coder or
-a kernel hacker, so I could be way off here. When alsaconf has managed to
-configure something (like in one of my previous comments) the IRQs were
-completely wrong, which I thought was odd.
-
-I'd also offer up a login to my notebook if someone would be willing to
-look into this. It would be the first time I'd done such a thing, though,
-so you'd probably have to tell me what software you need and how you'd
-like it set up.
-
-If there's anything else I can do, someone please say so. Like iive, I'm
-getting frustrated that my notebook is over 5 years old and is having
-driver regression issues. All drivers for this machine should work like a
-charm.
-
--Andy
-
-----------------------------------------------------------------------
  perex - 08-02-05 22:14 
+----------------------------------------------------------------------
+The alsaconf-isapnp-2.6.patch should fix the alsaconf probing problem.
+Please, confirm.
+
+Also, could you try remove 'options snd-opl3sa2' line from your
+modprobe.conf and try the command 'modprobe snd-opl3sa2' on fresh system
+(after boot)?
+
+----------------------------------------------------------------------
+ perex - 08-02-05 22:16 
 ----------------------------------------------------------------------
 The alsaconf-isapnp-2.6.patch should fix the alsaconf probing problem.
 Please, confirm.
@@ -125,6 +107,7 @@ version (current 2.6.10)
 08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
       
 08-02-05 22:14 perex          Note Added: 0005607                          
+08-02-05 22:16 perex          Note Added: 0005608                          
 ======================================================================
 
 
