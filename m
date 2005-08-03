@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001303]: AD1816A sound driver has no parameter to adjust reference clock frequency
-Date: Wed, 3 Aug 2005 12:30:56 +0200
-Message-ID: <063667ec998b2a9a04902e02fbbd5c3c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000424]: No mute control on Master Volume
+Date: Wed, 3 Aug 2005 12:43:27 +0200
+Message-ID: <31e84ebedb2ff23f06b3d454e9502d34@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D088192
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:30:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49B7F192
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:43:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1303> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=424> 
 ======================================================================
-Reported By:                tek01
-Assigned To:                
+Reported By:                marm
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1303
-Category:                   ISA - ad1816a
+Issue ID:                   424
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               does not matter
-Kernel Version:             at least up to 2.6.13-rc4
+Status:                     assigned
+Distribution:               Debian unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-02-2005 17:38 CEST
-Last Modified:              08-03-2005 12:30 CEST
+Date Submitted:             08-05-2004 20:07 CEST
+Last Modified:              08-03-2005 12:43 CEST
 ======================================================================
-Summary:                    AD1816A sound driver has no parameter to adjust
-reference clock frequency
+Summary:                    No mute control on Master Volume
 Description: 
-The ALSA AD1816A sound driver has no parameter to specify the reference
-clock frequency. The AD1816A chip has been designed for a 33MHz reference
-clock, however some cards are shipped with different reference clocks
-(mostly 32.125MHz). Thus the sample rate has to be corrected on those
-cards before it is written to the hardware registers for proper capture
-and playback speed.
+Please add a mute control for the Master Volume on cmipci cards (I have a
+CMI8738-MC6), as it makes life difficult not having one when the phone
+rings ;)
+
+The Windows drivers support this, and indeed, I seem to recall earlier
+(0.9.something) versions of the alsa driver did too.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-03-05 12:30 
+ schorpp - 08-02-05 10:19 
 ----------------------------------------------------------------------
-Could you try the attached patch?
+hi,
+
+got a trust dx514, cmi8738-mx (rev.10?)
+
+i would like to have it too, i will see what i can do.
+
+i am just on the code. 
+theres something wrong with general line out volume, 
+too, is about 20db too low...
+
+y
+tom
+
+----------------------------------------------------------------------
+ tiwai - 08-03-05 12:43 
+----------------------------------------------------------------------
+Yes, the life is hard.  This chip doesn't have a hardware master mute
+control.  It has only master volume.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-02-05 17:38 tek01          New Issue                                    
-08-02-05 17:38 tek01          Distribution              => does not matter 
-08-02-05 17:38 tek01          Kernel Version            => at least up to
-2.6.13-rc4
-08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-03-05 12:30 tiwai          Note Added: 0005622                          
+08-05-04 20:07 marm           New Issue                                    
+08-05-04 20:07 marm           Distribution              => Debian unstable 
+08-05-04 20:07 marm           Kernel Version            => 2.6.7           
+08-02-05 10:19 schorpp        Note Added: 0005602                          
+08-03-05 12:43 tiwai          Note Added: 0005623                          
 ======================================================================
 
 
