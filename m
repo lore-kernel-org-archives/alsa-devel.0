@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001304]: Speaker test hangs
-Date: Wed, 3 Aug 2005 12:18:56 +0200
-Message-ID: <6e94d049abbee4f03e3f9650869e97f6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000441]: Master volume not doing anything
+Date: Wed, 3 Aug 2005 12:24:11 +0200
+Message-ID: <0d2d7ecbdac6fd2ba285b384f6f847b3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99660178
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:18:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93CDD192
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:24:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=441> 
 ======================================================================
-Reported By:                herby
+Reported By:                Simon
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1304
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   441
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.
 ======================================================================
-Date Submitted:             08-03-2005 02:46 CEST
-Last Modified:              08-03-2005 12:18 CEST
+Date Submitted:             08-14-2004 20:49 CEST
+Last Modified:              08-03-2005 12:24 CEST
 ======================================================================
-Summary:                    Speaker test hangs
+Summary:                    Master volume not doing anything
 Description: 
-After applying the patch to the library that took out the check for a
-proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
-or so), I attempted to try a speaker test again.  It hung right after
-outputting "0 - Front Left".  I did an strace and the results are included
-in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
-with little luck.  The wierd thing is that I can execute 'aplay' (with the
-default device) and get a '.wav' file to play nicely.  I can even get a
-multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
-speaker-test doesn't work is beyond me.  The problem is that I appear to
-use similar techniques in my own programming as speaker-test, and my
-program doesen't do that well.  Being as how speaker-test IS part of ALSA,
-I thought I would submit the bug report against it.
+I have sound, everything works, but the master volume control doesn't have
+any effect on the actual volume output.
 
-If other tests need be preformed, I'd be VERY happy to do them.
+Running Soundblaster Live! 5.1 dolby surround system
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-03-05 12:18 
+ jdthood - 07-16-05 17:14 
 ----------------------------------------------------------------------
-Which version did you use?  Chance to try CVS version?
+Submitter: Is there any improvement in more recent ALSA releases?
+
+----------------------------------------------------------------------
+ Simon - 07-16-05 21:20 
+----------------------------------------------------------------------
+It works now for only the subwoofer and the left front and rear... it's an
+improvement
+
+Current kernel version running:
+2.6.8-24.16 or 2.6.11.9
+
+Latest ALSA driver
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 02:46 herby          New Issue                                    
-08-03-05 02:46 herby          File Added: speaker-trace                    
-08-03-05 12:18 tiwai          Note Added: 0005621                          
+08-14-04 20:49 Simon          New Issue                                    
+08-14-04 20:49 Simon          Distribution              => Slackware       
+08-14-04 20:49 Simon          Kernel Version            => 2.              
+07-16-05 17:14 jdthood        Note Added: 0005499                          
+07-16-05 21:19 Simon          Note Added: 0005502                          
+07-16-05 21:20 Simon          Note Edited: 0005502                         
+08-03-05 12:24 perex          Category                 CORE - control => PCI -
+emu10k1
 ======================================================================
 
 
