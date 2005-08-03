@@ -1,13 +1,14 @@
-From: Chow Raymond <usher_raymond82@yahoo.com>
-Subject: Re: Problem in testing ALSA
-Date: Tue, 2 Aug 2005 18:21:25 -0700 (PDT)
-Message-ID: <20050803012126.87440.qmail@web54607.mail.yahoo.com>
-References: <1122955779.3847.0.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001305]: some odd conditions cause gnomemeeting to crash on takeoff - they blame libasound
+Date: Wed, 3 Aug 2005 03:42:53 +0200
+Message-ID: <4fce04ed7bbeeef4c6f2e3826e092a0e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1122955779.3847.0.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DFC8146
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 03:42:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,86 +18,178 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Basically I want to test whether ALSA is working on my
-board or not. I got the ALSA driver built in to the
-kernel and then installed ALSA libraries and utils.
-When I perform aplay, I get this error.
 
-[root@ARMCore /]$ aplay /home/test/decoded_4350.wav
-ALSA lib pcm.c:1962:(snd_pcm_open_noupdate) Unknown
-PCM default
-aplay: main:507: audio open error: No such file or
-directory
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1305> 
+======================================================================
+Reported By:                zsd
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1305
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-03-2005 03:42 CEST
+Last Modified:              08-03-2005 03:42 CEST
+======================================================================
+Summary:                    some odd conditions cause gnomemeeting to crash on
+takeoff - they blame libasound
+Description: 
+Here is what I reported to the gnomemeeting people:
 
-I suspect that I need the snd_pcm module loaded before
-aplay could work. Thus, I need to modprobe soundcore
-module before I can modprobe snd_pcm module.
+Steps to reproduce the crash:
+1. start it
 
-Hope you get a clearer picture. Willing to clarify
-more if you need more information. Hope to hear from
-you soon.=20
+Expected Results:
+It should run
 
-Thanks.
+How often does this happen?
+Every time
 
-Regards
+Admittedly, this was vague, and I finally tracked it down (see "Steps to
+reproduce" below).
 
---- Lee Revell <rlrevell@joe-job.com> wrote:
+But first, here was the gnomemeeting traceback:
 
-> On Mon, 2005-08-01 at 18:12 -0700, Chow Raymond
-> wrote:
-> > Hi,
-> >=20
-> > I encounter this problem.
-> >=20
-> > [root@ARMCore user]$ modprobe soundcore
-> > modprobe: /lib/libc.so.6: version `GLIBC_2.2.3'
-> not
-> > found (required by mod)
-> >=20
-> > Do I need GLIBC? If yes, where do I get it and
-> where
-> > shall I install it?
->=20
-> You can't link a kernel module against glibc.
->=20
-> What are you trying to do?
->=20
-> Lee
->=20
->=20
->=20
->
--------------------------------------------------------
-> SF.Net email is sponsored by: Discover Easy Linux
-> Migration Strategies
-> from IBM. Find simple to follow Roadmaps,
-> straightforward articles,
-> informative Webcasts and more! Get everything you
-> need to get up to
-> speed, fast.
->
-http://ads.osdn.com/?ad_id=3D7477&alloc_id=3D16492&op=3Dclick
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
->
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
->=20
+Backtrace was generated from '/usr/bin/gnomemeeting'
+
+(no debugging symbols found)...Using host libthread_db library
+"/lib/libthread_db.so.1".
+(no debugging symbols found)...(no debugging symbols found)...(no
+debugging symbols found)...(no debugging symbols found)...(no debugging
+symbols found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...[Thread debugging using
+libthread_db enabled]
+[New Thread 16384 (LWP 16377)]
+0x41498497 in waitpid () from /lib/libpthread.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x41498497 in waitpid
+() from /lib/libpthread.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x400985c4 in
+libgnomeui_module_info_get () from
+/usr/lib/libgnomeui-2.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x41496be5 in
+__pthread_sighandler () from /lib/libpthread.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  <signal handler
+called>
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x4183beda in
+snd_ctl_close () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x41bf9155 in
+PSoundChannelALSA::UpdateDictionary ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x41bf919a in
+PSoundChannelALSA::GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x41bf88a5 in
+PSoundChannelALSA_GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x41340fea in
+PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x413411a9 in
+PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 0x41341229 in
+PSoundChannel::GetDefaultDevice ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=11 0x40fe98fe in
+H323EndPoint::H323EndPoint ()
+   from /usr/lib/libh323_linux_x86_r.so.1.15.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=12 0x0807c832 in
+GMH323EndPoint::GMH323EndPoint ()
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13 0x08079852 in
+GnomeMeeting::GnomeMeeting ()
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 0x080941b2 in main ()
+
+Thread 1 (Thread 16384 (LWP 16377)):
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x41498497 in waitpid
+() from /lib/libpthread.so.0
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x400985c4 in
+libgnomeui_module_info_get () from
+/usr/lib/libgnomeui-2.so.0
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x41496be5 in
+__pthread_sighandler () from /lib/libpthread.so.0
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  <signal handler
+called>
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x4183beda in
+snd_ctl_close () from /usr/lib/libasound.so.2
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x41bf9155 in
+PSoundChannelALSA::UpdateDictionary ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x41bf919a in
+PSoundChannelALSA::GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x41bf88a5 in
+PSoundChannelALSA_GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x41340fea in
+PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x413411a9 in
+PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 0x41341229 in
+PSoundChannel::GetDefaultDevice ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=11 0x40fe98fe in
+H323EndPoint::H323EndPoint ()
+   from /usr/lib/libh323_linux_x86_r.so.1.15.2
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=12 0x0807c832 in
+GMH323EndPoint::GMH323EndPoint ()
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13 0x08079852 in
+GnomeMeeting::GnomeMeeting ()
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 0x080941b2 in main ()
+No symbol table info available.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x41498497 in waitpid
+() from /lib/libpthread.so.0
 
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around=20
-http://mail.yahoo.com=20
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-03-05 03:42 zsd            New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=3D7477&alloc_id=3D16492&op=3Dclic=
-k
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
