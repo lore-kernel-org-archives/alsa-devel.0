@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000424]: No mute control on Master Volume
-Date: Wed, 3 Aug 2005 16:59:23 +0200
-Message-ID: <7121e0fbeae3cc34775a7d0e7838c0cd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001306]: Apparent race condition in snd_pcm_drain() sometimes hangs userspace processes
+Date: Wed, 3 Aug 2005 17:12:35 +0200
+Message-ID: <84dcae8e24dd4e95f67791418f18a127@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2808B1DD
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 16:59:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA43B1DD
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 17:12:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=424> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306> 
 ======================================================================
-Reported By:                marm
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   424
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   1306
+Category:                   CORE - pcm
+Reproducibility:            sometimes
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian unstable
-Kernel Version:             2.6.7
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-05-2004 20:07 CEST
-Last Modified:              08-03-2005 16:59 CEST
+Date Submitted:             08-03-2005 17:12 CEST
+Last Modified:              08-03-2005 17:12 CEST
 ======================================================================
-Summary:                    No mute control on Master Volume
+Summary:                    Apparent race condition in snd_pcm_drain() sometimes
+hangs userspace processes
 Description: 
-Please add a mute control for the Master Volume on cmipci cards (I have a
-CMI8738-MC6), as it makes life difficult not having one when the phone
-rings ;)
+esd with libesd-alsa0 sometimes hangs userspace processes.
+Reproducible on i386 and powerpc.
 
-The Windows drivers support this, and indeed, I seem to recall earlier
-(0.9.something) versions of the alsa driver did too.
+bt of the hanged state of esd, stracing esd appears to remove the
+problem:
+
+#0  0xffffe410 in ?? ()
+#1  0xbfff9068 in ?? ()
+#2  0xffffffff in ?? ()
+#3  0x00000001 in ?? ()
+#4  0xb7f1a4b5 in poll () from /lib/tls/i686/cmov/libc.so.6
+#5  0xb7dd3ca1 in snd_pcm_wait_nocheck () from /usr/lib/libasound.so.2
+#6  0xb7e09a2d in _snd_pcm_dmix_open () from /usr/lib/libasound.so.2
+#7  0xb7dd1a9c in snd_pcm_drain () from /usr/lib/libasound.so.2
+#8  0xb7dee0ea in _snd_pcm_rate_open () from /usr/lib/libasound.so.2
+#9  0xb7dd1a9c in snd_pcm_drain () from /usr/lib/libasound.so.2
+#10 0xb7fd12f9 in esd_audio_flush () from /usr/lib/libesd.so.0
+#11 0x0804bdd0 in clean_exit ()
+#12 0x0804a927 in clean_exit ()
+#13 0xb7e72e8a in __libc_start_main () from /lib/tls/i686/cmov/libc.so.6
+#14 0x08049751 in ?? ()
+(gdb) cont
+Continuing.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 08-03-05 14:56 
-----------------------------------------------------------------------
-Well, my comment is based on the datasheet available at ALSA ftp...
-
-----------------------------------------------------------------------
- schorpp - 08-03-05 16:59 
-----------------------------------------------------------------------
-ah yes, the antiquariate ;) but better than nothing...
-
-ouuuh, it kills abiword and kword instantly, 
-in openoffice it looks like an broken old book from 1700.
-
-anyway, dont You think theyve changed a little of the -reserved-'s since
-1999?
-
-hackers work to resovle. maybe emulation... maybe if i feel bored again.
-
-y
-tom
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-04 20:07 marm           New Issue                                    
-08-05-04 20:07 marm           Distribution              => Debian unstable 
-08-05-04 20:07 marm           Kernel Version            => 2.6.7           
-08-02-05 10:19 schorpp        Note Added: 0005602                          
-08-03-05 12:43 tiwai          Note Added: 0005623                          
-08-03-05 14:54 schorpp        Note Added: 0005626                          
-08-03-05 14:56 tiwai          Note Added: 0005627                          
-08-03-05 16:59 schorpp        Note Added: 0005633                          
+08-03-05 17:12 jdthood        New Issue                                    
 ======================================================================
 
 
