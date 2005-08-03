@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001287]: oss emulation does not work any more.
-Date: Wed, 3 Aug 2005 15:03:30 +0200
-Message-ID: <04e1cd1cd144ce2cad2cef2e3848720a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Wed, 3 Aug 2005 15:17:06 +0200
+Message-ID: <75b28e17c584ee2b829536246136b284@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A6AA189
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 15:03:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 793C61AA
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 15:17:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,159 +24,120 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1287> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                eNTi
+Reported By:                iive
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1287
-Category:                   CORE OSS - pcm
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             Linux eNTi 2.6.12-gentoo-r6 #4 SMP Thu Jul 28
-22:36:42 CEST 2005 i686 AMD Athlon(tm) 64 Processor 3500+ AuthenticAMD GNU/Linux
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             07-29-2005 01:00 CEST
-Last Modified:              08-03-2005 15:03 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              08-03-2005 15:17 CEST
 ======================================================================
-Summary:                    oss emulation does not work any more.
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-i'm getting these error messages, when the kernel starts up:
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
 
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_hwdep: Unknown symbol snd_verbose_printk
-kobject_register failed for snd_page_alloc (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_timer: Unknown symbol snd_verbose_printk
-snd_pcm: Unknown symbol snd_verbose_printk
-snd_ac97_codec: Unknown symbol snd_verbose_printk
-snd_seq_device: Unknown symbol snd_verbose_printk
-snd_rawmidi: Unknown symbol snd_verbose_printk
-snd_emu10k1: Unknown symbol snd_verbose_printk
-ieee1394: Host added: ID:BUS[0-00:1023]  GUID[00508d0000ee8226]
-ieee1394: Host added: ID:BUS[1-00:1023]  GUID[00023c01510808b8]
-nvidia: module license 'NVIDIA' taints kernel.
-ACPI: PCI Interrupt 0000:01:00.0[A] -> GSI 16 (level, low) -> IRQ 16
-NVRM: loading NVIDIA Linux x86 NVIDIA Kernel Module  1.0-6629  Wed Nov  3
-13:12:                       
-51 PST 2004
-Velocity is AUTO mode
-eth0: Link autonegation speed 1000M bps full duplex
-kjournald starting.  Commit interval 5 seconds
-EXT3 FS on dm-0, internal journal
-EXT3-fs: mounted filesystem with ordered data mode.
-EXT3-fs warning: maximal mount count reached, running e2fsck is
-recommended
-kjournald starting.  Commit interval 5 seconds
-EXT3 FS on dm-1, internal journal
-EXT3-fs: mounted filesystem with ordered data mode.
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_hwdep: Unknown symbol snd_verbose_printk
-kobject_register failed for snd_page_alloc (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_timer: Unknown symbol snd_verbose_printk
-snd_pcm: Unknown symbol snd_verbose_printk
-snd_ac97_codec: Unknown symbol snd_verbose_printk
-snd_seq_device: Unknown symbol snd_verbose_printk
-snd_rawmidi: Unknown symbol snd_verbose_printk
-snd_emu10k1: Unknown symbol snd_verbose_printk
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_seq_device: Unknown symbol snd_verbose_printk
-snd_timer: Unknown symbol snd_verbose_printk
-snd_seq: Unknown symbol snd_verbose_printk
-snd_seq_oss: Unknown symbol snd_verbose_printk
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_mixer_oss: Unknown symbol snd_verbose_printk
-kobject_register failed for snd_page_alloc (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_timer: Unknown symbol snd_verbose_printk
-snd_pcm: Unknown symbol snd_verbose_printk
-snd_pcm_oss: Unknown symbol snd_verbose_printk
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_mixer_oss: Unknown symbol snd_verbose_printk
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_mixer_oss: Unknown symbol snd_verbose_printk
-kobject_register failed for snd (-17)
- [<c0206fe9>] kobject_register+0x49/0x80
- [<c0136b00>] mod_sysfs_setup+0x50/0xb0
- [<c0137d34>] load_module+0x8b4/0xb90
- [<c01380a4>] sys_init_module+0x64/0x220
- [<c0102f1b>] sysenter_past_esp+0x54/0x75
-snd_seq_device: Unknown symbol snd_verbose_printk
-snd_timer: Unknown symbol snd_verbose_printk
-snd_seq: Unknown symbol snd_verbose_printk
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
 
-no /dev/sound/dsp, /dev/sound/mixer and /dev/sound/audio are created (by
-udev).
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
 
-alsa still works (xmms is playing fine).
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-03-05 15:03 
+ ahaning - 08-03-05 13:42 
 ----------------------------------------------------------------------
-Seems to be rather a problem of linux core than an ALSA-specific problem...
+perex:
+
+I copied the attached alsaconf script over my old one and ran it. The
+first time, without rebooting, it said it found a OPL3SA2 and would write
+the configuration to /etc/modprobe.conf, but either it didn't or it
+detected things incorrectly.
+
+After rebooting, it won't even detect the OPL3SA2. "No legacy cards
+found."
+
+What version of ALSA and the kernel are you running? If we can try to get
+at least similar software, it might be easier to debug these issues. Also,
+what kind of OPL3SA2 are you using? I have one in my Gateway Solo 2500 and
+I have PNP turned off in the BIOS.
+
+Thanks!
+
+----------------------------------------------------------------------
+ ahaning - 08-03-05 15:17 
+----------------------------------------------------------------------
+After applying that patch to alsa-utils-1.0.9 and reinstalling
+alsa-driver-1.0.9b, alsaconf appears to be consistently detecting my card.
+I don't think the IRQ setting is quite correct and I'm currently only able
+to access the machine over SSH, so I can't tell whether or not it's
+working. Here's the modprobe.conf that is generated:
+
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF version 1.0.9 ---
+alias snd-card-0 snd-opl3sa2
+alias sound-slot-0 snd-opl3sa2
+options snd-opl3sa2 fm_port=-1 midi_port=-1 port=0x370 wss_port=0x530
+dma1=1 dma2=0 irq=5
+# --- END: Generated by ALSACONF, do not edit. ---
+
+
+I don't think it's set to IRQ 5 and dma1 is usally set to 0 and dma2 to 1,
+but the IO ports look correct. I can load alsamixer and fiddle with the
+options. mplayer doesn't seem to be able to play (from what I can tell
+from an SSH window).
+
+At least it's a small step.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-05 01:00 eNTi           New Issue                                    
-07-29-05 01:00 eNTi           Distribution              => gentoo          
-07-29-05 01:00 eNTi           Kernel Version            => Linux eNTi
-2.6.12-gentoo-r6 #4 SMP Thu Jul 28 22:36:42 CEST 2005 i686 AMD Athlon(tm) 64
-Processor 3500+ AuthenticAMD GNU/Linux
-08-03-05 15:03 tiwai          Note Added: 0005630                          
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
+08-02-05 00:02 iive           Note Added: 0005599                          
+08-02-05 03:00 ahaning        Note Added: 0005600                          
+08-02-05 03:05 ahaning        Note Added: 0005601                          
+08-02-05 03:05 ahaning        Note Deleted: 0005600                        
+08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
+      
+08-02-05 22:14 perex          Note Added: 0005607                          
+08-02-05 22:16 perex          Note Added: 0005608                          
+08-03-05 02:46 ahaning        Note Added: 0005610                          
+08-03-05 11:42 perex          File Added: alsaconf                         
+08-03-05 11:42 perex          Note Added: 0005615                          
+08-03-05 13:42 ahaning        Note Added: 0005625                          
+08-03-05 15:17 ahaning        Note Added: 0005631                          
 ======================================================================
 
 
