@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001306]: Apparent race condition in snd_pcm_drain() sometimes hangs userspace processes
-Date: Wed, 3 Aug 2005 17:34:19 +0200
-Message-ID: <dfec1a771bb4ab79074c4df1e361b97a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001275]: easly no sound [fm801]
+Date: Wed, 3 Aug 2005 18:03:23 +0200
+Message-ID: <3e79ef635a6d7735d9331d973ad11f6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 336D01DD
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 17:34:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15A9F19D
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 18:03:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1275> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                jsz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1306
-Category:                   CORE - pcm
-Reproducibility:            sometimes
-Severity:                   major
+Issue ID:                   1275
+Category:                   PCI - fm801
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             2.4.29
 ======================================================================
-Date Submitted:             08-03-2005 17:12 CEST
-Last Modified:              08-03-2005 17:34 CEST
+Date Submitted:             07-22-2005 21:15 CEST
+Last Modified:              08-03-2005 18:03 CEST
 ======================================================================
-Summary:                    Apparent race condition in snd_pcm_drain() sometimes
-hangs userspace processes
+Summary:                    easly no sound [fm801]
 Description: 
-esd with libesd-alsa0 sometimes hangs userspace processes.
-Reproducible on i386 and powerpc.
+Dear alsa users, 
+i really don't know what else i should to do for my audio system.
+I have Fortemedia fm801 soundcard and i really followed the steps
+descripted in specific tutorial. 
+I remember that the default driver (alsa 1.0.8), after alsaconf &
+alsamixer, was function, but so i had not run #alsactl store, so i
+installed 1.0.9b to resolve the problem that i believe exists...
+-how can i restore the default 1.0.8 drivers? 
 
-bt of the hanged state of esd, stracing esd appears to remove the
-problem:
+-why the 1.0.9b don't functions? this i'have done:
+#./configure; make; make install; alsaconf; alsamixer; ./snddevices; 
+and everything is well done: driver installed and card present in
+/proc/asound/cards.
+Of course, the alsamixer settings are all unmuted, created .asoundrc in
+home and modules.conf has been modified by alsaconf.
+I tried also rebooting after install, but nothing.
 
-#0  0xffffe410 in ?? ()
-#1  0xbfff9068 in ?? ()
-#2  0xffffffff in ?? ()
-#3  0x00000001 in ?? ()
-#4  0xb7f1a4b5 in poll () from /lib/tls/i686/cmov/libc.so.6
-#5  0xb7dd3ca1 in snd_pcm_wait_nocheck () from /usr/lib/libasound.so.2
-#6  0xb7e09a2d in _snd_pcm_dmix_open () from /usr/lib/libasound.so.2
-#7  0xb7dd1a9c in snd_pcm_drain () from /usr/lib/libasound.so.2
-#8  0xb7dee0ea in _snd_pcm_rate_open () from /usr/lib/libasound.so.2
-#9  0xb7dd1a9c in snd_pcm_drain () from /usr/lib/libasound.so.2
-#10 0xb7fd12f9 in esd_audio_flush () from /usr/lib/libesd.so.0
-#11 0x0804bdd0 in clean_exit ()
-#12 0x0804a927 in clean_exit ()
-#13 0xb7e72e8a in __libc_start_main () from /lib/tls/i686/cmov/libc.so.6
-#14 0x08049751 in ?? ()
-(gdb) cont
-Continuing.
+Please help me.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 08-03-05 17:30 
-----------------------------------------------------------------------
-I don't know the version, but the bug was reported around the first of
-July, 2005.
-
-I will ask the submitter.
-
-----------------------------------------------------------------------
- jdthood - 08-03-05 17:34 
-----------------------------------------------------------------------
-Submitter says "1.0.9" so the bug has probably already been fixed in
-1.0.9a,
-as you say.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 17:12 jdthood        New Issue                                    
-08-03-05 17:18 tiwai          Note Added: 0005634                          
-08-03-05 17:26 jdthood        Additional Information Updated                    
-08-03-05 17:30 jdthood        Note Added: 0005635                          
-08-03-05 17:34 jdthood        Note Added: 0005636                          
-08-03-05 17:34 jdthood        Status                   new => resolved     
-08-03-05 17:34 jdthood        Resolution               open => fixed       
+07-22-05 21:15 jsz            New Issue                                    
+07-22-05 21:15 jsz            Kernel Version            => 2.4.29          
+07-22-05 21:18 jsz            Issue Monitored: jsz                         
+08-03-05 18:03 perex          Category                 1_OTHERS => PCI - fm801
 ======================================================================
 
 
