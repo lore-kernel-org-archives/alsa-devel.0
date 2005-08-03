@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000240]: Clean up the iPaq specific things (move them into another source code).
-Date: Wed, 3 Aug 2005 13:16:44 +0200
-Message-ID: <c673b151b583f241d54cd8c4d3d90de4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Wed, 3 Aug 2005 13:42:58 +0200
+Message-ID: <fa244a3a6df1d051b83fcea011dacc6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65FDA19D
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 13:16:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81ED617A
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 13:42:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=240> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                perex
-Assigned To:                perex
+Reported By:                iive
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   240
-Category:                   ARM - sa11xx-uda1341
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             04-27-2004 11:50 CEST
-Last Modified:              08-03-2005 13:16 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              08-03-2005 13:42 CEST
 ======================================================================
-Summary:                    Clean up the iPaq specific things (move them into
-another source code).
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-See summary.
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
+
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
+
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
+
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-03-05 13:16 
+ perex - 08-03-05 11:42 
 ----------------------------------------------------------------------
-just test bug#1200 bugnote#4100
+I uploaded new alsaconf script. Hopefully, it will work on your system.
+
+----------------------------------------------------------------------
+ ahaning - 08-03-05 13:42 
+----------------------------------------------------------------------
+perex:
+
+I copied the attached alsaconf script over my old one and ran it. The
+first time, without rebooting, it said it found a OPL3SA2 and would write
+the configuration to /etc/modprobe.conf, but either it didn't or it
+detected things incorrectly.
+
+After rebooting, it won't even detect the OPL3SA2. "No legacy cards
+found."
+
+What version of ALSA and the kernel are you running? If we can try to get
+at least similar software, it might be easier to debug these issues. Also,
+what kind of OPL3SA2 are you using? I have one in my Gateway Solo 2500 and
+I have PNP turned off in the BIOS.
+
+Thanks!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-27-04 11:50 perex          New Issue                                    
-10-20-04 11:30 perex          Note Added: 0002214                          
-10-20-04 11:31 perex          Note Deleted: 0002214                        
-10-20-04 11:53 perex          Note Added: 0002215                          
-10-20-04 11:53 perex          Note Deleted: 0002215                        
-10-20-04 12:21 perex          Note Added: 0002216                          
-10-20-04 12:21 perex          Note Deleted: 0002216                        
-10-22-04 15:18 perex          Note Added: 0002227                          
-10-22-04 15:20 perex          Note Added: 0002228                          
-10-22-04 15:24 perex          Note View State: public: 2227                    
-10-22-04 15:24 perex          Note View State: public: 2228                    
-10-22-04 15:26 perex          Note Added: 0002229                          
-10-22-04 15:26 perex          Note Added: 0002230                          
-10-22-04 15:27 perex          Note Added: 0002231                          
-10-22-04 15:28 perex          Note Added: 0002232                          
-10-22-04 15:29 perex          Note Added: 0002233                          
-10-22-04 15:32 perex          Note Added: 0002234                          
-10-22-04 15:35 perex          Note Added: 0002235                          
-10-22-04 15:35 perex          Note Added: 0002236                          
-10-22-04 15:39 perex          Note Added: 0002237                          
-10-22-04 15:46 perex          Note Added: 0002238                          
-10-22-04 15:48 perex          Note Added: 0002239                          
-10-22-04 15:48 perex          Note Added: 0002240                          
-10-22-04 15:52 perex          Note Added: 0002241                          
-10-22-04 15:55 perex          Note Added: 0002242                          
-10-22-04 16:16 perex          Note Deleted: 0002242                        
-10-22-04 16:17 perex          Note Deleted: 0002227                        
-10-22-04 16:17 perex          Note Deleted: 0002241                        
-10-22-04 16:17 perex          Note Deleted: 0002240                        
-10-22-04 16:17 perex          Note Deleted: 0002228                        
-10-22-04 16:18 perex          Note Deleted: 0002239                        
-10-22-04 16:18 perex          Note Deleted: 0002238                        
-10-22-04 16:18 perex          Note Deleted: 0002237                        
-10-22-04 16:18 perex          Note Deleted: 0002230                        
-10-22-04 16:18 perex          Note Deleted: 0002229                        
-10-22-04 16:18 perex          Note Deleted: 0002236                        
-10-22-04 16:18 perex          Note Deleted: 0002231                        
-10-22-04 16:18 perex          Note Deleted: 0002232                        
-10-22-04 16:19 perex          Note Deleted: 0002233                        
-10-22-04 16:19 perex          Note Deleted: 0002235                        
-10-22-04 16:19 perex          Note Deleted: 0002234                        
-06-06-05 10:08 perex          Reproducibility          always => sometimes 
-06-06-05 10:10 perex          Reproducibility          sometimes => always 
-06-06-05 10:14 perex          Reproducibility          always => sometimes 
-06-06-05 10:17 perex          Reproducibility          sometimes => always 
-06-06-05 10:19 perex          Reproducibility          always => sometimes 
-06-06-05 10:22 perex          Reproducibility          sometimes => always 
-08-03-05 13:16 perex          Note Added: 0005624                          
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
+08-02-05 00:02 iive           Note Added: 0005599                          
+08-02-05 03:00 ahaning        Note Added: 0005600                          
+08-02-05 03:05 ahaning        Note Added: 0005601                          
+08-02-05 03:05 ahaning        Note Deleted: 0005600                        
+08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
+      
+08-02-05 22:14 perex          Note Added: 0005607                          
+08-02-05 22:16 perex          Note Added: 0005608                          
+08-03-05 02:46 ahaning        Note Added: 0005610                          
+08-03-05 11:42 perex          File Added: alsaconf                         
+08-03-05 11:42 perex          Note Added: 0005615                          
+08-03-05 13:42 ahaning        Note Added: 0005625                          
 ======================================================================
 
 
