@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
-Date: Wed, 3 Aug 2005 10:11:04 +0200
-Message-ID: <c7e372478dde7037bd79dcf6190e647a@bugtrack.alsa-project.org>
+Date: Wed, 3 Aug 2005 10:10:30 +0200
+Message-ID: <1e281e63101322e646109a6b08160339@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66813192
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 10:11:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46E66192
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 10:10:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001302.
+The following issue has been set as RELATED TO issue 0001301.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
 ======================================================================
@@ -53,7 +53,6 @@ Linux 2.6.11.12 has been tested and is working fine.
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0001301 Kernel OSS emulation stops working afte...
-related to          0001302 Clicking noise when using kphone with t...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -73,7 +72,6 @@ Date Modified  Username       Field                    Change
 08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
 08-02-05 22:26 perex          Note Added: 0005609                          
 08-03-05 10:10 perex          Relationship added       related to 0001301  
-08-03-05 10:11 perex          Relationship added       related to 0001302  
 ======================================================================
 
 
