@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000424]: No mute control on Master Volume
-Date: Wed, 3 Aug 2005 14:56:39 +0200
-Message-ID: <5a1659e606c018562e580b8448ac7ee6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001296]: isapnp is incompatible with pnpbios and used the wrong ID's
+Date: Wed, 3 Aug 2005 14:58:51 +0200
+Message-ID: <c0b99e0dbf13cafb46c79a04df81b50f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 873C8189
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 14:56:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFF3C189
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 14:58:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,40 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=424> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1296> 
 ======================================================================
-Reported By:                marm
-Assigned To:                tiwai
+Reported By:                Henne
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   424
-Category:                   PCI - cmipci
+Project:                    ALSA - utils
+Issue ID:                   1296
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian unstable
-Kernel Version:             2.6.7
+Status:                     new
 ======================================================================
-Date Submitted:             08-05-2004 20:07 CEST
-Last Modified:              08-03-2005 14:56 CEST
+Date Submitted:             08-01-2005 13:07 CEST
+Last Modified:              08-03-2005 14:58 CEST
 ======================================================================
-Summary:                    No mute control on Master Volume
+Summary:                    isapnp is incompatible with pnpbios and used the
+wrong ID's
 Description: 
-Please add a mute control for the Master Volume on cmipci cards (I have a
-CMI8738-MC6), as it makes life difficult not having one when the phone
-rings ;)
-
-The Windows drivers support this, and indeed, I seem to recall earlier
-(0.9.something) versions of the alsa driver did too.
+The sysfs path to the device is wrong.
+All details are in the patch. 
 ======================================================================
 
 ----------------------------------------------------------------------
- schorpp - 08-03-05 14:54 
+ tiwai - 08-03-05 14:58 
 ----------------------------------------------------------------------
-hard to say without available register datasheet.. but if You say it...
-
-on trying to emulate the switch button by software then.
-
-----------------------------------------------------------------------
- tiwai - 08-03-05 14:56 
-----------------------------------------------------------------------
-Well, my comment is based on the datasheet available at ALSA ftp...
+Check the cvs version.  It was fixed today.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-04 20:07 marm           New Issue                                    
-08-05-04 20:07 marm           Distribution              => Debian unstable 
-08-05-04 20:07 marm           Kernel Version            => 2.6.7           
-08-02-05 10:19 schorpp        Note Added: 0005602                          
-08-03-05 12:43 tiwai          Note Added: 0005623                          
-08-03-05 14:54 schorpp        Note Added: 0005626                          
-08-03-05 14:56 tiwai          Note Added: 0005627                          
+08-01-05 13:07 Henne          New Issue                                    
+08-01-05 13:07 Henne          File Added: aconf.diff                       
+08-03-05 14:58 tiwai          Note Added: 0005628                          
 ======================================================================
 
 
