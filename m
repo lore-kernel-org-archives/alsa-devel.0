@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Problem in testing ALSA
-Date: Tue, 02 Aug 2005 21:55:03 -0400
-Message-ID: <1123034103.6189.1.camel@mindpipe>
+Date: Tue, 02 Aug 2005 22:02:31 -0400
+Message-ID: <1123034552.6189.3.camel@mindpipe>
 References: <20050803012126.87440.qmail@web54607.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -22,19 +22,8 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Tue, 2005-08-02 at 18:21 -0700, Chow Raymond wrote:
-> [root@ARMCore /]$ aplay /home/test/decoded_4350.wav
-> ALSA lib pcm.c:1962:(snd_pcm_open_noupdate) Unknown
-> PCM default
-> aplay: main:507: audio open error: No such file or
-> directory
-> 
 
-No, that probably just means that the default pcm is not defined.  This
-is actually a userspace (alsa-lib) problem, it sounds like the kernel
-side might be OK.
-
-But, please repost your query, and cc: alsa-devel, because I don't know
-that much about the ARM drivers.
+Disregard my last message, I see that you did cc: alsa-devel already.
 
 Lee
 
