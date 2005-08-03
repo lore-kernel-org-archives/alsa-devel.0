@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001305]: some odd conditions cause gnomemeeting to crash on takeoff - they blame libasound
-Date: Wed, 3 Aug 2005 04:01:09 +0200
-Message-ID: <1103bc2dbc4ff16507e3c1ea15ffd4e9@bugtrack.alsa-project.org>
+From: =?windows-1254?q?T.Net_Bilgisayar_Sistemleri_Kartu=FE_ve_Toner_Dolum_Hizmetleri_ <TnetBilgisayarSistem@ttnet.net.tr>,
+	?=@perex.cz
+Subject: SATIN ALIYORUZ
+Date: Wed, 03 Aug 2005 06:33:41 +0300
+Message-ID: <20050803033338.B7DDC8724A@mail.perex.cz>
+Reply-To: TnetBilgisayarSistem@ttnet.net.tr
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="8179f65e-91c8-4ecc-8070-dafe6dc27a26"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9415419D
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 04:01:09 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7EA871E7
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 05:33:43 +0200 (MEST)
+Received: from ttnet225.com (unknown [85.99.139.24])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id B7DDC8724A
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 05:33:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,216 +26,104 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1305> 
-======================================================================
-Reported By:                zsd
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1305
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-03-2005 03:42 CEST
-Last Modified:              08-03-2005 04:01 CEST
-======================================================================
-Summary:                    some odd conditions cause gnomemeeting to crash on
-takeoff - they blame libasound
-Description: 
-Here is what I reported to the gnomemeeting people:
+This is a multi-part message in MIME format
+--8179f65e-91c8-4ecc-8070-dafe6dc27a26
+Content-Type: text/plain; charset=windows-1254
+Content-Transfer-Encoding: quoted-printable
 
-Steps to reproduce the crash:
-1. start it
-
-Expected Results:
-It should run
-
-How often does this happen?
-Every time
-
-Admittedly, this was vague, and I finally tracked it down (see "Steps to
-reproduce" below).
-
-But first, here was the gnomemeeting traceback:
-
-Backtrace was generated from '/usr/bin/gnomemeeting'
-
-(no debugging symbols found)...Using host libthread_db library
-"/lib/libthread_db.so.1".
-(no debugging symbols found)...(no debugging symbols found)...(no
-debugging symbols found)...(no debugging symbols found)...(no debugging
-symbols found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...(no debugging symbols
-found)...(no debugging symbols found)...[Thread debugging using
-libthread_db enabled]
-[New Thread 16384 (LWP 16377)]
-0x41498497 in waitpid () from /lib/libpthread.so.0
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x41498497 in waitpid
-() from /lib/libpthread.so.0
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x400985c4 in
-libgnomeui_module_info_get () from
-/usr/lib/libgnomeui-2.so.0
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x41496be5 in
-__pthread_sighandler () from /lib/libpthread.so.0
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  <signal handler
-called>
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x4183beda in
-snd_ctl_close () from /usr/lib/libasound.so.2
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x41bf9155 in
-PSoundChannelALSA::UpdateDictionary ()
-   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x41bf919a in
-PSoundChannelALSA::GetDeviceNames ()
-   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x41bf88a5 in
-PSoundChannelALSA_GetDeviceNames ()
-   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x41340fea in
-PSoundChannel::GetDeviceNames ()
-   from /usr/lib/libpt_linux_x86_r.so.1.8.3
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x413411a9 in
-PSoundChannel::GetDeviceNames ()
-   from /usr/lib/libpt_linux_x86_r.so.1.8.3
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 0x41341229 in
-PSoundChannel::GetDefaultDevice ()
-   from /usr/lib/libpt_linux_x86_r.so.1.8.3
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=11 0x40fe98fe in
-H323EndPoint::H323EndPoint ()
-   from /usr/lib/libh323_linux_x86_r.so.1.15.2
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=12 0x0807c832 in
-GMH323EndPoint::GMH323EndPoint ()
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13 0x08079852 in
-GnomeMeeting::GnomeMeeting ()
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 0x080941b2 in main ()
-
-Thread 1 (Thread 16384 (LWP 16377)):
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x41498497 in waitpid
-() from /lib/libpthread.so.0
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x400985c4 in
-libgnomeui_module_info_get () from
-/usr/lib/libgnomeui-2.so.0
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x41496be5 in
-__pthread_sighandler () from /lib/libpthread.so.0
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  <signal handler
-called>
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x4183beda in
-snd_ctl_close () from /usr/lib/libasound.so.2
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x41bf9155 in
-PSoundChannelALSA::UpdateDictionary ()
-   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x41bf919a in
-PSoundChannelALSA::GetDeviceNames ()
-   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x41bf88a5 in
-PSoundChannelALSA_GetDeviceNames ()
-   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x41340fea in
-PSoundChannel::GetDeviceNames ()
-   from /usr/lib/libpt_linux_x86_r.so.1.8.3
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x413411a9 in
-PSoundChannel::GetDeviceNames ()
-   from /usr/lib/libpt_linux_x86_r.so.1.8.3
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 0x41341229 in
-PSoundChannel::GetDefaultDevice ()
-   from /usr/lib/libpt_linux_x86_r.so.1.8.3
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=11 0x40fe98fe in
-H323EndPoint::H323EndPoint ()
-   from /usr/lib/libh323_linux_x86_r.so.1.15.2
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=12 0x0807c832 in
-GMH323EndPoint::GMH323EndPoint ()
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13 0x08079852 in
-GnomeMeeting::GnomeMeeting ()
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14 0x080941b2 in main ()
-No symbol table info available.
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x41498497 in waitpid
-() from /lib/libpthread.so.0
+KARTU=DELARINIZI =C7=D6PE ATMAYIN. ORJ=DDNAL KARTU=DE ALIP DOLUM =
+YAPTIRMIYORSANIZ SATIN ALIYORUZ. =DDSTER ADRES=DDM=DDZE =DCCRETS=DDZ KARGO =DD=
+LE G=D6NDER=DDN, =DDSTER ARAYIN B=DDZ GELEL=DDM.
+    
+A=FEa=F0=FDda kartu=FE ve toner dolum yap=FDl=FDrken ge=E7ilen a=FEamalar =
+vard=FDr. Fark=FDm=FDz=FD g=F6receksiniz.....  
+    Sizi m=FC=FEteri portfoy=FCm=FCz i=E7inde g=F6rmekten mutluluk duyar=FDz.
+=
 
 
+Inkjet ve Toner Kartu=FEu Dolumu Hakk=FDnda K=FDsa Bilgi 
 
-======================================================================
+1. Dolum i=FElemi sonucunda elde edece=F0iniz bask=FD ve sayfa kalitesi =
+orijinal kartu=FE veya tonerinizden farkl=FD olmayacakt=FDr. 
+Dolum i=FEleminden memnun kalmad=FD=F0=FDn=FDz taktirde =FCcret iade =
+edilecektir.
 
-----------------------------------------------------------------------
- zsd - 08-03-05 04:01 
-----------------------------------------------------------------------
-The following didn't get into the bug report above... here is info on how
-to reproduce the bug:
+2. Yaz=FDc=FD herhangi bir nedenle ar=FDzalan=FDr ise =FCcretsiz tamir =
+edilir. (malzeme hari=E7)
 
-I have discovered a set of conditions which cause this bug to manifest
-itself.
+3. =DDstanbul i=E7i Yerinden al=FDp yerine teslim ediyoruz. B=FCt=FCn kargo =
+ve kurye hizmetlerimiz =FCcretsizdir.  ( Yurti=E7i Kargo, Aras Kargo =E7al=FD=
+=FEt=FD=F0=FDm=FDz kargo =FEirketleridir.) 
 
-First, after submitting the bug report I discovered that gnomemeeting was
-working if I used a USB webcam that used the ov511 module and DID NOT have
-a
-built-in mic.  I usually use a Logitech webcam (which uses pwc+pwcx
-modules
-under 2.4.xx) but which also has a built in mic (which uses the
-snd-usb-audio).
+4. Inkjet ve laser kartu=FElar=FDn=FDz a=FEa=F0=FDda belirtilen i=FElemlerden =
+ge=E7ti=F0i i=E7in T=FCm =FCr=FCnlerimize %100 garanti vermekteyiz.
 
-Next I discovered that when I created a new user on my computer which was
-NOT in
-the "audio" group, gnomemeeting did not crash and burn on takeoff when
-using the
-Logitech web cam.  However, the config druid did not register the USB mic
-as an
-option.
+a) Inkjet Kartu=FE Dolum;
+" Inkjet kartu=FE dolumdan =F6nce elektronik devre testi yap=FDl=FDp , doluma =
+m=FCsait de=F0ilse kesinlikle dolum yap=FDlmaz.
+" Elektronik devre testinden ge=E7en =FDnkjet kartu=FE tamamen bo=FEalt=FD=
+larak , kartu=FE i=E7 temizleme s=FDv=FDs=FD ile i=E7 temizli=F0i yap=FDl=FD=
+r.
+" Kartu=FE nozzle (p=FCsk=FCrtme delikleri) buhar makinesi ile a=E7=FDl=FDr.
+" Inkjet kartu=FEa marka ve modeline uygun m=FCrekkep orj=FDnal miktarda =
+dolumu otomatik kartu=FE dolum makineleri ile yap=FDl=FDr.
+" Dolumu yap=FDlan kartu=FElar=FDn herhangi bir akma yada yazmama durumuna =
+engel olmak i=E7in i=E7 bas=FDn=E7 ayarlar=FD otomatik makineler kullan=FD=
+larak yap=FDl=FDr.
+" Tam olarak dolum i=FElemi biten =FDnkjet kartu=FE d=FD=FE temizli=F0i de =
+yap=FDlarak yaz=FD testi al=FDn=FDr.
+" Ancak en iyi bask=FD kalitesini veren =FDnkjet kartu=FE, p=FCsk=FCrtme =
+delikleri orj=FDnal mavi bant kullan=FDlarak bantlan=FDr. Bu i=FElem kartu=FE=
+un raf =F6mr=FCn=FC uzat=FDr.
+" T=FCm temizlik ve bantlama i=FElemleri biten =FDnkjet kartu=FElar kendi =
+test =E7=FDkt=FDlar=FD ile birlikte vakumlu bir =FEekilde paketlenerek , =
+kutulan=FDr
+" %100 garanti; kartu=FEunuz bitene kadar ge=E7erlidir. 
 
-After a lot of searching, I discovered that /dev/snd/pcmC1D0c was missing
-(presumably clobbered by udev in a 2.6.1x kernel I use some times) and
-that
-restoring this file brought the world back to its previous blissful
-state.
+b) Laser Kartu=FE Dolum
+" Laser kartu=FE tamamen s=F6k=FCl=FCp par=E7alar=FDna ayr=FDl=FDr.
+" At=FDk toner haznesi bo=FEalt=FDlarak gerekli t=FCm k=FDs=FD=
+mla!*USERNAME*!r=FD m=FDcrof=FDltre vakum cihaz=FD ile temizlenir.
+" Magnet=FDc roller card=FDnal =FDmag=FDng suppl=FDes marka =F6zel s=FDv=FD =
+ve bez ile temizlenir.
+" Pcr card=FDnal =FDmag=FDng suppl=FDes marka =F6zel s=FDv=FD ve bez ile =
+temizlenir.
+" Drum card=FDnal =FDmag=FDng suppl=FDes marka =F6zel s=FDv=FD ve bez ile =
+temizlenir.
+" Tamamen temizlenen laser kartu=FE modeline uygun toner ile orj=FDnal =
+miktarda dolum yap=FDl=FDr.
+" Laser kartu=FE par=E7alar=FD birle=FEtirilip test =E7=FDkt=FDs=FD al=FDn=FD=
+r.
+" Test =E7=FDkt=FDs=FD orj=FDnal kalitede de=F0ilse gerekli par=E7alar ( =
+magnet=FDc roller , pcr, drum , w=FDper blade, doctor blade ) yenileri ile =
+de=F0i=FEtirilir.
+" De=F0i=FEen par=E7alar fuj=FD, hanp veya stat=FDc control markal=FDd=FDr.
+" Yenilenen veya dolan laser kartu=FE, seal =E7ekilip, i=E7 korumas=FD ile =
+birlikte kutulan=FDr.
 
-It is interesting that being in the audio group is a significant
-difference
-here, because even with the audio devices (/dev/snd/*, /dev/dsp*,
-/dev/mixer*,
-...) chmod'ed to 666, the user w/o "audio" could run gnomemeeting, while
-the
-user with "audio" could not.
+5. T=FCm bu kalite ve hizmet i=E7in ise =F6deyece=F0iniz miktar ise orjinal =
+kartu=FEa =F6deyece=F0iniz miktardan %50 ile %70 daha azd=FDr. 
 
-Obviously, the missing file is a local config problem that was my fault (I
-could
-gripe about udev, but that's another story), however, 
-(a) the connection with me being in the audio group is mysterious, and
-(b) a more gracefull error message (or actually working regardless) would
-be nicer.
+*** TEKN=DDK SERV=DDS EK=DDB=DDM=DDZ =DDSTER EVDE =DDSTER =DD=DEYER=DDNDE =
+PROBLEMLER=DDN=DDZ=DD =C7=D6ZER... B=DDLG=DDSAYARINIZDA B=DDR SORUN VARSA =
+HEMEN ARAYIN !
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-03-05 03:42 zsd            New Issue                                    
-08-03-05 04:01 zsd            Note Added: 0005611                          
-======================================================================
+*** Inkjet kartu=FE dolum fiyat=FDm=FDz 8,50 YTL + Kdv
+*** Toner dolum fiyat=FDm=FDz 25,00 YTL + Kdv
+*** Daha fazla miktardaki Kartu=FE veya toner dolumlar=FDn=FDz i=E7in =
+firmam=FDzdan teklif isteyiniz.
 
+
+Sel=E7uk KONUK
+Pazarlama M=FCd=FCr=FC
+msn.: selcukkonuk@hotmail.com
+
+Tnet Bilgisayar Sistemleri Kartu=FE ve Toner Dolum Hizmetleri
+Ay=FEe =C7avu=FE Cad. Kaptan Arif Sok. No.:9/4 
+Suadiye/=DDSTANBUL
+Tel.: 0216 445 7242 - 445 7243
+Fax.: 0216 410 9314  
+--8179f65e-91c8-4ecc-8070-dafe6dc27a26--
 
 
 
