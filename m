@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001308]: hdsp 9632 w firmware 152 not working with Linux and ALSA 1.0.9
-Date: Wed, 3 Aug 2005 23:24:03 +0200
-Message-ID: <dce466ca31a53673159e749a3bdd6fbf@bugtrack.alsa-project.org>
+Date: Wed, 3 Aug 2005 23:32:34 +0200
+Message-ID: <9caa92936fb4708eca5a3df42d766b28@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBAA11D2
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 23:24:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 395991D2
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 23:32:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1308> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.12.2
 ======================================================================
 Date Submitted:             08-03-2005 23:24 CEST
-Last Modified:              08-03-2005 23:24 CEST
+Last Modified:              08-03-2005 23:32 CEST
 ======================================================================
 Summary:                    hdsp 9632 w firmware 152 not working with Linux and
 ALSA 1.0.9
@@ -76,11 +76,19 @@ Ado Arnolds
 
 ======================================================================
 
+----------------------------------------------------------------------
+ ado - 08-03-05 23:32 
+----------------------------------------------------------------------
+I'm very sorry for entering the wrong category. I will re-enter the problem
+with the right category!
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-03-05 23:24 ado            New Issue                                    
 08-03-05 23:24 ado            Kernel Version            => 2.6.12.2        
+08-03-05 23:31 ado            Issue Monitored: ado                         
+08-03-05 23:32 ado            Note Added: 0005637                          
 ======================================================================
 
 
