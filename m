@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001293]: trident: device supported by OSS but not by ALSA
-Date: Wed, 3 Aug 2005 12:01:18 +0200
-Message-ID: <3b77e0b2d7bcecb85f64185e89335b72@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001299]: mixed sound drained about 20db at the line-out until removal of driver
+Date: Wed, 3 Aug 2005 12:05:42 +0200
+Message-ID: <607f382f068960e07d6225180b241f25@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19547195
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:01:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DB6C195
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:05:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1293> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1299> 
 ======================================================================
-Reported By:                Adrian Bunk
-Assigned To:                
+Reported By:                schorpp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1293
-Category:                   PCI - trident
+Issue ID:                   1299
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.13-rc4-mm1
+Status:                     resolved
+Distribution:               debian sarge-sid
+Kernel Version:             2.6.12.0
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-31-2005 21:13 CEST
-Last Modified:              08-03-2005 12:01 CEST
+Date Submitted:             08-02-2005 10:42 CEST
+Last Modified:              08-03-2005 12:05 CEST
 ======================================================================
-Summary:                    trident: device supported by OSS but not by ALSA
+Summary:                    mixed sound drained about 20db at the line-out until
+removal of driver
 Description: 
-I'm currently creating a list of OSS drivers where all the hardware
-supported by them is also supported by ALSA. The goal is to schedule
-them for removal (except someone tells that for one or more of them ALSA
-support is inferior). I do not have this hardware, but this is currently
-the reason why the old OSS driver can't be removed from the kernel.
+with the driver working, output volume is about 20db too low.
 
-
-The OSS trident driver has 5 different pci_device_id entries.
-
-For 4 of them there seems to be similar ALSA support, but I can't find
-any ALSA equivalent for the following entry:
-        {PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_5050,
-         PCI_ANY_ID, PCI_ANY_ID, 0, 0, CYBER5050},
-
-
-
-Alan Cox said about this:
-
-The OSS driver supports the CyberPro T-squared core integrated into the
-cyberpro chipset while the ALSA driver only supports the others. Should
-be easy for someone to resolve. I don't have any 5000 hardware to test
-it however.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-03-05 12:01 
+ schorpp - 08-02-05 15:29 
 ----------------------------------------------------------------------
-TESTERS WANTED!
+CLOSED
+
+was a mixer problem.
+
+sry
+y
+tom
+
+----------------------------------------------------------------------
+ tiwai - 08-03-05 12:05 
+----------------------------------------------------------------------
+OK, resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-05 21:13 Adrian Bunk    New Issue                                    
-07-31-05 21:13 Adrian Bunk    Kernel Version            => 2.6.13-rc4-mm1  
-08-03-05 12:01 perex          Note Added: 0005616                          
+08-02-05 10:42 schorpp        New Issue                                    
+08-02-05 10:42 schorpp        Distribution              => debian sarge-sid
+08-02-05 10:42 schorpp        Kernel Version            => 2.6.12.0        
+08-02-05 10:54 schorpp        Note Added: 0005603                          
+08-02-05 11:37 schorpp        Note Added: 0005604                          
+08-02-05 15:29 schorpp        Note Added: 0005605                          
+08-03-05 12:05 tiwai          Status                   assigned => resolved
+08-03-05 12:05 tiwai          Resolution               open => not an issue
+08-03-05 12:05 tiwai          Note Added: 0005617                          
 ======================================================================
 
 
