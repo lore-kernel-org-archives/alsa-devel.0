@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000441]: Master volume not doing anything
-Date: Wed, 3 Aug 2005 12:24:11 +0200
-Message-ID: <0d2d7ecbdac6fd2ba285b384f6f847b3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001303]: AD1816A sound driver has no parameter to adjust reference clock frequency
+Date: Wed, 3 Aug 2005 12:30:56 +0200
+Message-ID: <063667ec998b2a9a04902e02fbbd5c3c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93CDD192
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:24:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D088192
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:30:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=441> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1303> 
 ======================================================================
-Reported By:                Simon
+Reported By:                tek01
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   441
-Category:                   PCI - emu10k1
+Issue ID:                   1303
+Category:                   ISA - ad1816a
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.
+Distribution:               does not matter
+Kernel Version:             at least up to 2.6.13-rc4
 ======================================================================
-Date Submitted:             08-14-2004 20:49 CEST
-Last Modified:              08-03-2005 12:24 CEST
+Date Submitted:             08-02-2005 17:38 CEST
+Last Modified:              08-03-2005 12:30 CEST
 ======================================================================
-Summary:                    Master volume not doing anything
+Summary:                    AD1816A sound driver has no parameter to adjust
+reference clock frequency
 Description: 
-I have sound, everything works, but the master volume control doesn't have
-any effect on the actual volume output.
-
-Running Soundblaster Live! 5.1 dolby surround system
+The ALSA AD1816A sound driver has no parameter to specify the reference
+clock frequency. The AD1816A chip has been designed for a 33MHz reference
+clock, however some cards are shipped with different reference clocks
+(mostly 32.125MHz). Thus the sample rate has to be corrected on those
+cards before it is written to the hardware registers for proper capture
+and playback speed.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 07-16-05 17:14 
+ tiwai - 08-03-05 12:30 
 ----------------------------------------------------------------------
-Submitter: Is there any improvement in more recent ALSA releases?
-
-----------------------------------------------------------------------
- Simon - 07-16-05 21:20 
-----------------------------------------------------------------------
-It works now for only the subwoofer and the left front and rear... it's an
-improvement
-
-Current kernel version running:
-2.6.8-24.16 or 2.6.11.9
-
-Latest ALSA driver
-
-
+Could you try the attached patch?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-04 20:49 Simon          New Issue                                    
-08-14-04 20:49 Simon          Distribution              => Slackware       
-08-14-04 20:49 Simon          Kernel Version            => 2.              
-07-16-05 17:14 jdthood        Note Added: 0005499                          
-07-16-05 21:19 Simon          Note Added: 0005502                          
-07-16-05 21:20 Simon          Note Edited: 0005502                         
-08-03-05 12:24 perex          Category                 CORE - control => PCI -
-emu10k1
+08-02-05 17:38 tek01          New Issue                                    
+08-02-05 17:38 tek01          Distribution              => does not matter 
+08-02-05 17:38 tek01          Kernel Version            => at least up to
+2.6.13-rc4
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-03-05 12:30 tiwai          Note Added: 0005622                          
 ======================================================================
 
 
