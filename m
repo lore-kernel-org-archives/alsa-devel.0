@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001307]: cs46xx module load error with kernel 2.6.13-rc5
-Date: Wed, 3 Aug 2005 18:25:33 +0200
-Message-ID: <fc8284f7c9f9f0e0957b0e490740ba7c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001308]: hdsp 9632 w firmware 152 not working with Linux and ALSA 1.0.9
+Date: Wed, 3 Aug 2005 23:24:03 +0200
+Message-ID: <dce466ca31a53673159e749a3bdd6fbf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81BF7165
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 18:25:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBAA11D2
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 23:24:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1307> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1308> 
 ======================================================================
-Reported By:                jfeise
+Reported By:                ado
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1307
-Category:                   PCI - cs46xx
+Issue ID:                   1308
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.13-rc5
+Distribution:               
+Kernel Version:             2.6.12.2
 ======================================================================
-Date Submitted:             08-03-2005 18:25 CEST
-Last Modified:              08-03-2005 18:25 CEST
+Date Submitted:             08-03-2005 23:24 CEST
+Last Modified:              08-03-2005 23:24 CEST
 ======================================================================
-Summary:                    cs46xx module load error with kernel 2.6.13-rc5
+Summary:                    hdsp 9632 w firmware 152 not working with Linux and
+ALSA 1.0.9
 Description: 
-Using Slackware 10.1 with kernel 2.6.13-rc5, the cs46xx module is not
-loaded and reports lots of unknown symbols in dmesg. See the attached file
-with the dmesg output.
-I am using ALSA 1.0.9a.
-On the same machine, using kernel 2.6.10, everything works.
+Hi,
+
+today I got my new 9632. First I did a firmware (152) and driver (2.9.4)
+update with the supplied windows software and studied the Totalmixer
+and the other apllications for some hours under Windows - it's all very
+impressive!!!
+
+But my main goal is using the 9632 with Linux. And what a pitty: the
+HDSPMixer application is totally unusable with the new firmware release.
+The routing is mixed up (I couldn't find any rules for what was going
+on) and I wasn't able to route the analog input signal to analog output!
+Fortunately I found the old firmware on the RME server and that's it:
+the routing is working now!
+
+It would be very nice if anyone had time to answer my questions:
+- will there an ALSA update for the new firmware release?
+- will there be an update to the Linux HDSPMixer including the
+  features of the Windows release (selecting channels for common
+  level adjustment, Switching monitoring to individual channels, ...)
+  and the excelent Matrix window?
+- when I'm starting a playback with audacity or xmms the signal is
+  shown on all playback channels Out1 through Out12.
+- does anybody have a working .asoundrc file for me?
+- Can I use amixer to set routing and gain? What will I need to do this?
+
+Thanks a lot for your patience and help
+
+Ado Arnolds
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 18:25 jfeise         New Issue                                    
-08-03-05 18:25 jfeise         File Added: cs46xx.out                       
-08-03-05 18:25 jfeise         Distribution              => Slackware 10.1  
-08-03-05 18:25 jfeise         Kernel Version            => 2.6.13-rc5      
+08-03-05 23:24 ado            New Issue                                    
+08-03-05 23:24 ado            Kernel Version            => 2.6.12.2        
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-from IBM. Find simple to follow Roadmaps, straightforward articles,
-informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
