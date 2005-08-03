@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001284]: Soundfont notes problem - notes cut off too soon.
-Date: Wed, 3 Aug 2005 11:31:25 +0200
-Message-ID: <3a986a39c518f06052fcbfeefdc018e0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001289]: I fixed Bug 0001284.  Please reinstate line 86 in emux_synth.c !
+Date: Wed, 3 Aug 2005 11:31:24 +0200
+Message-ID: <8c29e696a032aae1bf6675c5d105c723@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBEE0195
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 11:31:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82892195
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 11:31:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001289.
+The following issue has been set as RELATED TO issue 0001284.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1284> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1289> 
 ======================================================================
 Reported By:                terminator356
-Assigned To:                
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1284
-Category:                   PCI - emu10k1
+Issue ID:                   1289
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Mandrake
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-27-2005 06:36 CEST
-Last Modified:              08-03-2005 11:30 CEST
+Date Submitted:             07-29-2005 04:36 CEST
+Last Modified:              08-03-2005 11:31 CEST
 ======================================================================
-Summary:                    Soundfont notes problem - notes cut off too soon.
+Summary:                    I fixed Bug 0001284.  Please reinstate line 86 in
+emux_synth.c !
 Description: 
-Playing a midi keyboard or a file, a note played twice will cut off 
- other notes.
+I fixed Bug 0001284. Please reinstate line 86 in emux_synth.c !
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001290 Re: Bug 0001284 + 0001289: Sorry, my fi...
-related to          0001289 I fixed Bug 0001284.  Please reinstate ...
+related to          0001284 Soundfont notes problem - notes cut off...
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 06:36 terminator356  New Issue                                    
-07-27-05 06:36 terminator356  File Added: drumtrack-test.mid                    
-07-27-05 06:36 terminator356  Distribution              => Mandrake        
-07-27-05 06:36 terminator356  Kernel Version            => 2.6.10          
-08-03-05 11:30 perex          Relationship added       related to 0001290  
-08-03-05 11:31 perex          Relationship added       related to 0001289  
+07-29-05 04:36 terminator356  New Issue                                    
+08-03-05 11:31 perex          Relationship added       related to 0001284  
 ======================================================================
 
 
