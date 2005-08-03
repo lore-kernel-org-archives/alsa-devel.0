@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops working after a few seconds when used with VoIP softphones
-Date: Wed, 3 Aug 2005 10:10:28 +0200
-Message-ID: <249bca0550c935a89983bb5788a1db2f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
+Date: Wed, 3 Aug 2005 10:11:04 +0200
+Message-ID: <c7e372478dde7037bd79dcf6190e647a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2714A183
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 10:10:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66813192
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 10:11:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001300.
+The following issue has been set as RELATED TO issue 0001302.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
 ======================================================================
 Reported By:                tek01
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1301
+Issue ID:                   1300
 Category:                   ISA - ad1816a
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               Debian Sarge
-Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
-2.6.8-2
+Kernel Version:             2.6.12.3 and 2.6.13-rc4
 ======================================================================
-Date Submitted:             08-02-2005 17:16 CEST
-Last Modified:              08-03-2005 10:10 CEST
+Date Submitted:             08-02-2005 16:56 CEST
+Last Modified:              08-02-2005 22:26 CEST
 ======================================================================
-Summary:                    Kernel OSS emulation stops working after a few
-seconds when used with VoIP softphones
+Summary:                    modprobe goes into D-state when inserting
+snd-ad1816a
 Description: 
-Kernel OSS emulation fails a few seconds after a call is established when
-used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
-process using strace reveals, that the file descriptor of the sound device
-is no longer listed in the readset or writeset when the select() syscall
-returns. Audio Playback using XMMS is working fine using the OSS API
- 
-Also the native OSS driver is working fine with both VoIP phones on the
-same system and kernel.
+Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
+causes the modprobe process to go into D-state forever. 
 
-
+Linux 2.6.11.12 has been tested and is working fine.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001300 modprobe goes into D-state when inserti...
+related to          0001301 Kernel OSS emulation stops working afte...
+related to          0001302 Clicking noise when using kphone with t...
 ======================================================================
+
+----------------------------------------------------------------------
+ perex - 08-02-05 22:26 
+----------------------------------------------------------------------
+It might be a pnp related problem. The driver code was not touched long
+time. Could you add some printk calls into snd_ad1816a_pnp_detect() /
+snd_card_ad1816a_probe() functions to know where the initialization stops?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-02-05 17:16 tek01          New Issue                                    
-08-02-05 17:16 tek01          Distribution              => Debian Sarge    
-08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
-vanilla 2.6.10 and Debians 2.6.8-2
+08-02-05 16:56 tek01          New Issue                                    
+08-02-05 16:56 tek01          Distribution              => Debian Sarge    
+08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
+2.6.13-rc4
 08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-03-05 10:10 perex          Relationship added       related to 0001300  
+08-02-05 22:26 perex          Note Added: 0005609                          
+08-03-05 10:10 perex          Relationship added       related to 0001301  
+08-03-05 10:11 perex          Relationship added       related to 0001302  
 ======================================================================
 
 
