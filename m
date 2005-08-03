@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Wed, 3 Aug 2005 11:42:54 +0200
-Message-ID: <b45f06494a8e680ee9b6e865fd0dd237@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001293]: trident: device supported by OSS but not by ALSA
+Date: Wed, 3 Aug 2005 12:01:18 +0200
+Message-ID: <3b77e0b2d7bcecb85f64185e89335b72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DB67195
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 11:42:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19547195
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:01:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,96 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1293> 
 ======================================================================
-Reported By:                iive
+Reported By:                Adrian Bunk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
+Issue ID:                   1293
+Category:                   PCI - trident
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
+Distribution:               
+Kernel Version:             2.6.13-rc4-mm1
 ======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-03-2005 11:42 CEST
+Date Submitted:             07-31-2005 21:13 CEST
+Last Modified:              08-03-2005 12:01 CEST
 ======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
+Summary:                    trident: device supported by OSS but not by ALSA
 Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+I'm currently creating a list of OSS drivers where all the hardware
+supported by them is also supported by ALSA. The goal is to schedule
+them for removal (except someone tells that for one or more of them ALSA
+support is inferior). I do not have this hardware, but this is currently
+the reason why the old OSS driver can't be removed from the kernel.
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
 
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
+The OSS trident driver has 5 different pci_device_id entries.
 
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
+For 4 of them there seems to be similar ALSA support, but I can't find
+any ALSA equivalent for the following entry:
+        {PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_5050,
+         PCI_ANY_ID, PCI_ANY_ID, 0, 0, CYBER5050},
+
+
+
+Alan Cox said about this:
+
+The OSS driver supports the CyberPro T-squared core integrated into the
+cyberpro chipset while the ALSA driver only supports the others. Should
+be easy for someone to resolve. I don't have any 5000 hardware to test
+it however.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- ahaning - 08-03-05 02:46 
+ perex - 08-03-05 12:01 
 ----------------------------------------------------------------------
-perex: Thanks for the patch! Unfortunately, I'm unable to get it to work.
-
-The patch you attached to this bug appears to be against the CVS tree,
-which won't even build for me. Furthermore, I've had trouble figuring out
-how to apply the patch. I've tried 'patch -p1 < <patchfile>' from the
-./alsa-utils/alsaconf directory, as well as 'patch -p0 < <patchfile>' and
--p1 says it can't find the file to patch. -p0 says that it looks like the
-patch has already been applied.
-
-What kernel are you running? I'm still on 2.6.12.2. 
-
-If possible, a patch against ALSA 1.0.9 would be much appreciated.
-
-Thanks!
-
-----------------------------------------------------------------------
- perex - 08-03-05 11:42 
-----------------------------------------------------------------------
-I uploaded new alsaconf script. Hopefully, it will work on your system.
+TESTERS WANTED!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
-04-13-05 21:59 jdthood        Note Added: 0004478                          
-04-14-05 00:02 iive           Note Added: 0004485                          
-07-09-05 06:26 ahaning        Note Added: 0005438                          
-07-09-05 06:38 ahaning        Note Edited: 0005438                         
-07-09-05 11:13 jdthood        Note Added: 0005439                          
-07-09-05 11:14 jdthood        Note Added: 0005440                          
-07-28-05 05:17 ahaning        Note Added: 0005577                          
-08-02-05 00:02 iive           Note Added: 0005599                          
-08-02-05 03:00 ahaning        Note Added: 0005600                          
-08-02-05 03:05 ahaning        Note Added: 0005601                          
-08-02-05 03:05 ahaning        Note Deleted: 0005600                        
-08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
-      
-08-02-05 22:14 perex          Note Added: 0005607                          
-08-02-05 22:16 perex          Note Added: 0005608                          
-08-03-05 02:46 ahaning        Note Added: 0005610                          
-08-03-05 11:42 perex          File Added: alsaconf                         
-08-03-05 11:42 perex          Note Added: 0005615                          
+07-31-05 21:13 Adrian Bunk    New Issue                                    
+07-31-05 21:13 Adrian Bunk    Kernel Version            => 2.6.13-rc4-mm1  
+08-03-05 12:01 perex          Note Added: 0005616                          
 ======================================================================
 
 
