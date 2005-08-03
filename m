@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000424]: No mute control on Master Volume
-Date: Tue, 2 Aug 2005 10:19:38 +0200
-Message-ID: <b167f0fff12c00c3c9150fd2a8c6604b@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001304]: Speaker test hangs
+Date: Wed, 3 Aug 2005 12:18:56 +0200
+Message-ID: <6e94d049abbee4f03e3f9650869e97f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C9A0149
-	for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2005 10:19:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99660178
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:18:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=424> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
 ======================================================================
-Reported By:                marm
-Assigned To:                tiwai
+Reported By:                herby
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   424
-Category:                   PCI - cmipci
+Project:                    ALSA - utils
+Issue ID:                   1304
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian unstable
-Kernel Version:             2.6.7
+Status:                     new
 ======================================================================
-Date Submitted:             08-05-2004 20:07 CEST
-Last Modified:              08-02-2005 10:19 CEST
+Date Submitted:             08-03-2005 02:46 CEST
+Last Modified:              08-03-2005 12:18 CEST
 ======================================================================
-Summary:                    No mute control on Master Volume
+Summary:                    Speaker test hangs
 Description: 
-Please add a mute control for the Master Volume on cmipci cards (I have a
-CMI8738-MC6), as it makes life difficult not having one when the phone
-rings ;)
+After applying the patch to the library that took out the check for a
+proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
+or so), I attempted to try a speaker test again.  It hung right after
+outputting "0 - Front Left".  I did an strace and the results are included
+in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
+with little luck.  The wierd thing is that I can execute 'aplay' (with the
+default device) and get a '.wav' file to play nicely.  I can even get a
+multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
+speaker-test doesn't work is beyond me.  The problem is that I appear to
+use similar techniques in my own programming as speaker-test, and my
+program doesen't do that well.  Being as how speaker-test IS part of ALSA,
+I thought I would submit the bug report against it.
 
-The Windows drivers support this, and indeed, I seem to recall earlier
-(0.9.something) versions of the alsa driver did too.
+If other tests need be preformed, I'd be VERY happy to do them.
 ======================================================================
 
 ----------------------------------------------------------------------
- schorpp - 08-02-05 10:19 
+ tiwai - 08-03-05 12:18 
 ----------------------------------------------------------------------
-hi,
-
-got a trust dx514, cmi8738-mx (rev.10?)
-
-i would like to have it too, i will see what i can do.
-
-i am just on the code. 
-theres something wrong with general line out volume, 
-too, is about 20db too low...
-
-y
-tom
+Which version did you use?  Chance to try CVS version?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-04 20:07 marm           New Issue                                    
-08-05-04 20:07 marm           Distribution              => Debian unstable 
-08-05-04 20:07 marm           Kernel Version            => 2.6.7           
-08-02-05 10:19 schorpp        Note Added: 0005602                          
+08-03-05 02:46 herby          New Issue                                    
+08-03-05 02:46 herby          File Added: speaker-trace                    
+08-03-05 12:18 tiwai          Note Added: 0005621                          
 ======================================================================
 
 
