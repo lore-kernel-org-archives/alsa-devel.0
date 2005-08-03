@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001289]: I fixed Bug 0001284.  Please reinstate line 86 in emux_synth.c !
-Date: Wed, 3 Aug 2005 11:31:33 +0200
-Message-ID: <90cc7322caae8385aa25a4a9646a1010@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Wed, 3 Aug 2005 11:42:54 +0200
+Message-ID: <b45f06494a8e680ee9b6e865fd0dd237@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F33E2195
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 11:31:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DB67195
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 11:42:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001290.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1289> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                terminator356
-Assigned To:                fmoraes
+Reported By:                iive
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1289
-Category:                   PCI - emu10k1x
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             07-29-2005 04:36 CEST
-Last Modified:              08-03-2005 11:31 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              08-03-2005 11:42 CEST
 ======================================================================
-Summary:                    I fixed Bug 0001284.  Please reinstate line 86 in
-emux_synth.c !
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-I fixed Bug 0001284. Please reinstate line 86 in emux_synth.c !
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
+
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
+
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
+
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
 
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-related to          0001284 Soundfont notes problem - notes cut off...
-related to          0001290 Re: Bug 0001284 + 0001289: Sorry, my fi...
-======================================================================
+ ahaning - 08-03-05 02:46 
+----------------------------------------------------------------------
+perex: Thanks for the patch! Unfortunately, I'm unable to get it to work.
+
+The patch you attached to this bug appears to be against the CVS tree,
+which won't even build for me. Furthermore, I've had trouble figuring out
+how to apply the patch. I've tried 'patch -p1 < <patchfile>' from the
+./alsa-utils/alsaconf directory, as well as 'patch -p0 < <patchfile>' and
+-p1 says it can't find the file to patch. -p0 says that it looks like the
+patch has already been applied.
+
+What kernel are you running? I'm still on 2.6.12.2. 
+
+If possible, a patch against ALSA 1.0.9 would be much appreciated.
+
+Thanks!
+
+----------------------------------------------------------------------
+ perex - 08-03-05 11:42 
+----------------------------------------------------------------------
+I uploaded new alsaconf script. Hopefully, it will work on your system.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-05 04:36 terminator356  New Issue                                    
-08-03-05 11:31 perex          Relationship added       related to 0001284  
-08-03-05 11:31 perex          Relationship added       related to 0001290  
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
+08-02-05 00:02 iive           Note Added: 0005599                          
+08-02-05 03:00 ahaning        Note Added: 0005600                          
+08-02-05 03:05 ahaning        Note Added: 0005601                          
+08-02-05 03:05 ahaning        Note Deleted: 0005600                        
+08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
+      
+08-02-05 22:14 perex          Note Added: 0005607                          
+08-02-05 22:16 perex          Note Added: 0005608                          
+08-03-05 02:46 ahaning        Note Added: 0005610                          
+08-03-05 11:42 perex          File Added: alsaconf                         
+08-03-05 11:42 perex          Note Added: 0005615                          
 ======================================================================
 
 
