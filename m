@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001306]: Apparent race condition in snd_pcm_drain() sometimes hangs userspace processes
-Date: Wed, 3 Aug 2005 17:30:20 +0200
-Message-ID: <3963ca96609078722d80245359a8cad4@bugtrack.alsa-project.org>
+Date: Wed, 3 Aug 2005 17:34:19 +0200
+Message-ID: <dfec1a771bb4ab79074c4df1e361b97a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B92611DD
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 17:30:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 336D01DD
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 17:34:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   CORE - pcm
 Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             08-03-2005 17:12 CEST
-Last Modified:              08-03-2005 17:30 CEST
+Last Modified:              08-03-2005 17:34 CEST
 ======================================================================
 Summary:                    Apparent race condition in snd_pcm_drain() sometimes
 hangs userspace processes
@@ -71,18 +73,19 @@ Continuing.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-03-05 17:18 
-----------------------------------------------------------------------
-Which driver version?
-There was a bug around semaphore races fixed in 1.0.9a.
-
-----------------------------------------------------------------------
  jdthood - 08-03-05 17:30 
 ----------------------------------------------------------------------
 I don't know the version, but the bug was reported around the first of
 July, 2005.
 
 I will ask the submitter.
+
+----------------------------------------------------------------------
+ jdthood - 08-03-05 17:34 
+----------------------------------------------------------------------
+Submitter says "1.0.9" so the bug has probably already been fixed in
+1.0.9a,
+as you say.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,6 +94,9 @@ Date Modified  Username       Field                    Change
 08-03-05 17:18 tiwai          Note Added: 0005634                          
 08-03-05 17:26 jdthood        Additional Information Updated                    
 08-03-05 17:30 jdthood        Note Added: 0005635                          
+08-03-05 17:34 jdthood        Note Added: 0005636                          
+08-03-05 17:34 jdthood        Status                   new => resolved     
+08-03-05 17:34 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
