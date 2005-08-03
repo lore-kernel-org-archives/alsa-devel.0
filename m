@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Wed, 3 Aug 2005 13:42:58 +0200
-Message-ID: <fa244a3a6df1d051b83fcea011dacc6c@bugtrack.alsa-project.org>
+From: victor_lee@accton.com.tw
+Subject: 8000 Hz PCM capture error
+Date: Wed, 3 Aug 2005 20:05:03 +0800
+Message-ID: <OFD043A611.D5AE961F-ON48257052.00408AD8-48257052.00426182@accton.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81ED617A
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 13:42:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,106 +14,117 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi there,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
-======================================================================
-Reported By:                iive
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
-======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-03-2005 13:42 CEST
-======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
-Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+I just started to use ALSA two days ago. I plan to use ALSA to process
+voice data
+sent and received in RTP packets for a VoIP project.
+I found two sample programs from:
+http://www.linuxjournal.com/node/6735/print .
+The two programs can record voice data and play it back nicely. I modified
+the
+rate setting in the "simple_record.c" program from 44100 to 8000. Then it
+core
+dumped when I ran it and gave the following error message:
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
+simple_record: pcm_params.c:146: snd_pcm_hw_param_get_min: Assertion
+`!snd_interval_empty(i)' failed.
 
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
+I also modified the rate setting in the "simple_play.c" program that plays
+back
+the recorded voice data. And it runs ok. I looked through the document and
+found
+little clue.
 
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
+May I ask for your help to tell me how to capture a single channel voice
+data
+into 8000 Hz PCM.
 
-======================================================================
+Thanks a lot..
 
-----------------------------------------------------------------------
- perex - 08-03-05 11:42 
-----------------------------------------------------------------------
-I uploaded new alsaconf script. Hopefully, it will work on your system.
+Victor
 
-----------------------------------------------------------------------
- ahaning - 08-03-05 13:42 
-----------------------------------------------------------------------
-perex:
+/*
+  This example reads from the default PCM device
+  and writes to standard output for 5 seconds of data.
+*/
+/* Use the newer ALSA API */
+#define ALSA_PCM_NEW_HW_PARAMS_API
+#include <alsa/asoundlib.h>
+int main() {
+      long loops;
+      int rc;
+      int size;
+      snd_pcm_t *handle;
+      snd_pcm_hw_params_t *params;
+      unsigned int val;
+      int dir;
+      snd_pcm_uframes_t frames;
+      char *buffer;
 
-I copied the attached alsaconf script over my old one and ran it. The
-first time, without rebooting, it said it found a OPL3SA2 and would write
-the configuration to /etc/modprobe.conf, but either it didn't or it
-detected things incorrectly.
+      /* Open PCM device for recording (capture). */
+      rc = snd_pcm_open(&handle, "default", SND_PCM_STREAM_CAPTURE, 0);
+      if (rc < 0) {
+            fprintf(stderr, "unable to open pcm device: %s\n",
+snd_strerror(rc));
+            exit(1);
+      }
 
-After rebooting, it won't even detect the OPL3SA2. "No legacy cards
-found."
+      snd_pcm_hw_params_alloca(&params);
+      snd_pcm_hw_params_any(handle, params);
 
-What version of ALSA and the kernel are you running? If we can try to get
-at least similar software, it might be easier to debug these issues. Also,
-what kind of OPL3SA2 are you using? I have one in my Gateway Solo 2500 and
-I have PNP turned off in the BIOS.
+      snd_pcm_hw_params_set_access(handle, params,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+      snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
+      snd_pcm_hw_params_set_channels(handle, params, 1);
 
-Thanks!
+      val = 8000;
+      snd_pcm_hw_params_set_rate_near(handle, params, &val, &dir);
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
-04-13-05 21:59 jdthood        Note Added: 0004478                          
-04-14-05 00:02 iive           Note Added: 0004485                          
-07-09-05 06:26 ahaning        Note Added: 0005438                          
-07-09-05 06:38 ahaning        Note Edited: 0005438                         
-07-09-05 11:13 jdthood        Note Added: 0005439                          
-07-09-05 11:14 jdthood        Note Added: 0005440                          
-07-28-05 05:17 ahaning        Note Added: 0005577                          
-08-02-05 00:02 iive           Note Added: 0005599                          
-08-02-05 03:00 ahaning        Note Added: 0005600                          
-08-02-05 03:05 ahaning        Note Added: 0005601                          
-08-02-05 03:05 ahaning        Note Deleted: 0005600                        
-08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
-      
-08-02-05 22:14 perex          Note Added: 0005607                          
-08-02-05 22:16 perex          Note Added: 0005608                          
-08-03-05 02:46 ahaning        Note Added: 0005610                          
-08-03-05 11:42 perex          File Added: alsaconf                         
-08-03-05 11:42 perex          Note Added: 0005615                          
-08-03-05 13:42 ahaning        Note Added: 0005625                          
-======================================================================
+      /* Set period size to 32 frames. */
+      frames = 32;
+      snd_pcm_hw_params_set_period_size_near(handle, params, &frames,
+&dir);
+
+      rc = snd_pcm_hw_params(handle, params);
+      if (rc < 0) {
+            fprintf(stderr,"unable to set hw parameters:
+%s\n",snd_strerror(rc));
+            exit(1);
+      }
+
+      snd_pcm_hw_params_get_period_size(params, &frames, &dir);
+      size = frames * 2; /* 2 bytes/sample, 1 channel */
+      buffer = (char *) malloc(size);
+
+      /* We want to loop for 5 seconds */
+      snd_pcm_hw_params_get_period_time(params, &val, &dir);
+      loops = 5000000 / val;
+      while (loops > 0) {
+            loops--;
+            rc = snd_pcm_readi(handle, buffer, frames);
+            if (rc == -EPIPE) {
+                  /* EPIPE means overrun */
+                  fprintf(stderr, "overrun occurred\n");
+                  snd_pcm_prepare(handle);
+            } else if (rc < 0) {
+                  fprintf(stderr, "error from read: %s\n",
+snd_strerror(rc));
+            } else if (rc != (int)frames) {
+                  fprintf(stderr, "short read, read %d frames\n", rc);
+            }
+            rc = write(1, buffer, size);
+            if (rc != size)
+                  fprintf(stderr, "short write: wrote %d bytes\n", rc);
+      }
+      snd_pcm_drain(handle);
+      snd_pcm_close(handle);
+      free(buffer);
+      return 0;
+}
 
 
 
