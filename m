@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001306]: Apparent race condition in snd_pcm_drain() sometimes hangs userspace processes
-Date: Wed, 3 Aug 2005 17:12:35 +0200
-Message-ID: <84dcae8e24dd4e95f67791418f18a127@bugtrack.alsa-project.org>
+Date: Wed, 3 Aug 2005 17:18:56 +0200
+Message-ID: <d4e5b953400fa1a86645ed93b522c3bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA43B1DD
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 17:12:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E712137
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 17:18:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-03-2005 17:12 CEST
-Last Modified:              08-03-2005 17:12 CEST
+Last Modified:              08-03-2005 17:18 CEST
 ======================================================================
 Summary:                    Apparent race condition in snd_pcm_drain() sometimes
 hangs userspace processes
@@ -70,10 +70,17 @@ problem:
 Continuing.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 08-03-05 17:18 
+----------------------------------------------------------------------
+Which driver version?
+There was a bug around semaphore races fixed in 1.0.9a.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-03-05 17:12 jdthood        New Issue                                    
+08-03-05 17:18 tiwai          Note Added: 0005634                          
 ======================================================================
 
 
