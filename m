@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001302]: Clicking noise when using kphone with the ALSA AD1816A sound driver
-Date: Wed, 3 Aug 2005 10:11:03 +0200
-Message-ID: <1bbdeca522f49012e51b65ae27eb3c8c@bugtrack.alsa-project.org>
+Date: Wed, 3 Aug 2005 10:20:17 +0200
+Message-ID: <8e8e66f29ef8de4c09f45bd3c198db90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37D53183
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 10:11:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79A06183
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 10:20:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001300.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1302> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge
 Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10, Debians 2.6.8-2
 ======================================================================
 Date Submitted:             08-02-2005 17:29 CEST
-Last Modified:              08-03-2005 10:11 CEST
+Last Modified:              08-03-2005 10:20 CEST
 ======================================================================
 Summary:                    Clicking noise when using kphone with the ALSA
 AD1816A sound driver
@@ -57,6 +57,11 @@ Relationships       ID      Summary
 related to          0001300 modprobe goes into D-state when inserti...
 ======================================================================
 
+----------------------------------------------------------------------
+ perex - 08-03-05 10:20 
+----------------------------------------------------------------------
+We need a test against the latest ALSA code.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -66,6 +71,7 @@ Date Modified  Username       Field                    Change
 vanilla 2.6.10, Debians 2.6.8-2
 08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
 08-03-05 10:11 perex          Relationship added       related to 0001300  
+08-03-05 10:20 perex          Note Added: 0005613                          
 ======================================================================
 
 
