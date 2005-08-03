@@ -1,11 +1,14 @@
-From: =?GB2312?B?wO7J+g==?= <lq13928420331@21cn.com>
-Subject: =?GB2312?B?08W73bT6v6q3osax?=
-Date: Wed, 3 Aug 2005 07:38:49 +0800
-Message-ID: <E1E06Kq-000734-My@mail.sourceforge.net>
-Reply-To: lq13928420331@21cn.com
-Content-Type: text/plain;charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001304]: Speaker test hangs
+Date: Wed, 3 Aug 2005 02:46:42 +0200
+Message-ID: <e0146cf2250bbc3f73279edf41a9f2e0@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90F5C1EE
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 02:46:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,26 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-=B9=F3=B9=AB=CB=BE=BE=AD=C0=ED=A1=A2=B2=C6=CE=F1=A3=BA=C4=FA=BA=C3=A3=A1
-=CE=D2=B9=AB=CB=BE=D3=C9=D3=DA=BD=F8=CF=EE=B6=E0=A3=AC=CF=FB=CF=EE=C9=D9=A1=
-=A3=CF=D6=D3=D0=B6=EE=D3=E0=B5=C4=A3=A8=D4=F6=D6=B5=CB=B0=B7=A2=C6=B1=A1=A2=
-=C6=D5=CD=A8=B7=A2=C6=B1=A3=A9=B5=C8=BF=C9=B4=FA=CD=E2=D3=C5=BB=DD=B4=FA=BF=
-=AA=A3=AC=CB=B0=B5=E3=B4=D3=D3=C5=A1=A3=B9=F3=B9=AB=CB=BE=C8=E7=D3=D0=D0=E8=
-=D2=AA=A3=AC=BB=B6=D3=AD=C0=B4=B5=E7=B4=B9=D1=AF=A3=A1
-=CB=B3=D7=A3
-=C9=CC=EC=F7=A3=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1
-=A1=A1   =C9=EE=DB=DA=CA=D0=BD=F0=C0=FB=B7=E1=CA=B5=D2=B5=B7=A2=D5=B9=D3=D0=
-=CF=DE=B9=AB=CB=BE
-=A1=A1=A1=A1 =C1=AA=CF=B5=B5=E7=BB=B0:13928420331
-     =C1=AA =CF=B5 =C8=CB=A3=BA=C0=EE=C8=A8
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
+======================================================================
+Reported By:                herby
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1304
+Category:                   speakertest
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-03-2005 02:46 CEST
+Last Modified:              08-03-2005 02:46 CEST
+======================================================================
+Summary:                    Speaker test hangs
+Description: 
+After applying the patch to the library that took out the check for a
+proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
+or so), I attempted to try a speaker test again.  It hung right after
+outputting "0 - Front Left".  I did an strace and the results are included
+in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
+with little luck.  The wierd thing is that I can execute 'aplay' (with the
+default device) and get a '.wav' file to play nicely.  I can even get a
+multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
+speaker-test doesn't work is beyond me.  The problem is that I appear to
+use similar techniques in my own programming as speaker-test, and my
+program doesen't do that well.  Being as how speaker-test IS part of ALSA,
+I thought I would submit the bug report against it.
+
+If other tests need be preformed, I'd be VERY happy to do them.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-03-05 02:46 herby          New Issue                                    
+08-03-05 02:46 herby          File Added: speaker-trace                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=3D7477&alloc_id=3D16492&op=3Dclic=
-k
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
