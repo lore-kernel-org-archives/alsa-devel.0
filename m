@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001302]: Clicking noise when using kphone with the ALSA AD1816A sound driver
-Date: Wed, 3 Aug 2005 12:09:57 +0200
-Message-ID: <dbbc83ef86118a790f82f6e80df2800e@bugtrack.alsa-project.org>
+Date: Wed, 3 Aug 2005 12:10:44 +0200
+Message-ID: <7f18b07aff3cd0ffd8756a06da48cdc9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB0FA195
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:09:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F4DC195
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 12:10:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge
 Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10, Debians 2.6.8-2
 ======================================================================
 Date Submitted:             08-02-2005 17:29 CEST
-Last Modified:              08-03-2005 12:09 CEST
+Last Modified:              08-03-2005 12:10 CEST
 ======================================================================
 Summary:                    Clicking noise when using kphone with the ALSA
 AD1816A sound driver
@@ -58,15 +58,18 @@ related to          0001300 modprobe goes into D-state when inserti...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-03-05 10:20 
-----------------------------------------------------------------------
-We need a test against the latest ALSA code.
-
-----------------------------------------------------------------------
  tiwai - 08-03-05 12:09 
 ----------------------------------------------------------------------
 This might be a bug of oss-emulation rather than the ad1816a.
 Can you test another sound card on the same system?
+
+----------------------------------------------------------------------
+ tiwai - 08-03-05 12:10 
+----------------------------------------------------------------------
+Blah, a wrong bug issue.  Sorry.
+
+But anyway, it's worthy to try another sound card to sort out whether it's
+ad1816a-specific or not.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +82,7 @@ vanilla 2.6.10, Debians 2.6.8-2
 08-03-05 10:11 perex          Relationship added       related to 0001300  
 08-03-05 10:20 perex          Note Added: 0005613                          
 08-03-05 12:09 tiwai          Note Added: 0005618                          
+08-03-05 12:10 tiwai          Note Added: 0005619                          
 ======================================================================
 
 
