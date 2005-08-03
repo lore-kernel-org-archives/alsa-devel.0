@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_drain() always fails
-Date: Mon, 1 Aug 2005 19:57:40 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0508011953060.12402@tm8103.perex-int.cz>
-References: <20050801172719.GB10144@brailcom.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops working after a few seconds when used with VoIP softphones
+Date: Wed, 3 Aug 2005 10:10:28 +0200
+Message-ID: <249bca0550c935a89983bb5788a1db2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76730196
-	for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2005 19:57:41 +0200 (MEST)
-In-Reply-To: <20050801172719.GB10144@brailcom.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2714A183
+	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 10:10:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,45 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hynek Hanke <hanke@brailcom.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Aug 2005, Hynek Hanke wrote:
 
-> 
-> Hi,
-> 
-> I'm still having problems programming ALSA backend for my app. I open the
-> device, I try to write as many frames as possible, I poll() for events (and
-> check for XRUNs and SUSPENDs, they don't happen). When I get notification that
-> ALSA is ready for more frames, I send more (typically 32 or 64). After all
-> frames are sent, I call snd_pcm_drain() ... and want to wait in poll() until
-> ALSA gets out of SND_PCM_STATE_DRAINING.
-> 
-> But snd_pcm_drain() always fails with ``Resource temporarily unavailable''
-> error.  The state after snd_pcm_drain() fails is still RUNNING. Why is this?
-> What can I do about it?
+The following issue has been set as RELATED TO issue 0001300.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
+======================================================================
+Reported By:                tek01
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1301
+Category:                   ISA - ad1816a
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
+2.6.8-2
+======================================================================
+Date Submitted:             08-02-2005 17:16 CEST
+Last Modified:              08-03-2005 10:10 CEST
+======================================================================
+Summary:                    Kernel OSS emulation stops working after a few
+seconds when used with VoIP softphones
+Description: 
+Kernel OSS emulation fails a few seconds after a call is established when
+used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
+process using strace reveals, that the file descriptor of the sound device
+is no longer listed in the readset or writeset when the select() syscall
+returns. Audio Playback using XMMS is working fine using the OSS API
+ 
+Also the native OSS driver is working fine with both VoIP phones on the
+same system and kernel.
 
-Nothing. If drain() is supposed to wait until all data are played and 
-you're using the non-blocking mode, then it's definitely an error (thus 
--EAGAIN is returned - and it means from the driver perspective - I must 
-wait and the application does not want this from me).
 
-> Or, what is the correct way to wait until the rest of the sound is 
-> played when I'm using the poll() approach?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001300 modprobe goes into D-state when inserti...
+======================================================================
 
-Set the blocking mode before drain() is called (and return the mode back 
-after it, if you want). The better way might be setting sw_params to 
-wakeup app after all frames are played and use the standard poll() call to 
-wait in app.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-02-05 17:16 tek01          New Issue                                    
+08-02-05 17:16 tek01          Distribution              => Debian Sarge    
+08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
+vanilla 2.6.10 and Debians 2.6.8-2
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-03-05 10:10 perex          Relationship added       related to 0001300  
+======================================================================
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
