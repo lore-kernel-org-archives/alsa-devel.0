@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001308]: hdsp 9632 w firmware 152 not working with Linux and ALSA 1.0.9
-Date: Thu, 4 Aug 2005 09:04:04 +0200
-Message-ID: <73992063bea83080ca42a81f75b290f0@bugtrack.alsa-project.org>
+Date: Thu, 4 Aug 2005 09:04:14 +0200
+Message-ID: <dccca56b1dff6153a627a7a9c6bb3634@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E71B81FC
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:04:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E59B5140
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:04:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001308 has been removed as a DUPLICATE OF the following issue.
+The following issue has been set as DUPLICATE OF issue 0001309.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1308> 
 ======================================================================
@@ -78,6 +78,10 @@ Thanks a lot for your patience and help
 Ado Arnolds
 
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001309 hdsp 9632 w firmware 152 not working wi...
+======================================================================
 
 ----------------------------------------------------------------------
  ado - 08-03-05 23:32 
@@ -100,6 +104,7 @@ Date Modified  Username       Field                    Change
 08-04-05 09:02 perex          Assigned To               => perex           
 08-04-05 09:04 perex          Relationship deleted     duplicate of 0001308
 08-04-05 09:04 perex          Relationship deleted     has duplicate 0001308
+08-04-05 09:04 perex          Relationship added       duplicate of 0001309
 ======================================================================
 
 
