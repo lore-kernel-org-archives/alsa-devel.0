@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Thu, 4 Aug 2005 14:42:25 +0200
-Message-ID: <1db602b9e76412adffc95f25941a76c1@bugtrack.alsa-project.org>
+Date: Thu, 4 Aug 2005 12:52:52 +0200
+Message-ID: <eaa994f2badb02ea4b4185595d8817c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4446E167
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 14:42:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F042D203
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 12:52:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10
 Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
 Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-04-2005 14:42 CEST
+Last Modified:              08-04-2005 12:52 CEST
 ======================================================================
 Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
 on 2.6.x kernels
@@ -70,29 +70,24 @@ related to          0001296 isapnp is incompatible with pnpbios and...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-04-05 13:28 
+ perex - 08-04-05 08:51 
 ----------------------------------------------------------------------
-And attach the packed contents of /sys directory after all steps when your
-card is not detected or misconfigured.
+You are trying configure legacy cards. Don't try that (select only detected
+PnP card in alsaconf). The option opl3sa2 line with manual resources
+should NOT be present in the generated configuration. Select only detected
+card (and try to remove the whole ALSACONF block from modprobe.conf).
 
 ----------------------------------------------------------------------
- ahaning - 08-04-05 14:42 
+ ahaning - 08-04-05 12:52 
 ----------------------------------------------------------------------
-I have recompiled and installed the latest versions of alsa-driver,
-alsa-utils, and alsa-lib. I applied the above patch before compiling
-alsa-utils and copied the above alsaconf script over the one installed by
-alsa-utils.
+When I compile all drivers (not just --with-cards=opl3sa2) none of them
+work.
 
-No PnP cards were detected.
+I have now enabled kernel and BIOS support for PnP. With
+alsa-driver-1.0.9b compiled with --with-cards=opl3sa2, no PnP or PCI cards
+are found.
 
-I have attached a tar.bz2 of my sys directory. If I need to pack it
-differently, please let me know.
-
-When I tried to do "modprobe snd_opl3sa2" after a reboot, I get a "FATAL"
-error saying "No such device". In dmesg, I see that pnp
-registers/unregisters the opl3sa2 driver.
-
-Thanks.
+I don't see why I should need drivers other than opl3sa2.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -125,11 +120,6 @@ version (current 2.6.10)
 08-04-05 08:51 perex          Note Added: 0005641                          
 08-04-05 08:52 perex          Relationship added       related to 0001296  
 08-04-05 12:52 ahaning        Note Added: 0005644                          
-08-04-05 13:25 perex          Note Added: 0005645                          
-08-04-05 13:28 perex          Note Added: 0005646                          
-08-04-05 14:38 ahaning        File Added: sys-ahaning-0.1.tar.bz2               
-    
-08-04-05 14:42 ahaning        Note Added: 0005649                          
 ======================================================================
 
 
