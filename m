@@ -1,14 +1,11 @@
-From: "Patsy Kruse" <PatKruse@gaypornforme.com>
+From: "Artemisios Hagan" <ArtemisioHagan_4133@jacksonmiss.com>
 Subject: =?iso-8859-1?Q?Vi=E0GRA_Cl=C0LIS_V=E0LIUM?=
 Date: Thu, 4 Aug 2005 11:20:21 -0500
-Message-ID: <20050804162025.38C001ED@alsa.jcu.cz>
+Message-ID: <E1E0iSN-0007Xs-Jz@mail.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
 	boundary="----=_NextPart_000_004D_01C59910.68FF1080"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gaypornforme.com (219-81-145-73.static.tfn.net.tw [219.81.145.73])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 38C001ED
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 18:20:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,7 +15,7 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karin Eubanks <alsa-devel@alsa-project.org>
+To: Nikki Rose <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
