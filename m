@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Thu, 4 Aug 2005 22:50:08 +0200
-Message-ID: <023ae53565d6c5f0fbe143c9d5c553be@bugtrack.alsa-project.org>
+From: =?windows-1251?B?MTUgLSAxOSDAwsPT0dLAIDIwMDUg4+7k4A==?= <acts@enter.vg>
+Subject: =?windows-1251?B?z9DAytLI18XRysjJIMrT0NEgxMvfIMHQxc3ELczFzcXExsXQwA==?=
+Date: Thu, 04 Aug 2005 20:38:18 +0000
+Message-ID: <2da101c59934$8cd87200$e8b8a20b@enter.vg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_72E44445.206486BB"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1798317B
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 22:50:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +16,209 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1310> 
-======================================================================
-Reported By:                oxi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1310
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge AMD64
-Kernel Version:             2.6.12.3
-======================================================================
-Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-04-2005 22:50 CEST
-======================================================================
-Summary:                    Driver cant find firmware for Layla24
-Description: 
-Hello,
-
-After modprobe snd-layla24 ,
-in dmesg|tail:
-
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
-
-Same issue that another guy is experiencing with a Layla20:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-04-05 22:50 oxi            New Issue                                    
-08-04-05 22:50 oxi            Distribution              => Debian Sarge AMD64
-08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
-======================================================================
+------=_NextPart_000_0000_72E44445.206486BB
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_C1C40663.689C752A"
 
 
+------=_NextPart_001_0001_C1C40663.689C752A
+Content-Type: text/plain;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+ =CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=20
+=C4=CB=DF =C1=D0=C5=CD=C4-=CC=C5=CD=C5=C4=C6=C5=D0=C0=20
+
+15 - 19 =C0=C2=C3=D3=D1=D2=C0 2005 =E3=EE=E4=E0=20
 
 
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+ =C2 =ED=E0=F8=E5=E9 =F1=F2=F0=E0=ED=E5 =E1=F0=E5=ED=E4=E8=ED=E3 =EF=EE=EA=
+=E0 =ED=E0=F5=EE=E4=E8=F2=F1=FF =E2 =F1=F2=E0=E4=E8=E8 =F0=E0=E7=E2=E8=F2=
+=E8=FF, =E8 =ED=E5 =E2=F1=E5 =E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=FB
+=E7=ED=E0=FE=F2, =EA=E0=EA =ED=E0=E4=EE =F1=EE=E7=E4=E0=E2=E0=F2=FC =E1=F0=
+=E5=ED=E4 =E8 =F3=EF=F0=E0=E2=EB=FF=F2=FC =E8=EC, =F7=F2=EE=E1=FB =E4=EE=E1=
+=E8=F2=FC=F1=FF =F5=EE=F0=EE=F8=E8=F5
+=F0=E5=E7=F3=EB=FC=F2=E0=F2=EE=E2.=20
+
+=C2 =F6=E5=EB=FF=F5 =F0=E0=E7=F0=E0=E1=EE=F2=EA=E8 =EE=EF=F2=E8=EC=E0=EB=FC=
+=ED=EE=E3=EE =F3=F7=E5=E1=ED=EE=E3=EE =EA=F3=F0=F1=E0 =ED=E0=EC=E8 =E1=FB=
+=EB =EF=F0=EE=E2=E5=E4=E5=ED =EE=EF=F0=EE=F1
+=E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=EE=E2 =E8 =EC=E5=ED=E5=E4=E6=E5=F0=
+=EE=E2 =EF=EE =F0=E5=EA=EB=E0=EC=E5, =EA=EE=F2=EE=F0=FB=E9 =EF=EE=E7=E2=EE=
+=EB=E8=EB =E2=FB=FF=E2=E8=F2=FC =EE=E1=F9=E8=E5
+=F4=F3=ED=EA=F6=E8=E8 =E8 =EE=E1=FF=E7=E0=ED=ED=EE=F1=F2=E8. =C8=EC=E5=ED=
+=ED=EE =E4=EB=FF =F0=E5=F8=E5=ED=E8=FF =EA=EE=ED=EA=F0=E5=F2=ED=FB=F5 =E7=
+=E0=E4=E0=F7, =F1=F2=EE=FF=F9=E8=F5 =EF=E5=F0=E5=E4
+=EA=E0=E6=E4=FB=EC =E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=EE=EC, =EC=FB=
+ =F1=EE=E1=F0=E0=EB=E8 =EF=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=
+=E3=E8=E8 =E8 =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=FB,
+=EE=E1=FA=E5=E4=E8=ED=E8=E2 =E8=F5 =E2 =EF=F0=EE=E3=F0=E0=EC=EC=F3 =ED=E5=
+=E4=E5=EB=FC=ED=EE=E3=EE =F1=EF=E5=F6=E8=E0=EB=E8=E7=E8=F0=EE=E2=E0=ED=ED=
+=EE=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0-=EF=F0=E0=EA=F2=E8=EA=F3=EC=E0:
+
+
+=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=20
+=C4=CB=DF =C1=D0=C5=CD=C4-=CC=C5=CD=C5=C4=C6=C5=D0=C0=20
+
+15 - 19 =C0=C2=C3=D3=D1=D2=C0 2005 =E3=EE=E4=E0=20
+
+=C2 =EF=F0=EE=E3=F0=E0=EC=EC=E5 =EA=F3=F0=F1=E0:=20
+
+ =D1=F2=F0=E0=F2=E5=E3=E8=FF =F0=E0=E7=E2=E8=F2=E8=FF =E8 =EF=F0=EE=E4=E2=
+=E8=E6=E5=ED=E8=FF =E1=F0=E5=ED=E4=E0 =ED=E0 =F0=FB=ED=EA=E5  =D3=EF=F0=E0=
+=E2=EB=E5=ED=E8=E5 =EA=EE=F0=EF=EE=F0=E0=F2=E8=E2=ED=FB=EC=E8
+=E8 =F2=EE=E2=E0=F0=ED=FB=EC=E8 =E1=F0=E5=ED=E4=E0=EC=E8  =CE=F1=ED=EE=E2=
+=ED=FB=E5 =EF=EE=E4=F5=EE=E4=FB =EA =EF=EE=F1=F2=F0=EE=E5=ED=E8=FE =EC=E0=
+=F0=EE=F7=ED=EE=E3=EE =EF=EE=F0=F2=F4=E5=EB=FF
+ =CF=EE=E7=E8=F6=E8=EE=ED=E8=F0=EE=E2=E0=ED=E8=E5 =E1=F0=E5=ED=E4=E0  =CE=
+=F0=E3=E0=ED=E8=E7=E0=F6=E8=FF =EC=E0=F0=EA=E5=F2=E8=ED=E3=EE=E2=FB=F5 =E8=
+=F1=F1=EB=E5=E4=EE=E2=E0=ED=E8=E9 =E2 =F0=E0=E1=EE=F2=E5
+=E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=E0  =D1=E8=F1=F2=E5=EC=E0 =EC=E0=
+=F0=EA=E5=F2=E8=ED=E3=EE=E2=FB=F5 =EA=EE=EC=EC=F3=ED=E8=EA=E0=F6=E8=E9  =D3=
+=EF=F0=E0=E2=EB=E5=ED=E8=E5 =EC=E0=F0=EE=F7=ED=FB=EC=E8
+=EA=EE=EC=EC=F3=ED=E8=EA=E0=F6=E8=FF=EC=E8  =C2=E7=E0=E8=EC=EE=E4=E5=E9=F1=
+=F2=E2=E8=E5 =F1 =F0=E5=EA=EB=E0=EC=ED=FB=EC=E8 =E8 =EC=E0=F0=EA=E5=F2=E8=
+=ED=E3=EE=E2=FB=EC=E8 =E0=E3=E5=ED=F2=F1=F2=E2=E0=EC=E8
+ =D6=E5=EB=FC =EA=F3=F0=F1=E0 - =E4=E0=F2=FC =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC=
+ =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E5 =ED=E0=E2=FB=EA=E8 =EF=EE =F0=E0=E7=
+=F0=E0=E1=EE=F2=EA=E5 =F1=F2=F0=F3=EA=F2=F3=F0=FB
+=E1=F0=E5=ED=E4=E0 =E8 =E8=ED=F2=E5=E3=F0=E0=F6=E8=E8 =E5=E3=EE =E2 =EE=E1=
+=F9=F3=FE =F1=F2=F0=F3=EA=F2=F3=F0=F3 =EA=EE=EC=EF=E0=ED=E8=E8.=20
+
+=C4=E0=ED=ED=FB=E9 =F1=E5=EC=E8=ED=E0=F0 =E4=E0=F1=F2 =EA=EE=EC=EF=EB=E5=EA=
+=F1=ED=FB=E5 =E7=ED=E0=ED=E8=FF =E4=EB=FF =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =
+=F2=EE=F0=E3=EE=E2=EE=E9 =EC=E0=F0=EA=EE=E9 =E2
+=EA=EE=EC=EF=E0=ED=E8=E8. =D3=F7=E0=F1=F2=ED=E8=EA=E8 =F0=E0=E7=E1=E5=F0=F3=
+=F2 =F0=E0=F1=EF=F0=EE=F1=F2=F0=E0=ED=E5=ED=ED=FB=E5 =EE=F8=E8=E1=EA=E8, =
+=F1=EE=E2=E5=F0=F8=E0=E5=EC=FB=E5 =E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=
+=E0=EC=E8
+=E8 =F3=E7=ED=E0=FE=F2 =EF=F3=F2=E8 =E8=F5 =F0=E0=E7=F0=E5=F8=E5=ED=E8=FF=
+.=20
+
+=D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=E4=E8=F2 =E2 =E8=ED=F2=E5=ED=F1=E8=E2=
+=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=E8=E2=ED=EE=E9 =F4=EE=F0=EC=E5 =F1 =F0=
+=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=FC=F8=EE=E3=EE
+=EA=EE=EB=E8=F7=E5=F1=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =E8=E7 =EF=F0=E0=EA=
+=F2=E8=EA=E8 =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5 =E8 =E8=ED=EE=F1=F2=F0=E0=ED=ED=
+=FB=F5 =EA=EE=EC=EF=E0=ED=E8=E9. =C2 =F5=EE=E4=E5
+=F1=E5=EC=E8=ED=E0=F0=E0 =F3=F7=E0=F1=F2=ED=E8=EA=E8 =E2=FB=EF=EE=EB=ED=FF=
+=F2 =EC=ED=EE=E6=E5=F1=F2=E2=EE =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=F5 =E7=E0=
+=E4=E0=ED=E8=E9.=20
+
+
+=C7=E2=EE=ED=E8=F2=E5, =F2=E5=EB. (O95) 98O-65-I6
+
+  =20
+------=_NextPart_001_0001_C1C40663.689C752A
+Content-Type: text/html;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
+251">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
+<BODY text=3D#000000 bgColor=3D#ffffff>
+<font size=3D"3" color=3D"#000000" face=3D"Times New Roman"><P align=3Dce=
+nter><FONT face=3DArial><FONT size=3D6><b>=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=
+=C9 =CA=D3=D0=D1 <br>
+=C4=CB=DF =C1=D0=C5=CD=C4-=CC=C5=CD=C5=C4=C6=C5=D0=C0 <br>
+</b></FONT><br>
+<b>15 - 19 =C0=C2=C3=D3=D1=D2=C0 2005 =E3=EE=E4=E0 <br>
+</b></P>
+
+<P align=3Djustify>
+=C2 =ED=E0=F8=E5=E9 =F1=F2=F0=E0=ED=E5 =E1=F0=E5=ED=E4=E8=ED=E3 =EF=EE=EA=
+=E0 =ED=E0=F5=EE=E4=E8=F2=F1=FF =E2 =F1=F2=E0=E4=E8=E8 =F0=E0=E7=E2=E8=F2=
+=E8=FF, =E8 =ED=E5 =E2=F1=E5 =E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=FB =
+=E7=ED=E0=FE=F2, =EA=E0=EA =ED=E0=E4=EE =F1=EE=E7=E4=E0=E2=E0=F2=FC =E1=F0=
+=E5=ED=E4 =E8 =F3=EF=F0=E0=E2=EB=FF=F2=FC =E8=EC, =F7=F2=EE=E1=FB =E4=EE=E1=
+=E8=F2=FC=F1=FF =F5=EE=F0=EE=F8=E8=F5 =F0=E5=E7=F3=EB=FC=F2=E0=F2=EE=E2. =
+<br>
+<br>
+=C2 =F6=E5=EB=FF=F5 =F0=E0=E7=F0=E0=E1=EE=F2=EA=E8 =EE=EF=F2=E8=EC=E0=EB=FC=
+=ED=EE=E3=EE =F3=F7=E5=E1=ED=EE=E3=EE =EA=F3=F0=F1=E0 =ED=E0=EC=E8 =E1=FB=
+=EB =EF=F0=EE=E2=E5=E4=E5=ED =EE=EF=F0=EE=F1 =E1=F0=E5=ED=E4-=EC=E5=ED=E5=
+=E4=E6=E5=F0=EE=E2 =E8 =EC=E5=ED=E5=E4=E6=E5=F0=EE=E2 =EF=EE =F0=E5=EA=EB=
+=E0=EC=E5, =EA=EE=F2=EE=F0=FB=E9 =EF=EE=E7=E2=EE=EB=E8=EB =E2=FB=FF=E2=E8=
+=F2=FC =EE=E1=F9=E8=E5 =F4=F3=ED=EA=F6=E8=E8 =E8 =EE=E1=FF=E7=E0=ED=ED=EE=
+=F1=F2=E8. =C8=EC=E5=ED=ED=EE =E4=EB=FF =F0=E5=F8=E5=ED=E8=FF =EA=EE=ED=EA=
+=F0=E5=F2=ED=FB=F5 =E7=E0=E4=E0=F7, =F1=F2=EE=FF=F9=E8=F5 =EF=E5=F0=E5=E4=
+ =EA=E0=E6=E4=FB=EC =E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=EE=EC, =EC=FB=
+ =F1=EE=E1=F0=E0=EB=E8 =EF=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=
+=E3=E8=E8 =E8 =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=FB, =EE=E1=FA=E5=E4=E8=ED=E8=
+=E2 =E8=F5 =E2 =EF=F0=EE=E3=F0=E0=EC=EC=F3 =ED=E5=E4=E5=EB=FC=ED=EE=E3=EE=
+ =F1=EF=E5=F6=E8=E0=EB=E8=E7=E8=F0=EE=E2=E0=ED=ED=EE=E3=EE =F1=E5=EC=E8=ED=
+=E0=F0=E0-=EF=F0=E0=EA=F2=E8=EA=F3=EC=E0: </P>
+
+<P align=3Dcenter><FONT size=3D6><b>=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =
+=CA=D3=D0=D1 <br>
+=C4=CB=DF =C1=D0=C5=CD=C4-=CC=C5=CD=C5=C4=C6=C5=D0=C0 <br>
+</b></FONT><br>
+<b>15 - 19 =C0=C2=C3=D3=D1=D2=C0 2005 =E3=EE=E4=E0</b> </P>
+
+<P align=3Djustify><b>=C2 =EF=F0=EE=E3=F0=E0=EC=EC=E5 =EA=F3=F0=F1=E0:</b=
+> </FONT></P>
+<UL>
+<LI><FONT face=3DArial>=D1=F2=F0=E0=F2=E5=E3=E8=FF =F0=E0=E7=E2=E8=F2=E8=FF=
+ =E8 =EF=F0=EE=E4=E2=E8=E6=E5=ED=E8=FF =E1=F0=E5=ED=E4=E0 =ED=E0 =F0=FB=ED=
+=EA=E5 </FONT>
+<LI><FONT face=3DArial>=D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =EA=EE=F0=EF=EE=F0=E0=
+=F2=E8=E2=ED=FB=EC=E8 =E8 =F2=EE=E2=E0=F0=ED=FB=EC=E8 =E1=F0=E5=ED=E4=E0=EC=
+=E8 </FONT>
+<LI><FONT face=3DArial>=CE=F1=ED=EE=E2=ED=FB=E5 =EF=EE=E4=F5=EE=E4=FB =EA=
+ =EF=EE=F1=F2=F0=EE=E5=ED=E8=FE =EC=E0=F0=EE=F7=ED=EE=E3=EE =EF=EE=F0=F2=F4=
+=E5=EB=FF </FONT>
+<LI><FONT face=3DArial>=CF=EE=E7=E8=F6=E8=EE=ED=E8=F0=EE=E2=E0=ED=E8=E5 =E1=
+=F0=E5=ED=E4=E0 </FONT>
+<LI><FONT face=3DArial>=CE=F0=E3=E0=ED=E8=E7=E0=F6=E8=FF =EC=E0=F0=EA=E5=F2=
+=E8=ED=E3=EE=E2=FB=F5 =E8=F1=F1=EB=E5=E4=EE=E2=E0=ED=E8=E9 =E2 =F0=E0=E1=EE=
+=F2=E5 =E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=E0 </FONT>
+<LI><FONT face=3DArial>=D1=E8=F1=F2=E5=EC=E0 =EC=E0=F0=EA=E5=F2=E8=ED=E3=EE=
+=E2=FB=F5 =EA=EE=EC=EC=F3=ED=E8=EA=E0=F6=E8=E9 </FONT>
+<LI><FONT face=3DArial>=D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =EC=E0=F0=EE=F7=ED=FB=
+=EC=E8 =EA=EE=EC=EC=F3=ED=E8=EA=E0=F6=E8=FF=EC=E8 </FONT>
+<LI><FONT face=3DArial>=C2=E7=E0=E8=EC=EE=E4=E5=E9=F1=F2=E2=E8=E5 =F1 =F0=
+=E5=EA=EB=E0=EC=ED=FB=EC=E8 =E8 =EC=E0=F0=EA=E5=F2=E8=ED=E3=EE=E2=FB=EC=E8=
+ =E0=E3=E5=ED=F2=F1=F2=E2=E0=EC=E8 </FONT></LI></UL>
+<P align=3Djustify><FONT face=3DArial><b>=D6=E5=EB=FC =EA=F3=F0=F1=E0</b>=
+ - =E4=E0=F2=FC =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC =EF=F0=E0=EA=F2=E8=F7=E5=F1=
+=EA=E8=E5 =ED=E0=E2=FB=EA=E8 =EF=EE =F0=E0=E7=F0=E0=E1=EE=F2=EA=E5 =F1=F2=
+=F0=F3=EA=F2=F3=F0=FB =E1=F0=E5=ED=E4=E0 =E8 =E8=ED=F2=E5=E3=F0=E0=F6=E8=E8=
+ =E5=E3=EE =E2 =EE=E1=F9=F3=FE =F1=F2=F0=F3=EA=F2=F3=F0=F3 =EA=EE=EC=EF=E0=
+=ED=E8=E8. <br>
+<br>
+=C4=E0=ED=ED=FB=E9 =F1=E5=EC=E8=ED=E0=F0 =E4=E0=F1=F2 =EA=EE=EC=EF=EB=E5=EA=
+=F1=ED=FB=E5 =E7=ED=E0=ED=E8=FF =E4=EB=FF =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =
+=F2=EE=F0=E3=EE=E2=EE=E9 =EC=E0=F0=EA=EE=E9 =E2 =EA=EE=EC=EF=E0=ED=E8=E8.=
+ =D3=F7=E0=F1=F2=ED=E8=EA=E8 =F0=E0=E7=E1=E5=F0=F3=F2 =F0=E0=F1=EF=F0=EE=F1=
+=F2=F0=E0=ED=E5=ED=ED=FB=E5 =EE=F8=E8=E1=EA=E8, =F1=EE=E2=E5=F0=F8=E0=E5=EC=
+=FB=E5 =E1=F0=E5=ED=E4-=EC=E5=ED=E5=E4=E6=E5=F0=E0=EC=E8 =E8 =F3=E7=ED=E0=
+=FE=F2 =EF=F3=F2=E8 =E8=F5 =F0=E0=E7=F0=E5=F8=E5=ED=E8=FF. <br>
+<br>
+=D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=E4=E8=F2 =E2 <b>=E8=ED=F2=E5=ED=F1=E8=
+=E2=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=E8=E2=ED=EE=E9 =F4=EE=F0=EC=E5 </b>=
+=F1 =F0=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=FC=F8=EE=E3=EE =EA=EE=EB=E8=F7=E5=F1=
+=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =E8=E7 =EF=F0=E0=EA=F2=E8=EA=E8 =F0=EE=
+=F1=F1=E8=E9=F1=EA=E8=F5 =E8 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =EA=EE=EC=EF=
+=E0=ED=E8=E9. =C2 =F5=EE=E4=E5 =F1=E5=EC=E8=ED=E0=F0=E0 =F3=F7=E0=F1=F2=ED=
+=E8=EA=E8 =E2=FB=EF=EE=EB=ED=FF=F2 =EC=ED=EE=E6=E5=F1=F2=E2=EE <b>=EF=F0=E0=
+=EA=F2=E8=F7=E5=F1=EA=E8=F5 =E7=E0=E4=E0=ED=E8=E9</b>. <br>
+</P>
+
+<P align=3Dcenter><b><font face=3D"Arial" size=3D"3">=C7=E2=EE=ED=E8=F2=E5=
+, =F2=E5=EB. (O95) 98O-65-I6</b></FONT></P></font>
+</BODY>
+</HTML>
+
+------=_NextPart_001_0001_C1C40663.689C752A--
+
+
+
+------=_NextPart_000_0000_72E44445.206486BB--
