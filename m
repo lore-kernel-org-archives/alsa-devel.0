@@ -1,10 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH] PXA27x AC97 warm reset
-Date: Thu, 04 Aug 2005 16:20:06 +0100
-Message-ID: <1123168806.15878.6.camel@cearnarfon>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001226]: Ego Sys NEON
+Date: Thu, 4 Aug 2005 18:09:59 +0200
+Message-ID: <1570eb510814dd5a7dfb5831687e6248@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-kceqES+e3E13h2v21IYG"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69F201FF
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 18:09:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,48 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Nicolas Pitre <nico@cam.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-kceqES+e3E13h2v21IYG
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1226> 
+======================================================================
+Reported By:                nictuku
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1226
+Category:                   USB - usb-audio
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware Current
+Kernel Version:             2.4
+======================================================================
+Date Submitted:             07-01-2005 21:21 CEST
+Last Modified:              08-04-2005 18:09 CEST
+======================================================================
+Summary:                    Ego Sys NEON
+Description: 
+hi, i have a ESI NeON (
+http://www.esi-pro.com/viewProduct.php?pid=42&page=1 ) i've tryed to make
+it work with alsa with no success, but strangely on the oss the 24-bit
+audio interface works. I just send this bug report to know if there's a
+way to make it work or if it's planned to put support on this hardware. if
+you need to test it feel free to contactme (nictuku@gmail.com)
+thanx
+======================================================================
 
-This patch extends the period of an AC97 warm reset on the PXA27x from
-50uS to 500uS. The shorter reset didn't always guarantee that the codec
-would wake up.
+----------------------------------------------------------------------
+ Clemens Ladisch - 07-25-05 11:05 
+----------------------------------------------------------------------
+This device should work with the ALSA driver.
 
-Changes:-
+Please make sure that the snd-usb-audio module is loaded, and that the
+audio module is _not_ loaded.  All supported sample format should be
+listed in /proc/asound/cardX/stream0.
 
-  o Change pxa27x warm reset period to 500uS
-  o Removed double semi-colon.
+----------------------------------------------------------------------
+ nictuku - 08-04-05 18:09 
+----------------------------------------------------------------------
+it worked perfectly. you could add it to the list of supported harware.
+Both sound and midi worked just fine :). thanks!!
 
-Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-
-Liam 
-
---=-kceqES+e3E13h2v21IYG
-Content-Disposition: attachment; filename=pxa-warm-reset.diff
-Content-Type: text/x-patch; name=pxa-warm-reset.diff; charset=UTF-8
-Content-Transfer-Encoding: base64
-
-SW5kZXg6IGFybS9weGEyeHgtYWM5Ny5jDQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQpSQ1MgZmlsZTogL2N2c3Jvb3Qv
-YWxzYS9hbHNhLWtlcm5lbC9hcm0vcHhhMnh4LWFjOTcuYyx2DQpyZXRyaWV2aW5nIHJldmlzaW9u
-IDEuMQ0KZGlmZiAtdSAtcjEuMSBweGEyeHgtYWM5Ny5jDQotLS0gYXJtL3B4YTJ4eC1hYzk3LmMJ
-MzAgSnVuIDIwMDUgMTc6NTQ6MDUgLTAwMDAJMS4xDQorKysgYXJtL3B4YTJ4eC1hYzk3LmMJNCBB
-dWcgMjAwNSAxNToxMjoxNSAtMDAwMA0KQEAgLTEzMiw5ICsxMzIsOSBAQA0KIAkJdWRlbGF5KDEw
-KTsNCiAJCUdDUiB8PSBHQ1JfV0FSTV9SU1Q7DQogCQlweGFfZ3Bpb19tb2RlKDExMyB8IEdQSU9f
-QUxUX0ZOXzJfT1VUKTsNCi0JCXVkZWxheSg1MCk7DQorCQl1ZGVsYXkoNTAwKTsNCiAjZWxzZQ0K
-LQkJR0NSIHw9IEdDUl9XQVJNX1JTVHxHQ1JfUFJJUkRZX0lFTnxHQ1JfU0VDUkRZX0lFTjs7DQor
-CQlHQ1IgfD0gR0NSX1dBUk1fUlNUfEdDUl9QUklSRFlfSUVOfEdDUl9TRUNSRFlfSUVOOw0KIAkJ
-d2FpdF9ldmVudF90aW1lb3V0KGdzcl93cSwgZ3NyX2JpdHMgJiAoR1NSX1BDUiB8IEdTUl9TQ1Ip
-LCAxKTsNCiAjZW5kaWYJCQkNCiANCg==
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-01-05 21:21 nictuku        New Issue                                    
+07-01-05 21:21 nictuku        Distribution              => Slackware Current
+07-01-05 21:21 nictuku        Kernel Version            => 2.4             
+07-04-05 09:23 Clemens LadischNote Added: 0005382                          
+07-06-05 23:04 nictuku        Issue Monitored: nictuku                     
+07-06-05 23:06 nictuku        Note Added: 0005395                          
+07-06-05 23:09 nictuku        Issue End Monitor: nictuku                    
+07-23-05 00:32 nictuku        Note Added: 0005551                          
+07-25-05 11:05 Clemens LadischNote Added: 0005562                          
+08-04-05 18:09 nictuku        Note Added: 0005651                          
+======================================================================
 
 
---=-kceqES+e3E13h2v21IYG--
 
 
 -------------------------------------------------------
