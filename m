@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001309]: hdsp 9632 w firmware 152 not working with Linux and ALSA 1.0.9
-Date: Wed, 3 Aug 2005 23:35:13 +0200
-Message-ID: <b88ec610e435c79c191dbca21160d567@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001304]: Speaker test hangs
+Date: Thu, 4 Aug 2005 03:21:20 +0200
+Message-ID: <3eec15a3928bbf272cb95302fbac3fa8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C72AC1D2
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2005 23:35:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D3E91A3
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 03:21:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1309> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
 ======================================================================
-Reported By:                ado
-Assigned To:                charbonnel
+Reported By:                herby
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1309
-Category:                   PCI - RME HDSP
+Project:                    ALSA - utils
+Issue ID:                   1304
+Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.12.2
+Status:                     new
 ======================================================================
-Date Submitted:             08-03-2005 23:35 CEST
-Last Modified:              08-03-2005 23:35 CEST
+Date Submitted:             08-03-2005 02:46 CEST
+Last Modified:              08-04-2005 03:21 CEST
 ======================================================================
-Summary:                    hdsp 9632 w firmware 152 not working with Linux and
-ALSA 1.0.9
+Summary:                    Speaker test hangs
 Description: 
-Hi,
+After applying the patch to the library that took out the check for a
+proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
+or so), I attempted to try a speaker test again.  It hung right after
+outputting "0 - Front Left".  I did an strace and the results are included
+in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
+with little luck.  The wierd thing is that I can execute 'aplay' (with the
+default device) and get a '.wav' file to play nicely.  I can even get a
+multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
+speaker-test doesn't work is beyond me.  The problem is that I appear to
+use similar techniques in my own programming as speaker-test, and my
+program doesen't do that well.  Being as how speaker-test IS part of ALSA,
+I thought I would submit the bug report against it.
 
-today I got my new 9632. First I did a firmware (152) and driver (2.9.4)
-update with the supplied windows software and studied the Totalmixer
-and the other apllications for some hours under Windows - it's all very
-impressive!!!
-
-But my main goal is using the 9632 with Linux. And what a pitty: the
-HDSPMixer application is totally unusable with the new firmware release.
-The routing is mixed up (I couldn't find any rules for what was going
-on) and I wasn't able to route the analog input signal to analog output!
-Fortunately I found the old firmware on the RME server and that's it:
-the routing is working now!
-
-It would be very nice if anyone had time to answer my questions:
-- will there be an ALSA update for the new firmware release?
-- will there be an update to the Linux HDSPMixer including the
-  features of the Windows release (selecting channels for common
-  level adjustment, Switching monitoring to individual channels, ...)
-  and the excelent Matrix window?
-- when I'm starting a playback with audacity or xmms the signal is
-  shown on all playback channels Out1 through Out12.
-- does anybody have a working .asoundrc file for me?
-- Can I use amixer to set routing and gain? What will I need to do this?
-
-Thanks a lot for your patience and help
-
-Ado Arnolds
-
+If other tests need be preformed, I'd be VERY happy to do them.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 08-03-05 12:18 
+----------------------------------------------------------------------
+Which version did you use?  Chance to try CVS version?
+
+----------------------------------------------------------------------
+ herby - 08-04-05 03:21 
+----------------------------------------------------------------------
+While not the CVS version, it is the 1.0.9 version(s) augmented 'b' on the
+driver and 'a' on the library (with the patch indicated).  Here is how it
+is called:
+>>>>>
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Jun  8 2005 for kernel 2.6.11.7.
+
+
+/proc/asound/cards:
+0 [Revolution71   ]: ICE1724 - M Audio Revolution-7.1
+                     M Audio Revolution-7.1 at 0xdc00, irq 10
+1 [V8235          ]: VIA8233 - VIA 8235
+                     VIA 8235 with VT1616i at 0xd400, irq 5
+
+
+Attempted execution of speaker-test:
+
+[tsw@xytar20 ~]$ strace -o speaker-trace speaker-test -c 2
+
+speaker-test 0.0.8
+
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ 0 - Front Left
+
+(Aborted with ^C after waiting a minute, no sound!)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 23:35 ado            New Issue                                    
-08-03-05 23:35 ado            Kernel Version            => 2.6.12.2        
+08-03-05 02:46 herby          New Issue                                    
+08-03-05 02:46 herby          File Added: speaker-trace                    
+08-03-05 12:18 tiwai          Note Added: 0005621                          
+08-04-05 03:21 herby          Note Added: 0005638                          
 ======================================================================
 
 
