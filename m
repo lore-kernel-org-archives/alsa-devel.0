@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001304]: Speaker test hangs
-Date: Thu, 4 Aug 2005 03:21:20 +0200
-Message-ID: <3eec15a3928bbf272cb95302fbac3fa8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001021]: codec_semaphore: semaphore is not ready [0x1][0x700300]
+Date: Thu, 4 Aug 2005 07:51:15 +0200
+Message-ID: <92e86b75fa6669d35d634d11f0ab8c8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D3E91A3
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 03:21:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 138251FC
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 07:51:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1021> 
 ======================================================================
-Reported By:                herby
+Reported By:                brujo66
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1304
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1021
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Linux Gentoo
+Kernel Version:             2.6.11-r4
 ======================================================================
-Date Submitted:             08-03-2005 02:46 CEST
-Last Modified:              08-04-2005 03:21 CEST
+Date Submitted:             03-29-2005 16:02 CEST
+Last Modified:              08-04-2005 07:51 CEST
 ======================================================================
-Summary:                    Speaker test hangs
+Summary:                    codec_semaphore: semaphore is not ready
+[0x1][0x700300]
 Description: 
-After applying the patch to the library that took out the check for a
-proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
-or so), I attempted to try a speaker test again.  It hung right after
-outputting "0 - Front Left".  I did an strace and the results are included
-in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
-with little luck.  The wierd thing is that I can execute 'aplay' (with the
-default device) and get a '.wav' file to play nicely.  I can even get a
-multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
-speaker-test doesn't work is beyond me.  The problem is that I appear to
-use similar techniques in my own programming as speaker-test, and my
-program doesen't do that well.  Being as how speaker-test IS part of ALSA,
-I thought I would submit the bug report against it.
+Hi,
 
-If other tests need be preformed, I'd be VERY happy to do them.
+I've tried to install ALSA by two ways: Using the Linux kernel modules and
+compiling ALSA with the original files.
+
+When the system load the 'snd-intel8x0' module, it produces the next
+messages, visibles by dmesg:
+
+PCI: Enabling device 0000:00:1f.5 (0005 -> 0007)
+ACPI: PCI interrupt 0000:00:1f.5[B] -> GSI 11 (level, low) -> IRQ 11
+PCI: Setting latency timer of device 0000:00:1f.5 to 64
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:582:
+codec_semaphore: semaphore is not ready [0x1][0x700300]
+[...] 
+[...]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:582:
+codec_semaphore: semaphore is not ready [0x1][0x700300]
+intel8x0_measure_ac97_clock: measured 49228 usecs
+intel8x0: clocking to 48000
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:582:
+codec_semaphore: semaphore is not ready [0x1][0x700300]
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:596:
+codec_write 0: semaphore is not ready forregister 0x2
+
+Those are the unique kind of message that reports error on the system. 
+
+The module is loaded on the system, but the sound of the music is
+distorsionated .
+
+The only solution that i find is to use OSS (not ALSA with OSS
+compatibility).
+
+Sorry about my english.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-03-05 12:18 
+ th - 08-04-05 07:51 
 ----------------------------------------------------------------------
-Which version did you use?  Chance to try CVS version?
-
-----------------------------------------------------------------------
- herby - 08-04-05 03:21 
-----------------------------------------------------------------------
-While not the CVS version, it is the 1.0.9 version(s) augmented 'b' on the
-driver and 'a' on the library (with the patch indicated).  Here is how it
-is called:
->>>>>
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun  8 2005 for kernel 2.6.11.7.
-
-
-/proc/asound/cards:
-0 [Revolution71   ]: ICE1724 - M Audio Revolution-7.1
-                     M Audio Revolution-7.1 at 0xdc00, irq 10
-1 [V8235          ]: VIA8233 - VIA 8235
-                     VIA 8235 with VT1616i at 0xd400, irq 5
-
-
-Attempted execution of speaker-test:
-
-[tsw@xytar20 ~]$ strace -o speaker-trace speaker-test -c 2
-
-speaker-test 0.0.8
-
-Playback device is plughw:0,0
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 32768
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3764
-was set buffer_size = 15052
- 0 - Front Left
-
-(Aborted with ^C after waiting a minute, no sound!)
+i've got the same problem. When i'm maximizing the volume -- sound gets
+noise and distortion.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 02:46 herby          New Issue                                    
-08-03-05 02:46 herby          File Added: speaker-trace                    
-08-03-05 12:18 tiwai          Note Added: 0005621                          
-08-04-05 03:21 herby          Note Added: 0005638                          
+03-29-05 16:02 brujo66        New Issue                                    
+03-29-05 16:02 brujo66        Distribution              => Linux Gentoo    
+03-29-05 16:02 brujo66        Kernel Version            => 2.6.11-r4       
+08-04-05 07:51 th             Note Added: 0005639                          
 ======================================================================
 
 
