@@ -1,12 +1,14 @@
-From: =?windows-1251?B?MDksIDEwIEHi4/Px8uA=?= <baldpate@terra.com>
-Subject: =?windows-1251?B?wf7k5uXyIPDg4e7y4P756Okg7eAgwuDx?=
-Date: Fri, 05 Aug 2005 03:59:09 +0000
-Message-ID: <e50901c59972$f462b519$1d4a59b4@terra.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001304]: Speaker test hangs
+Date: Thu, 4 Aug 2005 14:10:03 +0200
+Message-ID: <462313a0990b3d10b1f39e906f3f5965@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_F7026484.0F149C20"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8067017B
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 14:10:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,261 +18,125 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_F7026484.0F149C20
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_3C7187F9.14A28A05"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
+======================================================================
+Reported By:                herby
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1304
+Category:                   speakertest
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-03-2005 02:46 CEST
+Last Modified:              08-04-2005 14:10 CEST
+======================================================================
+Summary:                    Speaker test hangs
+Description: 
+After applying the patch to the library that took out the check for a
+proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
+or so), I attempted to try a speaker test again.  It hung right after
+outputting "0 - Front Left".  I did an strace and the results are included
+in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
+with little luck.  The wierd thing is that I can execute 'aplay' (with the
+default device) and get a '.wav' file to play nicely.  I can even get a
+multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
+speaker-test doesn't work is beyond me.  The problem is that I appear to
+use similar techniques in my own programming as speaker-test, and my
+program doesen't do that well.  Being as how speaker-test IS part of ALSA,
+I thought I would submit the bug report against it.
 
+If other tests need be preformed, I'd be VERY happy to do them.
+======================================================================
 
-------=_NextPart_001_0001_3C7187F9.14A28A05
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-   =D1=E5=E3=EE=E4=ED=FF =ED=E5 =ED=F3=E6=ED=EE =E4=EE=EA=E0=E7=FB=E2=E0=F2=
-=FC,=20
-=F7=F2=EE =F1=E8=F1=F2=E5=EC=E0 =C1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF=
- - =FD=F2=EE=20
-=CF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E5, =D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =E8 =
-=CA=EE=ED=F2=F0=EE=EB=FC =E2 =EE=E4=ED=EE=EC =F4=EB=E0=EA=EE=ED=E5.=20
-=C2=EE=EF=F0=EE=F1: =CA=E0=EA =F2=E0=EA=F3=FE =F0=E0=E1=EE=F2=E0=FE=F9=F3=
-=FE =F1=E8=F1=F2=E5=EC=F3 =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF?=20
-
-
-=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=
-=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0=
- =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=E5=F4=EE=ED=F3
-(095) 514-5047=20
-
-=D7=F2=EE =E4=E0=E5=F2 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =EA=EE=EC=
-=EF=E0=ED=E8=E8, =F1=E5=E3=EE=E4=ED=FF =E8=E7=E2=E5=F1=F2=ED=EE =EC=ED=EE=
-=E3=E8=EC. =CD=EE =E5=F1=F2=FC =E4=E2=E0
-=E2=EE=EF=F0=EE=F1=E0, =EE=E1 =EA=EE=F2=EE=F0=FB=E5, =EA=E0=EA =EE =E3=F0=
-=E0=E1=EB=E8, =F1=EF=EE=F2=FB=EA=E0=FE=F2=F1=FF =E1=EE=EB=FC=F8=E8=ED=F1=F2=
-=E2=EE =F2=E5=F5, =EA=F2=EE =F1=E0=EC=EE=F1=F2=EE=FF=F2=E5=EB=FC=ED=EE
-=E4=E5=EB=E0=EB =FD=F2=EE =E2 =F1=E2=EE=E5=E9 =EA=EE=EC=EF=E0=ED=E8=E8.=20
-
-=CF=E5=F0=E2=FB=E9 - =E2 =EA=ED=E8=E6=EA=E0=F5, =F1=F2=E0=F2=FC=FF=F5 "=EA=
-=E0=EA =FD=F2=EE =E4=E5=EB=E0=F2=FC =EF=F0=E0=E2=E8=EB=FC=ED=EE" =EF=EE=F0=
-=EE=E9 =ED=E0=EF=E8=F1=E0=ED=EE =EC=F3=E4=F0=E5=ED=EE,
-=F2=F0=F3=E4=ED=EE =F0=E0=E7=EE=E1=F0=E0=F2=FC=F1=FF =F1=E0=EC=EE=EC=F3.=20
-
-=C2=F2=EE=F0=EE=E9 - =E2 =FD=F2=E8=F5 =EA=ED=E8=E6=EA=E0=F5 =E8 =F1=F2=E0=
-=F2=FC=FF=F5 =ED=E0=EF=E8=F1=E0=ED=EE =ED=E5 =E2=F1=E5!=20
-
-=C8 =F1=E0=EC=EE=EE=E1=F3=F7=E5=ED=E8=E5 =EE=F1=F2=E0=E2=F8=E8=EC=F1=FF "=
-=EC=E5=EB=EE=F7=E0=EC" =EE=E1=F5=EE=E4=E8=F2=F1=FF =E4=EE=F0=EE=E3=EE:=20
-
-=C5=F1=EB=E8 =E2=FB =F1=F2=E0=E2=E8=F2=E5 =F3 =F1=E5=E1=FF =E2 =EA=EE=EC=EF=
-=E0=ED=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 - =EF=F0=E8=E3=EB=
-=E0=F8=E0=E5=EC =C2=E0=F1 =ED=E0 =F1=E5=EC=E8=ED=E0=F0-=EF=F0=E0=EA=F2=E8=
-=EA=F3=EC
+----------------------------------------------------------------------
+ herby - 08-04-05 03:21 
+----------------------------------------------------------------------
+While not the CVS version, it is the 1.0.9 version(s) augmented 'b' on the
+driver and 'a' on the library (with the patch indicated).  Here is how it
+is called:
+>>>>>
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Jun  8 2005 for kernel 2.6.11.7.
 
 
-=C1=FE=E4=E6=E5=F2, =EA=EE=F2=EE=F0=FB=E9 =D0=E0=E1=EE=F2=E0=E5=F2 =ED=E0=
-  =C2=E0=F1 =20
-=CA=E0=EA =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF =D0=E0=E1=EE=F2=E0=
-=FE=F9=F3=FE =D1=E8=F1=F2=E5=EC=F3 =C1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=
-=FF=20
+/proc/asound/cards:
+0 [Revolution71   ]: ICE1724 - M Audio Revolution-7.1
+                     M Audio Revolution-7.1 at 0xdc00, irq 10
+1 [V8235          ]: VIA8233 - VIA 8235
+                     VIA 8235 with VT1616i at 0xd400, irq 5
 
 
+Attempted execution of speaker-test:
 
-=CD=E0 =F1=E5=EC=E8=ED=E0=F0=E5 =F3=F7=E0=F1=F2=ED=E8=EA=E8 =EF=EE=EB=F3=F7=
-=E0=F2  =D0=E5=E0=EB=E8=E8 =F1=E5=E3=EE=E4=ED=FF=F8=ED=E5=E3=EE =E4=ED=FF=
-, =EF=EE=ED=E8=EC=E0=ED=E8=E5 =F2=EE=E3=EE,
-=F7=F2=EE =EF=F0=E5=E4=F1=F2=E0=E2=EB=FF=E5=F2 =E8=E7 =F1=E5=E1=FF =E1=FE=
-=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =E2 =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E9=
- =EA=EE=EC=EF=E0=ED=E8=E8 =E7=ED=E0=ED=E8=FF =E8=E7
-=EE=E1=EB=E0=F1=F2=E5=E9  =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8 =EF=EE=F1=F2=E0=
-=ED=EE=E2=EA=E8 (=E2=ED=E5=E4=F0=E5=ED=E8=FF) =E0=E2=F2=EE=EC=E0=F2=E8=E7=
-=E0=F6=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF
-=EC=E5=F2=EE=E4=E8=EA=E8 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E1=FE=E4=E6=E5=
-=F2=E8=F0=EE=E2=E0=ED=E8=FF =FD=EA=EE=ED=EE=EC=E8=EA=E8 =E1=FE=E4=E6=E5=F2=
-=ED=EE=E3=EE =EF=F0=EE=F6=E5=F1=F1=E0 =E8 =EF=F0=EE=F6=E5=F1=F1=E0
-=E2=ED=E5=E4=F0=E5=ED=E8=FF =F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =F1=F2=F0=F3=EA=
-=F2=F3=F0=FB =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E9 =EA=EE=EC=EF=E0=ED=E8=E8 =CF=
-=EE =E8=F2=EE=E3=E0=EC =F1=E5=EC=E8=ED=E0=F0=E0
-=F3=F7=E0=F1=F2=ED=E8=EA=E8 =F1=EC=EE=E3=F3=F2  =EA=E2=E0=EB=E8=F4=E8=F6=E8=
-=F0=EE=E2=E0=ED=ED=EE =F0=E0=E7=EE=E1=F0=E0=F2=FC=F1=FF =E2 =EF=F0=EE=E1=EB=
-=E5=EC=E0=F5, =F1=F2=EE=FF=F9=E8=F5 =EF=E5=F0=E5=E4
-=ED=E8=EC=E8 =E2 =EE=E1=EB=E0=F1=F2=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=
-=E8=FF =EF=F0=E0=E2=E8=EB=FC=ED=EE =EF=EE=F1=F2=E0=E2=E8=F2=FC =E7=E0=E4=E0=
-=F7=E8 =EE=F1=ED=EE=E2=ED=FB=EC =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC
-=E1=FE=E4=E6=E5=F2=ED=EE=E3=EE =EF=F0=EE=F6=E5=F1=F1=E0 =EE=F6=E5=ED=E8=F2=
-=FC =EE=E1=FA=E5=EC =F0=E0=E1=EE=F2=FB, =ED=E5=EE=E1=F5=EE=E4=E8=EC=FB=E9=
- =E2 =E8=F5 =EA=EE=EC=EF=E0=ED=E8=FF=F5 =E3=F0=E0=EC=EE=F2=ED=EE
-=E2=FB=E1=F0=E0=F2=FC =EF=F0=EE=E3=F0=E0=EC=EC=ED=EE=E5 =EE=E1=E5=F1=EF=E5=
-=F7=E5=ED=E8=E5 =E8 =F2=E0=EA=F2=E8=EA=F3 =E5=E3=EE =E2=ED=E5=E4=F0=E5=ED=
-=E8=FF =EE=E1=FA=FF=F1=ED=E8=F2=FC =F1=E5=E1=E5
-=E8 =EA=EE=EB=EB=E5=E3=E0=EC =EF=F0=E8=ED=F6=E8=EF=FB =F1=EE=E2=F0=E5=EC=E5=
-=ED=ED=EE=E3=EE "=F5=EE=E7=F0=E0=F1=F7=E5=F2=E0" =ED=E0=EF=E8=F1=E0=F2=FC=
- =EE=F1=ED=EE=E2=ED=FB=E5 =E4=EE=EA=F3=EC=E5=ED=F2=FB,
-=F0=E5=E3=EB=E0=EC=E5=ED=F2=E8=F0=F3=FE=F9=E8=E5 =EF=F0=EE=F6=E5=F1=F1 =D1=
-=E5=EC=E8=ED=E0=F0 =E1=F3=E4=E5=F2 =EF=EE=EB=E5=E7=E5=ED =F0=F3=EA=EE=E2=EE=
-=E4=E8=F2=E5=EB=FF=EC =E2=F1=E5=F5 =F3=F0=EE=E2=ED=E5=E9,
-=EE=F0=E3=E0=ED=E8=E7=E0=F2=EE=F0=FB, =EE=F2=E2=E5=F7=E0=FE=F9=E8=E5 =E7=E0=
- =EF=EE=F1=F2=E0=ED=EE=E2=EA=F3 =E8 =E8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5=
- =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF =E2
-=F3=EF=F0=E0=E2=EB=E5=ED=E8=E8, =F1=EF=E5=F6=E8=E0=EB=E8=F1=F2=FB =F1=EB=F3=
-=E6=E1 =C8=D2, =FD=EA=EE=ED=EE=EC=E8=F1=F2=FB=20
-=CF=EE=E4=F0=EE=E1=ED=FB=E9 =EF=EB=E0=ED =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=EE=
-=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0 =EC=EE=E6=ED=EE =EF=EE=EB=F3=F7=E8=F2=FC =
-=EF=EE =F4=E0=EA=F1=F3 =E8=EB=E8 =FD=EB=E5=EA=F2=F0=EE=ED=ED=EE=E9
-=EF=EE=F7=F2=E5.=20
+[tsw@xytar20 ~]$ strace -o speaker-trace speaker-test -c 2
 
-=CF=F0=EE=E4=EE=EB=E6=E8=F2=E5=EB=FC=ED=EE=F1=F2=FC =F1=E5=EC=E8=ED=E0=F0=
-=E0: 2 =E4=ED=FF 10-11.08.05 =F1 10:00 =E4=EE 18:00=20
-=D1=F2=EE=E8=EC=EE=F1=F2=FC =F3=F7=E0=F1=F2=E8=FF: 12900 =F0=F3=E1. =CD=C4=
-=D1 =ED=E5 =EE=E1=EB=E0=E3=E0=E5=F2=F1=FF.
-=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
-=F4=E5-=EF=E0=F3=E7=FB, =EF=E5=F7=E0=F2=ED=FB=E5 =EC=E5=F2=EE=E4=E8=F7=E5=
-=F1=EA=E8=E5 =EC=E0=F2=E5=F0=E8=E0=EB=FB.
+speaker-test 0.0.8
 
-=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=
-=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0=
- =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=E5=F4=EE=ED=F3
-(095) 514-5047=20
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ 0 - Front Left
 
-  =20
-------=_NextPart_001_0001_3C7187F9.14A28A05
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+(Aborted with ^C after waiting a minute, no sound!)
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
-251">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
-<BODY text=3D#000000 bgColor=3D#ffffff>
-<font face=3D"Times New Roman"><TABLE borderColor=3D#009900 cellSpacing=3D=
-0 cellPadding=3D10 width=3D700 align=3Dcenter border=3D1><TR>
-<TD>
-<P style=3D"BACKGROUND-COLOR: #ccffcc" align=3Dright><FONT size=3D4><I>=D1=
-=E5=E3=EE=E4=ED=FF =ED=E5 =ED=F3=E6=ED=EE =E4=EE=EA=E0=E7=FB=E2=E0=F2=FC,=
- <br>
-=F7=F2=EE =F1=E8=F1=F2=E5=EC=E0 =C1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF=
- - =FD=F2=EE <br>
-=CF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E5, =D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =E8 =
-=CA=EE=ED=F2=F0=EE=EB=FC =E2 =EE=E4=ED=EE=EC =F4=EB=E0=EA=EE=ED=E5. <br>
-<B>=C2=EE=EF=F0=EE=F1: =CA=E0=EA =F2=E0=EA=F3=FE =F0=E0=E1=EE=F2=E0=FE=F9=
-=F3=FE =F1=E8=F1=F2=E5=EC=F3 =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF=
-? </B><br>
-</I></FONT></P>
-<font face=3D"Times New Roman"><b>=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=
-=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=
-=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=
-=E5=F4=EE=ED=F3<br>
-<font color=3D"#0000FF" size=3D"4">(095) 514-5047 </font><br>
-</b></font><br>
-=D7=F2=EE =E4=E0=E5=F2 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =EA=EE=EC=
-=EF=E0=ED=E8=E8, =F1=E5=E3=EE=E4=ED=FF =E8=E7=E2=E5=F1=F2=ED=EE =EC=ED=EE=
-=E3=E8=EC. =CD=EE =E5=F1=F2=FC =E4=E2=E0 =E2=EE=EF=F0=EE=F1=E0, =EE=E1 =EA=
-=EE=F2=EE=F0=FB=E5, =EA=E0=EA =EE =E3=F0=E0=E1=EB=E8, =F1=EF=EE=F2=FB=EA=E0=
-=FE=F2=F1=FF =E1=EE=EB=FC=F8=E8=ED=F1=F2=E2=EE =F2=E5=F5, =EA=F2=EE =F1=E0=
-=EC=EE=F1=F2=EE=FF=F2=E5=EB=FC=ED=EE =E4=E5=EB=E0=EB =FD=F2=EE =E2 =F1=E2=
-=EE=E5=E9 =EA=EE=EC=EF=E0=ED=E8=E8. <br>
-<br>
-=CF=E5=F0=E2=FB=E9 - =E2 =EA=ED=E8=E6=EA=E0=F5, =F1=F2=E0=F2=FC=FF=F5 "=EA=
-=E0=EA =FD=F2=EE =E4=E5=EB=E0=F2=FC =EF=F0=E0=E2=E8=EB=FC=ED=EE" =EF=EE=F0=
-=EE=E9 =ED=E0=EF=E8=F1=E0=ED=EE =EC=F3=E4=F0=E5=ED=EE, =F2=F0=F3=E4=ED=EE=
- =F0=E0=E7=EE=E1=F0=E0=F2=FC=F1=FF =F1=E0=EC=EE=EC=F3. <br>
-<br>
-=C2=F2=EE=F0=EE=E9 - =E2 =FD=F2=E8=F5 =EA=ED=E8=E6=EA=E0=F5 =E8 =F1=F2=E0=
-=F2=FC=FF=F5 =ED=E0=EF=E8=F1=E0=ED=EE =ED=E5 =E2=F1=E5! <br>
-<br>
-=C8 =F1=E0=EC=EE=EE=E1=F3=F7=E5=ED=E8=E5 =EE=F1=F2=E0=E2=F8=E8=EC=F1=FF "=
-=EC=E5=EB=EE=F7=E0=EC" =EE=E1=F5=EE=E4=E8=F2=F1=FF =E4=EE=F0=EE=E3=EE: <b=
-r>
-<br>
-=C5=F1=EB=E8 =E2=FB =F1=F2=E0=E2=E8=F2=E5 =F3 =F1=E5=E1=FF =E2 =EA=EE=EC=EF=
-=E0=ED=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 - =EF=F0=E8=E3=EB=
-=E0=F8=E0=E5=EC =C2=E0=F1 =ED=E0 =F1=E5=EC=E8=ED=E0=F0-=EF=F0=E0=EA=F2=E8=
-=EA=F3=EC <br>
-<br>
+----------------------------------------------------------------------
+ jcdutton - 08-04-05 14:10 
+----------------------------------------------------------------------
+This looks like a bug in the period/buffer size setting.
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
 
-<P align=3Dcenter><B><FONT color=3Dblue size=3D6>=C1=FE=E4=E6=E5=F2, =EA=EE=
-=F2=EE=F0=FB=E9 =D0=E0=E1=EE=F2=E0=E5=F2 =ED=E0 </FONT>=20
-<FONT color=3Dblue size=3D7>=C2=E0=F1</FONT></B><font size=3D"7"> </font>=
- <br>
-<FONT size=3D5>=CA=E0=EA =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF =D0=
-=E0=E1=EE=F2=E0=FE=F9=F3=FE =D1=E8=F1=F2=E5=EC=F3 =C1=FE=E4=E6=E5=F2=E8=F0=
-=EE=E2=E0=ED=E8=FF <br>
-</FONT><br>
-</P><B>=CD=E0 =F1=E5=EC=E8=ED=E0=F0=E5 =F3=F7=E0=F1=F2=ED=E8=EA=E8 =EF=EE=
-=EB=F3=F7=E0=F2</B>=20
-<UL>
-<LI>=D0=E5=E0=EB=E8=E8 =F1=E5=E3=EE=E4=ED=FF=F8=ED=E5=E3=EE =E4=ED=FF, =EF=
-=EE=ED=E8=EC=E0=ED=E8=E5 =F2=EE=E3=EE, =F7=F2=EE =EF=F0=E5=E4=F1=F2=E0=E2=
-=EB=FF=E5=F2 =E8=E7 =F1=E5=E1=FF =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5=
- =E2 =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E9 =EA=EE=EC=EF=E0=ED=E8=E8=20
-<LI>=E7=ED=E0=ED=E8=FF =E8=E7 =EE=E1=EB=E0=F1=F2=E5=E9=20
-<UL>
-<LI>=EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8=20
-<LI>=EF=EE=F1=F2=E0=ED=EE=E2=EA=E8 (=E2=ED=E5=E4=F0=E5=ED=E8=FF)=20
-<LI>=E0=E2=F2=EE=EC=E0=F2=E8=E7=E0=F6=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=
-=E0=ED=E8=FF=20
-<LI>=EC=E5=F2=EE=E4=E8=EA=E8 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E1=FE=E4=
-=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF=20
-<LI>=FD=EA=EE=ED=EE=EC=E8=EA=E8 =E1=FE=E4=E6=E5=F2=ED=EE=E3=EE =EF=F0=EE=F6=
-=E5=F1=F1=E0 =E8 =EF=F0=EE=F6=E5=F1=F1=E0 =E2=ED=E5=E4=F0=E5=ED=E8=FF=20
-<LI>=F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =F1=F2=F0=F3=EA=F2=F3=F0=FB =F1=EE=E2=F0=
-=E5=EC=E5=ED=ED=EE=E9 =EA=EE=EC=EF=E0=ED=E8=E8 </LI></UL></LI></UL><B>=CF=
-=EE =E8=F2=EE=E3=E0=EC =F1=E5=EC=E8=ED=E0=F0=E0 =F3=F7=E0=F1=F2=ED=E8=EA=E8=
- =F1=EC=EE=E3=F3=F2</B>=20
-<UL>
-<LI>=EA=E2=E0=EB=E8=F4=E8=F6=E8=F0=EE=E2=E0=ED=ED=EE =F0=E0=E7=EE=E1=F0=E0=
-=F2=FC=F1=FF =E2 =EF=F0=EE=E1=EB=E5=EC=E0=F5, =F1=F2=EE=FF=F9=E8=F5 =EF=E5=
-=F0=E5=E4 =ED=E8=EC=E8 =E2 =EE=E1=EB=E0=F1=F2=E8 =E1=FE=E4=E6=E5=F2=E8=F0=
-=EE=E2=E0=ED=E8=FF=20
-<LI>=EF=F0=E0=E2=E8=EB=FC=ED=EE =EF=EE=F1=F2=E0=E2=E8=F2=FC =E7=E0=E4=E0=F7=
-=E8 =EE=F1=ED=EE=E2=ED=FB=EC =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC =E1=FE=E4=E6=E5=
-=F2=ED=EE=E3=EE =EF=F0=EE=F6=E5=F1=F1=E0=20
-<LI>=EE=F6=E5=ED=E8=F2=FC =EE=E1=FA=E5=EC =F0=E0=E1=EE=F2=FB, =ED=E5=EE=E1=
-=F5=EE=E4=E8=EC=FB=E9 =E2 =E8=F5 =EA=EE=EC=EF=E0=ED=E8=FF=F5=20
-<LI>=E3=F0=E0=EC=EE=F2=ED=EE =E2=FB=E1=F0=E0=F2=FC =EF=F0=EE=E3=F0=E0=EC=EC=
-=ED=EE=E5 =EE=E1=E5=F1=EF=E5=F7=E5=ED=E8=E5 =E8 =F2=E0=EA=F2=E8=EA=F3 =E5=
-=E3=EE =E2=ED=E5=E4=F0=E5=ED=E8=FF=20
-<LI>=EE=E1=FA=FF=F1=ED=E8=F2=FC =F1=E5=E1=E5 =E8 =EA=EE=EB=EB=E5=E3=E0=EC=
- =EF=F0=E8=ED=F6=E8=EF=FB =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E3=EE "=F5=EE=E7=
-=F0=E0=F1=F7=E5=F2=E0"=20
-<LI>=ED=E0=EF=E8=F1=E0=F2=FC =EE=F1=ED=EE=E2=ED=FB=E5 =E4=EE=EA=F3=EC=E5=ED=
-=F2=FB, =F0=E5=E3=EB=E0=EC=E5=ED=F2=E8=F0=F3=FE=F9=E8=E5 =EF=F0=EE=F6=E5=F1=
-=F1 </LI></UL><B>=D1=E5=EC=E8=ED=E0=F0 =E1=F3=E4=E5=F2 =EF=EE=EB=E5=E7=E5=
-=ED</B> =F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF=EC =E2=F1=E5=F5 =F3=F0=EE=E2=
-=ED=E5=E9, =EE=F0=E3=E0=ED=E8=E7=E0=F2=EE=F0=FB, =EE=F2=E2=E5=F7=E0=FE=F9=
-=E8=E5 =E7=E0 =EF=EE=F1=F2=E0=ED=EE=E2=EA=F3 =E8 =E8=F1=EF=EE=EB=FC=E7=EE=
-=E2=E0=ED=E8=E5 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF =E2 =F3=EF=F0=E0=
-=E2=EB=E5=ED=E8=E8, =F1=EF=E5=F6=E8=E0=EB=E8=F1=F2=FB =F1=EB=F3=E6=E1 =C8=
-=D2, =FD=EA=EE=ED=EE=EC=E8=F1=F2=FB <br>
-=CF=EE=E4=F0=EE=E1=ED=FB=E9 =EF=EB=E0=ED =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=EE=
-=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0 =EC=EE=E6=ED=EE =EF=EE=EB=F3=F7=E8=F2=FC =
-=EF=EE =F4=E0=EA=F1=F3 =E8=EB=E8 =FD=EB=E5=EA=F2=F0=EE=ED=ED=EE=E9 =EF=EE=
-=F7=F2=E5. <br>
-<br>
+Does not make valid sense.
+If there are 4 periods, with period size of 3764, the buffer size should
+be 15056 and not 15052.
 
-<P style=3D"BACKGROUND-COLOR: #ccffcc" align=3Dcenter>=CF=F0=EE=E4=EE=EB=E6=
-=E8=F2=E5=EB=FC=ED=EE=F1=F2=FC =F1=E5=EC=E8=ED=E0=F0=E0: 2 =E4=ED=FF 10-1=
-1.08.05 =F1 10:00 =E4=EE 18:00 <br>
-<FONT style=3D"BACKGROUND-COLOR: #66ff66"><B>=D1=F2=EE=E8=EC=EE=F1=F2=FC =
-=F3=F7=E0=F1=F2=E8=FF: 12900 =F0=F3=E1.</B> =CD=C4=D1 =ED=E5 =EE=E1=EB=E0=
-=E3=E0=E5=F2=F1=FF.</FONT><br>
-=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
-=F4=E5-=EF=E0=F3=E7=FB, =EF=E5=F7=E0=F2=ED=FB=E5 =EC=E5=F2=EE=E4=E8=F7=E5=
-=F1=EA=E8=E5 =EC=E0=F2=E5=F0=E8=E0=EB=FB. <br>
-=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=
-=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0=
- =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=E5=F4=EE=ED=F3<B><br>
-(095) 514-5047 </B></P></TD></TR></TABLE></font>
-</BODY>
-</HTML>
+Do you have similar problems with the other sound card?
+E.g.
+Card 0
+speaker-test -c2 -Dplug:front:0
+Card 1
+speaker-test -c2 -Dplug:front:1
 
-------=_NextPart_001_0001_3C7187F9.14A28A05--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-03-05 02:46 herby          New Issue                                    
+08-03-05 02:46 herby          File Added: speaker-trace                    
+08-03-05 12:18 tiwai          Note Added: 0005621                          
+08-04-05 03:21 herby          Note Added: 0005638                          
+08-04-05 14:10 jcdutton       Note Added: 0005648                          
+======================================================================
 
 
 
-------=_NextPart_000_0000_F7026484.0F149C20--
+
+-------------------------------------------------------
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
