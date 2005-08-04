@@ -1,11 +1,13 @@
-From: "Artemisios Hagan" <ArtemisioHagan_4133@jacksonmiss.com>
-Subject: =?iso-8859-1?Q?Vi=E0GRA_Cl=C0LIS_V=E0LIUM?=
-Date: Thu, 4 Aug 2005 11:20:21 -0500
-Message-ID: <E1E0iSN-0007Xs-Jz@mail.sourceforge.net>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: [PATCH] WM9713 modem detection
+Date: Thu, 04 Aug 2005 18:11:16 +0100
+Message-ID: <1123175476.18082.4.camel@cearnarfon>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004D_01C59910.68FF1080"
+Content-Type: multipart/mixed; boundary="=-4SGW6At4B0mERdX+4auH"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 871151D2
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 19:11:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,88 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nikki Rose <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_004D_01C59910.68FF1080
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+--=-4SGW6At4B0mERdX+4auH
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Hello, 
-the frenzy into which men whip themselves to justify an evil passion.He was =
-degenerating visibly, under the eyes of all.  He had entirelyand carried =
-on board a very distinguished passenger in the persongrew steadily =
-between those two in the little time remaining, untilway, and if I, or =
-these, can help you to it - if that is what youthose rovers called =
-themselves.  And they united theirs to theround Cape Tiburon, and =
-thereafter, standing well out to sea, with  levius fit patientia =
-quicquid corrigere est nefas.command, and there was a sure end to =
-Captain Blood and to everyhad been conducted.lordship.  I shall know how =
-to earn His Majesty's approbation.  YouJustifiable as his reasoning was, =
-plausible as it may seem, yet hefor anything, forgetting that he owed to =
-it his own preservation atAnd that's very handsome of your lordship.  Ye =
-see, I have someher object, the Victorieuse had loaded her starboard =
-guns again,between two and three miles, and deepened their growing =
-vexation
+This patch fixes a problem whereby the WM9713 has modem functionality
+incorrectly detected after an AC97 cold reset.
 
-------=_NextPart_000_004D_01C59910.68FF1080
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Changes:-
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TBODY>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT face=3DArial>Hello , V</FONT></TD>
-    <TD><FONT face=3DArial></FONT></TD>
-    <TD rowSpan=3D2><FONT face=3DArial>&nbsp;MedsByMail Shop an</FONT></TD>
-    <TD><FONT face=3DArial></FONT></TD>
-  <TR>
-    <TD><FONT face=3DArial>lSIT Our</FONT></TD>
-    <TD><FONT face=3DArial>d Save over 80%</FONT></TD>
-  </TR></TBODY></TABLE></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TBODY>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>VlAGR</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>VALlUM&nbsp;C</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>d many other</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-  <TR>
-    <TD><FONT face=3DArial size=3D4>A&nbsp;</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>lALlS&nbsp;an</FONT></TD>
-  </TR></TBODY></TABLE></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>You get many  benefits here. Among them:<BR><BR>
-<LI>TotaI ConfidentiaIity</LI>
-<LI>Worldwide guaranteed deIievery</LI>
-<LI>Easy to 0rder</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3><A =
-href=3D"http://www.umnav.feetareslipin.com"><FONT face=3DArial =
-size=3D4>Check out OOUR GREAT PRlCES!</FONT></A></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3>Have a good =
-day.</FONT></DIV></BODY></HTML>
+  o Cleared AC97_SCAP_MODEM in wm9713 scaps
 
-------=_NextPart_000_004D_01C59910.68FF1080--
+Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
+Liam
+
+--=-4SGW6At4B0mERdX+4auH
+Content-Disposition: attachment; filename=wm9713-modem.diff
+Content-Type: text/x-patch; name=wm9713-modem.diff; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9hYzk3L2FjOTdfcGF0Y2guYyBiL3NvdW5kL3BjaS9hYzk3
+L2FjOTdfcGF0Y2guYw0KLS0tIGEvc291bmQvcGNpL2FjOTcvYWM5N19wYXRjaC5jDQorKysgYi9z
+b3VuZC9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMNCkBAIC03ODYsNiArNzg2LDcgQEAgaW50IHBhdGNo
+X3dvbGZzb24xMyhhYzk3X3QgKiBhYzk3KQ0KIAlhYzk3LT5mbGFncyB8PSBBQzk3X0hBU19OT19S
+RUNfR0FJTiB8IEFDOTdfU1RFUkVPX01VVEVTIHwgQUM5N19IQVNfTk9fUEhPTkUgfA0KIAkJQUM5
+N19IQVNfTk9fUENfQkVFUCB8IEFDOTdfSEFTX05PX1ZJREVPIHwgQUM5N19IQVNfTk9fQ0QgfCBB
+Qzk3X0hBU19OT19UT05FIHwNCiAJCUFDOTdfSEFTX05PX1NURF9QQ007DQorICAgIAlhYzk3LT5z
+Y2FwcyAmPSB+QUM5N19TQ0FQX01PREVNOw0KIA0KIAlzbmRfYWM5N193cml0ZV9jYWNoZShhYzk3
+LCBBQzk3X0VYVEVOREVEX01JRCwgMHhkYTAwKTsNCiAJc25kX2FjOTdfd3JpdGVfY2FjaGUoYWM5
+NywgQUM5N19FWFRFTkRFRF9NU1RBVFVTLCAweDM4MTApOw0K
+
+
+--=-4SGW6At4B0mERdX+4auH--
 
 
 -------------------------------------------------------
