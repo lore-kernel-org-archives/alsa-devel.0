@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
-Date: Fri, 5 Aug 2005 01:10:02 +0200
-Message-ID: <0b885818367dc71c277032189c84b10c@bugtrack.alsa-project.org>
+Date: Fri, 5 Aug 2005 01:58:14 +0200
+Message-ID: <fd3ccd85138132142cfda8d489f05773@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EDB51EE
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 01:10:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 872931EE
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 01:58:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             08-05-2005 01:10 CEST
-Last Modified:              08-05-2005 01:10 CEST
+Last Modified:              08-05-2005 01:58 CEST
 ======================================================================
 Summary:                    drivers load but unmuting channels / adjusting
 volumes does not produce any sound
@@ -55,12 +55,19 @@ This is the card in the new ASUS W2 laptop and could be slightly different
 to other models.
 ======================================================================
 
+----------------------------------------------------------------------
+ hettar - 08-05-05 01:58 
+----------------------------------------------------------------------
+I just saw issue #0001176 and I would guess that this is the same problem
+as reported there.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-05-05 01:10 hettar         New Issue                                    
 08-05-05 01:10 hettar         Distribution              => Ubuntu          
 08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
+08-05-05 01:58 hettar         Note Added: 0005654                          
 ======================================================================
 
 
