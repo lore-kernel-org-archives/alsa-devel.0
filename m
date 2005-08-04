@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001308]: hdsp 9632 w firmware 152 not working with Linux and ALSA 1.0.9
-Date: Thu, 4 Aug 2005 09:02:58 +0200
-Message-ID: <6d415032d386cab9727e257b97179c87@bugtrack.alsa-project.org>
+Date: Thu, 4 Aug 2005 09:04:04 +0200
+Message-ID: <cb90839b9bf4ac9aaff0ab278bb90e16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2CA75140
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:02:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42FBD140
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:04:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UNset as DUPLICATE OF issue 0001308.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1308> 
 ======================================================================
@@ -43,7 +43,7 @@ Duplicate:                  1308
 Fixed in Version:           
 ======================================================================
 Date Submitted:             08-03-2005 23:24 CEST
-Last Modified:              08-04-2005 09:02 CEST
+Last Modified:              08-04-2005 09:04 CEST
 ======================================================================
 Summary:                    hdsp 9632 w firmware 152 not working with Linux and
 ALSA 1.0.9
@@ -78,11 +78,6 @@ Thanks a lot for your patience and help
 Ado Arnolds
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001308 hdsp 9632 w firmware 152 not working wi...
-duplicate of        0001308 hdsp 9632 w firmware 152 not working wi...
-======================================================================
 
 ----------------------------------------------------------------------
  ado - 08-03-05 23:32 
@@ -103,6 +98,7 @@ Date Modified  Username       Field                    Change
 08-04-05 09:02 perex          Status                   new => resolved     
 08-04-05 09:02 perex          Resolution               open => duplicate   
 08-04-05 09:02 perex          Assigned To               => perex           
+08-04-05 09:04 perex          Relationship deleted     duplicate of 0001308
 ======================================================================
 
 
