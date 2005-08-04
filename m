@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000833]: [snd_via82xx] setting ac97_clock greater than 48000 should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
-Date: Thu, 4 Aug 2005 09:15:23 +0200
-Message-ID: <87055a997f06f9b2ec4d0dbf9f82bc51@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001246]: Sound card loops and doesn't play any more
+Date: Thu, 4 Aug 2005 09:25:21 +0200
+Message-ID: <60365e7042ee7c51afc9a8fc1195a88b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F4001F6
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:15:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C97B214B
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:25:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1246> 
 ======================================================================
-Reported By:                t35t0r
+Reported By:                syberdave
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   833
-Category:                   PCI - via82xx
+Issue ID:                   1246
+Category:                   ISA - es18xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.10-gentoo-r5 (but error is reproducible in stock
-kernels also)
+Distribution:               Debian Testing
+Kernel Version:             2.6.7-grsec
 ======================================================================
-Date Submitted:             01-18-2005 17:35 CET
-Last Modified:              08-04-2005 09:15 CEST
+Date Submitted:             07-09-2005 17:04 CEST
+Last Modified:              08-04-2005 09:25 CEST
 ======================================================================
-Summary:                    [snd_via82xx] setting ac97_clock greater than 48000
-should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
+Summary:                    Sound card loops and doesn't play any more
 Description: 
-Please read: http://bugs.gentoo.org/show_bug.cgi?id=78327
+I installed a second sound card (ESS 1868 F/ISA) and when I send data to
+it, it plays the first second or so and starts repeating it and it doesn't
+move on. I notice that when I make the sound mono and bring the bitrate
+down, the data that it repeats becomes longer: mpg321 --wav - music.mp3
+|sox -t wav - -t ossdsp -c 1 -r 4096 /dev/dsp1
 
-Forwarded email below
+And when I try to play it with ALSA, this command works for my first sound
+card:
+mpg321 --wav - music.mp3 |aplay -D hw:0,0
+But this command doesn't - it does that loop thing again:
+mpg321 --wav - music.mp3 |aplay -D hw:1,0
 
-From: Jaroslav Kysela <perex@suse.cz>
-To: t35t0r@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 18 Jan 2005 10:40:56 +0100 (CET)
-Subject: Re: snd_via82xx ac97_clock=96000 parameter doesn't work for
-kernels >= linux-2.6.9 (fwd)
+This is my results for lsmod:
+Module                  Size  Used by
+snd_es18xx             29100  0 
+snd_cs4231_lib         21280  0 
+snd_sb16_dsp            8064  0 
+snd_sb_common          13152  1 snd_sb16_dsp
+snd_ymfpci             54084  1 
+snd_ac97_codec         60356  1 snd_ymfpci
+snd_opl3_lib            8320  2 snd_es18xx,snd_ymfpci
+snd_hwdep               7136  1 snd_opl3_lib
+snd_mpu401_uart         5824  2 snd_es18xx,snd_ymfpci
+snd_rawmidi            19872  1 snd_mpu401_uart
 
-> > Dear sir:
-> >
-> > If you get a chance can you look at
-> > http://bugs.gentoo.org/show_bug.cgi?id=78327 . It seems that setting
-> > ac97_clock=96000 no longer works for kernels >= linux-2.6.9. I didn't
-> > try any other ac97_clock settings since the 96000 setting was working
-> > for a 2.6.7 and 2.6.8.1 kernel. The url has some of my hardware
-> > specifications.
-
-It seems that the no-sound bug is caused with the AC'97 codec
-initialization. Specifying 96000 as ac97_clock parameter won't help,
-because this value must be from 8000 to 48000 otherwise it is ignored.
-Please, fill a bug to our bugtrack system.
-
-                                               Jaroslav
+Any help would be appreciated.
 ======================================================================
 
 ----------------------------------------------------------------------
- connolly - 07-22-05 02:46 
+ twhitehead - 07-23-05 13:38 
 ----------------------------------------------------------------------
-I see this problem on Ubuntu also. My motherboard has onboard sound;
-lspci says:
+Are you sure it's because of an IRQ conflict.  I had this problem on my
+Alpha PWS 500au, and it turned out to be the interupt detection code.
 
-0000:00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II]
-(rev 78)
+There are two versions of the detection code in the source.  The second
+one (which I understand to be the old one) is commented out.  Uncommenting
+it (and re-commenting the first) did the trick for me.
 
-it works fine with ubuntu's linux-image-2.6.8.1-3-386 but not with
-any of
-linux-image-2.6.10-5-386, linux-image-2.6.10-5-686, nor
-linux-image-2.6.10-5-k7
-
-Is it ordinary for a bug to remain in "new" state this long? Anything I
-can do to help?
+I'm attached a patch if you want to give it a go.
 
 ----------------------------------------------------------------------
- perex - 08-04-05 09:15 
+ perex - 08-04-05 09:25 
 ----------------------------------------------------------------------
-To confirm: Does the driver work without using ac97_clock parameter?
+syberdave: Could you try the patch from twhitehead?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-18-05 17:35 t35t0r         New Issue                                    
-01-18-05 17:35 t35t0r         Distribution              => gentoo          
-01-18-05 17:35 t35t0r         Kernel Version            => 2.6.10-gentoo-r5 (but
-error is reproducible in stock kernels also)
-01-18-05 17:44 tiwai          Note Added: 0003252                          
-07-22-05 02:46 connolly       Note Added: 0005544                          
-08-04-05 09:15 perex          Note Added: 0005642                          
+07-09-05 17:04 syberdave      New Issue                                    
+07-09-05 17:04 syberdave      Distribution              => Debian Testing  
+07-09-05 17:04 syberdave      Kernel Version            => 2.6.7-grsec     
+07-09-05 17:04 syberdave      Issue Monitored: syberdave                    
+07-10-05 06:49 syberdave      Note Added: 0005441                          
+07-23-05 13:38 twhitehead     Note Added: 0005552                          
+07-23-05 13:42 twhitehead     File Added: alpha-alsa.patch                    
+08-04-05 09:25 perex          Note Added: 0005643                          
 ======================================================================
 
 
