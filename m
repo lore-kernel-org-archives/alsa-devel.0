@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001308]: hdsp 9632 w firmware 152 not working with Linux and ALSA 1.0.9
-Date: Thu, 4 Aug 2005 09:04:14 +0200
-Message-ID: <dccca56b1dff6153a627a7a9c6bb3634@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000833]: [snd_via82xx] setting ac97_clock greater than 48000 should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
+Date: Thu, 4 Aug 2005 09:15:23 +0200
+Message-ID: <87055a997f06f9b2ec4d0dbf9f82bc51@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E59B5140
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:04:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F4001F6
+	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 09:15:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,89 +22,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001309.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1308> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=833> 
 ======================================================================
-Reported By:                ado
-Assigned To:                perex
+Reported By:                t35t0r
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1308
-Category:                   1_OTHERS
+Issue ID:                   833
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.12.2
-Resolution:                 duplicate
-Duplicate:                  1308
-Fixed in Version:           
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.10-gentoo-r5 (but error is reproducible in stock
+kernels also)
 ======================================================================
-Date Submitted:             08-03-2005 23:24 CEST
-Last Modified:              08-04-2005 09:04 CEST
+Date Submitted:             01-18-2005 17:35 CET
+Last Modified:              08-04-2005 09:15 CEST
 ======================================================================
-Summary:                    hdsp 9632 w firmware 152 not working with Linux and
-ALSA 1.0.9
+Summary:                    [snd_via82xx] setting ac97_clock greater than 48000
+should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
 Description: 
-Hi,
+Please read: http://bugs.gentoo.org/show_bug.cgi?id=78327
 
-today I got my new 9632. First I did a firmware (152) and driver (2.9.4)
-update with the supplied windows software and studied the Totalmixer
-and the other apllications for some hours under Windows - it's all very
-impressive!!!
+Forwarded email below
 
-But my main goal is using the 9632 with Linux. And what a pitty: the
-HDSPMixer application is totally unusable with the new firmware release.
-The routing is mixed up (I couldn't find any rules for what was going
-on) and I wasn't able to route the analog input signal to analog output!
-Fortunately I found the old firmware on the RME server and that's it:
-the routing is working now!
+From: Jaroslav Kysela <perex@suse.cz>
+To: t35t0r@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>
+Date: Tue, 18 Jan 2005 10:40:56 +0100 (CET)
+Subject: Re: snd_via82xx ac97_clock=96000 parameter doesn't work for
+kernels >= linux-2.6.9 (fwd)
 
-It would be very nice if anyone had time to answer my questions:
-- will there an ALSA update for the new firmware release?
-- will there be an update to the Linux HDSPMixer including the
-  features of the Windows release (selecting channels for common
-  level adjustment, Switching monitoring to individual channels, ...)
-  and the excelent Matrix window?
-- when I'm starting a playback with audacity or xmms the signal is
-  shown on all playback channels Out1 through Out12.
-- does anybody have a working .asoundrc file for me?
-- Can I use amixer to set routing and gain? What will I need to do this?
+> > Dear sir:
+> >
+> > If you get a chance can you look at
+> > http://bugs.gentoo.org/show_bug.cgi?id=78327 . It seems that setting
+> > ac97_clock=96000 no longer works for kernels >= linux-2.6.9. I didn't
+> > try any other ac97_clock settings since the 96000 setting was working
+> > for a 2.6.7 and 2.6.8.1 kernel. The url has some of my hardware
+> > specifications.
 
-Thanks a lot for your patience and help
+It seems that the no-sound bug is caused with the AC'97 codec
+initialization. Specifying 96000 as ac97_clock parameter won't help,
+because this value must be from 8000 to 48000 otherwise it is ignored.
+Please, fill a bug to our bugtrack system.
 
-Ado Arnolds
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001309 hdsp 9632 w firmware 152 not working wi...
+                                               Jaroslav
 ======================================================================
 
 ----------------------------------------------------------------------
- ado - 08-03-05 23:32 
+ connolly - 07-22-05 02:46 
 ----------------------------------------------------------------------
-I'm very sorry for entering the wrong category. I will re-enter the problem
-with the right category!
+I see this problem on Ubuntu also. My motherboard has onboard sound;
+lspci says:
+
+0000:00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II]
+(rev 78)
+
+it works fine with ubuntu's linux-image-2.6.8.1-3-386 but not with
+any of
+linux-image-2.6.10-5-386, linux-image-2.6.10-5-686, nor
+linux-image-2.6.10-5-k7
+
+Is it ordinary for a bug to remain in "new" state this long? Anything I
+can do to help?
+
+----------------------------------------------------------------------
+ perex - 08-04-05 09:15 
+----------------------------------------------------------------------
+To confirm: Does the driver work without using ac97_clock parameter?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 23:24 ado            New Issue                                    
-08-03-05 23:24 ado            Kernel Version            => 2.6.12.2        
-08-03-05 23:31 ado            Issue Monitored: ado                         
-08-03-05 23:32 ado            Note Added: 0005637                          
-08-04-05 09:02 perex          Relationship added       duplicate of 0001308
-08-04-05 09:02 perex          Relationship added       has duplicate 0001308
-08-04-05 09:02 perex          Duplicate ID             0 => 1308           
-08-04-05 09:02 perex          Status                   new => resolved     
-08-04-05 09:02 perex          Resolution               open => duplicate   
-08-04-05 09:02 perex          Assigned To               => perex           
-08-04-05 09:04 perex          Relationship deleted     duplicate of 0001308
-08-04-05 09:04 perex          Relationship deleted     has duplicate 0001308
-08-04-05 09:04 perex          Relationship added       duplicate of 0001309
+01-18-05 17:35 t35t0r         New Issue                                    
+01-18-05 17:35 t35t0r         Distribution              => gentoo          
+01-18-05 17:35 t35t0r         Kernel Version            => 2.6.10-gentoo-r5 (but
+error is reproducible in stock kernels also)
+01-18-05 17:44 tiwai          Note Added: 0003252                          
+07-22-05 02:46 connolly       Note Added: 0005544                          
+08-04-05 09:15 perex          Note Added: 0005642                          
 ======================================================================
 
 
