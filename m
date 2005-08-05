@@ -1,14 +1,29 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Thu, 4 Aug 2005 13:25:49 +0200
-Message-ID: <e195ea1f845feadce2edb1dd50d88e45@bugtrack.alsa-project.org>
+From: Hynek Hanke <hanke@brailcom.org>
+Subject: Crack sounds in playback
+Date: Fri, 5 Aug 2005 13:05:53 +0200
+Message-ID: <20050805110553.GB32027@brailcom.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A188202
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 13:25:50 +0200 (MEST)
+Received: from smtp-out3.iol.cz (smtp-out3.iol.cz [194.228.2.91])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B08B20E
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 13:09:16 +0200 (MEST)
+Received: from antivir3.iol.cz (unknown [192.168.30.206])
+	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 946133180A1
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 13:09:12 +0200 (CEST)
+Received: from localhost (antivir3.iol.cz [127.0.0.1])
+	by antivir3.iol.cz (Postfix) with ESMTP id 865736DC007
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 13:09:12 +0200 (CEST)
+Received: from smtp-out3.iol.cz (unknown [192.168.30.28])
+	by antivir3.iol.cz (Postfix) with ESMTP id C6B8B6DC002
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 13:09:11 +0200 (CEST)
+Received: from chopin (unknown [80.188.214.108])
+	by smtp-out3.iol.cz (Internet on Line ESMTP server) with ESMTP id 3A32B3C2A3
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 13:09:09 +0200 (CEST)
+Received: from hanke by chopin with local (Exim 3.36 #1 (Debian))
+	id 1E101R-0001mr-00
+	for <alsa-devel@alsa-project.org>; Fri, 05 Aug 2005 13:05:53 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,113 +37,31 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
-======================================================================
-Reported By:                iive
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
-======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-04-2005 13:25 CEST
-======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
-Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+Hello everyone,
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
+after all the suggestions (thanks for them), I got the alsa playback working
+with the non-blocking/polling approach. I'm checking for xrun and suspend
+states in the poll loop and after I send all the samples, I set avail_min to
+the whole buffer and poll() until the states gets to XRUN. I open the device
+before playing each track and close it after that. Sometimes, I interrupt the
+sound in the middle through snd_pcm_drop() and immediatelly close the device.
 
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
+I'm setting the usual hw parameters. From software parameters, I set only
+avail_min at the end, when I need to ,,drain''.
 
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
+The playback seems good now, but my colleague is reporting he hears some crack
+sounds on his SoundBlaster Platinum. They appear mostly at the beginning and at
+the end, but in the middle sometimes too. They appear often.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001296 isapnp is incompatible with pnpbios and...
-======================================================================
+I've examined the log and the device does never get to XRUN or SUSPEND, except
+for the last stage, when I set avail_min to the size of the buffer and wait
+until it's empty -- but that's expected behavior. None of snd_pcm_ calls
+returns any error.
 
-----------------------------------------------------------------------
- ahaning - 08-04-05 12:52 
-----------------------------------------------------------------------
-When I compile all drivers (not just --with-cards=opl3sa2) none of them
-work.
+Any ideas of what am I doing wrong or how to debug this?
 
-I have now enabled kernel and BIOS support for PnP. With
-alsa-driver-1.0.9b compiled with --with-cards=opl3sa2, no PnP or PCI cards
-are found.
-
-I don't see why I should need drivers other than opl3sa2.
-
-----------------------------------------------------------------------
- perex - 08-04-05 13:25 
-----------------------------------------------------------------------
-Please, follow my instructions. I have not written to recompile other
-drivers. I meant that in alsaconf should be selected the pnp card not
-probing of legacy cards.
-
-Also, follow ALL requests from
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879#5608 and
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879#5641. If you do
-only partial steps, it avoids me to do proper conclusions. I don't have
-opl3sa2 system around, so I rely on your input.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
-04-13-05 21:59 jdthood        Note Added: 0004478                          
-04-14-05 00:02 iive           Note Added: 0004485                          
-07-09-05 06:26 ahaning        Note Added: 0005438                          
-07-09-05 06:38 ahaning        Note Edited: 0005438                         
-07-09-05 11:13 jdthood        Note Added: 0005439                          
-07-09-05 11:14 jdthood        Note Added: 0005440                          
-07-28-05 05:17 ahaning        Note Added: 0005577                          
-08-02-05 00:02 iive           Note Added: 0005599                          
-08-02-05 03:00 ahaning        Note Added: 0005600                          
-08-02-05 03:05 ahaning        Note Added: 0005601                          
-08-02-05 03:05 ahaning        Note Deleted: 0005600                        
-08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
-      
-08-02-05 22:14 perex          Note Added: 0005607                          
-08-02-05 22:16 perex          Note Added: 0005608                          
-08-03-05 02:46 ahaning        Note Added: 0005610                          
-08-03-05 11:42 perex          File Added: alsaconf                         
-08-03-05 11:42 perex          Note Added: 0005615                          
-08-03-05 13:42 ahaning        Note Added: 0005625                          
-08-03-05 15:17 ahaning        Note Added: 0005631                          
-08-04-05 08:51 perex          Note Added: 0005641                          
-08-04-05 08:52 perex          Relationship added       related to 0001296  
-08-04-05 12:52 ahaning        Note Added: 0005644                          
-08-04-05 13:25 perex          Note Added: 0005645                          
-======================================================================
-
-
+Thank you,
+Hynek Hanke
 
 
 -------------------------------------------------------
