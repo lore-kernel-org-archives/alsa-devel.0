@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001312]: aplay has endian issues
-Date: Fri, 5 Aug 2005 20:01:55 +0200
-Message-ID: <79fc1bb22155d9e4d4a574cdfa26c081@bugtrack.alsa-project.org>
+Date: Fri, 5 Aug 2005 20:09:01 +0200
+Message-ID: <3c974e2d840617eb4f10872c9c9c5ced@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FC3D20C
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 20:01:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18CB6132
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 20:09:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-05-2005 07:18 CEST
-Last Modified:              08-05-2005 20:01 CEST
+Last Modified:              08-05-2005 20:09 CEST
 ======================================================================
 Summary:                    aplay has endian issues
 Description: 
@@ -47,18 +47,6 @@ default.  As alsa seems to have a default SND_PCM_FORMAT_S16 which
 switches to the correct native endian, I'm not sure why that's not used as
 the default instead of endian specific definitions.
 ======================================================================
-
-----------------------------------------------------------------------
- ChrisWhite - 08-05-05 19:55 
-----------------------------------------------------------------------
-It seems I misunderstood the process.  My hardware did not support the
-sample format sent to it, which was why it was failing.  I do know that
-you can override the format sent, but in this instance I was wondering if
-there was a more automated way to accomplish such a task.  IE, if it
-cannot support the sample endian, it would convert it accordingly.  I see
-MPlayer does that, maybe code could be borrowed from there.
-
-as for the command, I simply said `aplay file.mp3`.
 
 ----------------------------------------------------------------------
  ChrisWhite - 08-05-05 20:01 
@@ -83,6 +71,19 @@ trying default\n", af_fmt2str_short(format));
       }
 -------------------------------------------------
 
+----------------------------------------------------------------------
+ jcdutton - 08-05-05 20:09 
+----------------------------------------------------------------------
+You seem to missunderstand how alsa works.
+If the hardware can only do S16_LE and the audio file is S16_BE, the
+alsa-lib will automatically do the conversion for you
+e.g.
+aplay -Dplug:front filename.wav
+
+That is what the "plug" bit does. If you use -Dhw:0,0 or -Dfront it does
+not use the "plug" bit, so alsa will not do the format conversion and the
+sound will fail to play.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -92,6 +93,7 @@ Date Modified  Username       Field                    Change
 08-05-05 18:26 Clemens LadischNote Added: 0005670                          
 08-05-05 19:55 ChrisWhite     Note Added: 0005672                          
 08-05-05 20:01 ChrisWhite     Note Added: 0005673                          
+08-05-05 20:09 jcdutton       Note Added: 0005674                          
 ======================================================================
 
 
