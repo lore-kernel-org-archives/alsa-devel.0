@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001244]: error with firmware with echo layla20
-Date: Fri, 5 Aug 2005 08:49:46 +0200
-Message-ID: <e03f64a7b9606bc7c8485978c8b8e707@bugtrack.alsa-project.org>
+Date: Fri, 5 Aug 2005 08:50:12 +0200
+Message-ID: <0d38e98a84c3efc64b122664c26fe05c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3FFE204
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 08:49:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FF63204
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 08:50:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue is now in status NEW (again)
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Debian
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             07-09-2005 02:22 CEST
-Last Modified:              08-05-2005 08:49 CEST
+Last Modified:              08-05-2005 08:50 CEST
 ======================================================================
 Summary:                    error with firmware with echo layla20
 Description: 
@@ -75,6 +75,7 @@ Date Modified  Username       Field                    Change
 08-05-05 08:48 perex          Relationship added       related to 0001310  
 08-05-05 08:49 perex          Assigned To              perex =>            
 08-05-05 08:49 perex          Description Updated                          
+08-05-05 08:50 perex          Status                   assigned => new     
 ======================================================================
 
 
