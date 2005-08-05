@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001244]: error with firmware with echo layla20
-Date: Fri, 5 Aug 2005 08:50:12 +0200
-Message-ID: <0d38e98a84c3efc64b122664c26fe05c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
+Date: Fri, 5 Aug 2005 09:10:55 +0200
+Message-ID: <eaf2620ed7b1596dc0409219a0809078@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FF63204
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 08:50:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FDD01DA
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 09:10:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue is now in status NEW (again)
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
 ======================================================================
-Reported By:                hennewou
-Assigned To:                
+Reported By:                hettar
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1244
-Category:                   0_compilation problem_!!!
+Issue ID:                   1311
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.11
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-09-2005 02:22 CEST
-Last Modified:              08-05-2005 08:50 CEST
+Date Submitted:             08-05-2005 01:10 CEST
+Last Modified:              08-05-2005 09:10 CEST
 ======================================================================
-Summary:                    error with firmware with echo layla20
+Summary:                    drivers load but unmuting channels / adjusting
+volumes does not produce any sound
 Description: 
-I get this error when loading snd-layla20 card:
+I have installed the 1.0.9b version of alsa kernel/libs and utils in an
+attempt to get the intel high definition sound card working. These all
+appear to work, I can unmute the various channels, adjust volumes etc,
+however no matter what I do I can't get any sound out. Sound apps are all
+playing fine but don't actually produce any sound.
 
-ACPI: PCI interrupt 0000:02:0d.0[A] -> GSI 21 (level, low) -> IRQ 177
-ALSA /usr/src/modules/alsa-driver/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla20: probe of 0000:02:0d.0 failed with error -2
-
-I compiled an alsa driver for layla20 (I had to patch the alsa-driver tree
-a year ago for linux-2.4.25, and that worked (and still does).
-
-
-(By the way, For some reason I can only compile snd-layla20 according to
-debian package manager (apt-get install alsa-source ....) . With the
-original alsa-driver-1.0.9a.tar.bz2, the echoaudio modules refuse to
-compile.)
+This is the card in the new ASUS W2 laptop and could be slightly different
+to other models.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001310 Driver cant find firmware for Layla24
+related to          0001176 problem with alsa-driver and asus m5a n...
 ======================================================================
+
+----------------------------------------------------------------------
+ hettar - 08-05-05 08:39 
+----------------------------------------------------------------------
+I just saw issue https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176 and
+I would guess that this is the same problem
+as reported there.
+
+
+
+----------------------------------------------------------------------
+ hettar - 08-05-05 09:10 
+----------------------------------------------------------------------
+I was just directed to the model=<model> as indicated in the
+ALSA-Configuration.txt, None of these actually worked but I though it
+might be worth mentioning that there are for jacks for the card in the
+laptop and one of them is front, s/pidf and HP, another is sorround and
+line out, another is center/bass and mic and the other is av-in. This
+doesn't seem to match any of the models indicated in the
+ALSA-configuration.txt file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-05 02:22 hennewou       New Issue                                    
-07-09-05 02:22 hennewou       Distribution              => Debian          
-07-09-05 02:22 hennewou       Kernel Version            => 2.6.11          
-08-05-05 05:36 oxi            Issue Monitored: oxi                         
-08-05-05 08:48 perex          Relationship added       related to 0001310  
-08-05-05 08:49 perex          Assigned To              perex =>            
-08-05-05 08:49 perex          Description Updated                          
-08-05-05 08:50 perex          Status                   assigned => new     
+08-05-05 01:10 hettar         New Issue                                    
+08-05-05 01:10 hettar         Distribution              => Ubuntu          
+08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
+08-05-05 01:58 hettar         Note Added: 0005654                          
+08-05-05 08:39 perex          Note Edited: 0005654                         
+08-05-05 08:39 perex          Relationship added       related to 0001176  
+08-05-05 09:10 hettar         Note Added: 0005662                          
 ======================================================================
 
 
