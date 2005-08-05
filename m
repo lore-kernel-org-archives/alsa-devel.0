@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Fri, 5 Aug 2005 23:58:52 +0200
-Message-ID: <33f8729d90362938a387686e7101c821@bugtrack.alsa-project.org>
+From: "Delio Brignoli" <dbrignoli@audioscience.com>
+Subject: [PATCH] asihpi, snd_runtime_check assertions fixes
+Date: Fri, 5 Aug 2005 15:06:58 -0700
+Message-ID: <455325839e4e444e9454d61c2c7103b8@audioscience.com>
+Reply-To: dbrignoli@audioscience.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary=----_SmarterMail_NextPart_7610353681716364
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2EE0213
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 23:58:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,122 +16,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
-======================================================================
-Reported By:                iive
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
-======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-05-2005 23:58 CEST
-======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
-Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+------_SmarterMail_NextPart_7610353681716364
+Content-Type: text/plain;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
+Hello,=0D=0A=0D=0Ain the rush I made some mistakes converting assertions to=
+ the snd_runtime_check, =0D=0Athis patch fixes them, please apply.=0D=0A=0D=
+=0AChangelog:=0D=0A*fixed snd_runtime_check assertions=0D=0A=0D=0Asigned-of=
+f-by: Delio Brignoli dbrignoli@audioscience.com=0D=0A=0D=0Athanks=0D=0A--=
+=0D=0ADelio Brignoli=0D=0A
 
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
+------_SmarterMail_NextPart_7610353681716364
+Content-Type: application/octet-stream;
+	name=patch.txt
+Content-Disposition: attachment; filename="patch.txt"
+Content-Transfer-Encoding: base64
 
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
+LS0tIG9sZC1hbHNhLWRyaXZlci0xLjAuOWItd3JrL3BjaS9hc2locGkuYwkyMDA1LTA4LTA0IDE3
+OjA4OjQ2LjAwMDAwMDAwMCArMTIwMAorKysgbmV3LWFsc2EtZHJpdmVyLTEuMC45Yi13cmsvcGNp
+L2FzaWhwaS5jCTIwMDUtMDgtMDUgMTc6MDY6MTYuMDAwMDAwMDAwICsxMjAwCkBAIC0xMTc0LDcg
+KzExNzQsNyBAQAogCUhQSV9IQ09OVFJPTCBoQ29udHJvbCA9IGtjb250cm9sLT5wcml2YXRlX3Zh
+bHVlOwogCUhXMTYgc291cmNlOwogCi0Jc25kX3J1bnRpbWVfY2hlY2soIGZ1bmMocGhTdWJTeXMs
+IGhDb250cm9sLCAmc291cmNlKSAhPSAwICwgcmV0dXJuIC1FSU5WQUwgKTsKKwlmdW5jKHBoU3Vi
+U3lzLCBoQ29udHJvbCwgJnNvdXJjZSk7CiAKIAkvKiBkZWZhdWx0IHRvIFMvUERJRiAqLwogCXVj
+b250cm9sLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0gPSAwOwpAQCAtMTE5OSw3ICsxMTk5LDcg
+QEAKIAlpZiAoIHVjb250cm9sLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0gPT0gMiApCiAJCXNv
+dXJjZSA9IEhQSV9BRVNFQlVfU09VUkNFX0FFU0VCVTsKIAotCXNuZF9ydW50aW1lX2NoZWNrKCBm
+dW5jKHBoU3ViU3lzLCBoQ29udHJvbCwgc291cmNlKSAhPSAwLCByZXR1cm4gLUVJTlZBTCApOwor
+CXNuZF9ydW50aW1lX2NoZWNrKCBmdW5jKHBoU3ViU3lzLCBoQ29udHJvbCwgc291cmNlKSA9PSAw
+LCByZXR1cm4gLUVJTlZBTCApOwogCiAJcmV0dXJuIDE7CiB9CkBAIC0xMjU2LDcgKzEyNTYsNyBA
+QAogCUhQSV9IQ09OVFJPTCBoQ29udHJvbCA9IGtjb250cm9sLT5wcml2YXRlX3ZhbHVlOwogCUhX
+MTYgc3luYzsKIAotCXNuZF9ydW50aW1lX2NoZWNrKCBIUElfQUVTRUJVX1RyYW5zbWl0dGVyX0dl
+dENsb2NrU291cmNlKHBoU3ViU3lzLCBoQ29udHJvbCwgJnN5bmMpICk7CisJSFBJX0FFU0VCVV9U
+cmFuc21pdHRlcl9HZXRDbG9ja1NvdXJjZShwaFN1YlN5cywgaENvbnRyb2wsICZzeW5jKTsKIAog
+CS8qIGRlZmF1bHQgdG8gSFBJX0FFU0VCVV9DTE9DS1NPVVJDRV9BREFQVEVSICovCiAJdWNvbnRy
+b2wtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXSA9IDA7CkBAIC0xMjgwLDcgKzEyODAsNyBAQAog
+CWlmICggdWNvbnRyb2wtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXSA9PSAxICkKIAkJc3luYyA9
+IEhQSV9BRVNFQlVfQ0xPQ0tTT1VSQ0VfQUVTRUJVX1NZTkM7CiAKLQlzbmRfcnVudGltZV9jaGVj
+ayggSFBJX0FFU0VCVV9UcmFuc21pdHRlcl9TZXRDbG9ja1NvdXJjZShwaFN1YlN5cywgaENvbnRy
+b2wsIHN5bmMpICE9IDAsIHJldHVybiAtRUlOVkFMICk7CisJc25kX3J1bnRpbWVfY2hlY2soIEhQ
+SV9BRVNFQlVfVHJhbnNtaXR0ZXJfU2V0Q2xvY2tTb3VyY2UocGhTdWJTeXMsIGhDb250cm9sLCBz
+eW5jKSA9PSAwLCByZXR1cm4gLUVJTlZBTCApOwogCiAJcmV0dXJuIDE7CiB9CkBAIC0xNTc4LDcg
+KzE1NzgsNyBAQAogCWFzaWhwaV9jdGxfbmFtZV9wcmVmaXgoIHNuZF9jb250cm9sLCBhc2locGlf
+Y29udHJvbCApOwogCXN0cmNhdChzbmRfY29udHJvbC0+bmFtZSwgIiBHYWluIik7CiAKLQlzbmRf
+cnVudGltZV9jaGVjayggY3RsX2FkZCggY2FyZCwgc25kX2NvbnRyb2wsIGFzaWhwaSApICE9IDAs
+IHJldHVybiAtRUlOVkFMICk7CisJc25kX3J1bnRpbWVfY2hlY2soIGN0bF9hZGQoIGNhcmQsIHNu
+ZF9jb250cm9sLCBhc2locGkgKSA9PSAwLCByZXR1cm4gLUVJTlZBTCApOwogCiAvKiBCYW5kIGN0
+bCAqLwogCkBAIC0xNTkwLDcgKzE1OTAsNyBAQAogCWFzaWhwaV9jdGxfbmFtZV9wcmVmaXgoIHNu
+ZF9jb250cm9sLCBhc2locGlfY29udHJvbCApOwogCXN0cmNhdChzbmRfY29udHJvbC0+bmFtZSwg
+IiBCYW5kIik7CiAKLQlzbmRfcnVudGltZV9jaGVjayggY3RsX2FkZCggY2FyZCwgc25kX2NvbnRy
+b2wsIGFzaWhwaSApICE9IDAsIHJldHVybiAtRUlOVkFMICk7CisJc25kX3J1bnRpbWVfY2hlY2so
+IGN0bF9hZGQoIGNhcmQsIHNuZF9jb250cm9sLCBhc2locGkgKSA9PSAwLCByZXR1cm4gLUVJTlZB
+TCApOwogCiAvKiBGcmVxIGN0bCAqLwogCkBAIC0xNjAyLDcgKzE2MDIsNyBAQAogCWFzaWhwaV9j
+dGxfbmFtZV9wcmVmaXgoIHNuZF9jb250cm9sLCBhc2locGlfY29udHJvbCApOwogCXN0cmNhdChz
+bmRfY29udHJvbC0+bmFtZSwgIiBGcmVxIik7CiAKLQlzbmRfcnVudGltZV9jaGVjayggY3RsX2Fk
+ZCggY2FyZCwgc25kX2NvbnRyb2wsIGFzaWhwaSApICE9IDAsIHJldHVybiAtRUlOVkFMICk7CisJ
+c25kX3J1bnRpbWVfY2hlY2soIGN0bF9hZGQoIGNhcmQsIHNuZF9jb250cm9sLCBhc2locGkgKSA9
+PSAwLCByZXR1cm4gLUVJTlZBTCApOwogCiAvKiBMZXZlbCBtZXRlciAqLwogCgo=
+------_SmarterMail_NextPart_7610353681716364--
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001296 isapnp is incompatible with pnpbios and...
-======================================================================
-
-----------------------------------------------------------------------
- perex - 08-05-05 13:47 
-----------------------------------------------------------------------
-ahaning:
-
-Appeartly, it's another bug than originally reported. The original
-reporter uses the ISAPnP configuration.
-
-What does command 'modinfo -p snd-opl3sa2' show on your system?
-
-----------------------------------------------------------------------
- ahaning - 08-05-05 23:58 
-----------------------------------------------------------------------
-# modinfo -p snd-opl3sa2
-#
-
-I'm not sure whether to be :-D or :-(
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
-04-13-05 21:59 jdthood        Note Added: 0004478                          
-04-14-05 00:02 iive           Note Added: 0004485                          
-07-09-05 06:26 ahaning        Note Added: 0005438                          
-07-09-05 06:38 ahaning        Note Edited: 0005438                         
-07-09-05 11:13 jdthood        Note Added: 0005439                          
-07-09-05 11:14 jdthood        Note Added: 0005440                          
-07-28-05 05:17 ahaning        Note Added: 0005577                          
-08-02-05 00:02 iive           Note Added: 0005599                          
-08-02-05 03:00 ahaning        Note Added: 0005600                          
-08-02-05 03:05 ahaning        Note Added: 0005601                          
-08-02-05 03:05 ahaning        Note Deleted: 0005600                        
-08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
-      
-08-02-05 22:14 perex          Note Added: 0005607                          
-08-02-05 22:16 perex          Note Added: 0005608                          
-08-03-05 02:46 ahaning        Note Added: 0005610                          
-08-03-05 11:42 perex          File Added: alsaconf                         
-08-03-05 11:42 perex          Note Added: 0005615                          
-08-03-05 13:42 ahaning        Note Added: 0005625                          
-08-03-05 15:17 ahaning        Note Added: 0005631                          
-08-04-05 08:51 perex          Note Added: 0005641                          
-08-04-05 08:52 perex          Relationship added       related to 0001296  
-08-04-05 12:52 ahaning        Note Added: 0005644                          
-08-04-05 13:25 perex          Note Added: 0005645                          
-08-04-05 13:28 perex          Note Added: 0005646                          
-08-04-05 14:38 ahaning        File Added: sys-ahaning-0.1.tar.bz2               
-    
-08-04-05 14:42 ahaning        Note Added: 0005649                          
-08-04-05 14:49 ahaning        Note Edited: 0005649                         
-08-04-05 14:50 ahaning        File Added: asound-ahaning-0.1.tar.bz2            
-       
-08-04-05 14:51 perex          Note Added: 0005650                          
-08-05-05 02:35 ahaning        Note Added: 0005655                          
-08-05-05 03:18 ahaning        Note Edited: 0005655                         
-08-05-05 08:44 perex          Note Added: 0005661                          
-08-05-05 12:47 ahaning        Note Added: 0005665                          
-08-05-05 13:47 perex          Note Added: 0005667                          
-08-05-05 23:58 ahaning        Note Added: 0005678                          
-======================================================================
 
 
 
