@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
-Date: Fri, 5 Aug 2005 08:39:35 +0200
-Message-ID: <e38af1bce0fcab9dc4662d73913f99dc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Fri, 5 Aug 2005 08:44:22 +0200
+Message-ID: <19cca6c1313f692f936758eaebc3788b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6121A204
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 08:39:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 809DC204
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 08:44:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,148 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001176.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                hettar
-Assigned To:                tiwai
+Reported By:                iive
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1311
-Category:                   PCI - hda-intel
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
+Status:                     new
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             08-05-2005 01:10 CEST
-Last Modified:              08-05-2005 01:58 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              08-05-2005 08:44 CEST
 ======================================================================
-Summary:                    drivers load but unmuting channels / adjusting
-volumes does not produce any sound
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-I have installed the 1.0.9b version of alsa kernel/libs and utils in an
-attempt to get the intel high definition sound card working. These all
-appear to work, I can unmute the various channels, adjust volumes etc,
-however no matter what I do I can't get any sound out. Sound apps are all
-playing fine but don't actually produce any sound.
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
 
-This is the card in the new ASUS W2 laptop and could be slightly different
-to other models.
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
+
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
+
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001176 problem with alsa-driver and asus m5a n...
+related to          0001296 isapnp is incompatible with pnpbios and...
 ======================================================================
 
 ----------------------------------------------------------------------
- hettar - 08-05-05 08:39 
+ ahaning - 08-05-05 03:18 
 ----------------------------------------------------------------------
-I just saw issue https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176 and
-I would guess that this is the same problem
-as reported there.
+When I have PnP turned on in the BIOS, dmesg produces the following
+regarding PnP:
+
+pnp: PnP ACPI init
+pnp: PnP ACPI: found 15 devices
+PnPBIOS: Disabled by ACPI PNP
+pnp: the driver 'system' has been registered
+pnp: match found with the PnP device '00:0b' and the driver 'system'
+pnp: match found with the PnP device '00:0c' and the driver 'system'
+pnp: 00:0c: ioport range 0x372-0x373 has been reserved
+pnp: 00:0c: ioport range 0x398-0x399 has been reserved
+pnp: 00:0c: ioport range 0x4d0-0x4d1 has been reserved
+pnp: 00:0c: ioport range 0x279-0x279 has been reserved
+pnp: 00:0c: ioport range 0xa79-0xa79 has been reserved
+pnp: 00:0c: ioport range 0x2180-0x218f has been reserved
+isapnp: Scanning for PnP cards...
+isapnp: No Plug & Play device found
+pnp: the driver 'i8042 kbd' has been registered
+pnp: match found with the PnP device '00:0d' and the driver 'i8042 kbd'
+pnp: the driver 'i8042 aux' has been registered
+pnp: match found with the PnP device '00:0e' and the driver 'i8042 aux'
+pnp: the driver 'serial' has been registered
+pnp: match found with the PnP device '00:00' and the driver 'serial'
+
+With PnP turned off in the BIOS, I get the same.
+
+Running alsaconf with PnP turned off (as opposed to before when it was
+turned on) gives no found PnP, PCI, or legacy cards.
+
+Maybe I should turn off ACPI or upgrade to the latest stable kernel and
+ACPI/suspend2 patches.
+
+Thanks.
+
+Edit: Enabling/disabling ACPI didn't change anything.
 
 
+
+----------------------------------------------------------------------
+ perex - 08-05-05 08:44 
+----------------------------------------------------------------------
+If you see these two lines:
+
+isapnp: Scanning for PnP cards...
+isapnp: No Plug & Play device found
+
+Then ISAPnP subsystem does not detected any ISAPnP card. Please, could you
+try the user-space isapnp utility, if it finds an ISAPnP device?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-05 01:10 hettar         New Issue                                    
-08-05-05 01:10 hettar         Distribution              => Ubuntu          
-08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
-08-05-05 01:58 hettar         Note Added: 0005654                          
-08-05-05 08:39 perex          Note Edited: 0005654                         
-08-05-05 08:39 perex          Relationship added       related to 0001176  
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
+08-02-05 00:02 iive           Note Added: 0005599                          
+08-02-05 03:00 ahaning        Note Added: 0005600                          
+08-02-05 03:05 ahaning        Note Added: 0005601                          
+08-02-05 03:05 ahaning        Note Deleted: 0005600                        
+08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
+      
+08-02-05 22:14 perex          Note Added: 0005607                          
+08-02-05 22:16 perex          Note Added: 0005608                          
+08-03-05 02:46 ahaning        Note Added: 0005610                          
+08-03-05 11:42 perex          File Added: alsaconf                         
+08-03-05 11:42 perex          Note Added: 0005615                          
+08-03-05 13:42 ahaning        Note Added: 0005625                          
+08-03-05 15:17 ahaning        Note Added: 0005631                          
+08-04-05 08:51 perex          Note Added: 0005641                          
+08-04-05 08:52 perex          Relationship added       related to 0001296  
+08-04-05 12:52 ahaning        Note Added: 0005644                          
+08-04-05 13:25 perex          Note Added: 0005645                          
+08-04-05 13:28 perex          Note Added: 0005646                          
+08-04-05 14:38 ahaning        File Added: sys-ahaning-0.1.tar.bz2               
+    
+08-04-05 14:42 ahaning        Note Added: 0005649                          
+08-04-05 14:49 ahaning        Note Edited: 0005649                         
+08-04-05 14:50 ahaning        File Added: asound-ahaning-0.1.tar.bz2            
+       
+08-04-05 14:51 perex          Note Added: 0005650                          
+08-05-05 02:35 ahaning        Note Added: 0005655                          
+08-05-05 03:18 ahaning        Note Edited: 0005655                         
+08-05-05 08:44 perex          Note Added: 0005661                          
 ======================================================================
 
 
