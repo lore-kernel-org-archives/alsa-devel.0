@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Fri, 5 Aug 2005 19:43:14 +0200
-Message-ID: <35a84efb5f83c1b1040a4d9d1803fd51@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001312]: aplay has endian issues
+Date: Fri, 5 Aug 2005 19:55:42 +0200
+Message-ID: <a6ef8a80c832ea5a50c081d296afff7f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FF37215
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 19:43:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D714420C
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 19:55:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1310> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1312> 
 ======================================================================
-Reported By:                oxi
+Reported By:                ChrisWhite
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1310
-Category:                   PCI - echoaudio
+Project:                    ALSA - utils
+Issue ID:                   1312
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge AMD64
-Kernel Version:             2.6.12.3
 ======================================================================
-Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-05-2005 19:43 CEST
+Date Submitted:             08-05-2005 07:18 CEST
+Last Modified:              08-05-2005 19:55 CEST
 ======================================================================
-Summary:                    Driver cant find firmware for Layla24
+Summary:                    aplay has endian issues
 Description: 
-Hello,
-
-After modprobe snd-layla24 ,
-in dmesg|tail:
-
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
-
-Same issue that another guy is experiencing with a Layla20:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001244 error with firmware with echo layla20
+It appears that play uses BE specific formating when playing back by
+default.  As alsa seems to have a default SND_PCM_FORMAT_S16 which
+switches to the correct native endian, I'm not sure why that's not used as
+the default instead of endian specific definitions.
 ======================================================================
 
 ----------------------------------------------------------------------
- hennewou - 08-05-05 15:09 
+ Clemens Ladisch - 08-05-05 18:26 
 ----------------------------------------------------------------------
-The time, when I had to patch the alsa-driver tree and echo-drivers had his
-own website, I could use the sound-layla20 without any major problem.
- Maybe this helps developpers to resolve the problem?
+If the sample formats of the file and the device do not match, the ALSA
+library can convert them on the fly.
 
-(Normally I should pick an old alsa-driver tree and patch it with an older
-driver, but I can't the old patches anymore)
-
-P.S. I'm the other guy that is experiencing the same problem
+How does your aplay command look like?
 
 ----------------------------------------------------------------------
- oxi - 08-05-05 19:43 
+ ChrisWhite - 08-05-05 19:55 
 ----------------------------------------------------------------------
-Well, at that time i wasnt able to compile them properly, probably because
-of my little knowledge then regarding Linux.
-Ow, pity Mr. Pochini isnt supporting them anymore as stated in ALSA matrix
-:(
-I hope we accomplish our goal by making gentle pressure both, and that a
-well experienced coder will move ahead and help us out.
-It's a real pain not being able to use such cards in this environment, as
-in my opinion ALSA has got really powerful possibilities, such as using a
-sound server(is it named like that?) like Jack and redirecting any program
-i/o s the way you like. No need for plug-ins nor shit... Btw i'd like to
-know your opinion regarding this and its usage if you have used it
-before(which i guess is a yes?).
+It seems I misunderstood the process.  My hardware did not support the
+sample format sent to it, which was why it was failing.  I do know that
+you can override the format sent, but in this instance I was wondering if
+there was a more automated way to accomplish such a task.  IE, if it
+cannot support the sample endian, it would convert it accordingly.  I see
+MPlayer does that, maybe code could be borrowed from there.
+
+as for the command, I simply said `aplay file.mp3`.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-05 22:50 oxi            New Issue                                    
-08-04-05 22:50 oxi            Distribution              => Debian Sarge AMD64
-08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
-08-04-05 23:48 rlrevell       Note Added: 0005653                          
-08-05-05 04:57 oxi            Note Added: 0005656                          
-08-05-05 04:59 oxi            Issue Monitored: oxi                         
-08-05-05 05:00 rlrevell       Note Added: 0005657                          
-08-05-05 05:20 oxi            Note Added: 0005658                          
-08-05-05 05:25 oxi            Note Added: 0005659                          
-08-05-05 06:03 rlrevell       Note Added: 0005660                          
-08-05-05 08:48 perex          Relationship added       related to 0001244  
-08-05-05 13:26 oxi            Note Added: 0005666                          
-08-05-05 15:09 hennewou       Note Added: 0005668                          
-08-05-05 19:43 oxi            Note Added: 0005671                          
+08-05-05 07:18 ChrisWhite     New Issue                                    
+08-05-05 09:30 Clemens LadischNote Added: 0005663                          
+08-05-05 18:08 ChrisWhite     Note Added: 0005669                          
+08-05-05 18:26 Clemens LadischNote Added: 0005670                          
+08-05-05 19:55 ChrisWhite     Note Added: 0005672                          
 ======================================================================
 
 
