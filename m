@@ -1,13 +1,15 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Fri, 05 Aug 2005 20:46:07 +0800
-Message-ID: <42F35F8F.4060808@netvigator.com>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de>	<42A6B51F.20405@netvigator.com>	<s5h8y1lkv1c.wl@alsa2.suse.de>	<42EA4086.6030702@netvigator.com> <s5hoe8lbqe0.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Crack sounds in playback
+Date: Fri, 5 Aug 2005 14:49:07 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0508051447540.3253-100000@studcom.urz.uni-halle.de>
+References: <20050805122940.GC11890@brailcom.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hoe8lbqe0.wl%tiwai@suse.de>
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E9421AE
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 14:49:08 +0200 (MEST)
+In-Reply-To: <20050805122940.GC11890@brailcom.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,110 +19,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: Hynek Hanke <hanke@brailcom.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 29 Jul 2005 22:43:18 +0800,
-> Raymond wrote:
-> 
->>Takashi Iwai wrote:
->>
->>>At Wed, 08 Jun 2005 17:06:39 +0800,
->>>Raymond wrote:
->>>
->>>
->>>
->>>>Is there any reason to make this change ?
->>>>
->>>>alsa-kernel/pci/au88x0/au88x0.c
->>>>@@ -144,15 +144,18 @@
->>>>        // check PCI availability (DMA).
->>>>        if ((err = pci_enable_device(pci)) < 0)
->>>>                return err;
->>>>-       if (!pci_dma_supported(pci, VORTEX_DMA_MASK)) {
->>>>+        if (pci_set_dma_mask(pci, VORTEX_DMA_MASK) < 0 ||
->>>>+               pci_set_consistent_dma_mask(pci, VORTEX_DMA_MASK) < 0) {
->>>>                printk(KERN_ERR "error to set DMA mask\n");
->>>>+               pci_disable_device(pci);
->>>>                return -ENXIO;
->>>>        }
->>>>-       pci_set_dma_mask(pci, VORTEX_DMA_MASK);
->>>
->>>
->>>This is clean up.
->>>
->>>
->>>
->>>>        chip = kcalloc(1, sizeof(*chip), GFP_KERNEL);
->>>>-       if (chip == NULL)
->>>>+       if (chip == NULL) {
->>>>+               pci_disable_device(pci);
->>>>                return -ENOMEM;
->>>>+       }
->>>
->>>
->>>This fixes the PCI state in the error path.
->>>
->>>
->>>
->>>>        chip->card = card;
->>>>
->>>>@@ -202,6 +205,8 @@
->>>>                goto alloc_out;
->>>>        }
->>>>
->>>>+       snd_card_set_dev(card, &pci->dev);
->>>>+
->>>>        *rchip = chip;
->>>
->>>
->>>And this sets up the missing sysfs stuff.
->>>
->>>
->>
->>It seem that these two patches for Kernel 2.6 were lost when au88x0 
->>migrate from alsa-driver to alsa-kernel.
-> 
-> 
-> You're right.  It seems dropped at that time accidentally.
-> 
-> Could you care to post a patch to fix them?
-> 
-> 
+Hynek Hanke wrote:
+> On Fri, Aug 05, 2005 at 02:20:25PM +0200, Clemens Ladisch wrote:
+> > Hynek Hanke wrote:
+> > > after all the suggestions (thanks for them), I got the alsa playback working
+> > > with the non-blocking/polling approach. I'm checking for xrun and suspend
+> > > states in the poll loop and after I send all the samples, I set avail_min to
+> > > the whole buffer and poll() until the states gets to XRUN.
+> >
+> > Underruns will interrupt the playback.  You should set avail_min to
+> > the period size so that you can fill up the buffer before playback
+> > gets stopped.
+>
+> I'm sorry, maybe I didn't explain myself clearly. I set avail_min to this state
+> and expect to get XRUN only *after* I've sent all the samples to the buffer.
+
+So you're using the default sw_params for playback?  In theory, this
+should work.  How does your code look like?
 
 
-au88x0_fix_fc4.patch (file# 4739)
-
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=4107
-
-posted in the open vortex project patch manager (item id #4107) add back 
-the two patches lost during au88x0 migrate from alsa-driver to alsa-kernel.
-
-http://savannah.nongnu.org/patch/download.php?item_id=4107&item_file_id=4739
-
-
-
-These are the two patches lost during au88x0 migrate from alsa-driver to 
-alsa-kernel.
-
-http://www.mail-archive.com/alsa-cvslog@lists.sourceforge.net/msg03580.html
-
-* fixed the DMA allocation.
-   pci_set_dma_mask() is called together with pci_set_consistent_dma_mask().
-   also clean up the double check of mask.
-
-http://www.mail-archive.com/alsa-cvslog@lists.sourceforge.net/msg03642.html
-
-* added snd_card_set_dev() macro.
-* sysfsfied more pci, isapnp and usb drivers.
-
-
-
-
-
-
+Regards,
+Clemens
 
 
 
