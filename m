@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Thu, 4 Aug 2005 12:52:52 +0200
-Message-ID: <eaa994f2badb02ea4b4185595d8817c9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops working after a few seconds when used with VoIP softphones
+Date: Fri, 5 Aug 2005 11:20:40 +0200
+Message-ID: <32eeafe482d5ccbff64128c3d268a6c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F042D203
-	for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2005 12:52:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C89A9212
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 11:20:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,102 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
 ======================================================================
-Reported By:                iive
+Reported By:                tek01
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
+Issue ID:                   1301
+Category:                   ISA - ad1816a
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
+Distribution:               Debian Sarge
+Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
+2.6.8-2
 ======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-04-2005 12:52 CEST
+Date Submitted:             08-02-2005 17:16 CEST
+Last Modified:              08-05-2005 11:20 CEST
 ======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
+Summary:                    Kernel OSS emulation stops working after a few
+seconds when used with VoIP softphones
 Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+Kernel OSS emulation fails a few seconds after a call is established when
+used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
+process using strace reveals, that the file descriptor of the sound device
+is no longer listed in the readset or writeset when the select() syscall
+returns. Audio Playback using XMMS is working fine using the OSS API
+ 
+Also the native OSS driver is working fine with both VoIP phones on the
+same system and kernel.
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
-
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
-
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001296 isapnp is incompatible with pnpbios and...
+related to          0001300 modprobe goes into D-state when inserti...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-04-05 08:51 
+ perex - 08-03-05 10:47 
 ----------------------------------------------------------------------
-You are trying configure legacy cards. Don't try that (select only detected
-PnP card in alsaconf). The option opl3sa2 line with manual resources
-should NOT be present in the generated configuration. Select only detected
-card (and try to remove the whole ALSACONF block from modprobe.conf).
+We need a test against the latest ALSA driver.
 
 ----------------------------------------------------------------------
- ahaning - 08-04-05 12:52 
+ tek01 - 08-05-05 11:20 
 ----------------------------------------------------------------------
-When I compile all drivers (not just --with-cards=opl3sa2) none of them
-work.
-
-I have now enabled kernel and BIOS support for PnP. With
-alsa-driver-1.0.9b compiled with --with-cards=opl3sa2, no PnP or PCI cards
-are found.
-
-I don't see why I should need drivers other than opl3sa2.
+Which kernel and ALSA version should I use?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
-04-13-05 21:59 jdthood        Note Added: 0004478                          
-04-14-05 00:02 iive           Note Added: 0004485                          
-07-09-05 06:26 ahaning        Note Added: 0005438                          
-07-09-05 06:38 ahaning        Note Edited: 0005438                         
-07-09-05 11:13 jdthood        Note Added: 0005439                          
-07-09-05 11:14 jdthood        Note Added: 0005440                          
-07-28-05 05:17 ahaning        Note Added: 0005577                          
-08-02-05 00:02 iive           Note Added: 0005599                          
-08-02-05 03:00 ahaning        Note Added: 0005600                          
-08-02-05 03:05 ahaning        Note Added: 0005601                          
-08-02-05 03:05 ahaning        Note Deleted: 0005600                        
-08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
-      
-08-02-05 22:14 perex          Note Added: 0005607                          
-08-02-05 22:16 perex          Note Added: 0005608                          
-08-03-05 02:46 ahaning        Note Added: 0005610                          
-08-03-05 11:42 perex          File Added: alsaconf                         
-08-03-05 11:42 perex          Note Added: 0005615                          
-08-03-05 13:42 ahaning        Note Added: 0005625                          
-08-03-05 15:17 ahaning        Note Added: 0005631                          
-08-04-05 08:51 perex          Note Added: 0005641                          
-08-04-05 08:52 perex          Relationship added       related to 0001296  
-08-04-05 12:52 ahaning        Note Added: 0005644                          
+08-02-05 17:16 tek01          New Issue                                    
+08-02-05 17:16 tek01          Distribution              => Debian Sarge    
+08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
+vanilla 2.6.10 and Debians 2.6.8-2
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-03-05 10:10 perex          Relationship added       related to 0001300  
+08-03-05 10:47 perex          Note Added: 0005614                          
+08-05-05 11:20 tek01          Note Added: 0005664                          
 ======================================================================
 
 
