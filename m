@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Fri, 5 Aug 2005 05:00:03 +0200
-Message-ID: <7f202835327729988e29b998e4120900@bugtrack.alsa-project.org>
+Date: Fri, 5 Aug 2005 05:20:44 +0200
+Message-ID: <9aec7c084746b2fe6321c1d853e071ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A25A6204
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 05:00:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C38DE204
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 05:20:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge AMD64
 Kernel Version:             2.6.12.3
 ======================================================================
 Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-05-2005 05:00 CEST
+Last Modified:              08-05-2005 05:20 CEST
 ======================================================================
 Summary:                    Driver cant find firmware for Layla24
 Description: 
@@ -59,23 +59,29 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
 ======================================================================
 
 ----------------------------------------------------------------------
- oxi - 08-05-05 04:57 
-----------------------------------------------------------------------
-I dont know, i guess its not!
-How would I know? There wasnt a comment pointing to that in the specific
-installation instructions for my card. It just said to enable firmware
-loading support in the kernel options, which i believe its hotplug. I
-thought that would mean it would be able to retrieve the firmware from the
-card eprom, as to my knowledge the firmware is usually stored in a device
-itself.
-
-Where should i get this and how to install it please? Any help
-appreciated! Thank you!
-
-----------------------------------------------------------------------
  rlrevell - 08-05-05 05:00 
 ----------------------------------------------------------------------
 Is the alsa-firmware package installed?
+
+----------------------------------------------------------------------
+ oxi - 08-05-05 05:20 
+----------------------------------------------------------------------
+Well i did some research and yes, i just installed it. But the problem is
+still there!
+
+debian:/usr/src/alsa-firmware-1.0.9# ./configure;make;make install
+debian:/usr/src/alsa-firmware-1.0.9# /etc/init.d/alsasound stop
+Shutting down sound driver: /usr/sbin/alsactl: save_state:1163: No
+soundcards found...
+done
+debian:/usr/src/alsa-firmware-1.0.9# modprobe snd-layla24
+debian:/usr/src/alsa-firmware-1.0.9# dmesg|tail
+ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
+ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
+get_firmware(): Firmware not available (-2)
+Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
+
+*Its not the same previous message, as i have checked it.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -87,6 +93,7 @@ Date Modified  Username       Field                    Change
 08-05-05 04:57 oxi            Note Added: 0005656                          
 08-05-05 04:59 oxi            Issue Monitored: oxi                         
 08-05-05 05:00 rlrevell       Note Added: 0005657                          
+08-05-05 05:20 oxi            Note Added: 0005658                          
 ======================================================================
 
 
