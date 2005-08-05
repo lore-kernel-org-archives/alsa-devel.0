@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Fri, 5 Aug 2005 13:26:39 +0200
-Message-ID: <9044442012a212f6f105fe9855ba4615@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Fri, 5 Aug 2005 13:47:06 +0200
+Message-ID: <f8e5c5f0ccda91571ce1b261d6c7aed7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2B6820E
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 13:26:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8BFF1F0
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 13:47:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,153 +24,140 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1310> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                oxi
+Reported By:                iive
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1310
-Category:                   PCI - echoaudio
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge AMD64
-Kernel Version:             2.6.12.3
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-05-2005 13:26 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              08-05-2005 13:47 CEST
 ======================================================================
-Summary:                    Driver cant find firmware for Layla24
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-Hello,
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
 
-After modprobe snd-layla24 ,
-in dmesg|tail:
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
 
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
 
-Same issue that another guy is experiencing with a Layla20:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001244 error with firmware with echo layla20
+related to          0001296 isapnp is incompatible with pnpbios and...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-05-05 06:03 
+ ahaning - 08-05-05 12:47 
 ----------------------------------------------------------------------
-If you just installed the firmware you might also need to restart hotplug:
+Well, I don't have a /etc/isapnp.conf file and I don't know how to write
+one. pnpdump doesn't find anything, anyway. The only interesting thing
+that it prints is:
 
-/etc/init.d/hotplug restart
+# Trying port address 02f3
+REALTIME operation timeout exceeded - Switching to normal scheduling
+nanosleep failed: Interrupted system call
+# Trying port address 0313
+
+it ends with:
+
+# No boards found
+
+So, I don't think that isapnp would work, anyway, even if I did know how
+to write a config file for it (which, IMO, seems completely backwards from
+what PnP means!)
+
+Maybe there's a newer version than I have? All I can find is that 1.26,
+released in 2001 (!), is the latest version.
+
+This non-working state could have something to do with the related bug
+0001296 at the top of this page: isapnp is incompatible with pnpbios and
+used the wrong ID's
+
+Also, I've always had to manually configure this card (except in Windows
+XP, which might do that automatically) and any isapnp options have always
+had to be turned off. So, isapnp has never worked with any of the
+available opl3sa2 drivers, OSS or ALSA.
+
+Thanks.
 
 ----------------------------------------------------------------------
- oxi - 08-05-05 13:26 
+ perex - 08-05-05 13:47 
 ----------------------------------------------------------------------
-debian:/home/oxi# /etc/init.d/alsasound stop
-Shutting down sound driver: done
-debian:/home/oxi# /etc/init.d/hotplug restart
-Stopping hotplug subsystem:
-   pci
-   pci      [success]
-   usb
-   usb      [success]
-   isapnp
-   isapnp   [success]
-   ide
-   ide      [success]
-   input
-   input    [success]
-   scsi
-   scsi     [success]
-done.
-Starting hotplug subsystem:
-   pci
-     ohci1394: already loaded
-     sata_promise: already loaded
-     bttv: already loaded
-     bt878: already loaded
-     sk98lin: already loaded
-     snd-layla24: loaded successfully
-     sata_via: already loaded
-     via82cxxx: already loaded
-     uhci-hcd: loaded successfully
-     uhci-hcd: already loaded
-     uhci-hcd: already loaded
-     uhci-hcd: already loaded
-     ehci-hcd: loaded successfully
-     i2c-viapro: already loaded
-     snd-via82xx: loaded successfully
-     ohci1394: already loaded
-     ignoring pci display device 02:00.0
-     ignoring pci display device 02:00.1
-   pci      [success]
-   usb
-     hci_usb: loaded successfully
-     usbhid: already loaded
-     hci_usb: already loaded
-     hci_usb: already loaded
-     hci_usb: already loaded
-   usb      [success]
-   isapnp
-   isapnp   [success]
-   ide
-   ide      [success]
-   input
-     evdev: already loaded
-     tsdev: already loaded
-     mousedev: already loaded
-     evdev: already loaded
-   input    [success]
-   scsi
-   scsi     [success]
-   ide
-   ide      [success]
-   input
-     evdev: already loaded
-     tsdev: already loaded
-     mousedev: already loaded
-     evdev: already loaded
-   input    [success]
-   scsi
-   scsi     [success]
-done.
+ahaning:
 
-However when running alsaconf the card isnt there.
+Appeartly, it's another bug than originally reported. The original
+reporter uses the ISAPnP configuration.
 
-And after that, if I run:
-debian:/home/oxi# /etc/init.d/alsasound stop
-Shutting down sound driver: done
-debian:/home/oxi# modprobe snd-layla24
-
-In dmesg|tail, again:
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
-
-Btw, thank you very much for the help and support :)
+What does command 'modinfo -p snd-opl3sa2' show on your system?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-05 22:50 oxi            New Issue                                    
-08-04-05 22:50 oxi            Distribution              => Debian Sarge AMD64
-08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
-08-04-05 23:48 rlrevell       Note Added: 0005653                          
-08-05-05 04:57 oxi            Note Added: 0005656                          
-08-05-05 04:59 oxi            Issue Monitored: oxi                         
-08-05-05 05:00 rlrevell       Note Added: 0005657                          
-08-05-05 05:20 oxi            Note Added: 0005658                          
-08-05-05 05:25 oxi            Note Added: 0005659                          
-08-05-05 06:03 rlrevell       Note Added: 0005660                          
-08-05-05 08:48 perex          Relationship added       related to 0001244  
-08-05-05 13:26 oxi            Note Added: 0005666                          
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
+08-02-05 00:02 iive           Note Added: 0005599                          
+08-02-05 03:00 ahaning        Note Added: 0005600                          
+08-02-05 03:05 ahaning        Note Added: 0005601                          
+08-02-05 03:05 ahaning        Note Deleted: 0005600                        
+08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
+      
+08-02-05 22:14 perex          Note Added: 0005607                          
+08-02-05 22:16 perex          Note Added: 0005608                          
+08-03-05 02:46 ahaning        Note Added: 0005610                          
+08-03-05 11:42 perex          File Added: alsaconf                         
+08-03-05 11:42 perex          Note Added: 0005615                          
+08-03-05 13:42 ahaning        Note Added: 0005625                          
+08-03-05 15:17 ahaning        Note Added: 0005631                          
+08-04-05 08:51 perex          Note Added: 0005641                          
+08-04-05 08:52 perex          Relationship added       related to 0001296  
+08-04-05 12:52 ahaning        Note Added: 0005644                          
+08-04-05 13:25 perex          Note Added: 0005645                          
+08-04-05 13:28 perex          Note Added: 0005646                          
+08-04-05 14:38 ahaning        File Added: sys-ahaning-0.1.tar.bz2               
+    
+08-04-05 14:42 ahaning        Note Added: 0005649                          
+08-04-05 14:49 ahaning        Note Edited: 0005649                         
+08-04-05 14:50 ahaning        File Added: asound-ahaning-0.1.tar.bz2            
+       
+08-04-05 14:51 perex          Note Added: 0005650                          
+08-05-05 02:35 ahaning        Note Added: 0005655                          
+08-05-05 03:18 ahaning        Note Edited: 0005655                         
+08-05-05 08:44 perex          Note Added: 0005661                          
+08-05-05 12:47 ahaning        Note Added: 0005665                          
+08-05-05 13:47 perex          Note Added: 0005667                          
 ======================================================================
 
 
