@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Fri, 5 Aug 2005 04:57:06 +0200
-Message-ID: <df92dc16d42a93c5bfd43ed61292375f@bugtrack.alsa-project.org>
+Date: Fri, 5 Aug 2005 05:00:03 +0200
+Message-ID: <7f202835327729988e29b998e4120900@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43E9A204
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 04:57:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A25A6204
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 05:00:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge AMD64
 Kernel Version:             2.6.12.3
 ======================================================================
 Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-05-2005 04:57 CEST
+Last Modified:              08-05-2005 05:00 CEST
 ======================================================================
 Summary:                    Driver cant find firmware for Layla24
 Description: 
@@ -59,11 +59,6 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-04-05 23:48 
-----------------------------------------------------------------------
-Well, is the firmware installed?
-
-----------------------------------------------------------------------
  oxi - 08-05-05 04:57 
 ----------------------------------------------------------------------
 I dont know, i guess its not!
@@ -77,6 +72,11 @@ itself.
 Where should i get this and how to install it please? Any help
 appreciated! Thank you!
 
+----------------------------------------------------------------------
+ rlrevell - 08-05-05 05:00 
+----------------------------------------------------------------------
+Is the alsa-firmware package installed?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -85,6 +85,8 @@ Date Modified  Username       Field                    Change
 08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
 08-04-05 23:48 rlrevell       Note Added: 0005653                          
 08-05-05 04:57 oxi            Note Added: 0005656                          
+08-05-05 04:59 oxi            Issue Monitored: oxi                         
+08-05-05 05:00 rlrevell       Note Added: 0005657                          
 ======================================================================
 
 
