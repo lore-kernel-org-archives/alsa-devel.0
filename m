@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
-Date: Fri, 5 Aug 2005 09:10:55 +0200
-Message-ID: <eaf2620ed7b1596dc0409219a0809078@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001312]: aplay has endian issues
+Date: Fri, 5 Aug 2005 09:30:08 +0200
+Message-ID: <58ff2dbdf8627d9f64f185d3ec626616@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FDD01DA
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 09:10:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82E3D20B
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 09:30:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1312> 
 ======================================================================
-Reported By:                hettar
-Assigned To:                tiwai
+Reported By:                ChrisWhite
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1311
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   1312
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
+Status:                     new
 ======================================================================
-Date Submitted:             08-05-2005 01:10 CEST
-Last Modified:              08-05-2005 09:10 CEST
+Date Submitted:             08-05-2005 07:18 CEST
+Last Modified:              08-05-2005 09:30 CEST
 ======================================================================
-Summary:                    drivers load but unmuting channels / adjusting
-volumes does not produce any sound
+Summary:                    aplay has endian issues
 Description: 
-I have installed the 1.0.9b version of alsa kernel/libs and utils in an
-attempt to get the intel high definition sound card working. These all
-appear to work, I can unmute the various channels, adjust volumes etc,
-however no matter what I do I can't get any sound out. Sound apps are all
-playing fine but don't actually produce any sound.
-
-This is the card in the new ASUS W2 laptop and could be slightly different
-to other models.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001176 problem with alsa-driver and asus m5a n...
+It appears that play uses BE specific formating when playing back by
+default.  As alsa seems to have a default SND_PCM_FORMAT_S16 which
+switches to the correct native endian, I'm not sure why that's not used as
+the default instead of endian specific definitions.
 ======================================================================
 
 ----------------------------------------------------------------------
- hettar - 08-05-05 08:39 
+ Clemens Ladisch - 08-05-05 09:30 
 ----------------------------------------------------------------------
-I just saw issue https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176 and
-I would guess that this is the same problem
-as reported there.
+aplay uses the sample format of the file it's playing.
 
-
-
-----------------------------------------------------------------------
- hettar - 08-05-05 09:10 
-----------------------------------------------------------------------
-I was just directed to the model=<model> as indicated in the
-ALSA-Configuration.txt, None of these actually worked but I though it
-might be worth mentioning that there are for jacks for the card in the
-laptop and one of them is front, s/pidf and HP, another is sorround and
-line out, another is center/bass and mic and the other is av-in. This
-doesn't seem to match any of the models indicated in the
-ALSA-configuration.txt file.
+What type of file are you using?  And what kind of sound card on what
+computer architecture?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-05 01:10 hettar         New Issue                                    
-08-05-05 01:10 hettar         Distribution              => Ubuntu          
-08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
-08-05-05 01:58 hettar         Note Added: 0005654                          
-08-05-05 08:39 perex          Note Edited: 0005654                         
-08-05-05 08:39 perex          Relationship added       related to 0001176  
-08-05-05 09:10 hettar         Note Added: 0005662                          
+08-05-05 07:18 ChrisWhite     New Issue                                    
+08-05-05 09:30 Clemens LadischNote Added: 0005663                          
 ======================================================================
 
 
