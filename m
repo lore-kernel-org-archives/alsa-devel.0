@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Fri, 5 Aug 2005 06:03:58 +0200
-Message-ID: <932d5a21dc659d65b26a1ff8a4cfcccd@bugtrack.alsa-project.org>
+From: =?windows-1251?B?MDksIDEwIEHi4/Px8uA=?= <baldpate@terra.com>
+Subject: =?windows-1251?B?wf7k5uXyIPDg4e7y4P756Okg7eAgwuDx?=
+Date: Fri, 05 Aug 2005 03:59:09 +0000
+Message-ID: <e50901c59972$f462b519$1d4a59b4@terra.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_F7026484.0F149C20"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89F8F204
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 06:03:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,107 +16,261 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1310> 
-======================================================================
-Reported By:                oxi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1310
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge AMD64
-Kernel Version:             2.6.12.3
-======================================================================
-Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-05-2005 06:03 CEST
-======================================================================
-Summary:                    Driver cant find firmware for Layla24
-Description: 
-Hello,
+------=_NextPart_000_0000_F7026484.0F149C20
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_3C7187F9.14A28A05"
 
-After modprobe snd-layla24 ,
-in dmesg|tail:
 
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
+------=_NextPart_001_0001_3C7187F9.14A28A05
+Content-Type: text/plain;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
-Same issue that another guy is experiencing with a Layla20:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
-======================================================================
+   =D1=E5=E3=EE=E4=ED=FF =ED=E5 =ED=F3=E6=ED=EE =E4=EE=EA=E0=E7=FB=E2=E0=F2=
+=FC,=20
+=F7=F2=EE =F1=E8=F1=F2=E5=EC=E0 =C1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF=
+ - =FD=F2=EE=20
+=CF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E5, =D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =E8 =
+=CA=EE=ED=F2=F0=EE=EB=FC =E2 =EE=E4=ED=EE=EC =F4=EB=E0=EA=EE=ED=E5.=20
+=C2=EE=EF=F0=EE=F1: =CA=E0=EA =F2=E0=EA=F3=FE =F0=E0=E1=EE=F2=E0=FE=F9=F3=
+=FE =F1=E8=F1=F2=E5=EC=F3 =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF?=20
 
-----------------------------------------------------------------------
- oxi - 08-05-05 05:25 
-----------------------------------------------------------------------
-debian:/usr/lib/hotplug/firmware/ea# ls -l
-total 776
--rw-r--r--  1 root root 78761 2005-08-05 05:16 3g_asic.fw
--rw-r--r--  1 root root 17162 2005-08-05 05:16 darla20_dsp.fw
--rw-r--r--  1 root root 15022 2005-08-05 05:16 darla24_dsp.fw
--rw-r--r--  1 root root 32058 2005-08-05 05:16 echo3g_dsp.fw
--rw-r--r--  1 root root 19022 2005-08-05 05:16 gina20_dsp.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 gina24_301_asic.fw
--rw-r--r--  1 root root 22342 2005-08-05 05:16 gina24_301_dsp.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 gina24_361_asic.fw
--rw-r--r--  1 root root 22450 2005-08-05 05:16 gina24_361_dsp.fw
--rw-r--r--  1 root root 27682 2005-08-05 05:16 gina3g_dsp.fw
--rw-r--r--  1 root root 16082 2005-08-05 05:16 indigo_dj_dsp.fw
--rw-r--r--  1 root root 15354 2005-08-05 05:16 indigo_dsp.fw
--rw-r--r--  1 root root 16658 2005-08-05 05:16 indigo_io_dsp.fw
--rw-r--r--  1 root root 32385 2005-08-05 05:16 layla20_asic.fw
--rw-r--r--  1 root root 24710 2005-08-05 05:16 layla20_dsp.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 layla24_1_asic.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 layla24_2A_asic.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 layla24_2S_asic.fw
--rw-r--r--  1 root root 27930 2005-08-05 05:16 layla24_dsp.fw
--rw-r--r--  1 root root   634 2005-08-05 05:16 loader_dsp.fw
--rw-r--r--  1 root root 20346 2005-08-05 05:16 mia_dsp.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 mona_2_asic.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 mona_301_1_asic_48.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 mona_301_1_asic_96.fw
--rw-r--r--  1 root root 24130 2005-08-05 05:16 mona_301_dsp.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 mona_361_1_asic_48.fw
--rw-r--r--  1 root root 31146 2005-08-05 05:16 mona_361_1_asic_96.fw
--rw-r--r--  1 root root 24258 2005-08-05 05:16 mona_361_dsp.fw
 
-----------------------------------------------------------------------
- rlrevell - 08-05-05 06:03 
-----------------------------------------------------------------------
-If you just installed the firmware you might also need to restart hotplug:
+=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=
+=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0=
+ =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=E5=F4=EE=ED=F3
+(095) 514-5047=20
 
-/etc/init.d/hotplug restart
+=D7=F2=EE =E4=E0=E5=F2 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =EA=EE=EC=
+=EF=E0=ED=E8=E8, =F1=E5=E3=EE=E4=ED=FF =E8=E7=E2=E5=F1=F2=ED=EE =EC=ED=EE=
+=E3=E8=EC. =CD=EE =E5=F1=F2=FC =E4=E2=E0
+=E2=EE=EF=F0=EE=F1=E0, =EE=E1 =EA=EE=F2=EE=F0=FB=E5, =EA=E0=EA =EE =E3=F0=
+=E0=E1=EB=E8, =F1=EF=EE=F2=FB=EA=E0=FE=F2=F1=FF =E1=EE=EB=FC=F8=E8=ED=F1=F2=
+=E2=EE =F2=E5=F5, =EA=F2=EE =F1=E0=EC=EE=F1=F2=EE=FF=F2=E5=EB=FC=ED=EE
+=E4=E5=EB=E0=EB =FD=F2=EE =E2 =F1=E2=EE=E5=E9 =EA=EE=EC=EF=E0=ED=E8=E8.=20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-04-05 22:50 oxi            New Issue                                    
-08-04-05 22:50 oxi            Distribution              => Debian Sarge AMD64
-08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
-08-04-05 23:48 rlrevell       Note Added: 0005653                          
-08-05-05 04:57 oxi            Note Added: 0005656                          
-08-05-05 04:59 oxi            Issue Monitored: oxi                         
-08-05-05 05:00 rlrevell       Note Added: 0005657                          
-08-05-05 05:20 oxi            Note Added: 0005658                          
-08-05-05 05:25 oxi            Note Added: 0005659                          
-08-05-05 06:03 rlrevell       Note Added: 0005660                          
-======================================================================
+=CF=E5=F0=E2=FB=E9 - =E2 =EA=ED=E8=E6=EA=E0=F5, =F1=F2=E0=F2=FC=FF=F5 "=EA=
+=E0=EA =FD=F2=EE =E4=E5=EB=E0=F2=FC =EF=F0=E0=E2=E8=EB=FC=ED=EE" =EF=EE=F0=
+=EE=E9 =ED=E0=EF=E8=F1=E0=ED=EE =EC=F3=E4=F0=E5=ED=EE,
+=F2=F0=F3=E4=ED=EE =F0=E0=E7=EE=E1=F0=E0=F2=FC=F1=FF =F1=E0=EC=EE=EC=F3.=20
+
+=C2=F2=EE=F0=EE=E9 - =E2 =FD=F2=E8=F5 =EA=ED=E8=E6=EA=E0=F5 =E8 =F1=F2=E0=
+=F2=FC=FF=F5 =ED=E0=EF=E8=F1=E0=ED=EE =ED=E5 =E2=F1=E5!=20
+
+=C8 =F1=E0=EC=EE=EE=E1=F3=F7=E5=ED=E8=E5 =EE=F1=F2=E0=E2=F8=E8=EC=F1=FF "=
+=EC=E5=EB=EE=F7=E0=EC" =EE=E1=F5=EE=E4=E8=F2=F1=FF =E4=EE=F0=EE=E3=EE:=20
+
+=C5=F1=EB=E8 =E2=FB =F1=F2=E0=E2=E8=F2=E5 =F3 =F1=E5=E1=FF =E2 =EA=EE=EC=EF=
+=E0=ED=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 - =EF=F0=E8=E3=EB=
+=E0=F8=E0=E5=EC =C2=E0=F1 =ED=E0 =F1=E5=EC=E8=ED=E0=F0-=EF=F0=E0=EA=F2=E8=
+=EA=F3=EC
+
+
+=C1=FE=E4=E6=E5=F2, =EA=EE=F2=EE=F0=FB=E9 =D0=E0=E1=EE=F2=E0=E5=F2 =ED=E0=
+  =C2=E0=F1 =20
+=CA=E0=EA =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF =D0=E0=E1=EE=F2=E0=
+=FE=F9=F3=FE =D1=E8=F1=F2=E5=EC=F3 =C1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=
+=FF=20
 
 
 
+=CD=E0 =F1=E5=EC=E8=ED=E0=F0=E5 =F3=F7=E0=F1=F2=ED=E8=EA=E8 =EF=EE=EB=F3=F7=
+=E0=F2  =D0=E5=E0=EB=E8=E8 =F1=E5=E3=EE=E4=ED=FF=F8=ED=E5=E3=EE =E4=ED=FF=
+, =EF=EE=ED=E8=EC=E0=ED=E8=E5 =F2=EE=E3=EE,
+=F7=F2=EE =EF=F0=E5=E4=F1=F2=E0=E2=EB=FF=E5=F2 =E8=E7 =F1=E5=E1=FF =E1=FE=
+=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =E2 =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E9=
+ =EA=EE=EC=EF=E0=ED=E8=E8 =E7=ED=E0=ED=E8=FF =E8=E7
+=EE=E1=EB=E0=F1=F2=E5=E9  =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8 =EF=EE=F1=F2=E0=
+=ED=EE=E2=EA=E8 (=E2=ED=E5=E4=F0=E5=ED=E8=FF) =E0=E2=F2=EE=EC=E0=F2=E8=E7=
+=E0=F6=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF
+=EC=E5=F2=EE=E4=E8=EA=E8 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E1=FE=E4=E6=E5=
+=F2=E8=F0=EE=E2=E0=ED=E8=FF =FD=EA=EE=ED=EE=EC=E8=EA=E8 =E1=FE=E4=E6=E5=F2=
+=ED=EE=E3=EE =EF=F0=EE=F6=E5=F1=F1=E0 =E8 =EF=F0=EE=F6=E5=F1=F1=E0
+=E2=ED=E5=E4=F0=E5=ED=E8=FF =F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =F1=F2=F0=F3=EA=
+=F2=F3=F0=FB =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E9 =EA=EE=EC=EF=E0=ED=E8=E8 =CF=
+=EE =E8=F2=EE=E3=E0=EC =F1=E5=EC=E8=ED=E0=F0=E0
+=F3=F7=E0=F1=F2=ED=E8=EA=E8 =F1=EC=EE=E3=F3=F2  =EA=E2=E0=EB=E8=F4=E8=F6=E8=
+=F0=EE=E2=E0=ED=ED=EE =F0=E0=E7=EE=E1=F0=E0=F2=FC=F1=FF =E2 =EF=F0=EE=E1=EB=
+=E5=EC=E0=F5, =F1=F2=EE=FF=F9=E8=F5 =EF=E5=F0=E5=E4
+=ED=E8=EC=E8 =E2 =EE=E1=EB=E0=F1=F2=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=
+=E8=FF =EF=F0=E0=E2=E8=EB=FC=ED=EE =EF=EE=F1=F2=E0=E2=E8=F2=FC =E7=E0=E4=E0=
+=F7=E8 =EE=F1=ED=EE=E2=ED=FB=EC =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC
+=E1=FE=E4=E6=E5=F2=ED=EE=E3=EE =EF=F0=EE=F6=E5=F1=F1=E0 =EE=F6=E5=ED=E8=F2=
+=FC =EE=E1=FA=E5=EC =F0=E0=E1=EE=F2=FB, =ED=E5=EE=E1=F5=EE=E4=E8=EC=FB=E9=
+ =E2 =E8=F5 =EA=EE=EC=EF=E0=ED=E8=FF=F5 =E3=F0=E0=EC=EE=F2=ED=EE
+=E2=FB=E1=F0=E0=F2=FC =EF=F0=EE=E3=F0=E0=EC=EC=ED=EE=E5 =EE=E1=E5=F1=EF=E5=
+=F7=E5=ED=E8=E5 =E8 =F2=E0=EA=F2=E8=EA=F3 =E5=E3=EE =E2=ED=E5=E4=F0=E5=ED=
+=E8=FF =EE=E1=FA=FF=F1=ED=E8=F2=FC =F1=E5=E1=E5
+=E8 =EA=EE=EB=EB=E5=E3=E0=EC =EF=F0=E8=ED=F6=E8=EF=FB =F1=EE=E2=F0=E5=EC=E5=
+=ED=ED=EE=E3=EE "=F5=EE=E7=F0=E0=F1=F7=E5=F2=E0" =ED=E0=EF=E8=F1=E0=F2=FC=
+ =EE=F1=ED=EE=E2=ED=FB=E5 =E4=EE=EA=F3=EC=E5=ED=F2=FB,
+=F0=E5=E3=EB=E0=EC=E5=ED=F2=E8=F0=F3=FE=F9=E8=E5 =EF=F0=EE=F6=E5=F1=F1 =D1=
+=E5=EC=E8=ED=E0=F0 =E1=F3=E4=E5=F2 =EF=EE=EB=E5=E7=E5=ED =F0=F3=EA=EE=E2=EE=
+=E4=E8=F2=E5=EB=FF=EC =E2=F1=E5=F5 =F3=F0=EE=E2=ED=E5=E9,
+=EE=F0=E3=E0=ED=E8=E7=E0=F2=EE=F0=FB, =EE=F2=E2=E5=F7=E0=FE=F9=E8=E5 =E7=E0=
+ =EF=EE=F1=F2=E0=ED=EE=E2=EA=F3 =E8 =E8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5=
+ =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF =E2
+=F3=EF=F0=E0=E2=EB=E5=ED=E8=E8, =F1=EF=E5=F6=E8=E0=EB=E8=F1=F2=FB =F1=EB=F3=
+=E6=E1 =C8=D2, =FD=EA=EE=ED=EE=EC=E8=F1=F2=FB=20
+=CF=EE=E4=F0=EE=E1=ED=FB=E9 =EF=EB=E0=ED =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=EE=
+=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0 =EC=EE=E6=ED=EE =EF=EE=EB=F3=F7=E8=F2=FC =
+=EF=EE =F4=E0=EA=F1=F3 =E8=EB=E8 =FD=EB=E5=EA=F2=F0=EE=ED=ED=EE=E9
+=EF=EE=F7=F2=E5.=20
 
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+=CF=F0=EE=E4=EE=EB=E6=E8=F2=E5=EB=FC=ED=EE=F1=F2=FC =F1=E5=EC=E8=ED=E0=F0=
+=E0: 2 =E4=ED=FF 10-11.08.05 =F1 10:00 =E4=EE 18:00=20
+=D1=F2=EE=E8=EC=EE=F1=F2=FC =F3=F7=E0=F1=F2=E8=FF: 12900 =F0=F3=E1. =CD=C4=
+=D1 =ED=E5 =EE=E1=EB=E0=E3=E0=E5=F2=F1=FF.
+=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
+=F4=E5-=EF=E0=F3=E7=FB, =EF=E5=F7=E0=F2=ED=FB=E5 =EC=E5=F2=EE=E4=E8=F7=E5=
+=F1=EA=E8=E5 =EC=E0=F2=E5=F0=E8=E0=EB=FB.
+
+=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=
+=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0=
+ =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=E5=F4=EE=ED=F3
+(095) 514-5047=20
+
+  =20
+------=_NextPart_001_0001_3C7187F9.14A28A05
+Content-Type: text/html;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
+251">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
+<BODY text=3D#000000 bgColor=3D#ffffff>
+<font face=3D"Times New Roman"><TABLE borderColor=3D#009900 cellSpacing=3D=
+0 cellPadding=3D10 width=3D700 align=3Dcenter border=3D1><TR>
+<TD>
+<P style=3D"BACKGROUND-COLOR: #ccffcc" align=3Dright><FONT size=3D4><I>=D1=
+=E5=E3=EE=E4=ED=FF =ED=E5 =ED=F3=E6=ED=EE =E4=EE=EA=E0=E7=FB=E2=E0=F2=FC,=
+ <br>
+=F7=F2=EE =F1=E8=F1=F2=E5=EC=E0 =C1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF=
+ - =FD=F2=EE <br>
+=CF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E5, =D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =E8 =
+=CA=EE=ED=F2=F0=EE=EB=FC =E2 =EE=E4=ED=EE=EC =F4=EB=E0=EA=EE=ED=E5. <br>
+<B>=C2=EE=EF=F0=EE=F1: =CA=E0=EA =F2=E0=EA=F3=FE =F0=E0=E1=EE=F2=E0=FE=F9=
+=F3=FE =F1=E8=F1=F2=E5=EC=F3 =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF=
+? </B><br>
+</I></FONT></P>
+<font face=3D"Times New Roman"><b>=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=
+=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=
+=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=
+=E5=F4=EE=ED=F3<br>
+<font color=3D"#0000FF" size=3D"4">(095) 514-5047 </font><br>
+</b></font><br>
+=D7=F2=EE =E4=E0=E5=F2 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =EA=EE=EC=
+=EF=E0=ED=E8=E8, =F1=E5=E3=EE=E4=ED=FF =E8=E7=E2=E5=F1=F2=ED=EE =EC=ED=EE=
+=E3=E8=EC. =CD=EE =E5=F1=F2=FC =E4=E2=E0 =E2=EE=EF=F0=EE=F1=E0, =EE=E1 =EA=
+=EE=F2=EE=F0=FB=E5, =EA=E0=EA =EE =E3=F0=E0=E1=EB=E8, =F1=EF=EE=F2=FB=EA=E0=
+=FE=F2=F1=FF =E1=EE=EB=FC=F8=E8=ED=F1=F2=E2=EE =F2=E5=F5, =EA=F2=EE =F1=E0=
+=EC=EE=F1=F2=EE=FF=F2=E5=EB=FC=ED=EE =E4=E5=EB=E0=EB =FD=F2=EE =E2 =F1=E2=
+=EE=E5=E9 =EA=EE=EC=EF=E0=ED=E8=E8. <br>
+<br>
+=CF=E5=F0=E2=FB=E9 - =E2 =EA=ED=E8=E6=EA=E0=F5, =F1=F2=E0=F2=FC=FF=F5 "=EA=
+=E0=EA =FD=F2=EE =E4=E5=EB=E0=F2=FC =EF=F0=E0=E2=E8=EB=FC=ED=EE" =EF=EE=F0=
+=EE=E9 =ED=E0=EF=E8=F1=E0=ED=EE =EC=F3=E4=F0=E5=ED=EE, =F2=F0=F3=E4=ED=EE=
+ =F0=E0=E7=EE=E1=F0=E0=F2=FC=F1=FF =F1=E0=EC=EE=EC=F3. <br>
+<br>
+=C2=F2=EE=F0=EE=E9 - =E2 =FD=F2=E8=F5 =EA=ED=E8=E6=EA=E0=F5 =E8 =F1=F2=E0=
+=F2=FC=FF=F5 =ED=E0=EF=E8=F1=E0=ED=EE =ED=E5 =E2=F1=E5! <br>
+<br>
+=C8 =F1=E0=EC=EE=EE=E1=F3=F7=E5=ED=E8=E5 =EE=F1=F2=E0=E2=F8=E8=EC=F1=FF "=
+=EC=E5=EB=EE=F7=E0=EC" =EE=E1=F5=EE=E4=E8=F2=F1=FF =E4=EE=F0=EE=E3=EE: <b=
+r>
+<br>
+=C5=F1=EB=E8 =E2=FB =F1=F2=E0=E2=E8=F2=E5 =F3 =F1=E5=E1=FF =E2 =EA=EE=EC=EF=
+=E0=ED=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 - =EF=F0=E8=E3=EB=
+=E0=F8=E0=E5=EC =C2=E0=F1 =ED=E0 =F1=E5=EC=E8=ED=E0=F0-=EF=F0=E0=EA=F2=E8=
+=EA=F3=EC <br>
+<br>
+
+<P align=3Dcenter><B><FONT color=3Dblue size=3D6>=C1=FE=E4=E6=E5=F2, =EA=EE=
+=F2=EE=F0=FB=E9 =D0=E0=E1=EE=F2=E0=E5=F2 =ED=E0 </FONT>=20
+<FONT color=3Dblue size=3D7>=C2=E0=F1</FONT></B><font size=3D"7"> </font>=
+ <br>
+<FONT size=3D5>=CA=E0=EA =EF=EE=F1=F2=E0=E2=E8=F2=FC =F3 =F1=E5=E1=FF =D0=
+=E0=E1=EE=F2=E0=FE=F9=F3=FE =D1=E8=F1=F2=E5=EC=F3 =C1=FE=E4=E6=E5=F2=E8=F0=
+=EE=E2=E0=ED=E8=FF <br>
+</FONT><br>
+</P><B>=CD=E0 =F1=E5=EC=E8=ED=E0=F0=E5 =F3=F7=E0=F1=F2=ED=E8=EA=E8 =EF=EE=
+=EB=F3=F7=E0=F2</B>=20
+<UL>
+<LI>=D0=E5=E0=EB=E8=E8 =F1=E5=E3=EE=E4=ED=FF=F8=ED=E5=E3=EE =E4=ED=FF, =EF=
+=EE=ED=E8=EC=E0=ED=E8=E5 =F2=EE=E3=EE, =F7=F2=EE =EF=F0=E5=E4=F1=F2=E0=E2=
+=EB=FF=E5=F2 =E8=E7 =F1=E5=E1=FF =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5=
+ =E2 =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E9 =EA=EE=EC=EF=E0=ED=E8=E8=20
+<LI>=E7=ED=E0=ED=E8=FF =E8=E7 =EE=E1=EB=E0=F1=F2=E5=E9=20
+<UL>
+<LI>=EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8=20
+<LI>=EF=EE=F1=F2=E0=ED=EE=E2=EA=E8 (=E2=ED=E5=E4=F0=E5=ED=E8=FF)=20
+<LI>=E0=E2=F2=EE=EC=E0=F2=E8=E7=E0=F6=E8=E8 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=
+=E0=ED=E8=FF=20
+<LI>=EC=E5=F2=EE=E4=E8=EA=E8 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E1=FE=E4=
+=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF=20
+<LI>=FD=EA=EE=ED=EE=EC=E8=EA=E8 =E1=FE=E4=E6=E5=F2=ED=EE=E3=EE =EF=F0=EE=F6=
+=E5=F1=F1=E0 =E8 =EF=F0=EE=F6=E5=F1=F1=E0 =E2=ED=E5=E4=F0=E5=ED=E8=FF=20
+<LI>=F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =F1=F2=F0=F3=EA=F2=F3=F0=FB =F1=EE=E2=F0=
+=E5=EC=E5=ED=ED=EE=E9 =EA=EE=EC=EF=E0=ED=E8=E8 </LI></UL></LI></UL><B>=CF=
+=EE =E8=F2=EE=E3=E0=EC =F1=E5=EC=E8=ED=E0=F0=E0 =F3=F7=E0=F1=F2=ED=E8=EA=E8=
+ =F1=EC=EE=E3=F3=F2</B>=20
+<UL>
+<LI>=EA=E2=E0=EB=E8=F4=E8=F6=E8=F0=EE=E2=E0=ED=ED=EE =F0=E0=E7=EE=E1=F0=E0=
+=F2=FC=F1=FF =E2 =EF=F0=EE=E1=EB=E5=EC=E0=F5, =F1=F2=EE=FF=F9=E8=F5 =EF=E5=
+=F0=E5=E4 =ED=E8=EC=E8 =E2 =EE=E1=EB=E0=F1=F2=E8 =E1=FE=E4=E6=E5=F2=E8=F0=
+=EE=E2=E0=ED=E8=FF=20
+<LI>=EF=F0=E0=E2=E8=EB=FC=ED=EE =EF=EE=F1=F2=E0=E2=E8=F2=FC =E7=E0=E4=E0=F7=
+=E8 =EE=F1=ED=EE=E2=ED=FB=EC =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC =E1=FE=E4=E6=E5=
+=F2=ED=EE=E3=EE =EF=F0=EE=F6=E5=F1=F1=E0=20
+<LI>=EE=F6=E5=ED=E8=F2=FC =EE=E1=FA=E5=EC =F0=E0=E1=EE=F2=FB, =ED=E5=EE=E1=
+=F5=EE=E4=E8=EC=FB=E9 =E2 =E8=F5 =EA=EE=EC=EF=E0=ED=E8=FF=F5=20
+<LI>=E3=F0=E0=EC=EE=F2=ED=EE =E2=FB=E1=F0=E0=F2=FC =EF=F0=EE=E3=F0=E0=EC=EC=
+=ED=EE=E5 =EE=E1=E5=F1=EF=E5=F7=E5=ED=E8=E5 =E8 =F2=E0=EA=F2=E8=EA=F3 =E5=
+=E3=EE =E2=ED=E5=E4=F0=E5=ED=E8=FF=20
+<LI>=EE=E1=FA=FF=F1=ED=E8=F2=FC =F1=E5=E1=E5 =E8 =EA=EE=EB=EB=E5=E3=E0=EC=
+ =EF=F0=E8=ED=F6=E8=EF=FB =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E3=EE "=F5=EE=E7=
+=F0=E0=F1=F7=E5=F2=E0"=20
+<LI>=ED=E0=EF=E8=F1=E0=F2=FC =EE=F1=ED=EE=E2=ED=FB=E5 =E4=EE=EA=F3=EC=E5=ED=
+=F2=FB, =F0=E5=E3=EB=E0=EC=E5=ED=F2=E8=F0=F3=FE=F9=E8=E5 =EF=F0=EE=F6=E5=F1=
+=F1 </LI></UL><B>=D1=E5=EC=E8=ED=E0=F0 =E1=F3=E4=E5=F2 =EF=EE=EB=E5=E7=E5=
+=ED</B> =F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF=EC =E2=F1=E5=F5 =F3=F0=EE=E2=
+=ED=E5=E9, =EE=F0=E3=E0=ED=E8=E7=E0=F2=EE=F0=FB, =EE=F2=E2=E5=F7=E0=FE=F9=
+=E8=E5 =E7=E0 =EF=EE=F1=F2=E0=ED=EE=E2=EA=F3 =E8 =E8=F1=EF=EE=EB=FC=E7=EE=
+=E2=E0=ED=E8=E5 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF =E2 =F3=EF=F0=E0=
+=E2=EB=E5=ED=E8=E8, =F1=EF=E5=F6=E8=E0=EB=E8=F1=F2=FB =F1=EB=F3=E6=E1 =C8=
+=D2, =FD=EA=EE=ED=EE=EC=E8=F1=F2=FB <br>
+=CF=EE=E4=F0=EE=E1=ED=FB=E9 =EF=EB=E0=ED =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=EE=
+=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0 =EC=EE=E6=ED=EE =EF=EE=EB=F3=F7=E8=F2=FC =
+=EF=EE =F4=E0=EA=F1=F3 =E8=EB=E8 =FD=EB=E5=EA=F2=F0=EE=ED=ED=EE=E9 =EF=EE=
+=F7=F2=E5. <br>
+<br>
+
+<P style=3D"BACKGROUND-COLOR: #ccffcc" align=3Dcenter>=CF=F0=EE=E4=EE=EB=E6=
+=E8=F2=E5=EB=FC=ED=EE=F1=F2=FC =F1=E5=EC=E8=ED=E0=F0=E0: 2 =E4=ED=FF 10-1=
+1.08.05 =F1 10:00 =E4=EE 18:00 <br>
+<FONT style=3D"BACKGROUND-COLOR: #66ff66"><B>=D1=F2=EE=E8=EC=EE=F1=F2=FC =
+=F3=F7=E0=F1=F2=E8=FF: 12900 =F0=F3=E1.</B> =CD=C4=D1 =ED=E5 =EE=E1=EB=E0=
+=E3=E0=E5=F2=F1=FF.</FONT><br>
+=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
+=F4=E5-=EF=E0=F3=E7=FB, =EF=E5=F7=E0=F2=ED=FB=E5 =EC=E5=F2=EE=E4=E8=F7=E5=
+=F1=EA=E8=E5 =EC=E0=F2=E5=F0=E8=E0=EB=FB. <br>
+=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=
+=F6=E8=FE =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0=
+ =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE =F2=E5=EB=E5=F4=EE=ED=F3<B><br>
+(095) 514-5047 </B></P></TD></TR></TABLE></font>
+</BODY>
+</HTML>
+
+------=_NextPart_001_0001_3C7187F9.14A28A05--
+
+
+
+------=_NextPart_000_0000_F7026484.0F149C20--
