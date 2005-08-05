@@ -1,11 +1,9 @@
-From: "Delio Brignoli" <dbrignoli@audioscience.com>
-Subject: [PATCH] asihpi, snd_runtime_check assertions fixes
-Date: Fri, 5 Aug 2005 15:06:58 -0700
-Message-ID: <455325839e4e444e9454d61c2c7103b8@audioscience.com>
-Reply-To: dbrignoli@audioscience.com
+From: "Mike Chalmers" <mikechalmers_70@hotmail.com>
+Subject: Sound Blaster Audigy 2 Ex.
+Date: Fri, 05 Aug 2005 19:08:07 -0400
+Message-ID: <BAY106-F16A3B4FC749663ACA875C792C70@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary=----_SmarterMail_NextPart_7610353681716364
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,69 +17,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Why doesn't the ALSA team make support for the Sound Blaster Audigy 2 Ex. I 
+have one and the volume control doesn't work and I wonder if the midi input 
+and output works. Make it so all the features on the external box works. 
+Thanks.
 
-------_SmarterMail_NextPart_7610353681716364
-Content-Type: text/plain;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+From,
+Mike
 
-Hello,=0D=0A=0D=0Ain the rush I made some mistakes converting assertions to=
- the snd_runtime_check, =0D=0Athis patch fixes them, please apply.=0D=0A=0D=
-=0AChangelog:=0D=0A*fixed snd_runtime_check assertions=0D=0A=0D=0Asigned-of=
-f-by: Delio Brignoli dbrignoli@audioscience.com=0D=0A=0D=0Athanks=0D=0A--=
-=0D=0ADelio Brignoli=0D=0A
-
-------_SmarterMail_NextPart_7610353681716364
-Content-Type: application/octet-stream;
-	name=patch.txt
-Content-Disposition: attachment; filename="patch.txt"
-Content-Transfer-Encoding: base64
-
-LS0tIG9sZC1hbHNhLWRyaXZlci0xLjAuOWItd3JrL3BjaS9hc2locGkuYwkyMDA1LTA4LTA0IDE3
-OjA4OjQ2LjAwMDAwMDAwMCArMTIwMAorKysgbmV3LWFsc2EtZHJpdmVyLTEuMC45Yi13cmsvcGNp
-L2FzaWhwaS5jCTIwMDUtMDgtMDUgMTc6MDY6MTYuMDAwMDAwMDAwICsxMjAwCkBAIC0xMTc0LDcg
-KzExNzQsNyBAQAogCUhQSV9IQ09OVFJPTCBoQ29udHJvbCA9IGtjb250cm9sLT5wcml2YXRlX3Zh
-bHVlOwogCUhXMTYgc291cmNlOwogCi0Jc25kX3J1bnRpbWVfY2hlY2soIGZ1bmMocGhTdWJTeXMs
-IGhDb250cm9sLCAmc291cmNlKSAhPSAwICwgcmV0dXJuIC1FSU5WQUwgKTsKKwlmdW5jKHBoU3Vi
-U3lzLCBoQ29udHJvbCwgJnNvdXJjZSk7CiAKIAkvKiBkZWZhdWx0IHRvIFMvUERJRiAqLwogCXVj
-b250cm9sLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0gPSAwOwpAQCAtMTE5OSw3ICsxMTk5LDcg
-QEAKIAlpZiAoIHVjb250cm9sLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0gPT0gMiApCiAJCXNv
-dXJjZSA9IEhQSV9BRVNFQlVfU09VUkNFX0FFU0VCVTsKIAotCXNuZF9ydW50aW1lX2NoZWNrKCBm
-dW5jKHBoU3ViU3lzLCBoQ29udHJvbCwgc291cmNlKSAhPSAwLCByZXR1cm4gLUVJTlZBTCApOwor
-CXNuZF9ydW50aW1lX2NoZWNrKCBmdW5jKHBoU3ViU3lzLCBoQ29udHJvbCwgc291cmNlKSA9PSAw
-LCByZXR1cm4gLUVJTlZBTCApOwogCiAJcmV0dXJuIDE7CiB9CkBAIC0xMjU2LDcgKzEyNTYsNyBA
-QAogCUhQSV9IQ09OVFJPTCBoQ29udHJvbCA9IGtjb250cm9sLT5wcml2YXRlX3ZhbHVlOwogCUhX
-MTYgc3luYzsKIAotCXNuZF9ydW50aW1lX2NoZWNrKCBIUElfQUVTRUJVX1RyYW5zbWl0dGVyX0dl
-dENsb2NrU291cmNlKHBoU3ViU3lzLCBoQ29udHJvbCwgJnN5bmMpICk7CisJSFBJX0FFU0VCVV9U
-cmFuc21pdHRlcl9HZXRDbG9ja1NvdXJjZShwaFN1YlN5cywgaENvbnRyb2wsICZzeW5jKTsKIAog
-CS8qIGRlZmF1bHQgdG8gSFBJX0FFU0VCVV9DTE9DS1NPVVJDRV9BREFQVEVSICovCiAJdWNvbnRy
-b2wtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXSA9IDA7CkBAIC0xMjgwLDcgKzEyODAsNyBAQAog
-CWlmICggdWNvbnRyb2wtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXSA9PSAxICkKIAkJc3luYyA9
-IEhQSV9BRVNFQlVfQ0xPQ0tTT1VSQ0VfQUVTRUJVX1NZTkM7CiAKLQlzbmRfcnVudGltZV9jaGVj
-ayggSFBJX0FFU0VCVV9UcmFuc21pdHRlcl9TZXRDbG9ja1NvdXJjZShwaFN1YlN5cywgaENvbnRy
-b2wsIHN5bmMpICE9IDAsIHJldHVybiAtRUlOVkFMICk7CisJc25kX3J1bnRpbWVfY2hlY2soIEhQ
-SV9BRVNFQlVfVHJhbnNtaXR0ZXJfU2V0Q2xvY2tTb3VyY2UocGhTdWJTeXMsIGhDb250cm9sLCBz
-eW5jKSA9PSAwLCByZXR1cm4gLUVJTlZBTCApOwogCiAJcmV0dXJuIDE7CiB9CkBAIC0xNTc4LDcg
-KzE1NzgsNyBAQAogCWFzaWhwaV9jdGxfbmFtZV9wcmVmaXgoIHNuZF9jb250cm9sLCBhc2locGlf
-Y29udHJvbCApOwogCXN0cmNhdChzbmRfY29udHJvbC0+bmFtZSwgIiBHYWluIik7CiAKLQlzbmRf
-cnVudGltZV9jaGVjayggY3RsX2FkZCggY2FyZCwgc25kX2NvbnRyb2wsIGFzaWhwaSApICE9IDAs
-IHJldHVybiAtRUlOVkFMICk7CisJc25kX3J1bnRpbWVfY2hlY2soIGN0bF9hZGQoIGNhcmQsIHNu
-ZF9jb250cm9sLCBhc2locGkgKSA9PSAwLCByZXR1cm4gLUVJTlZBTCApOwogCiAvKiBCYW5kIGN0
-bCAqLwogCkBAIC0xNTkwLDcgKzE1OTAsNyBAQAogCWFzaWhwaV9jdGxfbmFtZV9wcmVmaXgoIHNu
-ZF9jb250cm9sLCBhc2locGlfY29udHJvbCApOwogCXN0cmNhdChzbmRfY29udHJvbC0+bmFtZSwg
-IiBCYW5kIik7CiAKLQlzbmRfcnVudGltZV9jaGVjayggY3RsX2FkZCggY2FyZCwgc25kX2NvbnRy
-b2wsIGFzaWhwaSApICE9IDAsIHJldHVybiAtRUlOVkFMICk7CisJc25kX3J1bnRpbWVfY2hlY2so
-IGN0bF9hZGQoIGNhcmQsIHNuZF9jb250cm9sLCBhc2locGkgKSA9PSAwLCByZXR1cm4gLUVJTlZB
-TCApOwogCiAvKiBGcmVxIGN0bCAqLwogCkBAIC0xNjAyLDcgKzE2MDIsNyBAQAogCWFzaWhwaV9j
-dGxfbmFtZV9wcmVmaXgoIHNuZF9jb250cm9sLCBhc2locGlfY29udHJvbCApOwogCXN0cmNhdChz
-bmRfY29udHJvbC0+bmFtZSwgIiBGcmVxIik7CiAKLQlzbmRfcnVudGltZV9jaGVjayggY3RsX2Fk
-ZCggY2FyZCwgc25kX2NvbnRyb2wsIGFzaWhwaSApICE9IDAsIHJldHVybiAtRUlOVkFMICk7CisJ
-c25kX3J1bnRpbWVfY2hlY2soIGN0bF9hZGQoIGNhcmQsIHNuZF9jb250cm9sLCBhc2locGkgKSA9
-PSAwLCByZXR1cm4gLUVJTlZBTCApOwogCiAvKiBMZXZlbCBtZXRlciAqLwogCgo=
-------_SmarterMail_NextPart_7610353681716364--
-
-
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today - it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
 
 
