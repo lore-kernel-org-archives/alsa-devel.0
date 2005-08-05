@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001314]: No SPDIF sound, no SPDIF mixer controls
-Date: Fri, 5 Aug 2005 17:41:29 +0200
-Message-ID: <afc8dd445a53d4e9cc7badd5c21f86b0@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001312]: aplay has endian issues
+Date: Fri, 5 Aug 2005 18:08:28 +0200
+Message-ID: <9a811432ca7a4127aa6cb30acdcd916d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE9F8218
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 17:41:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DBEF205
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 18:08:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1314> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1312> 
 ======================================================================
-Reported By:                SamiH
+Reported By:                ChrisWhite
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1314
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   1312
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               BLFS
-Kernel Version:             2.6.11.8
 ======================================================================
-Date Submitted:             08-05-2005 17:41 CEST
-Last Modified:              08-05-2005 17:41 CEST
+Date Submitted:             08-05-2005 07:18 CEST
+Last Modified:              08-05-2005 18:08 CEST
 ======================================================================
-Summary:                    No SPDIF sound, no SPDIF mixer controls
+Summary:                    aplay has endian issues
 Description: 
-  * I have S/PDIF output, but it doesn't work
-  * I don't even have the mixer control for that entry
-  * SPDIF have worked in Fedora Core 2 or something else,
-    but I haven't got it working again even on that system.
-
-  * Stereo output works fine from the analog output.
+It appears that play uses BE specific formating when playing back by
+default.  As alsa seems to have a default SND_PCM_FORMAT_S16 which
+switches to the correct native endian, I'm not sure why that's not used as
+the default instead of endian specific definitions.
 ======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 08-05-05 09:30 
+----------------------------------------------------------------------
+aplay uses the sample format of the file it's playing.
+
+What type of file are you using?  And what kind of sound card on what
+computer architecture?
+
+----------------------------------------------------------------------
+ ChrisWhite - 08-05-05 18:08 
+----------------------------------------------------------------------
+See, that's the problem, using the sample format of the audio file isn't
+going to work.  For exmample, the file I'm playing is 44100 Hz, 2 channel,
+s16 big endian 320.0kbit format.  However, I'm on a little endian ppc
+system with a via82xx sound card.  It's going to use big endian and I'm
+going to get static as the usual result.  AFAIK there's a native endian
+hardware format flag that can be sent to overcome this (SND_PCM_FORMAT_S16
+I think I mentioned).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-05 17:41 SamiH          New Issue                                    
-08-05-05 17:41 SamiH          Distribution              => BLFS            
-08-05-05 17:41 SamiH          Kernel Version            => 2.6.11.8        
+08-05-05 07:18 ChrisWhite     New Issue                                    
+08-05-05 09:30 Clemens LadischNote Added: 0005663                          
+08-05-05 18:08 ChrisWhite     Note Added: 0005669                          
 ======================================================================
 
 
