@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Fri, 5 Aug 2005 05:25:43 +0200
-Message-ID: <32667427b33c643c6235be56d65d78db@bugtrack.alsa-project.org>
+Date: Fri, 5 Aug 2005 06:03:58 +0200
+Message-ID: <932d5a21dc659d65b26a1ff8a4cfcccd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0C4914E
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 05:25:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89F8F204
+	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 06:03:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge AMD64
 Kernel Version:             2.6.12.3
 ======================================================================
 Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-05-2005 05:25 CEST
+Last Modified:              08-05-2005 06:03 CEST
 ======================================================================
 Summary:                    Driver cant find firmware for Layla24
 Description: 
@@ -57,26 +57,6 @@ Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
 Same issue that another guy is experiencing with a Layla20:
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
 ======================================================================
-
-----------------------------------------------------------------------
- oxi - 08-05-05 05:20 
-----------------------------------------------------------------------
-Well i did some research and yes, i just installed it. But the problem is
-still there!
-
-debian:/usr/src/alsa-firmware-1.0.9# ./configure;make;make install
-debian:/usr/src/alsa-firmware-1.0.9# /etc/init.d/alsasound stop
-Shutting down sound driver: /usr/sbin/alsactl: save_state:1163: No
-soundcards found...
-done
-debian:/usr/src/alsa-firmware-1.0.9# modprobe snd-layla24
-debian:/usr/src/alsa-firmware-1.0.9# dmesg|tail
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
-
-*Its not the same previous message, as i have checked it.
 
 ----------------------------------------------------------------------
  oxi - 08-05-05 05:25 
@@ -112,6 +92,13 @@ total 776
 -rw-r--r--  1 root root 31146 2005-08-05 05:16 mona_361_1_asic_96.fw
 -rw-r--r--  1 root root 24258 2005-08-05 05:16 mona_361_dsp.fw
 
+----------------------------------------------------------------------
+ rlrevell - 08-05-05 06:03 
+----------------------------------------------------------------------
+If you just installed the firmware you might also need to restart hotplug:
+
+/etc/init.d/hotplug restart
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -124,6 +111,7 @@ Date Modified  Username       Field                    Change
 08-05-05 05:00 rlrevell       Note Added: 0005657                          
 08-05-05 05:20 oxi            Note Added: 0005658                          
 08-05-05 05:25 oxi            Note Added: 0005659                          
+08-05-05 06:03 rlrevell       Note Added: 0005660                          
 ======================================================================
 
 
