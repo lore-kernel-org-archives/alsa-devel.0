@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001312]: aplay has endian issues
-Date: Fri, 5 Aug 2005 20:09:01 +0200
-Message-ID: <3c974e2d840617eb4f10872c9c9c5ced@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: snd-mpu401 bug?
+Date: Fri, 05 Aug 2005 14:29:37 -0400
+Message-ID: <1123266578.8003.13.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18CB6132
-	for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2005 20:09:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +15,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Guys,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1312> 
-======================================================================
-Reported By:                ChrisWhite
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1312
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-05-2005 07:18 CEST
-Last Modified:              08-05-2005 20:09 CEST
-======================================================================
-Summary:                    aplay has endian issues
-Description: 
-It appears that play uses BE specific formating when playing back by
-default.  As alsa seems to have a default SND_PCM_FORMAT_S16 which
-switches to the correct native endian, I'm not sure why that's not used as
-the default instead of endian specific definitions.
-======================================================================
+Have a look at:
 
-----------------------------------------------------------------------
- ChrisWhite - 08-05-05 20:01 
-----------------------------------------------------------------------
-Here's the MPlayer relevant code btw, it seems to simply switch to Little
-Endian if it can't handle the format:
+http://bugzilla.kernel.org/show_bug.cgi?id=4823
 
--------------------------------------------------
-      /* workaround for nonsupported formats
-         sets default format to S16_LE if the given formats aren't
-supported */
-      if ((err = snd_pcm_hw_params_test_format(alsa_handler,
-alsa_hwparams,
-                                             alsa_format)) < 0)
-      {
-         mp_msg(MSGT_AO,MSGL_INFO,
-                "alsa-init: format %s are not supported by hardware,
-trying default\n", af_fmt2str_short(format));
-         alsa_format = SND_PCM_FORMAT_S16_LE;
-         ao_data.format = AF_FORMAT_S16_LE;
-         ao_data.bps = channels * rate_hz * 2;
-      }
--------------------------------------------------
+Is it possible we broke snd-mpu401?
 
-----------------------------------------------------------------------
- jcdutton - 08-05-05 20:09 
-----------------------------------------------------------------------
-You seem to missunderstand how alsa works.
-If the hardware can only do S16_LE and the audio file is S16_BE, the
-alsa-lib will automatically do the conversion for you
-e.g.
-aplay -Dplug:front filename.wav
-
-That is what the "plug" bit does. If you use -Dhw:0,0 or -Dfront it does
-not use the "plug" bit, so alsa will not do the format conversion and the
-sound will fail to play.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-05-05 07:18 ChrisWhite     New Issue                                    
-08-05-05 09:30 Clemens LadischNote Added: 0005663                          
-08-05-05 18:08 ChrisWhite     Note Added: 0005669                          
-08-05-05 18:26 Clemens LadischNote Added: 0005670                          
-08-05-05 19:55 ChrisWhite     Note Added: 0005672                          
-08-05-05 20:01 ChrisWhite     Note Added: 0005673                          
-08-05-05 20:09 jcdutton       Note Added: 0005674                          
-======================================================================
-
+Lee
 
 
 
