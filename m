@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001316]: can't run mixer to adjusting volumes / no sound
-Date: Sat, 6 Aug 2005 11:11:38 +0200
-Message-ID: <46d8bdc6c9afa4bfb5dbb7d436b61314@bugtrack.alsa-project.org>
+From: Alan Jenkins <sourcejedi@gmail.com>
+Subject: softvol pcm plugin
+Date: Sat, 06 Aug 2005 13:07:15 +0100
+Message-ID: <1123330035.4472.18.camel@singularity.jenkins>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AAC531D2
-	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 11:11:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +15,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+What is the development status of softvol?  My hardware lacks volume
+control, but softvol is unusable at the moment.  I've tried the latest
+tarballs and current CVS.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1316> 
-======================================================================
-Reported By:                boris
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1316
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian stable
-Kernel Version:             2.6.13-rc5-git3
-======================================================================
-Date Submitted:             08-06-2005 11:11 CEST
-Last Modified:              08-06-2005 11:11 CEST
-======================================================================
-Summary:                    can't run mixer to adjusting volumes / no sound
-Description: 
-When I try to run alsamixer it fails with:
-alsamixer: function snd_mixer_load failed: Invalid argument
+Theres a bug somewhere which causes the volume control to expand to 255
+channels sometime between initialisation and the first use of the
+device:
 
-running ogg123 seems to work ...
+# cat ~/.asoundrc
+pcm.!default {
+        type plug
+        slave.pcm "name"
+}
 
-running aumix over oss-emu only shows a view controls 
-which have no effect -> no sound
+pcm.name {
+        type softvol
 
-This happened with 2.6.13-rc[3,5]-git?.
-2.6.12-rc5-git8 (for example) works. 
+        slave {
+                pcm "hw:0,0"
+        }
 
-HW: Aopen 915gmm-hfs.
+        control {
+                name "NAME"
+        }
+}
 
-======================================================================
+# amixer controls|grep NAME
+numid=41,iface=MIXER,name='NAME'
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-06-05 11:11 boris          New Issue                                    
-08-06-05 11:11 boris          Distribution              => Debian stable   
-08-06-05 11:11 boris          Kernel Version            => 2.6.13-rc5-git3 
-======================================================================
+# amixer cget numid=41
+numid=41,iface=MIXER,name='NAME'
+  ; type=INTEGER,access=rw---,values=255,min=0,max=0,step=0
+amixer: control.c:2313: snd_ctl_elem_value_get_integer: Assertion `idx <
+sizeof(obj->value.integer.value) / sizeof(obj->value.integer.value[0])'
+failed.
+  :
+values=255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Aborted
 
+Attempting to change the volume wipes the control:
 
+# amixer cset numid=41,index=1 30
+numid=41,iface=MIXER,name='NAME'
+  ; type=INTEGER,access=rw---,values=0,min=0,max=0,step=0
+  : values=
+alan@singularity:~> amixer cget numid=41
+numid=41,iface=MIXER,name='NAME'
+  ; type=INTEGER,access=rw---,values=0,min=0,max=0,step=0
+  : values=
+
+It also plays sound with a constant jitter, and with mplayer I get a
+stream of warnings: "alsa-space: xrun of at least 10.328 msecs.
+resetting stream".  I could say more, but theres no point until the
+volume control is usable.
 
 
 -------------------------------------------------------
