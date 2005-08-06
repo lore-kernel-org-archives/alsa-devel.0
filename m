@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001315]: Audio output of video tuner does not work for CMI 9880
-Date: Sat, 6 Aug 2005 09:42:33 +0200
-Message-ID: <6c93e32333dbdb056602285b0c25331b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001316]: can't run mixer to adjusting volumes / no sound
+Date: Sat, 6 Aug 2005 11:11:38 +0200
+Message-ID: <46d8bdc6c9afa4bfb5dbb7d436b61314@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B9DB1DA
-	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 09:42:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AAC531D2
+	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 11:11:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,42 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1315> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1316> 
 ======================================================================
-Reported By:                exos
+Reported By:                boris
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1315
+Issue ID:                   1316
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC3
-Kernel Version:             2.6.12
+Distribution:               Debian stable
+Kernel Version:             2.6.13-rc5-git3
 ======================================================================
-Date Submitted:             08-06-2005 09:42 CEST
-Last Modified:              08-06-2005 09:42 CEST
+Date Submitted:             08-06-2005 11:11 CEST
+Last Modified:              08-06-2005 11:11 CEST
 ======================================================================
-Summary:                    Audio output of video tuner does not work for CMI
-9880
+Summary:                    can't run mixer to adjusting volumes / no sound
 Description: 
-snd-hda-intel with Cmedie 9880 is working fine. Anyway, it is not possible
-to hear any sound from the video/tuner card. I'm using tvtime. Picture is
-fine and when I physically connected an ampliefier to the audio-output
-cables of the tuner card the sound was audible. But I didn't find a way to
-hear this sound under Linux. I made some investigations on the chipset,
-but there is no description for video "widgets".
-The hardware works fine under WinXP.
+When I try to run alsamixer it fails with:
+alsamixer: function snd_mixer_load failed: Invalid argument
+
+running ogg123 seems to work ...
+
+running aumix over oss-emu only shows a view controls 
+which have no effect -> no sound
+
+This happened with 2.6.13-rc[3,5]-git?.
+2.6.12-rc5-git8 (for example) works. 
+
+HW: Aopen 915gmm-hfs.
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-06-05 09:42 exos           New Issue                                    
-08-06-05 09:42 exos           Distribution              => FC3             
-08-06-05 09:42 exos           Kernel Version            => 2.6.12          
+08-06-05 11:11 boris          New Issue                                    
+08-06-05 11:11 boris          Distribution              => Debian stable   
+08-06-05 11:11 boris          Kernel Version            => 2.6.13-rc5-git3 
 ======================================================================
 
 
