@@ -1,11 +1,14 @@
-From: Alan Jenkins <sourcejedi@gmail.com>
-Subject: softvol pcm plugin
-Date: Sat, 06 Aug 2005 13:07:15 +0100
-Message-ID: <1123330035.4472.18.camel@singularity.jenkins>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001317]: Distortion and crackle
+Date: Sat, 6 Aug 2005 17:08:37 +0200
+Message-ID: <e5fe05e814b656b5b270a34a69e0fc3a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 572E71C2
+	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 17:08:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,62 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-What is the development status of softvol?  My hardware lacks volume
-control, but softvol is unusable at the moment.  I've tried the latest
-tarballs and current CVS.
 
-Theres a bug somewhere which causes the volume control to expand to 255
-channels sometime between initialisation and the first use of the
-device:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1317> 
+======================================================================
+Reported By:                starfury
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1317
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             08-06-2005 17:08 CEST
+Last Modified:              08-06-2005 17:08 CEST
+======================================================================
+Summary:                    Distortion and crackle
+Description: 
+Sound distorts and crackles when played through Audigy NX. Happens with all
+sound programs.  Doesn't appear to happen when sound is not being played.
+======================================================================
 
-# cat ~/.asoundrc
-pcm.!default {
-        type plug
-        slave.pcm "name"
-}
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-06-05 17:08 starfury       New Issue                                    
+08-06-05 17:08 starfury       Kernel Version            => 2.6.11          
+======================================================================
 
-pcm.name {
-        type softvol
 
-        slave {
-                pcm "hw:0,0"
-        }
-
-        control {
-                name "NAME"
-        }
-}
-
-# amixer controls|grep NAME
-numid=41,iface=MIXER,name='NAME'
-
-# amixer cget numid=41
-numid=41,iface=MIXER,name='NAME'
-  ; type=INTEGER,access=rw---,values=255,min=0,max=0,step=0
-amixer: control.c:2313: snd_ctl_elem_value_get_integer: Assertion `idx <
-sizeof(obj->value.integer.value) / sizeof(obj->value.integer.value[0])'
-failed.
-  :
-values=255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Aborted
-
-Attempting to change the volume wipes the control:
-
-# amixer cset numid=41,index=1 30
-numid=41,iface=MIXER,name='NAME'
-  ; type=INTEGER,access=rw---,values=0,min=0,max=0,step=0
-  : values=
-alan@singularity:~> amixer cget numid=41
-numid=41,iface=MIXER,name='NAME'
-  ; type=INTEGER,access=rw---,values=0,min=0,max=0,step=0
-  : values=
-
-It also plays sound with a constant jitter, and with mplayer I get a
-stream of warnings: "alsa-space: xrun of at least 10.328 msecs.
-resetting stream".  I could say more, but theres no point until the
-volume control is usable.
 
 
 -------------------------------------------------------
