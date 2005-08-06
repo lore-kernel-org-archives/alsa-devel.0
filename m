@@ -1,10 +1,14 @@
-From: "Mike Chalmers" <mikechalmers_70@hotmail.com>
-Subject: Sound Blaster Audigy 2 Ex.
-Date: Fri, 05 Aug 2005 19:08:07 -0400
-Message-ID: <BAY106-F16A3B4FC749663ACA875C792C70@phx.gbl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001313]: Using module snd_azx instead of snd_hda_intel
+Date: Sat, 6 Aug 2005 05:45:56 +0200
+Message-ID: <0176e9532d1f3da3818eb1e94622f94b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52C071DA
+	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 05:45:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,20 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Why doesn't the ALSA team make support for the Sound Blaster Audigy 2 Ex. I 
-have one and the volume control doesn't work and I wonder if the midi input 
-and output works. Make it so all the features on the external box works. 
-Thanks.
 
-From,
-Mike
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1313> 
+======================================================================
+Reported By:                chris
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1313
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.12-gentoo-r4
+======================================================================
+Date Submitted:             08-05-2005 13:58 CEST
+Last Modified:              08-06-2005 05:45 CEST
+======================================================================
+Summary:                    Using module snd_azx instead of snd_hda_intel
+Description: 
+When I start alsasound, it tries to use snd_azx instead of snd_hda_intel.
+In /etc/modprobe.conf I find "alias snd-card0 snd-azx" and "alias
+snd-slot0 snd-azx" instead of being "alias snd-card0 snd-hda-intel" and
+"alias snd-slot0 snd-hda-intel"
+======================================================================
 
-_________________________________________________________________
-Express yourself instantly with MSN Messenger! Download today - it's FREE! 
-http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+----------------------------------------------------------------------
+ chris - 08-06-05 05:45 
+----------------------------------------------------------------------
+Rebooted system and appers to work. Still attempts to use azx module and
+cannot find it, but it appears alsamixer works properly.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-05-05 13:58 chris          New Issue                                    
+08-05-05 13:58 chris          Distribution              => Gentoo          
+08-05-05 13:58 chris          Kernel Version            => 2.6.12-gentoo-r4
+08-06-05 05:45 chris          Note Added: 0005679                          
+======================================================================
+
 
 
 
