@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sat, 6 Aug 2005 20:24:52 +0200
-Message-ID: <a88e0faa41feb34195fd0ff5f23ebf0b@bugtrack.alsa-project.org>
+Date: Sat, 6 Aug 2005 20:31:07 +0200
+Message-ID: <5eaa61e06d98119816c7d47aa563ddc8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 096931DA
-	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 20:24:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C0B1DA
+	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 20:31:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              08-06-2005 20:24 CEST
+Last Modified:              08-06-2005 20:31 CEST
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -54,13 +54,6 @@ moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 04-02-05 13:33 
-----------------------------------------------------------------------
-Mark Shuttleworth has placed a 500 USD bounty towards fixing all remaining
-ALSA issues for PowerMac hardware. Contact Ubuntu's Matt Zimmerman for
-details.
-
-----------------------------------------------------------------------
  Quietti - 08-06-05 20:24 
 ----------------------------------------------------------------------
 Just a reminder that the Open Darwin source is still available as a
@@ -68,6 +61,13 @@ reference for anyone willing to fix ALSA for all PowerMac variants and to
 pocket the Ubuntu bounty for fixing it:
 
 http://darwinsource.opendarwin.org/10.4.2/AppleOnboardAudio-250.2.17/
+
+----------------------------------------------------------------------
+ rlrevell - 08-06-05 20:31 
+----------------------------------------------------------------------
+I think it's a safe bet that there's no one who has the hardware AND can
+hack ALSA drivers AND has time.  I suspect adding an offer of a hardware
+donation/loan would get you more results than just a bounty.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +94,7 @@ vanilla.
 02-04-05 13:04 tiwai          Note Added: 0003499                          
 04-02-05 13:33 Quietti        Note Added: 0004297                          
 08-06-05 20:24 Quietti        Note Added: 0005682                          
+08-06-05 20:31 rlrevell       Note Added: 0005683                          
 ======================================================================
 
 
