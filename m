@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sat, 6 Aug 2005 21:17:54 +0200
-Message-ID: <ee0031f5cc5203ea7d940475a406ad0b@bugtrack.alsa-project.org>
+Date: Sat, 6 Aug 2005 23:54:12 +0200
+Message-ID: <baab59d56ba3a8167827f0b1429bf967@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAC311DA
-	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 21:17:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E335215
+	for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2005 23:54:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              08-06-2005 21:17 CEST
+Last Modified:              08-06-2005 23:54 CEST
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -54,20 +54,17 @@ moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-06-05 20:53 
-----------------------------------------------------------------------
-Please specify exactly what is meant by "fix all remaining ALSA issues for
-PowerMac hardware" by providing a list of ALSA bug IDs.
-
-If you supply this info AND someone provides any necessary hardware to fix
-the problem(s) then I can take on this bounty.
-
-----------------------------------------------------------------------
  rlrevell - 08-06-05 21:17 
 ----------------------------------------------------------------------
 Hmm, if the open source OSS driver works on the exact same machine, I might
 be able to fix this with SSH access.  Please send me a private message if
 this is possible.
+
+----------------------------------------------------------------------
+ rlrevell - 08-06-05 23:54 
+----------------------------------------------------------------------
+So, just to clarify, it seems that "snapper", "tumbler" etc are OK but
+"burgundy" does not work for anyone?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +95,7 @@ vanilla.
 08-06-05 20:32 rlrevell       Note Added: 0005684                          
 08-06-05 20:53 rlrevell       Note Added: 0005685                          
 08-06-05 21:17 rlrevell       Note Added: 0005686                          
+08-06-05 23:54 rlrevell       Note Added: 0005687                          
 ======================================================================
 
 
