@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sun, 7 Aug 2005 10:03:43 +0200
-Message-ID: <f24909195e5091757d3e52b30d5fde5d@bugtrack.alsa-project.org>
+Date: Sun, 7 Aug 2005 10:31:08 +0200
+Message-ID: <0d9aff6b8d692eee0c4e5be9cf02f089@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FDF3207
-	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 10:03:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BCC5207
+	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 10:31:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              08-07-2005 10:03 CEST
+Last Modified:              08-07-2005 10:31 CEST
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -54,12 +54,6 @@ moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-06-05 23:54 
-----------------------------------------------------------------------
-So, just to clarify, it seems that "snapper", "tumbler" etc are OK but
-"burgundy" does not work for anyone?
-
-----------------------------------------------------------------------
  pochini - 08-07-05 10:03 
 ----------------------------------------------------------------------
 card 2: Snapper [PowerMac Snapper], device 0: PMac Snapper [PowerMac
@@ -71,6 +65,24 @@ Works fine here (dual G4 MDD). Did you remember to turn the "Master
 Playback Switch" on ?
 The Burgundy chip worked fine with OSS, but I don't remember if it worked
 with ALSA. I don't have the b/w G3 anymore.
+
+----------------------------------------------------------------------
+ Quietti - 08-07-05 10:31 
+----------------------------------------------------------------------
+pochini:  I tried every slider in amixer; they all refuse to move.
+
+rlrevell:  Absolutely every PowerMac chipset's ALSA support is broken in
+one way or another; it's *not* just Burgundy. Some chipsets have
+everything except the console bell working, others everything except sound
+input, others have the separate volume for the built-in speakers (as
+opposed to master volume) broken, etc. Someone had started sending info
+about what works and what doesn't to the Debian PPC mailing list (see
+http://lists.debian.org/debian-powerpc/ for the archive). Look for a
+thread whose Subject was "list of PowerMac sound hardware TO-DO (help
+welcome)" starting around 2005-03-22.
+
+NOTE: I'm affraid that very few people will bother filing bug reports to
+the ALSA BTS for as long as this first requires creating a user account!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +117,7 @@ vanilla.
 08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
 08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
 08-07-05 10:03 pochini        Note Added: 0005689                          
+08-07-05 10:31 Quietti        Note Added: 0005690                          
 ======================================================================
 
 
