@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sun, 7 Aug 2005 10:31:08 +0200
-Message-ID: <0d9aff6b8d692eee0c4e5be9cf02f089@bugtrack.alsa-project.org>
+Date: Sun, 7 Aug 2005 10:46:14 +0200
+Message-ID: <08bd23290298d9c36bdfd16e86617cf9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BCC5207
-	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 10:31:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFC67207
+	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 10:46:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              08-07-2005 10:31 CEST
+Last Modified:              08-07-2005 10:46 CEST
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -52,19 +52,6 @@ but no sound comes up.
 Running alsamixer gives me a mixer screen where none of the sliders can be
 moved.
 ======================================================================
-
-----------------------------------------------------------------------
- pochini - 08-07-05 10:03 
-----------------------------------------------------------------------
-card 2: Snapper [PowerMac Snapper], device 0: PMac Snapper [PowerMac
-Snapper]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Works fine here (dual G4 MDD). Did you remember to turn the "Master
-Playback Switch" on ?
-The Burgundy chip worked fine with OSS, but I don't remember if it worked
-with ALSA. I don't have the b/w G3 anymore.
 
 ----------------------------------------------------------------------
  Quietti - 08-07-05 10:31 
@@ -83,6 +70,18 @@ welcome)" starting around 2005-03-22.
 
 NOTE: I'm affraid that very few people will bother filing bug reports to
 the ALSA BTS for as long as this first requires creating a user account!
+
+----------------------------------------------------------------------
+ rlrevell - 08-07-05 10:46 
+----------------------------------------------------------------------
+Every bug tracker in existence requires creating a user account first. 
+It's just part of open source development these days, the volume is too
+high to depend on mailing lists.  You should consider being able to report
+bugs a privilege, try it with any other OS and see how far you get.
+
+Anyway I'm not surprised that several of the drivers are broken.  I
+believe tiwai wrote these based on the OSS driver without access to the
+hardware.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +117,7 @@ vanilla.
 08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
 08-07-05 10:03 pochini        Note Added: 0005689                          
 08-07-05 10:31 Quietti        Note Added: 0005690                          
+08-07-05 10:46 rlrevell       Note Added: 0005691                          
 ======================================================================
 
 
