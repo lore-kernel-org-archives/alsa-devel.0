@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Sun, 7 Aug 2005 18:27:47 +0200
-Message-ID: <399dcd330466554345fc4b021c557546@bugtrack.alsa-project.org>
+Date: Sun, 7 Aug 2005 18:31:26 +0200
+Message-ID: <b1aafa7d69ffb16052ad659919fac4a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D0431E0
-	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 18:27:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FEF11E0
+	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 18:31:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge AMD64
 Kernel Version:             2.6.12.3
 ======================================================================
 Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-07-2005 18:27 CEST
+Last Modified:              08-07-2005 18:31 CEST
 ======================================================================
 Summary:                    Driver cant find firmware for Layla24
 Description: 
@@ -63,46 +63,6 @@ related to          0001244 error with firmware with echo layla20
 ======================================================================
 
 ----------------------------------------------------------------------
- pochini - 08-07-05 09:46 
-----------------------------------------------------------------------
-I didn't know I'm not the official maintainer anymore :))
-
-The driver simply does:
-
-	if ((err = request_firmware(fw_entry, name, pci_device(chip))) < 0)
-		snd_printk(KERN_ERR "get_firmware(): Firmware not available (%d)\n",
-err);
-	return err;
-
-So I don't think there is something wrong there. Btw an other user had a
-similar problem some days ago. I quote the relevant part:
-
-----------------------------------------
-From: indigo@bitglue.com (Phil Frost)
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
-Subject: [Alsa-devel] Re: [Alsa-user] need help getting echo indigo io to
-work
-Date: Tue, 19 Jul 2005 19:14:44 -0400
-
-> Error -2 is -ENOENT (No such file or directory). request_firmware()
-returns
-> that error code if the file has zero size of if the script aborted the
-> operation. Please check if /usr/lib/hotplug/firmware/ea/indigo_io_dsp.fw
-is
-> empty.
-
-It's 17 kb away from empty. Also, firmware.agent seems to complete
-successfuly from what I can tell. Lee Revell suggested on alsa-devel
-that I should try with 2.6.12 since there have been changes in the
-driver model since 2.6.10 (what i'm using). Indeed that seems to have
-been the cause of the problem. With 2.6.12 I was able to play audio
-nicely.
-----------------------------------------
-
-P.S.: my email is pochini@shiny.it
-
-----------------------------------------------------------------------
  oxi - 08-07-05 18:27 
 ----------------------------------------------------------------------
 Hey thank you all for your replies!
@@ -116,6 +76,12 @@ im missing something somehow, since im just a newbie linux user. If you
 think of something obvious i might be missing please let me know!
 
 Again, thank you all for your support and patience. :)
+
+----------------------------------------------------------------------
+ oxi - 08-07-05 18:31 
+----------------------------------------------------------------------
+Oh almost forgot! None of firmware files in my /usr/lib/hotplug/firmware/ea
+directory is zero sized.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -139,6 +105,7 @@ Date Modified  Username       Field                    Change
 08-05-05 23:10 hennewou       Note Added: 0005677                          
 08-07-05 09:46 pochini        Note Added: 0005688                          
 08-07-05 18:27 oxi            Note Added: 0005695                          
+08-07-05 18:31 oxi            Note Added: 0005696                          
 ======================================================================
 
 
