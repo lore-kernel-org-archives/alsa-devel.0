@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sun, 7 Aug 2005 11:36:39 +0200
-Message-ID: <114cc7487befb21eb2c30222fd0e3d2f@bugtrack.alsa-project.org>
+Date: Sun, 7 Aug 2005 11:44:34 +0200
+Message-ID: <007885a9670893985746f89d7e829e8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D19712E
-	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 11:36:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67BB3214
+	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 11:44:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              08-07-2005 11:36 CEST
+Last Modified:              08-07-2005 11:44 CEST
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -52,18 +52,6 @@ but no sound comes up.
 Running alsamixer gives me a mixer screen where none of the sliders can be
 moved.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 08-07-05 10:46 
-----------------------------------------------------------------------
-Every bug tracker in existence requires creating a user account first. 
-It's just part of open source development these days, the volume is too
-high to depend on mailing lists.  You should consider being able to report
-bugs a privilege, try it with any other OS and see how far you get.
-
-Anyway I'm not surprised that several of the drivers are broken.  I
-believe tiwai wrote these based on the OSS driver without access to the
-hardware.
 
 ----------------------------------------------------------------------
  Quietti - 08-07-05 11:36 
@@ -88,6 +76,14 @@ bug reporting tools that mail the report and won't require the creation of
 an account on every project's BTS) would make it easier for users to
 report bugs, which would then result in immediate product quality
 improvements. Think about that.
+
+----------------------------------------------------------------------
+ Quietti - 08-07-05 11:44 
+----------------------------------------------------------------------
+As for Tiwai's blindfold-coding based on an already broken OSS driver:
+using the Open Darwin source code as a reference would definitely lead to
+more solid results, since the starting point is the opensourced version of
+Apple's own drivers.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -125,6 +121,7 @@ vanilla.
 08-07-05 10:31 Quietti        Note Added: 0005690                          
 08-07-05 10:46 rlrevell       Note Added: 0005691                          
 08-07-05 11:36 Quietti        Note Added: 0005692                          
+08-07-05 11:44 Quietti        Note Added: 0005693                          
 ======================================================================
 
 
