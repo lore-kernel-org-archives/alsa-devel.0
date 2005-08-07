@@ -1,11 +1,12 @@
-From: Dirk Opfer <Dirk@Opfer-Online.de>
-Subject: [Patch] Fix compiler warnings in PXA2XX-AC97
-Date: Sun, 07 Aug 2005 16:37:53 +0200
-Message-ID: <0MKwtQ-1E1mHi2L9x-00028d@mrelayeu.kundenserver.de>
+From: Raymond Lai <raymond.kk.lai@gmail.com>
+Subject: any update on the pcmcia bug blocking Audigy2 notebook sound card driver development
+Date: Sun, 7 Aug 2005 11:44:16 -0400
+Message-ID: <1ed860e3050807084449b0daac@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020000070001070006090309"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,76 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020000070001070006090309
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Hi all,
 
-This patch fixes compiler warnings in the file pxa2xx-ac97.c.
+I remember there's a kernel pcmcia bug preventing the development for=20
+the Audigy2 pcmcia notebook sound card driver.=20
 
-Changes:
+See http://www.alsa-project.org/alsa-doc/index.php?vendor=3Dvendor-Creative=
+_Labs#matrix
 
-    -  change pxa2xx_ac97_do_suspend and pxa2xx_ac97_do_resume to use
-the expected arguments
+Is there any new updates on the situation? Has the bug been fixed? or
+anyone working on it?
 
-
-Signed-off-by: Dirk Opfer <dirk <at> do13.de>
-
-Dirk
-
---------------020000070001070006090309
-Content-Type: text/plain;
- name="fix-warning-pxa2xx-ac97.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="fix-warning-pxa2xx-ac97.diff"
-
---- orig.sound/arm/pxa2xx-ac97.c	2005-08-05 21:55:21.000000000 +0200
-+++ sound/arm/pxa2xx-ac97.c	2005-08-06 14:46:27.713915616 +0200
--static int pxa2xx_ac97_do_suspend(snd_card_t *card, unsigned int state)
-+static int pxa2xx_ac97_do_suspend(snd_card_t *card, pm_message_t state)
- {
- 	if (card->power_state != SNDRV_CTL_POWER_D3cold) {
- 		pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
-@@ -261,7 +261,7 @@
- 	return 0;
- }
- 
--static int pxa2xx_ac97_do_resume(snd_card_t *card, unsigned int state)
-+static int pxa2xx_ac97_do_resume(snd_card_t *card)
- {
- 	if (card->power_state != SNDRV_CTL_POWER_D0) {
- 		pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
-@@ -275,13 +275,13 @@
- 	return 0;
- }
- 
--static int pxa2xx_ac97_suspend(struct device *_dev, u32 state, u32 level)
-+static int pxa2xx_ac97_suspend(struct device *_dev, pm_message_t state, u32 level)
- {
- 	snd_card_t *card = dev_get_drvdata(_dev);
- 	int ret = 0;
- 
- 	if (card && level == SUSPEND_DISABLE)
--		ret = pxa2xx_ac97_do_suspend(card, SNDRV_CTL_POWER_D3cold);
-+		ret = pxa2xx_ac97_do_suspend(card, PMSG_SUSPEND);
- 
- 	return ret;
- }
-@@ -292,7 +292,7 @@
- 	int ret = 0;
- 
- 	if (card && level == RESUME_ENABLE)
--		ret = pxa2xx_ac97_do_resume(card, SNDRV_CTL_POWER_D0);
-+		ret = pxa2xx_ac97_do_resume(card);
- 
- 	return ret;
- }
-
---------------020000070001070006090309--
+Thanks,
+Raymond
 
 
 -------------------------------------------------------
