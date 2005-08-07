@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Sun, 7 Aug 2005 09:46:16 +0200
-Message-ID: <8b1932454057b984fde91d8f52dbf0b0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Sun, 7 Aug 2005 10:03:43 +0200
+Message-ID: <f24909195e5091757d3e52b30d5fde5d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77BDC207
-	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 09:46:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FDF3207
+	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 10:03:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,128 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1310> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
 ======================================================================
-Reported By:                oxi
-Assigned To:                
+Reported By:                Quietti
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1310
-Category:                   PCI - echoaudio
+Issue ID:                   306
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge AMD64
-Kernel Version:             2.6.12.3
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
-Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-07-2005 09:46 CEST
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              08-07-2005 10:03 CEST
 ======================================================================
-Summary:                    Driver cant find firmware for Layla24
+Summary:                    compiles, but no sound comes out
 Description: 
-Hello,
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
-After modprobe snd-layla24 ,
-in dmesg|tail:
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
 
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
-
-Same issue that another guy is experiencing with a Layla20:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001244 error with firmware with echo layla20
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- hennewou - 08-05-05 23:10 
+ rlrevell - 08-06-05 23:54 
 ----------------------------------------------------------------------
-Does anyone know mr. Pochini's e-mail?
-
-
-
-Hey Oxi,
-
-I've had good experience with alsa-jack and layla20. I hope the bug will
-be resolved soon. 
-
-Oxi, If you want to talk about it further and exchange experience, e-mail
-me:
-
-hwouters <at> pandora <dot> be
-
-or jabber:
-
-hwouters <at> jabber <dot> org
-
-Greetings Hendrik
+So, just to clarify, it seems that "snapper", "tumbler" etc are OK but
+"burgundy" does not work for anyone?
 
 ----------------------------------------------------------------------
- pochini - 08-07-05 09:46 
+ pochini - 08-07-05 10:03 
 ----------------------------------------------------------------------
-I didn't know I'm not the official maintainer anymore :))
+card 2: Snapper [PowerMac Snapper], device 0: PMac Snapper [PowerMac
+Snapper]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-The driver simply does:
-
-	if ((err = request_firmware(fw_entry, name, pci_device(chip))) < 0)
-		snd_printk(KERN_ERR "get_firmware(): Firmware not available (%d)\n",
-err);
-	return err;
-
-So I don't think there is something wrong there. Btw an other user had a
-similar problem some days ago. I quote the relevant part:
-
-----------------------------------------
-From: indigo@bitglue.com (Phil Frost)
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
-Subject: [Alsa-devel] Re: [Alsa-user] need help getting echo indigo io to
-work
-Date: Tue, 19 Jul 2005 19:14:44 -0400
-
-> Error -2 is -ENOENT (No such file or directory). request_firmware()
-returns
-> that error code if the file has zero size of if the script aborted the
-> operation. Please check if /usr/lib/hotplug/firmware/ea/indigo_io_dsp.fw
-is
-> empty.
-
-It's 17 kb away from empty. Also, firmware.agent seems to complete
-successfuly from what I can tell. Lee Revell suggested on alsa-devel
-that I should try with 2.6.12 since there have been changes in the
-driver model since 2.6.10 (what i'm using). Indeed that seems to have
-been the cause of the problem. With 2.6.12 I was able to play audio
-nicely.
-----------------------------------------
-
-P.S.: my email is pochini@shiny.it
+Works fine here (dual G4 MDD). Did you remember to turn the "Master
+Playback Switch" on ?
+The Burgundy chip worked fine with OSS, but I don't remember if it worked
+with ALSA. I don't have the b/w G3 anymore.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-05 22:50 oxi            New Issue                                    
-08-04-05 22:50 oxi            Distribution              => Debian Sarge AMD64
-08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
-08-04-05 23:48 rlrevell       Note Added: 0005653                          
-08-05-05 04:57 oxi            Note Added: 0005656                          
-08-05-05 04:59 oxi            Issue Monitored: oxi                         
-08-05-05 05:00 rlrevell       Note Added: 0005657                          
-08-05-05 05:20 oxi            Note Added: 0005658                          
-08-05-05 05:25 oxi            Note Added: 0005659                          
-08-05-05 06:03 rlrevell       Note Added: 0005660                          
-08-05-05 08:48 perex          Relationship added       related to 0001244  
-08-05-05 13:26 oxi            Note Added: 0005666                          
-08-05-05 15:09 hennewou       Note Added: 0005668                          
-08-05-05 19:43 oxi            Note Added: 0005671                          
-08-05-05 19:46 oxi            Note Edited: 0005671                         
-08-05-05 20:36 rlrevell       Note Added: 0005675                          
-08-05-05 23:10 hennewou       Note Added: 0005677                          
-08-07-05 09:46 pochini        Note Added: 0005688                          
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
+02-04-05 09:22 Quietti        Note Added: 0003496                          
+02-04-05 13:04 tiwai          Note Added: 0003499                          
+04-02-05 13:33 Quietti        Note Added: 0004297                          
+08-06-05 20:24 Quietti        Note Added: 0005682                          
+08-06-05 20:31 rlrevell       Note Added: 0005683                          
+08-06-05 20:32 rlrevell       Note Added: 0005684                          
+08-06-05 20:53 rlrevell       Note Added: 0005685                          
+08-06-05 21:17 rlrevell       Note Added: 0005686                          
+08-06-05 23:54 rlrevell       Note Added: 0005687                          
+08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
+08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
+08-07-05 10:03 pochini        Note Added: 0005689                          
 ======================================================================
 
 
