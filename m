@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sun, 7 Aug 2005 10:46:14 +0200
-Message-ID: <08bd23290298d9c36bdfd16e86617cf9@bugtrack.alsa-project.org>
+Date: Sun, 7 Aug 2005 11:36:39 +0200
+Message-ID: <114cc7487befb21eb2c30222fd0e3d2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFC67207
-	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 10:46:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D19712E
+	for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2005 11:36:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              08-07-2005 10:46 CEST
+Last Modified:              08-07-2005 11:36 CEST
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -54,24 +54,6 @@ moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 08-07-05 10:31 
-----------------------------------------------------------------------
-pochini:  I tried every slider in amixer; they all refuse to move.
-
-rlrevell:  Absolutely every PowerMac chipset's ALSA support is broken in
-one way or another; it's *not* just Burgundy. Some chipsets have
-everything except the console bell working, others everything except sound
-input, others have the separate volume for the built-in speakers (as
-opposed to master volume) broken, etc. Someone had started sending info
-about what works and what doesn't to the Debian PPC mailing list (see
-http://lists.debian.org/debian-powerpc/ for the archive). Look for a
-thread whose Subject was "list of PowerMac sound hardware TO-DO (help
-welcome)" starting around 2005-03-22.
-
-NOTE: I'm affraid that very few people will bother filing bug reports to
-the ALSA BTS for as long as this first requires creating a user account!
-
-----------------------------------------------------------------------
  rlrevell - 08-07-05 10:46 
 ----------------------------------------------------------------------
 Every bug tracker in existence requires creating a user account first. 
@@ -82,6 +64,30 @@ bugs a privilege, try it with any other OS and see how far you get.
 Anyway I'm not surprised that several of the drivers are broken.  I
 believe tiwai wrote these based on the OSS driver without access to the
 hardware.
+
+----------------------------------------------------------------------
+ Quietti - 08-07-05 11:36 
+----------------------------------------------------------------------
+Debian's BTS, for instance, works quite well without the hindrance of a
+user account creation.
+
+Anyhow, that's a moot point for me, since I have accounts pretty much
+everywhere. 
+
+This being said, I know for fact that most end-users won't bother with
+creating an account  on someone's Bugzilla, for every damn piece of OSS
+they use; they will switch OS instead. The proof of the pudding exists for
+this ALSA PowerMac bug as well: several people immediately posted the
+details of their ALSA problems to the debian-powerpc list, as soon as the
+possibility was offered to them. Good luck finding anyone among them who
+would have done the same, if it first required them to create an account
+on some BTS.
+
+Perhaps adopting the path of lowest resistance that Debian uses (including
+bug reporting tools that mail the report and won't require the creation of
+an account on every project's BTS) would make it easier for users to
+report bugs, which would then result in immediate product quality
+improvements. Think about that.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +124,7 @@ vanilla.
 08-07-05 10:03 pochini        Note Added: 0005689                          
 08-07-05 10:31 Quietti        Note Added: 0005690                          
 08-07-05 10:46 rlrevell       Note Added: 0005691                          
+08-07-05 11:36 Quietti        Note Added: 0005692                          
 ======================================================================
 
 
