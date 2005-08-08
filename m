@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
-Date: Mon, 8 Aug 2005 05:38:13 +0200
-Message-ID: <d1325e291f7c9256be544f741f8cbe09@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
+Date: Mon, 8 Aug 2005 06:03:16 +0200
+Message-ID: <91490844f1912db37328d29d7aefb154@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7458B1E4
-	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 05:38:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FD781E4
+	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 06:03:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,36 +24,39 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
 ======================================================================
-Reported By:                roothorick
-Assigned To:                
+Reported By:                ammiellodebar
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1319
-Category:                   PCI - emu10k1
+Issue ID:                   1320
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
+Status:                     assigned
+Distribution:               Arch Linux
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-08-2005 05:38 CEST
-Last Modified:              08-08-2005 05:38 CEST
+Date Submitted:             08-08-2005 06:03 CEST
+Last Modified:              08-08-2005 06:03 CEST
 ======================================================================
-Summary:                    MIDI I/O (MPU-401) works for output only, not input
+Summary:                    CA0106 with Soundblaster 24-bit live does not allow
+recording
 Description: 
-I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
-such as keyboards, only works for output (from the soundcard to other
-devices). When I try to do input (from those devices to the soundcard) no
-events get through at all.
+When I use the line in on the card, it will not capture unless i crank up
+the mixer to near peak, and then its garbled and distorted sound, my
+capture is up all the way and i know its not a dumb mistake of mine
+
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 05:38 roothorick     New Issue                                    
+08-08-05 06:03 ammiellodebar  New Issue                                    
+08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
 ======================================================================
 
 
