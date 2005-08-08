@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Mon, 8 Aug 2005 23:07:42 +0200
-Message-ID: <8b132c30c5e3cb85ccb2a748e761dbb2@bugtrack.alsa-project.org>
+From: Steve deRosier <derosier@pianodisc.com>
+Subject: frozen MIDI connections
+Date: Mon, 08 Aug 2005 14:26:06 -0700
+Message-ID: <42F7CDEE.2070407@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53BE21D6
-	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 23:07:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,125 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+All,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1310> 
-======================================================================
-Reported By:                oxi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1310
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge AMD64
-Kernel Version:             2.6.12.3
-======================================================================
-Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-08-2005 23:07 CEST
-======================================================================
-Summary:                    Driver cant find firmware for Layla24
-Description: 
-Hello,
+I'm hoping that somebody here has seen this and can help.  We have a system with Alsa, using the generic midi serial port device (serial-u16550), that after playing for a while randomly just stops sending data.  We have a player program (port 132:0), connected to a midi "router" program (port 128:0) that then sends it to the real device (port 72:*)
 
-After modprobe snd-layla24 ,
-in dmesg|tail:
+A couple of interesting symptoms (other than no data physically going out the port):
+1. /proc/asound/seq/clients is showing a constantly increasing alloc failures count on port 132, with some (but not as fast) increase in alloc success.  No other port shows the failures.
+2. When I 'aconnect -d 132:0 128:0' I get: "Disconnection failed (Operation not permitted)", even though 'acconect -lo' shows the connection.  An 'aconnect -x' kills all the connections except the 132->128 connection (but gives no error message at this point).
 
-ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
-ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
-get_firmware(): Firmware not available (-2)
-Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
+Killing the player program and restarting it or another player program doesn't cause MIDI to return. 
 
-Same issue that another guy is experiencing with a Layla20:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001244 error with firmware with echo layla20
-======================================================================
+Other than these two items (and the fact that it has stopped sending data out the physical port), we don't see any other anomalies.  
 
-----------------------------------------------------------------------
- oxi - 08-08-05 22:23 
-----------------------------------------------------------------------
-Ok I dont have a clue what ive just done but i made hotplug load the
-firmware!!!
-After downloading the hotplug scripts from sourceforge and trying all the
-things listed above, i rebooted and then in X my mouse wasnt working
-anymore! So i got mad with xf86cfg cause i couldnt make it work again and
-thought of reinstalling the hotplug package from my debian repository, I
-did so, but it didnt seem to work anymore, so i just thought of installing
-every package i got in return for the "hotplug" search string in
-apt-cache. I just had installed "fxload - Firmware download to EZ-USB
-devices" and my mouse worked again, but surprisingly enough, on the next
-reboot hotplug could at last find the Layla24 firmware!!!
+Clearly there's a bug, but at this point I've no clue which of my programs to look in, or even the alsa lib or the driver.  Has anyone ever seen a case like this, or have any suggestions of where to look?
 
-Now, in alsaconf it does not appear to be there. Is it supposed to be like
-that?
-However in alsamixer i got the Layla24 there, but only with Master and PCM
-channels. Same for volume control in gnome.
-
-SDL based apps are not sounding neither noatun which exited with an
-error.
-
-Now that the firmware is there, am I missing something?
-
-Thank for all of the support so far and thanks in advance.
-
-----------------------------------------------------------------------
- oxi - 08-08-05 23:07 
-----------------------------------------------------------------------
-Ok, I installed the echomixer, btw I must say its far much better than the
-one for win, since you can redirect any i/os as you please with the amount
-of dB you desire :))) I've read about that before... i think the mixing is
-done in the card itself. Thats great.
-
-The leftmost 8 signals in the VU meter are trembling, with their peaks
-around -96dB, but i still cant make any audio program sound.
-
-Alsaconf still doesnt recognise it.
-
-Willing to hear from you, thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-04-05 22:50 oxi            New Issue                                    
-08-04-05 22:50 oxi            Distribution              => Debian Sarge AMD64
-08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
-08-04-05 23:48 rlrevell       Note Added: 0005653                          
-08-05-05 04:57 oxi            Note Added: 0005656                          
-08-05-05 04:59 oxi            Issue Monitored: oxi                         
-08-05-05 05:00 rlrevell       Note Added: 0005657                          
-08-05-05 05:20 oxi            Note Added: 0005658                          
-08-05-05 05:25 oxi            Note Added: 0005659                          
-08-05-05 06:03 rlrevell       Note Added: 0005660                          
-08-05-05 08:48 perex          Relationship added       related to 0001244  
-08-05-05 13:26 oxi            Note Added: 0005666                          
-08-05-05 15:09 hennewou       Note Added: 0005668                          
-08-05-05 19:43 oxi            Note Added: 0005671                          
-08-05-05 19:46 oxi            Note Edited: 0005671                         
-08-05-05 20:36 rlrevell       Note Added: 0005675                          
-08-05-05 23:10 hennewou       Note Added: 0005677                          
-08-07-05 09:46 pochini        Note Added: 0005688                          
-08-07-05 18:27 oxi            Note Added: 0005695                          
-08-07-05 18:31 oxi            Note Added: 0005696                          
-08-08-05 00:06 pochini        Note Added: 0005698                          
-08-08-05 04:12 oxi            File Added: firmware.agent                    
-08-08-05 04:32 oxi            Note Added: 0005700                          
-08-08-05 09:22 pochini        Note Added: 0005703                          
-08-08-05 21:40 oxi            Note Added: 0005712                          
-08-08-05 22:23 oxi            Note Added: 0005713                          
-08-08-05 23:07 oxi            Note Added: 0005715                          
-======================================================================
-
-
+Thanks,
+- Steve
 
 
 -------------------------------------------------------
