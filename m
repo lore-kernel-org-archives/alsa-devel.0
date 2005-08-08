@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Mon, 8 Aug 2005 21:40:05 +0200
-Message-ID: <0efff3c191f2c437f23d066c81ab968c@bugtrack.alsa-project.org>
+Date: Mon, 8 Aug 2005 22:23:39 +0200
+Message-ID: <ce3e10e31674d192892eb2fe4a27e2d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BCD91C3
-	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 21:40:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D9C114C
+	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 22:23:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge AMD64
 Kernel Version:             2.6.12.3
 ======================================================================
 Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-08-2005 21:40 CEST
+Last Modified:              08-08-2005 22:23 CEST
 ======================================================================
 Summary:                    Driver cant find firmware for Layla24
 Description: 
@@ -61,13 +61,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0001244 error with firmware with echo layla20
 ======================================================================
-
-----------------------------------------------------------------------
- pochini - 08-08-05 09:22 
-----------------------------------------------------------------------
-The patch is against the official hotplug scripts. You have to look at the
-system logs, eg. /var/log/messages or /var/log/syslog (look in
-/etc/syslog.conf for details).
 
 ----------------------------------------------------------------------
  oxi - 08-08-05 21:40 
@@ -156,6 +149,33 @@ Aug  8 21:13:14 localhost hal.dev[6285]: DEVNAME is not set
 Hope this is of any help to find out the bug.
 Greets
 
+----------------------------------------------------------------------
+ oxi - 08-08-05 22:23 
+----------------------------------------------------------------------
+Ok I dont have a clue what ive just done but i made hotplug load the
+firmware!!!
+After downloading the hotplug scripts from sourceforge and trying all the
+things listed above, i rebooted and then in X my mouse wasnt working
+anymore! So i got mad with xf86cfg cause i couldnt make it work again and
+thought of reinstalling the hotplug package from my debian repository, I
+did so, but it didnt seem to work anymore, so i just thought of installing
+every package i got in return for the "hotplug" search string in
+apt-cache. I just had installed "fxload - Firmware download to EZ-USB
+devices" and my mouse worked again, but surprisingly enough, on the next
+reboot hotplug could at last find the Layla24 firmware!!!
+
+Now, in alsaconf it does not appear to be there. Is it supposed to be like
+that?
+However in alsamixer i got the Layla24 there, but only with Master and PCM
+channels. Same for volume control in gnome.
+
+SDL based apps are not sounding neither noatun which exited with an
+error.
+
+Now that the firmware is there, am I missing something?
+
+Thank for all of the support so far and thanks in advance.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -184,6 +204,7 @@ Date Modified  Username       Field                    Change
 08-08-05 04:32 oxi            Note Added: 0005700                          
 08-08-05 09:22 pochini        Note Added: 0005703                          
 08-08-05 21:40 oxi            Note Added: 0005712                          
+08-08-05 22:23 oxi            Note Added: 0005713                          
 ======================================================================
 
 
