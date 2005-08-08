@@ -1,13 +1,14 @@
-From: =?windows-1251?B?zeAg4eXw5ePzINe48O3u4+4g7O7w/yDiIDMwIOzl8vDg9SDu8iDv6//m4A==?= <aeneid@martindale.com>
-Subject: =?windows-1251?B?z/Du5OD+IPP+8u376SAzLfUg/fLg5u376SDq4O/o8uDr/O376SD96+vo7eMg4+7x?=
- =?windows-1251?B?8ujt6Pft7uPuIPLo7+A=?=
-Date: Sun, 07 Aug 2005 07:14:22 +0000
-Message-ID: <e10b01c59b1f$24a3e5fd$bf9cfb28@martindale.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
+Date: Mon, 8 Aug 2005 05:38:13 +0200
+Message-ID: <d1325e291f7c9256be544f741f8cbe09@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_5DEA9A5D.67D6D4F6"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7458B1E4
+	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 05:38:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,194 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_5DEA9A5D.67D6D4F6
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_1B20645E.46938C37"
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
+======================================================================
+Reported By:                roothorick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1319
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-08-2005 05:38 CEST
+Last Modified:              08-08-2005 05:38 CEST
+======================================================================
+Summary:                    MIDI I/O (MPU-401) works for output only, not input
+Description: 
+I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
+such as keyboards, only works for output (from the soundcard to other
+devices). When I try to do input (from those devices to the soundcard) no
+events get through at all.
+======================================================================
 
-
-------=_NextPart_001_0001_1B20645E.46938C37
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
- =CE=F7=E5=ED=FC =F3=E6 =E8=ED=F2=E5=F0=E5=F1=ED=EE=E5 =EF=F0=E5=E4=EB=EE=
-=E6=E5=ED=E8=E5 =EE=F2 =F1=EE=E1=F1=F2=E2=E5=ED=ED=E8=EA=E0! =D1=F0=EE=F7=
-=ED=EE!=20
-
-=CF=F0=EE=E4=E0=FE =F3=FE=F2=ED=FB=E9 3-=F5 =FD=F2=E0=E6=ED=FB=E9 =EA=E0=EF=
-=E8=F2=E0=EB=FC=ED=FB=E9 =FD=EB=EB=E8=ED=E3 =E3=EE=F1=F2=E8=ED=E8=F7=ED=EE=
-=E3=EE =F2=E8=EF=E0, =ED=E0 =E1=E5=F0=E5=E3=F3
-=D7=B8=F0=ED=EE=E3=EE =EC=EE=F0=FF =E2 30 =EC=E5=F2=F0=E0=F5 =EE=F2 =EF=EB=
-=FF=E6=E0, =EE=E1=F9. =EF=EB=EE=F9=E0=E4=FC=FE 210 =EA=E2.=EC=E5=F2=F0=EE=
-=E2.=20
-
- 1-=E9 =FD=F2=E0=E6 - =E3=E0=F0=E0=E6 =ED=E0 2 =E0=E2=F2=EE=EC=EE=E1=E8=EB=
-=FF, =EA=F3=F5=ED=FF-=F1=F2=EE=EB=EE=E2=E0=FF, =E6=E8=EB=FB=E5 =EF=EE=EC=E5=
-=F9=E5=ED=E8=FF. =C2 =E4=E2=F3=F5
-=F8=E0=E3=E0=F5 =E3=EE=F0=ED=E0=FF =F0=E5=F7=EA=E0.=20
-=CD=E0 2- =EC =E8 3- =EC =FD=F2=E0=E6=E0=F5 =EE=F2=E4=E5=EB=FC=ED=FB=E5 =EC=
-=E5=E1=EB=E8=F0=EE=E2=E0=ED=ED=FB=E5 =ED=EE=EC=E5=F0=E0 =E4=EB=FF =E3=EE=F1=
-=F2=E5=E9, =F1=EE =E2=F1=E5=EC=E8
-=F3=E4=EE=E1=F1=F2=E2=E0=EC=E8 (=F2=F3=E0=EB=E5=F2, =E4=F3=F8, =F2=E5=EB=E5=
-=E2=E8=E4=E5=ED=E8=E5, =EA=EE=ED=E4=E8=F6=E8=EE=ED=E5=F0=FB, =F5=EE=EB=EE=
-=E4=E8=EB=FC=ED=E8=EA=E8 =EE=E4=ED=EE=E2=F0=E5=EC=E5=ED=ED=EE
-=EC=EE=E6=ED=EE =F0=E0=F1=F1=E5=EB=E8=F2=FC 20-25 =F7=E5=EB=EE=E2=E5=EA).=
-=20
-
-=D1=EE=E1=F1=F2=E2=E5=ED=ED=EE=F1=F2=FC, =E2=F1=E5 =EA=EE=EC=EC=F3=ED=E8=EA=
-=E0=F6=E8=E8, =F2=E5=EB=E5=F4=EE=ED, =E8=ED=F2=E5=F0=ED=E5=F2, 60 =EC=E5=F2=
-=F0=EE=E2 =EE=F2 =E6.=E4. =F1=F2=E0=ED=F6=E8=E8
-(=EE=F1=F2=E0=ED=E0=E2=EB=E8=E2=E0=FE=F2=F1=FF =E2=F1=E5 =EF=EE=E5=E7=E4=E0=
- =ED=E0 =D1=EE=F7=E8 =E8=E7 =CC=EE=F1=EA=E2=FB =E8 =E4=F0=F3=E3=E8=E5, =FD=
-=EB=E5=EA=F2=F0=E8=F7=EA=E0 =D1=EE=F7=E8-=CA=F0=E0=F1=ED=EE=E4=E0=F0,
-=D1=EE=F7=E8-=D2=F3=E0=EF=F1=E5). =D2=E8=F5=EE, =F1=EF=EE=EA=EE=E9=ED=EE,=
- =F0=FF=E4=EE=EC =F1=E0=ED=E0=F2=EE=F0=E8=E8, =E8=ED=F4=F0=E0=F1=F2=F0=F3=
-=EA=F2=F3=F0=E0. 12 =EA=EC =EE=F2
-=F6=E5=ED=F2=F0=E0 =D2=F3=E0=EF=F1=E5 =E8 30 =EA=EC =EE=F2 =EF. =CB=E0=E7=
-=E0=F0=E5=E2=F1=EA=EE=E3=EE =E3. =D1=EE=F7=E8.=20
-
-830 =F3.=E5.!!! =E7=E0 =EA=E2.=EC=E5=F2=F0. =D2=EE=F0=E3.=20
-
-=C2=EE=E7=EC=EE=E6=ED=FB =E2=E0=F0=E8=E0=ED=F2=FB =EE=E1=EC=E5=ED=E0 =ED=E0=
- =ED=E5=E4=E2=E8=E6=E8=EC=EE=F1=F2=FC =E2 =CC=EE=F1=EA=E2=E5 =E8=EB=E8 =CA=
-=F0=E0=F1=ED=EE=E4=E0=F0=E5 (=EA=E2=E0=F0=F2=E8=F0=E0,
-=EE=F4=E8=F1), =E0 =F2=E0=EA=E6=E5 =EF=F0=EE=E4=E0=E6=E0 =F0=E0=E2=ED=FB=F5=
- 1/2 =E8=EB=E8 1/3 =F7=E0=F1=F2=E8 =F1 =EE=F2=E4=E5=EB=FC=ED=FB=EC=E8 =E2=
-=F5=EE=E4=E0=EC=E8.=20
-
-=C4=EE=EF=EE=EB=ED=E8=F2=E5=EB=FC=ED=E0=FF =E8=ED=F4=EE=F0=EC=E0=F6=E8=FF=
- =E8 =F4=EE=F2=EE =EF=EE =E7=E0=EF=F0=EE=F1=F3 =ED=E0 e-mail: ellingmo@Ho=
-tPOP.com
- =20
-=E8=EB=E8 =F2=E5=EB. 8-918-306-74-94, =CE=EB=E5=E3 =CD=E8=EA=EE=EB=E0=E5=E2=
-=E8=F7   =20
-------=_NextPart_001_0001_1B20645E.46938C37
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
-251">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
-<BODY text=3D#000000 bgColor=3D#ffffff>
-<font face=3D"Times New Roman"><FONT size=3D5><b><FONT color=3Dmediumviol=
-etred>=CE=F7=E5=ED=FC =F3=E6 =E8=ED=F2=E5=F0=E5=F1=ED=EE=E5 =EF=F0=E5=E4=EB=
-=EE=E6=E5=ED=E8=E5 =EE=F2 =F1=EE=E1=F1=F2=E2=E5=ED=ED=E8=EA=E0! =D1=F0=EE=
-=F7=ED=EE!</FONT> <br>
-</b></FONT><br>
-<b><FONT color=3Dcrimson>=CF=F0=EE=E4=E0=FE =F3=FE=F2=ED=FB=E9 3-=F5 =FD=F2=
-=E0=E6=ED=FB=E9 =EA=E0=EF=E8=F2=E0=EB=FC=ED=FB=E9 =FD=EB=EB=E8=ED=E3 =E3=EE=
-=F1=F2=E8=ED=E8=F7=ED=EE=E3=EE =F2=E8=EF=E0, =ED=E0 =E1=E5=F0=E5=E3=F3 =D7=
-=B8=F0=ED=EE=E3=EE =EC=EE=F0=FF =E2 30 =EC=E5=F2=F0=E0=F5 =EE=F2 =EF=EB=FF=
-=E6=E0, =EE=E1=F9. =EF=EB=EE=F9=E0=E4=FC=FE 210 =EA=E2.=EC=E5=F2=F0=EE=E2=
-.</FONT></b> <br>
-<br>
-<img src=3D"cid:bc0f06ade52f$cf62125b$a540f621@martindale.com" align=3D"r=
-ight">
-<b>1-=E9 =FD=F2=E0=E6</b> - =E3=E0=F0=E0=E6 =ED=E0 2 =E0=E2=F2=EE=EC=EE=E1=
-=E8=EB=FF, =EA=F3=F5=ED=FF-=F1=F2=EE=EB=EE=E2=E0=FF, =E6=E8=EB=FB=E5 =EF=EE=
-=EC=E5=F9=E5=ED=E8=FF. =C2 =E4=E2=F3=F5 =F8=E0=E3=E0=F5 =E3=EE=F0=ED=E0=FF=
- =F0=E5=F7=EA=E0. <br>
-<b>=CD=E0 2- =EC =E8 3- =EC =FD=F2=E0=E6=E0=F5</b> =EE=F2=E4=E5=EB=FC=ED=FB=
-=E5 =EC=E5=E1=EB=E8=F0=EE=E2=E0=ED=ED=FB=E5 =ED=EE=EC=E5=F0=E0 =E4=EB=FF =
-=E3=EE=F1=F2=E5=E9, =F1=EE =E2=F1=E5=EC=E8 =F3=E4=EE=E1=F1=F2=E2=E0=EC=E8=
- (=F2=F3=E0=EB=E5=F2, =E4=F3=F8, =F2=E5=EB=E5=E2=E8=E4=E5=ED=E8=E5, =EA=EE=
-=ED=E4=E8=F6=E8=EE=ED=E5=F0=FB, =F5=EE=EB=EE=E4=E8=EB=FC=ED=E8=EA=E8 =EE=E4=
-=ED=EE=E2=F0=E5=EC=E5=ED=ED=EE =EC=EE=E6=ED=EE =F0=E0=F1=F1=E5=EB=E8=F2=FC=
- 20-25 =F7=E5=EB=EE=E2=E5=EA). <br>
-<br>
-=D1=EE=E1=F1=F2=E2=E5=ED=ED=EE=F1=F2=FC, =E2=F1=E5 =EA=EE=EC=EC=F3=ED=E8=EA=
-=E0=F6=E8=E8, =F2=E5=EB=E5=F4=EE=ED, =E8=ED=F2=E5=F0=ED=E5=F2, 60 =EC=E5=F2=
-=F0=EE=E2 =EE=F2 =E6.=E4. =F1=F2=E0=ED=F6=E8=E8 (=EE=F1=F2=E0=ED=E0=E2=EB=
-=E8=E2=E0=FE=F2=F1=FF =E2=F1=E5 =EF=EE=E5=E7=E4=E0 =ED=E0 =D1=EE=F7=E8 =E8=
-=E7 =CC=EE=F1=EA=E2=FB =E8 =E4=F0=F3=E3=E8=E5, =FD=EB=E5=EA=F2=F0=E8=F7=EA=
-=E0 =D1=EE=F7=E8-=CA=F0=E0=F1=ED=EE=E4=E0=F0, =D1=EE=F7=E8-=D2=F3=E0=EF=F1=
-=E5). =D2=E8=F5=EE, =F1=EF=EE=EA=EE=E9=ED=EE, =F0=FF=E4=EE=EC =F1=E0=ED=E0=
-=F2=EE=F0=E8=E8, =E8=ED=F4=F0=E0=F1=F2=F0=F3=EA=F2=F3=F0=E0. 12 =EA=EC =EE=
-=F2 =F6=E5=ED=F2=F0=E0 =D2=F3=E0=EF=F1=E5 =E8 30 =EA=EC =EE=F2 =EF. =CB=E0=
-=E7=E0=F0=E5=E2=F1=EA=EE=E3=EE =E3. =D1=EE=F7=E8. <br>
-<br>
-<FONT color=3Dmidnightblue size=3D4><b><FONT color=3Dcrimson>830 =F3.=E5.=
-!!!</FONT> =E7=E0 =EA=E2.=EC=E5=F2=F0. =D2=EE=F0=E3.</b></FONT> <br>
-<br>
-=C2=EE=E7=EC=EE=E6=ED=FB =E2=E0=F0=E8=E0=ED=F2=FB =EE=E1=EC=E5=ED=E0 =ED=E0=
- =ED=E5=E4=E2=E8=E6=E8=EC=EE=F1=F2=FC =E2 =CC=EE=F1=EA=E2=E5 =E8=EB=E8 =CA=
-=F0=E0=F1=ED=EE=E4=E0=F0=E5 (=EA=E2=E0=F0=F2=E8=F0=E0, =EE=F4=E8=F1), =E0=
- =F2=E0=EA=E6=E5 =EF=F0=EE=E4=E0=E6=E0 =F0=E0=E2=ED=FB=F5 1/2 =E8=EB=E8 1=
-/3 =F7=E0=F1=F2=E8 =F1 =EE=F2=E4=E5=EB=FC=ED=FB=EC=E8 =E2=F5=EE=E4=E0=EC=E8=
-. <br>
-<br>
-<FONT size=3D4>=C4=EE=EF=EE=EB=ED=E8=F2=E5=EB=FC=ED=E0=FF =E8=ED=F4=EE=F0=
-=EC=E0=F6=E8=FF =E8 =F4=EE=F2=EE =EF=EE =E7=E0=EF=F0=EE=F1=F3 =ED=E0 e-ma=
-il: </FONT><A href=3D"mailto:ellingmo@HotPOP.com"><FONT size=3D4><b>ellin=
-gmo@HotPOP.com</b></FONT></A><FONT size=3D4> &nbsp;<br>
-=E8=EB=E8 =F2=E5=EB. <FONT color=3Dmediumblue><b>8-918-306-74-94</b></FON=
-T>, =CE=EB=E5=E3 =CD=E8=EA=EE=EB=E0=E5=E2=E8=F7 </FONT></font>
-</BODY>
-</HTML>
-
-------=_NextPart_001_0001_1B20645E.46938C37--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-05 05:38 roothorick     New Issue                                    
+======================================================================
 
 
-------=_NextPart_000_0000_5DEA9A5D.67D6D4F6
-Content-Type: image/jpeg;
-    name="ipqaey.jpg"
-Content-Transfer-Encoding: base64
-Content-ID: <bc0f06ade52f$cf62125b$a540f621@martindale.com>
-
-/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAACgAA/+4ADkFkb2JlAGTAAAAA
-Af/bAIQAFBAQGRIZJxcXJzImHyYyLiYmJiYuPjU1NTU1PkRBQUFBQUFERERERERERERERERE
-RERERERERERERERERERERAEVGRkgHCAmGBgmNiYgJjZENisrNkREREI1QkRERERERERERERE
-RERERERERERERERERERERERERERERERERERE/8AAEQgAdADYAwEiAAIRAQMRAf/EAIYAAAMB
-AQEBAAAAAAAAAAAAAAACAwEEBQYBAAMBAQAAAAAAAAAAAAAAAAABAgMEEAABAwMDBAAEAwcF
-AAAAAAABABECIRIDMUEEUWEiE3GBMhSRwSPwobHRQlKS4fFiMwURAAIBBQABAwQDAAAAAAAA
-AAABESExQQISUXEDE/BhgSLBMkL/2gAMAwEAAhEDEQA/APoEIQuo5AQhCABCEIAEIQgAQhCA
-BCEIAEIQgAQhCABCEIAEIQgAQhCABClmzxxRuK4z/wCn0ipeyVylq3Y9FC8OfOzu9QCs9+fK
-dSpfuIv4mepyuXHBTWR2QvInjMiJTNd0KPkr9i/iURnyfQIQhbnOCEIQAIQoz5MI0dz2QESW
-QuM84DSKQ86W0UpHyzvQuAcvISwAWS5eQbD8ESh8s9BC848jMdwEks2UCskSh8M9QltVHJyY
-Q3c9l5xOSepdYISdv4pSPg65c0/0j8Un30ugUDj6apTjKUlc/Y7Y84bhP97DuvOIEdSqgRB2
-IHU6o6Hwdn3kO6ll/wDQjGkQSVxmcX6D4rRLGTcalS9nga9tF/u80xQM+iWcMmUeU9EvtAL0
-/FMc3Rv8gsntsy1qkQlx+pJkdFfFhhjFdUomXct/kESedNVDksecYzZxogkRFaAJJY8pj4uk
-5BngPrFe7KYHBgyxvsYMEKd2WlAH0QiALff5juPwQObmOsm+QUhK0uNU8+ROWrf4j+S7ZOag
-Hm5v7v3BaeTmZ7/kpXnfTsAlMkSOCvvyyoZpAZS/qZIZkrLkhmvLqi6XVBZY6AHjfMgA1PdK
-ZS6rHCH7IGZVFUwPZa56IkJFtPVbYVr9lrURIVFsWnEWdBqj5pSCCxFhWgseqZ2qwqk9hpEx
-FbHHI6KoxPp+wT2HVyzsofuLBfHkkcZj9QZaInoqyiWBlROMRMXqAdVL9xoa0TJgNqqjLOId
-bjxObp1A2C045CZxxPlbo1KfuWTb2yaLVIoDkDABn3WAipmNHoU3HdvMPIHQKpjKcrzFydWU
-WKlEo5MGM+TgtQ6oXaePfEi0B0KocESpk8FkMEMgxXccYWgpbEyKIGIMayxlUSI0R8Uhk7EW
-qiAkEiRg6LVRayAkkcZHZFipqgBL1AT1lNHCTROIpxRJ2oNXJeltVow91Yhy7uSnjEM5Ldkp
-oVFSUcF0rRq6eXFlDVMJAFnDv/FdvH5GKxspMZf8vyXPtvu2uIjMmnKVzhhhGzlZLGQbXck6
-fyVcPI/UNjygf2qp5TKUxliNqkD8vgk2aaryNlgw8C4id+q6OLOU8Rw0DFc4MpRJiN2+emiX
-HEgl6nQqJL5oUx8WU8haQBG47Lq+xeYnORJCpwuLbdPr9JfZUhORDTpPcLSIMe2whw8I2/Ep
-4YrBQrCWqAoT5c8ZAsp1dOgqs08mWXIcWHb6pHRC2eeOHGcgjUnyAQnKvIQ/B4N3UVQ7rSVj
-rqOYH+SVwndwsSGYJLS6zXRA1rVADUCyq0tssEVKGY5TivdNERFS1FcwFokCNA6h7ftyWtf1
-6IHEbbqLYxV6yhRmCUApatuZHslSBGZWxYjkDjZKQsuyCJjjNpO6NtoHrrJQzER4BtnK3GBj
-H6gqNgnOKWSIlIgAakqWPHD/ALDIuTTZc+20+htrqieTKIztZgdHXPLkzzgYtQC4PRdHIgY5
-BKYuBBXfgHhQAMG70SUFbOhx8QgRALuSfFtV0YfKLksdgtlk/VAoGG/dYcvrIjAXOanomwls
-eZOOMRFrifkmz4RilcK+NW7LmzGJebhx/cWV+GIl3PkS9utEXpAoip34+TjAEQ9OybJIS0UT
-iA0YfJEQdCrl2Mmlg0hyuXkSIcSHi1aLrdSy5oAMZAFOJCpHHZGPiyFLjZp2ual9kJzqPlnm
-66rEl5TR6yLLoeyRzJSFrVWpRJ1tSmIEMOiYJgEhistATALbSpGK24VACyAGTAhRFZNMQDFl
-jstcbINCymUijNUscxjlsP0uA/cqoi2qTH6pSJ+qWqybmco0Sg6s+WEY+uf0mjqUc8ATj9ZM
-gHfYqpEZxYgkfBZdbF6afmo9S7IS5ovVwC/wdJyMpOISiTWldvijBkyZQRAMKg0qyreIystZ
-gNeqIgarcpDjDJF5Ed26pvSICnRn1TccVkRQHZVJEdaKoTqQ9mnBxZcd0GYn5LkiTKlXq1G/
-1Xte4aPVckeU7jJEVPilylktbPwdPHJMKmvQp3ZJGcBG6kVt0ToXV2Ri7mZXEKB2C4YQnmN0
-sbPqC38dV6ALLXTuCcHD9tLHGTkANp/uhdMsUSRKQcjqhLlD7Z4JHZDJqrQuo5DAAttdaEIA
-BFk7JQyZkijRRbU6LAKsNVshOBqKKXslQtathVCL3RUqNmUkaHfRViLfisiSAyaPkVhs5ojV
-IfHC56UW8bjWYx7GJOlE93rBG7LmGOeTGCZMw6pWRSUlOUDLJDHFw+4Oirj4hi10nUcMyTd9
-ZBoey64TlIOQyqZoJqCghEG5ebyyDlodGBC9Jc3JxDJIfAhDsLW9Ty83PnjkYQFAaIgZcuJE
-/EgEjuvYwSbHEnokzRJL1ING2+KatS5XVTnxQE4gxlsxT2zsEZVbpuoT5pgDA08tOyfiH2iv
-0uVDTcMsti4xGzj+1U9MDQBvgV0wAgGiGU5QjGVwAcpvXMsxbkaMQWBVPE0Gq5Z5BFyDUbJ8
-OW6N0i5bRmVp4E1kuQ6Fw5PMl/xBOiFcMmUebRZTZCFuc41dkIQkM2q2m6EIKRTy9M2bt1Wh
-7IXO/dCFyr+79f4On/JvIscWtpVlWNnr7oQqJyJJU4776IQsVcs6BZsy4YNd43ety7s3f5IQ
-qBfk68Xof9K1+y6R31QhVkghm9f9d371zYvRf+nc7IQqdgVynIu9R9Tvs3REb7I36t5IQkrF
-ZJH7W43W3b3O6t5XfoMzD4IQrYkdsLvmiTIQkSeXNmHpfdn+l0/Avs/U+r8kIWbv9Sa4Hk7S
-fTZkIQts5sYYwf/Z
 
 
-------=_NextPart_000_0000_5DEA9A5D.67D6D4F6--
+-------------------------------------------------------
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
