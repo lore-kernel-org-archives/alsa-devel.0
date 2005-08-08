@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
-Date: Mon, 8 Aug 2005 12:37:06 +0200
-Message-ID: <b876598a415d39b11999c5ea95755de1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001313]: Using module snd_azx instead of snd_hda_intel
+Date: Mon, 8 Aug 2005 13:32:37 +0200
+Message-ID: <622e24fb4bc9d5420e8ca6121217de6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 308D41D3
-	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 12:37:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 503081C8
+	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 13:32:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,117 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1313> 
 ======================================================================
-Reported By:                ahessling
-Assigned To:                
+Reported By:                chris
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1058
+Issue ID:                   1313
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Gentoo
-Kernel Version:             2.6.11.6
+Kernel Version:             2.6.12-gentoo-r4
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-16-2005 16:37 CEST
-Last Modified:              08-08-2005 12:37 CEST
+Date Submitted:             08-05-2005 13:58 CEST
+Last Modified:              08-08-2005 13:32 CEST
 ======================================================================
-Summary:                    CMI9880 sometimes produces distorted sound
+Summary:                    Using module snd_azx instead of snd_hda_intel
 Description: 
-I am using the CVS version of alsa-kernel from a few days and because of
-the soundchip CMI9880, I have to activate Intel HDA in the kernel.
-Sound is working quite fine in stereo mode, but if I want to play a DVD
-with 5.1 sound, all speakers are activated but the sound is a little bit
-distorted.
-xine uses plug:surround51:0 as the surround device.
-
-My asound.conf looks like this:
-pcm.!default {
-type plug
-slave.pcm "svol"
-}
-
-pcm.svol {
-type softvol
-slave.pcm "hw:0,0"
-control {
-name "PCM Playback Volume"
-}
-}
-
-I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
-Again, stereo sound works fine and also dmix does its work, but this time
-I only get stereo sound in xine although the same configuration of xine is
-used.
-
-I also noticed that playing some files using aplay produces the same
-distortions, e.g.:
-
-aplay /usr/share/sounds/k3b_success1.wav
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-
-Seems to have to do something with sample rate.
-Using the other asound.conf from the homepage above just gives an error:
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-aplay: set_params:857: Sample format non available
- 
-Is there a way to play 5.1 sound without these distortions? Maybe some
-lines added to my asound.conf would do the work.
-
-Thanks in advance!
-
-Regards,
-André
+When I start alsasound, it tries to use snd_azx instead of snd_hda_intel.
+In /etc/modprobe.conf I find "alias snd-card0 snd-azx" and "alias
+snd-slot0 snd-azx" instead of being "alias snd-card0 snd-hda-intel" and
+"alias snd-slot0 snd-hda-intel"
 ======================================================================
 
 ----------------------------------------------------------------------
- komanek - 08-08-05 12:26 
+ chris - 08-06-05 05:45 
 ----------------------------------------------------------------------
-I have the distorted sound even playing 2-channel stereo sounds.
-Motherboard Asus P5AD2-E Deluxe offers the ability to use AC97 instead of
-HDA on the chipset, but Fedora Core 4 still detects it with the same Alsa
-driver.
-
-This is surely software issue - in Windows XP (which are supported by the
-manufacturer - just to test if I should give the otherboard back to the
-reseller or not) there are no such problems.
+Rebooted system and appers to work. Still attempts to use azx module and
+cannot find it, but it appears alsamixer works properly.
 
 ----------------------------------------------------------------------
- komanek - 08-08-05 12:37 
+ perex - 08-08-05 13:32 
 ----------------------------------------------------------------------
-I also tried to modify modprobe.conf:
-
-diff /etc/modprobe.conf /etc/modprobe.conf.orig_fc4
-5c5
-< options snd-hda-intel index=0 position_fix=1
----
-> options snd-hda-intel index=0
-
-
-But the new parameter is not recognized:
-
-kernel: snd_hda_intel: Unknown parameter `position_fix'
+Please, it's not an issue for ALSA developers. Ask on Gentoo forums to get
+your configuration right.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-05 16:37 ahessling      New Issue                                    
-04-16-05 16:37 ahessling      Distribution              => Gentoo          
-04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
-04-19-05 17:47 tiwai          Note Added: 0004527                          
-04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
-04-21-05 11:41 ahessling      Note Added: 0004550                          
-06-22-05 16:32 andersin       Note Added: 0005133                          
-06-22-05 17:49 tiwai          Note Added: 0005135                          
-08-08-05 12:26 komanek        Note Added: 0005704                          
-08-08-05 12:37 komanek        Note Added: 0005705                          
+08-05-05 13:58 chris          New Issue                                    
+08-05-05 13:58 chris          Distribution              => Gentoo          
+08-05-05 13:58 chris          Kernel Version            => 2.6.12-gentoo-r4
+08-06-05 05:45 chris          Note Added: 0005679                          
+08-06-05 05:47 chris          Issue Monitored: chris                       
+08-06-05 05:48 chris          Issue End Monitor: chris                     
+08-08-05 13:32 perex          Status                   assigned => resolved
+08-08-05 13:32 perex          Resolution               open => not an issue
+08-08-05 13:32 perex          Note Added: 0005706                          
 ======================================================================
 
 
