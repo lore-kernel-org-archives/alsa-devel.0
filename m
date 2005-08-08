@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
-Date: Mon, 8 Aug 2005 12:26:39 +0200
-Message-ID: <df8bd7d9842d27fc5ad232a57cc99c47@bugtrack.alsa-project.org>
+Date: Mon, 8 Aug 2005 12:37:06 +0200
+Message-ID: <b876598a415d39b11999c5ea95755de1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB50E1D8
-	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 12:26:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 308D41D3
+	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 12:37:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.11.6
 ======================================================================
 Date Submitted:             04-16-2005 16:37 CEST
-Last Modified:              08-08-2005 12:26 CEST
+Last Modified:              08-08-2005 12:37 CEST
 ======================================================================
 Summary:                    CMI9880 sometimes produces distorted sound
 Description: 
@@ -93,13 +93,6 @@ André
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-05 17:49 
-----------------------------------------------------------------------
-Try position_fix=1 or 2 module option for snd-hda-intel.  This fixes the
-noisy output problems sometimes.  See ALSA-Configuration.txt for details.
-Otherwise, I have no idea, so far...
-
-----------------------------------------------------------------------
  komanek - 08-08-05 12:26 
 ----------------------------------------------------------------------
 I have the distorted sound even playing 2-channel stereo sounds.
@@ -110,6 +103,22 @@ driver.
 This is surely software issue - in Windows XP (which are supported by the
 manufacturer - just to test if I should give the otherboard back to the
 reseller or not) there are no such problems.
+
+----------------------------------------------------------------------
+ komanek - 08-08-05 12:37 
+----------------------------------------------------------------------
+I also tried to modify modprobe.conf:
+
+diff /etc/modprobe.conf /etc/modprobe.conf.orig_fc4
+5c5
+< options snd-hda-intel index=0 position_fix=1
+---
+> options snd-hda-intel index=0
+
+
+But the new parameter is not recognized:
+
+kernel: snd_hda_intel: Unknown parameter `position_fix'
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +132,7 @@ Date Modified  Username       Field                    Change
 06-22-05 16:32 andersin       Note Added: 0005133                          
 06-22-05 17:49 tiwai          Note Added: 0005135                          
 08-08-05 12:26 komanek        Note Added: 0005704                          
+08-08-05 12:37 komanek        Note Added: 0005705                          
 ======================================================================
 
 
