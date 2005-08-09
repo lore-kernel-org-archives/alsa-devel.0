@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001078]: intel8x0 does not work on any (?) 2.6 kernel
-Date: Tue, 9 Aug 2005 13:44:52 +0200
-Message-ID: <a54706b1bc630f1873452bc74840ff7e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000986]: snd-ice1724 outputs white noise on rear surround output of Chaintech AV-710
+Date: Tue, 9 Aug 2005 13:44:22 +0200
+Message-ID: <9f51239e7fd5769380cd40721d738fc7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A3CC1FE
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A14BF1E6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,116 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1078> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=986> 
 ======================================================================
-Reported By:                columbo
-Assigned To:                jdthood
+Reported By:                AdamW
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1078
-Category:                   PCI - intel8x0
+Issue ID:                   986
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware Linux 10.1
-Kernel Version:             2.6.11.7
-Resolution:                 not an issue
+Distribution:               Mandrakelinux Cooker
+Kernel Version:             2.6.11
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-26-2005 21:29 CEST
+Date Submitted:             03-12-2005 22:43 CET
 Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    intel8x0 does not work on any (?) 2.6 kernel
+Summary:                    snd-ice1724 outputs white noise on rear surround
+output of Chaintech AV-710
 Description: 
-After compilation of ALSA drivers, libs, utilities, and after alsaconf ALSA
-modules loads correctly, they are visible in lsmod and so on, but all
-programs can't see sound card, /dev/dsp and so on. With kernels 2.4.x
-everything is OK.
+A little background. The Chaintech AV-710 soundcard is a 7.1 soundcard
+which uses this driver. It has two DACs. There's a standard DAC that
+drives the first six channels. The rear surround channels, however, are
+driven by a high-quality Wolfson DAC. Audio enthusiasts like to set the
+card to drive the main two channels through this DAC instead in order to
+get a very high quality stereo line-level output. The card's Windows
+driver has an option to do just this, and in the past people have been
+successful doing it on Linux. I am attaching an asound.state file which
+owners of this card used with ALSA 1.0.7 to achieve this. However, I am
+having trouble getting this to work with ALSA 1.0.8. The rear surround
+output just produces white noise all the time. This is the case both with
+this asound.state loaded and also with default levels (i.e., what I get if
+I wipe /etc/asound.state and re-run alsaconf). It'd be nice to know what
+changed between 1.0.7 and 1.0.8 that caused this to break, and how to fix
+it. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- gem7 - 05-06-05 19:04 
+ jaanusk_ - 05-24-05 21:35 
 ----------------------------------------------------------------------
-> This means snd-intel8x0m is loading. 
+Seems so, at least all av710-s seem to be detected as audio2000-s. From my
+AV710:
 
-Sure, that time.  As I said, I have tried it w/ and w/o intel8x0m and
-loading the 2 intel drivers in different order.  Just to be sure I just
-deleted the intel8x0m
-module and did a cold reboot.  Same results.
-
-> Are you sure, you don't have it compiled in kernel ?
-
-Notice the modules was 1.0.9rc3?  No kernel has that yet.
-
-Here is a fragment of /proc/config.gz:
-
-#
-# Sound
-#
-CONFIG_SOUND=y
-
-#
-# Advanced Linux Sound Architecture
-#
-# CONFIG_SND is not set
-
-#
-# Open Sound System
-#
-# CONFIG_SOUND_PRIME is not set
-
-#
-
-
-And here is my lsmod:
-
-~# lsmod
-Module                  Size  Used by
-snd_intel8x0           29248  0 
-snd_ac97_codec         79996  1 snd_intel8x0
-snd_pcm                80004  2 snd_intel8x0,snd_ac97_codec
-snd_timer              21124  1 snd_pcm
-snd                    45796  4
-snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc          7684  2 snd_intel8x0,snd_pcm
-
-All the rest of my kernel is compiled in, not modules.
+EEPROM:
+  Subvendor        : 0x12142417
+  Size             : 28 bytes
+  Version          : 1
+  System Config    : 0x2
+  ACLink           : 0x2
+  I2S              : 0x10
+  S/PDIF           : 0xc1
+  GPIO direction   : 0xff
+  GPIO mask        : 0xff
+  GPIO state       : 0xff
+  Extra #18        : 0x1
+  Extra #19        : 0x0
+  Extra #20        : 0x0
+  Extra #21        : 0x0
+  Extra #22        : 0x0
+  Extra #23        : 0x0
+  Extra #24        : 0x0
+  Extra #25        : 0x0
+  Extra #26        : 0x0
+  Extra #27        : 0x0
 
 ----------------------------------------------------------------------
- gem7 - 05-06-05 20:24 
+ tiwai - 05-27-05 17:26 
 ----------------------------------------------------------------------
-I have it working now.  Yes, the problem was the intel8x0m module. 
-Removeing it
-with modproebe -r is not enough to undo it's damage.  Only a power off
-cold boot got my system to where if I only loaded the intel8x0, and not
-intel8x0m module that things would work.  Thanks for pushing me to try
-some more permutations of that.
-
-Now the core problem remains, what broke intel8x0m after ALSA 1.0.4?  It
-used to not break the intel8x0.  I can understand the intel8x0m not
-working on my laptop but loading it shold not break other related
-subsystems.  If it is not possible to fix it surely needs an obvious
-warning in the doc, if not at boot time.
+Fixed on CVS, aka 1.0.9-final.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-05 21:29 columbo        New Issue                                    
-04-26-05 21:29 columbo        Distribution              => Slackware Linux 10.1
-04-26-05 21:29 columbo        Kernel Version            => 2.6.11.7        
-04-29-05 21:06 columbo        Issue Monitored: columbo                     
-05-06-05 08:50 gem7           Note Added: 0004590                          
-05-06-05 08:59 pzad           Note Added: 0004591                          
-05-06-05 09:00 pzad           Note Added: 0004592                          
-05-06-05 09:13 gem7           Note Added: 0004593                          
-05-06-05 09:33 pzad           Note Added: 0004594                          
-05-06-05 19:04 gem7           Note Added: 0004595                          
-05-06-05 20:24 gem7           Note Added: 0004596                          
-05-07-05 09:45 jdthood        Status                   new => resolved     
-05-07-05 09:45 jdthood        Resolution               open => not an issue
-05-07-05 09:45 jdthood        Assigned To               => jdthood         
-05-29-05 06:09 liangalei      Issue Monitored: liangalei                    
+03-12-05 22:43 AdamW          New Issue                                    
+03-12-05 22:43 AdamW          File Added: asound.state                     
+03-12-05 22:43 AdamW          Distribution              => Mandrakelinux Cooker
+03-12-05 22:43 AdamW          Kernel Version            => 2.6.11          
+03-14-05 16:23 AdamW          Note Added: 0003904                          
+03-19-05 08:17 AdamW          Note Added: 0004010                          
+04-29-05 15:18 jamesferguson  Issue Monitored: jamesferguson                    
+04-29-05 15:24 jamesferguson  Note Added: 0004579                          
+05-08-05 20:46 jaanusk_       File Added: amp2000_wm8728.patch                  
+ 
+05-08-05 20:49 jaanusk_       Note Added: 0004619                          
+05-08-05 20:50 jaanusk_       Issue Monitored: jaanusk_                    
+05-09-05 07:42 AdamW          Note Added: 0004621                          
+05-09-05 10:43 jaanusk_       Note Added: 0004623                          
+05-09-05 18:09 AdamW          Note Added: 0004628                          
+05-24-05 12:23 tiwai          Note Added: 0004716                          
+05-24-05 21:35 jaanusk_       Note Added: 0004729                          
+05-27-05 17:26 tiwai          Status                   new => resolved     
+05-27-05 17:26 tiwai          Resolution               open => fixed       
+05-27-05 17:26 tiwai          Assigned To               => tiwai           
+05-27-05 17:26 tiwai          Note Added: 0004754                          
 08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
