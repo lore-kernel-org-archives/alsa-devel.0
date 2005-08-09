@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001114]: Redline depends on terminal height
-Date: Tue, 9 Aug 2005 13:44:43 +0200
-Message-ID: <22f86bceca2ab636c876b76e1cda7566@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000215]: Kernel freezes after an hour when using the powermac driver
+Date: Tue, 9 Aug 2005 13:43:14 +0200
+Message-ID: <42344e69a1fe4bbf32455d4fb6f9c2b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E6751F4
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C05AE191
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:43:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1114> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=215> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                sjoyeux
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1114
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   215
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Resolution:                 won't fix
+Status:                     resolved
+Distribution:               Debian unstable
+Kernel Version:             2.6.5
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-17-2005 22:33 CEST
-Last Modified:              08-09-2005 13:44 CEST
+Date Submitted:             04-16-2004 10:01 CEST
+Last Modified:              08-09-2005 13:43 CEST
 ======================================================================
-Summary:                    Redline depends on terminal height
+Summary:                    Kernel freezes after an hour when using the powermac
+driver
 Description: 
-The submitter of Debian bug #309337 says the following:
+I have an ibook G4 and using alsa freezes the system (I have about 1 hr of
+uptime when I'm listening to music, no problem when not using the
+soundcard). 
 
-I noticed that that running alsamixer on a 50-line xterm, red appears on
-my volume controls between 79 and 81. On a 24-line xterm, it appears
-between 71 and 73. This seems slightly odd, though I don't know if
-there's any way to tell what PC soundcard mixers happen to put out. :)
+I'm using the OSS driver now, as it does not show the problem.
+
+I experienced it on every 2.4 and 2.6 kernel I used. I'm using now vanilla
+2.6.5, without any patch, and with preempt disabled. No trace of a kernel
+panic in the logs.
+
+Tell me if I can do anything to provide more useful informations
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-19-05 14:18 
+ sjoyeux - 08-09-05 13:19 
 ----------------------------------------------------------------------
-Yes, it depends on the terminal height.  The red line starts over "almost"
-80% but it can't be exat in the lower height (resolution).
+Fixex in latest kernels. Sorry I did not reported that earlier.
+Btw, isn't there a way to change the status myself ?
+
+----------------------------------------------------------------------
+ perex - 08-09-05 13:43 
+----------------------------------------------------------------------
+fine, fixed... only developer can change the bug-status....
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-05 22:33 jdthood        New Issue                                    
-05-19-05 14:18 tiwai          Status                   new => resolved     
-05-19-05 14:18 tiwai          Resolution               open => won't fix   
-05-19-05 14:18 tiwai          Assigned To               => tiwai           
-05-19-05 14:18 tiwai          Note Added: 0004692                          
-08-09-05 13:44 perex          Status                   resolved => closed  
+04-16-04 10:01 sjoyeux        New Issue                                    
+04-16-04 10:01 sjoyeux        Distribution              => Debian unstable 
+04-16-04 10:01 sjoyeux        Kernel Version            => 2.6.5           
+08-09-05 13:11 perex          Note Added: 0005728                          
+08-09-05 13:19 sjoyeux        Note Added: 0005730                          
+08-09-05 13:43 perex          Status                   assigned => resolved
+08-09-05 13:43 perex          Resolution               open => fixed       
+08-09-05 13:43 perex          Note Added: 0005731                          
 ======================================================================
 
 
