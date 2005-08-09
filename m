@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
-Date: Tue, 9 Aug 2005 13:46:29 +0200
-Message-ID: <5ad0eaddc9b82941184cf82bf6aff3fc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000988]: No errors, but no sound output
+Date: Tue, 9 Aug 2005 13:06:48 +0200
+Message-ID: <00e57a645fd8ce126954d30c370c6cc7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C9D51D6
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:46:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7CE81B5
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:06:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
 ======================================================================
-Reported By:                TheOrwithVagrant
+Reported By:                madCoder
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   929
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   988
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
+Status:                     resolved
+Distribution:               gentoo
+Kernel Version:             2.6.11-gentoo-r2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-21-2005 14:56 CET
-Last Modified:              08-09-2005 13:46 CEST
+Date Submitted:             03-14-2005 00:35 CET
+Last Modified:              08-09-2005 13:06 CEST
 ======================================================================
-Summary:                    Left/Right reversed when using the raw iec958 on
-Audigy2
+Summary:                    No errors, but no sound output
 Description: 
-When using an spdif-attatched amplifier, the iec958/spdif raw device to
-play a sound (or video file), the left and right channels end up
-reversed.
+Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
+upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
+1.0.8, and now I get no sound at all.  There are no error messages, the
+kernel modules are loaded properly and appear to be working fine.  Playing
+a file in XMMS, the spectrum analyzer shows that it should be playing
+sound, but I get nothing from the speakers.
 
-Example:
+I've already checked that all the mixer channels are unmuted and turned
+up, including DAC.  I know I'm not the only one, nor is this chipset the
+only one, that has had this problem, so is it something in the core that
+is causing all these problems, or are there just that many chipsets that
+have suddenly developed the inability to produce sound?
 
-This produces "correct" left and right mappings
-
-extract_ac3 AC3TEST.VOB |ac3dec
-
-The following, however, reverses left & right:
-
-extract_ac3 AC3TEST.VOB |ac3dec -R
-
-Likewise, when playing a dvd with mplayer, things are correct if i merely
-use -ao alsa, but end up with left/right reversed if i use -ao
-alsa:device=iec958.
-
-It appears to be an error in Audigy2.conf - changing the line
-
-value [ 255 255 0 0 0 0 0 0  0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
-
-to
-
-value [ 255 255 0 0 0 0 0 0  255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
-
-as in Audigy.conf, makes the channels appear from the right speaker even
-when using the raw spdif device.
+lsmod, lspci, and /proc output are attached in Additional Info
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000963 Sounc card is mute
 ======================================================================
 
 ----------------------------------------------------------------------
- TheOrwithVagrant - 05-30-05 14:50 
+ madCoder - 08-08-05 07:47 
 ----------------------------------------------------------------------
-It's been fixed since 1.0.9rc2. With 1.0.9 final out, this bug is a thing
-of the past, and should be closed.
+No, this isn't a duplicate of #371 - My .asoundrc does not use dmix.
+The issue was resolved 5 months ago :x
 
 ----------------------------------------------------------------------
- perex - 05-30-05 14:59 
+ perex - 08-09-05 13:06 
 ----------------------------------------------------------------------
-Fine, closing now.
+Resolved - mixer settings.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-21-05 14:56 TheOrwithVagrantNew Issue                                    
-02-21-05 15:04 pzad           Note Added: 0003679                          
-02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
-02-22-05 03:59 rlrevell       Note Added: 0003684                          
-03-19-05 09:21 jdthood        Note Added: 0004013                          
-03-19-05 09:58 jdthood        Note Added: 0004028                          
-03-19-05 11:36 TheOrwithVagrantNote Added: 0004032                          
-03-19-05 11:46 jcdutton       Note Added: 0004033                          
-05-30-05 13:41 perex          Note Added: 0004813                          
-05-30-05 14:50 TheOrwithVagrantNote Added: 0004815                          
-05-30-05 14:59 perex          Status                   new => resolved     
-05-30-05 14:59 perex          Resolution               open => fixed       
-05-30-05 14:59 perex          Assigned To               => perex           
-05-30-05 14:59 perex          Note Added: 0004817                          
-08-09-05 13:46 perex          Status                   resolved => closed  
+03-14-05 00:35 madCoder       New Issue                                    
+03-14-05 00:35 madCoder       Distribution              => gentoo          
+03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
+03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
+03-16-05 12:56 tiwai          Note Added: 0003950                          
+03-17-05 00:05 madCoder       File Added: asound.state                     
+03-17-05 00:06 madCoder       Note Added: 0003973                          
+03-17-05 00:08 madCoder       Note Edited: 0003973                         
+03-18-05 18:19 tiwai          Note Added: 0004002                          
+03-19-05 00:16 madCoder       Note Added: 0004008                          
+03-19-05 04:07 madCoder       Note Added: 0004009                          
+03-19-05 04:08 madCoder       Issue End Monitor: madCoder                    
+03-22-05 15:13 jdthood        Relationship added       duplicate of 0000963
+03-22-05 19:42 tiwai          Note Added: 0004128                          
+08-08-05 03:40 mohjive        Note Added: 0005699                          
+08-08-05 03:50 mohjive        Note Deleted: 0005699                        
+08-08-05 07:47 madCoder       Note Added: 0005701                          
+08-09-05 13:06 perex          Status                   new => resolved     
+08-09-05 13:06 perex          Resolution               open => fixed       
+08-09-05 13:06 perex          Assigned To               => perex           
+08-09-05 13:06 perex          Note Added: 0005726                          
 ======================================================================
 
 
