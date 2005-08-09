@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000299]: No audio after recommended patch (see 0000216)
-Date: Tue, 9 Aug 2005 13:13:41 +0200
-Message-ID: <797d9f0fb679452ad953003a403dff6e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001312]: aplay has endian issues
+Date: Tue, 9 Aug 2005 12:54:57 +0200
+Message-ID: <9a23e0915fe375a276a7d5124a93ae7e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0241B1AF
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:13:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EC921BB
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 12:54:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,89 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000216.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1312> 
 ======================================================================
-Reported By:                salmo
-Assigned To:                mjander
+Reported By:                ChrisWhite
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   299
-Category:                   PCI - au88x0
+Project:                    ALSA - utils
+Issue ID:                   1312
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.6
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-22-2004 22:25 CEST
-Last Modified:              08-09-2005 13:13 CEST
+Date Submitted:             08-05-2005 07:18 CEST
+Last Modified:              08-09-2005 12:54 CEST
 ======================================================================
-Summary:                    No audio after recommended patch (see 0000216)
+Summary:                    aplay has endian issues
 Description: 
-This is a continuation of bug 0000216.  Would have added this comment there
-but bug was closed.
-
-Applied the patch
-(http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.5.diff.gz)
-cleanly, recompiled, rebooted twice.  Now I get no sound output at all. 
-Checked with headphones, checked mixer levels.  
-
-The modules (snd_au8830, snd_ac97_codec, snd_mpu401_uart, snd_rawmidi,
-snd_seq_oss, snd_seq_midi_event, snd_seq, snd_seq_device, snd_pcm_oss,
-snd_pcm, snd_page_alloc, snd_timer, snd_mixer_oss, snd) are loaded,
-everything seems fine.  XMMS, Rhythmbox, etc. will "play" the files at a
-normal rate using both ALSA and OSS outputs, but nothing comes out of the
-card.
-
-Let me know if there is any information that I can give you that will
-help.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000216 Speed/pitch issues when playing multipl...
+It appears that play uses BE specific formating when playing back by
+default.  As alsa seems to have a default SND_PCM_FORMAT_S16 which
+switches to the correct native endian, I'm not sure why that's not used as
+the default instead of endian specific definitions.
 ======================================================================
 
 ----------------------------------------------------------------------
- mjander - 05-22-04 23:42 
+ pzad - 08-05-05 21:41 
 ----------------------------------------------------------------------
-Hi,
+aplay can not play mp3.
 
-- Why are you using patch 2.6.5 if you are using kernel 2.6.6 ?! Use the
-patch for 2.6.6 instead:
-http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.6.diff.gz
-That wont change much, but its the latest.
-
-- Please check your mixer settings *again*. Use alsamixer (or other ALSA
-mixer), not a OSS mixer. Be sure to uncheck the "mute" toggles.
-CDROM,line-in,video,auxiliar,etc audio won't be hearable through the
-"headpones" output, since the codec is not capable to do so, and another
-kind of workaround is needed for that.
-
-- If you experience too low output level, toggle the "Externel Amplifier
-Disable" control in alsamixer to set it right.
-
-- Turn on your loudspeaker, take out your earplugs ... :D
-
-- Any bad things reported on dmesg ?
-
-You should not have any problem, many people are using the current driver
-without problem, i use them everyday (what else could i say ?) ...
-
-Best Regards
-
-Manuel Jander
+----------------------------------------------------------------------
+ perex - 08-09-05 12:54 
+----------------------------------------------------------------------
+Invalid request. aplay does not support the mp3 format.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-04 22:25 salmo          New Issue                                    
-05-22-04 22:25 salmo          Distribution              => Gentoo Linux    
-05-22-04 22:25 salmo          Kernel Version            => 2.6.6           
-05-22-04 23:42 mjander        Note Added: 0001176                          
-08-09-05 13:13 perex          Relationship added       related to 0000216  
+08-05-05 07:18 ChrisWhite     New Issue                                    
+08-05-05 09:30 Clemens LadischNote Added: 0005663                          
+08-05-05 18:08 ChrisWhite     Note Added: 0005669                          
+08-05-05 18:26 Clemens LadischNote Added: 0005670                          
+08-05-05 19:55 ChrisWhite     Note Added: 0005672                          
+08-05-05 20:01 ChrisWhite     Note Added: 0005673                          
+08-05-05 20:09 jcdutton       Note Added: 0005674                          
+08-05-05 21:41 pzad           Note Added: 0005676                          
+08-09-05 12:54 perex          Status                   new => resolved     
+08-09-05 12:54 perex          Resolution               open => not an issue
+08-09-05 12:54 perex          Assigned To               => perex           
+08-09-05 12:54 perex          Note Added: 0005724                          
 ======================================================================
 
 
