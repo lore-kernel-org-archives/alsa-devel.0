@@ -1,10 +1,14 @@
-From: "Nambiar, Anil" <NambiarA@sharpsec.com>
-Subject: RE: Alsa-lib problem
-Date: Tue, 9 Aug 2005 20:44:17 -0400
-Message-ID: <6A09F73E2878E447BF6B87C43162C827021545A6@excwa1b2.sharpsec.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001112]: ad1816a based card with id "ADS7180" not detected
+Date: Tue, 9 Aug 2005 13:44:48 +0200
+Message-ID: <839e5f00106442ca94b6460434faa84a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D0011EC
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,58 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'James Courtier-Dutton' <James@superbug.demon.co.uk>, "Nambiar, Anil" <NambiarA@sharpsec.com>
-Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I was able to get it running. Had to export
-ALSA_CONFIG_PATH=/etc/alsa/alsa.conf. It would be nice if this is documented
-somewhere. 
+
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1112> 
+======================================================================
+Reported By:                sonne000ca
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1112
+Category:                   ISA - ad1816a
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             05-15-2005 08:41 CEST
+Last Modified:              08-09-2005 13:44 CEST
+======================================================================
+Summary:                    ad1816a based card with id "ADS7180" not detected
+Description: 
+To fix, add:
+{ .id = "ADS7180", .devs = { { .id = "ADS7180" }, { .id = "ADS7181" } }
+},
+to snd_ad1816a_pnpids[] in ad1816a,c
 
 
-Thanks,
-AniL
+======================================================================
 
------Original Message-----
-From: James Courtier-Dutton [mailto:James@superbug.demon.co.uk] 
-Sent: Tuesday, August 09, 2005 3:19 PM
-To: Nambiar, Anil
-Cc: 'alsa-devel@lists.sourceforge.net'
-Subject: Re: [Alsa-devel] Alsa-lib problem
+----------------------------------------------------------------------
+ tiwai - 05-15-05 15:41 
+----------------------------------------------------------------------
+Fixed on CVS.
 
-Nambiar, Anil wrote:
-> Hi,
-> 
->             I am developing ALSA based sound driver for our arm based soc.
-> The driver is built as part of the kernel rather than as a loadable
-module.
-> If I run a simple wave player which has OSS based interface, it works
-fine.
-> Even mplayer works fine in OSS emulation mode. But if I run any native
-alsa
-> based player it gives error opening the device. For eg: running 'aplay -D
-> default demo.wav" give the following error: 
-> 
-> ALSA lib pcm.c:2090:(snd_pcm_open_noupdate) Unknown PCM default
-> 
-> aplay: main:533: audio open error: No such file or directory
-> 
-
-You probably do not have a "default" device defined for your card due to 
-the lack of a config file.
-But, in order to test it, even though you don't have a config file, try
-speaker-test -c2 -Dplughw:0,0
-
-if that works, all you then need is a config file for your card.
-cat /proc/asound/cards  and note down whatever is in the [....    ] bit.
-Here I get:
-0 [Audigy2        ]: Audigy2 - Audigy 4 PRO [SB0380]
-                      Audigy 4 PRO [SB0380] (rev.4, serial:0x20071102) 
-at 0x9800, irq 20
-
-
-So I have an "Audigy2" file in /usr/share/alsa/cards
-You will need to create one for your card.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-15-05 08:41 sonne000ca     New Issue                                    
+05-15-05 15:41 tiwai          Status                   new => resolved     
+05-15-05 15:41 tiwai          Resolution               open => fixed       
+05-15-05 15:41 tiwai          Assigned To               => tiwai           
+05-15-05 15:41 tiwai          Note Added: 0004661                          
+08-09-05 13:44 perex          Status                   resolved => closed  
+======================================================================
 
 
 
