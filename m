@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Tue, 9 Aug 2005 15:33:26 +0200
-Message-ID: <a842b8ef522d0032cc5d7a77c61a5258@bugtrack.alsa-project.org>
+Date: Wed, 10 Aug 2005 00:49:02 +0200
+Message-ID: <940772d5711e906e84d7fd7a89c043e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C12261BD
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 15:33:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46ED51E9
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 00:49:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as DUPLICATE OF issue 0001224.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              08-09-2005 15:33 CEST
+Last Modified:              08-10-2005 00:49 CEST
 ======================================================================
 Summary:                    Skype Does not work with aoss
 Description: 
@@ -51,6 +51,10 @@ version of skype from the skype official website. Skype only uses
 not hear anything and the microphone did not work as well if I run  skype
 like aoss /usr/bin/skype. If I run skype without aoss, then skype works
 just fine.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001224 artsd-like style
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -69,6 +73,7 @@ Date Modified  Username       Field                    Change
 ======================================================================
 07-03-05 09:09 hil            New Issue                                    
 08-09-05 15:33 rapand         Note Added: 0005732                          
+08-10-05 00:49 rlrevell       Relationship added       duplicate of 0001224
 ======================================================================
 
 
