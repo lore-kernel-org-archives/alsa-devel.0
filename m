@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001296]: isapnp is incompatible with pnpbios and used the wrong ID's
-Date: Tue, 9 Aug 2005 12:53:00 +0200
-Message-ID: <0b632bcc6a42b0b7f5bad67b8b073ea4@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001068]: enable dmix by default
+Date: Tue, 9 Aug 2005 13:44:19 +0200
+Message-ID: <69e47b36d7cd86a7fcb02f51f275e6f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F19BA1BB
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 12:53:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A08F1BD
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1296> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1068> 
 ======================================================================
-Reported By:                Henne
+Reported By:                mandreiana
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1296
-Category:                   alsaconf
+Project:                    ALSA - lib
+Issue ID:                   1068
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-01-2005 13:07 CEST
-Last Modified:              08-09-2005 12:53 CEST
+Date Submitted:             04-21-2005 06:49 CEST
+Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    isapnp is incompatible with pnpbios and used the
-wrong ID's
+Summary:                    enable dmix by default
 Description: 
-The sysfs path to the device is wrong.
-All details are in the patch. 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
+Please see this bug report:
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155421
+
+Someone suggested to change /etc/asound.conf so dmix is turned on, but
+please enable it by default.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-03-05 14:58 
+ pzad - 05-24-05 09:35 
 ----------------------------------------------------------------------
-Check the cvs version.  It was fixed today.
+dmix should be enabled for all cheap motherboards cards (except I think
+envy24 based cards).
+
+What other cards do you have ?
 
 ----------------------------------------------------------------------
- perex - 08-09-05 12:53 
+ perex - 05-30-05 12:54 
 ----------------------------------------------------------------------
-Fixed in CVS.
+The sympthom has been resolved. Please, create another bug, if something
+does not work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-01-05 13:07 Henne          New Issue                                    
-08-01-05 13:07 Henne          File Added: aconf.diff                       
-08-03-05 14:58 tiwai          Note Added: 0005628                          
-08-04-05 08:52 perex          Relationship added       related to 0000879  
-08-09-05 12:53 perex          Status                   new => resolved     
-08-09-05 12:53 perex          Resolution               open => fixed       
-08-09-05 12:53 perex          Assigned To               => perex           
-08-09-05 12:53 perex          Note Added: 0005723                          
+04-21-05 06:49 mandreiana     New Issue                                    
+04-21-05 07:59 pzad           Note Added: 0004546                          
+04-21-05 08:39 mandreiana     Note Added: 0004547                          
+04-21-05 08:42 mandreiana     Note Added: 0004548                          
+04-29-05 09:08 mandreiana     Note Added: 0004578                          
+05-24-05 09:29 Martin Pitt    Note Added: 0004707                          
+05-24-05 09:35 pzad           Note Added: 0004708                          
+05-30-05 12:54 perex          Status                   new => resolved     
+05-30-05 12:54 perex          Resolution               open => fixed       
+05-30-05 12:54 perex          Assigned To               => perex           
+05-30-05 12:54 perex          Note Added: 0004803                          
+08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
 
