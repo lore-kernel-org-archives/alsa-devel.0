@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001304]: Speaker test hangs
-Date: Tue, 9 Aug 2005 06:58:49 +0200
-Message-ID: <58a49ccbf6276b480e154bcf2927459c@bugtrack.alsa-project.org>
+From: "Nambiar, Anil" <NambiarA@sharpsec.com>
+Subject: Alsa-lib problem
+Date: Tue, 9 Aug 2005 17:57:02 -0400
+Message-ID: <6A09F73E2878E447BF6B87C43162C827021545A4@excwa1b2.sharpsec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C59D2D.45D1A606"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECE7E1CB
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 06:58:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,179 +15,192 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
-======================================================================
-Reported By:                herby
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1304
-Category:                   speakertest
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-03-2005 02:46 CEST
-Last Modified:              08-09-2005 06:58 CEST
-======================================================================
-Summary:                    Speaker test hangs
-Description: 
-After applying the patch to the library that took out the check for a
-proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
-or so), I attempted to try a speaker test again.  It hung right after
-outputting "0 - Front Left".  I did an strace and the results are included
-in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
-with little luck.  The wierd thing is that I can execute 'aplay' (with the
-default device) and get a '.wav' file to play nicely.  I can even get a
-multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
-speaker-test doesn't work is beyond me.  The problem is that I appear to
-use similar techniques in my own programming as speaker-test, and my
-program doesen't do that well.  Being as how speaker-test IS part of ALSA,
-I thought I would submit the bug report against it.
+------_=_NextPart_001_01C59D2D.45D1A606
+Content-Type: text/plain
 
-If other tests need be preformed, I'd be VERY happy to do them.
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- herby - 08-04-05 20:21 
-----------------------------------------------------------------------
-It seems that the problem is only on the Revolution 7.1 card, since it
-hangs, and the motherboard audio (Via 8235) can generate the audio. 
-Results of the tests:
-<<<Revo 7.1 card test (card #0)>>>
-[tsw ~]$ speaker-test -c2 -Dplug:front:0
+            I am developing ALSA based sound driver for our arm based soc.
+The driver is built as part of the kernel rather than as a loadable module.
+If I run a simple wave player which has OSS based interface, it works fine.
+Even mplayer works fine in OSS emulation mode. But if I run any native alsa
+based player it gives error opening the device. For eg: running 'aplay -D
+default demo.wav" give the following error: 
 
-speaker-test 0.0.8
+ALSA lib pcm.c:2090:(snd_pcm_open_noupdate) Unknown PCM default
 
-Playback device is plug:front:0
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 32768
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3764
-was set buffer_size = 15052
- 0 - Front Left
-<<<Hangs, aborted by interupt>>>
+aplay: main:533: audio open error: No such file or directory
 
-<<<Test using the Motherboard audio, card #1>>>
-[tsw ~]$ speaker-test -c2 -Dplug:front:1
+ 
 
-speaker-test 0.0.8
+The /dev/snd/ looks like this:
 
-Playback device is plug:front:1
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 16384
-Period size range from 8 to 8192
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3763
-was set buffer_size = 15052
- 0 - Front Left
- 1 - Front Right
-Time per period = 5.649717
- 0 - Front Left
- 1 - Front Right
+drwxr-xr-x    2 root     root         4096 Aug  9  2005 .
 
-<<<Audio cycles as intended>>>
+drwxr-xr-x    6 root     root         4096 Aug  9  2005 ..
 
-Maybe it is the interaction between the Revo 7.1 driver and the speaker
-test.  Any more test to be run??
+crw-rw-rw-    1 root     root     116,   0 Aug  9  2005 controlC0
 
-----------------------------------------------------------------------
- herby - 08-09-05 06:58 
-----------------------------------------------------------------------
-Now that I see the problem only happens on the Revo 7.1 card, do we
-transfer it to that driver?  There are the attempts at trying speaker
-test:
-[tsw ~]$ speaker-test -c 2 -D plug:front:0  <<Attempting to use Revo 7.1
-card>>
+crw-rw-rw-    1 root     root     116,  24 Aug  9  2005 pcmC0D0c
 
-speaker-test 0.0.8
+crw-rw-rw-    1 root     root     116,  16 Aug  9  2005 pcmC0D0p
 
-Playback device is plug:front:0
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 32768
-Period size range from 8 to 16384
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3764
-was set buffer_size = 15052
- 0 - Front Left
-<interupt after waiting for sound to appear. No such luck!>
+crw-rw-rw-    1 root     root     116,   1 Aug  9  2005 seq
+
+crw-rw-rw-    1 root     root     116,  33 Aug  9  2005 timer
+
+ 
+
+            If I do "cat demo.wav > dev/snd/pcmC0D0p", it prints the 'open'
+msg in my driver. So it seems like the devices I have created are able to
+link to my driver. But using alsa-lib it doen't even print the 'open' msg in
+the driver. So looks like Alsa-lib does not link to my driver. 
+
+I would appreciate if someone could point and tell me if I'm missing
+something as this is the first time I'm developing Alsa device driver. Do I
+have to create any configuration files on the root file system? I'm using
+the linux kernel 2.6.12.3 and the latest Alsa-lib 1.0.9. 
+
+ 
+
+Thanks,
+
+AniL
 
 
-[tsw ~]$ speaker-test -c 2 -D plug:front:1   <<Using working motherboard
-audio>>
+------_=_NextPart_001_01C59D2D.45D1A606
+Content-Type: text/html
 
-speaker-test 0.0.8
+<html>
 
-Playback device is plug:front:1
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 16 to 16384
-Period size range from 8 to 8192
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 15052
-To choose period_size = 3763
-was set period_size = 3763
-was set buffer_size = 15052
- 0 - Front Left
- 1 - Front Right
-Time per period = 5.649939
- 0 - Front Left
-<interupted after success at generating white noise.  Works OK>
-
-For reference:
-
-[tsw ~]$ more /proc/asound/cards
-0 [Revolution71   ]: ICE1724 - M Audio Revolution-7.1
-                     M Audio Revolution-7.1 at 0xdc00, irq 10
-1 [V8235          ]: VIA8233 - VIA 8235
-                     VIA 8235 with VT1616i at 0xd400, irq 5
-
-Obviously there is a problem in the Revolution-7.1 software.  Is there any
-hope?
-Has the Revo 7.1 driver changed from version 1.0.9b to the present??
-
-I'd like to get the Revo driver functional, as I've got a project that
-uses it
-(all 8 channels it really should be called a Revo 8.0!).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-03-05 02:46 herby          New Issue                                    
-08-03-05 02:46 herby          File Added: speaker-trace                    
-08-03-05 12:18 tiwai          Note Added: 0005621                          
-08-04-05 03:21 herby          Note Added: 0005638                          
-08-04-05 14:10 jcdutton       Note Added: 0005648                          
-08-04-05 20:21 herby          Note Added: 0005652                          
-08-09-05 06:58 herby          Note Added: 0005718                          
-======================================================================
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
 
 
+<meta name=Generator content="Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>Hi,</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am
+developing ALSA based sound driver for our arm based soc. The driver is built
+as part of the kernel rather than as a loadable module. If I run a simple wave
+player which has </span></font>OSS based interface, it works fine. Even mplayer
+works fine in OSS emulation mode. But if I run any native alsa based player it gives
+error opening the device. For eg: running 'aplay -D default demo.wav"
+give the following error: </p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>ALSA lib pcm.c:2090:(snd_pcm_open_noupdate) Unknown PCM default</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>aplay: main:533: audio open error: No such file or directory</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>The /dev/snd/ looks like this:</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>drwxr-xr-x&nbsp;&nbsp;&nbsp; 2 root&nbsp;&nbsp;&nbsp;&nbsp; root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4096 </span></font>Aug&nbsp; 9&nbsp; 2005 .</p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>drwxr-xr-x&nbsp;&nbsp;&nbsp; 6 root&nbsp;&nbsp;&nbsp;&nbsp; root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4096 </span></font>Aug&nbsp; 9&nbsp; 2005 ..</p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>crw-rw-rw-&nbsp;&nbsp;&nbsp; 1 root&nbsp;&nbsp;&nbsp;&nbsp; root&nbsp;&nbsp;&nbsp;&nbsp;
+116,&nbsp;&nbsp; 0 </span></font>Aug&nbsp; 9&nbsp; 2005 controlC0</p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>crw-rw-rw-&nbsp;&nbsp;&nbsp; 1 root&nbsp;&nbsp;&nbsp;&nbsp; root&nbsp;&nbsp;&nbsp;&nbsp;
+116,&nbsp; 24 </span></font>Aug&nbsp; 9&nbsp; 2005 pcmC0D0c</p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>crw-rw-rw-&nbsp;&nbsp;&nbsp; 1 root&nbsp;&nbsp;&nbsp;&nbsp; root&nbsp;&nbsp;&nbsp;&nbsp;
+116,&nbsp; 16 </span></font>Aug&nbsp; 9&nbsp; 2005 pcmC0D0p</p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>crw-rw-rw-&nbsp;&nbsp;&nbsp; 1 root&nbsp;&nbsp;&nbsp;&nbsp; root&nbsp;&nbsp;&nbsp;&nbsp;
+116,&nbsp;&nbsp; 1 </span></font>Aug&nbsp; 9&nbsp; 2005 seq</p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>crw-rw-rw-&nbsp;&nbsp;&nbsp; 1 root&nbsp;&nbsp;&nbsp;&nbsp; root&nbsp;&nbsp;&nbsp;&nbsp;
+116,&nbsp; 33 </span></font>Aug&nbsp; 9&nbsp; 2005 timer</p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If I
+do "cat demo.wav &gt; dev/snd/pcmC0D0p", it prints the 'open'
+msg in my driver. So it seems like the devices I have created are able to link
+to my driver. But using alsa-lib it doen't even print the 'open'
+msg in the driver. So looks like Alsa-lib does not link to my driver. </span></font></p>
+
+<p class=MsoNormal style='text-indent:.5in'><font size=3 face="Times New Roman"><span
+style='font-size:12.0pt'>I would appreciate if someone could point and tell me
+if I'm missing something as this is the first time I'm developing Alsa
+device driver. Do I have to create any configuration files on the root file
+system? I'm using the linux kernel 2.6.12.3 and the latest Alsa-lib 1.0.9.
+</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>Thanks,</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>AniL</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C59D2D.45D1A606--
 
 
 -------------------------------------------------------
