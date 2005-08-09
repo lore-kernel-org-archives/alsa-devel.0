@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - plugins 0001324]: ALSA apps that use both playback and capture segfaults with plug:jack
-Date: Tue, 9 Aug 2005 21:42:50 +0200
-Message-ID: <a8fe0e230d5a0b8f119cb66924036181@bugtrack.alsa-project.org>
+Date: Tue, 9 Aug 2005 21:45:27 +0200
+Message-ID: <d5c309c2e64b85e83ba7a28dbf0f866f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3AD3E1CD
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 21:42:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 626311E6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 21:45:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-09-2005 21:36 CEST
-Last Modified:              08-09-2005 21:42 CEST
+Last Modified:              08-09-2005 21:45 CEST
 ======================================================================
 Summary:                    ALSA apps that use both playback and capture
 segfaults with plug:jack
@@ -53,12 +53,6 @@ I have not found any app that uses both playback and capture that works
 with plug:jack. Normal playback and capture separate with plug:jack works
 great. 
 ======================================================================
-
-----------------------------------------------------------------------
- b0ef - 08-09-05 21:40 
-----------------------------------------------------------------------
-Hmm, some text I wrote didn't make it into the report. This would be the
-steps to reproduce box. Where did that go?
 
 ----------------------------------------------------------------------
  b0ef - 08-09-05 21:42 
@@ -96,12 +90,20 @@ jack_activate (client=0x814cc08) at client.c:1611
 1611    client.c: No such file or directory.
         in client.c
 
+----------------------------------------------------------------------
+ b0ef - 08-09-05 21:45 
+----------------------------------------------------------------------
+I wrote the wrong patch number. The patch I have applied is: 
+
+realtime-preempt-2.6.13-rc4-RT-V0.7.52-02
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-09-05 21:36 b0ef           New Issue                                    
 08-09-05 21:40 b0ef           Note Added: 0005736                          
 08-09-05 21:42 b0ef           Note Added: 0005737                          
+08-09-05 21:45 b0ef           Note Added: 0005738                          
 ======================================================================
 
 
