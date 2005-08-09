@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001112]: ad1816a based card with id "ADS7180" not detected
-Date: Tue, 9 Aug 2005 13:44:48 +0200
-Message-ID: <839e5f00106442ca94b6460434faa84a@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
+Date: Tue, 9 Aug 2005 13:44:24 +0200
+Message-ID: <f93c3a4494f967c5d9a10c5ab06237bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D0011EC
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBBE81E9
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1112> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
 ======================================================================
-Reported By:                sonne000ca
+Reported By:                qwer1234
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1112
-Category:                   ISA - ad1816a
+Project:                    ALSA - liboss
+Issue ID:                   1098
+Category:                   
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-15-2005 08:41 CEST
+Date Submitted:             05-09-2005 17:09 CEST
 Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    ad1816a based card with id "ADS7180" not detected
+Summary:                    aoss openal    gives too fast sound.
 Description: 
-To fix, add:
-{ .id = "ADS7180", .devs = { { .id = "ADS7180" }, { .id = "ADS7181" } }
-},
-to snd_ad1816a_pnpids[] in ad1816a,c
+Opanal layer gives too fast sound when I use aoss wrapper and I get this
+error multiple times:
 
+native_blitbuffer: select error occured
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-15-05 15:41 
+ qwer1234 - 05-25-05 05:24 
 ----------------------------------------------------------------------
-Fixed on CVS.
+aoss armyops; works fine with alsa 1.0.9rc3a,
+but openal doesn't give me any sound with alsa driver.
+I think that this is openal bug, but I don't know that
+for sure. I will try to debug openal. Mabey I will find out
+what is wrong.
+
+----------------------------------------------------------------------
+ tiwai - 05-27-05 12:36 
+----------------------------------------------------------------------
+OK, then let's close this bug now.
+Please open another one for the bug of alsa mode of openal if you find
+anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-15-05 08:41 sonne000ca     New Issue                                    
-05-15-05 15:41 tiwai          Status                   new => resolved     
-05-15-05 15:41 tiwai          Resolution               open => fixed       
-05-15-05 15:41 tiwai          Assigned To               => tiwai           
-05-15-05 15:41 tiwai          Note Added: 0004661                          
+05-09-05 17:09 qwer1234       New Issue                                    
+05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
+05-17-05 17:52 tiwai          Note Added: 0004681                          
+05-17-05 17:53 tiwai          Note Added: 0004682                          
+05-18-05 00:38 qwer1234       Note Added: 0004685                          
+05-18-05 00:41 qwer1234       Note Edited: 0004685                         
+05-18-05 14:53 tiwai          Note Added: 0004687                          
+05-18-05 14:55 tiwai          Note Added: 0004688                          
+05-19-05 13:37 qwer1234       Note Added: 0004689                          
+05-19-05 14:12 tiwai          Note Added: 0004690                          
+05-19-05 16:59 qwer1234       Note Added: 0004694                          
+05-24-05 11:59 tiwai          Note Added: 0004712                          
+05-25-05 05:24 qwer1234       Note Added: 0004735                          
+05-27-05 12:36 tiwai          Status                   new => resolved     
+05-27-05 12:36 tiwai          Resolution               open => fixed       
+05-27-05 12:36 tiwai          Assigned To               => tiwai           
+05-27-05 12:36 tiwai          Note Added: 0004751                          
+05-28-05 06:55 qwer1234       Issue End Monitor: qwer1234                    
 08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
