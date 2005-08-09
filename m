@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [linux-audio-dev] Re: any update on the
-	pcmcia bug blocking Audigy2 notebook sound card driver development
-Date: Tue, 09 Aug 2005 02:54:49 -0400
-Message-ID: <1123570490.26998.1.camel@mindpipe>
-References: <1ed860e3050807084449b0daac@mail.gmail.com>
-	 <20050807104332.320aec48.akpm@osdl.org>
-	 <1123519224.16205.5.camel@cmn37.stanford.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001176]: problem with alsa-driver and asus m5a notebook
+Date: Tue, 9 Aug 2005 21:09:50 +0200
+Message-ID: <5a6f89ff14fd7ea87b21eedfe0ca211c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1123519224.16205.5.camel@cmn37.stanford.edu>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D70521E6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 21:09:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,36 +18,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>, Raymond Lai <raymond.kk.lai@gmail.com>, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-[added James to cc:]
 
-On Mon, 2005-08-08 at 09:40 -0700, Fernando Lopez-Lezcano wrote:
-> On Sun, 2005-08-07 at 10:43, Andrew Morton wrote:
-> > Raymond Lai <raymond.kk.lai@gmail.com> wrote:
-> > > Hi all,
-> > > 
-> > > I remember there's a kernel pcmcia bug preventing the development for 
-> > > the Audigy2 pcmcia notebook sound card driver. 
-> > > 
-> > > See http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
-> > > 
-> > > Is there any new updates on the situation? Has the bug been fixed? or
-> > > anyone working on it?
-> >
-> > Is it related to http://bugzilla.kernel.org/show_bug.cgi?id=4788 ?
-> 
-> I think not, the card in question is the Creative Audigy 2 ZS PCMCIA
-> card. I have one I can't use yet :-( The kernel locks hard when ALSA
-> tries to load the driver. 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176> 
+======================================================================
+Reported By:                Ballbreaker
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1176
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.12-rc5
+======================================================================
+Date Submitted:             06-09-2005 13:44 CEST
+Last Modified:              08-09-2005 21:09 CEST
+======================================================================
+Summary:                    problem with alsa-driver and asus m5a notebook
+Description: 
+I use gentoo-linux on an asus m5a notebook. Installation of alsa-driver
+works without any error messages. xmms, aplay etc. play files, but i can't
+hear anything. alsa-mixer shows me all the mixer-controls. I didn't forget
+to unmute, and with windows sound is working fine - so i think there is a
+problem with the alsa-driver and this notebook (on other notebooks with
+the same sound-chip alsa is working).
 
-Maybe we should have the emu10k1 driver not claim the device until this
-is fixed.  It's better than locking the machine (this behavior has been
-confirmed by several other users).
+I tried the following, always with the same results:
+- compile alsa in the kernel
+- compile alsa as kernel modules
+- emerge alsa-driver (version 1.0.9-rc3 - 1.0.9-rc4 is not in portage
+yet)
+- compile alsa-driver manually (version 1.0.9-rc4)
 
-Lee
+Everything seems to work fine, but i can't hear anything, so maybe this is
+a bug in the alsa-driver.
+Would be great if somebody could tell me how i get alsa working on my
+notebook  ;-)
+
+Greetz,
+thomas
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001311 drivers load but unmuting channels / ad...
+======================================================================
+
+----------------------------------------------------------------------
+ askel - 08-09-05 21:09 
+----------------------------------------------------------------------
+I have exactly the same problem - all modules are loaded flawlessly, I can
+change levels and mute/unmute channels but that makes no any difference.
+No any audible sound. I tried kernel 2.6.12 with built-in alsa modules as
+well as alsa-driver 1.0.9b with all alsa and oss modules disaled in
+kernel. No errors but no sound.
+
+0000:00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 04)
+        Subsystem: CLEVO/KAPOK Computer: Unknown device 038a
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, cache line size 08
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at 80000000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] #10 [0091]
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-09-05 13:44 Ballbreaker    New Issue                                    
+06-09-05 13:44 Ballbreaker    Distribution              => gentoo          
+06-09-05 13:44 Ballbreaker    Kernel Version            => 2.6.12-rc5      
+06-09-05 16:11 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-09-05 16:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
+06-09-05 16:19 Ballbreaker    Issue Monitored: Ballbreaker                    
+08-05-05 08:39 perex          Relationship added       related to 0001311  
+08-09-05 21:09 askel          Note Added: 0005735                          
+======================================================================
+
 
 
 
