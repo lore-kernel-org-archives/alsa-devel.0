@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001074]: pcm_dmix hangs on device close
-Date: Tue, 9 Aug 2005 13:44:45 +0200
-Message-ID: <cba1edd2918f69f60ce98e944ee79add@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
+Date: Tue, 9 Aug 2005 13:44:35 +0200
+Message-ID: <f9ae0c226aca7270065495b19c8d5a80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C7841D1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDDE11C9
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1074> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
 ======================================================================
-Reported By:                ikonst
+Reported By:                timing
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1074
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1013
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
+Distribution:               Ubuntu
+Kernel Version:             2.6.11.5
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-24-2005 08:48 CEST
+Date Submitted:             03-24-2005 19:27 CET
 Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    pcm_dmix hangs on device close
+Summary:                    Sound is not working on the MacMini
 Description: 
-The fix in pcm_dmix.c revision 1.71 causes the following regression:
+Sound is not working on the MacMini. When loading the dmasound_pmac i get
+the following error:
 
-Everytime I access a Flash site thru my 'aoss'-wrapped Mozilla, it hangs:
+FATAL: Error inserting dmasound_pmac
+(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
+such device
 
-#0  0x40a951c3 in poll () from /lib/tls/libc.so.6
-#1  0x4001a1fd in poll () from /usr/lib/libaoss.so
-#2  0x40c7bf78 in snd_pcm_wait_nocheck (pcm=0x9a7a6a0, timeout=-1)
-    at pcm.c:2234
-#3  0x40cb27fb in snd_pcm_dmix_drain (pcm=0x9a7a6a0) at pcm_dmix.c:504
-#4  0x40c79bd4 in snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
-#5  0x40c8cbb7 in snd_pcm_generic_drain (pcm=0xfffffffc) at
-pcm_generic.c:151
-#6  0x40c79bd4 in snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
-#7  0x40bb24e7 in lib_oss_pcm_close () from /usr/lib/libalsatoss.so.0
-#8  0x400199b4 in close () from /usr/lib/libaoss.so
-#9  0x441712b9 in PlatformSoundMix::UnlockAudioCallback ()
-   from /usr/lib/flashplugin-nonfree/libflashplayer.so
-...
+When trying to play music i get an "maybe your device is busy?" error.
 
+I've found a solution on the ubuntuforums(
+http://www.ubuntuforums.org/showthread.php?t=12748 )
+
+it says:
+
+To manually apply the patch (just as easy in this case),
+just open the file linux/sound/ppc/pmac.c in an editor,
+and search for OAKeylargo.
+Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
+(In kernel 2.6.10 it's at line 967). 
+
+this solution is very minimal, the alsamixer is slow, and my computer
+hangs for a couple of seconds before the start of every new process (when
+opening a new window in gnome etc.). When i edit pmac.c in the old way my
+system runs normal again.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-15-05 15:45 
+ perchrh - 05-07-05 17:24 
 ----------------------------------------------------------------------
-Yeah, that's really bad.  We need to change these ioctls.
-Meanwhile, I'll apply your patch as a temporary workaround.
+Benjamin Herrenschmidt <benh@kernel.crashing.org> 
+has made a driver for mac mini sound. It's included in current alsa-cvs
+and linux-2.6.12-rc4 and later
 
 ----------------------------------------------------------------------
- tiwai - 05-17-05 17:51 
+ tiwai - 05-24-05 12:27 
 ----------------------------------------------------------------------
-This should be fixed on CVS now.
+Fixed on CVS, 1.0.9rc4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-24-05 08:48 ikonst         New Issue                                    
-05-09-05 17:33 chtephan       Note Added: 0004627                          
-05-09-05 17:53 chtephan       Issue Monitored: chtephan                    
-05-09-05 20:41 chtephan       File Added: timer-flush-blocking.diff             
-      
-05-09-05 20:42 chtephan       Note Added: 0004629                          
-05-11-05 17:23 ikonst         Note Added: 0004638                          
-05-11-05 18:11 tiwai          Note Added: 0004639                          
-05-12-05 13:34 chtephan       Note Added: 0004641                          
-05-12-05 13:50 tiwai          Note Added: 0004642                          
-05-13-05 22:57 chtephan       Note Added: 0004656                          
-05-15-05 15:45 tiwai          Note Added: 0004662                          
-05-17-05 17:51 tiwai          Status                   new => resolved     
-05-17-05 17:51 tiwai          Resolution               open => fixed       
-05-17-05 17:51 tiwai          Assigned To               => tiwai           
-05-17-05 17:51 tiwai          Note Added: 0004680                          
+03-24-05 19:27 timing         New Issue                                    
+03-24-05 19:27 timing         Distribution              => Ubuntu          
+03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
+03-24-05 19:32 timing         Note Added: 0004194                          
+03-24-05 19:35 timing         Issue Monitored: timing                      
+03-24-05 19:48 tiwai          Note Added: 0004197                          
+03-24-05 21:35 timing         Note Added: 0004202                          
+03-25-05 21:44 perchrh        Note Added: 0004212                          
+03-25-05 21:50 perchrh        Note Edited: 0004212                         
+03-25-05 21:52 perchrh        Issue Monitored: perchrh                     
+03-25-05 22:57 timing         Note Edited: 0004202                         
+03-25-05 23:27 timing         Note Edited: 0004202                         
+04-03-05 13:44 perchrh        Note Added: 0004309                          
+04-03-05 14:29 perchrh        Note Edited: 0004309                         
+04-03-05 14:30 perchrh        Note Edited: 0004309                         
+04-03-05 14:36 perchrh        Note Added: 0004310                          
+04-09-05 02:45 perchrh        Note Added: 0004381                          
+04-09-05 14:26 perchrh        Note Added: 0004396                          
+05-07-05 17:24 perchrh        Note Added: 0004605                          
+05-07-05 17:24 perchrh        Issue End Monitor: perchrh                    
+05-24-05 12:27 tiwai          Status                   assigned => resolved
+05-24-05 12:27 tiwai          Resolution               open => fixed       
+05-24-05 12:27 tiwai          Note Added: 0004718                          
 08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
