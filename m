@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001312]: aplay has endian issues
-Date: Tue, 9 Aug 2005 12:54:57 +0200
-Message-ID: <9a23e0915fe375a276a7d5124a93ae7e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001131]: Alsamixer crashing - using Audigy Platinum Ex
+Date: Tue, 9 Aug 2005 13:46:25 +0200
+Message-ID: <2353feddb13eb0282f8af853fd82fc1e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EC921BB
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 12:54:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72869218
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:46:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1312> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131> 
 ======================================================================
-Reported By:                ChrisWhite
-Assigned To:                perex
+Reported By:                sorn73
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1312
-Category:                   aplay/arecord
+Issue ID:                   1131
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
+Status:                     closed
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-05-2005 07:18 CEST
-Last Modified:              08-09-2005 12:54 CEST
+Date Submitted:             05-27-2005 21:52 CEST
+Last Modified:              08-09-2005 13:46 CEST
 ======================================================================
-Summary:                    aplay has endian issues
+Summary:                    Alsamixer crashing - using Audigy Platinum Ex
 Description: 
-It appears that play uses BE specific formating when playing back by
-default.  As alsa seems to have a default SND_PCM_FORMAT_S16 which
-switches to the correct native endian, I'm not sure why that's not used as
-the default instead of endian specific definitions.
+I'm having problems with setting the capture levels on my Audigy card. If I
+start up alsamixer and press F4 I get a crash:
+"alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion
+`helem' failed.
+Abort (core dumped)"
+
+Also, since Kmix (from KDE 3.4) doesn't show any capture devices, I'm
+thinking this is not a problem with alsamixer, but with something else.
+But since I don't know where I report it on alsamixer.
+
+This is actually alsa v1.0.9, but you can't select that from the list of
+versions.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001144 alsamixer 1.0.9 crashes when browsing t...
+has duplicate       0001142 alsamixer (alsa-utils-1.0.9) crash when...
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 08-05-05 21:41 
+ mrmachine - 05-29-05 14:53 
 ----------------------------------------------------------------------
-aplay can not play mp3.
+cvs update fixed for me, too.
 
 ----------------------------------------------------------------------
- perex - 08-09-05 12:54 
+ sorn73 - 05-29-05 18:45 
 ----------------------------------------------------------------------
-Invalid request. aplay does not support the mp3 format.
+Yes, CVS version worked for me too. I consider this issue resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-05 07:18 ChrisWhite     New Issue                                    
-08-05-05 09:30 Clemens LadischNote Added: 0005663                          
-08-05-05 18:08 ChrisWhite     Note Added: 0005669                          
-08-05-05 18:26 Clemens LadischNote Added: 0005670                          
-08-05-05 19:55 ChrisWhite     Note Added: 0005672                          
-08-05-05 20:01 ChrisWhite     Note Added: 0005673                          
-08-05-05 20:09 jcdutton       Note Added: 0005674                          
-08-05-05 21:41 pzad           Note Added: 0005676                          
-08-09-05 12:54 perex          Status                   new => resolved     
-08-09-05 12:54 perex          Resolution               open => not an issue
-08-09-05 12:54 perex          Assigned To               => perex           
-08-09-05 12:54 perex          Note Added: 0005724                          
+05-27-05 21:52 sorn73         New Issue                                    
+05-28-05 04:13 mrmachine      File Added: aadebug.txt                      
+05-28-05 04:15 mrmachine      Note Added: 0004757                          
+05-28-05 04:16 mrmachine      Issue Monitored: mrmachine                    
+05-29-05 07:39 Xero           Note Added: 0004779                          
+05-29-05 12:35 jcdutton       Note Added: 0004784                          
+05-29-05 14:17 Xero           Note Added: 0004786                          
+05-29-05 14:18 Xero           Note Edited: 0004786                         
+05-29-05 14:53 mrmachine      Note Added: 0004788                          
+05-29-05 18:45 sorn73         Note Added: 0004790                          
+05-29-05 23:22 rlrevell       Relationship added       has duplicate 0001144
+05-31-05 12:54 tiwai          Status                   new => resolved     
+05-31-05 12:54 tiwai          Resolution               open => fixed       
+05-31-05 12:54 tiwai          Assigned To               => tiwai           
+05-31-05 12:56 tiwai          Relationship added       has duplicate 0001142
+08-09-05 13:46 perex          Status                   resolved => closed  
 ======================================================================
 
 
