@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001102]: alsaconf man page installed as "alsaconf" rather than as "alsaconf.8"
-Date: Tue, 9 Aug 2005 13:44:49 +0200
-Message-ID: <fb207e55923cb3ef5ed0f2ce560cfe62@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
+Date: Tue, 9 Aug 2005 13:46:33 +0200
+Message-ID: <0451cf431a607beadb032c8712d48e21@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F00571FB
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E321A21C
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:46:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1102> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                tiwai
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1102
-Category:                   alsaconf
+Project:                    ALSA - lib
+Issue ID:                   829
+Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -39,36 +39,63 @@ Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-12-2005 18:55 CEST
-Last Modified:              08-09-2005 13:44 CEST
+Date Submitted:             01-17-2005 09:21 CET
+Last Modified:              08-09-2005 13:46 CEST
 ======================================================================
-Summary:                    alsaconf man page installed as "alsaconf" rather
-than as "alsaconf.8"
+Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
+`snd_config_get_pointer' from incompatible pointer type"
 Description: 
-Running "make install" produces these commands, the first one correct, the
-second one incorrectly omitting the ".8" suffix.
+Making all in alisp
+[...]
+if /bin/sh ../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H -I.
+-I. -I../include -I../include  -D__ppc__  -g -Wall -O2 -MT confmisc.lo -MD
+-MP -MF ".deps/confmisc.Tpo" \
+  -c -o confmisc.lo `test -f 'confmisc.c' || echo './'`confmisc.c; \
+then mv -f ".deps/confmisc.Tpo" ".deps/confmisc.Plo"; \
+else rm -f ".deps/confmisc.Tpo"; exit 1; \
+fi
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
+confmisc.c  -fPIC -DPIC -o .libs/confmisc.o
+confmisc.c: In function `snd_func_private_pcm_subdevice':
+confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from
+incompatible pointer type
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
+-D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
+confmisc.c -o confmisc.o >/dev/null 2>&1
 
-/usr/bin/install -c -m 644 ./alsactl.1
-/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-utils-1.0.8+1.0.9rc3/debian/alsa-utils/usr/share/man/man1/alsactl.1
-
-/usr/bin/install -c -m 644 alsaconf.8
-/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-utils-1.0.8+1.0.9rc3/debian/alsa-utils/usr/share/man/man8/alsaconf
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-13-05 14:14 
+ tiwai - 01-19-05 14:44 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Yep, this should get fixed.
+The problem is perhaps const void **.  Both const and "void **" are tricky
+to use...
+
+Anyway, thanks for these reports.
+
+----------------------------------------------------------------------
+ perex - 05-30-05 13:18 
+----------------------------------------------------------------------
+This warning should be fixed in CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-12-05 18:55 jdthood        New Issue                                    
-05-13-05 14:14 tiwai          Status                   new => resolved     
-05-13-05 14:14 tiwai          Resolution               open => fixed       
-05-13-05 14:14 tiwai          Assigned To               => tiwai           
-05-13-05 14:14 tiwai          Note Added: 0004643                          
-08-09-05 13:44 perex          Status                   resolved => closed  
+01-17-05 09:21 jdthood        New Issue                                    
+01-17-05 09:30 jdthood        Note Added: 0003224                          
+01-17-05 11:26 jdthood        Note Added: 0003233                          
+01-18-05 16:49 jdthood        Note Added: 0003251                          
+01-19-05 14:31 tiwai          Note Added: 0003269                          
+01-19-05 14:39 jdthood        Note Added: 0003274                          
+01-19-05 14:44 tiwai          Note Added: 0003277                          
+05-30-05 12:59 perex          Category                 alisp => general    
+05-30-05 13:18 perex          Status                   new => resolved     
+05-30-05 13:18 perex          Resolution               open => fixed       
+05-30-05 13:18 perex          Assigned To               => perex           
+05-30-05 13:18 perex          Note Added: 0004807                          
+08-09-05 13:46 perex          Status                   resolved => closed  
 ======================================================================
 
 
