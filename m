@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001324]: ALSA apps that use both playback and capture segfaults with plug:jack
-Date: Tue, 9 Aug 2005 21:49:28 +0200
-Message-ID: <367644a6e2b0ba4adda795c2c6c2ee77@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001304]: Speaker test hangs
+Date: Tue, 9 Aug 2005 06:58:49 +0200
+Message-ID: <58a49ccbf6276b480e154bcf2927459c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A6531E6
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 21:49:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECE7E1CB
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 06:58:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,170 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1324> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
 ======================================================================
-Reported By:                b0ef
+Reported By:                herby
 Assigned To:                
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1324
-Category:                   PCM - jack
+Project:                    ALSA - utils
+Issue ID:                   1304
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             08-09-2005 21:36 CEST
-Last Modified:              08-09-2005 21:49 CEST
+Date Submitted:             08-03-2005 02:46 CEST
+Last Modified:              08-09-2005 06:58 CEST
 ======================================================================
-Summary:                    ALSA apps that use both playback and capture
-segfaults with plug:jack
+Summary:                    Speaker test hangs
 Description: 
-I have applied realtime-preempt-2.6.13-rc4-RT-V0.7.51-38
+After applying the patch to the library that took out the check for a
+proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
+or so), I attempted to try a speaker test again.  It hung right after
+outputting "0 - Front Left".  I did an strace and the results are included
+in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
+with little luck.  The wierd thing is that I can execute 'aplay' (with the
+default device) and get a '.wav' file to play nicely.  I can even get a
+multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
+speaker-test doesn't work is beyond me.  The problem is that I appear to
+use similar techniques in my own programming as speaker-test, and my
+program doesen't do that well.  Being as how speaker-test IS part of ALSA,
+I thought I would submit the bug report against it.
 
-ALSA apps that use both playback and capture segfaults with plug:jack
-
-I have tested with several applications, primarily asterisk. 
-
-I have not found any app that uses both playback and capture that works
-with plug:jack. Normal playback and capture separate with plug:jack works
-great. 
+If other tests need be preformed, I'd be VERY happy to do them.
 ======================================================================
 
 ----------------------------------------------------------------------
- b0ef - 08-09-05 21:45 
+ herby - 08-04-05 20:21 
 ----------------------------------------------------------------------
-I wrote the wrong patch number. The patch I have applied is: 
+It seems that the problem is only on the Revolution 7.1 card, since it
+hangs, and the motherboard audio (Via 8235) can generate the audio. 
+Results of the tests:
+<<<Revo 7.1 card test (card #0)>>>
+[tsw ~]$ speaker-test -c2 -Dplug:front:0
 
-realtime-preempt-2.6.13-rc4-RT-V0.7.52-02
+speaker-test 0.0.8
+
+Playback device is plug:front:0
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ 0 - Front Left
+<<<Hangs, aborted by interupt>>>
+
+<<<Test using the Motherboard audio, card #1>>>
+[tsw ~]$ speaker-test -c2 -Dplug:front:1
+
+speaker-test 0.0.8
+
+Playback device is plug:front:1
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 16384
+Period size range from 8 to 8192
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3763
+was set buffer_size = 15052
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 5.649717
+ 0 - Front Left
+ 1 - Front Right
+
+<<<Audio cycles as intended>>>
+
+Maybe it is the interaction between the Revo 7.1 driver and the speaker
+test.  Any more test to be run??
 
 ----------------------------------------------------------------------
- b0ef - 08-09-05 21:49 
+ herby - 08-09-05 06:58 
 ----------------------------------------------------------------------
-I found the advanced view, btw;), so now I see the "steps to reproduce" is
-there
+Now that I see the problem only happens on the Revo 7.1 card, do we
+transfer it to that driver?  There are the attempts at trying speaker
+test:
+[tsw ~]$ speaker-test -c 2 -D plug:front:0  <<Attempting to use Revo 7.1
+card>>
+
+speaker-test 0.0.8
+
+Playback device is plug:front:0
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3764
+was set buffer_size = 15052
+ 0 - Front Left
+<interupt after waiting for sound to appear. No such luck!>
+
+
+[tsw ~]$ speaker-test -c 2 -D plug:front:1   <<Using working motherboard
+audio>>
+
+speaker-test 0.0.8
+
+Playback device is plug:front:1
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 16384
+Period size range from 8 to 8192
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 3763
+was set buffer_size = 15052
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 5.649939
+ 0 - Front Left
+<interupted after success at generating white noise.  Works OK>
+
+For reference:
+
+[tsw ~]$ more /proc/asound/cards
+0 [Revolution71   ]: ICE1724 - M Audio Revolution-7.1
+                     M Audio Revolution-7.1 at 0xdc00, irq 10
+1 [V8235          ]: VIA8233 - VIA 8235
+                     VIA 8235 with VT1616i at 0xd400, irq 5
+
+Obviously there is a problem in the Revolution-7.1 software.  Is there any
+hope?
+Has the Revo 7.1 driver changed from version 1.0.9b to the present??
+
+I'd like to get the Revo driver functional, as I've got a project that
+uses it
+(all 8 channels it really should be called a Revo 8.0!).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-09-05 21:36 b0ef           New Issue                                    
-08-09-05 21:40 b0ef           Note Added: 0005736                          
-08-09-05 21:42 b0ef           Note Added: 0005737                          
-08-09-05 21:45 b0ef           Note Added: 0005738                          
-08-09-05 21:49 b0ef           Note Added: 0005739                          
+08-03-05 02:46 herby          New Issue                                    
+08-03-05 02:46 herby          File Added: speaker-trace                    
+08-03-05 12:18 tiwai          Note Added: 0005621                          
+08-04-05 03:21 herby          Note Added: 0005638                          
+08-04-05 14:10 jcdutton       Note Added: 0005648                          
+08-04-05 20:21 herby          Note Added: 0005652                          
+08-09-05 06:58 herby          Note Added: 0005718                          
 ======================================================================
 
 
