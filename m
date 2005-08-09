@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001246]: Sound card loops and doesn't play any more
-Date: Wed, 10 Aug 2005 04:13:06 +0200
-Message-ID: <cd3a332a9d15958f298aedef8db0048a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
+Date: Tue, 9 Aug 2005 03:00:46 +0200
+Message-ID: <8020908e9a1ec19052ea4156c00af23f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C2791EE
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 04:13:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21EC91F1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 03:00:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,136 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1246> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
 ======================================================================
-Reported By:                syberdave
+Reported By:                iive
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1246
-Category:                   ISA - es18xx
+Issue ID:                   879
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Testing
-Kernel Version:             2.6.7-grsec
+Distribution:               Slackware 10
+Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             07-09-2005 17:04 CEST
-Last Modified:              08-10-2005 04:13 CEST
+Date Submitted:             02-03-2005 03:42 CET
+Last Modified:              08-09-2005 03:00 CEST
 ======================================================================
-Summary:                    Sound card loops and doesn't play any more
+Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
+on 2.6.x kernels
 Description: 
-I installed a second sound card (ESS 1868 F/ISA) and when I send data to
-it, it plays the first second or so and starts repeating it and it doesn't
-move on. I notice that when I make the sound mono and bring the bitrate
-down, the data that it repeats becomes longer: mpg321 --wav - music.mp3
-|sox -t wav - -t ossdsp -c 1 -r 4096 /dev/dsp1
+It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
+alsaconf doesn't detect the card as PnP, and fails to find it with
+bruteforce.
 
-And when I try to play it with ALSA, this command works for my first sound
-card:
-mpg321 --wav - music.mp3 |aplay -D hw:0,0
-But this command doesn't - it does that loop thing again:
-mpg321 --wav - music.mp3 |aplay -D hw:1,0
+When module is loaded by hand it shows no error, but on `aplay samle.wav`
+I got
+"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
+playback
+write error (DMA or IRQ trouble?"
 
-This is my results for lsmod:
-Module                  Size  Used by
-snd_es18xx             29100  0 
-snd_cs4231_lib         21280  0 
-snd_sb16_dsp            8064  0 
-snd_sb_common          13152  1 snd_sb16_dsp
-snd_ymfpci             54084  1 
-snd_ac97_codec         60356  1 snd_ymfpci
-snd_opl3_lib            8320  2 snd_es18xx,snd_ymfpci
-snd_hwdep               7136  1 snd_opl3_lib
-snd_mpu401_uart         5824  2 snd_es18xx,snd_ymfpci
-snd_rawmidi            19872  1 snd_mpu401_uart
+on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
+etc..)
 
-Any help would be appreciated.
+the bug is reported 4 months ago on
+http://bugzilla.kernel.org/show_bug.cgi?id=3117
+that's why some versions are old (but I had tried alsa-1.0.8 before
+reposting this bug here)
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001296 isapnp is incompatible with pnpbios and...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-04-05 09:25 
+ perex - 08-08-05 13:45 
 ----------------------------------------------------------------------
-syberdave: Could you try the patch from twhitehead?
+iive: Thanks for testing. Please, could you send me related ALSA lines from
+/etc/modules.conf or /etc/modprobe.d/sound (depending on distro) and
+contents of /sys directory when snd-opl3sa2 module is loaded?
+
+Also, please,try to override dma1, dma2 and irq parameters in the modprobe
+configuration file. (For example: options snd-opl3sa2 dma1=3 dma2=1
+irq=9). Check for free irqs in /proc/interrupts and for dmas in /proc/dma.
 
 ----------------------------------------------------------------------
- syberdave - 08-10-05 04:13 
+ ahaning - 08-09-05 03:00 
 ----------------------------------------------------------------------
-Hmm, the patch doesn't fix it. I don't know how to solve an IRQ conflict.
-So I'll just do without this extra sound card.
+Well, with the help of some people on LKML, I've successfully built
+module-init-tools 3.2-pre7.
+
+I've installed alsa-utils-1.0.9 with the above patch and installed the
+above-attached alsaconf.
+
+When I run alsaconf 1.0.9a, it does not detect my card as a PnP card. It
+will brute-force detect the card, however. The dma1, dma2, and irq are
+wrong, though.  When I fix them in the modprobe.conf file, I can do
+'alsasound restart' and the card appears to be detected. When I go to play
+something, I won't get sound until I touch the PCM mixer.
+
+If it would help, I can repost my /sys directory.
+
+Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-05 17:04 syberdave      New Issue                                    
-07-09-05 17:04 syberdave      Distribution              => Debian Testing  
-07-09-05 17:04 syberdave      Kernel Version            => 2.6.7-grsec     
-07-09-05 17:04 syberdave      Issue Monitored: syberdave                    
-07-10-05 06:49 syberdave      Note Added: 0005441                          
-07-23-05 13:38 twhitehead     Note Added: 0005552                          
-07-23-05 13:42 twhitehead     File Added: alpha-alsa.patch                    
-08-04-05 09:25 perex          Note Added: 0005643                          
-08-10-05 04:13 syberdave      Note Added: 0005745                          
+02-03-05 03:42 iive           New Issue                                    
+02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
+02-03-05 03:42 iive           Distribution              => Slackware 10    
+02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
+version (current 2.6.10)
+04-13-05 21:59 jdthood        Note Added: 0004478                          
+04-14-05 00:02 iive           Note Added: 0004485                          
+07-09-05 06:26 ahaning        Note Added: 0005438                          
+07-09-05 06:38 ahaning        Note Edited: 0005438                         
+07-09-05 11:13 jdthood        Note Added: 0005439                          
+07-09-05 11:14 jdthood        Note Added: 0005440                          
+07-28-05 05:17 ahaning        Note Added: 0005577                          
+08-02-05 00:02 iive           Note Added: 0005599                          
+08-02-05 03:00 ahaning        Note Added: 0005600                          
+08-02-05 03:05 ahaning        Note Added: 0005601                          
+08-02-05 03:05 ahaning        Note Deleted: 0005600                        
+08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
+      
+08-02-05 22:14 perex          Note Added: 0005607                          
+08-02-05 22:16 perex          Note Added: 0005608                          
+08-03-05 02:46 ahaning        Note Added: 0005610                          
+08-03-05 11:42 perex          File Added: alsaconf                         
+08-03-05 11:42 perex          Note Added: 0005615                          
+08-03-05 13:42 ahaning        Note Added: 0005625                          
+08-03-05 15:17 ahaning        Note Added: 0005631                          
+08-04-05 08:51 perex          Note Added: 0005641                          
+08-04-05 08:52 perex          Relationship added       related to 0001296  
+08-04-05 12:52 ahaning        Note Added: 0005644                          
+08-04-05 13:25 perex          Note Added: 0005645                          
+08-04-05 13:28 perex          Note Added: 0005646                          
+08-04-05 14:38 ahaning        File Added: sys-ahaning-0.1.tar.bz2               
+    
+08-04-05 14:42 ahaning        Note Added: 0005649                          
+08-04-05 14:49 ahaning        Note Edited: 0005649                         
+08-04-05 14:50 ahaning        File Added: asound-ahaning-0.1.tar.bz2            
+       
+08-04-05 14:51 perex          Note Added: 0005650                          
+08-05-05 02:35 ahaning        Note Added: 0005655                          
+08-05-05 03:18 ahaning        Note Edited: 0005655                         
+08-05-05 08:44 perex          Note Added: 0005661                          
+08-05-05 12:47 ahaning        Note Added: 0005665                          
+08-05-05 13:47 perex          Note Added: 0005667                          
+08-05-05 23:58 ahaning        Note Added: 0005678                          
+08-06-05 00:31 ahaning        Note Edited: 0005678                         
+08-06-05 08:37 perex          Note Added: 0005680                          
+08-06-05 18:32 ahaning        Note Added: 0005681                          
+08-06-05 18:39 ahaning        Note Edited: 0005681                         
+08-06-05 19:51 ahaning        Note Edited: 0005681                         
+08-07-05 15:19 iive           File Added: opl3sa2_iive2.tgz                    
+08-07-05 15:24 iive           Note Added: 0005694                          
+08-08-05 13:45 perex          Note Added: 0005707                          
+08-09-05 03:00 ahaning        Note Added: 0005716                          
 ======================================================================
 
 
