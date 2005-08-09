@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000988]: No errors, but no sound output
-Date: Tue, 9 Aug 2005 13:06:48 +0200
-Message-ID: <00e57a645fd8ce126954d30c370c6cc7@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001296]: isapnp is incompatible with pnpbios and used the wrong ID's
+Date: Tue, 9 Aug 2005 12:53:00 +0200
+Message-ID: <0b632bcc6a42b0b7f5bad67b8b073ea4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7CE81B5
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:06:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F19BA1BB
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 12:53:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1296> 
 ======================================================================
-Reported By:                madCoder
+Reported By:                Henne
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   988
-Category:                   PCI - cs46xx
+Project:                    ALSA - utils
+Issue ID:                   1296
+Category:                   alsaconf
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               gentoo
-Kernel Version:             2.6.11-gentoo-r2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-14-2005 00:35 CET
-Last Modified:              08-09-2005 13:06 CEST
+Date Submitted:             08-01-2005 13:07 CEST
+Last Modified:              08-09-2005 12:53 CEST
 ======================================================================
-Summary:                    No errors, but no sound output
+Summary:                    isapnp is incompatible with pnpbios and used the
+wrong ID's
 Description: 
-Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
-upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
-1.0.8, and now I get no sound at all.  There are no error messages, the
-kernel modules are loaded properly and appear to be working fine.  Playing
-a file in XMMS, the spectrum analyzer shows that it should be playing
-sound, but I get nothing from the speakers.
-
-I've already checked that all the mixer channels are unmuted and turned
-up, including DAC.  I know I'm not the only one, nor is this chipset the
-only one, that has had this problem, so is it something in the core that
-is causing all these problems, or are there just that many chipsets that
-have suddenly developed the inability to produce sound?
-
-lsmod, lspci, and /proc output are attached in Additional Info
+The sysfs path to the device is wrong.
+All details are in the patch. 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0000963 Sounc card is mute
+related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
- madCoder - 08-08-05 07:47 
+ tiwai - 08-03-05 14:58 
 ----------------------------------------------------------------------
-No, this isn't a duplicate of #371 - My .asoundrc does not use dmix.
-The issue was resolved 5 months ago :x
+Check the cvs version.  It was fixed today.
 
 ----------------------------------------------------------------------
- perex - 08-09-05 13:06 
+ perex - 08-09-05 12:53 
 ----------------------------------------------------------------------
-Resolved - mixer settings.
+Fixed in CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 00:35 madCoder       New Issue                                    
-03-14-05 00:35 madCoder       Distribution              => gentoo          
-03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
-03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
-03-16-05 12:56 tiwai          Note Added: 0003950                          
-03-17-05 00:05 madCoder       File Added: asound.state                     
-03-17-05 00:06 madCoder       Note Added: 0003973                          
-03-17-05 00:08 madCoder       Note Edited: 0003973                         
-03-18-05 18:19 tiwai          Note Added: 0004002                          
-03-19-05 00:16 madCoder       Note Added: 0004008                          
-03-19-05 04:07 madCoder       Note Added: 0004009                          
-03-19-05 04:08 madCoder       Issue End Monitor: madCoder                    
-03-22-05 15:13 jdthood        Relationship added       duplicate of 0000963
-03-22-05 19:42 tiwai          Note Added: 0004128                          
-08-08-05 03:40 mohjive        Note Added: 0005699                          
-08-08-05 03:50 mohjive        Note Deleted: 0005699                        
-08-08-05 07:47 madCoder       Note Added: 0005701                          
-08-09-05 13:06 perex          Status                   new => resolved     
-08-09-05 13:06 perex          Resolution               open => fixed       
-08-09-05 13:06 perex          Assigned To               => perex           
-08-09-05 13:06 perex          Note Added: 0005726                          
+08-01-05 13:07 Henne          New Issue                                    
+08-01-05 13:07 Henne          File Added: aconf.diff                       
+08-03-05 14:58 tiwai          Note Added: 0005628                          
+08-04-05 08:52 perex          Relationship added       related to 0000879  
+08-09-05 12:53 perex          Status                   new => resolved     
+08-09-05 12:53 perex          Resolution               open => fixed       
+08-09-05 12:53 perex          Assigned To               => perex           
+08-09-05 12:53 perex          Note Added: 0005723                          
 ======================================================================
 
 
