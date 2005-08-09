@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
-Date: Wed, 10 Aug 2005 00:57:10 +0200
-Message-ID: <55ccd91dd59451cdc3e6ce273c9f9322@bugtrack.alsa-project.org>
+Date: Wed, 10 Aug 2005 01:06:33 +0200
+Message-ID: <ae5b526ed99be6d0c9b4ad63cbc53c4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73E4E1E9
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 00:57:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BF7F1E9
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 01:06:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge AMD64
 Kernel Version:             2.6.12.3
 ======================================================================
 Date Submitted:             08-04-2005 22:50 CEST
-Last Modified:              08-10-2005 00:57 CEST
+Last Modified:              08-10-2005 01:06 CEST
 ======================================================================
 Summary:                    Driver cant find firmware for Layla24
 Description: 
@@ -63,19 +63,6 @@ related to          0001244 error with firmware with echo layla20
 ======================================================================
 
 ----------------------------------------------------------------------
- pochini - 08-09-05 11:42 
-----------------------------------------------------------------------
-I can only hope that distros will ship with working hotplug scripts :)
-With DSL apps you have to set an env variable, eg.:
-
-export AUDIODEV=plughw:0,0,2
-
-and they must be compiled with ALSA support. You can use the monitor mixer
-on windos too, but echomixer has a much simpler interface. The moving
-VU-meters is the background noise of the analog input channels. Did you
-try aplay ? Did you remember to set the volume :) ?
-
-----------------------------------------------------------------------
  oxi - 08-10-05 00:57 
 ----------------------------------------------------------------------
 Aaaaaalright! I got it finally working!! Thank you!!
@@ -90,6 +77,11 @@ work, and vice versa, so i was wondering if there is a work around for
 this to use both things at a time.
 
 My Layla24 is finally sounding! yay!! :D
+
+----------------------------------------------------------------------
+ rlrevell - 08-10-05 01:06 
+----------------------------------------------------------------------
+OK, closing (we can see if #1244 has a similar fix).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +115,7 @@ Date Modified  Username       Field                    Change
 08-08-05 23:07 oxi            Note Added: 0005715                          
 08-09-05 11:42 pochini        Note Added: 0005720                          
 08-10-05 00:57 oxi            Note Added: 0005741                          
+08-10-05 01:06 rlrevell       Note Added: 0005742                          
 ======================================================================
 
 
