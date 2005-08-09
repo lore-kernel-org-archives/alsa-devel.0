@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Wed, 10 Aug 2005 03:39:56 +0200
-Message-ID: <4c85cff5529ee5d15e370ef759540d61@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [linux-audio-dev] Re: any update on the
+	pcmcia bug blocking Audigy2 notebook sound card driver development
+Date: Tue, 09 Aug 2005 02:54:49 -0400
+Message-ID: <1123570490.26998.1.camel@mindpipe>
+References: <1ed860e3050807084449b0daac@mail.gmail.com>
+	 <20050807104332.320aec48.akpm@osdl.org>
+	 <1123519224.16205.5.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 682A61BC
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 03:39:56 +0200 (MEST)
+In-Reply-To: <1123519224.16205.5.camel@cmn37.stanford.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +20,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>, Raymond Lai <raymond.kk.lai@gmail.com>, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+[added James to cc:]
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
-======================================================================
-Reported By:                ahaning
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1326
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 9.1 (but it's not distribution-specific)
-Kernel Version:             2.6.12.2
-======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-10-2005 03:39 CEST
-======================================================================
-Summary:                    ISAPNP cards (opl3sa2 in particular) are not
-detected properly on 2.6 kernels
-Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+On Mon, 2005-08-08 at 09:40 -0700, Fernando Lopez-Lezcano wrote:
+> On Sun, 2005-08-07 at 10:43, Andrew Morton wrote:
+> > Raymond Lai <raymond.kk.lai@gmail.com> wrote:
+> > > Hi all,
+> > > 
+> > > I remember there's a kernel pcmcia bug preventing the development for 
+> > > the Audigy2 pcmcia notebook sound card driver. 
+> > > 
+> > > See http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
+> > > 
+> > > Is there any new updates on the situation? Has the bug been fixed? or
+> > > anyone working on it?
+> >
+> > Is it related to http://bugzilla.kernel.org/show_bug.cgi?id=4788 ?
+> 
+> I think not, the card in question is the Creative Audigy 2 ZS PCMCIA
+> card. I have one I can't use yet :-( The kernel locks hard when ALSA
+> tries to load the driver. 
 
-According to perex (author of the opl3sa2 driver):
+Maybe we should have the emu10k1 driver not claim the device until this
+is fixed.  It's better than locking the machine (this behavior has been
+confirmed by several other users).
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-======================================================================
-
+Lee
 
 
 
