@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001142]: alsamixer (alsa-utils-1.0.9) crash when going to right controls
-Date: Tue, 9 Aug 2005 13:46:23 +0200
-Message-ID: <1c054efcdd727c587abf88fb34c151c8@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001080]: [PATCH] alsamixer crashes with toonie (mac-mini) when pressing F4
+Date: Tue, 9 Aug 2005 13:44:40 +0200
+Message-ID: <10d1a681a3a43b041137e90fabb5d3fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A65EF1F8
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:46:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DAA81C9
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1142> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1080> 
 ======================================================================
-Reported By:                atermiles
+Reported By:                gjasny
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1142
+Issue ID:                   1080
 Category:                   alsamixer
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Resolution:                 duplicate
-Duplicate:                  1131
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-29-2005 13:31 CEST
-Last Modified:              08-09-2005 13:46 CEST
+Date Submitted:             04-28-2005 12:21 CEST
+Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    alsamixer (alsa-utils-1.0.9) crash when going to
-right controls
+Summary:                    [PATCH] alsamixer crashes with toonie (mac-mini)
+when pressing F4
 Description: 
-When going to right controls in alsamixer(alsa-utils-1.0.9)
-there is an error:
-"mixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion `helem'
-failed"
+When entering the capture view, alsamixer recognized that there are no
+napture controls and switches back to playback.
 
-alsa-driver-1.0.9 and alsa-lib-1.0.9 works good with alsa-utils-1.0.8
+But during the first reinit after F4 mixer_grpidx is freeed and malloced.
+Because there are no capture devices mixer_grpidx[0] contains garbage,
+which leads to a crash.
 
-(soundcard: au8830)
+I've replaced the malloc with a calloc, so that mixer_grpidx always
+contains some sane values.
 
+Cheers,
+Gregor
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001131 Alsamixer crashing - using Audigy Plati...
-======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-29-05 13:47 
+ tiwai - 05-23-05 18:57 
 ----------------------------------------------------------------------
-This is a duplicate of bug #1131
+Fixed on CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-05 13:31 atermiles      New Issue                                    
-05-29-05 13:47 jcdutton       Note Added: 0004785                          
-05-31-05 12:56 tiwai          Relationship added       duplicate of 0001131
-05-31-05 12:56 tiwai          Duplicate ID             0 => 1131           
-05-31-05 12:56 tiwai          Status                   new => resolved     
-05-31-05 12:56 tiwai          Resolution               open => duplicate   
-05-31-05 12:56 tiwai          Assigned To               => tiwai           
-08-09-05 13:46 perex          Status                   resolved => closed  
+04-28-05 12:21 gjasny         New Issue                                    
+04-28-05 12:21 gjasny         File Added: alsamixer.diff                    
+05-23-05 18:57 tiwai          Status                   new => resolved     
+05-23-05 18:57 tiwai          Resolution               open => fixed       
+05-23-05 18:57 tiwai          Assigned To               => tiwai           
+05-23-05 18:57 tiwai          Note Added: 0004705                          
+08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
 
