@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001122]: Soudcard will not suspend due to white list incomplete
-Date: Tue, 9 Aug 2005 13:44:41 +0200
-Message-ID: <8db6b9c4c486a964801115f4404ef7a8@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001102]: alsaconf man page installed as "alsaconf" rather than as "alsaconf.8"
+Date: Tue, 9 Aug 2005 13:44:49 +0200
+Message-ID: <fb207e55923cb3ef5ed0f2ce560cfe62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE8F71C9
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F00571FB
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1122> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1102> 
 ======================================================================
-Reported By:                hiaslboy
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1122
-Category:                   PCI - es1968
+Project:                    ALSA - utils
+Issue ID:                   1102
+Category:                   alsaconf
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.11 with 2.6.11.10 patch and softwaresuspend2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-21-2005 16:10 CEST
+Date Submitted:             05-12-2005 18:55 CEST
 Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    Soudcard will not suspend due to white list
-incomplete
+Summary:                    alsaconf man page installed as "alsaconf" rather
+than as "alsaconf.8"
 Description: 
-M soundcard will not suspend, even though it works perfectly adding the
-vendor 1558 to the whitelist.
+Running "make install" produces these commands, the first one correct, the
+second one incorrectly omitting the ".8" suffix.
 
+/usr/bin/install -c -m 644 ./alsactl.1
+/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-utils-1.0.8+1.0.9rc3/debian/alsa-utils/usr/share/man/man1/alsactl.1
+
+/usr/bin/install -c -m 644 alsaconf.8
+/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-utils-1.0.8+1.0.9rc3/debian/alsa-utils/usr/share/man/man8/alsaconf
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-23-05 11:33 
+ tiwai - 05-13-05 14:14 
 ----------------------------------------------------------------------
-Thanks, fixed on CVS.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-21-05 16:10 hiaslboy       New Issue                                    
-05-21-05 16:11 hiaslboy       File Added: es1968-matthias.patch                 
-  
-05-21-05 16:11 hiaslboy       Distribution              => Debian          
-05-21-05 16:11 hiaslboy       Kernel Version            => 2.6.11 with 2.6.11.10
-patch and softwaresuspend2
-05-23-05 11:33 tiwai          Status                   assigned => resolved
-05-23-05 11:33 tiwai          Resolution               open => fixed       
-05-23-05 11:33 tiwai          Note Added: 0004701                          
+05-12-05 18:55 jdthood        New Issue                                    
+05-13-05 14:14 tiwai          Status                   new => resolved     
+05-13-05 14:14 tiwai          Resolution               open => fixed       
+05-13-05 14:14 tiwai          Assigned To               => tiwai           
+05-13-05 14:14 tiwai          Note Added: 0004643                          
 08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
