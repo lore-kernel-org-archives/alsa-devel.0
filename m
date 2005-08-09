@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000981]: I don't get any sound on nforce 3 (AMD64 plataform).
-Date: Tue, 9 Aug 2005 13:44:46 +0200
-Message-ID: <c2e7c54f481bbe53071856505ca53d1b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000215]: Kernel freezes after an hour when using the powermac driver
+Date: Tue, 9 Aug 2005 13:11:57 +0200
+Message-ID: <0e9a8fdaebb455a0a7d3aa01621d0462@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F57B1C9
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 741701AF
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:11:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=981> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=215> 
 ======================================================================
-Reported By:                soulhunter
-Assigned To:                jdthood
+Reported By:                sjoyeux
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   981
-Category:                   PCI - intel8x0
+Issue ID:                   215
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian and Gentoo.
-Kernel Version:             2.6.11
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian unstable
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             03-12-2005 01:48 CET
-Last Modified:              08-09-2005 13:44 CEST
+Date Submitted:             04-16-2004 10:01 CEST
+Last Modified:              08-09-2005 13:11 CEST
 ======================================================================
-Summary:                    I don't get any sound on nforce 3 (AMD64 plataform).
+Summary:                    Kernel freezes after an hour when using the powermac
+driver
 Description: 
->From kernel version 2.6.9 and up I don't get any sound.  I currently use
-2.6.8.1 (where the sound works just fine).
+I have an ibook G4 and using alsa freezes the system (I have about 1 hr of
+uptime when I'm listening to music, no problem when not using the
+soundcard). 
 
-I even tried to compile 2.6.11 with only snd_intel8x0 as module: nothing.
+I'm using the OSS driver now, as it does not show the problem.
 
-I have no idea what is going on, yes I looked at the volume settings, and
-unmuted the master and pcm channels.  The sound application seems to be
-"playing", but I get no sound.
+I experienced it on every 2.4 and 2.6 kernel I used. I'm using now vanilla
+2.6.5, without any patch, and with preempt disabled. No trace of a kernel
+panic in the logs.
 
-My motherboard is a Chaintech VNF250.
+Tell me if I can do anything to provide more useful informations
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:00 
+ perex - 08-09-05 13:11 
 ----------------------------------------------------------------------
-This could have something to do with the index numbers assigned to the
-drivers.  Please send the output of /proc/asound/cards.  Are you sure you
-are directing sound output to the right card?
-
-----------------------------------------------------------------------
- soulhunter - 05-16-05 21:49 
-----------------------------------------------------------------------
-Ok, I just solved this.  The problem went away when I muted the IEC58
-(something like that) Input Capture in alsamixer..... The weird thing is
-that it worked "out-of-the-box" in 2.6.8.1 and from 2.6.9 I had the
-problem, I verified the problem gone in 2.6.11.
-
-Sorry that I took so long to post this, I was offline.
-
-Please, somebody close this bug.
-
-Thanks for maintaining this great software.
-
-Sincerely,
-
-Ildefonso Camargo.
+reported: could you test the latest kernel and ALSA?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 01:48 soulhunter     New Issue                                    
-03-12-05 01:48 soulhunter     Distribution              => Debian and Gentoo.
-03-12-05 01:48 soulhunter     Kernel Version            => 2.6.11          
-03-16-05 13:03 tiwai          Note Added: 0003953                          
-03-23-05 16:00 jdthood        Note Added: 0004168                          
-05-16-05 21:49 soulhunter     Note Added: 0004677                          
-05-16-05 22:41 jdthood        Status                   new => resolved     
-05-16-05 22:41 jdthood        Resolution               open => fixed       
-05-16-05 22:41 jdthood        Assigned To               => jdthood         
-08-09-05 13:44 perex          Status                   resolved => closed  
+04-16-04 10:01 sjoyeux        New Issue                                    
+04-16-04 10:01 sjoyeux        Distribution              => Debian unstable 
+04-16-04 10:01 sjoyeux        Kernel Version            => 2.6.5           
+08-09-05 13:11 perex          Note Added: 0005728                          
 ======================================================================
 
 
