@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000215]: Kernel freezes after an hour when using the powermac driver
-Date: Tue, 9 Aug 2005 13:11:57 +0200
-Message-ID: <0e9a8fdaebb455a0a7d3aa01621d0462@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001078]: intel8x0 does not work on any (?) 2.6 kernel
+Date: Tue, 9 Aug 2005 13:44:52 +0200
+Message-ID: <a54706b1bc630f1873452bc74840ff7e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 741701AF
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:11:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A3CC1FE
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,119 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=215> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1078> 
 ======================================================================
-Reported By:                sjoyeux
-Assigned To:                tiwai
+Reported By:                columbo
+Assigned To:                jdthood
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   215
-Category:                   PPC - powermac
+Issue ID:                   1078
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian unstable
-Kernel Version:             2.6.5
+Status:                     closed
+Distribution:               Slackware Linux 10.1
+Kernel Version:             2.6.11.7
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-16-2004 10:01 CEST
-Last Modified:              08-09-2005 13:11 CEST
+Date Submitted:             04-26-2005 21:29 CEST
+Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    Kernel freezes after an hour when using the powermac
-driver
+Summary:                    intel8x0 does not work on any (?) 2.6 kernel
 Description: 
-I have an ibook G4 and using alsa freezes the system (I have about 1 hr of
-uptime when I'm listening to music, no problem when not using the
-soundcard). 
-
-I'm using the OSS driver now, as it does not show the problem.
-
-I experienced it on every 2.4 and 2.6 kernel I used. I'm using now vanilla
-2.6.5, without any patch, and with preempt disabled. No trace of a kernel
-panic in the logs.
-
-Tell me if I can do anything to provide more useful informations
+After compilation of ALSA drivers, libs, utilities, and after alsaconf ALSA
+modules loads correctly, they are visible in lsmod and so on, but all
+programs can't see sound card, /dev/dsp and so on. With kernels 2.4.x
+everything is OK.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-09-05 13:11 
+ gem7 - 05-06-05 19:04 
 ----------------------------------------------------------------------
-reported: could you test the latest kernel and ALSA?
+> This means snd-intel8x0m is loading. 
+
+Sure, that time.  As I said, I have tried it w/ and w/o intel8x0m and
+loading the 2 intel drivers in different order.  Just to be sure I just
+deleted the intel8x0m
+module and did a cold reboot.  Same results.
+
+> Are you sure, you don't have it compiled in kernel ?
+
+Notice the modules was 1.0.9rc3?  No kernel has that yet.
+
+Here is a fragment of /proc/config.gz:
+
+#
+# Sound
+#
+CONFIG_SOUND=y
+
+#
+# Advanced Linux Sound Architecture
+#
+# CONFIG_SND is not set
+
+#
+# Open Sound System
+#
+# CONFIG_SOUND_PRIME is not set
+
+#
+
+
+And here is my lsmod:
+
+~# lsmod
+Module                  Size  Used by
+snd_intel8x0           29248  0 
+snd_ac97_codec         79996  1 snd_intel8x0
+snd_pcm                80004  2 snd_intel8x0,snd_ac97_codec
+snd_timer              21124  1 snd_pcm
+snd                    45796  4
+snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
+snd_page_alloc          7684  2 snd_intel8x0,snd_pcm
+
+All the rest of my kernel is compiled in, not modules.
+
+----------------------------------------------------------------------
+ gem7 - 05-06-05 20:24 
+----------------------------------------------------------------------
+I have it working now.  Yes, the problem was the intel8x0m module. 
+Removeing it
+with modproebe -r is not enough to undo it's damage.  Only a power off
+cold boot got my system to where if I only loaded the intel8x0, and not
+intel8x0m module that things would work.  Thanks for pushing me to try
+some more permutations of that.
+
+Now the core problem remains, what broke intel8x0m after ALSA 1.0.4?  It
+used to not break the intel8x0.  I can understand the intel8x0m not
+working on my laptop but loading it shold not break other related
+subsystems.  If it is not possible to fix it surely needs an obvious
+warning in the doc, if not at boot time.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-04 10:01 sjoyeux        New Issue                                    
-04-16-04 10:01 sjoyeux        Distribution              => Debian unstable 
-04-16-04 10:01 sjoyeux        Kernel Version            => 2.6.5           
-08-09-05 13:11 perex          Note Added: 0005728                          
+04-26-05 21:29 columbo        New Issue                                    
+04-26-05 21:29 columbo        Distribution              => Slackware Linux 10.1
+04-26-05 21:29 columbo        Kernel Version            => 2.6.11.7        
+04-29-05 21:06 columbo        Issue Monitored: columbo                     
+05-06-05 08:50 gem7           Note Added: 0004590                          
+05-06-05 08:59 pzad           Note Added: 0004591                          
+05-06-05 09:00 pzad           Note Added: 0004592                          
+05-06-05 09:13 gem7           Note Added: 0004593                          
+05-06-05 09:33 pzad           Note Added: 0004594                          
+05-06-05 19:04 gem7           Note Added: 0004595                          
+05-06-05 20:24 gem7           Note Added: 0004596                          
+05-07-05 09:45 jdthood        Status                   new => resolved     
+05-07-05 09:45 jdthood        Resolution               open => not an issue
+05-07-05 09:45 jdthood        Assigned To               => jdthood         
+05-29-05 06:09 liangalei      Issue Monitored: liangalei                    
+08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
 
