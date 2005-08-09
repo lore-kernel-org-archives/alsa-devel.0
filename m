@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001095]: 'alsamixer' segfaults with M-Audio Revolution 7.1
-Date: Tue, 9 Aug 2005 13:44:39 +0200
-Message-ID: <0e37aab1e564a30c893dc7d54015e600@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000299]: No audio after recommended patch (see 0000216)
+Date: Tue, 9 Aug 2005 13:13:41 +0200
+Message-ID: <797d9f0fb679452ad953003a403dff6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E1921D1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0241B1AF
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:13:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been set as RELATED TO issue 0000216.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1095> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299> 
 ======================================================================
-Reported By:                sst4
-Assigned To:                perex
+Reported By:                salmo
+Assigned To:                mjander
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1095
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   299
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             05-07-2005 21:12 CEST
-Last Modified:              08-09-2005 13:44 CEST
+Date Submitted:             05-22-2004 22:25 CEST
+Last Modified:              08-09-2005 13:13 CEST
 ======================================================================
-Summary:                    'alsamixer' segfaults with M-Audio Revolution 7.1
+Summary:                    No audio after recommended patch (see 0000216)
 Description: 
-'alsamixer' crashes with
+This is a continuation of bug 0000216.  Would have added this comment there
+but bug was closed.
 
-Segmentation fault
+Applied the patch
+(http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.5.diff.gz)
+cleanly, recompiled, rebooted twice.  Now I get no sound output at all. 
+Checked with headphones, checked mixer levels.  
 
-message when F4 (capture view) is pressed.
+The modules (snd_au8830, snd_ac97_codec, snd_mpu401_uart, snd_rawmidi,
+snd_seq_oss, snd_seq_midi_event, snd_seq, snd_seq_device, snd_pcm_oss,
+snd_pcm, snd_page_alloc, snd_timer, snd_mixer_oss, snd) are loaded,
+everything seems fine.  XMMS, Rhythmbox, etc. will "play" the files at a
+normal rate using both ALSA and OSS outputs, but nothing comes out of the
+card.
 
-The audio card is M-Audio Revolution 7.1.
-
-'alsamixer -V capture' produces this:
-
-"
-[root <at> athlon ~]# alsamixer -V capture
-No mixer elems found
-
-[root <at> athlon ~]#
-".
-
-System configuration and ALSA configuration can be seen in these posts of
-mine:
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=7195261&forum_id=1751
-http://sourceforge.net/forum/forum.php?thread_id=1276291&forum_id=86660
-.
+Let me know if there is any information that I can give you that will
+help.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000216 Speed/pitch issues when playing multipl...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-23-05 21:26 
+ mjander - 05-22-04 23:42 
 ----------------------------------------------------------------------
-Should be fixed in CVS (not in 0.9.0rc4).
+Hi,
+
+- Why are you using patch 2.6.5 if you are using kernel 2.6.6 ?! Use the
+patch for 2.6.6 instead:
+http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.6.diff.gz
+That wont change much, but its the latest.
+
+- Please check your mixer settings *again*. Use alsamixer (or other ALSA
+mixer), not a OSS mixer. Be sure to uncheck the "mute" toggles.
+CDROM,line-in,video,auxiliar,etc audio won't be hearable through the
+"headpones" output, since the codec is not capable to do so, and another
+kind of workaround is needed for that.
+
+- If you experience too low output level, toggle the "Externel Amplifier
+Disable" control in alsamixer to set it right.
+
+- Turn on your loudspeaker, take out your earplugs ... :D
+
+- Any bad things reported on dmesg ?
+
+You should not have any problem, many people are using the current driver
+without problem, i use them everyday (what else could i say ?) ...
+
+Best Regards
+
+Manuel Jander
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-07-05 21:12 sst4           New Issue                                    
-05-23-05 21:26 perex          Status                   new => resolved     
-05-23-05 21:26 perex          Resolution               open => fixed       
-05-23-05 21:26 perex          Assigned To               => perex           
-05-23-05 21:26 perex          Note Added: 0004706                          
-08-09-05 13:44 perex          Status                   resolved => closed  
+05-22-04 22:25 salmo          New Issue                                    
+05-22-04 22:25 salmo          Distribution              => Gentoo Linux    
+05-22-04 22:25 salmo          Kernel Version            => 2.6.6           
+05-22-04 23:42 mjander        Note Added: 0001176                          
+08-09-05 13:13 perex          Relationship added       related to 0000216  
 ======================================================================
 
 
