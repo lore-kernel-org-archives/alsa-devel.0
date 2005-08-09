@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001273]: snd_intel8x0 and kexec() don't work together
-Date: Tue, 9 Aug 2005 16:18:09 +0200
-Message-ID: <143477b91e1749e32cf0aa713cc9f518@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001082]: 1.0.9rc2: no sound/segfault on ICH4, ICH5
+Date: Tue, 9 Aug 2005 13:44:32 +0200
+Message-ID: <c4821008917581f5a8cbc9281ec2a87a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2034E1CD
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 16:18:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA88B1D1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,101 +22,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1273> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1082> 
 ======================================================================
-Reported By:                hildeb
-Assigned To:                
+Reported By:                mandreiana
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1273
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1082
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian/unstable
-Kernel Version:             2.6.13-rc3-git4
+Status:                     closed
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-22-2005 10:23 CEST
-Last Modified:              08-09-2005 16:18 CEST
+Date Submitted:             04-29-2005 09:12 CEST
+Last Modified:              08-09-2005 13:44 CEST
 ======================================================================
-Summary:                    snd_intel8x0 and kexec() don't work together
+Summary:                    1.0.9rc2: no sound/segfault on ICH4, ICH5
 Description: 
-Whenever I use kexec() to reboot into a new kernel, sound doesn't work
-properly. KDE doesn't display a mixer.
+Hardware:
+00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+        Subsystem: Giga-byte Technology GA-8IPE1000/8KNXP motherboard
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Interrupt: pin B routed to IRQ 6
+        Region 0: I/O ports at dc00 [size=256]
+        Region 1: I/O ports at e000 [size=64]
+        Region 2: Memory at e8281000 (32-bit, non-prefetchable)
+[size=512]
+        Region 3: Memory at e8282000 (32-bit, non-prefetchable)
+[size=256]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-All modules seem to be loaded, though - and after a reboot using
-"reboot" instead of "kexec", sound works flawlessly with the same setup.
 
-/etc/init.d/alsa restart doesn't change things, either.
+cat /proc/asound/cards
+0 [ICH5           ]: ICH4 - Intel ICH5
+                     Intel ICH5 with ALC655 at 0xe8281000, irq 6
 
-If I unload the sounddriver:
+Applications with alsa output hang or crash, e.g.
+aplay /usr/lib/openoffice.org1.9.89/share/gallery/sounds/applause.wav
+Segmentation fault
 
-# rmmod snd_intel8x0
-
-and the reload it:
-
-# modprobe snd_intel8x0
-
-I get:
-
-ACPI: PCI Interrupt 0000:00:06.0[A] -> Link [LACI] -> GSI 22 (level, low)
--> IRQ 19
-PCI: Setting latency timer of device 0000:00:06.0 to 64
-AC'97 warm reset still in progress? [0xffffffff]
-Intel ICH: probe of 0000:00:06.0 failed with error -5
+strace:
+bind(3, {sa_family=AF_FILE, path="/tmp/alsa-dmix-7840-1114758683-555557"},
+39) = 0
+chmod("/tmp/alsa-dmix-7840-1114758683-555557", 0600) = 0
+listen(3, 4)                            = 0
+clone(child_stack=0,
+flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD,
+child_tidptr=0xb7f90708) = 7841
+--- SIGCHLD (Child exited) @ 0 (0) ---
+waitpid(7841, NULL, 0)                  = 7841
+shmget(221140559, 131072, IPC_CREAT|0600) = 720898
+shmat(720898, 0, 0)                     = 0xb7f60000
+mlock(0xb7f60000, 131072)               = -1 ENOMEM (Cannot allocate
+memory)
+ioctl(5, AGPIOC_ACQUIRE or APM_IOC_STANDBY, 0xbffa1fd0) = 0
+stat64("/etc/alsa/alsa.conf", {st_mode=S_IFREG|0644, st_size=7467, ...}) =
+0
+open("/dev/snd/controlC0", O_RDONLY)    = 7
+close(7)                                = 0
+open("/dev/snd/timer", O_RDONLY|O_NONBLOCK) = 7
+ioctl(7, 0x80045400, 0xbffa1d18)        = 0
+ioctl(7, SNDCTL_TMR_START or TCSETS, 0xbffa1d14) = 0
+ioctl(7, TIOCSPGRP, 0xbffa1ce0)         = 0
+ioctl(7, TIOCSTI <unfinished ...>
++++ killed by SIGSEGV +++
 
 ======================================================================
 
 ----------------------------------------------------------------------
- hildeb - 08-09-05 15:43 
+ rlrevell - 04-29-05 19:44 
 ----------------------------------------------------------------------
-Same problem with 2.6.13-rc6
+This bug has been fixed.  Try 1.0.9-rc3.
 
 ----------------------------------------------------------------------
- cartan - 08-09-05 16:18 
+ mandreiana - 05-04-05 07:30 
 ----------------------------------------------------------------------
-I get the same error messages with a different setting:
-
-This is Linux 2.6.10 on a Foxconn 915 motherboard.  In /proc/pci it says
-
-Bus  0, device  30, function  2:
-    Multimedia audio controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) AC'97 Audio Controller (rev 3).
-      IRQ 17.
-      I/O at 0xfb00 [0xfbff].
-      I/O at 0xfa00 [0xfa3f].
-      Non-prefetchable 32 bit memory at 0xfdffe000 [0xfdffe1ff].
-      Non-prefetchable 32 bit memory at 0xfdffd000 [0xfdffd0ff].
-
-After I run alsaconf, I get no error and snd_intel8x0 is loaded.  But
-alsamixer fails:
-
-alsamixer: function snd_ctl_open failed for default: No such file or
-directory
-
-In dmesg, I get the messages as hildeb:
-
-ACPI: PCI interrupt 0000:00:1e.2[A] -> GSI 17 (level, low) -> IRQ 17
-PCI: Setting latency timer of device 0000:00:1e.2 to 64
-ALSA /usr/src/alsa-driver-1.0.9b/pci/intel8x0.c:2182: AC'97 warm reset
-still in progress? [0x6]
-Intel ICH: probe of 0000:00:1e.2 failed with error -5
-
-I installed the alsa-driver-1.0.9b package, but that didn't help, either.
+Yes, 1.0.9-rc3 works for me, thanks!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 10:23 hildeb         New Issue                                    
-07-22-05 10:23 hildeb         Distribution              => Debian/unstable 
-07-22-05 10:23 hildeb         Kernel Version            => 2.6.13-rc3-git4 
-07-22-05 10:25 hildeb         Note Added: 0005545                          
-07-25-05 11:50 hildeb         Issue Monitored: hildeb                      
-08-09-05 15:43 hildeb         Note Added: 0005733                          
-08-09-05 16:18 cartan         Note Added: 0005734                          
+04-29-05 09:12 mandreiana     New Issue                                    
+04-29-05 19:44 rlrevell       Note Added: 0004580                          
+05-04-05 07:30 mandreiana     Note Added: 0004587                          
+05-24-05 12:33 tiwai          Status                   new => resolved     
+05-24-05 12:33 tiwai          Resolution               open => fixed       
+05-24-05 12:33 tiwai          Assigned To               => tiwai           
+08-09-05 13:44 perex          Status                   resolved => closed  
 ======================================================================
 
 
