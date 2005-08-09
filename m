@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Wed, 10 Aug 2005 00:50:32 +0200
-Message-ID: <b75d7fb30e0d6e6de62694fd0ebc570f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001310]: Driver cant find firmware for Layla24
+Date: Wed, 10 Aug 2005 00:57:10 +0200
+Message-ID: <55ccd91dd59451cdc3e6ce273c9f9322@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BB131E9
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 00:50:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73E4E1E9
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 00:57:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1310> 
 ======================================================================
-Reported By:                hil
+Reported By:                oxi
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1228
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1310
+Category:                   PCI - echoaudio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian Sarge AMD64
+Kernel Version:             2.6.12.3
 ======================================================================
-Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              08-10-2005 00:50 CEST
+Date Submitted:             08-04-2005 22:50 CEST
+Last Modified:              08-10-2005 00:57 CEST
 ======================================================================
-Summary:                    Skype Does not work with aoss
+Summary:                    Driver cant find firmware for Layla24
 Description: 
-I downloaded alsa-oss-1.0.9rc2 and install by
-# ./configure --with-aoss=yes && make && make install
-as root. Virtually every program works except skype
-(http://www.skype.com/) version 1.1.0.13_API. I downloaded the Fedora
-version of skype from the skype official website. Skype only uses
-/dev/dsp. I guess skype uses /dev/dsp as microphone input as well. I could
-not hear anything and the microphone did not work as well if I run  skype
-like aoss /usr/bin/skype. If I run skype without aoss, then skype works
-just fine.
+Hello,
+
+After modprobe snd-layla24 ,
+in dmesg|tail:
+
+ACPI: PCI Interrupt 0000:00:0e.0[A] -> GSI 19 (level, low) -> IRQ 19
+ALSA /usr/src/alsa-driver-1.0.9b/pci/echoaudio/echoaudio.c:41:
+get_firmware(): Firmware not available (-2)
+Echoaudio Layla24: probe of 0000:00:0e.0 failed with error -2
+
+Same issue that another guy is experiencing with a Layla20:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1244
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001224 artsd-like style
+related to          0001244 error with firmware with echo layla20
 ======================================================================
 
 ----------------------------------------------------------------------
- rapand - 08-09-05 15:33 
+ pochini - 08-09-05 11:42 
 ----------------------------------------------------------------------
-I can confirm that there still exists a problem with the newest Skype
-version 1.2.0.11_API.
+I can only hope that distros will ship with working hotplug scripts :)
+With DSL apps you have to set an env variable, eg.:
 
-'aoss skype' results in a segmentation fault
-Other programs does not segfault.
+export AUDIODEV=plughw:0,0,2
 
-I run debian sarge and alsa-oss 1.0.9
+and they must be compiled with ALSA support. You can use the monitor mixer
+on windos too, but echomixer has a much simpler interface. The moving
+VU-meters is the background noise of the analog input channels. Did you
+try aplay ? Did you remember to set the volume :) ?
 
 ----------------------------------------------------------------------
- rlrevell - 08-10-05 00:50 
+ oxi - 08-10-05 00:57 
 ----------------------------------------------------------------------
-See bug 1224 for details.  Basically the segfault is a known bug in
-alsa-oss (I don't think it's fixed in CVS yet).
+Aaaaaalright! I got it finally working!! Thank you!!
+
+I have some problems now that I think are beyond the scope of this
+thread... Well, in fact all of it was out of the scope because it wasnt a
+bug at all!
+
+I can make SDL based apps work fine, and gnome events, but only
+separately. I need to disable gnome sound server in order to make sdl apps
+work, and vice versa, so i was wondering if there is a work around for
+this to use both things at a time.
+
+My Layla24 is finally sounding! yay!! :D
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-03-05 09:09 hil            New Issue                                    
-08-09-05 15:33 rapand         Note Added: 0005732                          
-08-10-05 00:49 rlrevell       Relationship added       duplicate of 0001224
-08-10-05 00:50 rlrevell       Note Added: 0005740                          
+08-04-05 22:50 oxi            New Issue                                    
+08-04-05 22:50 oxi            Distribution              => Debian Sarge AMD64
+08-04-05 22:50 oxi            Kernel Version            => 2.6.12.3        
+08-04-05 23:48 rlrevell       Note Added: 0005653                          
+08-05-05 04:57 oxi            Note Added: 0005656                          
+08-05-05 04:59 oxi            Issue Monitored: oxi                         
+08-05-05 05:00 rlrevell       Note Added: 0005657                          
+08-05-05 05:20 oxi            Note Added: 0005658                          
+08-05-05 05:25 oxi            Note Added: 0005659                          
+08-05-05 06:03 rlrevell       Note Added: 0005660                          
+08-05-05 08:48 perex          Relationship added       related to 0001244  
+08-05-05 13:26 oxi            Note Added: 0005666                          
+08-05-05 15:09 hennewou       Note Added: 0005668                          
+08-05-05 19:43 oxi            Note Added: 0005671                          
+08-05-05 19:46 oxi            Note Edited: 0005671                         
+08-05-05 20:36 rlrevell       Note Added: 0005675                          
+08-05-05 23:10 hennewou       Note Added: 0005677                          
+08-07-05 09:46 pochini        Note Added: 0005688                          
+08-07-05 18:27 oxi            Note Added: 0005695                          
+08-07-05 18:31 oxi            Note Added: 0005696                          
+08-08-05 00:06 pochini        Note Added: 0005698                          
+08-08-05 04:12 oxi            File Added: firmware.agent                    
+08-08-05 04:32 oxi            Note Added: 0005700                          
+08-08-05 09:22 pochini        Note Added: 0005703                          
+08-08-05 21:40 oxi            Note Added: 0005712                          
+08-08-05 22:23 oxi            Note Added: 0005713                          
+08-08-05 23:07 oxi            Note Added: 0005715                          
+08-09-05 11:42 pochini        Note Added: 0005720                          
+08-10-05 00:57 oxi            Note Added: 0005741                          
 ======================================================================
 
 
