@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000299]: No audio after recommended patch (see 0000216)
-Date: Tue, 9 Aug 2005 13:14:23 +0200
-Message-ID: <ef0416ce48ed80f84f9a8766777e0dd1@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
+Date: Tue, 9 Aug 2005 13:46:29 +0200
+Message-ID: <5ad0eaddc9b82941184cf82bf6aff3fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8217D1AF
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:14:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C9D51D6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:46:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
 ======================================================================
-Reported By:                salmo
-Assigned To:                mjander
+Reported By:                TheOrwithVagrant
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   299
-Category:                   PCI - au88x0
+Project:                    ALSA - lib
+Issue ID:                   929
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.6
+Status:                     closed
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-22-2004 22:25 CEST
-Last Modified:              08-09-2005 13:14 CEST
+Date Submitted:             02-21-2005 14:56 CET
+Last Modified:              08-09-2005 13:46 CEST
 ======================================================================
-Summary:                    No audio after recommended patch (see 0000216)
+Summary:                    Left/Right reversed when using the raw iec958 on
+Audigy2
 Description: 
-This is a continuation of bug 0000216.  Would have added this comment there
-but bug was closed.
+When using an spdif-attatched amplifier, the iec958/spdif raw device to
+play a sound (or video file), the left and right channels end up
+reversed.
 
-Applied the patch
-(http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.5.diff.gz)
-cleanly, recompiled, rebooted twice.  Now I get no sound output at all. 
-Checked with headphones, checked mixer levels.  
+Example:
 
-The modules (snd_au8830, snd_ac97_codec, snd_mpu401_uart, snd_rawmidi,
-snd_seq_oss, snd_seq_midi_event, snd_seq, snd_seq_device, snd_pcm_oss,
-snd_pcm, snd_page_alloc, snd_timer, snd_mixer_oss, snd) are loaded,
-everything seems fine.  XMMS, Rhythmbox, etc. will "play" the files at a
-normal rate using both ALSA and OSS outputs, but nothing comes out of the
-card.
+This produces "correct" left and right mappings
 
-Let me know if there is any information that I can give you that will
-help.
+extract_ac3 AC3TEST.VOB |ac3dec
+
+The following, however, reverses left & right:
+
+extract_ac3 AC3TEST.VOB |ac3dec -R
+
+Likewise, when playing a dvd with mplayer, things are correct if i merely
+use -ao alsa, but end up with left/right reversed if i use -ao
+alsa:device=iec958.
+
+It appears to be an error in Audigy2.conf - changing the line
+
+value [ 255 255 0 0 0 0 0 0  0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
+
+to
+
+value [ 255 255 0 0 0 0 0 0  255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
+
+as in Audigy.conf, makes the channels appear from the right speaker even
+when using the raw spdif device.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000216 Speed/pitch issues when playing multipl...
-======================================================================
 
 ----------------------------------------------------------------------
- mjander - 05-22-04 23:42 
+ TheOrwithVagrant - 05-30-05 14:50 
 ----------------------------------------------------------------------
-Hi,
-
-- Why are you using patch 2.6.5 if you are using kernel 2.6.6 ?! Use the
-patch for 2.6.6 instead:
-http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.6.diff.gz
-That wont change much, but its the latest.
-
-- Please check your mixer settings *again*. Use alsamixer (or other ALSA
-mixer), not a OSS mixer. Be sure to uncheck the "mute" toggles.
-CDROM,line-in,video,auxiliar,etc audio won't be hearable through the
-"headpones" output, since the codec is not capable to do so, and another
-kind of workaround is needed for that.
-
-- If you experience too low output level, toggle the "Externel Amplifier
-Disable" control in alsamixer to set it right.
-
-- Turn on your loudspeaker, take out your earplugs ... :D
-
-- Any bad things reported on dmesg ?
-
-You should not have any problem, many people are using the current driver
-without problem, i use them everyday (what else could i say ?) ...
-
-Best Regards
-
-Manuel Jander
+It's been fixed since 1.0.9rc2. With 1.0.9 final out, this bug is a thing
+of the past, and should be closed.
 
 ----------------------------------------------------------------------
- perex - 08-09-05 13:14 
+ perex - 05-30-05 14:59 
 ----------------------------------------------------------------------
-reporter: Does this problem exists at the time?
+Fine, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-04 22:25 salmo          New Issue                                    
-05-22-04 22:25 salmo          Distribution              => Gentoo Linux    
-05-22-04 22:25 salmo          Kernel Version            => 2.6.6           
-05-22-04 23:42 mjander        Note Added: 0001176                          
-08-09-05 13:13 perex          Relationship added       related to 0000216  
-08-09-05 13:14 perex          Note Added: 0005729                          
+02-21-05 14:56 TheOrwithVagrantNew Issue                                    
+02-21-05 15:04 pzad           Note Added: 0003679                          
+02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
+02-22-05 03:59 rlrevell       Note Added: 0003684                          
+03-19-05 09:21 jdthood        Note Added: 0004013                          
+03-19-05 09:58 jdthood        Note Added: 0004028                          
+03-19-05 11:36 TheOrwithVagrantNote Added: 0004032                          
+03-19-05 11:46 jcdutton       Note Added: 0004033                          
+05-30-05 13:41 perex          Note Added: 0004813                          
+05-30-05 14:50 TheOrwithVagrantNote Added: 0004815                          
+05-30-05 14:59 perex          Status                   new => resolved     
+05-30-05 14:59 perex          Resolution               open => fixed       
+05-30-05 14:59 perex          Assigned To               => perex           
+05-30-05 14:59 perex          Note Added: 0004817                          
+08-09-05 13:46 perex          Status                   resolved => closed  
 ======================================================================
 
 
