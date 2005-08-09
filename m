@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000370]: CMedia 8768 Support
-Date: Tue, 9 Aug 2005 13:44:27 +0200
-Message-ID: <e5a72fefa3154e582369417d8fdf44c2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001147]: snd_intel_hda crashes when the module is loaded
+Date: Tue, 9 Aug 2005 13:46:17 +0200
+Message-ID: <8b37dba28b363fc40cd18b25826a859a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3BFD1BD
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:44:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE5251FB
+	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:46:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,125 +24,138 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=370> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1147> 
 ======================================================================
-Reported By:                drbobguy
+Reported By:                Katagia
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   370
-Category:                   PCI - cmipci
+Issue ID:                   1147
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.7
+Distribution:               Suse Linux 9.3
+Kernel Version:             2.6.11
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-07-2004 04:59 CEST
-Last Modified:              08-09-2005 13:44 CEST
+Date Submitted:             05-31-2005 16:21 CEST
+Last Modified:              08-09-2005 13:46 CEST
 ======================================================================
-Summary:                    CMedia 8768 Support
+Summary:                    snd_intel_hda crashes when the module is loaded
 Description: 
-I've recently built a new computer with an on-board CMedia 8768 chip.  This
-chip is not listed as one of the supported CMedia chips (8738, etc.),
-although I suspect that is because it is so new.  Just wanted to let you
-guys know it apparently doesn't work with the standard cmipci driver (at
-least I think I'm doing everthing correctly -- I have a decent amount of
-Linux experience but I'm no guru).  Here is what I see though:
+May 29 15:06:44 Notebook kernel: snd: unsupported module, tainting
+kernel.
+May 29 15:06:44 Notebook kernel: snd_page_alloc: unsupported module,
+tainting kernel.
+May 29 15:06:44 Notebook kernel: snd_timer: unsupported module, tainting
+kernel.
+May 29 15:06:45 Notebook kernel: snd_pcm: unsupported module, tainting
+kernel.
+May 29 15:06:45 Notebook kernel: snd_hda_codec: unsupported module,
+tainting kernel.
+May 29 15:06:45 Notebook kernel: snd_hda_intel: unsupported module,
+tainting kernel.
+May 29 15:06:45 Notebook kernel: PCI: No IRQ known for interrupt pin A
+of device 0000:00:1b.0. Please try using pci=biosirq.
+May 29 15:06:45 Notebook kernel:
+ALSA /tmp/2/alsa-driver-1.0.9/alsa-kernel/pci/hda/hda_intel.c:1331:
+hda-intel: unable to grab IRQ 0
+May 29 15:06:45 Notebook kernel: Unable to handle kernel NULL pointer
+dereference at virtual address 00000000
+May 29 15:06:45 Notebook kernel:  printing eip:
+May 29 15:06:45 Notebook kernel: e04b2415
+May 29 15:06:45 Notebook kernel: *pde = 00000000
+May 29 15:06:45 Notebook kernel: Oops: 0000 [#1]
+May 29 15:06:45 Notebook kernel: Modules linked in: snd_hda_intel
+snd_hda_codec snd_pcm snd_timer snd_page_alloc snd soundcore
+cpufreq_userspace speedstep_
+centrino freq_table thermal processor fan button battery ac usbserial
+parport_pc lp parport eeprom i2c_sensor nvram af_packet pcmcia tg3
+ipw2200 firmware_c
+lass ieee80211 yenta_socket rsrc_nonstatic pcmcia_core ieee80211_crypt
+tun intel_agp agpgart i2c_i801 i2c_core video1394 ohci1394 raw1394
+ieee1394 capabili
+ty ext3 jbd twofish cryptoloop edd evdev joydev sg st sd_mod sr_mod
+scsi_mod usbhid uhci_hcd ohci_hcd ehci_hcd usbcore ipv6 nls_iso8859_1
+nls_cp437 vfat fa
+t dm_mod reiserfs ide_cd cdrom ide_disk piix ide_core
+May 29 15:06:45 Notebook kernel: CPU:    0
+May 29 15:06:45 Notebook kernel: EIP:    0060:[<e04b2415>]    Tainted: G
+U VLI
+May 29 15:06:45 Notebook kernel: EFLAGS: 00010286
+(2.6.11.4-20a-default)
+May 29 15:06:45 Notebook kernel: EIP is at azx_stream_stop+0x5/0x40
+[snd_hda_intel]
+May 29 15:06:45 Notebook kernel: eax: dc020000   ebx: 00000000   ecx:
+ffffffff   edx: dc020024
+May 29 15:06:45 Notebook kernel: esi: 00000007   edi: dc020000   ebp:
+00000000   esp: d6949ee0
+May 29 15:06:45 Notebook kernel: ds: 007b   es: 007b   ss: 0068
+May 29 15:06:45 Notebook kernel: Process modprobe (pid: 8955,
+threadinfo=d6948000 task=dcc9ba60)
+May 29 15:06:45 Notebook kernel: Stack: dc020024 00000007 e04b2eed
+fffffff0 dc020000 c17d1c00 e04b3196 d3de0000
+May 29 15:06:45 Notebook kernel:        000000d0 00000006 d1f38c00
+c02ece0e d3de0000 00000000 00000001 c17d1c00
+May 29 15:06:45 Notebook kernel:        e04b32e6 d6949f28 00000000
+e04b5d40 c17d1c00 ffffffed 00000000 c01dafa2
+May 29 15:06:45 Notebook kernel: Call Trace:
+May 29 15:06:45 Notebook kernel:  [<e04b2eed>] azx_free+0x1d/0x100
+[snd_hda_intel]
+May 29 15:06:45 Notebook kernel:  [<e04b3196>] azx_create+0x1b6/0x2a0
+[snd_hda_intel]
+May 29 15:06:45 Notebook kernel:  [<e04b32e6>] azx_probe+0x66/0x170
+[snd_hda_intel]
+May 29 15:06:45 Notebook kernel:  [<c01dafa2>] pci_device_probe_static
++0x32/0x50
+May 29 15:06:45 Notebook kernel:  [<c01dafe7>] __pci_device_probe
++0x27/0x40
+May 29 15:06:45 Notebook kernel:  [<c01db01b>] pci_device_probe
++0x1b/0x40
+May 29 15:06:46 Notebook kernel:  [<c0234fd1>] driver_probe_device
++0x21/0x60
+May 29 15:06:46 Notebook kernel:  [<c02350fd>] driver_attach+0x4d/0x80
+May 29 15:06:46 Notebook kernel:  [<c023551d>] bus_add_driver+0x6d/0xa0
+May 29 15:06:47 Notebook kernel:  [<c0235a18>] driver_register+0x28/0x30
+May 29 15:06:47 Notebook kernel:  [<c01db1d9>] pci_register_driver
++0x49/0x60
+May 29 15:06:47 Notebook kernel:  [<c012e9a4>] sys_init_module
++0x104/0x180
+May 29 15:06:47 Notebook kernel:  [<c0102c49>] sysenter_past_esp
++0x52/0x79
+May 29 15:06:47 Notebook kernel: Code: 2d 88 d9 b8 01 00 00 00 0f b6 7e
+20 d3 e0 09 c7 89 f8 88 46 20 8b 52 1c 8a 02 83 c8 1e 88 02 5b 5e 5f c3
+8d 76 00 56
+ 53 8b 5a 1c <8a> 0b 81 e1 e1 00 00 00 88 0b 8b 4a 1c c6 41 03 1c 8b 58
+0c 8a
+May 29 15:06:47 Notebook kernel:  <4>snd_mixer_oss: unsupported module,
+tainting kernel.
+May 29 15:06:48 Notebook kernel: snd_pcm_oss: unsupported module,
+tainting kernel.
 
-The card is recognized in /proc/asound as a CMedia 8738M6.  However, if I
-use a mixer like amixer or gnome-alsamixer none of the mixer settings I
-change will take effect (and I am running these as root).
-
-Any advice or comments would be appreciated.  I'd be happy to help if you
-think there is a possible fix.
 ======================================================================
 
 ----------------------------------------------------------------------
- henoux - 05-09-05 12:08 
+ tiwai - 05-31-05 16:22 
 ----------------------------------------------------------------------
-Sound is working fine for me too with the beta bios without error message.
-I've tested it on Fedora Core 3 x86_64 and Suse 9.2 x86_64. With FC3, the
-C-Media PCI CMI8738 is automatically discovered and the snd-cmipci driver
-loaded by alsasound. Yast from Suse found a CMI8738/C3DX audio device and
-load the cmipci driver with alsasound. Everything seems to work fine.
-In order to flash without floppy drive, i used a bootable cd from
-http://www.nu2.nu/bootcd and just add the bios bin file and the flash
-utility. It worked prefectly. 
-So, it is a good new indeed.
+Already fixed on CVS.
 
-
-
-----------------------------------------------------------------------
- tiwai - 05-24-05 12:36 
-----------------------------------------------------------------------
-OK, thanks for confirmatoin.
-Let's close this long-standing issue now.
+But the driver won't work for your device unless you adjust/fix the ACPI. 
+It's above the scope of ALSA.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-07-04 04:59 drbobguy       New Issue                                    
-07-07-04 04:59 drbobguy       Distribution              => Gentoo          
-07-07-04 04:59 drbobguy       Kernel Version            => 2.6.7           
-07-07-04 05:03 drbobguy       Note Added: 0001390                          
-07-27-04 05:26 robg           Note Added: 0001475                          
-07-30-04 16:56 tiwai          Note Added: 0001493                          
-07-31-04 02:46 drbobguy       File Added: CMI8768.pdf                      
-07-31-04 02:46 drbobguy       Note Added: 0001508                          
-07-31-04 06:10 robg           Note Added: 0001509                          
-08-22-04 22:13 masanetz       Issue Monitored: masanetz                    
-09-06-04 18:02 patrick        Issue Monitored: patrick                     
-10-08-04 05:17 robg           Note Added: 0002043                          
-10-08-04 05:18 robg           File Added: CMI8768 register spec v1.0.pdf        
-           
-10-08-04 05:19 robg           File Added: Programming Guide to CMI8738 PCI Audio
-Chip_v16_0311.pdf                    
-10-08-04 12:49 tiwai          Note Added: 0002050                          
-10-08-04 15:26 tiwai          Note Added: 0002053                          
-10-08-04 15:36 tiwai          Note Added: 0002054                          
-10-09-04 09:05 patrick        File Added: asound.state                     
-10-09-04 09:08 patrick        File Added: cmipci                           
-10-09-04 09:29 patrick        Note Added: 0002061                          
-10-09-04 09:30 patrick        Note Edited: 0002061                         
-10-10-04 04:48 robg           Note Added: 0002064                          
-10-10-04 04:57 robg           Note Added: 0002065                          
-10-13-04 16:37 tiwai          Note Added: 0002126                          
-10-13-04 16:37 tiwai          Note Added: 0002127                          
-10-14-04 01:24 patrick        Note Added: 0002136                          
-10-14-04 12:02 tiwai          Note Added: 0002139                          
-10-14-04 12:03 tiwai          File Added: cmipci-address.diff                   
-
-10-14-04 16:05 patrick        Note Added: 0002151                          
-10-14-04 16:19 tiwai          Note Added: 0002152                          
-10-14-04 23:57 patrick        Note Added: 0002161                          
-10-16-04 00:33 cltien         Note Added: 0002177                          
-10-16-04 07:32 robg           Note Added: 0002184                          
-10-17-04 05:47 ehrenkranz     Issue Monitored: ehrenkranz                    
-10-18-04 11:32 tiwai          Note Added: 0002194                          
-10-18-04 23:00 cltien         Note Added: 0002199                          
-10-19-04 05:35 robg           Note Added: 0002202                          
-11-22-04 12:11 Los_Andros     Note Added: 0002495                          
-11-22-04 12:12 Los_Andros     Note Edited: 0002495                         
-12-25-04 17:13 cltien         Note Added: 0002933                          
-01-04-05 05:12 robg           Note Added: 0003078                          
-01-11-05 12:49 henoux         Issue Monitored: henoux                      
-01-11-05 13:18 henoux         Issue End Monitor: henoux                    
-01-12-05 14:21 solus          Issue Monitored: solus                       
-04-25-05 11:42 Los_Andros     Note Added: 0004576                          
-04-26-05 09:34 Los_Andros     Note Added: 0004577                          
-05-01-05 15:00 henoux         Note Added: 0004581                          
-05-01-05 15:01 henoux         Note Edited: 0004581                         
-05-01-05 15:04 henoux         Note Edited: 0004581                         
-05-09-05 12:08 henoux         Note Edited: 0004581                         
-05-20-05 10:38 masanetz       Issue End Monitor: masanetz                    
-05-24-05 12:36 tiwai          Status                   assigned => resolved
-05-24-05 12:36 tiwai          Resolution               open => fixed       
-05-24-05 12:36 tiwai          Note Added: 0004723                          
-08-09-05 13:44 perex          Status                   resolved => closed  
+05-31-05 16:21 Katagia        New Issue                                    
+05-31-05 16:21 Katagia        Distribution              => Suse Linux 9.3  
+05-31-05 16:21 Katagia        Kernel Version            => 2.6.11          
+05-31-05 16:22 tiwai          Status                   assigned => resolved
+05-31-05 16:22 tiwai          Resolution               open => fixed       
+05-31-05 16:22 tiwai          Note Added: 0004835                          
+08-09-05 13:46 perex          Status                   resolved => closed  
 ======================================================================
 
 
