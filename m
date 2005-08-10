@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001324]: ALSA apps that use both playback and capture segfaults with plug:jack
-Date: Wed, 10 Aug 2005 16:07:45 +0200
-Message-ID: <d08e64c785cbe6e39e62a971d4622475@bugtrack.alsa-project.org>
+From: "Nambiar, Anil" <NambiarA@sharpsec.com>
+Subject: Using headphones
+Date: Wed, 10 Aug 2005 13:44:53 -0400
+Message-ID: <6A09F73E2878E447BF6B87C43162C827021545A7@excwa1b2.sharpsec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C59DD3.369C1F4E"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC339210
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 16:07:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +15,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1324> 
-======================================================================
-Reported By:                b0ef
-Assigned To:                
-======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1324
-Category:                   PCM - jack
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-09-2005 21:36 CEST
-Last Modified:              08-10-2005 16:07 CEST
-======================================================================
-Summary:                    ALSA apps that use both playback and capture
-segfaults with plug:jack
-Description: 
-I have applied realtime-preempt-2.6.13-rc4-RT-V0.7.51-38
+------_=_NextPart_001_01C59DD3.369C1F4E
+Content-Type: text/plain
 
-ALSA apps that use both playback and capture segfaults with plug:jack
+Hi,
 
-I have tested with several applications, primarily asterisk. 
+            I have got alsa driver and aplay up and running on my arm based
+board. Now the AC97 codec on the board is using headphone out instead of
+speaker out. But the ac97 library in alsa is muting headphones and using
+speaker and phone. I can unmute headphone in the driver code and mute
+speaker and phone, but it is not so elegant. Is there any way in the
+alsa.conf or some other configuration file where I can specify it to use
+headphones instead of speakers? I appreciate for any useful info.
 
-I have not found any app that uses both playback and capture that works
-with plug:jack. Normal playback and capture separate with plug:jack works
-great. 
-======================================================================
+ 
 
-----------------------------------------------------------------------
- b0ef - 08-10-05 16:01 
-----------------------------------------------------------------------
-I also tested this with kphone which is also a voip application. 
+Thanks,
 
-I gave it the plug:jack audio device in it's alsa configuration. 
-
-It brought down jack and immediately exited.
-
-Please, if any apps are know to work with both playback and capture,
-please scream out.
-
-----------------------------------------------------------------------
- b0ef - 08-10-05 16:07 
-----------------------------------------------------------------------
-This is how I start JACK, btw:
-
-jackd -R -P 80 -p 256 -t4000 -dalsa -r48000 -p512 -S -P -n2 -D -Chw:0,2
--Phw:0,3
-
-I have an emu01k1 audio chip.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-09-05 21:36 b0ef           New Issue                                    
-08-09-05 21:40 b0ef           Note Added: 0005736                          
-08-09-05 21:42 b0ef           Note Added: 0005737                          
-08-09-05 21:45 b0ef           Note Added: 0005738                          
-08-09-05 21:49 b0ef           Note Added: 0005739                          
-08-09-05 22:05 b0ef           Issue Monitored: b0ef                        
-08-10-05 16:01 b0ef           Note Added: 0005749                          
-08-10-05 16:07 b0ef           Note Added: 0005750                          
-======================================================================
+AniL
 
 
+------_=_NextPart_001_01C59DD3.369C1F4E
+Content-Type: text/html
+
+<html>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
+
+
+<meta name=Generator content="Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>Hi,</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I
+have got alsa driver and aplay up and running on my arm based board. Now the
+AC97 codec on the board is using headphone out instead of speaker out. But the
+ac97 library in alsa is muting headphones and using speaker and phone. I can unmute
+headphone in the driver code and mute speaker and phone, but it is not so
+elegant. Is there any way in the alsa.conf or some other configuration file
+where I can specify it to use headphones instead of speakers? I appreciate for
+any useful info.</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>Thanks,</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>AniL</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C59DD3.369C1F4E--
 
 
 -------------------------------------------------------
