@@ -1,13 +1,14 @@
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
-Subject: Re: Using headphones
-Date: Wed, 10 Aug 2005 20:40:10 +0200
-Message-ID: <42FA4A0A.6060705@cetrtapot.si>
-References: <6A09F73E2878E447BF6B87C43162C827021545A7@excwa1b2.sharpsec.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: ALSA and Wine DirectSound question: Fwd from
+	wine-patches list
+Date: Wed, 10 Aug 2005 15:08:45 -0400
+Message-ID: <1123700926.24369.18.camel@mindpipe>
+References: <20050810121434.96950.qmail@web52911.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <6A09F73E2878E447BF6B87C43162C827021545A7@excwa1b2.sharpsec.com>
+In-Reply-To: <20050810121434.96950.qmail@web52911.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +18,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Nambiar, Anil" <NambiarA@sharpsec.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Chris Rankin <rankincj@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net, a.villacis@palosanto.com
 List-Id: alsa-devel@alsa-project.org
 
-Nambiar, Anil wrote:
-> Hi,
+On Wed, 2005-08-10 at 13:14 +0100, Chris Rankin wrote:
+> I think the Wine developers are seeking enlightenment from an ALSA Guru. (The "World of Warcraft"
+> people seem keen to get this patch working, too ;-).) Can anyone help, please?
 > 
->             I have got alsa driver and aplay up and running on my arm 
-> based board. Now the AC97 codec on the board is using headphone out 
-> instead of speaker out. But the ac97 library in alsa is muting 
-> headphones and using speaker and phone. I can unmute headphone in the 
+> http://www.winehq.org/hypermail/wine-patches/2005/08/0173.html
 
-I'm seeing the same issue here - PXA255 and UCB1400 AC'97 codec. I just need to 
-add one-line-hack to enable headphone output as well. It would be nice to avoid 
-this and use userspace to enable headphones, but it is not a major issue for me 
-though.
+This sounds a lot like my theory about what is causing the infamous
+crackling problem that has been reported with JACK - the ALSA middle
+layer is consistently returning an incorrect hardware pointer which
+causes a few samples from the other buffer (assuming a double buffering
+scheme) to be overwritten.
 
+Lee
 
--- 
-..because under Linux "if something is possible in principle,
-then it is already implemented or somebody is working on it".
-
-					--LKI
 
 
 -------------------------------------------------------
