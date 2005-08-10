@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Wed, 10 Aug 2005 13:30:22 +0200
-Message-ID: <bcefa2b12f2ac84f4fd4359b8b4f0da7@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
+Date: Wed, 10 Aug 2005 13:31:25 +0200
+Message-ID: <752d6cf05ae264b306820e1f785fcd56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA395201
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 13:30:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 634951FE
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 13:31:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,718 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001326.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
 ======================================================================
-Reported By:                iive
+Reported By:                ahaning
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
+Project:                    ALSA - utils
+Issue ID:                   1326
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     assigned
 ======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              08-09-2005 12:51 CEST
+Date Submitted:             08-10-2005 03:39 CEST
+Last Modified:              08-10-2005 13:31 CEST
 ======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
+Summary:                    ISAPNP cards (opl3sa2 in particular) are not
+detected properly on 2.6 kernels
 Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
+are incorrectly detected by alsaconf from alsa-utils. For example, the
+default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
+IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
+detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
+to that, then the card will make sound (after touching the mixer while
+playing audio).
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
+According to perex (author of the opl3sa2 driver):
 
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
-
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
-
+"The alsaconf tries to gather free resources (irq/dma/ports) from the
+/proc filesystem. It might be extended to gather this information also
+from /sys filesystem."
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001296 isapnp is incompatible with pnpbios and...
-related to          0001326 ISAPNP cards (opl3sa2 in particular) ar...
+related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 21:59 
+ perex - 08-10-05 13:28 
 ----------------------------------------------------------------------
-Submitter: Is there any way you can do more research into the problem?
+I've uploaded a new alsaconf which should do it in the described way. Could
+you give a try?
 
-----------------------------------------------------------------------
- iive - 04-14-05 00:02 
-----------------------------------------------------------------------
-Tell me what to do and I'll do it.
-btw have you took a look of the attached file?
-
-----------------------------------------------------------------------
- ahaning - 07-09-05 06:38 
-----------------------------------------------------------------------
-I was able to get alsa to brute-force detect my opl3sa2 card in linux 2.4
-and then copy the modules.conf to modprobe.conf and then (after installing
-the drivers compiled for the currently-installed kernel) I can do
-'alsasound start' and I get audio just fine in kernel 2.6(.12.2).
-
-HTH.
-
-FWIW, here is the modprobe.conf that was generated under kernel 2.6:
-
-# --- BEGIN: Generated by ALSACONF, do not edit. ---
-# --- ALSACONF version 1.0.9rc3 ---
-alias snd-card-0 snd-opl3sa2
-alias sound-slot-0 snd-opl3sa2
-options snd-opl3sa2 fm_port=-1 midi_port=-1 port=0x370 wss_port=0x530
-dma1=3 dma2=1 irq=9
-# --- END: Generated by ALSACONF, do not edit. ---
-
-
-and here is the configuration generated under 2.4 (that works in 2.6,
-too):
-
-# --- BEGIN: Generated by ALSACONF, do not edit. ---
-# --- ALSACONF version 1.0.9 ---
-alias char-major-116 snd
-alias char-major-14 soundcore
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-alias snd-card-0 snd-opl3sa2
-alias sound-slot-0 snd-opl3sa2
-options snd-opl3sa2 fm_port=-1 midi_port=-1 port=0x370 wss_port=0x530
-dma1=0 dma2=1 irq=11 isapnp=0
-# --- END: Generated by ALSACONF, do not edit. ---
-
-
-HTH.
-
--Andy
-
-(If you need any other information, I'm probably better reached via email:
-ahaning@gmail.com)
-
-
-
-----------------------------------------------------------------------
- jdthood - 07-09-05 11:13 
-----------------------------------------------------------------------
-> btw have you took a look of the attached file?
-
-I just looked at it now.  I see that it contains a lot of information.
-
-jdthood@turmeric:/tmp/isa_opl3sa2$ ls
-fullog  isapnp_after  isapnp_before  kernel/  lsmod  proc/  sys/
-
-----------------------------------------------------------------------
- jdthood - 07-09-05 11:14 
-----------------------------------------------------------------------
-See also: https://bugzilla.ubuntu.com/show_bug.cgi?id=5456
-
-----------------------------------------------------------------------
- ahaning - 07-28-05 05:17 
-----------------------------------------------------------------------
-Is there any news on this? I see on LKML that there is a move to remove
-"obsolete" OSS drivers from the kernel. This could be fairly disasterous
-for people who don't know how to configure their OPL3SA2 card in 2.6
-kernels with the ALSA driver, since alsaconf will not detect those cards
-correctly on 2.6 kernels.
-
-I was told to file a bug report, which I may do eventually, but I figured
-maybe it would be best to keep everything in one place. And since I'd
-already posted what I know in this bug, I didn't think it would be worth
-writing up another bug report.
-
-Anyway, just wanting to see what may have been done to get OPL3SA2 cards
-detected and working well on 2.6 kernels. Thanks.
-
-----------------------------------------------------------------------
- iive - 08-02-05 00:02 
-----------------------------------------------------------------------
-I must say that it is easier to make opl3sa2 work on 2.2.x kernel than to
-make it work on 2.6.x kernel. Because if you had read the link I had
-provided you would know that I have used isapnp&pnpdump before and that
-now it didn't work.
-Didn't work either the modprobe.conf options you have provided me.
-
-In short. I don't care if it is pnp, driver bug, kernel bug. I want it
-fixed. If some of developers is willing to investigate I could give him
-ssh access on my box. You have my email.
-
-So, it is now kernel-2.6.12.3 and it doesn't work.
-
-----------------------------------------------------------------------
- ahaning - 08-02-05 03:05 
-----------------------------------------------------------------------
-FWIW, I tried 2.6.13-rc4 with ALSA 1.0.9 (driver 1.0.9b) and had no luck
-(surprise).
-
-I tried having alsaconf brute force detect with several cs#### drivers and
-the opl3sa2 and it configured one of the cs#### drivers. It was wrong,
-though.
-
-I think the problem might have something to do with IRQs/ISA and the way
-that 2.6 handles them versus previous kernels. However, I'm not a coder or
-a kernel hacker, so I could be way off here. When alsaconf has managed to
-configure something (like in one of my previous comments) the IRQs were
-completely wrong, which I thought was odd.
-
-I'd also offer up a login to my notebook if someone would be willing to
-look into this. It would be the first time I'd done such a thing, though,
-so you'd probably have to tell me what software you need and how you'd
-like it set up.
-
-If there's anything else I can do, someone please say so. Like iive, I'm
-getting frustrated that my notebook is over 5 years old and is having
-driver regression issues. All drivers for this machine should work like a
-charm.
-
--Andy
-
-----------------------------------------------------------------------
- perex - 08-02-05 22:14 
-----------------------------------------------------------------------
-The alsaconf-isapnp-2.6.patch should fix the alsaconf probing problem.
-Please, confirm.
-
-Also, could you try remove 'options snd-opl3sa2' line from your
-modprobe.conf and try the command 'modprobe snd-opl3sa2' on fresh system
-(after boot)?
-
-----------------------------------------------------------------------
- perex - 08-02-05 22:16 
-----------------------------------------------------------------------
-The alsaconf-isapnp-2.6.patch should fix the alsaconf probing problem.
-Please, confirm.
-
-Also, could you try remove 'options snd-opl3sa2' line from your
-modprobe.conf and try the command 'modprobe snd-opl3sa2' on fresh system
-(after boot)?
-
-----------------------------------------------------------------------
- ahaning - 08-03-05 02:46 
-----------------------------------------------------------------------
-perex: Thanks for the patch! Unfortunately, I'm unable to get it to work.
-
-The patch you attached to this bug appears to be against the CVS tree,
-which won't even build for me. Furthermore, I've had trouble figuring out
-how to apply the patch. I've tried 'patch -p1 < <patchfile>' from the
-./alsa-utils/alsaconf directory, as well as 'patch -p0 < <patchfile>' and
--p1 says it can't find the file to patch. -p0 says that it looks like the
-patch has already been applied.
-
-What kernel are you running? I'm still on 2.6.12.2. 
-
-If possible, a patch against ALSA 1.0.9 would be much appreciated.
-
-Thanks!
-
-----------------------------------------------------------------------
- perex - 08-03-05 11:42 
-----------------------------------------------------------------------
-I uploaded new alsaconf script. Hopefully, it will work on your system.
-
-----------------------------------------------------------------------
- ahaning - 08-03-05 13:42 
-----------------------------------------------------------------------
-perex:
-
-I copied the attached alsaconf script over my old one and ran it. The
-first time, without rebooting, it said it found a OPL3SA2 and would write
-the configuration to /etc/modprobe.conf, but either it didn't or it
-detected things incorrectly.
-
-After rebooting, it won't even detect the OPL3SA2. "No legacy cards
-found."
-
-What version of ALSA and the kernel are you running? If we can try to get
-at least similar software, it might be easier to debug these issues. Also,
-what kind of OPL3SA2 are you using? I have one in my Gateway Solo 2500 and
-I have PNP turned off in the BIOS.
-
-Thanks!
-
-----------------------------------------------------------------------
- ahaning - 08-03-05 15:17 
-----------------------------------------------------------------------
-After applying that patch to alsa-utils-1.0.9 and reinstalling
-alsa-driver-1.0.9b, alsaconf appears to be consistently detecting my card.
-I don't think the IRQ setting is quite correct and I'm currently only able
-to access the machine over SSH, so I can't tell whether or not it's
-working. Here's the modprobe.conf that is generated:
-
-# --- BEGIN: Generated by ALSACONF, do not edit. ---
-# --- ALSACONF version 1.0.9 ---
-alias snd-card-0 snd-opl3sa2
-alias sound-slot-0 snd-opl3sa2
-options snd-opl3sa2 fm_port=-1 midi_port=-1 port=0x370 wss_port=0x530
-dma1=1 dma2=0 irq=5
-# --- END: Generated by ALSACONF, do not edit. ---
-
-
-I don't think it's set to IRQ 5 and dma1 is usally set to 0 and dma2 to 1,
-but the IO ports look correct. I can load alsamixer and fiddle with the
-options. mplayer doesn't seem to be able to play (from what I can tell
-from an SSH window).
-
-At least it's a small step.
-
-----------------------------------------------------------------------
- perex - 08-04-05 08:51 
-----------------------------------------------------------------------
-You are trying configure legacy cards. Don't try that (select only detected
-PnP card in alsaconf). The option opl3sa2 line with manual resources
-should NOT be present in the generated configuration. Select only detected
-card (and try to remove the whole ALSACONF block from modprobe.conf).
-
-----------------------------------------------------------------------
- ahaning - 08-04-05 12:52 
-----------------------------------------------------------------------
-When I compile all drivers (not just --with-cards=opl3sa2) none of them
-work.
-
-I have now enabled kernel and BIOS support for PnP. With
-alsa-driver-1.0.9b compiled with --with-cards=opl3sa2, no PnP or PCI cards
-are found.
-
-I don't see why I should need drivers other than opl3sa2.
-
-----------------------------------------------------------------------
- perex - 08-04-05 13:25 
-----------------------------------------------------------------------
-Please, follow my instructions. I have not written to recompile other
-drivers. I meant that in alsaconf should be selected the pnp card not
-probing of legacy cards.
-
-Also, follow ALL requests from
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879#5608 and
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879#5641. If you do
-only partial steps, it avoids me to do proper conclusions. I don't have
-opl3sa2 system around, so I rely on your input.
-
-----------------------------------------------------------------------
- perex - 08-04-05 13:28 
-----------------------------------------------------------------------
-And attach the packed contents of /sys directory after all steps when your
-card is not detected or misconfigured.
-
-----------------------------------------------------------------------
- ahaning - 08-04-05 14:49 
-----------------------------------------------------------------------
-I have recompiled and installed the latest versions of alsa-driver,
-alsa-utils, and alsa-lib. I applied the above patch before compiling
-alsa-utils and copied the above alsaconf script over the one installed by
-alsa-utils.
-
-No PnP cards were detected.
-
-I have attached a tar.bz2 of my sys directory. If I need to pack it
-differently, please let me know.
-
-When I tried to do "modprobe snd_opl3sa2" after a reboot, I get a "FATAL"
-error saying "No such device". In dmesg, I see that pnp
-registers/unregisters the opl3sa2 driver.
-
-Thanks.
-
-Edit: I'll be attaching my /proc/asound as well, for fun.
-
-
-
-----------------------------------------------------------------------
- perex - 08-04-05 14:51 
-----------------------------------------------------------------------
-The ISAPnP code in your kernel does not detected the ISAPnP card. Try
-toggle the pnp system os option in your bios and repeat all tests. Also,
-send me all pnp / PnP lines from dmesg (dmesg | grep -E "(pnp|PnP)") after
-boot for both cases when the card is detected and when it is not.
-
-----------------------------------------------------------------------
- ahaning - 08-05-05 03:18 
-----------------------------------------------------------------------
-When I have PnP turned on in the BIOS, dmesg produces the following
-regarding PnP:
-
-pnp: PnP ACPI init
-pnp: PnP ACPI: found 15 devices
-PnPBIOS: Disabled by ACPI PNP
-pnp: the driver 'system' has been registered
-pnp: match found with the PnP device '00:0b' and the driver 'system'
-pnp: match found with the PnP device '00:0c' and the driver 'system'
-pnp: 00:0c: ioport range 0x372-0x373 has been reserved
-pnp: 00:0c: ioport range 0x398-0x399 has been reserved
-pnp: 00:0c: ioport range 0x4d0-0x4d1 has been reserved
-pnp: 00:0c: ioport range 0x279-0x279 has been reserved
-pnp: 00:0c: ioport range 0xa79-0xa79 has been reserved
-pnp: 00:0c: ioport range 0x2180-0x218f has been reserved
-isapnp: Scanning for PnP cards...
-isapnp: No Plug & Play device found
-pnp: the driver 'i8042 kbd' has been registered
-pnp: match found with the PnP device '00:0d' and the driver 'i8042 kbd'
-pnp: the driver 'i8042 aux' has been registered
-pnp: match found with the PnP device '00:0e' and the driver 'i8042 aux'
-pnp: the driver 'serial' has been registered
-pnp: match found with the PnP device '00:00' and the driver 'serial'
-
-With PnP turned off in the BIOS, I get the same.
-
-Running alsaconf with PnP turned off (as opposed to before when it was
-turned on) gives no found PnP, PCI, or legacy cards.
-
-Maybe I should turn off ACPI or upgrade to the latest stable kernel and
-ACPI/suspend2 patches.
-
-Thanks.
-
-Edit: Enabling/disabling ACPI didn't change anything.
-
-
-
-----------------------------------------------------------------------
- perex - 08-05-05 08:44 
-----------------------------------------------------------------------
-If you see these two lines:
-
-isapnp: Scanning for PnP cards...
-isapnp: No Plug & Play device found
-
-Then ISAPnP subsystem does not detected any ISAPnP card. Please, could you
-try the user-space isapnp utility, if it finds an ISAPnP device?
-
-----------------------------------------------------------------------
- ahaning - 08-05-05 12:47 
-----------------------------------------------------------------------
-Well, I don't have a /etc/isapnp.conf file and I don't know how to write
-one. pnpdump doesn't find anything, anyway. The only interesting thing
-that it prints is:
-
-# Trying port address 02f3
-REALTIME operation timeout exceeded - Switching to normal scheduling
-nanosleep failed: Interrupted system call
-# Trying port address 0313
-
-it ends with:
-
-# No boards found
-
-So, I don't think that isapnp would work, anyway, even if I did know how
-to write a config file for it (which, IMO, seems completely backwards from
-what PnP means!)
-
-Maybe there's a newer version than I have? All I can find is that 1.26,
-released in 2001 (!), is the latest version.
-
-This non-working state could have something to do with the related bug
-0001296 at the top of this page: isapnp is incompatible with pnpbios and
-used the wrong ID's
-
-Also, I've always had to manually configure this card (except in Windows
-XP, which might do that automatically) and any isapnp options have always
-had to be turned off. So, isapnp has never worked with any of the
-available opl3sa2 drivers, OSS or ALSA.
-
-Thanks.
-
-----------------------------------------------------------------------
- perex - 08-05-05 13:47 
-----------------------------------------------------------------------
-ahaning:
-
-Appeartly, it's another bug than originally reported. The original
-reporter uses the ISAPnP configuration.
-
-What does command 'modinfo -p snd-opl3sa2' show on your system?
-
-----------------------------------------------------------------------
- ahaning - 08-06-05 00:31 
-----------------------------------------------------------------------
-# modinfo -p snd-opl3sa2
-#
-
-I'm not sure whether to be :-D or :-(
-
-Edit: FWIW, modinfo snd-opl3sa2 is slightly more interesting:
-
-# modinfo snd-opl3sa2
-author:         Jaroslav Kysela <perex@suse.cz>
-description:    Yamaha OPL3SA2+
-license:        GPL
-parmtype:       index:array of int
-parm:           index:Index value for OPL3-SA soundcard.
-parmtype:       id:array of charp
-parm:           id:ID string for OPL3-SA soundcard.
-parmtype:       enable:array of bool
-parm:           enable:Enable OPL3-SA soundcard.
-parmtype:       isapnp:array of bool
-parm:           isapnp:PnP detection for specified soundcard.
-parmtype:       port:array of long
-parm:           port:Port # for OPL3-SA driver.
-parmtype:       sb_port:array of long
-parm:           sb_port:SB port # for OPL3-SA driver.
-parmtype:       wss_port:array of long
-parm:           wss_port:WSS port # for OPL3-SA driver.
-parmtype:       fm_port:array of long
-parm:           fm_port:FM port # for OPL3-SA driver.
-parmtype:       midi_port:array of long
-parm:           midi_port:MIDI port # for OPL3-SA driver.
-parmtype:       irq:array of int
-parm:           irq:IRQ # for OPL3-SA driver.
-parmtype:       dma1:array of int
-parm:           dma1:DMA1 # for OPL3-SA driver.
-parmtype:       dma2:array of int
-parm:           dma2:DMA2 # for OPL3-SA driver.
-parmtype:       opl3sa3_ymode:array of int
-parm:           opl3sa3_ymode:Speaker size selection for 3D Enhancement
-mode: Desktop/Large Notebook/Small Notebook/HiFi.
-vermagic:       2.6.12.2 preempt PENTIUM4 gcc-3.2
-depends:        snd-cs4231-lib,snd-opl3-lib,snd,snd-mpu401-uart,snd-pcm
-alias:          pnp:cYMH0020dYMH0021*
-alias:          pnp:cYMH0030dYMH0021*
-alias:          pnp:cYMH0800dYMH0021*
-alias:          pnp:cYMH0801dYMH0021*
-alias:          pnp:cNMX2200dYMH2210*
-#
-
-Also FWIW:
-
-# modinfo -V
-module-init-tools version 0.9.14
-#
-
-I tried to install module-init-tools-3.1 but it requires docbook2man. I
-found a newer version of docbook-tools on sources.redhat.com but it
-requires the jade lib (which is in the same directory) but that won't
-compile. :-/
-
-Thanks.
-
-
-
-----------------------------------------------------------------------
- perex - 08-06-05 08:37 
-----------------------------------------------------------------------
-Yes, you need new version of module-init-tools accepting -p parameter. I'm
-using module-init-tools-3.2_pre1-7. It's not a worth to add support for
-older versions to alsaconf.
-
-----------------------------------------------------------------------
- ahaning - 08-06-05 19:51 
-----------------------------------------------------------------------
-I don't suppose you (or anyone else) have any tips on getting jade-1.2.1
-built? It's required by docbook-utils-0.6.14 which is required by
-module-init-tools-3.2-pre8.
-
-Thanks.
-
-Edit: I found openjade.sf.net.
-Edit: docbook-utils-0.6.14 won't build with openjade :-(
-
-
-
-----------------------------------------------------------------------
- iive - 08-07-05 15:24 
-----------------------------------------------------------------------
-Hello,
-perex I have tested your improved alsaconf, and yes it indeed detects 
-my sound card. To help you I have included the result of
-`bash -x ./alsaconf 2> alsaconf.log` so you can see the check that
-succeeds.
-
-Anyway, after alsaconf finds the right module updates the config files
-and
-says "your done", I try to play an sample and ... it hangs.
-
-Well, I suspect that this is DMA->IRQ issue. 
-As you could have probably seen in my very first archive posted here -
-the number of trigered interrupts inclrase with 2 (I checked, this is
-done when modules is inserted) but it never changes when I try to play 
-something. The most obvious reason -> The sound card doesn't triger it or
-doesn't handle it.
-
-Now having in mind same source code is uses in 2.4 kernel and I do use
-alsa in 2.4 kernel and it works flowlessly, I believe it is kernel bug.
-Well... there may be something in the details.
-
-To give you some light, I have enabled all debuging options and put
-an more verbose output on register handling in opl3sa2.c and cs4231_lib.c
-.
-I have attached modified files and the result output log.
-If you need something more specific... send it :P
-(kernel 2.6.12, sorry): 
-
-All files and logs are in opl3sa2_iive2.tgz, take a look and of the older
-opl3sa2.tgz.
-
-BTW While I was looking into the source I think i may have found bug 
-(not related to this issue).
-The snd_opl3sa2.single_dma is never zeroed. The structure(typedef
-actually)
-is declared static and assumed to be zeroed by the compiler.
-Unfortunatelly this flag will persist if module is removed and reloaded 
-with different parameters that doesn't set it.
-small patch :
--if (xdma2 < 0)
--         chip->single_dma = 1;
-+chip->single_dma = (xdma2 < 0);
-
-----------------------------------------------------------------------
- perex - 08-08-05 13:45 
-----------------------------------------------------------------------
-iive: Thanks for testing. Please, could you send me related ALSA lines from
-/etc/modules.conf or /etc/modprobe.d/sound (depending on distro) and
-contents of /sys directory when snd-opl3sa2 module is loaded?
-
-Also, please,try to override dma1, dma2 and irq parameters in the modprobe
-configuration file. (For example: options snd-opl3sa2 dma1=3 dma2=1
-irq=9). Check for free irqs in /proc/interrupts and for dmas in /proc/dma.
-
-----------------------------------------------------------------------
- ahaning - 08-09-05 04:39 
-----------------------------------------------------------------------
-Well, with the help of some people on LKML, I've successfully built
-module-init-tools 3.2-pre7.
-
-I've installed alsa-utils-1.0.9 with the above patch and installed the
-above-attached alsaconf.
-
-When I run alsaconf 1.0.9a, it does not detect my card as a PnP card. It
-will brute-force detect the card, however. The dma1, dma2, and irq are
-wrong, though.  When I fix them in the modprobe.conf file, I can do
-'alsasound restart' and the card appears to be detected. When I go to play
-something, I won't get sound until I touch the PCM mixer.
-
-If it would help, I can repost my /sys directory.
-
-Thanks.
-
-Edit: FWIW, here's my modinfo -p snd-opl3sa2
-
-# modinfo -p snd-opl3sa2
-index:Index value for OPL3-SA soundcard.
-id:ID string for OPL3-SA soundcard.
-enable:Enable OPL3-SA soundcard.
-isapnp:PnP detection for specified soundcard.
-port:Port # for OPL3-SA driver.
-sb_port:SB port # for OPL3-SA driver.
-wss_port:WSS port # for OPL3-SA driver.
-fm_port:FM port # for OPL3-SA driver.
-midi_port:MIDI port # for OPL3-SA driver.
-irq:IRQ # for OPL3-SA driver.
-dma1:DMA1 # for OPL3-SA driver.
-dma2:DMA2 # for OPL3-SA driver.
-opl3sa3_ymode:Speaker size selection for 3D Enhancement mode:
-Desktop/Large Notebook/Small Notebook/HiFi.
-#
-
-
-
-----------------------------------------------------------------------
- iive - 08-09-05 11:31 
-----------------------------------------------------------------------
-Well, I finnaly successed of making sound work.
-The only thing that helped was setting BIOS to 'PNP OS = YES'.
-This only comes to proove that the kernel is the reason of all problem.
-The real question is where to look now.
-
-----------------------------------------------------------------------
- perex - 08-09-05 12:48 
-----------------------------------------------------------------------
-iive: Thanks for testing. Please, return to 
-http://bugzilla.kernel.org/show_bug.cgi?id=3117 , because it appears to be
-a bug in the PnP subsystem of the 2.6 kernel. I reassinged this bug to
-Adam.
-
-----------------------------------------------------------------------
- perex - 08-09-05 12:51 
-----------------------------------------------------------------------
-Okay, the bug has been forwarded to the PnP subsystem maintainer.
-
-ahaning: The alsaconf tries to gather free resources (irq/dma/ports) from
-the /proc filesystem. It might be extended to gather this information also
-from /sys filesystem. Please, open a new bugreport for alsa-utils /
-alsaconf. It has nothing to do with the alsa-driver.
+Note that it non-pnp probing/setup might fail anyway, but the resources
+should be selected more correctly.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
-04-13-05 21:59 jdthood        Note Added: 0004478                          
-04-14-05 00:02 iive           Note Added: 0004485                          
-07-09-05 06:26 ahaning        Note Added: 0005438                          
-07-09-05 06:38 ahaning        Note Edited: 0005438                         
-07-09-05 11:13 jdthood        Note Added: 0005439                          
-07-09-05 11:14 jdthood        Note Added: 0005440                          
-07-28-05 05:17 ahaning        Note Added: 0005577                          
-08-02-05 00:02 iive           Note Added: 0005599                          
-08-02-05 03:00 ahaning        Note Added: 0005600                          
-08-02-05 03:05 ahaning        Note Added: 0005601                          
-08-02-05 03:05 ahaning        Note Deleted: 0005600                        
-08-02-05 22:08 perex          File Added: alsaconf-isapnp-2.6.patch             
-      
-08-02-05 22:14 perex          Note Added: 0005607                          
-08-02-05 22:16 perex          Note Added: 0005608                          
-08-03-05 02:46 ahaning        Note Added: 0005610                          
-08-03-05 11:42 perex          File Added: alsaconf                         
-08-03-05 11:42 perex          Note Added: 0005615                          
-08-03-05 13:42 ahaning        Note Added: 0005625                          
-08-03-05 15:17 ahaning        Note Added: 0005631                          
-08-04-05 08:51 perex          Note Added: 0005641                          
-08-04-05 08:52 perex          Relationship added       related to 0001296  
-08-04-05 12:52 ahaning        Note Added: 0005644                          
-08-04-05 13:25 perex          Note Added: 0005645                          
-08-04-05 13:28 perex          Note Added: 0005646                          
-08-04-05 14:38 ahaning        File Added: sys-ahaning-0.1.tar.bz2               
-    
-08-04-05 14:42 ahaning        Note Added: 0005649                          
-08-04-05 14:49 ahaning        Note Edited: 0005649                         
-08-04-05 14:50 ahaning        File Added: asound-ahaning-0.1.tar.bz2            
-       
-08-04-05 14:51 perex          Note Added: 0005650                          
-08-05-05 02:35 ahaning        Note Added: 0005655                          
-08-05-05 03:18 ahaning        Note Edited: 0005655                         
-08-05-05 08:44 perex          Note Added: 0005661                          
-08-05-05 12:47 ahaning        Note Added: 0005665                          
-08-05-05 13:47 perex          Note Added: 0005667                          
-08-05-05 23:58 ahaning        Note Added: 0005678                          
-08-06-05 00:31 ahaning        Note Edited: 0005678                         
-08-06-05 08:37 perex          Note Added: 0005680                          
-08-06-05 18:32 ahaning        Note Added: 0005681                          
-08-06-05 18:39 ahaning        Note Edited: 0005681                         
-08-06-05 19:51 ahaning        Note Edited: 0005681                         
-08-07-05 15:19 iive           File Added: opl3sa2_iive2.tgz                    
-08-07-05 15:24 iive           Note Added: 0005694                          
-08-08-05 13:45 perex          Note Added: 0005707                          
-08-09-05 03:00 ahaning        Note Added: 0005716                          
-08-09-05 04:39 ahaning        Note Edited: 0005716                         
-08-09-05 11:31 iive           Note Added: 0005719                          
-08-09-05 11:55 iive           File Added: opl3sa2_iive3.tgz                    
-08-09-05 12:48 perex          Note Added: 0005721                          
-08-09-05 12:51 perex          Status                   new => resolved     
-08-09-05 12:51 perex          Resolution               open => won't fix   
-08-09-05 12:51 perex          Assigned To               => perex           
-08-09-05 12:51 perex          Note Added: 0005722                          
-08-10-05 13:30 perex          Relationship added       related to 0001326  
+08-10-05 03:39 ahaning        New Issue                                    
+08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
+it's not distribution-specific)
+08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
+08-10-05 13:26 perex          Status                   new => assigned     
+08-10-05 13:26 perex          Assigned To               => perex           
+08-10-05 13:26 perex          File Added: alsaconf                         
+08-10-05 13:28 perex          Note Added: 0005747                          
+08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
+utils
+08-10-05 13:30 perex          Relationship added       related to 0000879  
+08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
 ======================================================================
 
 
