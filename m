@@ -1,20 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [linux-audio-user] Again on sudden and
- occasional	Jack	crackling sound
-Date: Tue, 09 Aug 2005 22:12:30 -0400
-Message-ID: <1123639951.21956.5.camel@mindpipe>
-References: <42F02BB2.3000201@virgilio.it> <42F62AE8.60604@virgilio.it>
-	 <87r7d4xmxm.fsf@localhost.localdomain> <42F7D849.3030000@virgilio.it>
-	 <87ll3byh42.fsf@localhost.localdomain>
-	 <1123557715.25617.32.camel@localhost.localdomain>
-	 <42F8A6AE.6010609@virgilio.it> <7q8xzb5ekw.fsf@io.com>
-	 <42F92B60.9020909@virgilio.it>
-	 <1123620561.25617.58.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001246]: Sound card loops and doesn't play any more
+Date: Wed, 10 Aug 2005 04:13:06 +0200
+Message-ID: <cd3a332a9d15958f298aedef8db0048a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1123620561.25617.58.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C2791EE
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 04:13:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,38 +18,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: paul@linuxaudiosystems.com, A list for linux audio users <linux-audio-user@music.columbia.edu>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-08-09 at 16:49 -0400, Paul Davis wrote:
-> On Tue, 2005-08-09 at 22:17 +0000, Salvatore Di Pietro wrote:
-> 
-> > Moreover, using jack_bufsize, or resizing buffer within Ardour, causes 
-> > complete muting of output sound (bit not clients death, as it was 
-> > before), until I restart jack.
-> > Notice that this "complete muting" only affects the output ports, i.e. I 
-> > can continue recording with qarecord, or ardour, I just cannot hear (and 
-> > monitor) anything anymore until I restart jack and its clients.
-> 
-> as far as we can tell, this is an ALSA (kernel) driver issue. it does
-> not affect other backends, and does not affect (we think) every ALSA
-> supported piece of h/w. it would be nice for it to be either fixed or at
-> least tracked down conclusively.
-> 
 
-OK, here's an idea.  Say there was an off-by-one error or some other bug
-in the ALSA middle layer that caused the reported value of the hardware
-pointer to be off by one.  So snd_pcm_avail_update would report 64
-frames available while there were actually 63.  If JACK gets scheduled
-within the space of one frame (quite possible especially with the RT
-kernel, it's a ~20us window at 48KHz) then we could overwrite the wrong
-part of the buffer - a frame or two ahead of the hardware pointer.
-AFAICT this would introduce a crackle, but no xruns would be reported.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1246> 
+======================================================================
+Reported By:                syberdave
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1246
+Category:                   ISA - es18xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Testing
+Kernel Version:             2.6.7-grsec
+======================================================================
+Date Submitted:             07-09-2005 17:04 CEST
+Last Modified:              08-10-2005 04:13 CEST
+======================================================================
+Summary:                    Sound card loops and doesn't play any more
+Description: 
+I installed a second sound card (ESS 1868 F/ISA) and when I send data to
+it, it plays the first second or so and starts repeating it and it doesn't
+move on. I notice that when I make the sound mono and bring the bitrate
+down, the data that it repeats becomes longer: mpg321 --wav - music.mp3
+|sox -t wav - -t ossdsp -c 1 -r 4096 /dev/dsp1
 
-Does this sound reasonable?
+And when I try to play it with ALSA, this command works for my first sound
+card:
+mpg321 --wav - music.mp3 |aplay -D hw:0,0
+But this command doesn't - it does that loop thing again:
+mpg321 --wav - music.mp3 |aplay -D hw:1,0
 
-Lee
+This is my results for lsmod:
+Module                  Size  Used by
+snd_es18xx             29100  0 
+snd_cs4231_lib         21280  0 
+snd_sb16_dsp            8064  0 
+snd_sb_common          13152  1 snd_sb16_dsp
+snd_ymfpci             54084  1 
+snd_ac97_codec         60356  1 snd_ymfpci
+snd_opl3_lib            8320  2 snd_es18xx,snd_ymfpci
+snd_hwdep               7136  1 snd_opl3_lib
+snd_mpu401_uart         5824  2 snd_es18xx,snd_ymfpci
+snd_rawmidi            19872  1 snd_mpu401_uart
+
+Any help would be appreciated.
+======================================================================
+
+----------------------------------------------------------------------
+ perex - 08-04-05 09:25 
+----------------------------------------------------------------------
+syberdave: Could you try the patch from twhitehead?
+
+----------------------------------------------------------------------
+ syberdave - 08-10-05 04:13 
+----------------------------------------------------------------------
+Hmm, the patch doesn't fix it. I don't know how to solve an IRQ conflict.
+So I'll just do without this extra sound card.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-09-05 17:04 syberdave      New Issue                                    
+07-09-05 17:04 syberdave      Distribution              => Debian Testing  
+07-09-05 17:04 syberdave      Kernel Version            => 2.6.7-grsec     
+07-09-05 17:04 syberdave      Issue Monitored: syberdave                    
+07-10-05 06:49 syberdave      Note Added: 0005441                          
+07-23-05 13:38 twhitehead     Note Added: 0005552                          
+07-23-05 13:42 twhitehead     File Added: alpha-alsa.patch                    
+08-04-05 09:25 perex          Note Added: 0005643                          
+08-10-05 04:13 syberdave      Note Added: 0005745                          
+======================================================================
+
 
 
 
