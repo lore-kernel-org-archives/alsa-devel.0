@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - plugins 0001324]: ALSA apps that use both playback and capture segfaults with plug:jack
-Date: Wed, 10 Aug 2005 16:01:11 +0200
-Message-ID: <5f068363aabb66e79a3a75775e22b784@bugtrack.alsa-project.org>
+Date: Wed, 10 Aug 2005 16:07:45 +0200
+Message-ID: <d08e64c785cbe6e39e62a971d4622475@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC42B210
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 16:01:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC339210
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 16:07:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-09-2005 21:36 CEST
-Last Modified:              08-10-2005 16:01 CEST
+Last Modified:              08-10-2005 16:07 CEST
 ======================================================================
 Summary:                    ALSA apps that use both playback and capture
 segfaults with plug:jack
@@ -55,12 +55,6 @@ great.
 ======================================================================
 
 ----------------------------------------------------------------------
- b0ef - 08-09-05 21:49 
-----------------------------------------------------------------------
-I found the advanced view, btw;), so now I see the "steps to reproduce" is
-there
-
-----------------------------------------------------------------------
  b0ef - 08-10-05 16:01 
 ----------------------------------------------------------------------
 I also tested this with kphone which is also a voip application. 
@@ -72,6 +66,16 @@ It brought down jack and immediately exited.
 Please, if any apps are know to work with both playback and capture,
 please scream out.
 
+----------------------------------------------------------------------
+ b0ef - 08-10-05 16:07 
+----------------------------------------------------------------------
+This is how I start JACK, btw:
+
+jackd -R -P 80 -p 256 -t4000 -dalsa -r48000 -p512 -S -P -n2 -D -Chw:0,2
+-Phw:0,3
+
+I have an emu01k1 audio chip.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -82,6 +86,7 @@ Date Modified  Username       Field                    Change
 08-09-05 21:49 b0ef           Note Added: 0005739                          
 08-09-05 22:05 b0ef           Issue Monitored: b0ef                        
 08-10-05 16:01 b0ef           Note Added: 0005749                          
+08-10-05 16:07 b0ef           Note Added: 0005750                          
 ======================================================================
 
 
