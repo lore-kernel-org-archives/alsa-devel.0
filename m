@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Wed, 10 Aug 2005 13:31:25 +0200
-Message-ID: <752d6cf05ae264b306820e1f785fcd56@bugtrack.alsa-project.org>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [Patch]implement no_mmap_ctrl only for CONFIG_COMPAT
+Date: Wed, 10 Aug 2005 13:51:47 +0200
+Message-ID: <200508101351.48058.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 634951FE
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 13:31:26 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +17,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
-The following issue has been UPDATED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
-======================================================================
-Reported By:                ahaning
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1326
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-10-2005 13:31 CEST
-======================================================================
-Summary:                    ISAPNP cards (opl3sa2 in particular) are not
-detected properly on 2.6 kernels
-Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+this spares a few bytes for the average case.
+Please apply.
 
-According to perex (author of the opl3sa2 driver):
+   Thanks,
+   Karsten
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
-======================================================================
+------
+Summary: ALSA's struct _snd_pcm_substream:
+         implent no_mmap_ctrl only for CONFIG_COMPAT
+From: Karsten Wiese <annabellesgarden@yahoo.de>
 
-----------------------------------------------------------------------
- perex - 08-10-05 13:28 
-----------------------------------------------------------------------
-I've uploaded a new alsaconf which should do it in the described way. Could
-you give a try?
+This patch makes the implementation of no_mmap_ctrl depend on
+CONFIG_COMPAT and thus spares a few bytes in the average case,
+when CONFIG_COMPAT is not defined.
+Two access macros GET_NO_MMAP_CTRL() and SET_NO_MMAP_CTRL() are
+also defined and substituted in the c - files, where previously
+no_mmap_ctrl was used directly.
 
-Note that it non-pnp probing/setup might fail anyway, but the resources
-should be selected more correctly.
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-08-10-05 13:26 perex          Status                   new => assigned     
-08-10-05 13:26 perex          Assigned To               => perex           
-08-10-05 13:26 perex          File Added: alsaconf                         
-08-10-05 13:28 perex          Note Added: 0005747                          
-08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
-utils
-08-10-05 13:30 perex          Relationship added       related to 0000879  
-08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
-======================================================================
 
+--- alsa-kernel_/include/pcm.h	2005-08-09 22:55:04.000000000 +0200
++++ alsa-kernel/include/pcm.h	2005-08-10 12:06:40.000000000 +0200
+@@ -405,10 +405,21 @@ struct _snd_pcm_substream {
+ 	snd_info_entry_t *proc_sw_params_entry;
+ 	snd_info_entry_t *proc_status_entry;
+ 	snd_info_entry_t *proc_prealloc_entry;
++#ifdef CONFIG_COMPAT
+ 	/* misc flags */
+ 	unsigned int no_mmap_ctrl: 1;
++#endif
+ };
+ 
++#ifdef CONFIG_COMPAT
++# define GET_NO_MMAP_CTRL(substream) ((substream)->no_mmap_ctrl)
++# define SET_NO_MMAP_CTRL(substream, val) ((substream)->no_mmap_ctrl = val)
++#else
++# define GET_NO_MMAP_CTRL(substream) 0
++# define SET_NO_MMAP_CTRL(substream, val)
++#endif
++
++
+ #if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
+ #define SUBSTREAM_BUSY(substream) ((substream)->file != NULL || ((substream)->oss.file != NULL))
+ #else
+
+--- alsa-kernel_/core/pcm_native.c	2005-08-09 23:03:15.000000000 +0200
++++ alsa-kernel/core/pcm_native.c	2005-08-10 12:06:40.000000000 +0200
+@@ -2004,7 +2004,7 @@ static int snd_pcm_open_file(struct file
+ 
+ 	str = substream->pstr;
+ 	substream->file = pcm_file;
+-	substream->no_mmap_ctrl = 0;
++	SET_NO_MMAP_CTRL(substream, 0);
+ 
+ 	pcm_file->substream = substream;
+ 
+@@ -3170,11 +3170,11 @@ static int snd_pcm_mmap(struct file *fil
+ 	offset = area->vm_pgoff << PAGE_SHIFT;
+ 	switch (offset) {
+ 	case SNDRV_PCM_MMAP_OFFSET_STATUS:
+-		if (substream->no_mmap_ctrl)
++		if (GET_NO_MMAP_CTRL(substream))
+ 			return -ENXIO;
+ 		return snd_pcm_mmap_status(substream, file, area);
+ 	case SNDRV_PCM_MMAP_OFFSET_CONTROL:
+-		if (substream->no_mmap_ctrl)
++		if (GET_NO_MMAP_CTRL(substream))
+ 			return -ENXIO;
+ 		return snd_pcm_mmap_control(substream, file, area);
+ 	default:
+
+--- alsa-kernel_/core/pcm_compat.c	2005-01-20 18:11:46.000000000 +0100
++++ alsa-kernel/core/pcm_compat.c	2005-08-10 12:06:29.000000000 +0200
+@@ -459,7 +459,7 @@ static long snd_pcm_ioctl_compat(struct 
+ 	 * mmap of PCM status/control records because of the size
+ 	 * incompatibility.
+ 	 */
+-	substream->no_mmap_ctrl = 1;
++	SET_NO_MMAP_CTRL(substream, 1);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_IOCTL_PVERSION:
+_
+
+	
+
+	
+		
+___________________________________________________________ 
+Gesendet von Yahoo! Mail - Jetzt mit 1GB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
 
 
 
