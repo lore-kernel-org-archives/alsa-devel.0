@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000215]: Kernel freezes after an hour when using the powermac driver
-Date: Tue, 9 Aug 2005 13:19:43 +0200
-Message-ID: <5f2d514c5645134f8754493e546ba468@bugtrack.alsa-project.org>
+From: Mail Administrator <postmaster@vngt.vn>
+Subject: Mail System Error - Returned Mail
+Date: Wed, 10 Aug 2005 15:00:31 +0700
+Message-ID: <IKZY8V02.N7Y@mail-hn.vngt.vn>
+Reply-To: Mail Administrator <postmaster@vngt.vn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/report; report-type=delivery-status;
+		Boundary="===========================_ _= 6982116(6406+8966528)"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA5EA19C
-	for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2005 13:19:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +16,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--===========================_ _= 6982116(6406+8966528)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=215> 
-======================================================================
-Reported By:                sjoyeux
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   215
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian unstable
-Kernel Version:             2.6.5
-======================================================================
-Date Submitted:             04-16-2004 10:01 CEST
-Last Modified:              08-09-2005 13:19 CEST
-======================================================================
-Summary:                    Kernel freezes after an hour when using the powermac
-driver
-Description: 
-I have an ibook G4 and using alsa freezes the system (I have about 1 hr of
-uptime when I'm listening to music, no problem when not using the
-soundcard). 
+This Message was undeliverable due to the following reason:
 
-I'm using the OSS driver now, as it does not show the problem.
+The following destination addresses were unknown (please check
+the addresses and re-mail the message):
 
-I experienced it on every 2.4 and 2.6 kernel I used. I'm using now vanilla
-2.6.5, without any patch, and with preempt disabled. No trace of a kernel
-panic in the logs.
+SMTP <jim@vngt.vn>
 
-Tell me if I can do anything to provide more useful informations
-======================================================================
+Please reply to <postmaster@vngt.vn>
+if you feel this message to be in error.
 
-----------------------------------------------------------------------
- perex - 08-09-05 13:11 
-----------------------------------------------------------------------
-reported: could you test the latest kernel and ALSA?
 
-----------------------------------------------------------------------
- sjoyeux - 08-09-05 13:19 
-----------------------------------------------------------------------
-Fixex in latest kernels. Sorry I did not reported that earlier.
-Btw, isn't there a way to change the status myself ?
+--===========================_ _= 6982116(6406+8966528)
+Content-Type: message/delivery-status
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-04 10:01 sjoyeux        New Issue                                    
-04-16-04 10:01 sjoyeux        Distribution              => Debian unstable 
-04-16-04 10:01 sjoyeux        Kernel Version            => 2.6.5           
-08-09-05 13:11 perex          Note Added: 0005728                          
-08-09-05 13:19 sjoyeux        Note Added: 0005730                          
-======================================================================
+Reporting-MTA: dns; mail-hn.vngt.vn
+Received-From-MTA: dns; lists.sourceforge.net (202.134.16.68)
+Arrival-Date: Wed, 10 Aug 2005 15:00:31 +0700
 
+Final-Recipient: rfc822;jim@vngt.vn
+Diagnostic-Code: smtp;551 User unknown
+Action: failed 
+Status: 5.1.6
+Last-Attempt-Date: Wed, 10 Aug 2005 15:00:31 +0700
+
+
+--===========================_ _= 6982116(6406+8966528)
+Content-Type: message/rfc822
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Received: from lists.sourceforge.net ([202.134.16.68]) by
+          mail-hn.vngt.vn (Netscape Messaging Server 4.15) with ESMTP id
+          IKZY8V00.I6D for <jim@vngt.vn>; Wed, 10 Aug 2005 15:00:31 +0700
+From: alsa-devel@lists.sourceforge.net
+To: jim@vngt.vn
+Subject: Error
+Date: Wed, 10 Aug 2005 14:58:02 +0700
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0005_5503D26A.7AEAB246"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0005_5503D26A.7AEAB246
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+------------------  Virus Warning Message (on mail-hn.vngt.vn)
+
+Found virus WORM_MYTOB.AM in file data.cmd
+The file is deleted.
+
+---------------------------------------------------------
+
+------=_NextPart_000_0005_5503D26A.7AEAB246
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+
+The message contains Unicode characters and has been sent as a binary attachment.
+
+
+------=_NextPart_000_0005_5503D26A.7AEAB246
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+
+------------------  Virus Warning Message (on mail-hn.vngt.vn)
+
+data.cmd is removed from here because it contains a virus.
+
+---------------------------------------------------------
+------=_NextPart_000_0005_5503D26A.7AEAB246--
+
+
+
+--===========================_ _= 6982116(6406+8966528)--
 
 
 
