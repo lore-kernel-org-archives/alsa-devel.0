@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Wed, 10 Aug 2005 13:28:48 +0200
-Message-ID: <7c7b9ca45a31ecf20c2b1c0adbb18989@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
+Date: Wed, 10 Aug 2005 13:30:21 +0200
+Message-ID: <b460e9fdfa51d0821264e253d43a91c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBB1C120
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 13:28:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C0301FE
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 13:30:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,25 +22,23 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as RELATED TO issue 0000879.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
 ======================================================================
 Reported By:                ahaning
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
+Project:                    ALSA - utils
 Issue ID:                   1326
 Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware 9.1 (but it's not distribution-specific)
-Kernel Version:             2.6.12.2
 ======================================================================
 Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-10-2005 13:28 CEST
+Last Modified:              08-10-2005 13:30 CEST
 ======================================================================
 Summary:                    ISAPNP cards (opl3sa2 in particular) are not
 detected properly on 2.6 kernels
@@ -58,6 +56,10 @@ According to perex (author of the opl3sa2 driver):
 "The alsaconf tries to gather free resources (irq/dma/ports) from the
 /proc filesystem. It might be extended to gather this information also
 from /sys filesystem."
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -80,6 +82,9 @@ it's not distribution-specific)
 08-10-05 13:26 perex          Assigned To               => perex           
 08-10-05 13:26 perex          File Added: alsaconf                         
 08-10-05 13:28 perex          Note Added: 0005747                          
+08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
+utils
+08-10-05 13:30 perex          Relationship added       related to 0000879  
 ======================================================================
 
 
