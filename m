@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001323]: MIC jack not supported
-Date: Mon, 8 Aug 2005 23:00:45 +0200
-Message-ID: <c1487cb3cd8522239a68f02db53aa409@bugtrack.alsa-project.org>
+Date: Wed, 10 Aug 2005 05:21:43 +0200
+Message-ID: <92e3dc95b37009bd30f4ebe3a3ae2f00@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F2651D6
-	for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2005 23:00:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A30161ED
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 05:21:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian 3.1 sarge
 Kernel Version:             linux 2.6.12.4
 ======================================================================
 Date Submitted:             08-08-2005 22:10 CEST
-Last Modified:              08-08-2005 23:00 CEST
+Last Modified:              08-10-2005 05:21 CEST
 ======================================================================
 Summary:                    MIC jack not supported
 Description: 
@@ -53,6 +53,13 @@ of the MIC therefore this do not work!
 ----------------------------------------------------------------------
 my card is sound blaster live 7.1 24 bit
 
+----------------------------------------------------------------------
+ rlrevell - 08-10-05 05:21 
+----------------------------------------------------------------------
+Known problem, capture is not supported in that ALSA version.  You need the
+latest ALSA sources from CVS (I think 1.0.9b also supports capture with
+that device).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -61,6 +68,7 @@ Date Modified  Username       Field                    Change
 08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
 08-08-05 22:59 submax82       Issue Monitored: submax82                    
 08-08-05 23:00 submax82       Note Added: 0005714                          
+08-10-05 05:21 rlrevell       Note Added: 0005746                          
 ======================================================================
 
 
