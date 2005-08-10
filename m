@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Thu, 11 Aug 2005 00:24:30 +0200
-Message-ID: <28a9b9221cde938148d510daf84ded5d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001327]: Creative X-Fi Support - Do you know anything?
+Date: Thu, 11 Aug 2005 00:31:41 +0200
+Message-ID: <7a922626368069fea1abb058a85d6814@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1987211
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 00:24:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 131A1211
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 00:31:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,135 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1327> 
 ======================================================================
-Reported By:                ahaning
-Assigned To:                perex
+Reported By:                ghost_zero
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1326
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   1327
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-11-2005 00:24 CEST
+Date Submitted:             08-11-2005 00:11 CEST
+Last Modified:              08-11-2005 00:31 CEST
 ======================================================================
-Summary:                    ISAPNP cards (opl3sa2 in particular) are not
-detected properly on 2.6 kernels
+Summary:                    Creative X-Fi Support - Do you know anything?
 Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+Hi,
 
-According to perex (author of the opl3sa2 driver):
+it is more a question than a feature request and that is about the
+Creative X-Fi Cards... do you know if Creative will release Linux drivers
+or specifications of it?
+If not, will you still support that cards in the future?
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
+Sorry to contact you for that in this way but I didn't find an
+e-mail-address...
 ======================================================================
 
 ----------------------------------------------------------------------
- ahaning - 08-10-05 14:55 
+ rlrevell - 08-11-05 00:15 
 ----------------------------------------------------------------------
-I tried the above alsaconf. The IRQ (irq=11) is now selected correctly.
-
-However, I *think* dma1=5 and dma2=3 are incorrect. I'm starting to doubt
-this now since I did mess with the BIOS settings recently. I'll check
-again when I have local access to the machine. 
-
-Thanks.
+What is "X-Fi"?  It sounds like meaningless Creative marketing speak.
 
 ----------------------------------------------------------------------
- ahaning - 08-11-05 00:24 
+ ghost_zero - 08-11-05 00:31 
 ----------------------------------------------------------------------
-Well, I'm going to guess that last time, my system was in some odd state.
+X-Fi are the next generation of sound cards from Creative - don't know how
+good they will really be - and should be out soon...
+Btw. X-Fi stands for eXtreme Fidelity...
 
-Here are the BIOS settings for my card (I had it set them to the
-defaults):
-
-PnP = On
-I/O = 220H-22FH
-MPU-401 I/O = 330H - 333H
-IRQ = 11
-DMA 1 = CH0
-WAVE 2 DMA = CH1
-
-When I run the above alsaconf and have it bruteforce detect my card, it
-produces the following /etc/modprobe.conf:
-
-# --- BEGIN: Generated by ALSACONF, do not edit. ---
-# --- ALSACONF version 1.0.9a ---
-alias snd-card-0 snd-opl3sa2
-alias sound-slot-0 snd-opl3sa2
-options snd-opl3sa2 fm_port=-1 midi_port=-1 port=0x370 wss_port=0x530
-isapnp=0 dma1=1 dma2=0 irq=5
-# --- END: Generated by ALSACONF, do not edit. ---
-
-
-Also, when it is doing the detection, I get the following badness in
-dmesg:
-
-pnp: the driver 'opl3sa2' has been registered
-pnp: the driver 'opl3sa2' has been unregistered
-kobject_register failed for snd_generic_pm (-17)
- [<c020bdf4>] kobject_register+0x44/0x70
- [<c0290417>] bus_add_driver+0x57/0xd0
- [<cca92984>] snd_generic_device_register+0x24/0xa0 [snd]
- [<cca92b13>] snd_card_set_generic_pm_callback+0x13/0x60 [snd]
- [<ccaaa7b5>] snd_cs4231_create+0x1f5/0x380 [snd_cs4231_lib]
- [<ccaaa280>] snd_cs4231_pm_suspend+0x0/0x30 [snd_cs4231_lib]
- [<ccaaa2b0>] snd_cs4231_pm_resume+0x0/0x30 [snd_cs4231_lib]
- [<ccaa3a17>] snd_opl3sa2_probe+0x227/0x520 [snd_opl3sa2]
- [<cc8607ad>] alsa_card_opl3sa2_init+0x8d/0x97 [snd_opl3sa2]
- [<c0135ac7>] sys_init_module+0x1f7/0x220
- [<c0103205>] syscall_call+0x7/0xb
-kobject_register failed for snd_generic_pm (-17)
- [<c020bdf4>] kobject_register+0x44/0x70
- [<c0290417>] bus_add_driver+0x57/0xd0
- [<cca92984>] snd_generic_device_register+0x24/0xa0 [snd]
- [<cca92b13>] snd_card_set_generic_pm_callback+0x13/0x60 [snd]
- [<ccaa3b4b>] snd_opl3sa2_probe+0x35b/0x520 [snd_opl3sa2]
- [<ccaa36b0>] snd_opl3sa2_suspend+0x0/0x50 [snd_opl3sa2]
- [<ccaa3700>] snd_opl3sa2_resume+0x0/0x90 [snd_opl3sa2]
- [<cc8607ad>] alsa_card_opl3sa2_init+0x8d/0x97 [snd_opl3sa2]
- [<c0135ac7>] sys_init_module+0x1f7/0x220
- [<c0103205>] syscall_call+0x7/0xb
-pnp: the driver 'opl3sa2' has been registered
-
-Occasionally, I get a lockup when my system goes to reboot. The drives are
-all un/re-mounted and everything's shut down, but there's an error like
-the above.
-
-HTH and thanks.
+Info-Page: http://www.soundblaster.com/products/x-fi/technology/
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-08-10-05 13:26 perex          Status                   new => assigned     
-08-10-05 13:26 perex          Assigned To               => perex           
-08-10-05 13:26 perex          File Added: alsaconf                         
-08-10-05 13:28 perex          Note Added: 0005747                          
-08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
-utils
-08-10-05 13:30 perex          Relationship added       related to 0000879  
-08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
-08-10-05 14:55 ahaning        Note Added: 0005748                          
-08-11-05 00:24 ahaning        Note Added: 0005752                          
+08-11-05 00:11 ghost_zero     New Issue                                    
+08-11-05 00:15 rlrevell       Note Added: 0005751                          
+08-11-05 00:31 ghost_zero     Note Added: 0005753                          
 ======================================================================
 
 
