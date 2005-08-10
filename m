@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Wed, 10 Aug 2005 13:26:28 +0200
-Message-ID: <9f6112624b9c163156e55266854935e9@bugtrack.alsa-project.org>
+Date: Wed, 10 Aug 2005 13:28:48 +0200
+Message-ID: <7c7b9ca45a31ecf20c2b1c0adbb18989@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8C091FE
-	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 13:26:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBB1C120
+	for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2005 13:28:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Slackware 9.1 (but it's not distribution-specific)
 Kernel Version:             2.6.12.2
 ======================================================================
 Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-10-2005 13:26 CEST
+Last Modified:              08-10-2005 13:28 CEST
 ======================================================================
 Summary:                    ISAPNP cards (opl3sa2 in particular) are not
 detected properly on 2.6 kernels
@@ -60,6 +60,15 @@ According to perex (author of the opl3sa2 driver):
 from /sys filesystem."
 ======================================================================
 
+----------------------------------------------------------------------
+ perex - 08-10-05 13:28 
+----------------------------------------------------------------------
+I've uploaded a new alsaconf which should do it in the described way. Could
+you give a try?
+
+Note that it non-pnp probing/setup might fail anyway, but the resources
+should be selected more correctly.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -69,6 +78,8 @@ it's not distribution-specific)
 08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
 08-10-05 13:26 perex          Status                   new => assigned     
 08-10-05 13:26 perex          Assigned To               => perex           
+08-10-05 13:26 perex          File Added: alsaconf                         
+08-10-05 13:28 perex          Note Added: 0005747                          
 ======================================================================
 
 
