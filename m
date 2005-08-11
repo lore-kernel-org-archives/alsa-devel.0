@@ -1,10 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: CVS compile issue
-Date: Thu, 11 Aug 2005 16:08:17 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0508111605320.21860-100000@studcom.urz.uni-halle.de>
-References: <s5hiryc63fd.wl%tiwai@suse.de>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: CVS compile issue
+Date: Thu, 11 Aug 2005 22:17:23 +0800
+Message-ID: <42FB5DF3.7020109@netvigator.com>
+References: <1121482166.12420.80.camel@mindpipe>	<42FB33B8.8070708@netvigator.com> <s5hiryc63fd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <s5hiryc63fd.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -16,35 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-
+> At Thu, 11 Aug 2005 19:17:12 +0800,
 > Raymond wrote:
-> >
-> > There is a "division by zero" warning for drivers which include
-> > "driver.h" on Kernel 2.4
-> >
-> > /alsa/cvs/alsa-driver/include/adriver.h: In function `jiffies_to_msecs':
-> > /alsa/cvs/alsa-driver/include/adriver.h:639: warning: division by zero
->
+> 
+>>There is a "division by zero" warning for drivers which include
+>>"driver.h" on Kernel 2.4
+>>
+>>
+>>gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa/cvs/alsa-driver/include
+>>-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+>>-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall
+>>-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+>>-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc
+>>-iwithprefix include -DMODVERSIONS -include
+>>/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h
+>>-DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
+>>In file included from /alsa/cvs/alsa-driver/include/sound/driver.h:42,
+>>                  from intel8x0.c:29:
+>>/alsa/cvs/alsa-driver/include/adriver.h: In function `jiffies_to_msecs':
+>>/alsa/cvs/alsa-driver/include/adriver.h:639: warning: division by zero
+> 
+> 
 > Is it the line:
 > 	else if (HZ > 1000 && !(HZ % 1000))
 > ==>		return (j + (HZ / 1000) - 1)/(HZ / 1000);
->
-> ??  Where HZ is defined/declared in your kernel?
+> 
+> ??  
 
-The HZ definition is OK.  The problem is that gcc complains even when
-the code gets optimized away.
+Yes
 
-The equivalent code in the 2.6 kernel uses #if, but that wouldn't work
-with the SuSE kernels where HZ is a variable.
+ > Where HZ is defined/declared in your kernel?
+> 
+
+Fedora Core 1
+
+/usr/src/linux/include/asm/param.h
 
 
-Regards,
-Clemens
+#ifndef HZ
+#define HZ 100
+#endif
 
 
 
