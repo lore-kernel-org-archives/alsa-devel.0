@@ -1,15 +1,12 @@
-From: Daniel James <daniel@64studio.com>
-Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
-Date: Thu, 11 Aug 2005 15:59:27 +0100
-Message-ID: <200508111559.27179.daniel@64studio.com>
-References: <200508111525.07881.daniel@64studio.com> <1123770589.6980.1.camel@mindpipe>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: CVS compile issue
+Date: Thu, 11 Aug 2005 17:13:54 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0508111711270.21860-100000@studcom.urz.uni-halle.de>
+References: <s5hek905ynz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1123770589.6980.1.camel@mindpipe>
-Content-Disposition: inline
+In-Reply-To: <s5hek905ynz.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,24 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lee,
+Takashi Iwai wrote:
 
-> I guess you have tried to trigger the crash from a console as well
-> as X
+> Clemens Ladisch wrote:
+>
+> > The equivalent code in the 2.6 kernel uses #if, but that wouldn't work
+> > with the SuSE kernels where HZ is a variable.
+>
+> How about to add #ifdef HZ and provide two version?
+>
+> #ifdef HZ
 
-Not yet, but aconnect should take care of that...
+This wouldn't work if there is a "#define HZ some_variable".
 
-> and there's no Oops output? 
+I've now fixed it in CVS with some evil preprocessor magic.
+("#if HZ > 0").
 
-I'll try to get some for you.
- 
-Cheers!
 
-Daniel
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
