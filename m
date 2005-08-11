@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
-Date: Thu, 11 Aug 2005 17:41:24 +0200
-Message-ID: <359926f965904e8deee03a63b9448d3d@bugtrack.alsa-project.org>
+From: Daniel James <daniel@64studio.com>
+Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
+Date: Thu, 11 Aug 2005 16:43:27 +0100
+Message-ID: <200508111643.27160.daniel@64studio.com>
+References: <200508111525.07881.daniel@64studio.com> <1123770589.6980.1.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3A4820C
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 17:41:24 +0200 (MEST)
+In-Reply-To: <1123770589.6980.1.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +19,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Lee,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
-======================================================================
-Reported By:                roothorick
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1319
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-08-2005 05:38 CEST
-Last Modified:              08-11-2005 17:41 CEST
-======================================================================
-Summary:                    MIDI I/O (MPU-401) works for output only, not input
-Description: 
-I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
-such as keyboards, only works for output (from the soundcard to other
-devices). When I try to do input (from those devices to the soundcard) no
-events get through at all.
-======================================================================
+> I guess you have tried to trigger the crash from a console as well
+> as X
 
-----------------------------------------------------------------------
- tiwai - 08-11-05 14:31 
-----------------------------------------------------------------------
-Check /proc/interrupts while MIDI input whether the count increases.
-If not, the interrupt isn't generated properly by the midi input by any
-reason.
+I've done that now. If I boot the system, switch to a console with 
+ctrl-alt-f1 and run nothing but:
 
-----------------------------------------------------------------------
- roothorick - 08-11-05 17:41 
-----------------------------------------------------------------------
-I don't see any /proc/interrupts entry specific to MIDI, only one for
-"EMU10K1" whose count goes up if any MIDI program is running at all,
-regardless of even whether a MIDI device is connected. Not connecting any
-MIDI program and pressing keys on a connected MIDI device doesn't cause
-the count to go up, however.
+strace seq24
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-08-05 05:38 roothorick     New Issue                                    
-08-11-05 14:31 tiwai          Note Added: 0005759                          
-08-11-05 17:41 roothorick     Note Added: 0005761                          
-======================================================================
+it starts to go wrong after: 
 
+open ("/dev/snd/seq", O_RDWR)
 
+There are a bunch of lines beginning with ioctl, then the killer blow 
+is dealt by:
+
+ioctl (3, CDROM_DEBUG or SNDRV_SEQ_IOCTL_SUBSCRIBE_PORT
+
+(This is retyped from hand-written notes of course). The machine is 
+then locked up solid - it's very reproducible too, same output every 
+time. 
+
+> and there's no Oops output? 
+
+Nothing at all appears in the console or in /var/log/messages. Should 
+I try increasing the log level or something like that?
+
+Cheers!
+
+Daniel
 
 
 -------------------------------------------------------
