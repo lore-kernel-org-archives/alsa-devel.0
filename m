@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001322]: C-Media HD Audio 7.1 CODEC  of motherboard Asus P5GDC Deluxe NO MODULE
-Date: Thu, 11 Aug 2005 14:29:11 +0200
-Message-ID: <a7491f75c624f605c7676e110583503b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
+Date: Thu, 11 Aug 2005 14:31:57 +0200
+Message-ID: <9149348baf043debe506766f54ae3db8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 468C81AF
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:29:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86730207
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:31:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1322> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
 ======================================================================
-Reported By:                SOHAM
+Reported By:                roothorick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1322
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1319
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             2.6.11
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-08-2005 19:59 CEST
-Last Modified:              08-11-2005 14:29 CEST
+Date Submitted:             08-08-2005 05:38 CEST
+Last Modified:              08-11-2005 14:31 CEST
 ======================================================================
-Summary:                    C-Media HD Audio 7.1 CODEC  of motherboard Asus
-P5GDC Deluxe NO MODULE
+Summary:                    MIDI I/O (MPU-401) works for output only, not input
 Description: 
-The chip C-Media 7.1 integrated in the motherboard Asus P5GDC Deluxe does
-not work with none of the modules of Alsa. Can you send me one module of
-sound for this motherboard? or can you say me what can I do?
-
-Thanks.
-
+I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
+such as keyboards, only works for output (from the soundcard to other
+devices). When I try to do input (from those devices to the soundcard) no
+events get through at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-11-05 14:29 
+ tiwai - 08-11-05 14:31 
 ----------------------------------------------------------------------
-The driver must be snd-hda-intel.  Try the latest version of ALSA.
+Check /proc/interrupts while MIDI input whether the count increases.
+If not, the interrupt isn't generated properly by the midi input by any
+reason.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 19:59 SOHAM          New Issue                                    
-08-08-05 19:59 SOHAM          Kernel Version            => 2.6.11          
-08-11-05 14:29 tiwai          Note Added: 0005757                          
+08-08-05 05:38 roothorick     New Issue                                    
+08-11-05 14:31 tiwai          Note Added: 0005759                          
 ======================================================================
 
 
