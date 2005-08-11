@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001176]: problem with alsa-driver and asus m5a notebook
-Date: Thu, 11 Aug 2005 14:26:50 +0200
-Message-ID: <f1cfd928b3fdeaeee8686aeb6e7c1d0b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
+Date: Thu, 11 Aug 2005 14:29:59 +0200
+Message-ID: <ee7fbaac767764a73dcc2f8c87ef5a9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 825C121E
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:26:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E4341CD
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:29:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,104 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
 ======================================================================
-Reported By:                Ballbreaker
-Assigned To:                tiwai
+Reported By:                ahessling
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1176
+Issue ID:                   1058
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.12-rc5
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             06-09-2005 13:44 CEST
-Last Modified:              08-11-2005 14:26 CEST
+Date Submitted:             04-16-2005 16:37 CEST
+Last Modified:              08-11-2005 14:29 CEST
 ======================================================================
-Summary:                    problem with alsa-driver and asus m5a notebook
+Summary:                    CMI9880 sometimes produces distorted sound
 Description: 
-I use gentoo-linux on an asus m5a notebook. Installation of alsa-driver
-works without any error messages. xmms, aplay etc. play files, but i can't
-hear anything. alsa-mixer shows me all the mixer-controls. I didn't forget
-to unmute, and with windows sound is working fine - so i think there is a
-problem with the alsa-driver and this notebook (on other notebooks with
-the same sound-chip alsa is working).
+I am using the CVS version of alsa-kernel from a few days and because of
+the soundchip CMI9880, I have to activate Intel HDA in the kernel.
+Sound is working quite fine in stereo mode, but if I want to play a DVD
+with 5.1 sound, all speakers are activated but the sound is a little bit
+distorted.
+xine uses plug:surround51:0 as the surround device.
 
-I tried the following, always with the same results:
-- compile alsa in the kernel
-- compile alsa as kernel modules
-- emerge alsa-driver (version 1.0.9-rc3 - 1.0.9-rc4 is not in portage
-yet)
-- compile alsa-driver manually (version 1.0.9-rc4)
+My asound.conf looks like this:
+pcm.!default {
+type plug
+slave.pcm "svol"
+}
 
-Everything seems to work fine, but i can't hear anything, so maybe this is
-a bug in the alsa-driver.
-Would be great if somebody could tell me how i get alsa working on my
-notebook  ;-)
+pcm.svol {
+type softvol
+slave.pcm "hw:0,0"
+control {
+name "PCM Playback Volume"
+}
+}
 
-Greetz,
-thomas
+I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
+Again, stereo sound works fine and also dmix does its work, but this time
+I only get stereo sound in xine although the same configuration of xine is
+used.
 
+I also noticed that playing some files using aplay produces the same
+distortions, e.g.:
 
+aplay /usr/share/sounds/k3b_success1.wav
+Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
+8000 Hz, Mono
+
+Seems to have to do something with sample rate.
+Using the other asound.conf from the homepage above just gives an error:
+Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
+8000 Hz, Mono
+aplay: set_params:857: Sample format non available
+ 
+Is there a way to play 5.1 sound without these distortions? Maybe some
+lines added to my asound.conf would do the work.
+
+Thanks in advance!
+
+Regards,
+André
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001311 drivers load but unmuting channels / ad...
-======================================================================
 
 ----------------------------------------------------------------------
- askel - 08-09-05 21:09 
+ komanek - 08-08-05 12:37 
 ----------------------------------------------------------------------
-I have exactly the same problem - all modules are loaded flawlessly, I can
-change levels and mute/unmute channels but that makes no any difference.
-No any audible sound. I tried kernel 2.6.12 with built-in alsa modules as
-well as alsa-driver 1.0.9b with all alsa and oss modules disaled in
-kernel. No errors but no sound.
+I also tried to modify modprobe.conf:
 
-0000:00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-        Subsystem: CLEVO/KAPOK Computer: Unknown device 038a
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, cache line size 08
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at 80000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
+diff /etc/modprobe.conf /etc/modprobe.conf.orig_fc4
+5c5
+< options snd-hda-intel index=0 position_fix=1
+---
+> options snd-hda-intel index=0
+
+
+But the new parameter is not recognized:
+
+kernel: snd_hda_intel: Unknown parameter `position_fix'
 
 ----------------------------------------------------------------------
- tiwai - 08-11-05 14:26 
+ tiwai - 08-11-05 14:29 
 ----------------------------------------------------------------------
-First, try ALSA CVS version.  Many bugs have been fixed with it.
-
-If still not working, attach the contents of /proc/asound/card0/codec#*
-files.
+You're using a too old version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-05 13:44 Ballbreaker    New Issue                                    
-06-09-05 13:44 Ballbreaker    Distribution              => gentoo          
-06-09-05 13:44 Ballbreaker    Kernel Version            => 2.6.12-rc5      
-06-09-05 16:11 Ballbreaker    Issue Monitored: Ballbreaker                    
-06-09-05 16:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
-06-09-05 16:19 Ballbreaker    Issue Monitored: Ballbreaker                    
-08-05-05 08:39 perex          Relationship added       related to 0001311  
-08-09-05 21:09 askel          Note Added: 0005735                          
-08-11-05 14:26 tiwai          Note Added: 0005756                          
+04-16-05 16:37 ahessling      New Issue                                    
+04-16-05 16:37 ahessling      Distribution              => Gentoo          
+04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
+04-19-05 17:47 tiwai          Note Added: 0004527                          
+04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
+04-21-05 11:41 ahessling      Note Added: 0004550                          
+06-22-05 16:32 andersin       Note Added: 0005133                          
+06-22-05 17:49 tiwai          Note Added: 0005135                          
+08-08-05 12:26 komanek        Note Added: 0005704                          
+08-08-05 12:37 komanek        Note Added: 0005705                          
+08-11-05 14:29 tiwai          Note Added: 0005758                          
 ======================================================================
 
 
