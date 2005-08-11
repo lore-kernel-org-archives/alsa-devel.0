@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
-Date: Thu, 11 Aug 2005 14:29:59 +0200
-Message-ID: <ee7fbaac767764a73dcc2f8c87ef5a9c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001322]: C-Media HD Audio 7.1 CODEC  of motherboard Asus P5GDC Deluxe NO MODULE
+Date: Thu, 11 Aug 2005 14:29:11 +0200
+Message-ID: <a7491f75c624f605c7676e110583503b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E4341CD
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:29:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 468C81AF
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:29:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,109 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1322> 
 ======================================================================
-Reported By:                ahessling
+Reported By:                SOHAM
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1058
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1322
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11.6
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-16-2005 16:37 CEST
+Date Submitted:             08-08-2005 19:59 CEST
 Last Modified:              08-11-2005 14:29 CEST
 ======================================================================
-Summary:                    CMI9880 sometimes produces distorted sound
+Summary:                    C-Media HD Audio 7.1 CODEC  of motherboard Asus
+P5GDC Deluxe NO MODULE
 Description: 
-I am using the CVS version of alsa-kernel from a few days and because of
-the soundchip CMI9880, I have to activate Intel HDA in the kernel.
-Sound is working quite fine in stereo mode, but if I want to play a DVD
-with 5.1 sound, all speakers are activated but the sound is a little bit
-distorted.
-xine uses plug:surround51:0 as the surround device.
+The chip C-Media 7.1 integrated in the motherboard Asus P5GDC Deluxe does
+not work with none of the modules of Alsa. Can you send me one module of
+sound for this motherboard? or can you say me what can I do?
 
-My asound.conf looks like this:
-pcm.!default {
-type plug
-slave.pcm "svol"
-}
+Thanks.
 
-pcm.svol {
-type softvol
-slave.pcm "hw:0,0"
-control {
-name "PCM Playback Volume"
-}
-}
-
-I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
-Again, stereo sound works fine and also dmix does its work, but this time
-I only get stereo sound in xine although the same configuration of xine is
-used.
-
-I also noticed that playing some files using aplay produces the same
-distortions, e.g.:
-
-aplay /usr/share/sounds/k3b_success1.wav
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-
-Seems to have to do something with sample rate.
-Using the other asound.conf from the homepage above just gives an error:
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-aplay: set_params:857: Sample format non available
- 
-Is there a way to play 5.1 sound without these distortions? Maybe some
-lines added to my asound.conf would do the work.
-
-Thanks in advance!
-
-Regards,
-André
 ======================================================================
-
-----------------------------------------------------------------------
- komanek - 08-08-05 12:37 
-----------------------------------------------------------------------
-I also tried to modify modprobe.conf:
-
-diff /etc/modprobe.conf /etc/modprobe.conf.orig_fc4
-5c5
-< options snd-hda-intel index=0 position_fix=1
----
-> options snd-hda-intel index=0
-
-
-But the new parameter is not recognized:
-
-kernel: snd_hda_intel: Unknown parameter `position_fix'
 
 ----------------------------------------------------------------------
  tiwai - 08-11-05 14:29 
 ----------------------------------------------------------------------
-You're using a too old version.
+The driver must be snd-hda-intel.  Try the latest version of ALSA.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-05 16:37 ahessling      New Issue                                    
-04-16-05 16:37 ahessling      Distribution              => Gentoo          
-04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
-04-19-05 17:47 tiwai          Note Added: 0004527                          
-04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
-04-21-05 11:41 ahessling      Note Added: 0004550                          
-06-22-05 16:32 andersin       Note Added: 0005133                          
-06-22-05 17:49 tiwai          Note Added: 0005135                          
-08-08-05 12:26 komanek        Note Added: 0005704                          
-08-08-05 12:37 komanek        Note Added: 0005705                          
-08-11-05 14:29 tiwai          Note Added: 0005758                          
+08-08-05 19:59 SOHAM          New Issue                                    
+08-08-05 19:59 SOHAM          Kernel Version            => 2.6.11          
+08-11-05 14:29 tiwai          Note Added: 0005757                          
 ======================================================================
 
 
