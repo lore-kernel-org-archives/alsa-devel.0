@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001327]: Creative X-Fi Support - Do you know anything?
-Date: Thu, 11 Aug 2005 03:46:24 +0200
-Message-ID: <7d267c7a7eded9717836478a9861b2d5@bugtrack.alsa-project.org>
+From: Linux Coder <linux@thehoytfamily.com>
+Subject: Calls from a custom dynamic shared library call the wrong version
+ of alsa functions in libasound
+Date: Wed, 10 Aug 2005 22:22:15 -0400
+Message-ID: <42FAB657.2070307@thehoytfamily.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 668EA211
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 03:46:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +16,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa Developers <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+I had created a library that is a dynamic shared library. Within this 
+library, calls are made to the ALSA Lib (libasound) but the wrong 
+version of the call is being made. If a single step through, it will 
+call __OLD_GET1(...). If my library is not a dynamic shared library then 
+the correct call is made.
+Am I doing something wrong or is the dynamic linker resolving to the 
+wrong version of the ALSA function call and there is not anything I can do?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1327> 
-======================================================================
-Reported By:                ghost_zero
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1327
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-11-2005 00:11 CEST
-Last Modified:              08-11-2005 03:46 CEST
-======================================================================
-Summary:                    Creative X-Fi Support - Do you know anything?
-Description: 
-Hi,
+The following is a useless program that demonstrates the issue
 
-it is more a question than a feature request and that is about the
-Creative X-Fi Cards... do you know if Creative will release Linux drivers
-or specifications of it?
-If not, will you still support that cards in the future?
+alibtest.h:
 
-Sorry to contact you for that in this way but I didn't find an
-e-mail-address...
-======================================================================
+#ifndef _ALIBTEST_H_
+#define _ALIBTEST_H_
 
-----------------------------------------------------------------------
- ghost_zero - 08-11-05 00:31 
-----------------------------------------------------------------------
-X-Fi are the next generation of sound cards from Creative - don't know how
-good they will really be - and should be out soon...
-Btw. X-Fi stands for eXtreme Fidelity...
+int GetBufferTime(void);
 
-Info-Page: http://www.soundblaster.com/products/x-fi/technology/
+#end
 
-----------------------------------------------------------------------
- rlrevell - 08-11-05 03:46 
-----------------------------------------------------------------------
-Well, that page is just a bunch of marketing speak so it's impossible to
-tell.
+alibtest.cpp:
 
-If they continue to pursue the SBLive/Audigy/Audigy2 design, with EAX and
-what not implemented in hardware, we can probably support it.  But there
-seems to be a disturbing trend at Creative to release crap like the
-SBLive! 24 bit that does not have any real hardware acceleration,
-implementing EAX and what not in the drivers.
+#include <alib/asoundlib.h>
+#include "alibtest.h"
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-11-05 00:11 ghost_zero     New Issue                                    
-08-11-05 00:15 rlrevell       Note Added: 0005751                          
-08-11-05 00:31 ghost_zero     Note Added: 0005753                          
-08-11-05 03:46 rlrevell       Note Added: 0005754                          
-======================================================================
+int GetBufferTime(void)
+{
+  int direction;
+  unsigned int buffer_time;
+  int err;
+  snd_pcm_hw_params_t *params;
 
+  err = 
+snd_pcm_hw_params_get_buffer_time_max(params,&buffer_time,&direction);
+  return err;
+}
+
+alsatest.cpp:
+
+#include "alibtest.h"
+
+int main()
+{
+  int err;
+  err = GetBufferTime();
+  return 0;
+}
+
+g++ -fPIC -gstabs+ -O0 -Wall alibtest.cpp
+g++ -shared -Wl,-soname,libalibtest.so.1 -o libalibtest.so.1.0.1 
+alibtest.o -lc
+ln -s libalibtest.so.1.0.1 libalibtest.so
+ln -s libalibtest.so.1.0.1 libalibtest.so.1
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+g++ -gstabs+ -O0 -o alsatest alsatest.cpp -lasound -lalibtest -L.
+
+If you the program throught the debugger and step through the 
+snd_pcm_hw_params_get_buffer_time_max, it will go to 
+__OLD_GET1(snd_pcm_hw_params_get_buffer_time_max, unsigned int, unsigned 
+int);
+
+Thus it tries to return the buffer time versus setting the variable 
+buffer_time and returning error.
+
+If I do a nm on the shared library, it will show 
+snd_pcm_hw_params_get_buffer_time_max. If I make a static library, it 
+will show the same thing, but when it is linked, the executable will 
+show snd_pcm_hw_params_get_buffer_time_max@@ALSA_0.9.0rc4
+
+Thanks
 
 
 
