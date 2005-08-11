@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
-Date: Thu, 11 Aug 2005 14:31:57 +0200
-Message-ID: <9149348baf043debe506766f54ae3db8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
+Date: Thu, 11 Aug 2005 14:34:01 +0200
+Message-ID: <ac73efdae9d3946687e2941759c292f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86730207
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:31:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5FE221E
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:34:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
 ======================================================================
-Reported By:                roothorick
-Assigned To:                
+Reported By:                hettar
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1319
-Category:                   PCI - emu10k1
+Issue ID:                   1311
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             08-08-2005 05:38 CEST
-Last Modified:              08-11-2005 14:31 CEST
+Date Submitted:             08-05-2005 01:10 CEST
+Last Modified:              08-11-2005 14:34 CEST
 ======================================================================
-Summary:                    MIDI I/O (MPU-401) works for output only, not input
+Summary:                    drivers load but unmuting channels / adjusting
+volumes does not produce any sound
 Description: 
-I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
-such as keyboards, only works for output (from the soundcard to other
-devices). When I try to do input (from those devices to the soundcard) no
-events get through at all.
+I have installed the 1.0.9b version of alsa kernel/libs and utils in an
+attempt to get the intel high definition sound card working. These all
+appear to work, I can unmute the various channels, adjust volumes etc,
+however no matter what I do I can't get any sound out. Sound apps are all
+playing fine but don't actually produce any sound.
+
+This is the card in the new ASUS W2 laptop and could be slightly different
+to other models.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001176 problem with alsa-driver and asus m5a n...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-11-05 14:31 
+ hettar - 08-05-05 09:10 
 ----------------------------------------------------------------------
-Check /proc/interrupts while MIDI input whether the count increases.
-If not, the interrupt isn't generated properly by the midi input by any
-reason.
+I was just directed to the model=<model> as indicated in the
+ALSA-Configuration.txt, None of these actually worked but I though it
+might be worth mentioning that there are for jacks for the card in the
+laptop and one of them is front, s/pidf and HP, another is sorround and
+line out, another is center/bass and mic and the other is av-in. This
+doesn't seem to match any of the models indicated in the
+ALSA-configuration.txt file.
+
+----------------------------------------------------------------------
+ tiwai - 08-11-05 14:34 
+----------------------------------------------------------------------
+Try ALSA CVS version.  There is a new model "asus".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 05:38 roothorick     New Issue                                    
-08-11-05 14:31 tiwai          Note Added: 0005759                          
+08-05-05 01:10 hettar         New Issue                                    
+08-05-05 01:10 hettar         Distribution              => Ubuntu          
+08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
+08-05-05 01:58 hettar         Note Added: 0005654                          
+08-05-05 08:39 perex          Note Edited: 0005654                         
+08-05-05 08:39 perex          Relationship added       related to 0001176  
+08-05-05 09:10 hettar         Note Added: 0005662                          
+08-11-05 14:34 tiwai          Note Added: 0005760                          
 ======================================================================
 
 
