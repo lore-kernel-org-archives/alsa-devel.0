@@ -1,14 +1,12 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: Calls from a custom dynamic shared library call the wrong version of alsa functions in libasound
-Date: Thu, 11 Aug 2005 16:04:30 +0200
-Message-ID: <m2iryck1sh.fsf@vador.mandriva.com>
-References: <42FAB657.2070307@thehoytfamily.com>
-	<1123727292.30766.0.camel@mindpipe>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: CVS compile issue
+Date: Thu, 11 Aug 2005 16:08:17 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0508111605320.21860-100000@studcom.urz.uni-halle.de>
+References: <s5hiryc63fd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1123727292.30766.0.camel@mindpipe> (Lee Revell's message of
-	"Wed, 10 Aug 2005 22:28:11 -0400")
+In-Reply-To: <s5hiryc63fd.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,17 +16,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Linux Coder <linux@thehoytfamily.com>, Alsa Developers <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell <rlrevell@joe-job.com> writes:
+Takashi Iwai wrote:
 
-> Well, you must have multiple ALSA version installed.  What does ldd
-> your_app say?
+> Raymond wrote:
+> >
+> > There is a "division by zero" warning for drivers which include
+> > "driver.h" on Kernel 2.4
+> >
+> > /alsa/cvs/alsa-driver/include/adriver.h: In function `jiffies_to_msecs':
+> > /alsa/cvs/alsa-driver/include/adriver.h:639: warning: division by zero
+>
+> Is it the line:
+> 	else if (HZ > 1000 && !(HZ % 1000))
+> ==>		return (j + (HZ / 1000) - 1)/(HZ / 1000);
+>
+> ??  Where HZ is defined/declared in your kernel?
 
-the major of the alsa lib hasn't changed for years, so i doubt one can
-actually have several versions of this lib installed...
+The HZ definition is OK.  The problem is that gcc complains even when
+the code gets optimized away.
+
+The equivalent code in the 2.6 kernel uses #if, but that wouldn't work
+with the SuSE kernels where HZ is a variable.
+
+
+Regards,
+Clemens
 
 
 
