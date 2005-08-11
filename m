@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
-Date: Thu, 11 Aug 2005 14:34:01 +0200
-Message-ID: <ac73efdae9d3946687e2941759c292f4@bugtrack.alsa-project.org>
+From: Linux Coder <linux@thehoytfamily.com>
+Subject: Re: Calls from a custom dynamic shared library call
+ the wrong version of alsa functions in libasound
+Date: Thu, 11 Aug 2005 08:53:48 -0400
+Message-ID: <42FB4A5C.8040107@thehoytfamily.com>
+References: <42FAB657.2070307@thehoytfamily.com> <Pine.LNX.4.61.0508111003190.8803@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5FE221E
-	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 14:34:01 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0508111003190.8803@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +18,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa Developers <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Thank you. It works.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
-======================================================================
-Reported By:                hettar
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1311
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             08-05-2005 01:10 CEST
-Last Modified:              08-11-2005 14:34 CEST
-======================================================================
-Summary:                    drivers load but unmuting channels / adjusting
-volumes does not produce any sound
-Description: 
-I have installed the 1.0.9b version of alsa kernel/libs and utils in an
-attempt to get the intel high definition sound card working. These all
-appear to work, I can unmute the various channels, adjust volumes etc,
-however no matter what I do I can't get any sound out. Sound apps are all
-playing fine but don't actually produce any sound.
+Jaroslav Kysela wrote:
 
-This is the card in the new ASUS W2 laptop and could be slightly different
-to other models.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001176 problem with alsa-driver and asus m5a n...
-======================================================================
-
-----------------------------------------------------------------------
- hettar - 08-05-05 09:10 
-----------------------------------------------------------------------
-I was just directed to the model=<model> as indicated in the
-ALSA-Configuration.txt, None of these actually worked but I though it
-might be worth mentioning that there are for jacks for the card in the
-laptop and one of them is front, s/pidf and HP, another is sorround and
-line out, another is center/bass and mic and the other is av-in. This
-doesn't seem to match any of the models indicated in the
-ALSA-configuration.txt file.
-
-----------------------------------------------------------------------
- tiwai - 08-11-05 14:34 
-----------------------------------------------------------------------
-Try ALSA CVS version.  There is a new model "asus".
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-05-05 01:10 hettar         New Issue                                    
-08-05-05 01:10 hettar         Distribution              => Ubuntu          
-08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
-08-05-05 01:58 hettar         Note Added: 0005654                          
-08-05-05 08:39 perex          Note Edited: 0005654                         
-08-05-05 08:39 perex          Relationship added       related to 0001176  
-08-05-05 09:10 hettar         Note Added: 0005662                          
-08-11-05 14:34 tiwai          Note Added: 0005760                          
-======================================================================
-
+>On Wed, 10 Aug 2005, Linux Coder wrote:
+>
+>  
+>
+>>g++ -fPIC -gstabs+ -O0 -Wall alibtest.cpp
+>>g++ -shared -Wl,-soname,libalibtest.so.1 -o libalibtest.so.1.0.1 alibtest.o
+>>-lc
+>>    
+>>
+>
+>Try add -lasound here, otherwise the linker won't add the necessary 
+>versions to external symbols.
+>
+>						Jaroslav
+>
+>-----
+>Jaroslav Kysela <perex@suse.cz>
+>Linux Kernel Sound Maintainer
+>ALSA Project, SUSE Labs
+>
+>
+>
+>  
+>
 
 
 
