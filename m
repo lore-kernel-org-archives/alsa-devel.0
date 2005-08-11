@@ -1,21 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [linux-audio-user] Again on sudden and
- occasional	Jack	crackling sound
-Date: Thu, 11 Aug 2005 11:33:34 -0400
-Message-ID: <1123774415.6980.18.camel@mindpipe>
-References: <42F02BB2.3000201@virgilio.it> <42F62AE8.60604@virgilio.it>
-	 <87r7d4xmxm.fsf@localhost.localdomain> <42F7D849.3030000@virgilio.it>
-	 <87ll3byh42.fsf@localhost.localdomain>
-	 <1123557715.25617.32.camel@localhost.localdomain>
-	 <42F8A6AE.6010609@virgilio.it> <7q8xzb5ekw.fsf@io.com>
-	 <42F92B60.9020909@virgilio.it>
-	 <1123620561.25617.58.camel@localhost.localdomain>
-	 <1123639951.21956.5.camel@mindpipe>  <1123702719.24369.24.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
+Date: Thu, 11 Aug 2005 17:41:24 +0200
+Message-ID: <359926f965904e8deee03a63b9448d3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1123702719.24369.24.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3A4820C
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2005 17:41:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,19 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: A list for linux audio users <linux-audio-user@music.columbia.edu>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-08-10 at 15:38 -0400, Lee Revell wrote:
-> So in both cases we're operating in mmap mode and ALSA is returning a
-> slightly incorrect hardware pointer which leads to crackling.
 
-Another thing to find out is whether this bug is more common when using
-sample rates like 44100, 88200, where the number of periods per buffer
-is not an integer.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
+======================================================================
+Reported By:                roothorick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1319
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-08-2005 05:38 CEST
+Last Modified:              08-11-2005 17:41 CEST
+======================================================================
+Summary:                    MIDI I/O (MPU-401) works for output only, not input
+Description: 
+I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
+such as keyboards, only works for output (from the soundcard to other
+devices). When I try to do input (from those devices to the soundcard) no
+events get through at all.
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ tiwai - 08-11-05 14:31 
+----------------------------------------------------------------------
+Check /proc/interrupts while MIDI input whether the count increases.
+If not, the interrupt isn't generated properly by the midi input by any
+reason.
+
+----------------------------------------------------------------------
+ roothorick - 08-11-05 17:41 
+----------------------------------------------------------------------
+I don't see any /proc/interrupts entry specific to MIDI, only one for
+"EMU10K1" whose count goes up if any MIDI program is running at all,
+regardless of even whether a MIDI device is connected. Not connecting any
+MIDI program and pressing keys on a connected MIDI device doesn't cause
+the count to go up, however.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-05 05:38 roothorick     New Issue                                    
+08-11-05 14:31 tiwai          Note Added: 0005759                          
+08-11-05 17:41 roothorick     Note Added: 0005761                          
+======================================================================
+
 
 
 
