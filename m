@@ -1,14 +1,13 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: Re: Fixes for identifying VT1617 codec and MSI-7142
- mobo
-Date: Thu, 11 Aug 2005 13:21:56 -0600
-Message-ID: <42FBA554.3040604@redfish-solutions.com>
-References: <42F655E2.5040504@redfish-solutions.com>	<20050807192732.GA3079@procyon.home>	<42F78569.5070604@redfish-solutions.com>	<s5hmzns1iud.wl%tiwai@suse.de>	<42F8F69D.2050302@redfish-solutions.com> <s5hpssk69ge.wl%tiwai@suse.de>
+From: =?windows-1251?B?MjItMjYg4OLj8/Hy4CAyMDA1IOMu?= <accuracy@asia-links.com>
+Subject: =?windows-1251?B?z9DAytLI18XRysjJIMrT0NEgxMvfINHO0tDTxM3Iys7CINTIzcDN0c7Czi3dys7N?=
+ =?windows-1251?B?zszI18XRysjVINHL08bB?=
+Date: Thu, 11 Aug 2005 19:58:45 +0000
+Message-ID: <dcbe01c59eaf$8363e9f0$34289704@asia-links.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_E5B3E230.06729A4C"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpssk69ge.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,163 +17,197 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+This is a multi-part message in MIME format.
 
->At Tue, 09 Aug 2005 12:31:57 -0600,
->Philip Prindeville wrote:
->  
->
->>Takashi Iwai wrote:
->>
->>    
->>
->>>At Mon, 08 Aug 2005 10:16:41 -0600,
->>>Philip Prindeville wrote:
->>> 
->>>
->>>      
->>>
->>>>Sergey Vlasov wrote:
->>>>
->>>>   
->>>>
->>>>        
->>>>
->>>>>On Sun, Aug 07, 2005 at 12:41:38PM -0600, Philip Prindeville wrote:
->>>>>
->>>>>
->>>>>     
->>>>>
->>>>>          
->>>>>
->>>>>>Can we please commit this minor fixes to the tree?  I've been
->>>>>>using them and they seem to work fine.
->>>>>>
->>>>>>Thanks,
->>>>>>
->>>>>>-Philip
->>>>>>
->>>>>>  
->>>>>>
->>>>>>       
->>>>>>
->>>>>>            
->>>>>>
->>>>>     
->>>>>
->>>>>          
->>>>>
->>>>>>*** alsa-kernel/pci/via82xx.c.bak	2005-05-27 04:10:18.000000000 -0600
->>>>>>--- alsa-kernel/pci/via82xx.c	2005-07-25 20:33:51.000000000 -0600
->>>>>>***************
->>>>>>*** 2174,2179 ****
->>>>>>--- 2174,2180 ----
->>>>>>		{ .vendor = 0x1462, .device = 0x5901, .action = VIA_DXS_NO_VRA }, /* MSI KT6 Delta-SR */
->>>>>>		{ .vendor = 0x1462, .device = 0x7023, .action = VIA_DXS_NO_VRA }, /* MSI K8T Neo2-FI */
->>>>>>		{ .vendor = 0x1462, .device = 0x7120, .action = VIA_DXS_ENABLE }, /* MSI KT4V */
->>>>>>+ 		{ .vendor = 0x1462, .device = 0x7142, .action = VIA_DXS_ENABLE }, /* MSI K8MM-V */
->>>>>>  
->>>>>>
->>>>>>       
->>>>>>
->>>>>>            
->>>>>>
->>>>>Did you try VIA_DXS_SRC instead?  If it works, it gives more
->>>>>capabilities (any sample rate - not discrete values, and separate
->>>>>sample rates for all 4 DXS channels).
->>>>>
->>>>>
->>>>>     
->>>>>
->>>>>          
->>>>>
->>>>Ok.  I've built a new image that has that set (I've also added an entry
->>>>for the K8MM-ILSR which is an identical motherboard but missing
->>>>video).
->>>>
->>>>How do I add the separate sample rates for the 4 DXS channels, and
->>>>how do I test all of this?
->>>>   
->>>>
->>>>        
->>>>
->>>The best would be to prepare WAV files in different sapmle rates by
->>>converting with sox.
->>>
->>>I believe we can merge NO_VRA and SRC.  We've made them differently
->>>just to be conservative.
->>>
->>>
->>>Takashi
->>> 
->>>
->>>      
->>>
->>Well, I'm a little stumped...  If I use "soundcard detection" on the 
->>"lineout" jack,
->>I can hear audio, but not on the SPDIF port.
->>    
->>
->
->Hmm, this sounds like an off-topic?  Does DXS_SRC work on your device?
->  
->
-
-I tried:
-
-aplay -v -D spdif /usr/share/system-config-soundcard/sound-sample.wav
-
-and that worked ok (I got PCM sound out), but it was at 48kHz.  So I
-tried with -D plug:spdif, and that was at the correct pitch...  But I'm
-confused.  If I'm setting:
-
-.action = VIA_DXS_SRC
-
-and:
-
-ac97->rates[AC97_RATES_SPDIF] = SNDRV_PCM_RATE_CONTINUOUS;
-
-shouldn't it be able to playback digitally at arbitrary rates?  What do 
-I need
-to change to get it to playback at 44100Hz for testing?
+------=_NextPart_000_0000_E5B3E230.06729A4C
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_29A6E71C.F04145E6"
 
 
->  
->
->> However, when I use mplayer to
->>play DVD's with:
->>
->>-ao alsa:device=hw=0.1 -ac hwdts,hwac3,a52,pcm
->>
->>then I get digital sound out the SPDIF just fine.
->>    
->>
->
->Don't do that.  The direct access to "hw" is not recommended at all
->unless you know exactly what you're doing.
->Use rather "spdif" PCM (aka "iec958").
->
->
->Takashi
->  
->
+------=_NextPart_001_0001_29A6E71C.F04145E6
+Content-Type: text/plain;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
-
-Ok, I'll change this.  But what would the .asoundrc look like to default
-everything through "spdif"?
-
-Thanks,
-
--Philip
+ =D3=ED=E8=EA=E0=EB=FC=ED=E0=FF =E2=EE=E7=EC=EE=E6=ED=EE=F1=F2=FC =E7=E0 =
+=EE=E4=ED=F3 =ED=E5=E4=E5=EB=FE =EE=E2=EB=E0=E4=E5=F2=FC =ED=EE=E2=FB=EC=E8=
+ =EF=F0=E8=EA=EB=E0=E4=ED=FB=EC=E8 =F2=E5=F5-=ED=EE=EB=EE=E3=E8=FF=EC=E8
+=E8 =EF=F0=EE=E2=E5=F0=E5=ED=ED=FB=EC=E8 =EC=E5=F2=EE=E4=E8=EA=E0=EC=E8 =EF=
+=EE=E2=FB=F8=E5=ED=E8=FF =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=F1=F2=E8=20
+=F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=E8 =EA=EE=
+=EC=EF=E0=ED=E8=E8 =E8 =EF=F0=E8 =FD=F2=EE=EC =F1=FD=EA=EE=ED=EE=EC=E8=F2=
+=FC.=20
 
 
 
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+=C2 =F6=E5=EB=FF=F5 =F1=EE=E7=E4=E0=ED=E8=FF =EE=EF=F2=E8=EC=E0=EB=FC=ED=EE=
+=E3=EE =F3=F7=E5=E1=ED=EE=E3=EE =EA=F3=F0=F1=E0 =ED=E0=EC=E8 =E1=FB=EB =EF=
+=F0=EE=E2=E5=E4=E5=ED =EE=EF=F0=EE=F1 =F4=E8=ED=E0=ED=F1=EE-=E2=FB=F5
+=EC=E5=ED=E5=E4=E6=E5=F0=EE=E2, =EA=EE=F2=EE=F0=FB=E9 =EF=EE=E7=E2=EE=EB=E8=
+=EB =E2=FB=FF=E2=E8=F2=FC =EE=E1=F9=E8=E5 =E4=EB=FF =E2=F1=E5=F5 =F1=EF=E5=
+=F6=E8=E0=EB=E8=F1=F2=EE=E2, =E7=E0=ED=E8=EC=E0=FE=F9=E8=F5
+=FD=F2=F3 =E4=EE=EB=E6=ED=EE=F1=F2=FC, =F4=F3=ED=EA=F6=E8=E8 =E8 =EE=E1=FF=
+=E7=E0=ED=ED=EE=F1=F2=E8. =C8=EC=E5=ED=ED=EE =E4=EB=FF =F0=E5=F8=E5=ED=E8=
+=FF =EA=EE=ED=EA=F0=E5=F2=ED=FB=F5 =E7=E0=E4=E0=F7,
+=F1=F2=EE=FF=F9=E8=F5 =EF=E5=F0=E5=E4 =EA=E0=E6=E4=FB=EC =F1=EE=F2=F0=F3=E4=
+=ED=E8=EA=EE=EC =F4=E8=ED=E0=ED=F1=EE=E2=EE-=FD=EA=EE=ED=EE=EC=E8=F7=E5=F1=
+=EA=EE=E3=EE =EE=F2=E4=E5=EB=E0, =EC=FB =F1=EE=E1=F0=E0=EB=E8
+=EF=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E8 =E8=ED=F1=
+=F2=F0=F3=EC=E5=ED=F2=FB, =EE=E1=FA=E5=E4=E8=ED=E8=E2 =E8=F5 =E2 =EF=F0=EE=
+=E3=F0=E0=EC=EC=F3 =F8=E5=F1=F2=E8=E4=ED=E5=E2=ED=EE=E3=EE
+=F1=EF=E5=F6=E8=E0=EB=E8=E7=E8=F0=EE=E2=E0=ED=ED=EE=E3=EE =F1=E5=EC=E8=ED=
+=E0=F0=E0-=EF=F0=E0=EA=F2=E8=EA=F3=EC=E0:=20
+
+=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=20
+=C4=CB=DF =D1=CE=D2=D0=D3=C4=CD=C8=CA=CE=C2 =D4=C8=CD=C0=CD=D1=CE=C2=CE-=DD=
+=CA=CE=CD=CE=CC=C8=D7=C5=D1=CA=C8=D5 =D1=CB=D3=C6=C1=20
+
+
+
+
+22-26 =E0=E2=E3=F3=F1=F2=E0 2005 =E3.=20
+
+=C2 =EF=F0=EE=E3=F0=E0=EC=EC=E5 =EA=F3=F0=F1=E0:   =D4=E8=ED=E0=ED=F1=EE=E2=
+=E0=FF =EF=EE=EB=E8=F2=E8=EA=E0 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=FF  =D3=EF=
+=F0=E0=E2=EB=E5=ED=E8=E5 =EE=E1=EE=F0=EE=F2=ED=FB=EC=E8
+=E0=EA=F2=E8=E2=E0=EC=E8  =C0=ED=E0=EB=E8=E7 =F4=E8=ED=E0=ED=F1=EE=E2=EE=E3=
+=EE =F1=EE=F1=F2=EE=FF=ED=E8=FF  =D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =E4=E5=ED=
+=E5=E6=ED=FB=EC=E8 =EF=EE=F2=EE=EA=E0=EC=E8=20
+=C0=ED=E0=EB=E8=E7 =EA=F0=E5=E4=E8=F2=EE=F1=EF=EE=F1=EE=E1=ED=EE=F1=F2=E8=
+, =EF=EB=E0=F2=E5=E6=E5=F1=EF=EE=F1=EE=E1=ED=EE=F1=F2=E8 =E8 =EB=E8=EA=E2=
+=E8=E4=ED=EE=F1=F2=E8  =D4=E8=ED=E0=ED=F1=EE=E2=FB=E5
+=E8 =FD=EA=EE=ED=EE=EC=E8=F7=E5=F1=EA=E8=E5 =EF=EE=EA=E0=E7=E0=F2=E5=EB=E5=
+=E9  =CF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E5 =E0=F1=EF=E5=EA=F2=FB =E2=E5=E4=
+=E5=ED=E8=FF =F3=EF=F0=E0=E2=EB=E5=ED=F7=E5=F1=EA=EE=E3=EE
+=F3=F7=E5=F2=E0 (=EC=E5=F0=EE=EF=F0=E8=FF=F2=E8=FF, =F0=E0=F1=F7=E5=F2=FB=
+ =E8 =E2=E5-=E4=EE=EC=EE=F1=F2=E8)  =D3=EF=F0=E0=E2=EB=E5=ED=F7=E5=F1=EA=E8=
+=E9 =F3=F7=E5=F2 =E8 =E0=F3=E4=E8=F2
+ =D4=E8=ED=E0=ED=F1=EE=E2=FB=E9 =E0=ED=E0=EB=E8=E7 =E8 =EF=F0=EE=E3=ED=EE=
+=E7=E8=F0=EE=E2=E0=ED=E8=E5  =C8=ED=E2=E5=F1=F2=E8=F6=E8=EE=ED=ED=E0=FF =EF=
+=EE=EB=E8=F2=E8=EA=E0 =EA=EE=EC=EF=E0=ED=E8=E8
+ =CF=F0=E8=E2=EB=E5=F7=E5=ED=E8=E5 =F1=F2=EE=F0=EE=ED=ED=E5=E3=EE =F4=E8=ED=
+=E0=ED=F1=E8=F0=EE=E2=E0=ED=E8=FF  =CC=E5=F2=EE=E4=E8=EA=E0 =E8 =F2=E5=F5=
+=ED=E8=EA=E0 =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF
+ =C2=ED=E5=E4=F0=E5=ED=E8=E5 =F1=E8=F1=F2=E5=EC=FB =F4=E8=ED=E0=ED=F1=EE=E2=
+=EE=E3=EE =EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=FF =E8 =EA=EE=ED=F2=F0=EE=EB=FF=
+ =ED=E0 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E8=20
+=D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=E4=E8=F2 =E2 =E8=ED=F2=E5=ED=F1=E8=E2=
+=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=E8=E2=ED=EE=E9 =F4=EE=F0=EC=E5 =F1 =F0=
+=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=FC=F8=EE=E3=EE
+=EA=EE-=EB=E8=F7=E5=F1=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =E8 =EA=E5=E9=F1=
+=EE=E2, =EA=E0=EA =E8=E7 =EF=F0=E0=EA=F2=E8=EA=E8 =F0=EE=F1=F1=E8=E9=F1=EA=
+=E8=F5 =F2=E0=EA =E8 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5
+=EA=EE=EC=EF=E0=ED=E8=E9.=20
+
+=D7=F2=EE=E1=FB =EF=EE=E4=E0=F2=FC =E7=E0=FF=E2=EA=F3 =E8=EB=E8 =EF=EE=EB=
+=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =EF=F0=EE=E3=F0=E0=EC=EC=F3 =EA=
+=F3=F0=F1=E0,=20
+=EF=EE=E7=E2=EE=ED=E8=F2=E5 =EF=EE =F2=E5=EB. (095) 980-65-49=20
+
+  =20
+------=_NextPart_001_0001_29A6E71C.F04145E6
+Content-Type: text/html;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
+251">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
+<BODY text=3D#000000 bgColor=3D#ffffff>
+<font face=3D"Times New Roman"><P align=3Dcenter><FONT face=3DArial><b>=D3=
+=ED=E8=EA=E0=EB=FC=ED=E0=FF =E2=EE=E7=EC=EE=E6=ED=EE=F1=F2=FC =E7=E0 =EE=E4=
+=ED=F3 =ED=E5=E4=E5=EB=FE =EE=E2=EB=E0=E4=E5=F2=FC =ED=EE=E2=FB=EC=E8 =EF=
+=F0=E8=EA=EB=E0=E4=ED=FB=EC=E8 =F2=E5=F5-=ED=EE=EB=EE=E3=E8=FF=EC=E8 =E8 =
+=EF=F0=EE=E2=E5=F0=E5=ED=ED=FB=EC=E8 =EC=E5=F2=EE=E4=E8=EA=E0=EC=E8 =EF=EE=
+=E2=FB=F8=E5=ED=E8=FF =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=F1=F2=E8 <br>
+=F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=E8 =EA=EE=
+=EC=EF=E0=ED=E8=E8 =E8 =EF=F0=E8 =FD=F2=EE=EC =F1=FD=EA=EE=ED=EE=EC=E8=F2=
+=FC. </b><br>
+</P>
+<DIV align=3Djustify></DIV>
+<P align=3Djustify>=C2 =F6=E5=EB=FF=F5 =F1=EE=E7=E4=E0=ED=E8=FF =EE=EF=F2=
+=E8=EC=E0=EB=FC=ED=EE=E3=EE =F3=F7=E5=E1=ED=EE=E3=EE =EA=F3=F0=F1=E0 =ED=E0=
+=EC=E8 =E1=FB=EB =EF=F0=EE=E2=E5=E4=E5=ED =EE=EF=F0=EE=F1 =F4=E8=ED=E0=ED=
+=F1=EE-=E2=FB=F5 =EC=E5=ED=E5=E4=E6=E5=F0=EE=E2, =EA=EE=F2=EE=F0=FB=E9 =EF=
+=EE=E7=E2=EE=EB=E8=EB =E2=FB=FF=E2=E8=F2=FC =EE=E1=F9=E8=E5 =E4=EB=FF =E2=
+=F1=E5=F5 =F1=EF=E5=F6=E8=E0=EB=E8=F1=F2=EE=E2, =E7=E0=ED=E8=EC=E0=FE=F9=E8=
+=F5 =FD=F2=F3 =E4=EE=EB=E6=ED=EE=F1=F2=FC, =F4=F3=ED=EA=F6=E8=E8 =E8 =EE=E1=
+=FF=E7=E0=ED=ED=EE=F1=F2=E8. =C8=EC=E5=ED=ED=EE =E4=EB=FF =F0=E5=F8=E5=ED=
+=E8=FF =EA=EE=ED=EA=F0=E5=F2=ED=FB=F5 =E7=E0=E4=E0=F7, =F1=F2=EE=FF=F9=E8=
+=F5 =EF=E5=F0=E5=E4 =EA=E0=E6=E4=FB=EC =F1=EE=F2=F0=F3=E4=ED=E8=EA=EE=EC =
+=F4=E8=ED=E0=ED=F1=EE=E2=EE-=FD=EA=EE=ED=EE=EC=E8=F7=E5=F1=EA=EE=E3=EE =EE=
+=F2=E4=E5=EB=E0, =EC=FB =F1=EE=E1=F0=E0=EB=E8 =EF=F0=E8=EA=EB=E0=E4=ED=FB=
+=E5 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E8 =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=FB,=
+ =EE=E1=FA=E5=E4=E8=ED=E8=E2 =E8=F5 =E2 =EF=F0=EE=E3=F0=E0=EC=EC=F3 =F8=E5=
+=F1=F2=E8=E4=ED=E5=E2=ED=EE=E3=EE =F1=EF=E5=F6=E8=E0=EB=E8=E7=E8=F0=EE=E2=
+=E0=ED=ED=EE=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0-=EF=F0=E0=EA=F2=E8=EA=F3=EC=E0=
+: </P>
+
+<P align=3Dcenter><FONT size=3D5><b>=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =
+=CA=D3=D0=D1 <br>
+=C4=CB=DF =D1=CE=D2=D0=D3=C4=CD=C8=CA=CE=C2 =D4=C8=CD=C0=CD=D1=CE=C2=CE-=DD=
+=CA=CE=CD=CE=CC=C8=D7=C5=D1=CA=C8=D5 =D1=CB=D3=C6=C1</b></FONT> <br>
+<br>
+</P>
+<DIV align=3Dcenter></DIV>
+<P align=3Dcenter><FONT size=3D4><b>22-26 =E0=E2=E3=F3=F1=F2=E0 2005 =E3.=
+</b></FONT> <b></P>
+=C2 =EF=F0=EE=E3=F0=E0=EC=EC=E5 =EA=F3=F0=F1=E0:</b> </FONT>
+<UL>
+<LI><FONT face=3DArial>=D4=E8=ED=E0=ED=F1=EE=E2=E0=FF =EF=EE=EB=E8=F2=E8=EA=
+=E0 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=FF </FONT>
+<LI><FONT face=3DArial>=D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =EE=E1=EE=F0=EE=F2=ED=
+=FB=EC=E8 =E0=EA=F2=E8=E2=E0=EC=E8 </FONT>
+<LI><FONT face=3DArial>=C0=ED=E0=EB=E8=E7 =F4=E8=ED=E0=ED=F1=EE=E2=EE=E3=EE=
+ =F1=EE=F1=F2=EE=FF=ED=E8=FF </FONT>
+<LI><FONT face=3DArial>=D3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =E4=E5=ED=E5=E6=ED=FB=
+=EC=E8 =EF=EE=F2=EE=EA=E0=EC=E8 </FONT>
+<LI><FONT face=3DArial>=C0=ED=E0=EB=E8=E7 =EA=F0=E5=E4=E8=F2=EE=F1=EF=EE=F1=
+=EE=E1=ED=EE=F1=F2=E8, =EF=EB=E0=F2=E5=E6=E5=F1=EF=EE=F1=EE=E1=ED=EE=F1=F2=
+=E8 =E8 =EB=E8=EA=E2=E8=E4=ED=EE=F1=F2=E8 </FONT>
+<LI><FONT face=3DArial>=D4=E8=ED=E0=ED=F1=EE=E2=FB=E5 =E8 =FD=EA=EE=ED=EE=
+=EC=E8=F7=E5=F1=EA=E8=E5 =EF=EE=EA=E0=E7=E0=F2=E5=EB=E5=E9 </FONT>
+<LI><FONT face=3DArial>=CF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E5 =E0=F1=EF=E5=EA=
+=F2=FB =E2=E5=E4=E5=ED=E8=FF =F3=EF=F0=E0=E2=EB=E5=ED=F7=E5=F1=EA=EE=E3=EE=
+ =F3=F7=E5=F2=E0 (=EC=E5=F0=EE=EF=F0=E8=FF=F2=E8=FF, =F0=E0=F1=F7=E5=F2=FB=
+ =E8 =E2=E5-=E4=EE=EC=EE=F1=F2=E8) </FONT>
+<LI><FONT face=3DArial>=D3=EF=F0=E0=E2=EB=E5=ED=F7=E5=F1=EA=E8=E9 =F3=F7=E5=
+=F2 =E8 =E0=F3=E4=E8=F2 </FONT>
+<LI><FONT face=3DArial>=D4=E8=ED=E0=ED=F1=EE=E2=FB=E9 =E0=ED=E0=EB=E8=E7 =
+=E8 =EF=F0=EE=E3=ED=EE=E7=E8=F0=EE=E2=E0=ED=E8=E5 </FONT>
+<LI><FONT face=3DArial>=C8=ED=E2=E5=F1=F2=E8=F6=E8=EE=ED=ED=E0=FF =EF=EE=EB=
+=E8=F2=E8=EA=E0 =EA=EE=EC=EF=E0=ED=E8=E8 </FONT>
+<LI><FONT face=3DArial>=CF=F0=E8=E2=EB=E5=F7=E5=ED=E8=E5 =F1=F2=EE=F0=EE=ED=
+=ED=E5=E3=EE =F4=E8=ED=E0=ED=F1=E8=F0=EE=E2=E0=ED=E8=FF </FONT>
+<LI><FONT face=3DArial>=CC=E5=F2=EE=E4=E8=EA=E0 =E8 =F2=E5=F5=ED=E8=EA=E0=
+ =E1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=FF </FONT>
+<LI><FONT face=3DArial>=C2=ED=E5=E4=F0=E5=ED=E8=E5 =F1=E8=F1=F2=E5=EC=FB =
+=F4=E8=ED=E0=ED=F1=EE=E2=EE=E3=EE =EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=FF =E8=
+ =EA=EE=ED=F2=F0=EE=EB=FF =ED=E0 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E8 </FONT=
+></LI></UL>
+<P align=3Dcenter><FONT face=3DArial>=D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=
+=E4=E8=F2 =E2 <b>=E8=ED=F2=E5=ED=F1=E8=E2=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=
+=E8=E2=ED=EE=E9 =F4=EE=F0=EC=E5</b> =F1 =F0=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=
+=FC=F8=EE=E3=EE =EA=EE-=EB=E8=F7=E5=F1=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =
+=E8 =EA=E5=E9=F1=EE=E2, =EA=E0=EA =E8=E7 =EF=F0=E0=EA=F2=E8=EA=E8 =F0=EE=F1=
+=F1=E8=E9=F1=EA=E8=F5 =F2=E0=EA =E8 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =EA=
+=EE=EC=EF=E0=ED=E8=E9. <br>
+<br>
+<b>=D7=F2=EE=E1=FB =EF=EE=E4=E0=F2=FC =E7=E0=FF=E2=EA=F3 =E8=EB=E8 =EF=EE=
+=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =EF=F0=EE=E3=F0=E0=EC=EC=F3=
+ =EA=F3=F0=F1=E0, <br>
+=EF=EE=E7=E2=EE=ED=E8=F2=E5 =EF=EE =F2=E5=EB. (095) 980-65-49</b> </FONT>=
+</P></font>
+</BODY>
+</HTML>
+
+------=_NextPart_001_0001_29A6E71C.F04145E6--
+
+
+
+------=_NextPart_000_0000_E5B3E230.06729A4C--
