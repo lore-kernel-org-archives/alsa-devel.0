@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001328]: Surround51 and surround40 don't work for Terratec Aureon USB 5.1 Mk II
-Date: Fri, 12 Aug 2005 15:50:21 +0200
-Message-ID: <644c375736f5b5587c02dd7b7200d4e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
+Date: Fri, 12 Aug 2005 15:53:39 +0200
+Message-ID: <06d9bb455f768128e1da602e129da6f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54AB5211
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 15:50:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0DE2166
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 15:53:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1328> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
 ======================================================================
-Reported By:                matthew_m
-Assigned To:                Clemens Ladisch
+Reported By:                roothorick
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1328
-Category:                   USB - usb-audio
+Issue ID:                   1319
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             2.6.11.4-21.8-smp
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-11-2005 19:07 CEST
-Last Modified:              08-12-2005 15:50 CEST
+Date Submitted:             08-08-2005 05:38 CEST
+Last Modified:              08-12-2005 15:53 CEST
 ======================================================================
-Summary:                    Surround51 and surround40 don't work for Terratec
-Aureon USB 5.1 Mk II
+Summary:                    MIDI I/O (MPU-401) works for output only, not input
 Description: 
-Trying to use mplayer to play back a 6-channel wav file (it needs the
--channels option or it will use the default device and only play back the
-first two channels despite reporting the file as containing 6 - I guess
-this is a bug in mplayer):
-
-mplayer -ao alsa -channels 6 123456.wav
-
-...
-alsa-init: 1 soundcard found, using: surround51
-ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-...
-
-...and the equivalent for 4 channels.
-
-BUT, if I override the surround51 device with a .asoundrc as follows:
-
-pcm.!surround51 {
-        type route
-        slave.pcm "hw:0"
-        slave.channels 6
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.2.2 1
-        ttable.3.3 1
-        ttable.4.4 1
-        ttable.5.5 1
-}
-
-then it works - as does an override for surround40.
+I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
+such as keyboards, only works for output (from the soundcard to other
+devices). When I try to do input (from those devices to the soundcard) no
+events get through at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-12-05 15:50 
+ roothorick - 08-11-05 17:41 
 ----------------------------------------------------------------------
-surroundXX are not defined for USB devices as default since the device
-types are so different.
+I don't see any /proc/interrupts entry specific to MIDI, only one for
+"EMU10K1" whose count goes up if any MIDI program is running at all,
+regardless of even whether a MIDI device is connected. Not connecting any
+MIDI program and pressing keys on a connected MIDI device doesn't cause
+the count to go up, however.
 
-We need to define a driver name for the known USB-audio devices and
-provide a reasonable configuration for each driver type.
+----------------------------------------------------------------------
+ tiwai - 08-12-05 15:53 
+----------------------------------------------------------------------
+The single irq is used for all pcm and midis.  So, don't run any audio
+program during you measure (even better on console rather than on a
+graphical desktop system to avoid beeps per PCM).
+
+And, are you sure that the midi device produces a right MIDI byte stream? 
+Can it test with a loopback?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-11-05 19:07 matthew_m      New Issue                                    
-08-11-05 19:07 matthew_m      Kernel Version            => 2.6.11.4-21.8-smp
-08-12-05 15:50 tiwai          Note Added: 0005775                          
+08-08-05 05:38 roothorick     New Issue                                    
+08-11-05 14:31 tiwai          Note Added: 0005759                          
+08-11-05 17:41 roothorick     Note Added: 0005761                          
+08-12-05 15:53 tiwai          Note Added: 0005776                          
 ======================================================================
 
 
