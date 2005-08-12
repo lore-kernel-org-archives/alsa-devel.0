@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001330]: alsa-driver fails "make install"
-Date: Sat, 13 Aug 2005 00:27:17 +0200
-Message-ID: <79da7e76d20c5d3293ceb1c01be4d89e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001327]: Creative X-Fi Support - Do you know anything?
+Date: Sat, 13 Aug 2005 00:32:03 +0200
+Message-ID: <f71efd7a03ed78afe5f2615ae662ca24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 202C51AB
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:27:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE3CA1AB
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:32:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1330> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1327> 
 ======================================================================
-Reported By:                jcdutton
-Assigned To:                perex
+Reported By:                ghost_zero
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1330
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
+Issue ID:                   1327
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-13-2005 00:07 CEST
-Last Modified:              08-13-2005 00:27 CEST
+Date Submitted:             08-11-2005 00:11 CEST
+Last Modified:              08-13-2005 00:32 CEST
 ======================================================================
-Summary:                    alsa-driver fails "make install"
+Summary:                    Creative X-Fi Support - Do you know anything?
 Description: 
-See output below.
-Does anyone have a clew how to fix this?
+Hi,
 
+it is more a question than a feature request and that is about the
+Creative X-Fi Cards... do you know if Creative will release Linux drivers
+or specifications of it?
+If not, will you still support that cards in the future?
 
-alsa-driver # make install
-find /lib/modules/2.6.13-rc5/kernel/sound -name 'snd*.*o' | xargs rm -f
-make[1]: Entering directory `/u/alsacvs/alsa-driver/acore'
-make[1]: *** No rule to make target `modules_install'.  Stop.
-make[1]: Leaving directory `/u/alsacvs/alsa-driver/acore'
-make: *** [install-modules] Error 1
-
-
-
+Sorry to contact you for that in this way but I didn't find an
+e-mail-address...
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 08-13-05 00:27 
+ rlrevell - 08-11-05 03:46 
 ----------------------------------------------------------------------
-The attached "make-it-work.diff.txt" is a diff from the current cvs to an
-older cvs version. Applying this diff lets if work again.
+Well, that page is just a bunch of marketing speak so it's impossible to
+tell.
+
+If they continue to pursue the SBLive/Audigy/Audigy2 design, with EAX and
+what not implemented in hardware, we can probably support it.  But there
+seems to be a disturbing trend at Creative to release crap like the
+SBLive! 24 bit that does not have any real hardware acceleration,
+implementing EAX and what not in the drivers.
+
+----------------------------------------------------------------------
+ ghost_zero - 08-13-05 00:32 
+----------------------------------------------------------------------
+As usual just time will tell :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 00:07 jcdutton       New Issue                                    
-08-13-05 00:26 jcdutton       File Added: make-it-work.diff.txt                 
-  
-08-13-05 00:27 jcdutton       Note Added: 0005792                          
+08-11-05 00:11 ghost_zero     New Issue                                    
+08-11-05 00:15 rlrevell       Note Added: 0005751                          
+08-11-05 00:31 ghost_zero     Note Added: 0005753                          
+08-11-05 03:46 rlrevell       Note Added: 0005754                          
+08-13-05 00:32 ghost_zero     Note Added: 0005793                          
 ======================================================================
 
 
