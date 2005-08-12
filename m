@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
-Date: Fri, 12 Aug 2005 16:30:40 +0200
-Message-ID: <21e1a035dc8a06248db7fb6883bdddea@bugtrack.alsa-project.org>
+Date: Fri, 12 Aug 2005 16:38:57 +0200
+Message-ID: <07e82b0ed85727c813d65c8595c4aa50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 496801EE
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 16:30:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4D531EE
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 16:38:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-08-2005 05:38 CEST
-Last Modified:              08-12-2005 16:30 CEST
+Last Modified:              08-12-2005 16:38 CEST
 ======================================================================
 Summary:                    MIDI I/O (MPU-401) works for output only, not input
 Description: 
@@ -51,17 +51,14 @@ events get through at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- roothorick - 08-12-05 16:17 
-----------------------------------------------------------------------
-The device works properly with input on a soundcard in another computer
-(that one uses the snd-cmipci driver), so I'm positive it's functional. I
-can even use aseqnet to run the input to this system. However, it's a
-royal pain maintaining an entire second system just for MIDI input.
-
-----------------------------------------------------------------------
  Clemens Ladisch - 08-12-05 16:30 
 ----------------------------------------------------------------------
 Try to load the driver with the enable_ir=1 option.
+
+----------------------------------------------------------------------
+ roothorick - 08-12-05 16:38 
+----------------------------------------------------------------------
+Passing the option enable_ir=1 had no effect whatsoever.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -72,6 +69,7 @@ Date Modified  Username       Field                    Change
 08-12-05 15:53 tiwai          Note Added: 0005776                          
 08-12-05 16:17 roothorick     Note Added: 0005779                          
 08-12-05 16:30 Clemens LadischNote Added: 0005780                          
+08-12-05 16:38 roothorick     Note Added: 0005781                          
 ======================================================================
 
 
