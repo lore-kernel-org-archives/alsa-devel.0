@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001304]: Speaker test hangs
-Date: Fri, 12 Aug 2005 15:47:45 +0200
-Message-ID: <eb861c9fb196532efc84f37201ed47c3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001176]: problem with alsa-driver and asus m5a notebook
+Date: Fri, 12 Aug 2005 15:48:27 +0200
+Message-ID: <afd3785999d5e09af6105f56812b3cab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FF7D211
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 15:47:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07082211
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 15:48:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,128 +24,264 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176> 
 ======================================================================
-Reported By:                herby
-Assigned To:                
+Reported By:                Ballbreaker
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1304
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1176
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.12-rc5
 ======================================================================
-Date Submitted:             08-03-2005 02:46 CEST
-Last Modified:              08-12-2005 15:47 CEST
+Date Submitted:             06-09-2005 13:44 CEST
+Last Modified:              08-12-2005 15:48 CEST
 ======================================================================
-Summary:                    Speaker test hangs
+Summary:                    problem with alsa-driver and asus m5a notebook
 Description: 
-After applying the patch to the library that took out the check for a
-proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
-or so), I attempted to try a speaker test again.  It hung right after
-outputting "0 - Front Left".  I did an strace and the results are included
-in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
-with little luck.  The wierd thing is that I can execute 'aplay' (with the
-default device) and get a '.wav' file to play nicely.  I can even get a
-multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
-speaker-test doesn't work is beyond me.  The problem is that I appear to
-use similar techniques in my own programming as speaker-test, and my
-program doesen't do that well.  Being as how speaker-test IS part of ALSA,
-I thought I would submit the bug report against it.
+I use gentoo-linux on an asus m5a notebook. Installation of alsa-driver
+works without any error messages. xmms, aplay etc. play files, but i can't
+hear anything. alsa-mixer shows me all the mixer-controls. I didn't forget
+to unmute, and with windows sound is working fine - so i think there is a
+problem with the alsa-driver and this notebook (on other notebooks with
+the same sound-chip alsa is working).
 
-If other tests need be preformed, I'd be VERY happy to do them.
+I tried the following, always with the same results:
+- compile alsa in the kernel
+- compile alsa as kernel modules
+- emerge alsa-driver (version 1.0.9-rc3 - 1.0.9-rc4 is not in portage
+yet)
+- compile alsa-driver manually (version 1.0.9-rc4)
+
+Everything seems to work fine, but i can't hear anything, so maybe this is
+a bug in the alsa-driver.
+Would be great if somebody could tell me how i get alsa working on my
+notebook  ;-)
+
+Greetz,
+thomas
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001311 drivers load but unmuting channels / ad...
 ======================================================================
 
 ----------------------------------------------------------------------
- herby - 08-12-05 08:12 
+ Ballbreaker - 08-11-05 19:45 
 ----------------------------------------------------------------------
-More info:
-When speaker-test stalls (on the Revo 7.1) no interrupts get generated
-(from /proc/interrupts).  When I use 'aplay' (which generates sound!),
-interrupts get generated (go figure).  When I use the VIA 8233
-(motherboard audio) speaker-test all goes well.  It seems that there is
-something wierd in the buffer counts, or something on the Revo 7.1 card. 
-Here is some data from /proc/asound/card0/pcm0p/sub0 that might help:
-[tsw sub0]$ more *
-::::::::::::::
-hw_params
-::::::::::::::
-access: MMAP_INTERLEAVED
-format: S32_LE
-subformat: STD
-channels: 2
-rate: 48000 (48000/1)
-period_size: 3764
-buffer_size: 15052
-tick_time: 1000
-::::::::::::::
-info
-::::::::::::::
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: ICE1724
-name: ICE1724
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-::::::::::::::
-prealloc
-::::::::::::::
-256
-::::::::::::::
-status
-::::::::::::::
-state: PREPARED
-trigger_time: 0.000000000
-tstamp      : 1123826957.287182000
-delay       : 0
-avail       : 3760
-avail_max   : 0
------
-hw_ptr      : 0
-appl_ptr    : 11292
-::::::::::::::
-sw_params
-::::::::::::::
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 3764
-xfer_align: 1
-start_threshold: 15052
-stop_threshold: 15052
-silence_threshold: 0
-silence_size: 0
-boundary: 1972895744
+same problem with alsa cvs version.
 
-(this was taken while the speaker-test was stalled out)
 
-Hope this helps!
+content of /proc/asound/card0/codec#0:
+
+Codec: Realtek ALC880
+Address: 0
+Vendor Id: 0x10ec0880
+Subsystem Id: 0x0
+Revision Id: 0x90500
+Default PCM: rates 0x560, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x411: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x03 [Audio Output] wcaps 0x411: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x04 [Audio Output] wcaps 0x411: Stereo
+  PCM: rates 0x160, bits 0x0e, types 0x1
+Node 0x05 [Audio Output] wcaps 0x411: Stereo
+  PCM: rates 0x160, bits 0x0e, types 0x1
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM: rates 0x160, bits 0x1e, types 0x1
+Node 0x07 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
+  Amp-In vals: 0x1d 0x1d
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 7
+     0x18 0x19 0x1a* 0x1b 0x1c 0x14 0x15
+Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
+  Amp-In vals: 0x1d 0x1d
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 7
+     0x18 0x19 0x1a 0x1b 0x1c* 0x14 0x15
+Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
+  Amp-In vals: 0x00 0x00
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 10
+     0x18 0x19 0x1a 0x1b 0x1c* 0x0b 0x14 0x15 0x16 0x17
+Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
+  PCM: rates 0x160, bits 0x1e, types 0x1
+  Connection: 1
+     0x1f
+Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x23, nsteps=0x41, stepsize=0x03, mute=1
+  Amp-In vals: 0xb8 0xb8
+  Connection: 8
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15
+Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals: 0x36 0x36
+  Connection: 2
+     0x02 0x0b
+Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals: 0x36 0x36
+  Connection: 2
+     0x03 0x0b
+Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals: 0x37 0x37
+  Connection: 2
+     0x04 0x0b
+Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals: 0x00 0x00
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals: 0x37 0x37
+  Connection: 2
+     0x05 0x0b
+Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 4
+     0x0c* 0x0d 0x0e 0x0f
+Node 0x11 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 4
+     0x0c 0x0d* 0x0e 0x0f
+Node 0x12 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 4
+     0x0c* 0x0d 0x0e 0x0f
+Node 0x13 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 4
+     0x0c* 0x0d 0x0e 0x0f
+Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x083f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0c
+Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x80 0x80
+  Pincap 0x083f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0d
+Node 0x16 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x80 0x80
+  Pincap 0x083f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0e
+Node 0x17 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x80 0x80
+  Pincap 0x083f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0f
+Node 0x18 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x10
+Node 0x19 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x11
+Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x00 0x00
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x12
+Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals: 0x80 0x80
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x13
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x06
+Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
+  Pincap 0x0820: IN
+  Pin Default 0x00000000: [Jack] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+Node 0x21 [Volume Knob Widget] wcaps 0x600080: Mono
 
 ----------------------------------------------------------------------
- tiwai - 08-12-05 15:47 
+ tiwai - 08-12-05 15:48 
 ----------------------------------------------------------------------
-ICE1724 has the restriction regarding period and buffer size alignment. 
-It's aligned to 32byte.
+Did you try model="asus" option?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 02:46 herby          New Issue                                    
-08-03-05 02:46 herby          File Added: speaker-trace                    
-08-03-05 12:18 tiwai          Note Added: 0005621                          
-08-04-05 03:21 herby          Note Added: 0005638                          
-08-04-05 14:10 jcdutton       Note Added: 0005648                          
-08-04-05 20:21 herby          Note Added: 0005652                          
-08-09-05 06:58 herby          Note Added: 0005718                          
-08-12-05 08:12 herby          Note Added: 0005765                          
-08-12-05 15:47 tiwai          Note Added: 0005773                          
+06-09-05 13:44 Ballbreaker    New Issue                                    
+06-09-05 13:44 Ballbreaker    Distribution              => gentoo          
+06-09-05 13:44 Ballbreaker    Kernel Version            => 2.6.12-rc5      
+06-09-05 16:11 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-09-05 16:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
+06-09-05 16:19 Ballbreaker    Issue Monitored: Ballbreaker                    
+08-05-05 08:39 perex          Relationship added       related to 0001311  
+08-09-05 21:09 askel          Note Added: 0005735                          
+08-11-05 14:26 tiwai          Note Added: 0005756                          
+08-11-05 19:45 Ballbreaker    Note Added: 0005762                          
+08-12-05 15:48 tiwai          Note Added: 0005774                          
 ======================================================================
 
 
