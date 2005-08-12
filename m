@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001327]: Creative X-Fi Support - Do you know anything?
-Date: Sat, 13 Aug 2005 00:32:03 +0200
-Message-ID: <f71efd7a03ed78afe5f2615ae662ca24@bugtrack.alsa-project.org>
+Date: Sat, 13 Aug 2005 00:37:35 +0200
+Message-ID: <b0b95828f960a8a284c1f31a4bebdf27@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE3CA1AB
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:32:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C50A1AB
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:37:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-11-2005 00:11 CEST
-Last Modified:              08-13-2005 00:32 CEST
+Last Modified:              08-13-2005 00:37 CEST
 ======================================================================
 Summary:                    Creative X-Fi Support - Do you know anything?
 Description: 
@@ -56,21 +56,14 @@ e-mail-address...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-11-05 03:46 
-----------------------------------------------------------------------
-Well, that page is just a bunch of marketing speak so it's impossible to
-tell.
-
-If they continue to pursue the SBLive/Audigy/Audigy2 design, with EAX and
-what not implemented in hardware, we can probably support it.  But there
-seems to be a disturbing trend at Creative to release crap like the
-SBLive! 24 bit that does not have any real hardware acceleration,
-implementing EAX and what not in the drivers.
-
-----------------------------------------------------------------------
  ghost_zero - 08-13-05 00:32 
 ----------------------------------------------------------------------
 As usual just time will tell :)
+
+----------------------------------------------------------------------
+ pzad - 08-13-05 00:37 
+----------------------------------------------------------------------
+Time will probably tell - never.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -80,6 +73,7 @@ Date Modified  Username       Field                    Change
 08-11-05 00:31 ghost_zero     Note Added: 0005753                          
 08-11-05 03:46 rlrevell       Note Added: 0005754                          
 08-13-05 00:32 ghost_zero     Note Added: 0005793                          
+08-13-05 00:37 pzad           Note Added: 0005794                          
 ======================================================================
 
 
