@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001323]: MIC jack not supported
-Date: Fri, 12 Aug 2005 23:09:42 +0200
-Message-ID: <f26b11b0da4047d6777fe363c8ac63b4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
+Date: Fri, 12 Aug 2005 23:11:28 +0200
+Message-ID: <63c7c433ddbeb02e77573145072f9ac3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5BFCF174
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 23:09:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B161174
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 23:11:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1323> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
 ======================================================================
-Reported By:                submax82
+Reported By:                ammiellodebar
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1323
+Issue ID:                   1320
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     feedback
-Distribution:               debian 3.1 sarge
-Kernel Version:             linux 2.6.12.4
+Distribution:               Arch Linux
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-08-2005 22:10 CEST
-Last Modified:              08-12-2005 23:09 CEST
+Date Submitted:             08-08-2005 06:03 CEST
+Last Modified:              08-12-2005 23:11 CEST
 ======================================================================
-Summary:                    MIC jack not supported
+Summary:                    CA0106 with Soundblaster 24-bit live does not allow
+recording
 Description: 
-The problem is simple but important! The alsamixer do not show the volume
-of the MIC therefore this do not work!
+When I use the line in on the card, it will not capture unless i crank up
+the mixer to near peak, and then its garbled and distorted sound, my
+capture is up all the way and i know its not a dumb mistake of mine
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-10-05 05:21 
+ ammiellodebar - 08-09-05 04:13 
 ----------------------------------------------------------------------
-Known problem, capture is not supported in that ALSA version.  You need the
-latest ALSA sources from CVS (I think 1.0.9b also supports capture with
-that device).
+I thought capture was mic but i guess not, so the mic bug for ca0106
+relates to mine, actually the same bug really
 
 ----------------------------------------------------------------------
- jcdutton - 08-12-05 23:09 
+ jcdutton - 08-12-05 23:11 
 ----------------------------------------------------------------------
-Waiting for feedback. Does upgrading to alsa-driver 1.0.9b help?
+Please try alsa-driver 1.0.9b.
 
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 22:10 submax82       New Issue                                    
-08-08-05 22:10 submax82       Distribution              => debian 3.1 sarge
-08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
-08-08-05 22:59 submax82       Issue Monitored: submax82                    
-08-08-05 23:00 submax82       Note Added: 0005714                          
-08-10-05 05:21 rlrevell       Note Added: 0005746                          
-08-12-05 23:09 jcdutton       Note Added: 0005790                          
-08-12-05 23:09 jcdutton       Status                   assigned => feedback
+08-08-05 06:03 ammiellodebar  New Issue                                    
+08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
+08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
+08-12-05 23:11 jcdutton       Note Added: 0005791                          
+08-12-05 23:11 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
