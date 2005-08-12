@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Sat, 13 Aug 2005 01:41:37 +0200
-Message-ID: <43fa5a3a9ce5ed48019dc0a886853933@bugtrack.alsa-project.org>
+Date: Sat, 13 Aug 2005 01:42:34 +0200
+Message-ID: <5372a37dccf6a18e245b0d82de7dd511@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 187511AE
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 01:41:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D81C1AE
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 01:42:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               Fedora Core 4
 Kernel Version:             2.6.12-1.1398-x86_64
 ======================================================================
 Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              08-13-2005 01:41 CEST
+Last Modified:              08-13-2005 01:42 CEST
 ======================================================================
 Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
 Description: 
@@ -80,6 +80,7 @@ Date Modified  Username       Field                    Change
 08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
 08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
 08-13-05 01:41 jcdutton       Note Added: 0005798                          
+08-13-05 01:42 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
