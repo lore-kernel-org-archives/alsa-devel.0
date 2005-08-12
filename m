@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Fri, 12 Aug 2005 15:56:51 +0200
-Message-ID: <3b0bc0e2f78085d3f8c07bee63a3fa20@bugtrack.alsa-project.org>
+Date: Fri, 12 Aug 2005 16:08:01 +0200
+Message-ID: <151b2daf7d8031b79d3b3954f97781f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5E5C188
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 15:56:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17A68188
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 16:08:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-12-2005 15:56 CEST
+Last Modified:              08-12-2005 16:08 CEST
 ======================================================================
 Summary:                    ISA cards (opl3sa2 in particular) are not detected
 properly on 2.6 kernels
@@ -63,12 +63,6 @@ related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-12-05 15:45 
-----------------------------------------------------------------------
-.. and do NOT define any module parameters in /etc/modprobe.conf or
-whatever.  And do just "modprobe snd-opl3sa2".
-
-----------------------------------------------------------------------
  perex - 08-12-05 15:56 
 ----------------------------------------------------------------------
 takashi: See the previous bug (related to). The BIOS disables ISA PnP
@@ -83,6 +77,27 @@ similar problems with non-default values.
 
 The datasheet for your chip says that the ISA PnP subsystem should detect
 the card even if it is configured in manual mode.
+
+----------------------------------------------------------------------
+ perex - 08-12-05 16:08 
+----------------------------------------------------------------------
+Okay, I got it. The pnpbios lists this device as:
+
+NMX2210
+state = active
+io 0x220-0x22f
+io 0x530-0x537
+io 0x388-0x38f
+io 0x330-0x331
+io 0x370-0x371
+irq 7
+dma 0
+dma 1
+
+We need to add support for these devices to snd-opl3sa module and for
+other ISA modules. And yes, the bug 
+http://bugzilla.kernel.org/show_bug.cgi?id=4561 is definitely related.
+Actually ALSA drivers support only ISA PnP devices not BIOS PnP devices.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -115,6 +130,7 @@ particular) are not detected properly on 2.6 kernels
 08-12-05 15:44 tiwai          Note Added: 0005771                          
 08-12-05 15:45 tiwai          Note Added: 0005772                          
 08-12-05 15:56 perex          Note Added: 0005777                          
+08-12-05 16:08 perex          Note Added: 0005778                          
 ======================================================================
 
 
