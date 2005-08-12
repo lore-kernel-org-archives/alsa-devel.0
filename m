@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001176]: problem with alsa-driver and asus m5a notebook
-Date: Fri, 12 Aug 2005 18:09:46 +0200
-Message-ID: <a40920ea760038179a2055c74851d986@bugtrack.alsa-project.org>
+Date: Fri, 12 Aug 2005 18:17:06 +0200
+Message-ID: <46c33e1220ffa7c55e90a3f7b807f717@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70BD81CD
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 18:09:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D58D1E2
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 18:17:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.12-rc5
 ======================================================================
 Date Submitted:             06-09-2005 13:44 CEST
-Last Modified:              08-12-2005 18:09 CEST
+Last Modified:              08-12-2005 18:17 CEST
 ======================================================================
 Summary:                    problem with alsa-driver and asus m5a notebook
 Description: 
@@ -74,15 +74,18 @@ related to          0001311 drivers load but unmuting channels / ad...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-12-05 15:48 
-----------------------------------------------------------------------
-Did you try model="asus" option?
-
-----------------------------------------------------------------------
  Ballbreaker - 08-12-05 18:09 
 ----------------------------------------------------------------------
 It is working now, thanks for the help!
 had to use cvs-version and model="asus".
+
+----------------------------------------------------------------------
+ tiwai - 08-12-05 18:17 
+----------------------------------------------------------------------
+Good to hear.
+
+Please show the output of "lspci -nv" to add an entry for your device to
+select the model asus.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +104,7 @@ Date Modified  Username       Field                    Change
 08-12-05 15:54 askel          Note Edited: 0005735                         
 08-12-05 15:55 askel          Note Edited: 0005735                         
 08-12-05 18:09 Ballbreaker    Note Added: 0005784                          
+08-12-05 18:17 tiwai          Note Added: 0005785                          
 ======================================================================
 
 
