@@ -1,11 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: CVS build error with kernel 2.6.13-rc4
-Date: Fri, 12 Aug 2005 17:48:22 -0400
-Message-ID: <1123883302.12680.60.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001330]: alsa-driver fails "make install"
+Date: Sat, 13 Aug 2005 00:08:00 +0200
+Message-ID: <dc2b597325f9ff571899584a6ac11635@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 450161A8
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:08:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,25 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  CC [M]  /smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o
-/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.c: In function 'snd_ac97_resume':
-/smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:653: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
-/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.c:2300: sorry, unimplemented: called from here
-/smb/rlrevell/cvs/alsa/alsa-driver/include/adriver.h:653: sorry, unimplemented: inlining failed in call to 'msecs_to_jiffies': function body not available
-/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.c:2312: sorry, unimplemented: called from here
-make[4]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97/ac97_codec.o] Error 1
-make[3]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci/ac97] Error 2
-make[2]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/pci] Error 2
-make[1]: *** [_module_/smb/rlrevell/cvs/alsa/alsa-driver] Error 2
-make[1]: Leaving directory `/smb/rlrevell/kernel-source/linux-2.6.13-rc4'
-make: *** [compile] Error 2
 
-Is this a gcc (4.0.2) bug or a kernel issue?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1330> 
+======================================================================
+Reported By:                jcdutton
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1330
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-13-2005 00:07 CEST
+Last Modified:              08-13-2005 00:07 CEST
+======================================================================
+Summary:                    alsa-driver fails "make install"
+Description: 
+See output below.
+Does anyone have a clew how to fix this?
 
-Lee
+
+alsa-driver # make install
+find /lib/modules/2.6.13-rc5/kernel/sound -name 'snd*.*o' | xargs rm -f
+make[1]: Entering directory `/u/alsacvs/alsa-driver/acore'
+make[1]: *** No rule to make target `modules_install'.  Stop.
+make[1]: Leaving directory `/u/alsacvs/alsa-driver/acore'
+make: *** [install-modules] Error 1
+
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-13-05 00:07 jcdutton       New Issue                                    
+======================================================================
+
 
 
 
