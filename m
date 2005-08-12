@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Sat, 13 Aug 2005 01:27:09 +0200
-Message-ID: <d6a2ab893b0f325d76646cf87598dee9@bugtrack.alsa-project.org>
+Date: Sat, 13 Aug 2005 01:41:37 +0200
+Message-ID: <43fa5a3a9ce5ed48019dc0a886853933@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3CF21A6
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 01:27:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 187511AE
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 01:41:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.12-1.1398-x86_64
 ======================================================================
 Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              08-13-2005 01:27 CEST
+Last Modified:              08-13-2005 01:41 CEST
 ======================================================================
 Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
 Description: 
@@ -59,12 +59,27 @@ volume.
 There is nothing that change line-in's volume.
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 08-13-05 01:41 
+----------------------------------------------------------------------
+In order to help me implement support for what you want, please try the
+following:
+arecord -fdat -Dhw:0,0 | aplay
+arecord -fdat -Dhw:0,1 | aplay
+arecord -fdat -Dhw:0,2 | aplay
+arecord -fdat -Dhw:0,3 | aplay
+
+Please tell me which one works for the "line in".
+If should record from the line in and then play it to the speakers with a
+small delay.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-13-05 01:27 Cimmo          New Issue                                    
 08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
 08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
+08-13-05 01:41 jcdutton       Note Added: 0005798                          
 ======================================================================
 
 
