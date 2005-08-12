@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Sat, 13 Aug 2005 00:39:29 +0200
-Message-ID: <fd586b1b73bb776cc4128ec253f3fce1@bugtrack.alsa-project.org>
+Date: Sat, 13 Aug 2005 00:40:25 +0200
+Message-ID: <73b84917b0102ae74868242ea794fa0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7C6E1AB
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:39:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C1C51AB
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:40:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               Fedora Core 4 (mostly)
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              08-13-2005 00:39 CEST
+Last Modified:              08-13-2005 00:40 CEST
 ======================================================================
 Summary:                    driver can't initialise card
 Description: 
@@ -95,6 +95,7 @@ Date Modified  Username       Field                    Change
 08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
 08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
 08-13-05 00:39 jcdutton       Note Added: 0005795                          
+08-13-05 00:40 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
