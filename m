@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Fri, 12 Aug 2005 15:14:42 +0200
-Message-ID: <fa19dc7df295016e9457d282f1b3ec25@bugtrack.alsa-project.org>
+Date: Fri, 12 Aug 2005 15:35:49 +0200
+Message-ID: <da1064017c696161047452c12454eaf5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 744C8208
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 15:14:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E38DB1C7
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 15:35:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-12-2005 15:14 CEST
+Last Modified:              08-12-2005 15:35 CEST
 ======================================================================
 Summary:                    ISA cards (opl3sa2 in particular) are not detected
 properly on 2.6 kernels
@@ -63,24 +63,6 @@ related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
- ahaning - 08-12-05 12:54 
-----------------------------------------------------------------------
-According to Gateway's site <
-http://support.gateway.com/s/Mobile/Solo_Series/P2500/p250044.shtml#P46_3484
-> my notebook uses a "Neomagic NMA 2" sound card. It also has a Neomagic
-video card, so it's possible that those two entries are from the video.
-That said, the OPL3SA2 driver is the only one that has ever worked for
-me.
-
-It appears that the DMAs are the only parts that have to be forced
-correctly. I tried setting DMA1 to 3 and DMA2 to 0 in the BIOS. They
-weren't detected correctly, but when I fixed that part in
-/etc/modprobe.conf, sound worked (after touching the mixer while
-playing).
-
-I can add some /proc or /sys output here later.
-
-----------------------------------------------------------------------
  perex - 08-12-05 15:14 
 ----------------------------------------------------------------------
 Okay, after some thoughs, we cannot do more. The BIOS disables for some
@@ -92,6 +74,19 @@ The legacy (non-PnP) configuration is always problematic and resources
 must be specified manually according BIOS.
 
 There is no way to read the "right" values from hardware...
+
+----------------------------------------------------------------------
+ tiwai - 08-12-05 15:35 
+----------------------------------------------------------------------
+Neomagic MaigcWae 3D has a PnP card id NMX200.  The device is YMH2210.
+
+If the device is really an ISA PnP, you can run "modprobe snd-opl3sa2"
+without any module parameters.  Even you should *not* define any
+parameters regarding resources.
+
+OTOH, if the device is a non PnP, only brute-force configuration is
+possible, i.e. checking /sys won't help.  In this case, check alsaconf log
+with -l option to see what it tried to detect correct parameters.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,6 +114,7 @@ utils
 particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
 particular) are not detected properly on 2.6 kernels
 08-12-05 15:14 perex          Note Added: 0005768                          
+08-12-05 15:35 tiwai          Note Added: 0005769                          
 ======================================================================
 
 
