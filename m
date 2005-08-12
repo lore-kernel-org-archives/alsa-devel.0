@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001326]: ISAPNP cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Fri, 12 Aug 2005 12:54:16 +0200
-Message-ID: <02f58198cbf85b3aecdd3d1935ecc568@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Mr Booth" <info@verybestonthenet.info>
+Subject: Anonymous Instant  Access
+Date: Fri, 12 Aug 2005 07:40:40 -0500
+Message-ID: <20050812124040.33F4D21E@alsa.jcu.cz>
+Reply-To: info@verybestonthenet.info
+Content-Type: text/html;
+	charset="us-ascii"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 831B1211
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 12:54:17 +0200 (MEST)
+Received: from verybestonthenet.info (verybestonthenet.info [72.26.223.6])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33F4D21E
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 14:40:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,96 +21,66 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html><body bgcolor=#000000 text="#ffffff" link="#ffff00" vlink="#ffff00" alink="#ffff00" 
+leftmargin=0 topmargin=0 marginwidth=0 marginheight=0 rightmargin=0 bottommargin=0><center>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
-======================================================================
-Reported By:                ahaning
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1326
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-12-2005 12:54 CEST
-======================================================================
-Summary:                    ISAPNP cards (opl3sa2 in particular) are not
-detected properly on 2.6 kernels
-Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+<table bgcolor="#111111" border="0" cellpadding="9" cellspacing="0">
+	<tr>
+		<td align="center">
 
-According to perex (author of the opl3sa2 driver):
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td valign="top" bgcolor="#000000" width="508" valign="top" align="center">
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
-======================================================================
+						<img src="http://www.thegraphichost.com/emailtheplanet/email-black.jpg" width="508" height="162"><br>
 
-----------------------------------------------------------------------
- perex - 08-12-05 09:29 
-----------------------------------------------------------------------
-The NMX devices are probably not related. Yamaha has YMF prefix.
+						<table bgcolor="#000000" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="480">
+									<br><font face=arial color=#ffffff size=2>
 
-So, the IRQ can be selected without any problem, but the DMA configuration
-must be forced to one combination otherwise it does not work?
 
-----------------------------------------------------------------------
- ahaning - 08-12-05 12:54 
-----------------------------------------------------------------------
-According to Gateway's site <
-http://support.gateway.com/s/Mobile/Solo_Series/P2500/p250044.shtml#P46_3484
-> my notebook uses a "Neomagic NMA 2" sound card. It also has a Neomagic
-video card, so it's possible that those two entries are from the video.
-That said, the OPL3SA2 driver is the only one that has ever worked for
-me.
+<center><h2>	Anonymous Instant Access		</h3></center>
 
-It appears that the DMAs are the only parts that have to be forced
-correctly. I tried setting DMA1 to 3 and DMA2 to 0 in the BIOS. They
-weren't detected correctly, but when I fixed that part in
-/etc/modprobe.conf, sound worked (after touching the mixer while
-playing).
+<center><h2>	Over 100 Sites to Access		</h3></center>
 
-I can add some /proc or /sys output here later.
+<br><br>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-08-10-05 13:26 perex          Status                   new => assigned     
-08-10-05 13:26 perex          Assigned To               => perex           
-08-10-05 13:26 perex          File Added: alsaconf                         
-08-10-05 13:28 perex          Note Added: 0005747                          
-08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
-utils
-08-10-05 13:30 perex          Relationship added       related to 0000879  
-08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
-08-10-05 14:55 ahaning        Note Added: 0005748                          
-08-11-05 00:24 ahaning        Note Added: 0005752                          
-08-11-05 23:59 ahaning        Note Added: 0005763                          
-08-12-05 00:00 ahaning        Note Edited: 0005763                         
-08-12-05 03:09 ahaning        Note Added: 0005764                          
-08-12-05 09:29 perex          Note Added: 0005766                          
-08-12-05 12:54 ahaning        Note Added: 0005767                          
-======================================================================
+
+
+
+									<font size=1><br>
+									Please note; that by clicking the link below, you have automatically opted-in, and have agreed to view their website.
+									<br><br></font>
+									<center><h3>
+
+<a href='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4742440E400E404B4B454647400E08.aspx'>
+
+									Click here to visit their website
+									</a></h3></center>
+									<br>
+
+									Thank you for taking the time to read this special report <br><br>
+
+									Regards, <br><b> The Web Reporter </b><br> The very best on the net	<br><br>
+
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<br><a href='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4742440E400E404B4B41414A430E08.aspx'><img src="http://www.thegraphichost.com/emailtheplanet/sendamillion179.gif" width="518" height="45" border="0" alt="Send ONE MILLION EMAILS for just 99 dollars"></a><br><br>
+
+<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
+<div align='center'><a href='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4742440E08.aspx'><img src='http://verybestonthenet.info/img.gif' width='531' height='80' border='0'></a>
+<font size='1' face='Arial, Helvetica, sans-serif'><br><img src='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4742440E430E420E08.aspx'>
+</font><font color="#999999" face="arial, verdana" size="2">Webworld S.L. &#183; Edificio Jupiter, Avendida El Gamonal 12 &#183; Benalmadena Costa, Malaga 29630 Spain<br>This e-mail message is an advertisement and/or solicitation.</font></p></td></tr></table></body>
+</html>
 
 
 
