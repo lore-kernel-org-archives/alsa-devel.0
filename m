@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001330]: alsa-driver fails "make install"
-Date: Sat, 13 Aug 2005 00:08:00 +0200
-Message-ID: <dc2b597325f9ff571899584a6ac11635@bugtrack.alsa-project.org>
+Date: Sat, 13 Aug 2005 00:27:17 +0200
+Message-ID: <79da7e76d20c5d3293ceb1c01be4d89e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 450161A8
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:08:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 202C51AB
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 00:27:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1330> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-13-2005 00:07 CEST
-Last Modified:              08-13-2005 00:07 CEST
+Last Modified:              08-13-2005 00:27 CEST
 ======================================================================
 Summary:                    alsa-driver fails "make install"
 Description: 
@@ -59,10 +59,19 @@ make: *** [install-modules] Error 1
 
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 08-13-05 00:27 
+----------------------------------------------------------------------
+The attached "make-it-work.diff.txt" is a diff from the current cvs to an
+older cvs version. Applying this diff lets if work again.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-13-05 00:07 jcdutton       New Issue                                    
+08-13-05 00:26 jcdutton       File Added: make-it-work.diff.txt                 
+  
+08-13-05 00:27 jcdutton       Note Added: 0005792                          
 ======================================================================
 
 
