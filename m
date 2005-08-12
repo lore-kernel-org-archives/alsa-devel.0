@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Fri, 12 Aug 2005 18:03:15 +0200
-Message-ID: <64541ea028fabcb5e1a869c48cb9e551@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001176]: problem with alsa-driver and asus m5a notebook
+Date: Fri, 12 Aug 2005 18:09:46 +0200
+Message-ID: <a40920ea760038179a2055c74851d986@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A187E1E2
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 18:03:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70BD81CD
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2005 18:09:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1176> 
 ======================================================================
-Reported By:                ahaning
-Assigned To:                perex
+Reported By:                Ballbreaker
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1326
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   1176
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.12-rc5
 ======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-12-2005 18:03 CEST
+Date Submitted:             06-09-2005 13:44 CEST
+Last Modified:              08-12-2005 18:09 CEST
 ======================================================================
-Summary:                    ISA cards (opl3sa2 in particular) are not detected
-properly on 2.6 kernels
+Summary:                    problem with alsa-driver and asus m5a notebook
 Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+I use gentoo-linux on an asus m5a notebook. Installation of alsa-driver
+works without any error messages. xmms, aplay etc. play files, but i can't
+hear anything. alsa-mixer shows me all the mixer-controls. I didn't forget
+to unmute, and with windows sound is working fine - so i think there is a
+problem with the alsa-driver and this notebook (on other notebooks with
+the same sound-chip alsa is working).
 
-According to perex (author of the opl3sa2 driver):
+I tried the following, always with the same results:
+- compile alsa in the kernel
+- compile alsa as kernel modules
+- emerge alsa-driver (version 1.0.9-rc3 - 1.0.9-rc4 is not in portage
+yet)
+- compile alsa-driver manually (version 1.0.9-rc4)
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
+Everything seems to work fine, but i can't hear anything, so maybe this is
+a bug in the alsa-driver.
+Would be great if somebody could tell me how i get alsa working on my
+notebook  ;-)
+
+Greetz,
+thomas
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
+related to          0001311 drivers load but unmuting channels / ad...
 ======================================================================
 
 ----------------------------------------------------------------------
- ahaning - 08-12-05 16:44 
+ tiwai - 08-12-05 15:48 
 ----------------------------------------------------------------------
-I installed Windows XP on the machine a while back just for fun. (It's a
-P2-300 with 192MB of RAM...not XP-friendly)
-
-Windows detected the card "out of the box". I guess the driver could have
-been provided to Microsoft by Yamaha or NeoMagic or whomever. My point is
-that I installed no drivers, so the driver is the one that is normally
-included with Windows XP.
-
-I'll try tawai's suggestion for shits and giggles.
+Did you try model="asus" option?
 
 ----------------------------------------------------------------------
- perex - 08-12-05 18:03 
+ Ballbreaker - 08-12-05 18:09 
 ----------------------------------------------------------------------
-Could you try the attached patch opl3sa2.c.patch? The driver should detect
-your card in the PnP BIOS way... Simply remove all sound config from your
-/etc/modules.conf and type 'modprobe snd-opl3sa2'..
+It is working now, thanks for the help!
+had to use cvs-version and model="asus".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-08-10-05 13:26 perex          Status                   new => assigned     
-08-10-05 13:26 perex          Assigned To               => perex           
-08-10-05 13:26 perex          File Added: alsaconf                         
-08-10-05 13:28 perex          Note Added: 0005747                          
-08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
-utils
-08-10-05 13:30 perex          Relationship added       related to 0000879  
-08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
-08-10-05 14:55 ahaning        Note Added: 0005748                          
-08-11-05 00:24 ahaning        Note Added: 0005752                          
-08-11-05 23:59 ahaning        Note Added: 0005763                          
-08-12-05 00:00 ahaning        Note Edited: 0005763                         
-08-12-05 03:09 ahaning        Note Added: 0005764                          
-08-12-05 09:29 perex          Note Added: 0005766                          
-08-12-05 12:54 ahaning        Note Added: 0005767                          
-08-12-05 15:11 perex          Summary                  ISAPNP cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels
-08-12-05 15:14 perex          Note Added: 0005768                          
-08-12-05 15:35 tiwai          Note Added: 0005769                          
-08-12-05 15:36 ahaning        Note Added: 0005770                          
-08-12-05 15:44 tiwai          Note Added: 0005771                          
-08-12-05 15:45 tiwai          Note Added: 0005772                          
-08-12-05 15:56 perex          Note Added: 0005777                          
-08-12-05 16:08 perex          Note Added: 0005778                          
-08-12-05 16:44 ahaning        Note Added: 0005782                          
-08-12-05 18:00 perex          File Added: opl3sa2.c.patch                    
-08-12-05 18:03 perex          Note Added: 0005783                          
+06-09-05 13:44 Ballbreaker    New Issue                                    
+06-09-05 13:44 Ballbreaker    Distribution              => gentoo          
+06-09-05 13:44 Ballbreaker    Kernel Version            => 2.6.12-rc5      
+06-09-05 16:11 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-09-05 16:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
+06-09-05 16:19 Ballbreaker    Issue Monitored: Ballbreaker                    
+08-05-05 08:39 perex          Relationship added       related to 0001311  
+08-09-05 21:09 askel          Note Added: 0005735                          
+08-11-05 14:26 tiwai          Note Added: 0005756                          
+08-11-05 19:45 Ballbreaker    Note Added: 0005762                          
+08-12-05 15:48 tiwai          Note Added: 0005774                          
+08-12-05 15:54 askel          Note Edited: 0005735                         
+08-12-05 15:55 askel          Note Edited: 0005735                         
+08-12-05 18:09 Ballbreaker    Note Added: 0005784                          
 ======================================================================
 
 
