@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Sat, 13 Aug 2005 01:42:34 +0200
-Message-ID: <5372a37dccf6a18e245b0d82de7dd511@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001329]: input part of kmix don't show any settings
+Date: Sat, 13 Aug 2005 01:51:36 +0200
+Message-ID: <739e283beba6e2e4e9164f9329c0f745@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D81C1AE
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 01:42:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 920141AE
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 01:51:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1329> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                submax82
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1331
+Issue ID:                   1329
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   feature
 Priority:                   normal
 Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398-x86_64
+Distribution:               debian
+Kernel Version:             2.6.12.4
 ======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              08-13-2005 01:42 CEST
+Date Submitted:             08-12-2005 14:59 CEST
+Last Modified:              08-13-2005 01:51 CEST
 ======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Summary:                    input part of kmix don't show any settings
 Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
-
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
-
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
+The input section of kmix, on kde, do not show any settings: cd, line-in,
+mic ecc... Those are not present! This is big lack!
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 08-13-05 01:41 
+ jcdutton - 08-13-05 01:51 
 ----------------------------------------------------------------------
-In order to help me implement support for what you want, please try the
-following:
-arecord -fdat -Dhw:0,0 | aplay
-arecord -fdat -Dhw:0,1 | aplay
-arecord -fdat -Dhw:0,2 | aplay
-arecord -fdat -Dhw:0,3 | aplay
+Please post the output of:
+cat /proc/asound/verson
+cat /proc/asound/cards
 
-Please tell me which one works for the "line in".
-If should record from the line in and then play it to the speakers with a
-small delay.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
+08-12-05 14:59 submax82       New Issue                                    
+08-12-05 14:59 submax82       Distribution              => debian          
+08-12-05 14:59 submax82       Kernel Version            => 2.6.12.4        
+08-13-05 01:51 jcdutton       Note Added: 0005799                          
+08-13-05 01:51 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
