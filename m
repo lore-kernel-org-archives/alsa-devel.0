@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001334]: module fails to load because it can't register ac97 bus
-Date: Sun, 14 Aug 2005 00:21:40 +0200
-Message-ID: <fc3be94d3332be2deeefa4d271f630a8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001297]: driver can't initialise card
+Date: Sun, 14 Aug 2005 00:32:08 +0200
+Message-ID: <318f37d0536828ded903ae6374356841@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F45C1D8
-	for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2005 00:21:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 656021D8
+	for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2005 00:32:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1334> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
 ======================================================================
-Reported By:                bdijkstra
-Assigned To:                
+Reported By:                hus
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1334
-Category:                   PCI - cs46xx
+Issue ID:                   1297
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux
-Kernel Version:             2.6.13-rc5-git3-3-default
+Status:                     feedback
+Distribution:               Fedora Core 4 (mostly)
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             08-14-2005 00:13 CEST
-Last Modified:              08-14-2005 00:21 CEST
+Date Submitted:             08-01-2005 14:27 CEST
+Last Modified:              08-14-2005 00:32 CEST
 ======================================================================
-Summary:                    module fails to load because it can't register ac97
-bus
+Summary:                    driver can't initialise card
 Description: 
-The Hercules GameTheater XP card has two codecs of the same type (CS4294).
-The cs46xx driver tries to register these two codecs with the same name
-with the ac97 bus which then fails.
-I have attached the message log of a module load which shows the problem.
+My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
+box).
+The snd-emu10k1 module refuses to work for this card; the kernel logs:
+
+ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
+ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
+subsystem_vendor_id=0x80611102, subsystem_id=0x8061
+ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
+[Unknown], 
+vendor=0x1102, device=0x2, subsystem=0x80611102
+ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
+ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
+
+removing mixer.
+EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
+
+lspci shows
+02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+07)
+        Subsystem: Creative Labs SBLive! Player 5.1
+        Flags: bus master, medium devsel, latency 64, IRQ 17
+        I/O ports at 30c0 [size=32]
+        Capabilities: [dc] Power Management version 1
+(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
 
 
+The only deviation from the ordinary I can think of is that my system is
+dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
+PCI-to-PCI bridge. That's one thing our systems might have in common, as
+your message shows the card on bus 03. Perhaps this is some strange kind
+of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- bdijkstra - 08-14-05 00:21 
+ rlrevell - 08-13-05 21:38 
 ----------------------------------------------------------------------
-The following patch fixes the problem for me.
-It makes the codec name that is registered with the ac97 bus unique
-by adding the codec number to the shortname.
+James,
 
-Signed-off-by: Bjorge Dijkstra <bjorge@gmx.net>
+You probably want to fix the comment before you commit, it's actually
+August ;-)
 
---- a/sound/pci/ac97/ac97_codec.c
-+++ b/sound/pci/ac97/ac97_codec.c
-@@ -1828,7 +1828,7 @@ static int snd_ac97_dev_register(snd_dev
-        ac97->dev.parent = ac97->bus->card->dev;
-        ac97->dev.platform_data = ac97;
-        ac97->dev.release = ac97_device_release;
--       strncpy(ac97->dev.bus_id, snd_ac97_get_short_name(ac97),
-BUS_ID_SIZE);
-+       snprintf(ac97->dev.bus_id, BUS_ID_SIZE, "%s-%d",
-snd_ac97_get_short_name(ac97), ac97->num);
-        if ((err = device_register(&ac97->dev)) < 0) {
-                snd_printk(KERN_ERR "Can't register ac97 bus\n");
-                ac97->dev.bus = NULL;
+----------------------------------------------------------------------
+ hus - 08-14-05 00:32 
+----------------------------------------------------------------------
+Should AC3 passthru work out of the box, or do I have do do something? I
+couldn't find anything except the "extout" parameter, which I set to 7fff,
+but that doesn't help. E.g. xine just uses analog stereo instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-05 00:13 bdijkstra      New Issue                                    
-08-14-05 00:13 bdijkstra      File Added: cs46xx-error.log                    
-08-14-05 00:13 bdijkstra      Distribution              => SuSE Linux      
-08-14-05 00:13 bdijkstra      Kernel Version            =>
-2.6.13-rc5-git3-3-default
-08-14-05 00:21 bdijkstra      Note Added: 0005812                          
+08-01-05 14:27 hus            New Issue                                    
+08-01-05 14:27 hus            Distribution              => Fedora Core 4
+(mostly)
+08-01-05 14:27 hus            Kernel Version            => 2.6.12          
+08-01-05 14:28 hus            Issue Monitored: hus                         
+08-01-05 15:24 jcdutton       Status                   new => assigned     
+08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
+08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
+08-13-05 00:39 jcdutton       Note Added: 0005795                          
+08-13-05 00:40 jcdutton       Status                   assigned => feedback
+08-13-05 21:18 hus            Note Added: 0005809                          
+08-13-05 21:38 rlrevell       Note Added: 0005810                          
+08-14-05 00:32 hus            Note Added: 0005813                          
 ======================================================================
 
 
