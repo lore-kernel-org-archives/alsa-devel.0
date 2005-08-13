@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001332]: hdspmixer crashes on starting it
-Date: Sat, 13 Aug 2005 12:09:47 +0200
-Message-ID: <a456d20528740f9bdd5ffd17f943da13@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001330]: alsa-driver fails "make install"
+Date: Sat, 13 Aug 2005 13:47:01 +0200
+Message-ID: <3318105c49fd9af0fec3aa8f4a6124fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6452184
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 12:09:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F3EC1E1
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 13:47:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,35 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1332> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1330> 
 ======================================================================
-Reported By:                jipi
-Assigned To:                charbonnel
+Reported By:                jcdutton
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1332
-Category:                   hdsp progs
+Project:                    ALSA - driver
+Issue ID:                   1330
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-13-2005 12:09 CEST
-Last Modified:              08-13-2005 12:09 CEST
+Date Submitted:             08-13-2005 00:07 CEST
+Last Modified:              08-13-2005 13:47 CEST
 ======================================================================
-Summary:                    hdspmixer crashes on starting it
+Summary:                    alsa-driver fails "make install"
 Description: 
-segfaults when hdspmixer is run.
+See output below.
+Does anyone have a clew how to fix this?
+
+
+alsa-driver # make install
+find /lib/modules/2.6.13-rc5/kernel/sound -name 'snd*.*o' | xargs rm -f
+make[1]: Entering directory `/u/alsacvs/alsa-driver/acore'
+make[1]: *** No rule to make target `modules_install'.  Stop.
+make[1]: Leaving directory `/u/alsacvs/alsa-driver/acore'
+make: *** [install-modules] Error 1
+
+
+
 ======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 08-13-05 00:27 
+----------------------------------------------------------------------
+The attached "make-it-work.diff.txt" is a diff from the current cvs to an
+older cvs version. Applying this diff lets if work again.
+
+----------------------------------------------------------------------
+ perex - 08-13-05 13:47 
+----------------------------------------------------------------------
+Fixed correctly in CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 12:09 jipi           New Issue                                    
-08-13-05 12:09 jipi           File Added: strace-hdspmixer.log.gz               
-    
+08-13-05 00:07 jcdutton       New Issue                                    
+08-13-05 00:26 jcdutton       File Added: make-it-work.diff.txt                 
+  
+08-13-05 00:27 jcdutton       Note Added: 0005792                          
+08-13-05 13:47 perex          Status                   assigned => resolved
+08-13-05 13:47 perex          Resolution               open => fixed       
+08-13-05 13:47 perex          Note Added: 0005803                          
 ======================================================================
 
 
