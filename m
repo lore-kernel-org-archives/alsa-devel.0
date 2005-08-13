@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001323]: MIC jack not supported
-Date: Sat, 13 Aug 2005 14:28:10 +0200
-Message-ID: <a4d739abc21750bbd6eaa2ad3583489d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001329]: input part of kmix don't show any settings
+Date: Sat, 13 Aug 2005 14:29:43 +0200
+Message-ID: <f3e70afd209b6e93680d80112848b6c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D518D1E1
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 14:28:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9D841E1
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 14:29:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1323> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1329> 
 ======================================================================
 Reported By:                submax82
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1323
+Issue ID:                   1329
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     feedback
-Distribution:               debian 3.1 sarge
-Kernel Version:             linux 2.6.12.4
+Distribution:               debian
+Kernel Version:             2.6.12.4
 ======================================================================
-Date Submitted:             08-08-2005 22:10 CEST
-Last Modified:              08-13-2005 14:28 CEST
+Date Submitted:             08-12-2005 14:59 CEST
+Last Modified:              08-13-2005 14:29 CEST
 ======================================================================
-Summary:                    MIC jack not supported
+Summary:                    input part of kmix don't show any settings
 Description: 
-The problem is simple but important! The alsamixer do not show the volume
-of the MIC therefore this do not work!
+The input section of kmix, on kde, do not show any settings: cd, line-in,
+mic ecc... Those are not present! This is big lack!
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 08-12-05 23:09 
+ jcdutton - 08-13-05 01:51 
 ----------------------------------------------------------------------
-Waiting for feedback. Does upgrading to alsa-driver 1.0.9b help?
+Please post the output of:
+cat /proc/asound/verson
+cat /proc/asound/cards
 
 
 ----------------------------------------------------------------------
- submax82 - 08-13-05 14:28 
+ submax82 - 08-13-05 14:29 
 ----------------------------------------------------------------------
-i have tried to upgrade at 1.0.9b but the problem not resolved
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9rc2  (Thu Mar 24
+10:33:39 2005 UTC).
+
+cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0410] at 0x9400 irq 217
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 22:10 submax82       New Issue                                    
-08-08-05 22:10 submax82       Distribution              => debian 3.1 sarge
-08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
-08-08-05 22:59 submax82       Issue Monitored: submax82                    
-08-08-05 23:00 submax82       Note Added: 0005714                          
-08-10-05 05:21 rlrevell       Note Added: 0005746                          
-08-12-05 23:09 jcdutton       Note Added: 0005790                          
-08-12-05 23:09 jcdutton       Status                   assigned => feedback
-08-13-05 14:28 submax82       Note Added: 0005804                          
+08-12-05 14:59 submax82       New Issue                                    
+08-12-05 14:59 submax82       Distribution              => debian          
+08-12-05 14:59 submax82       Kernel Version            => 2.6.12.4        
+08-13-05 01:51 jcdutton       Note Added: 0005799                          
+08-13-05 01:51 jcdutton       Status                   assigned => feedback
+08-13-05 14:29 submax82       Note Added: 0005805                          
 ======================================================================
 
 
