@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Volume per voices [Feature Request]
-Date: Sat, 13 Aug 2005 13:58:27 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0508131355050.8728@tm8103.perex-int.cz>
-References: <42E889DD.2070808@netvigator.com>
- <Pine.HPX.4.33n.0507280943050.9785-100000@studcom.urz.uni-halle.de>
- <42FCB8E4.90702@netvigator.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001323]: MIC jack not supported
+Date: Sat, 13 Aug 2005 14:28:10 +0200
+Message-ID: <a4d739abc21750bbd6eaa2ad3583489d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42FCB8E4.90702@netvigator.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D518D1E1
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 14:28:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,28 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>
-Cc: alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Aug 2005, Raymond wrote:
 
-> What is the meaning of SNDRV_CTL_ELEM_ACCESS_INACTIVE ?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1323> 
+======================================================================
+Reported By:                submax82
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1323
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               debian 3.1 sarge
+Kernel Version:             linux 2.6.12.4
+======================================================================
+Date Submitted:             08-08-2005 22:10 CEST
+Last Modified:              08-13-2005 14:28 CEST
+======================================================================
+Summary:                    MIC jack not supported
+Description: 
+The problem is simple but important! The alsamixer do not show the volume
+of the MIC therefore this do not work!
+======================================================================
 
-Inactive means that the driver does not care when the application updates 
-value. It means - this value can be written / read but has no effect / 
-meaning. For example, PCM stream related volumes must be initialized to 
-some reasonable default at the "open" stage. Then they are active until 
-"release" is called. After "release" they become "inactive". You can also 
-dynamically add and remove these PCM stream volume controls, but marking 
-them inactive is more efficient.
+----------------------------------------------------------------------
+ jcdutton - 08-12-05 23:09 
+----------------------------------------------------------------------
+Waiting for feedback. Does upgrading to alsa-driver 1.0.9b help?
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+----------------------------------------------------------------------
+ submax82 - 08-13-05 14:28 
+----------------------------------------------------------------------
+i have tried to upgrade at 1.0.9b but the problem not resolved
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-05 22:10 submax82       New Issue                                    
+08-08-05 22:10 submax82       Distribution              => debian 3.1 sarge
+08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
+08-08-05 22:59 submax82       Issue Monitored: submax82                    
+08-08-05 23:00 submax82       Note Added: 0005714                          
+08-10-05 05:21 rlrevell       Note Added: 0005746                          
+08-12-05 23:09 jcdutton       Note Added: 0005790                          
+08-12-05 23:09 jcdutton       Status                   assigned => feedback
+08-13-05 14:28 submax82       Note Added: 0005804                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
