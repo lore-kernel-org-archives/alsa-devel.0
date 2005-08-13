@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
-Date: Sat, 13 Aug 2005 03:40:15 +0200
-Message-ID: <de3793ba1be1e0a6b734658c4669e50d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001298]: Creative Labs Sound Blaster Live! 24-bit not detected
+Date: Sat, 13 Aug 2005 03:59:27 +0200
+Message-ID: <a0fefa5e0cd8d8873b6517ed1da68bfa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51EE91AF
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 03:40:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E66421B8
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 03:59:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1298> 
 ======================================================================
-Reported By:                ammiellodebar
+Reported By:                andrewvegan
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1320
+Issue ID:                   1298
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     feedback
-Distribution:               Arch Linux
-Kernel Version:             
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4smp
 ======================================================================
-Date Submitted:             08-08-2005 06:03 CEST
-Last Modified:              08-13-2005 03:40 CEST
+Date Submitted:             08-01-2005 15:15 CEST
+Last Modified:              08-13-2005 03:59 CEST
 ======================================================================
-Summary:                    CA0106 with Soundblaster 24-bit live does not allow
-recording
+Summary:                    Creative Labs Sound Blaster Live! 24-bit not
+detected
 Description: 
-When I use the line in on the card, it will not capture unless i crank up
-the mixer to near peak, and then its garbled and distorted sound, my
-capture is up all the way and i know its not a dumb mistake of mine
+Unable to get the sound card detected in Fedora Core 4. PC is a Shuttle XPC
+SD31P which has an onboard "Creative Labs Sound Blaster Live! 24-bit EAX
+high-definition 7.1 audio processor".
+
+from dmesg:
+
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0x0], removing mixer.
+CA0106: probe of 0000:03:0b.0 failed with error -5
+
+When I run lspci it lists a different card (Creative Labs SB Audigy LS):
+ 
+[root@localhost ~]# lspci
+00:00.0 Host bridge: Intel Corporation Memory Controller Hub (rev 02)
+00:01.0 PCI bridge: Intel Corporation PCI Express Graphics Port (rev 02)
+00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 1 (rev 01)
+00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+#1 (rev 01)
+00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+#2 (rev 01)
+00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+#3 (rev 01)
+00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
+#4 (rev 01)
+00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
+Controller (rev 01)
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev e1)
+00:1f.0 ISA bridge: Intel Corporation 82801GB/GR (ICH7 Family) LPC
+Interface Bridge (rev 01)
+00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 01)
+00:1f.2 IDE interface: Intel Corporation 82801GB/GR/GH (ICH7 Family)
+Serial ATA Storage Controllers cc=IDE (rev 01)
+00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
+(rev 01)
+01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce
+6600] (rev a2)
+02:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789
+Gigabit Ethernet PCI Express (rev 11)
+03:0a.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
+Controller (rev 80)
+03:0b.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+
+
+
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 08-12-05 23:11 
+ jcdutton - 08-13-05 00:53 
 ----------------------------------------------------------------------
-Please try alsa-driver 1.0.9b.
+Please try the latest alsa-driver cvs or the attached patch.
 
+----------------------------------------------------------------------
+ andrewvegan - 08-13-05 03:59 
+----------------------------------------------------------------------
+This sound card is now correctly detected and working after following the
+instructions from Clemens. On 8/2 I download the CVS version of ALSA,
+added the following entry to the ca0106_chip_details array in
+alsa-kernel/pci/ca0106/ca0106_main.c:
 
-----------------------------------------------------------------------
- ammiellodebar - 08-13-05 03:40 
-----------------------------------------------------------------------
-Unfortunately it doesnt work with 1.0.9b, still the same problem
+         /* Shuttle XPC SD31P with onboard SB Live 24bit without AC97 */
+         { .serial = 0x30381297,
+           .name   = "Shuttle XPC SD31P [SB04??]",
+           .gpio_type = 1,
+           .i2c_adc = 1 } ,
+
+But I have been unable to confirm if sound capture is working as my mic is
+dead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 06:03 ammiellodebar  New Issue                                    
-08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
-08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
-08-12-05 23:11 jcdutton       Note Added: 0005791                          
-08-12-05 23:11 jcdutton       Status                   assigned => feedback
-08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
+08-01-05 15:15 andrewvegan    New Issue                                    
+08-01-05 15:15 andrewvegan    Distribution              => Fedora Core 4   
+08-01-05 15:15 andrewvegan    Kernel Version            => 2.6.11-1.1369_FC4smp
+08-13-05 00:52 jcdutton       File Added: 1298.diff.txt                    
+08-13-05 00:53 jcdutton       Note Added: 0005796                          
+08-13-05 00:53 jcdutton       Status                   assigned => feedback
+08-13-05 03:59 andrewvegan    Note Added: 0005801                          
 ======================================================================
 
 
