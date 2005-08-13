@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Sat, 13 Aug 2005 10:43:38 +0200
-Message-ID: <fd8eed455eeea6976e48278d7477e14c@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001332]: hdspmixer crashes on starting it
+Date: Sat, 13 Aug 2005 12:09:47 +0200
+Message-ID: <a456d20528740f9bdd5ffd17f943da13@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6870A1CE
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 10:43:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6452184
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 12:09:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,35 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1332> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                jipi
+Assigned To:                charbonnel
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1318
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - tools
+Issue ID:                   1332
+Category:                   hdsp progs
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
 ======================================================================
-Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              08-13-2005 10:43 CEST
+Date Submitted:             08-13-2005 12:09 CEST
+Last Modified:              08-13-2005 12:09 CEST
 ======================================================================
-Summary:                    Volume control per PCM
+Summary:                    hdspmixer crashes on starting it
 Description: 
-Hi, i'm trying to implement a volume control per PCM streams, i've attached
-a function that does the job. Unfortunally when it change the volume it
-also change the equalizer cutting off low frequencyes. I think 
-there is a problem with the second poke, infact withot that poke, the
-volume works correctly for left case. Any suggestion? Any documentation?
-Thanks,
-   Dino
-
+segfaults when hdspmixer is run.
 ======================================================================
-
-----------------------------------------------------------------------
- darkbrain - 08-13-05 10:43 
-----------------------------------------------------------------------
-No one know where i'm doing bad? Why there are two volumne controls per
-pcm: Target volume and Current Volume. How to change them correctly?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-07-05 14:45 darkbrain      New Issue                                    
-08-07-05 14:45 darkbrain      File Added: volume.c                         
-08-13-05 10:43 darkbrain      Note Added: 0005802                          
+08-13-05 12:09 jipi           New Issue                                    
+08-13-05 12:09 jipi           File Added: strace-hdspmixer.log.gz               
+    
 ======================================================================
 
 
