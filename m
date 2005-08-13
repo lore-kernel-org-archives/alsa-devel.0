@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: Volume per voices [Feature Request]
-Date: Sat, 13 Aug 2005 11:59:08 +0800
-Message-ID: <42FD700C.9010603@netvigator.com>
-References: <Pine.HPX.4.33n.0507280926040.9785-100000@studcom.urz.uni-halle.de>	<Pine.LNX.4.58.0507281927310.14095@denise.shiny.it> <s5hzms5c0v6.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Sat, 13 Aug 2005 10:43:38 +0200
+Message-ID: <fd8eed455eeea6976e48278d7477e14c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzms5c0v6.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6870A1CE
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 10:43:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 28 Jul 2005 19:51:16 +0200 (CEST),
-> Giuliano Pochini wrote:
-> 
->>>>In my driver we have A analog channels and D digital channels. The
->>>>driver registers a "PCM Playback Volume" control as an array of
->>>>A+D integers, where each element is the gain (-128..+6) of each
->>>>channel, but they don't map directly to the PCM channels because
->>>>the driver exports analog and digital channels as two separate
->>>>devices (this feature can be removed easily). So pcmvol[0..A-1]
->>>>controls the volume of hw:0,0 and pcmvol[A..A+D-1] controls the
->>>>volume of hw:0,1. Furthermore, the user can open hw:0,0,x to
->>>>address the xth channel.
->>>
->>>As far as I can see, no driver actually uses the subdevice (substream)
->>>field for PCM substreams; probably because this would require a
->>>separate control for each substream instead of using an array.
->>
->>My case is even more compicated because one ctl controls the volume of two
->>devices. A callback that gets snd_pcm_substream_t* and returns {int numid,
->>firstindex, lastindex} or sort of would make things much simpler wrt hw
->>controls. In case there are both hw volume and softvol, which has
->>priority ? :)
-> 
-> 
-> Returning a list of controls would be simplest as the lowlevel API.
-> The higher level API decides which control to use, for example,  while
-> h/w specific apps can use the lowlevel API to get certain controls
-> directly.
-> 
-> 
 
-For those controls with SNDRV_CTL_ELEM_IFACE_PCM , ctl->id.device and 
-ctl->id.subdevice.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1318
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              08-13-2005 10:43 CEST
+======================================================================
+Summary:                    Volume control per PCM
+Description: 
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
 
-Is it feasible to have a function which return snd_pcm_substream_t* of 
-the PCM substream with parameters (snd_kcontrol_t *kcontrol, int device 
-,int subdevice)  ?
+======================================================================
 
-The topology which the hardware mixers are connected depends on the 
-number of channels (mono,stereo,quad,..) of the PCM substream
+----------------------------------------------------------------------
+ darkbrain - 08-13-05 10:43 
+----------------------------------------------------------------------
+No one know where i'm doing bad? Why there are two volumne controls per
+pcm: Target volume and Current Volume. How to change them correctly?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+======================================================================
 
 
 
