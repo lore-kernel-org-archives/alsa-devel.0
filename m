@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Sun, 14 Aug 2005 00:32:08 +0200
-Message-ID: <318f37d0536828ded903ae6374356841@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001333]: NO CARRIER
+Date: Sun, 14 Aug 2005 01:14:09 +0200
+Message-ID: <c817f8425937ed3e3c422a4bd126bf1b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 656021D8
-	for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2005 00:32:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35EFC14B
+	for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2005 01:14:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,90 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1333> 
 ======================================================================
-Reported By:                hus
-Assigned To:                jcdutton
+Reported By:                Chermisi
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1297
-Category:                   PCI - emu10k1
+Issue ID:                   1333
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 (mostly)
-Kernel Version:             2.6.12
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.12.4
 ======================================================================
-Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              08-14-2005 00:32 CEST
+Date Submitted:             08-13-2005 22:47 CEST
+Last Modified:              08-14-2005 01:14 CEST
 ======================================================================
-Summary:                    driver can't initialise card
+Summary:                    NO CARRIER
 Description: 
-My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
-box).
-The snd-emu10k1 module refuses to work for this card; the kernel logs:
+I don't have carrier on modem after loading module snd-atiixp-modem and
+after loading slmodemd script.
+I have a ATI Modem (1002:4378) 
+The output of 
+/usr/sbin/slmodemd --alsa --country=ITALY hw:1
+is
+SmartLink Soft Modem: version 2.9.9 Aug  9 2005 04:23:29
+symbolic link `/dev/ttySL0' -> `/dev/pts/2' created.
+modem `hw:0,0' created. TTY is `/dev/pts/2'
+Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
+error: cannot set channels for playback: Invalid argument
 
-ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
-ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
-subsystem_vendor_id=0x80611102, subsystem_id=0x8061
-ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
-[Unknown], 
-vendor=0x1102, device=0x2, subsystem=0x80611102
-ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
-ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
-
-removing mixer.
-EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
-
-lspci shows
-02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-07)
-        Subsystem: Creative Labs SBLive! Player 5.1
-        Flags: bus master, medium devsel, latency 64, IRQ 17
-        I/O ports at 30c0 [size=32]
-        Capabilities: [dc] Power Management version 1
-(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
-
-
-The only deviation from the ordinary I can think of is that my system is
-dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
-PCI-to-PCI bridge. That's one thing our systems might have in common, as
-your message shows the card on bus 03. Perhaps this is some strange kind
-of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-13-05 21:38 
+ sashak - 08-14-05 01:14 
 ----------------------------------------------------------------------
-James,
+You are with buggy slmodem version. Use recent one (probably with '-alsa'
+suffix) from http://linmodems.technion.ac.il/packages/smartlink .
 
-You probably want to fix the comment before you commit, it's actually
-August ;-)
-
-----------------------------------------------------------------------
- hus - 08-14-05 00:32 
-----------------------------------------------------------------------
-Should AC3 passthru work out of the box, or do I have do do something? I
-couldn't find anything except the "extout" parameter, which I set to 7fff,
-but that doesn't help. E.g. xine just uses analog stereo instead.
+Warning about MC'97 converters should not be fatal if you don't have
+unsupported Conexant modem codec and is be fixed in recent alsa-driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-01-05 14:27 hus            New Issue                                    
-08-01-05 14:27 hus            Distribution              => Fedora Core 4
-(mostly)
-08-01-05 14:27 hus            Kernel Version            => 2.6.12          
-08-01-05 14:28 hus            Issue Monitored: hus                         
-08-01-05 15:24 jcdutton       Status                   new => assigned     
-08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
-08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
-08-13-05 00:39 jcdutton       Note Added: 0005795                          
-08-13-05 00:40 jcdutton       Status                   assigned => feedback
-08-13-05 21:18 hus            Note Added: 0005809                          
-08-13-05 21:38 rlrevell       Note Added: 0005810                          
-08-14-05 00:32 hus            Note Added: 0005813                          
+08-13-05 22:47 Chermisi       New Issue                                    
+08-13-05 22:47 Chermisi       Kernel Version            => 2.6.12.4        
+08-14-05 01:14 sashak         Note Added: 0005814                          
 ======================================================================
 
 
