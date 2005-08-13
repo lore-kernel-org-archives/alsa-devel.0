@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001330]: alsa-driver fails "make install"
-Date: Sat, 13 Aug 2005 13:47:01 +0200
-Message-ID: <3318105c49fd9af0fec3aa8f4a6124fb@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: Volume per voices [Feature Request]
+Date: Sat, 13 Aug 2005 13:58:27 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0508131355050.8728@tm8103.perex-int.cz>
+References: <42E889DD.2070808@netvigator.com>
+ <Pine.HPX.4.33n.0507280943050.9785-100000@studcom.urz.uni-halle.de>
+ <42FCB8E4.90702@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F3EC1E1
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 13:47:02 +0200 (MEST)
+In-Reply-To: <42FCB8E4.90702@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +18,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 12 Aug 2005, Raymond wrote:
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1330> 
-======================================================================
-Reported By:                jcdutton
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1330
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-13-2005 00:07 CEST
-Last Modified:              08-13-2005 13:47 CEST
-======================================================================
-Summary:                    alsa-driver fails "make install"
-Description: 
-See output below.
-Does anyone have a clew how to fix this?
+> What is the meaning of SNDRV_CTL_ELEM_ACCESS_INACTIVE ?
 
+Inactive means that the driver does not care when the application updates 
+value. It means - this value can be written / read but has no effect / 
+meaning. For example, PCM stream related volumes must be initialized to 
+some reasonable default at the "open" stage. Then they are active until 
+"release" is called. After "release" they become "inactive". You can also 
+dynamically add and remove these PCM stream volume controls, but marking 
+them inactive is more efficient.
 
-alsa-driver # make install
-find /lib/modules/2.6.13-rc5/kernel/sound -name 'snd*.*o' | xargs rm -f
-make[1]: Entering directory `/u/alsacvs/alsa-driver/acore'
-make[1]: *** No rule to make target `modules_install'.  Stop.
-make[1]: Leaving directory `/u/alsacvs/alsa-driver/acore'
-make: *** [install-modules] Error 1
+						Jaroslav
 
-
-
-======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 08-13-05 00:27 
-----------------------------------------------------------------------
-The attached "make-it-work.diff.txt" is a diff from the current cvs to an
-older cvs version. Applying this diff lets if work again.
-
-----------------------------------------------------------------------
- perex - 08-13-05 13:47 
-----------------------------------------------------------------------
-Fixed correctly in CVS.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-13-05 00:07 jcdutton       New Issue                                    
-08-13-05 00:26 jcdutton       File Added: make-it-work.diff.txt                 
-  
-08-13-05 00:27 jcdutton       Note Added: 0005792                          
-08-13-05 13:47 perex          Status                   assigned => resolved
-08-13-05 13:47 perex          Resolution               open => fixed       
-08-13-05 13:47 perex          Note Added: 0005803                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
