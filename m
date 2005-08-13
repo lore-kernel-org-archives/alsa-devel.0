@@ -1,12 +1,14 @@
-From: Guilherme Fonseca <gfonsecabr@gmail.com>
-Subject: No sound with snd_atiixp driver
-Date: Sat, 13 Aug 2005 09:42:58 -0400
-Message-ID: <81d03f6f05081306427c167f1@mail.gmail.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Re: [linux-audio-dev] Re: any update on the	pcmcia
+ bug blocking Audigy2 notebook sound card driver development
+Date: Sat, 13 Aug 2005 16:08:17 +0100
+Message-ID: <42FE0CE1.5010502@superbug.co.uk>
+References: <1ed860e3050807084449b0daac@mail.gmail.com>	<20050807104332.320aec48.akpm@osdl.org>	<1123519224.16205.5.camel@cmn37.stanford.edu>	<1123570490.26998.1.camel@mindpipe> <s5hvf2eyvme.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hvf2eyvme.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,48 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>, The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>, Raymond Lai <raymond.kk.lai@gmail.com>, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I recently bought an HP L2000 laptop (Turion processor). I installed
-Fedora Core 4 (x64 version) and I can't get sound to work. The sound
-card is detected to use the snd_atiixp driver, but no sound plays. The
-information I get from lspci is:
+Anyone wishing to help fix this, please see:
+http://bugzilla.kernel.org/show_bug.cgi?id=5057
 
-0:14.5 Multimedia audio controller: ATI Technologies Inc: Unknown
-device 4370 (rev 02)
-       Subsystem: Hewlett-Packard Company: Unknown device 3091
-       Flags: bus master, 66Mhz, slow devsel, latency 64, IRQ 10
-       Memory at c0003400 (32-bit, non-prefetchable) [size=3D256]
-       Capabilities: [40] Message Signalled Interrupts: 64bit-
-Queue=3D0/0 Enable-
+Takashi Iwai wrote:
+> At Tue, 09 Aug 2005 02:54:49 -0400,
+> Lee Revell wrote:
+> 
+>>[added James to cc:]
+>>
+>>On Mon, 2005-08-08 at 09:40 -0700, Fernando Lopez-Lezcano wrote:
+>>
+>>>On Sun, 2005-08-07 at 10:43, Andrew Morton wrote:
+>>>
+>>>>Raymond Lai <raymond.kk.lai@gmail.com> wrote:
+>>>>
+>>>>>Hi all,
+>>>>>
+>>>>>I remember there's a kernel pcmcia bug preventing the development for 
+>>>>>the Audigy2 pcmcia notebook sound card driver. 
+>>>>>
+>>>>>See http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
+>>>>>
+>>>>>Is there any new updates on the situation? Has the bug been fixed? or
+>>>>>anyone working on it?
+>>>>
+>>>>Is it related to http://bugzilla.kernel.org/show_bug.cgi?id=4788 ?
+>>>
+>>>I think not, the card in question is the Creative Audigy 2 ZS PCMCIA
+>>>card. I have one I can't use yet :-( The kernel locks hard when ALSA
+>>>tries to load the driver. 
+>>
+>>Maybe we should have the emu10k1 driver not claim the device until this
+>>is fixed.  It's better than locking the machine (this behavior has been
+>>confirmed by several other users).
+> 
+> 
+> It seems to have the same PCI ID.  If the probing phase already
+> triggers the hang up, we can't stop it.
+> 
+> 
+> Takashi
+> 
+> 
 
-I think all the modules are loaded correctly:
-
-[root@localhost fonseca]# /sbin/lsmod |grep snd
-snd_atiixp             27105  1
-snd_ac97_codec         98437  1 snd_atiixp
-snd_seq_dummy           4677  0
-snd_seq_oss            45477  0
-snd_seq_midi_event     11713  1 snd_seq_oss
-snd_seq                79769  5 snd_seq_dummy,snd_seq_oss,snd_seq_midi_even=
-t
-snd_seq_device         11217  3 snd_seq_dummy,snd_seq_oss,snd_seq
-snd_pcm_oss            63089  0
-snd_mixer_oss          20673  1 snd_pcm_oss
-snd_pcm               122957  3 snd_atiixp,snd_ac97_codec,snd_pcm_oss
-snd_timer              38217  2 snd_seq,snd_pcm
-snd                    69697  11
-snd_atiixp,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,sn=
-d_mixer_oss,snd_pcm,snd_timer
-soundcore              13409  1 snd
-snd_page_alloc         12105  2 snd_atiixp,snd_pcm
-
-Anybody has any ideas? If you need more information, I'll be glad to provid=
-e.
-
-Thank you very much,
-Guilherme
+Please see
+http://bugzilla.kernel.org/show_bug.cgi?id=5057
 
 
 -------------------------------------------------------
