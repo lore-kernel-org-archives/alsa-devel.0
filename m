@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Re: [linux-audio-dev] Re: any update on the	pcmcia
- bug blocking Audigy2 notebook sound card driver development
-Date: Sat, 13 Aug 2005 16:08:17 +0100
-Message-ID: <42FE0CE1.5010502@superbug.co.uk>
-References: <1ed860e3050807084449b0daac@mail.gmail.com>	<20050807104332.320aec48.akpm@osdl.org>	<1123519224.16205.5.camel@cmn37.stanford.edu>	<1123570490.26998.1.camel@mindpipe> <s5hvf2eyvme.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
+Date: Sat, 13 Aug 2005 18:30:44 +0200
+Message-ID: <0b34e7a455c9c0d2c8ba363ebd3d1c85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hvf2eyvme.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6F6C1E0
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 18:30:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +18,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>, The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>, Raymond Lai <raymond.kk.lai@gmail.com>, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Anyone wishing to help fix this, please see:
-http://bugzilla.kernel.org/show_bug.cgi?id=5057
 
-Takashi Iwai wrote:
-> At Tue, 09 Aug 2005 02:54:49 -0400,
-> Lee Revell wrote:
-> 
->>[added James to cc:]
->>
->>On Mon, 2005-08-08 at 09:40 -0700, Fernando Lopez-Lezcano wrote:
->>
->>>On Sun, 2005-08-07 at 10:43, Andrew Morton wrote:
->>>
->>>>Raymond Lai <raymond.kk.lai@gmail.com> wrote:
->>>>
->>>>>Hi all,
->>>>>
->>>>>I remember there's a kernel pcmcia bug preventing the development for 
->>>>>the Audigy2 pcmcia notebook sound card driver. 
->>>>>
->>>>>See http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
->>>>>
->>>>>Is there any new updates on the situation? Has the bug been fixed? or
->>>>>anyone working on it?
->>>>
->>>>Is it related to http://bugzilla.kernel.org/show_bug.cgi?id=4788 ?
->>>
->>>I think not, the card in question is the Creative Audigy 2 ZS PCMCIA
->>>card. I have one I can't use yet :-( The kernel locks hard when ALSA
->>>tries to load the driver. 
->>
->>Maybe we should have the emu10k1 driver not claim the device until this
->>is fixed.  It's better than locking the machine (this behavior has been
->>confirmed by several other users).
-> 
-> 
-> It seems to have the same PCI ID.  If the probing phase already
-> triggers the hang up, we can't stop it.
-> 
-> 
-> Takashi
-> 
-> 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+======================================================================
+Reported By:                Cimmo
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1331
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398-x86_64
+======================================================================
+Date Submitted:             08-13-2005 01:27 CEST
+Last Modified:              08-13-2005 18:30 CEST
+======================================================================
+Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Description: 
+I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
+integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack like the pci version of the sb live 24
+bit.
 
-Please see
-http://bugzilla.kernel.org/show_bug.cgi?id=5057
+With this card I cannot hear any sound that come from line-in.
+For Example I have a tv card, its output audio go into line-in: result is
+I cannot hear nothing from the tv, I can only see channels without audio.
+
+The "Capture feedback into playback" in the mixer change the mic's
+volume.
+There is nothing that change line-in's volume.
+======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 08-13-05 01:41 
+----------------------------------------------------------------------
+In order to help me implement support for what you want, please try the
+following:
+arecord -fdat -Dhw:0,0 | aplay
+arecord -fdat -Dhw:0,1 | aplay
+arecord -fdat -Dhw:0,2 | aplay
+arecord -fdat -Dhw:0,3 | aplay
+
+Please tell me which one works for the "line in".
+If should record from the line in and then play it to the speakers with a
+small delay.
+
+----------------------------------------------------------------------
+ Cimmo - 08-13-05 18:30 
+----------------------------------------------------------------------
+There are some problems, none of the 4 lines works, this is what I have
+done:
+
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,0 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+Aborted by signal Interrupt...
+Aborted by signal Interrupt...
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,1 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+Aborted by signal Interrupt...
+Aborted by signal Interrupt...
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,2 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+arecord: pcm_read:1252: read error: Input/output error
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,3 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+arecord: pcm_read:1252: read error: Input/output error
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-13-05 01:27 Cimmo          New Issue                                    
+08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
+08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
+08-13-05 01:41 jcdutton       Note Added: 0005798                          
+08-13-05 01:42 jcdutton       Status                   assigned => feedback
+08-13-05 18:30 Cimmo          Note Added: 0005807                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
