@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
-Date: Sat, 13 Aug 2005 22:51:43 +0200
-Message-ID: <58305461fe81f0c46329893b50f769de@bugtrack.alsa-project.org>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Last set of diffs for vt1617, etc.
+Date: Sat, 13 Aug 2005 15:22:35 -0600
+Message-ID: <42FE649B.70805@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------030407040504070404090106"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1209A1D9
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 22:51:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +15,132 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------030407040504070404090106
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
-======================================================================
-Reported By:                tek01
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1300
-Category:                   ISA - ad1816a
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Debian Sarge
-Kernel Version:             2.6.12.3 and 2.6.13-rc4
-======================================================================
-Date Submitted:             08-02-2005 16:56 CEST
-Last Modified:              08-13-2005 22:51 CEST
-======================================================================
-Summary:                    modprobe goes into D-state when inserting
-snd-ad1816a
-Description: 
-Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
-causes the modprobe process to go into D-state forever. 
+Ok, so these are the changes for the changed PCI id
+for the K8MM-V motherboard and the VT1617A codec.
 
-Linux 2.6.11.12 has been tested and is working fine.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001301 Kernel OSS emulation stops working afte...
-related to          0001302 Clicking noise when using kphone with t...
-======================================================================
+I still get the warnings, however, about the device not being
+able to accept 44.1kHz audio and having to send it at 48kHz
+instead.  I suspect that this is a configuration file issue instead.
 
-----------------------------------------------------------------------
- perex - 08-02-05 22:26 
-----------------------------------------------------------------------
-It might be a pnp related problem. The driver code was not touched long
-time. Could you add some printk calls into snd_ad1816a_pnp_detect() /
-snd_card_ad1816a_probe() functions to know where the initialization stops?
+I tried forcing the patch_vt1617a() routing to set:
 
-----------------------------------------------------------------------
- tek01 - 08-13-05 22:51 
-----------------------------------------------------------------------
-Your assumption that the problem might be within the pnp code seems to be
-correct. I've added some printk-Statements to the AD1816A driver as
-shipped with vanilla Linux 2.6.13-rc6 preserving line numbers. Here is
-what happens:
+    ac97->rates[AC97_RATES_SPDIF] = SNDRV_PCM_RATE_44100;
 
-The second call of pnp_request_card_device() in line 125 of ad1816a.c
-returns NULL, thus snd_card_ad1816a_pnp() returns(-EBUSY) in line 128. The
-error is passed on to snd_ad1816a_pnp_detect() by snd_card_ad1816a_probe()
-in line 200. snd_ad1816a_pnp_detect(), which was obviously called by the
-pnp code, returns the error in line 271. pnp_register_card_driver() in
-line 314 which initially triggered the call to snd_ad1816a_pnp_detect()
-does not return.
+and it still complained about:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-02-05 16:56 tek01          New Issue                                    
-08-02-05 16:56 tek01          Distribution              => Debian Sarge    
-08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
-2.6.13-rc4
-08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-02-05 22:26 perex          Note Added: 0005609                          
-08-03-05 10:10 perex          Relationship added       related to 0001301  
-08-03-05 10:11 perex          Relationship added       related to 0001302  
-08-09-05 12:57 perex          Assigned To               => perex           
-08-09-05 12:57 perex          Status                   new => feedback     
-08-13-05 22:51 tek01          Note Added: 0005811                          
-======================================================================
+[root@media ~]# aplay -v  -Dhw:0,0 
+/usr/share/system-config-soundcard/sound-sample.wav
+Playing WAVE '/usr/share/system-config-soundcard/sound-sample.wav' : 
+Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
+        please, try the plug plugin (-Dplug:hw:0,0)
+Hardware PCM card 0 'VIA 8237' device 0 subdevice 0
+
+so that might be an orthogonal issue.
+
+-Philip
 
 
+
+--------------030407040504070404090106
+Content-Type: text/x-patch;
+ name="vt1617.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="vt1617.patch"
+
+*** alsa-kernel/pci/via82xx.c.bak	2005-05-27 04:10:18.000000000 -0600
+--- alsa-kernel/pci/via82xx.c	2005-08-12 13:50:42.000000000 -0600
+***************
+*** 932,943 ****
+  
+  	if ((rate_changed = via_lock_rate(&chip->rates[0], ac97_rate)) < 0)
+  		return rate_changed;
+! 	if (rate_changed) {
+  		snd_ac97_set_rate(chip->ac97, AC97_PCM_FRONT_DAC_RATE,
+  				  chip->no_vra ? 48000 : runtime->rate);
+! 		snd_ac97_set_rate(chip->ac97, AC97_SPDIF,
+! 				  chip->no_vra ? 48000 : runtime->rate);
+! 	}
+  	if (runtime->rate == 48000)
+  		rbits = 0xfffff;
+  	else
+--- 932,943 ----
+  
+  	if ((rate_changed = via_lock_rate(&chip->rates[0], ac97_rate)) < 0)
+  		return rate_changed;
+! 	if (rate_changed)
+  		snd_ac97_set_rate(chip->ac97, AC97_PCM_FRONT_DAC_RATE,
+  				  chip->no_vra ? 48000 : runtime->rate);
+!         if (chip->spdif_on && viadev->reg_offset == 0x30)
+! 		snd_ac97_set_rate(chip->ac97, AC97_SPDIF, runtime->rate);
+! 
+  	if (runtime->rate == 48000)
+  		rbits = 0xfffff;
+  	else
+***************
+*** 2170,2175 ****
+--- 2170,2176 ----
+  		{ .vendor = 0x1297, .device = 0xc160, .action = VIA_DXS_ENABLE }, /* Shuttle SK41G */
+  		{ .vendor = 0x1458, .device = 0xa002, .action = VIA_DXS_ENABLE }, /* Gigabyte GA-7VAXP */
+  		{ .vendor = 0x1462, .device = 0x0080, .action = VIA_DXS_SRC }, /* MSI K8T Neo-FIS2R */
++ 		{ .vendor = 0x1462, .device = 0x0430, .action = VIA_DXS_SRC },    /* MSI K8MM-V onboard audio */
+  		{ .vendor = 0x1462, .device = 0x3800, .action = VIA_DXS_ENABLE }, /* MSI KT266 */
+  		{ .vendor = 0x1462, .device = 0x5901, .action = VIA_DXS_NO_VRA }, /* MSI KT6 Delta-SR */
+  		{ .vendor = 0x1462, .device = 0x7023, .action = VIA_DXS_NO_VRA }, /* MSI K8T Neo2-FI */
+*** alsa-kernel/pci/ac97/ac97_codec.c.bak	2005-04-25 04:22:20.000000000 -0600
+--- alsa-kernel/pci/ac97/ac97_codec.c	2005-08-11 12:56:59.000000000 -0600
+***************
+*** 157,162 ****
+--- 157,163 ----
+  { 0x54524123, 0xffffffff, "TR28602",		NULL,		NULL }, // only guess --jk [TR28023 = eMicro EM28023 (new CT1297)]
+  { 0x54584e20, 0xffffffff, "TLC320AD9xC",	NULL,		NULL },
+  { 0x56494161, 0xffffffff, "VIA1612A",		NULL,		NULL }, // modified ICE1232 with S/PDIF
++ { 0x56494170, 0xffffffff, "VIA1617A",		patch_vt1617a,	NULL }, // modified VT1616 with S/PDIF
+  { 0x57454301, 0xffffffff, "W83971D",		NULL,		NULL },
+  { 0x574d4c00, 0xffffffff, "WM9701A",		NULL,		NULL },
+  { 0x574d4C03, 0xffffffff, "WM9703,WM9707,WM9708,WM9717", patch_wolfson03, NULL},
+*** alsa-kernel/pci/ac97/ac97_patch.c.bak	2005-05-27 03:42:45.000000000 -0600
+--- alsa-kernel/pci/ac97/ac97_patch.c	2005-08-12 17:45:05.000000000 -0600
+***************
+*** 558,563 ****
+--- 558,572 ----
+  }
+  
+  /*
++  * VT1617A codec
++  */
++ int patch_vt1617a(ac97_t * ac97)
++ {
++ 	ac97->ext_id |= AC97_EI_SPDIF;	/* force the detection of spdif */
++ 	return 0;
++ }
++ 
++ /*
+   * Sigmatel STAC97xx codecs
+   */
+  static int patch_sigmatel_stac9700_3d(ac97_t * ac97)
+*** alsa-kernel/pci/ac97/ac97_patch.h.bak	2005-04-07 08:53:20.000000000 -0600
+--- alsa-kernel/pci/ac97/ac97_patch.h	2005-08-11 12:56:59.000000000 -0600
+***************
+*** 56,60 ****
+--- 56,61 ----
+  int patch_cm9761(ac97_t * ac97);
+  int patch_cm9780(ac97_t * ac97);
+  int patch_vt1616(ac97_t * ac97);
++ int patch_vt1617a(ac97_t * ac97);
+  int patch_it2646(ac97_t * ac97);
+  int mpatch_si3036(ac97_t * ac97);
+
+--------------030407040504070404090106--
 
 
 -------------------------------------------------------
