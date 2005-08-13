@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001298]: Creative Labs Sound Blaster Live! 24-bit not detected
-Date: Sat, 13 Aug 2005 03:59:27 +0200
-Message-ID: <a0fefa5e0cd8d8873b6517ed1da68bfa@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Volume per voices [Feature Request]
+Date: Sat, 13 Aug 2005 11:59:08 +0800
+Message-ID: <42FD700C.9010603@netvigator.com>
+References: <Pine.HPX.4.33n.0507280926040.9785-100000@studcom.urz.uni-halle.de>	<Pine.LNX.4.58.0507281927310.14095@denise.shiny.it> <s5hzms5c0v6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E66421B8
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 03:59:27 +0200 (MEST)
+In-Reply-To: <s5hzms5c0v6.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,117 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Thu, 28 Jul 2005 19:51:16 +0200 (CEST),
+> Giuliano Pochini wrote:
+> 
+>>>>In my driver we have A analog channels and D digital channels. The
+>>>>driver registers a "PCM Playback Volume" control as an array of
+>>>>A+D integers, where each element is the gain (-128..+6) of each
+>>>>channel, but they don't map directly to the PCM channels because
+>>>>the driver exports analog and digital channels as two separate
+>>>>devices (this feature can be removed easily). So pcmvol[0..A-1]
+>>>>controls the volume of hw:0,0 and pcmvol[A..A+D-1] controls the
+>>>>volume of hw:0,1. Furthermore, the user can open hw:0,0,x to
+>>>>address the xth channel.
+>>>
+>>>As far as I can see, no driver actually uses the subdevice (substream)
+>>>field for PCM substreams; probably because this would require a
+>>>separate control for each substream instead of using an array.
+>>
+>>My case is even more compicated because one ctl controls the volume of two
+>>devices. A callback that gets snd_pcm_substream_t* and returns {int numid,
+>>firstindex, lastindex} or sort of would make things much simpler wrt hw
+>>controls. In case there are both hw volume and softvol, which has
+>>priority ? :)
+> 
+> 
+> Returning a list of controls would be simplest as the lowlevel API.
+> The higher level API decides which control to use, for example,  while
+> h/w specific apps can use the lowlevel API to get certain controls
+> directly.
+> 
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1298> 
-======================================================================
-Reported By:                andrewvegan
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1298
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4smp
-======================================================================
-Date Submitted:             08-01-2005 15:15 CEST
-Last Modified:              08-13-2005 03:59 CEST
-======================================================================
-Summary:                    Creative Labs Sound Blaster Live! 24-bit not
-detected
-Description: 
-Unable to get the sound card detected in Fedora Core 4. PC is a Shuttle XPC
-SD31P which has an onboard "Creative Labs Sound Blaster Live! 24-bit EAX
-high-definition 7.1 audio processor".
+For those controls with SNDRV_CTL_ELEM_IFACE_PCM , ctl->id.device and 
+ctl->id.subdevice.
 
-from dmesg:
+Is it feasible to have a function which return snd_pcm_substream_t* of 
+the PCM substream with parameters (snd_kcontrol_t *kcontrol, int device 
+,int subdevice)  ?
 
-AC'97 0 does not respond - RESET
-AC'97 0 access is not valid [0x0], removing mixer.
-CA0106: probe of 0000:03:0b.0 failed with error -5
-
-When I run lspci it lists a different card (Creative Labs SB Audigy LS):
- 
-[root@localhost ~]# lspci
-00:00.0 Host bridge: Intel Corporation Memory Controller Hub (rev 02)
-00:01.0 PCI bridge: Intel Corporation PCI Express Graphics Port (rev 02)
-00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 1 (rev 01)
-00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
-#1 (rev 01)
-00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
-#2 (rev 01)
-00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
-#3 (rev 01)
-00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI
-#4 (rev 01)
-00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
-Controller (rev 01)
-00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev e1)
-00:1f.0 ISA bridge: Intel Corporation 82801GB/GR (ICH7 Family) LPC
-Interface Bridge (rev 01)
-00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
-Controller (rev 01)
-00:1f.2 IDE interface: Intel Corporation 82801GB/GR/GH (ICH7 Family)
-Serial ATA Storage Controllers cc=IDE (rev 01)
-00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
-(rev 01)
-01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce
-6600] (rev a2)
-02:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789
-Gigabit Ethernet PCI Express (rev 11)
-03:0a.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
-Controller (rev 80)
-03:0b.0 Multimedia audio controller: Creative Labs SB Audigy LS
-
-
-
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 08-13-05 00:53 
-----------------------------------------------------------------------
-Please try the latest alsa-driver cvs or the attached patch.
-
-----------------------------------------------------------------------
- andrewvegan - 08-13-05 03:59 
-----------------------------------------------------------------------
-This sound card is now correctly detected and working after following the
-instructions from Clemens. On 8/2 I download the CVS version of ALSA,
-added the following entry to the ca0106_chip_details array in
-alsa-kernel/pci/ca0106/ca0106_main.c:
-
-         /* Shuttle XPC SD31P with onboard SB Live 24bit without AC97 */
-         { .serial = 0x30381297,
-           .name   = "Shuttle XPC SD31P [SB04??]",
-           .gpio_type = 1,
-           .i2c_adc = 1 } ,
-
-But I have been unable to confirm if sound capture is working as my mic is
-dead.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-01-05 15:15 andrewvegan    New Issue                                    
-08-01-05 15:15 andrewvegan    Distribution              => Fedora Core 4   
-08-01-05 15:15 andrewvegan    Kernel Version            => 2.6.11-1.1369_FC4smp
-08-13-05 00:52 jcdutton       File Added: 1298.diff.txt                    
-08-13-05 00:53 jcdutton       Note Added: 0005796                          
-08-13-05 00:53 jcdutton       Status                   assigned => feedback
-08-13-05 03:59 andrewvegan    Note Added: 0005801                          
-======================================================================
+The topology which the hardware mixers are connected depends on the 
+number of channels (mono,stereo,quad,..) of the PCM substream
 
 
 
