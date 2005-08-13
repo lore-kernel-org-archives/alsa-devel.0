@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Sat, 13 Aug 2005 18:30:44 +0200
-Message-ID: <0b34e7a455c9c0d2c8ba363ebd3d1c85@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [alsa-cvslog] CVS: alsa-utils ChangeLog,1.3,1.4 Makefile.am,1.33,1.34
+ configure.in,1.107,1.108
+Date: Sat, 13 Aug 2005 17:42:16 +0100
+Message-ID: <42FE22E8.4040406@superbug.co.uk>
+References: <E1E3yrb-0001Ke-Jk@sc8-pr-cvs1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6F6C1E0
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 18:30:44 +0200 (MEST)
+In-Reply-To: <E1E3yrb-0001Ke-Jk@sc8-pr-cvs1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <jcdutton@users.sourceforge.net>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hum. This seems wrong. Even after checking this in, ./cvscompile changes 
+them all again!
+I must have broken build tools.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
-======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1331
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398-x86_64
-======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              08-13-2005 18:30 CEST
-======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
-Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
-
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
-
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
-======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 08-13-05 01:41 
-----------------------------------------------------------------------
-In order to help me implement support for what you want, please try the
-following:
-arecord -fdat -Dhw:0,0 | aplay
-arecord -fdat -Dhw:0,1 | aplay
-arecord -fdat -Dhw:0,2 | aplay
-arecord -fdat -Dhw:0,3 | aplay
-
-Please tell me which one works for the "line in".
-If should record from the line in and then play it to the speakers with a
-small delay.
-
-----------------------------------------------------------------------
- Cimmo - 08-13-05 18:30 
-----------------------------------------------------------------------
-There are some problems, none of the 4 lines works, this is what I have
-done:
-
-[cimmo@localhost ~]$ arecord -fdat -Dhw:0,0 | aplay
-Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
-Stereo
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-Aborted by signal Interrupt...
-Aborted by signal Interrupt...
-[cimmo@localhost ~]$ arecord -fdat -Dhw:0,1 | aplay
-Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
-Stereo
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-Aborted by signal Interrupt...
-Aborted by signal Interrupt...
-[cimmo@localhost ~]$ arecord -fdat -Dhw:0,2 | aplay
-Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
-Stereo
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-arecord: pcm_read:1252: read error: Input/output error
-[cimmo@localhost ~]$ arecord -fdat -Dhw:0,3 | aplay
-Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
-Stereo
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-arecord: pcm_read:1252: read error: Input/output error
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
-08-13-05 18:30 Cimmo          Note Added: 0005807                          
-======================================================================
-
-
+James Courtier-Dutton wrote:
+> Update of /cvsroot/alsa/alsa-utils
+> In directory sc8-pr-cvs1.sourceforge.net:/tmp/cvs-serv4768/alsa-utils
+> 
+> Modified Files:
+> 	ChangeLog Makefile.am configure.in 
+> Log Message:
+> Summary: update build tools.
+> 
+> It seems that running ./cvscompile changes all these files due to
+> an updates. So, sink CVS with build tools.
+> 
+> 
+> 
+> Index: ChangeLog
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-utils/ChangeLog,v
+> retrieving revision 1.3
+> retrieving revision 1.4
+> diff -u -r1.3 -r1.4
+> --- ChangeLog	15 Nov 1998 15:34:33 -0000	1.3
+> +++ ChangeLog	13 Aug 2005 16:27:59 -0000	1.4
+> @@ -1,3 +1,8 @@
+> +2005-08-13  gettextize  <bug-gnu-gettext@gnu.org>
+> +
+> +	* Makefile.am (EXTRA_DIST): Add config.rpath, mkinstalldirs.
+> +	* configure.in (AM_GNU_GETTEXT_VERSION): Bump to 0.14.4.
+> +
+>  0.0.7 -> 0.2.0
+>  
+>  * removed error message from alsamixer
+> 
+> Index: Makefile.am
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-utils/Makefile.am,v
+> retrieving revision 1.33
+> retrieving revision 1.34
+> diff -u -r1.33 -r1.34
+> --- Makefile.am	23 Jun 2005 10:38:06 -0000	1.33
+> +++ Makefile.am	13 Aug 2005 16:27:59 -0000	1.34
+> @@ -5,7 +5,7 @@
+>  ALSAMIXER_DIR=
+>  endif
+>  SUBDIRS= include alsactl alsaconf $(ALSAMIXER_DIR) amidi amixer aplay iecset seq speaker-test utils m4 po
+> -EXTRA_DIST=ChangeLog INSTALL TODO README configure cvscompile depcomp
+> +EXTRA_DIST= config.rpath mkinstalldirs ChangeLog INSTALL TODO README configure cvscompile depcomp
+>  AUTOMAKE_OPTIONS=foreign
+>  ACLOCAL_AMFLAGS = -I m4
+>  
+> 
+> Index: configure.in
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-utils/configure.in,v
+> retrieving revision 1.107
+> retrieving revision 1.108
+> diff -u -r1.107 -r1.108
+> --- configure.in	23 Jun 2005 10:38:06 -0000	1.107
+> +++ configure.in	13 Aug 2005 16:27:59 -0000	1.108
+> @@ -5,7 +5,7 @@
+>  AM_INIT_AUTOMAKE(alsa-utils, 1.0.9a)
+>  
+>  AM_GNU_GETTEXT([external])
+> -AM_GNU_GETTEXT_VERSION(0.14.1)
+> +AM_GNU_GETTEXT_VERSION([0.14.4])
+>  
+>  dnl Checks for programs.
+>  
+> 
 
 
 -------------------------------------------------------
