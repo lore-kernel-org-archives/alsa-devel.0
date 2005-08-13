@@ -1,13 +1,14 @@
-From: "etta tucker" <moisesn@freebiemaniac.com>
-Subject: Give your partner more pleasure
-Date: Sat, 13 Aug 2005 17:27:51 -0700
-Message-ID: <B4245C7C.3A45D05@freebiemaniac.com>
-Reply-To: "etta tucker" <moisesn@freebiemaniac.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001334]: module fails to load because it can't register ac97 bus
+Date: Sun, 14 Aug 2005 00:13:02 +0200
+Message-ID: <a548cd93b65d4aec8e81a9c009bdea61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2854D1D8
+	for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2005 00:13:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,41 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lauran Bryant <abramo@alsa-project.org>
-Cc: alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-announce@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<HTML>
-increase the size of your manhood<br>
-<br>
-Forget about your partner faking her orgasm or not being able to please
-her. You will be able to penetrate deeper so your partner will experience
-more pleasure as well as multiple orgasms during sexual intercourse. 
-86% of women surveyed said that they would like their partner to be more
-'full' sexually.
-<br>
-<br>
-<br>
-<a href="http://uk.geocities.com/tisa_liddle/?yt=boul.dldk">Check out the
-only Male Enhancement formula with a free DVD</a><br>
-<br>
-<br>
-I cannot afford the ridiculous prescription costs since I have no health
-insurance and am unemployed. Your discount rates on the Internet really
-helped me, and your staff was very knowledgeable and helpful. I saw
-immediate results, and now I have regained the confidence I had when I was
-younger, in the bedroom. -Kenneth, Salt Lake City<br>
-<br>
-<br>address on site along with no more feature
-<br>
-Having seen the terrible effect of the electric tube they wisely fell back
-and allowed the boy to pass.<br>He marched through their lines with a fine
-air of dignity, although he was fearful lest some of the blacks should stick
-a spear into him or bump his head with a war-club<br>
-<br>
-But they were awed by the wonders they had seen and were still inclined to
-believe him a god, so he was not molested
-</FONT></HTML>
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1334> 
+======================================================================
+Reported By:                bdijkstra
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1334
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE Linux
+Kernel Version:             2.6.13-rc5-git3-3-default
+======================================================================
+Date Submitted:             08-14-2005 00:13 CEST
+Last Modified:              08-14-2005 00:13 CEST
+======================================================================
+Summary:                    module fails to load because it can't register ac97
+bus
+Description: 
+The Hercules GameTheater XP card has two codecs of the same type (CS4294).
+The cs46xx driver tries to register these two codecs with the same name
+with the ac97 bus which then fails.
+I have attached the message log of a module load which shows the problem.
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-14-05 00:13 bdijkstra      New Issue                                    
+08-14-05 00:13 bdijkstra      File Added: cs46xx-error.log                    
+08-14-05 00:13 bdijkstra      Distribution              => SuSE Linux      
+08-14-05 00:13 bdijkstra      Kernel Version            =>
+2.6.13-rc5-git3-3-default
+======================================================================
+
 
 
 
