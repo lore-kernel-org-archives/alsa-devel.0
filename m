@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Sat, 13 Aug 2005 21:18:16 +0200
-Message-ID: <e1347d6c795417a0f6e7bb70037d75ee@bugtrack.alsa-project.org>
+Date: Sat, 13 Aug 2005 21:38:07 +0200
+Message-ID: <c7c83d6ce6045c78c10eeb83f40ea14d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 08CF1181
-	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 21:18:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A6E01D7
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2005 21:38:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4 (mostly)
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              08-13-2005 21:18 CEST
+Last Modified:              08-13-2005 21:38 CEST
 ======================================================================
 Summary:                    driver can't initialise card
 Description: 
@@ -78,12 +78,6 @@ of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 08-13-05 00:39 
-----------------------------------------------------------------------
-Please try the latest alsa-driver CVS or alternatively, try the attached
-patch.
-
-----------------------------------------------------------------------
  hus - 08-13-05 21:18 
 ----------------------------------------------------------------------
 CVS version does work for me now, thanks.
@@ -93,6 +87,14 @@ random unrelated chipset changes.
 
 Just one unrelated problem: "make install" does not install all necessary
 modules, esp. not those under pci/emu10k1.
+
+----------------------------------------------------------------------
+ rlrevell - 08-13-05 21:38 
+----------------------------------------------------------------------
+James,
+
+You probably want to fix the comment before you commit, it's actually
+August ;-)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,6 +110,7 @@ Date Modified  Username       Field                    Change
 08-13-05 00:39 jcdutton       Note Added: 0005795                          
 08-13-05 00:40 jcdutton       Status                   assigned => feedback
 08-13-05 21:18 hus            Note Added: 0005809                          
+08-13-05 21:38 rlrevell       Note Added: 0005810                          
 ======================================================================
 
 
