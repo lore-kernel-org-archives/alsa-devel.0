@@ -1,14 +1,12 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: atiixp modem, pci id 0x4378
-Date: Sun, 14 Aug 2005 19:21:42 +0300
-Message-ID: <20050814162142.GA26452@sashak>
-References: <20050814101931.61897.qmail@web34508.mail.mud.yahoo.com>
+From: Robert Dunn <robert.j.dunn@gmail.com>
+Subject: Maximum number of sound devices
+Date: Sun, 14 Aug 2005 16:24:11 -0400
+Message-ID: <8421d7b20508141324317a9aeb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20050814101931.61897.qmail@web34508.mail.mud.yahoo.com>
-Content-disposition: inline
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,19 +16,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alex Dubov <oakad@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 03:19 Sun 14 Aug     , Alex Dubov wrote:
-> Does anybody know whether atiixp modem controller with
-> pci id 0x4378 is supported (or will be)? Currently
-> atiixp_modem driver ignores it completely.
+What is the maximum number of capture devices ALSA supports?
 
-It is supported in CVS version (and I guess in recent 'alsa-driver'),
-but probably never tested. Try it.
+I have spent the last hour or so, googing for an answer with no success.
 
-Sasha.
+The problem I have is a USB audio capture device.  The first eight work
+perfrect.  The 9th device on do not create /dev/dspX entries, and it appear=
+s
+that ALSA is limited to 8 devices.
+
+Thanks for any help in advance.
+
+Robert J. Dunn
+robert.j.dunn@gmail.com
 
 
 -------------------------------------------------------
