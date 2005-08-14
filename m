@@ -1,13 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Maximum number of sound devices
-Date: Sun, 14 Aug 2005 21:33:22 +0100
-Message-ID: <42FFAA92.10008@superbug.co.uk>
-References: <8421d7b20508141324317a9aeb@mail.gmail.com>
+From: Christian Esken <christian.esken-services@arcor.de>
+Subject: Getting the ALSA driver version
+Date: Mon, 15 Aug 2005 00:15:18 +0200
+Message-ID: <200508150015.18838.christian.esken-services@arcor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <8421d7b20508141324317a9aeb@mail.gmail.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Robert Dunn <robert.j.dunn@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Robert Dunn wrote:
-> What is the maximum number of capture devices ALSA supports?
-> 
-> I have spent the last hour or so, googing for an answer with no success.
-> 
-> The problem I have is a USB audio capture device.  The first eight work
-> perfrect.  The 9th device on do not create /dev/dspX entries, and it appears
-> that ALSA is limited to 8 devices.
-> 
-> Thanks for any help in advance.
-> 
-> Robert J. Dunn
-> robert.j.dunn@gmail.com
-> 
+Hello,
 
-The default is 8, but it can be changed with a module option for module 
-"snd"
-See "modinfo snd"
+for upcoming versions of KMix (the KDE Mixer Application), it will be possible to "tune"
+KMix's visual appearance according to:
+
+(1) the installed sound card
+(2) the users preference
+(3) the installed/running driver
+(4) the driver version
+
+While I am able to find out (1), (2) and (3), I haven't been able to find out (4): The runtime ALSA version.
+More precisely, I am interested in the runtime ALSALIB version (but I reckon it is the same as the ALSA driver version in normal installations).
+
+I cannot use /usr/include/alsa/version.h , because this is the version on which the
+application is compiled (but not the runtime version).
+
+Reading and parsing /proc/asound/version seems pretty crude, and I would like to avoid it, as it is error-prone.
+
+Have I missed anything, or is it just not possible at the moment?
+
+Chris
+
+-- 
+Is UNIX ready for the Desktop? See http://www.kde.org
+KDE Developer: esken@kde.org
 
 
 -------------------------------------------------------
