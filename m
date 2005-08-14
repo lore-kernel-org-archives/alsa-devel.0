@@ -1,13 +1,14 @@
-From: Christian Esken <christian.esken-services@arcor.de>
-Subject: Getting the ALSA driver version
-Date: Mon, 15 Aug 2005 00:15:18 +0200
-Message-ID: <200508150015.18838.christian.esken-services@arcor.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
+Date: Mon, 15 Aug 2005 01:15:16 +0200
+Message-ID: <b16c87309ce69b0282043ce46da5bec2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D18D91A1
+	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 01:15:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,34 +18,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-for upcoming versions of KMix (the KDE Mixer Application), it will be possible to "tune"
-KMix's visual appearance according to:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
+======================================================================
+Reported By:                hettar
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1311
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             08-05-2005 01:10 CEST
+Last Modified:              08-15-2005 01:15 CEST
+======================================================================
+Summary:                    drivers load but unmuting channels / adjusting
+volumes does not produce any sound
+Description: 
+I have installed the 1.0.9b version of alsa kernel/libs and utils in an
+attempt to get the intel high definition sound card working. These all
+appear to work, I can unmute the various channels, adjust volumes etc,
+however no matter what I do I can't get any sound out. Sound apps are all
+playing fine but don't actually produce any sound.
 
-(1) the installed sound card
-(2) the users preference
-(3) the installed/running driver
-(4) the driver version
+This is the card in the new ASUS W2 laptop and could be slightly different
+to other models.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001176 problem with alsa-driver and asus m5a n...
+======================================================================
 
-While I am able to find out (1), (2) and (3), I haven't been able to find out (4): The runtime ALSA version.
-More precisely, I am interested in the runtime ALSALIB version (but I reckon it is the same as the ALSA driver version in normal installations).
+----------------------------------------------------------------------
+ tiwai - 08-11-05 14:34 
+----------------------------------------------------------------------
+Try ALSA CVS version.  There is a new model "asus".
 
-I cannot use /usr/include/alsa/version.h , because this is the version on which the
-application is compiled (but not the runtime version).
+----------------------------------------------------------------------
+ hettar - 08-15-05 01:15 
+----------------------------------------------------------------------
+I have installed the CVS version with the following results.
+If I specify no model or the asus model I can get sound but only from the
+"front" channel. The LFE, center and surround channels seem to do nothing,
+and I only get sound out of the front speakers or headphones if plugged
+in.
 
-Reading and parsing /proc/asound/version seems pretty crude, and I would like to avoid it, as it is error-prone.
+If I specify "model=asus" I have as above but most of the other channels
+like spidf are missing. The cards listed in the ALSA-Configuration.txt
+file all seem to be for desktop systems not laptops.
 
-Have I missed anything, or is it just not possible at the moment?
+I need to use position_fix=1 or it makes a horrible crackling sound. In
+addition the volume is very low, I can't actually hear anything until the
+volume is up to about 60%.
 
-Chris
+However at least I can get some sound now :-)
 
--- 
-Is UNIX ready for the Desktop? See http://www.kde.org
-KDE Developer: esken@kde.org
+Would it be helpful if I built it with debug ??
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-05-05 01:10 hettar         New Issue                                    
+08-05-05 01:10 hettar         Distribution              => Ubuntu          
+08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
+08-05-05 01:58 hettar         Note Added: 0005654                          
+08-05-05 08:39 perex          Note Edited: 0005654                         
+08-05-05 08:39 perex          Relationship added       related to 0001176  
+08-05-05 09:10 hettar         Note Added: 0005662                          
+08-11-05 14:34 tiwai          Note Added: 0005760                          
+08-15-05 01:15 hettar         Note Added: 0005816                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
