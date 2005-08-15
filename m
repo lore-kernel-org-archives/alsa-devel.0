@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001340]: sonud MAX driver not available
-Date: Mon, 15 Aug 2005 23:55:02 +0200
-Message-ID: <b9a5cfa189a5177519b02169a47ffe8a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
+Date: Tue, 16 Aug 2005 01:25:36 +0200
+Message-ID: <c69bf270610aaf91155bf3ef620b9592@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FE541E7
-	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 23:55:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 068211EB
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 01:25:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,36 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1340> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
 ======================================================================
-Reported By:                san_quest007
+Reported By:                tek01
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1340
-Category:                   0_compilation problem_!!!
+Issue ID:                   1300
+Category:                   ISA - ad1816a
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     feedback
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12.3 and 2.6.13-rc4
 ======================================================================
-Date Submitted:             08-15-2005 23:55 CEST
-Last Modified:              08-15-2005 23:55 CEST
+Date Submitted:             08-02-2005 16:56 CEST
+Last Modified:              08-16-2005 01:25 CEST
 ======================================================================
-Summary:                    sonud MAX driver not available
+Summary:                    modprobe goes into D-state when inserting
+snd-ad1816a
 Description: 
-i checked for sound Max driver i didnt find any linxu driver for it . in
-this website also it's not listed. where do i get this driver.
+Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
+causes the modprobe process to go into D-state forever. 
+
+Linux 2.6.11.12 has been tested and is working fine.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001301 Kernel OSS emulation stops working afte...
+related to          0001302 Clicking noise when using kphone with t...
+======================================================================
+
+----------------------------------------------------------------------
+ tek01 - 08-15-05 20:34 
+----------------------------------------------------------------------
+After applying the patch, modprobe no longer hangs in D-state, but returns
+with "No such device", due to the fact, that the second call to
+pnp_request_card_device() in line 125 still returns NULL.
+
+----------------------------------------------------------------------
+ perex - 08-16-05 01:25 
+----------------------------------------------------------------------
+Could you check, if you have a mpu401 driver loaded and attached to the PnP
+core in your system? You can inspect /sys/bus/pnp/drivers directory....
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-15-05 23:55 san_quest007   New Issue                                    
+08-02-05 16:56 tek01          New Issue                                    
+08-02-05 16:56 tek01          Distribution              => Debian Sarge    
+08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
+2.6.13-rc4
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-02-05 22:26 perex          Note Added: 0005609                          
+08-03-05 10:10 perex          Relationship added       related to 0001301  
+08-03-05 10:11 perex          Relationship added       related to 0001302  
+08-09-05 12:57 perex          Assigned To               => perex           
+08-09-05 12:57 perex          Status                   new => feedback     
+08-13-05 22:51 tek01          Note Added: 0005811                          
+08-15-05 14:32 perex          File Added: pnp-card.c.patch                    
+08-15-05 14:33 perex          Note Added: 0005818                          
+08-15-05 20:34 tek01          Note Added: 0005821                          
+08-16-05 01:25 perex          Note Added: 0005825                          
 ======================================================================
 
 
