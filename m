@@ -1,21 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: proper suspend / resume for PCM streams
-Date: Mon, 15 Aug 2005 21:55:02 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0508152153230.9682@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0508152139420.9682@tm8103.perex-int.cz>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: ALSA CVS: SB-Live! (rev7) falls silent
+Date: Mon, 15 Aug 2005 21:07:44 +0100 (BST)
+Message-ID: <20050815200745.31071.qmail@web52910.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76BA71D1
-	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 21:55:03 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 49D0B8A6D5
-	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 21:55:03 +0200 (MEST)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 16D1D2E002
-	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 21:55:03 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0508152139420.9682@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,40 +15,195 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15 Aug 2005, Jaroslav Kysela wrote:
+Hi,
 
-> Hi,
-> 
-> 	I'm digging to add the proper suspend and resume to the HDA intel 
-> driver (PCM) and I noticed that some drivers incorrectly uses 
-> the SNDRV_PCM_INFO_RESUME flag (notably intel8x0.c, intel8x0m.c, 
-> hda_intel.c and perhaps more - I'll check).
-> 	The semantics of this flag is: The driver can do full recovery
-> for the suspended stream and can trigger it back to previous state 
-> (including position in the ring buffer and all other related things).
-> If the PCM stream must be restarted with the prepare callback, this flag 
-> MUST NOT be set.
-> 	For the first glance: cs4281.c and es1968.c drivers are restoring 
-> the registers, so it appears that the full resume should work for them.
+My old SB-Live! soundcard has suddenly gone very quiet. It's probably a m=
+ixer issue, because I can
+no longer find the "Master" mixer control in either alsamixer, amixer or =
+the OSS mixer. I am
+suspecting that it's been reset secretly reset to zero.
 
-And here is the simplest way to test the suspend/resume for PCM:
+My Audigy2 soundcard is working fine, however.
 
-first console : aplay -Dplughw:0 <some_file>
-second console: alsactl power off ; alsactl power on
+$ amixer
+Simple mixer control 'Headphone LFE',1
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Headphone',1
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 100
+  Mono:
+  Front Left: Playback 74 [74%]
+  Front Right: Playback 74 [74%]
+Simple mixer control 'Headphone Center',1
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Tone',0
+  Capabilities: pswitch
+  Playback channels: Front Left - Front Right
+  Mono:
+  Front Left: Playback [on]
+  Front Right: Playback [on]
+Simple mixer control 'Bass',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 15 [38%]
+  Front Right: 15 [38%]
+Simple mixer control 'Treble',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 40
+  Front Left: 31 [78%]
+  Front Right: 31 [78%]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 72 [72%] Capture 0 [0%] [off]
+  Front Right: Playback 72 [72%] Capture 0 [0%] [off]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 100
+  Mono: Playback 76 [76%]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 100
+  Mono: Playback 76 [76%]
+Simple mixer control 'Synth',0
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 76 [76%] Capture 76 [76%] [off]
+  Front Right: Playback 76 [76%] Capture 76 [76%] [off]
+Simple mixer control 'Wave',0
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 76 [76%] Capture 76 [76%] [off]
+  Front Right: Playback 76 [76%] Capture 76 [76%] [off]
+Simple mixer control 'Wave Center',0
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 100
+  Mono: Playback 76 [76%]
+Simple mixer control 'Wave LFE',0
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 100
+  Mono: Playback 76 [76%]
+Simple mixer control 'Wave Surround',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 100
+  Mono:
+  Front Left: Playback 84 [84%]
+  Front Right: Playback 84 [84%]
+Simple mixer control 'Line LiveDrive',0
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
+  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
+Simple mixer control 'Line2 LiveDrive',1
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
+  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
+Simple mixer control 'IEC958 Coaxial',0
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
+  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
+Simple mixer control 'IEC958 LiveDrive',0
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
+  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
+Simple mixer control 'IEC958 Optical Raw',0
+  Capabilities: pswitch
+  Playback channels: Front Left - Front Right
+  Mono:
+  Front Left: Playback [off]
+  Front Right: Playback [off]
+Simple mixer control 'IEC958 TTL',0
+  Capabilities: pvolume cvolume cswitch
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
+  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
+Simple mixer control 'AC97',0
+  Capabilities: pvolume cvolume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 100 Capture 0 - 100
+  Front Left: Playback 0 [0%] Capture 100 [100%]
+  Front Right: Playback 0 [0%] Capture 100 [100%]
+Simple mixer control 'SB Live Analog/Digital Output Jack',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
 
-						Jaroslav
+$ mixer
+Usage: mixer { bass|treble|synth|pcm2|dig1 } <value>
+  or   mixer { +rec|-rec } <devicename>
+  or   mixer ?rec (prints the current recording source)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+The PCI output is below:
+
+02:0a.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev =
+07)
+        Subsystem: Creative Labs SBLive! Player 5.1
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParEr=
+r- Stepping- SERR-
+FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=3Dmedium >TAbort=
+- <TAbort- <MAbort- >SERR-
+<PERR-
+        Latency: 32 (500ns min, 5000ns max)
+        Interrupt: pin A routed to IRQ 22
+        Region 0: I/O ports at d800 [size=3D32]
+        Capabilities: [dc] Power Management version 1
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=3D0mA PME(D0-,D1-,=
+D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=3D0 DScale=3D0 PME-
+
+Cheers,
+Chris
+
+
+
+	=09
+___________________________________________________________=20
+To help you stay safe and secure online, we've developed the all new Yaho=
+o! Security Centre. http://uk.security.yahoo.com
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
+es
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
+A
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
