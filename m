@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001334]: module fails to load because it can't register ac97 bus
-Date: Mon, 15 Aug 2005 23:11:12 +0200
-Message-ID: <46c60098c064e0cee32a8e4347ebc8fc@bugtrack.alsa-project.org>
+Date: Mon, 15 Aug 2005 23:14:43 +0200
+Message-ID: <dd83b4b3a8b5c2b01a786f915e26e47f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BF941E6
-	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 23:11:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7445E1E6
+	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 23:14:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSE Linux
 Kernel Version:             2.6.13-rc5-git3-3-default
 ======================================================================
 Date Submitted:             08-14-2005 00:13 CEST
-Last Modified:              08-15-2005 23:11 CEST
+Last Modified:              08-15-2005 23:14 CEST
 ======================================================================
 Summary:                    module fails to load because it can't register ac97
 bus
@@ -52,14 +52,6 @@ I have attached the message log of a module load which shows the problem.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 08-15-05 19:55 
-----------------------------------------------------------------------
-The changes look OK to me.
-Could you make a patch to the CVS version including both changes?
-
-Thanks.
 
 ----------------------------------------------------------------------
  bdijkstra - 08-15-05 23:11 
@@ -86,6 +78,11 @@ ac97->bus->card->number, ac97->num);
                 snd_printk(KERN_ERR "Can't register ac97 bus\n");
                 ac97->dev.bus = NULL;
 
+----------------------------------------------------------------------
+ bdijkstra - 08-15-05 23:14 
+----------------------------------------------------------------------
+added same patch as a file attachment, in case you prefer it that way..
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -98,6 +95,9 @@ Date Modified  Username       Field                    Change
 08-14-05 14:19 bdijkstra      Note Added: 0005815                          
 08-15-05 19:55 tiwai          Note Added: 0005820                          
 08-15-05 23:11 bdijkstra      Note Added: 0005823                          
+08-15-05 23:14 bdijkstra      File Added: ac97_codec_name.patch                 
+  
+08-15-05 23:14 bdijkstra      Note Added: 0005824                          
 ======================================================================
 
 
