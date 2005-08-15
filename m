@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001338]: sound mute by default with snd_intel8x0
-Date: Mon, 15 Aug 2005 22:30:18 +0200
-Message-ID: <e7263459bc1ad084313680106f9c8083@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001334]: module fails to load because it can't register ac97 bus
+Date: Mon, 15 Aug 2005 23:11:12 +0200
+Message-ID: <46c60098c064e0cee32a8e4347ebc8fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE97C1E6
-	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 22:30:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BF941E6
+	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 23:11:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1338> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1334> 
 ======================================================================
-Reported By:                marius_andreiana
+Reported By:                bdijkstra
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1338
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1334
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               SuSE Linux
+Kernel Version:             2.6.13-rc5-git3-3-default
 ======================================================================
-Date Submitted:             08-15-2005 20:35 CEST
-Last Modified:              08-15-2005 22:30 CEST
+Date Submitted:             08-14-2005 00:13 CEST
+Last Modified:              08-15-2005 23:11 CEST
 ======================================================================
-Summary:                    sound mute by default with snd_intel8x0
+Summary:                    module fails to load because it can't register ac97
+bus
 Description: 
-My particular hardware:  Multimedia audio controller: Intel Corporation
-82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller
+The Hercules GameTheater XP card has two codecs of the same type (CS4294).
+The cs46xx driver tries to register these two codecs with the same name
+with the ac97 bus which then fails.
+I have attached the message log of a module load which shows the problem.
 
-Sound is mute until running alsamixer and moving up the volume for
-"External Amplifier", which is 0 by default. 
 
-Please set a resonable (90% ?) default value for that device as it
-prevents any sounds to play or fix it to work with 0 value too.
-
-Lots of details and other devices:
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144742
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=137637
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=140590
-
-Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-15-05 22:30 
+ tiwai - 08-15-05 19:55 
 ----------------------------------------------------------------------
-"Sound card mute by default" is not a bug, this is by design.  Besides this
-is policy so must stay out of the kernel.  The distro is reponsible for
-providing reasonable defaults for the mixer.
+The changes look OK to me.
+Could you make a patch to the CVS version including both changes?
+
+Thanks.
+
+----------------------------------------------------------------------
+ bdijkstra - 08-15-05 23:11 
+----------------------------------------------------------------------
+This is a patch against most recent cvs version of ac97_codec.c (1.194)
+--
+
+[PATCH] make ac97 codec device name unique
+
+Signed-off-by: Bjorge Dijkstra <bjorge@gmx.net>
+
+--- sound/pci/ac97/ac97_codec.c.org     2005-08-15 23:04:35.000000000
++0200
++++ sound/pci/ac97/ac97_codec.c 2005-08-15 23:03:50.000000000 +0200
+@@ -1829,7 +1829,7 @@
+        ac97->dev.parent = ac97->bus->card->dev;
+        ac97->dev.platform_data = ac97;
+        ac97->dev.release = ac97_device_release;
+-       strncpy(ac97->dev.bus_id, snd_ac97_get_short_name(ac97),
+BUS_ID_SIZE);
++       snprintf(ac97->dev.bus_id, BUS_ID_SIZE, "card%d-%d",
+ac97->bus->card->number, ac97->num);
+        if ((err = device_register(&ac97->dev)) < 0) {
+                snd_printk(KERN_ERR "Can't register ac97 bus\n");
+                ac97->dev.bus = NULL;
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-15-05 20:35 marius_andreianaNew Issue                                    
-08-15-05 22:30 rlrevell       Note Added: 0005822                          
+08-14-05 00:13 bdijkstra      New Issue                                    
+08-14-05 00:13 bdijkstra      File Added: cs46xx-error.log                    
+08-14-05 00:13 bdijkstra      Distribution              => SuSE Linux      
+08-14-05 00:13 bdijkstra      Kernel Version            =>
+2.6.13-rc5-git3-3-default
+08-14-05 00:21 bdijkstra      Note Added: 0005812                          
+08-14-05 14:19 bdijkstra      Note Added: 0005815                          
+08-15-05 19:55 tiwai          Note Added: 0005820                          
+08-15-05 23:11 bdijkstra      Note Added: 0005823                          
 ======================================================================
 
 
