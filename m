@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Getting the ALSA driver version
-Date: Mon, 15 Aug 2005 09:28:03 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0508150926590.9682@tm8103.perex-int.cz>
-References: <200508150015.18838.christian.esken-services@arcor.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Compulab sound device
+Date: Mon, 15 Aug 2005 09:41:17 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0508150936140.21757-100000@studcom.urz.uni-halle.de>
+References: <20050815030641.94973.qmail@web54605.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200508150015.18838.christian.esken-services@arcor.de>
+In-Reply-To: <20050815030641.94973.qmail@web54605.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +16,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Christian Esken <christian.esken-services@arcor.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Chow Raymond <usher_raymond82@yahoo.com>
+Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15 Aug 2005, Christian Esken wrote:
+Chow Raymond wrote:
+> Does ALSA support ac97 codec as a soundcard?
 
-> Hello,
-> 
-> for upcoming versions of KMix (the KDE Mixer Application), it will be 
-> possible to "tune" KMix's visual appearance according to:
-> 
-> (1) the installed sound card
-> (2) the users preference
-> (3) the installed/running driver
-> (4) the driver version
-> 
-> While I am able to find out (1), (2) and (3), I haven't been able to 
-> find out (4): The runtime ALSA version. More precisely, I am interested 
-> in the runtime ALSALIB version (but I reckon it is the same as the ALSA 
-> driver version in normal installations).
+An AC'97 codec is always connected to an AC'97 controller.  It's the
+controller that would be supported (or not) by ALSA.
 
-Look for snd_asoundlib_version() .
+> Im not too sure whether ac97 can work on the Compulab Armcore
+> board.
 
-						Jaroslav
+ALSA has a driver for the AC'97 controller in the PXA2xx chip
+(snd-pxa2xx-ac97).
 
------
-Jaroslav Kysela <perex@suse.cz>
+
+HTH
+Clemens
+
 
 
 -------------------------------------------------------
