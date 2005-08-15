@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001334]: module fails to load because it can't register ac97 bus
-Date: Mon, 15 Aug 2005 23:14:43 +0200
-Message-ID: <dd83b4b3a8b5c2b01a786f915e26e47f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001340]: sonud MAX driver not available
+Date: Mon, 15 Aug 2005 23:55:02 +0200
+Message-ID: <b9a5cfa189a5177519b02169a47ffe8a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7445E1E6
-	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 23:14:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FE541E7
+	for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2005 23:55:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,36 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1334> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1340> 
 ======================================================================
-Reported By:                bdijkstra
-Assigned To:                
+Reported By:                san_quest007
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1334
-Category:                   PCI - cs46xx
+Issue ID:                   1340
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux
-Kernel Version:             2.6.13-rc5-git3-3-default
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-14-2005 00:13 CEST
-Last Modified:              08-15-2005 23:14 CEST
+Date Submitted:             08-15-2005 23:55 CEST
+Last Modified:              08-15-2005 23:55 CEST
 ======================================================================
-Summary:                    module fails to load because it can't register ac97
-bus
+Summary:                    sonud MAX driver not available
 Description: 
-The Hercules GameTheater XP card has two codecs of the same type (CS4294).
-The cs46xx driver tries to register these two codecs with the same name
-with the ac97 bus which then fails.
-I have attached the message log of a module load which shows the problem.
-
-
+i checked for sound Max driver i didnt find any linxu driver for it . in
+this website also it's not listed. where do i get this driver.
 ======================================================================
-
-----------------------------------------------------------------------
- bdijkstra - 08-15-05 23:11 
-----------------------------------------------------------------------
-This is a patch against most recent cvs version of ac97_codec.c (1.194)
---
-
-[PATCH] make ac97 codec device name unique
-
-Signed-off-by: Bjorge Dijkstra <bjorge@gmx.net>
-
---- sound/pci/ac97/ac97_codec.c.org     2005-08-15 23:04:35.000000000
-+0200
-+++ sound/pci/ac97/ac97_codec.c 2005-08-15 23:03:50.000000000 +0200
-@@ -1829,7 +1829,7 @@
-        ac97->dev.parent = ac97->bus->card->dev;
-        ac97->dev.platform_data = ac97;
-        ac97->dev.release = ac97_device_release;
--       strncpy(ac97->dev.bus_id, snd_ac97_get_short_name(ac97),
-BUS_ID_SIZE);
-+       snprintf(ac97->dev.bus_id, BUS_ID_SIZE, "card%d-%d",
-ac97->bus->card->number, ac97->num);
-        if ((err = device_register(&ac97->dev)) < 0) {
-                snd_printk(KERN_ERR "Can't register ac97 bus\n");
-                ac97->dev.bus = NULL;
-
-----------------------------------------------------------------------
- bdijkstra - 08-15-05 23:14 
-----------------------------------------------------------------------
-added same patch as a file attachment, in case you prefer it that way..
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-05 00:13 bdijkstra      New Issue                                    
-08-14-05 00:13 bdijkstra      File Added: cs46xx-error.log                    
-08-14-05 00:13 bdijkstra      Distribution              => SuSE Linux      
-08-14-05 00:13 bdijkstra      Kernel Version            =>
-2.6.13-rc5-git3-3-default
-08-14-05 00:21 bdijkstra      Note Added: 0005812                          
-08-14-05 14:19 bdijkstra      Note Added: 0005815                          
-08-15-05 19:55 tiwai          Note Added: 0005820                          
-08-15-05 23:11 bdijkstra      Note Added: 0005823                          
-08-15-05 23:14 bdijkstra      File Added: ac97_codec_name.patch                 
-  
-08-15-05 23:14 bdijkstra      Note Added: 0005824                          
+08-15-05 23:55 san_quest007   New Issue                                    
 ======================================================================
 
 
