@@ -1,12 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Compulab sound device
-Date: Mon, 15 Aug 2005 09:41:17 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0508150936140.21757-100000@studcom.urz.uni-halle.de>
-References: <20050815030641.94973.qmail@web54605.mail.yahoo.com>
+Subject: Re: Maximum number of sound devices
+Date: Mon, 15 Aug 2005 09:50:57 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0508150943420.21757-100000@studcom.urz.uni-halle.de>
+References: <42FFAA92.10008@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050815030641.94973.qmail@web54605.mail.yahoo.com>
+In-Reply-To: <42FFAA92.10008@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,24 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chow Raymond <usher_raymond82@yahoo.com>
-Cc: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Robert Dunn <robert.j.dunn@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Chow Raymond wrote:
-> Does ALSA support ac97 codec as a soundcard?
+> Robert Dunn wrote:
+> > What is the maximum number of capture devices ALSA supports?
 
-An AC'97 codec is always connected to an AC'97 controller.  It's the
-controller that would be supported (or not) by ALSA.
+ALSA supports up to 8 sound cards, and up to 8 devices on one sound
+card.  (It's possible to increase the latter number by using
+subdevices.)
 
-> Im not too sure whether ac97 can work on the Compulab Armcore
-> board.
+It may be possible to hack the snd-usb-audio driver so that it
+pretends that multiple USB devices are one sound card.
 
-ALSA has a driver for the AC'97 controller in the PXA2xx chip
-(snd-pxa2xx-ac97).
+James Courtier-Dutton wrote:
+> The default is 8, but it can be changed with a module option for module
+> "snd"
+
+But it cannot be increased beyond 8 (as long as ALSA uses static
+device number allocation for its 8-bit minor numbers).
 
 
-HTH
+Regards,
 Clemens
 
 
