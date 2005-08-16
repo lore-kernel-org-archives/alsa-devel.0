@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0001343]: bitops not 64bit clean
-Date: Tue, 16 Aug 2005 20:49:39 +0200
-Message-ID: <d7c12df0605f79106d1e1cdb4acca7ae@bugtrack.alsa-project.org>
+Date: Tue, 16 Aug 2005 20:52:44 +0200
+Message-ID: <9afea37c219f50c0e5e6255c2db33bcc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3C281C5
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 20:49:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9CB81C5
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 20:52:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1343> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-16-2005 20:49 CEST
-Last Modified:              08-16-2005 20:49 CEST
+Last Modified:              08-16-2005 20:52 CEST
 ======================================================================
 Summary:                    bitops not 64bit clean
 Description: 
@@ -109,10 +109,18 @@ alsa-tools-1.0.9.mine/ld10k1/src/bitops.h
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 08-16-05 20:52 
+----------------------------------------------------------------------
+Um, what are those being used for?  I don't think the emu10k1 has any 64
+bit registers so why on earth would you need to set a bit in a 64 bit
+variable?  Are you sure they are not supposed to be u32?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-16-05 20:49 jdthood        New Issue                                    
+08-16-05 20:52 rlrevell       Note Added: 0005832                          
 ======================================================================
 
 
