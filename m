@@ -1,14 +1,13 @@
-From: "Cephas Reed" <Cephas5574@keke.com>
-Subject: =?iso-8859-1?Q?VI=C4GRRA_Special_Offr?=
-Date: Tue, 16 Aug 2005 15:39:15 -0500
-Message-ID: <004901c5a2a2$90f05b80$6bc4a8c0@unveil>
+From: Kai Vehmanen <kvehmanen@eca.cx>
+Subject: Re: [linux-audio-user] midi and ecasound
+Date: Wed, 17 Aug 2005 00:48:44 +0300 (EEST)
+Message-ID: <Pine.LNX.4.62.0508170033020.26977@ecabase.localdomain>
+References: <43645.192.168.0.2.1123890071.squirrel@192.168.0.2>
+ <46225.192.168.0.2.1123891721.squirrel@192.168.0.2> <1123884862.12680.62.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0046_01C5A278.A81A5380"
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from keke.com (211.Red-80-37-20.pooles.rima-tde.net [80.37.20.211])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 900AB147
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 22:39:22 +0200 (MEST)
+In-Reply-To: <1123884862.12680.62.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Augusto Dickey <alsa-devel@alsa-project.org>
+To: A list for linux audio users <linux-audio-user@music.columbia.edu>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------=_NextPart_000_0046_01C5A278.A81A5380
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+On Fri, 12 Aug 2005, Lee Revell wrote:
+> Um, /dev/snd/midi* are not supposed to be used directly by applications.
+> They are intended to be accessed via alsa-lib.
 
-Hello, 
-Bezrodny  (Tastless  or Familyless).  Many `proletarian writers  adopteda=
-nd =
- pours out in all directions. The moon rules and plays,  the moon dances =
-    On  a  dark background  of  photographic paper, some black  =
-handwritten     Among  those who  rushed  to him  was  Rimsky. The =
-master of ceremonies     Ill turn it over, Kanavkin said quietly.     =
-One ought to remember trifles, too. Here Pilate turned, picked up the    =
- General  applause greeted the artiste. The surprised Nikanor  =
-Ivanovichinto  the  city, and after them rode a  Syrian  military =
-patrol, which Judas     Heres  the  contract... that vermin of an  =
-interpreter stuck  me withsuit ... Waaa! ... Stretching her mouth, which =
-had lost all shape entirely,them  and  came  back,  both  copies  now =
-bearing  the  foreigners sweepingbut still there might be some hitch or =
-delay.     It is always one and the same thing that  awakens the scholar =
-and draws(Russian  Association of Proletarian  Writers),  one of  =
-Bulgakovs fiercestbefore last, near  the temple, I  made the =
-acquaintance  of a young man  who     And what was this magicians name? =
-Vassily Stepanovich did not know, he
+has there been (or is under planning) any major changes to this, or known 
+problems?
 
-------=_NextPart_000_0046_01C5A278.A81A5380
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Ecasound (and many other apps) has used /dev/snd/midi* with no reported 
+problems for many years now (at least since ALSA 0.6.x). See for example:
+    http://lalists.stanford.edu/lad/2001/Apr/0176.html
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
-border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>Welco</TD><TD></TD><TD =
-rowSpan=3D2>RE</TD><TD></TD><TD rowSpan=3D2>&nbsp;- Save huge 70% on all =
-=
-the 0rders w</TD><TD></TD><TD rowSpan=3D2>ith =
-us.</TD><TD></TD><TR><TD>me to PharmcyByMail =
-ST0</TD><TD></TD></TR></TABLE></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
-border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>We are the =
-on</TD><TD></TD><TD rowSpan=3D2>re which gives this =
-g</TD><TD></TD><TR><TD>ly sto</TD><TD>reat deal to =
-you!</TD></TR></TABLE></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR =
-vAlign=3Dbottom><TD rowSpan=3D2><FONT face=3DArial =
-size=3D4>Vl</FONT></TD><TD><FONT face=3DArial size=3D4></FONT></TD><TD =
-rowSpan=3D2><FONT face=3DArial size=3D4>lS VALl</FONT></TD><TD><FONT =
-face=3DArial size=3D4></FONT></TD><TD rowSpan=3D2><FONT face=3DArial =
-size=3D4>d many other d</FONT></TD><TD><FONT face=3DArial =
-size=3D4></FONT></TD><TD rowSpan=3D2><FONT face=3DArial =
-size=3D4>ore</FONT></TD><TD><FONT face=3DArial =
-size=3D4></FONT></TD></TR><TR><TD><FONT face=3DArial size=3D4>AGRA =
-ClAL</FONT></TD><TD><FONT face=3DArial size=3D4>UM =
-an</FONT></TD><TD><FONT face=3DArial size=3D4>rugs in our =
-st</FONT></TD></TR></TABLE></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><A href=3D"http://www.rupcr.ontatubiber.com">Check =
-=
-out our new PRlCES</A></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Have a nice day.</FONT></DIV></BODY></HTML>
+I understand the general principle of getting rid of all direct 
+"user-space apps <-> ALSA kernel modules" interactions, but in this case 
+I'd like to stick with the current code until there's some practical 
+reason to update (adding support for ALSA sequencer API is another thing). 
+The good ol' read/write interface is quite sufficient for rawmidi, and you 
+can cover many use-cases with one piece of code (ALSA, OSS, pipes, etc)...
 
-------=_NextPart_000_0046_01C5A278.A81A5380--
+PS In this case not using alsa-lib is obviously not the problem as
+    the same thing happens with /dev/midi*...
 
+--
+  links, my public keys, etc at http://eca.cx/kv
 
 
 -------------------------------------------------------
