@@ -1,18 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: proper suspend / resume for PCM streams
-Date: Tue, 16 Aug 2005 13:33:58 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0508161328050.9566@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0508152139420.9682@tm8103.perex-int.cz>
- <s5h8xz2xiiz.wl%tiwai@suse.de> <Pine.LNX.4.61.0508161254410.9566@tm8103.perex-int.cz>
- <s5h64u6xhpc.wl%tiwai@suse.de> <Pine.LNX.4.61.0508161315320.9566@tm8103.perex-int.cz>
- <s5h4q9qxgw4.wl%tiwai@suse.de>
+From: John Shillinglaw <ianchas@sc.rr.com>
+Subject: Writing alsa driver for Roland Sound Canvas SCP-55 pcmcia card
+Date: Tue, 16 Aug 2005 07:43:25 -0400
+Message-ID: <1124192606.15433.5.camel@Pippin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 466F81FB
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 13:33:59 +0200 (MEST)
-In-Reply-To: <s5h4q9qxgw4.wl%tiwai@suse.de>
+Received: from ms-smtp-03-eri0.southeast.rr.com (ms-smtp-03-lbl.southeast.rr.com [24.25.9.102])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 06ECF1FB
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 13:43:30 +0200 (MEST)
+Received: from [192.168.1.25] (cpe-065-188-052-217.sc.res.rr.com [65.188.52.217])
+	by ms-smtp-03-eri0.southeast.rr.com (8.12.10/8.12.7) with ESMTP id j7GBhRY4000812
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 07:43:28 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +21,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16 Aug 2005, Takashi Iwai wrote:
+Hello,
 
-> > Yes, but they don't have set the INFO_RESUME flag, thus the midlevel
-> > returns an error code for the resule ioctl...
-> 
-> That's the very problem.  We can't see whether the device suppose PM
-> or not from this level.  So, from the app level, it can't see whether
-> the PM is possible or not.
+I am starting to write a driver for Roland's SCP-55 pcmcia sound card
+( midi port at 330, 2 channels of audio play/record, and internal GM
+synth ).
 
-It's not a problem. If the driver does not support resume, the SUSPENDED 
-PCM state never occurs. Thus the -ESTRPIPE error code won't be ever seen 
-with an application.
+I have the old drivers from the person who was previously working on a
+driver for this card, and have found the driver writing documentation
+from alsa-project.org which focuses on pci cards.
 
-> > It's not about error handling, it's about PCM state handling.
-> > As I said, we may add some helper functions to handle these states in some 
-> > default way (like aplay does) and rest of applications will do the state 
-> > handling itself.
-> 
-> Well, what's the difference of error handling and PCM state handling?
-> 
-> The point in my last post is that both mean the same for almost all
-> cases.  I.e. when snd_pcm_readx/writex() (or avail & mmap) receives
-> -EXXX, do the standard error handling.  Nothing else is required.
+Can anyone point me to resources and help for developing an alsa driver
+for a pcmcia card?
 
-Okay, the error code carries the state information, but the point is 
-that the application should do necessary things in this stage like:
+Thanks,
+John Shillinglaw
 
-1) try recovery from resume and continue (standard players)
-2) stop the stream and tell to the user that he/she is stupid to do such 
-   things for live performance (for example JACK will do it ;-))
-
-The point is that the application must decide what to do with this state.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
