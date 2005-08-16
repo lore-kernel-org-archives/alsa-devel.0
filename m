@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: proper suspend / resume for PCM streams
-Date: Tue, 16 Aug 2005 12:57:32 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0508161254410.9566@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0508152139420.9682@tm8103.perex-int.cz>
- <s5h8xz2xiiz.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
+Date: Tue, 16 Aug 2005 12:56:29 +0200
+Message-ID: <352dde4b0031fadbdb1c7318b539ea25@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A401F1AA
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 12:57:32 +0200 (MEST)
-In-Reply-To: <s5h8xz2xiiz.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D824127
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 12:56:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,40 +18,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16 Aug 2005, Takashi Iwai wrote:
 
-> > 	For the first glance: cs4281.c and es1968.c drivers are restoring 
-> > the registers, so it appears that the full resume should work for them.
-> 
-> Do we need another flag, then?  Currently, alsa-lib doesn't handle the
-> cases with a half-way suspend/resume support as most of drivers
-> provide.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
+======================================================================
+Reported By:                tek01
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1300
+Category:                   ISA - ad1816a
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12.3 and 2.6.13-rc4
+======================================================================
+Date Submitted:             08-02-2005 16:56 CEST
+Last Modified:              08-16-2005 12:56 CEST
+======================================================================
+Summary:                    modprobe goes into D-state when inserting
+snd-ad1816a
+Description: 
+Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
+causes the modprobe process to go into D-state forever. 
 
-I don't understand the requirement for the new flag. Could you explain?
+Linux 2.6.11.12 has been tested and is working fine.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001301 Kernel OSS emulation stops working afte...
+related to          0001302 Clicking noise when using kphone with t...
+======================================================================
 
-> Nevertheless, the current way of snd_pcm_resume() is quite
-> user-unfriendly.  snd_pcm_prepare() and other complex procedure must
-> be handled inside snd_pcm_resume(), instead of forcing each app to do
-> it.
-> 
-> Also we can provide a standard PCM error handling routine to do the
-> standard job like XRUN and PM recovery, too.
+----------------------------------------------------------------------
+ perex - 08-16-05 01:25 
+----------------------------------------------------------------------
+Could you check, if you have a mpu401 driver loaded and attached to the PnP
+core in your system? You can inspect /sys/bus/pnp/drivers directory....
 
-Well, I'm not against a helper function for really simple apps, but there 
-is drastic difference between resume and restart of the PCM stream 
-(buffering), so the enhanced applications must have a way to know about 
-these events.
+----------------------------------------------------------------------
+ tek01 - 08-16-05 12:56 
+----------------------------------------------------------------------
+You are absolutly right. The snd-mpu401 module gets loaded earlier during
+system startup. After unloading the snd-mpu401 module the snd-ad1816a
+module loads fine. 
+I'll check if #1301 and #1302 are still valid with 2.6.13-rc6.
 
-						Jaroslav
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-02-05 16:56 tek01          New Issue                                    
+08-02-05 16:56 tek01          Distribution              => Debian Sarge    
+08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
+2.6.13-rc4
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-02-05 22:26 perex          Note Added: 0005609                          
+08-03-05 10:10 perex          Relationship added       related to 0001301  
+08-03-05 10:11 perex          Relationship added       related to 0001302  
+08-09-05 12:57 perex          Assigned To               => perex           
+08-09-05 12:57 perex          Status                   new => feedback     
+08-13-05 22:51 tek01          Note Added: 0005811                          
+08-15-05 14:32 perex          File Added: pnp-card.c.patch                    
+08-15-05 14:33 perex          Note Added: 0005818                          
+08-15-05 20:34 tek01          Note Added: 0005821                          
+08-16-05 01:25 perex          Note Added: 0005825                          
+08-16-05 12:56 tek01          Note Added: 0005828                          
+======================================================================
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
 
 
 -------------------------------------------------------
