@@ -1,14 +1,11 @@
-From: Guilherme Fonseca <gfonsecabr@gmail.com>
-Subject: Re: No sound with snd_atiixp driver
-Date: Tue, 16 Aug 2005 18:08:06 -0400
-Message-ID: <81d03f6f05081615081056511a@mail.gmail.com>
-References: <81d03f6f05081306427c167f1@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: "Dean George" <dgeorge@rfznet.net>
+Subject: Start Accepting Credit Cards
+Date: Tue, 16 Aug 2005 17:17:33 -0500
+Message-ID: <E1E59kc-0007cD-0d@mail.sourceforge.net>
+Reply-To: dgeorge@rfznet.net
+Content-Type: text/html;
+	charset="us-ascii"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <81d03f6f05081306427c167f1@mail.gmail.com>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,52 +18,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Problem solved! Everything works fine after I turned on External
-Amplifier on KMix.
+<html>
+<body>
+<div align="center">
+  <table width="500" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><a href='http://rfznet.net/080E131E01135F161704171E321E1B0106015C011D07001117141D0015175C1C17060E454747454A0E4B0E400E404B42434A44460E08.aspx'><img src="http://images.rfznet.net/a2zfiles/r/remark/mes3cid3/img1.jpg" width="500" height="322" border="0"></a></td>
+    </tr>
+    <tr>
+      <td><a href='http://rfznet.net/080E131E01135F161704171E321E1B0106015C011D07001117141D0015175C1C17060E454747454A0E4B0E400E404A424740434A0E08.aspx'><img src="http://images.rfznet.net/a2zfiles/r/remark/mes2cid2/img2.gif" width="500" height="46" border="0"></a></td>
+    </tr>
+    <tr>
+      <td><img src="http://images.rfznet.net/a2zfiles/r/remark/mes2cid2/img3.gif" width="500" height="42"></td>
+    </tr>
+  </table>
+  </div>
+<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
+<div align='center'><a href='http://rfznet.net/080E131E01135F161704171E321E1B0106015C011D07001117141D0015175C1C17060E454747454A0E4B0E08.aspx'><img src='http://rfznet.net/img.gif' width='531' height='80' border='0'></a>
+<font size='1' face='Arial, Helvetica, sans-serif'><br><img src='http://rfznet.net/080E131E01135F161704171E321E1B0106015C011D07001117141D0015175C1C17060E454747454A0E4B0E430E420E08.aspx'>
+</font><font color="#999999" face="arial, verdana" size="2">Remark International Limited &#183; 50 W. Dundee Rd. &#183; Wheeling, IL 60090<br>This e-mail message is an advertisement and/or solicitation.</font></p></td></tr></table></body>
+</html>
 
-Guilherme
 
-On 8/13/05, Guilherme Fonseca <gfonsecabr@gmail.com> wrote:
-> I recently bought an HP L2000 laptop (Turion processor). I installed
-> Fedora Core 4 (x64 version) and I can't get sound to work. The sound
-> card is detected to use the snd_atiixp driver, but no sound plays. The
-> information I get from lspci is:
->=20
-> 0:14.5 Multimedia audio controller: ATI Technologies Inc: Unknown
-> device 4370 (rev 02)
->        Subsystem: Hewlett-Packard Company: Unknown device 3091
->        Flags: bus master, 66Mhz, slow devsel, latency 64, IRQ 10
->        Memory at c0003400 (32-bit, non-prefetchable) [size=3D256]
->        Capabilities: [40] Message Signalled Interrupts: 64bit-
-> Queue=3D0/0 Enable-
->=20
-> I think all the modules are loaded correctly:
->=20
-> [root@localhost fonseca]# /sbin/lsmod |grep snd
-> snd_atiixp             27105  1
-> snd_ac97_codec         98437  1 snd_atiixp
-> snd_seq_dummy           4677  0
-> snd_seq_oss            45477  0
-> snd_seq_midi_event     11713  1 snd_seq_oss
-> snd_seq                79769  5 snd_seq_dummy,snd_seq_oss,snd_seq_midi_ev=
-ent
-> snd_seq_device         11217  3 snd_seq_dummy,snd_seq_oss,snd_seq
-> snd_pcm_oss            63089  0
-> snd_mixer_oss          20673  1 snd_pcm_oss
-> snd_pcm               122957  3 snd_atiixp,snd_ac97_codec,snd_pcm_oss
-> snd_timer              38217  2 snd_seq,snd_pcm
-> snd                    69697  11
-> snd_atiixp,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,=
-snd_mixer_oss,snd_pcm,snd_timer
-> soundcore              13409  1 snd
-> snd_page_alloc         12105  2 snd_atiixp,snd_pcm
->=20
-> Anybody has any ideas? If you need more information, I'll be glad to prov=
-ide.
->=20
-> Thank you very much,
-> Guilherme
->
 
 
 -------------------------------------------------------
