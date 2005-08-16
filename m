@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001341]: No volume control
-Date: Tue, 16 Aug 2005 12:54:16 +0200
-Message-ID: <2e4d6bcbafe490b3d3a7190d3622af15@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: proper suspend / resume for PCM streams
+Date: Tue, 16 Aug 2005 12:57:32 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0508161254410.9566@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0508152139420.9682@tm8103.perex-int.cz>
+ <s5h8xz2xiiz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D4C71F1
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 12:54:16 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A401F1AA
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 12:57:32 +0200 (MEST)
+In-Reply-To: <s5h8xz2xiiz.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +20,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 16 Aug 2005, Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1341> 
-======================================================================
-Reported By:                chui101
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1341
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Arch
-Kernel Version:             2.6.12-ARCH
-======================================================================
-Date Submitted:             08-16-2005 12:51 CEST
-Last Modified:              08-16-2005 12:54 CEST
-======================================================================
-Summary:                    No volume control
-Description: 
-Initially, there was no sound, but to enable sound output the "IEC958
-Capture Monitor" switch must be turned off.
+> > 	For the first glance: cs4281.c and es1968.c drivers are restoring 
+> > the registers, so it appears that the full resume should work for them.
+> 
+> Do we need another flag, then?  Currently, alsa-lib doesn't handle the
+> cases with a half-way suspend/resume support as most of drivers
+> provide.
 
-Once there is sound, there is no way to control the volume. All the volume
-sliders in the playback tab of the GNOME Volume Control are functionless.
-PCM appears as a switch, perhaps it should be a slider?
-======================================================================
+I don't understand the requirement for the new flag. Could you explain?
 
-----------------------------------------------------------------------
- chui101 - 08-16-05 12:54 
-----------------------------------------------------------------------
-The IEC958 switch only appears to affect sound streamed through OSS.
+> Nevertheless, the current way of snd_pcm_resume() is quite
+> user-unfriendly.  snd_pcm_prepare() and other complex procedure must
+> be handled inside snd_pcm_resume(), instead of forcing each app to do
+> it.
+> 
+> Also we can provide a standard PCM error handling routine to do the
+> standard job like XRUN and PM recovery, too.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-16-05 12:51 chui101        New Issue                                    
-08-16-05 12:51 chui101        Distribution              => Arch            
-08-16-05 12:51 chui101        Kernel Version            => 2.6.12-ARCH     
-08-16-05 12:54 chui101        Note Added: 0005827                          
-======================================================================
+Well, I'm not against a helper function for really simple apps, but there 
+is drastic difference between resume and restart of the PCM stream 
+(buffering), so the enhanced applications must have a way to know about 
+these events.
 
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
