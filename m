@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Tue, 16 Aug 2005 16:52:46 +0200
-Message-ID: <f9b73afb36b5c60ba043530017028ec7@bugtrack.alsa-project.org>
+Date: Tue, 16 Aug 2005 16:53:45 +0200
+Message-ID: <be6599908de7bbdb84d2b04c7fc6b934@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A90C91FD
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 16:52:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13CBA1FD
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 16:53:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
 ======================================================================
@@ -35,13 +35,13 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     feedback
 Distribution:               Gentoo AMD64 2005.0
 Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
 20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
 Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              08-16-2005 16:52 CEST
+Last Modified:              08-16-2005 16:53 CEST
 ======================================================================
 Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
 playing any sound.
@@ -70,12 +70,6 @@ That thread concluded with no solution but to revert to OSS.
 ======================================================================
 
 ----------------------------------------------------------------------
- colding - 07-23-05 15:47 
-----------------------------------------------------------------------
-"Fixed" by downgrading to OSS. Not exactly what I had in mind, but now I
-have sound.
-
-----------------------------------------------------------------------
  pzad - 08-16-05 12:34 
 ----------------------------------------------------------------------
 "Audigy Analog/Digital Output Jack" should be muted - otherways card is in
@@ -98,6 +92,7 @@ Processor 252 AuthenticAMD GNU/Linux
 07-23-05 15:47 colding        Note Added: 0005553                          
 08-16-05 12:34 pzad           Note Added: 0005826                          
 08-16-05 16:52 rlrevell       Note Added: 0005829                          
+08-16-05 16:53 rlrevell       Status                   new => feedback     
 ======================================================================
 
 
