@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0001343]: bitops not 64bit clean
-Date: Tue, 16 Aug 2005 20:52:44 +0200
-Message-ID: <9afea37c219f50c0e5e6255c2db33bcc@bugtrack.alsa-project.org>
+Date: Tue, 16 Aug 2005 21:13:14 +0200
+Message-ID: <787ad209eb27992e2532f839c23dd20f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9CB81C5
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 20:52:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BB89205
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 21:13:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-16-2005 20:49 CEST
-Last Modified:              08-16-2005 20:52 CEST
+Last Modified:              08-16-2005 21:13 CEST
 ======================================================================
 Summary:                    bitops not 64bit clean
 Description: 
@@ -116,11 +116,17 @@ Um, what are those being used for?  I don't think the emu10k1 has any 64
 bit registers so why on earth would you need to set a bit in a 64 bit
 variable?  Are you sure they are not supposed to be u32?
 
+----------------------------------------------------------------------
+ pzad - 08-16-05 21:13 
+----------------------------------------------------------------------
+This is used to set used (valid) GPRs, TRAM, code maps in CODE_POKE ioctl.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-16-05 20:49 jdthood        New Issue                                    
 08-16-05 20:52 rlrevell       Note Added: 0005832                          
+08-16-05 21:13 pzad           Note Added: 0005833                          
 ======================================================================
 
 
