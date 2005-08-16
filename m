@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001334]: module fails to load because it can't register ac97 bus
-Date: Tue, 16 Aug 2005 18:05:49 +0200
-Message-ID: <7f2d327a69c38e781e3b589b8119113a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001339]: does audio driver for Intel 945 chipset exist?
+Date: Tue, 16 Aug 2005 18:17:22 +0200
+Message-ID: <c7e5788d0b0b9e26f53e43ae518d8962@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DC081FD
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 18:05:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AB391FD
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2005 18:17:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1334> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1339> 
 ======================================================================
-Reported By:                bdijkstra
-Assigned To:                tiwai
+Reported By:                zhllg
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1334
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1339
+Category:                   PCI - intel8x0m
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               SuSE Linux
-Kernel Version:             2.6.13-rc5-git3-3-default
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-14-2005 00:13 CEST
-Last Modified:              08-16-2005 18:05 CEST
+Date Submitted:             08-15-2005 20:39 CEST
+Last Modified:              08-16-2005 18:17 CEST
 ======================================================================
-Summary:                    module fails to load because it can't register ac97
-bus
+Summary:                    does audio driver for Intel 945 chipset exist?
 Description: 
-The Hercules GameTheater XP card has two codecs of the same type (CS4294).
-The cs46xx driver tries to register these two codecs with the same name
-with the ac97 bus which then fails.
-I have attached the message log of a module load which shows the problem.
-
-
+as stated in the title
 ======================================================================
 
 ----------------------------------------------------------------------
- bdijkstra - 08-15-05 23:14 
+ tiwai - 08-16-05 18:17 
 ----------------------------------------------------------------------
-added same patch as a file attachment, in case you prefer it that way..
-
-----------------------------------------------------------------------
- tiwai - 08-16-05 18:05 
-----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+It's either snd-hda-intel or snd-intel8x0, depending on the board.
+ICH6/7 has both HDA and AC97 interface.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-05 00:13 bdijkstra      New Issue                                    
-08-14-05 00:13 bdijkstra      File Added: cs46xx-error.log                    
-08-14-05 00:13 bdijkstra      Distribution              => SuSE Linux      
-08-14-05 00:13 bdijkstra      Kernel Version            =>
-2.6.13-rc5-git3-3-default
-08-14-05 00:21 bdijkstra      Note Added: 0005812                          
-08-14-05 14:19 bdijkstra      Note Added: 0005815                          
-08-15-05 19:55 tiwai          Note Added: 0005820                          
-08-15-05 23:11 bdijkstra      Note Added: 0005823                          
-08-15-05 23:14 bdijkstra      File Added: ac97_codec_name.patch                 
-  
-08-15-05 23:14 bdijkstra      Note Added: 0005824                          
-08-16-05 18:05 tiwai          Status                   new => resolved     
-08-16-05 18:05 tiwai          Resolution               open => fixed       
-08-16-05 18:05 tiwai          Assigned To               => tiwai           
-08-16-05 18:05 tiwai          Note Added: 0005830                          
+08-15-05 20:39 zhllg          New Issue                                    
+08-16-05 18:17 tiwai          Note Added: 0005831                          
 ======================================================================
 
 
