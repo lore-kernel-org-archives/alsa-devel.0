@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001347]: unable to configure sound card
-Date: Wed, 17 Aug 2005 11:05:08 +0200
-Message-ID: <bcb86752da6fd010fa64a91cf6f242cb@bugtrack.alsa-project.org>
+Date: Wed, 17 Aug 2005 11:24:35 +0200
+Message-ID: <a5343170bfe663c5909d5885ccfd2ad8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C83D8210
-	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 11:05:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AC31210
+	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 11:24:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Knoppix 4.0
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             08-17-2005 11:05 CEST
-Last Modified:              08-17-2005 11:05 CEST
+Last Modified:              08-17-2005 11:24 CEST
 ======================================================================
 Summary:                    unable to configure sound card
 Description: 
@@ -176,12 +176,20 @@ anyway, you get the point..
 can you please assist??
 ======================================================================
 
+----------------------------------------------------------------------
+ CptS - 08-17-05 11:24 
+----------------------------------------------------------------------
+ps. I've read the other PCI nm256 issues and found 2 identical threads, the
+problem is that they are un-resolved... Please HELP! (i can't afford a new
+laptop :))
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-17-05 11:05 CptS           New Issue                                    
 08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
 08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
+08-17-05 11:24 CptS           Note Added: 0005835                          
 ======================================================================
 
 
