@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001343]: bitops not 64bit clean
-Date: Wed, 17 Aug 2005 12:23:04 +0200
-Message-ID: <fcea75d2b165ffd95182cb322fdc5ee4@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Compulab sound device
+Date: Wed, 17 Aug 2005 15:40:06 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0508171538200.19860-100000@studcom.urz.uni-halle.de>
+References: <20050816125813.75232.qmail@web54609.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6223B203
-	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 12:23:04 +0200 (MEST)
+In-Reply-To: <20050816125813.75232.qmail@web54609.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,116 +16,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Chow Raymond <usher_raymond82@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Chow Raymond wrote:
+> I can't compile a newer kernel version. This is
+> because Compulab Armcore only supports till kernel
+> 2.6.7 and in that contains ALSA 1.0.4.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1343> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1343
-Category:                   ld10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-16-2005 20:49 CEST
-Last Modified:              08-17-2005 12:23 CEST
-======================================================================
-Summary:                    bitops not 64bit clean
-Description: 
-Quoting Debian bug report #323331:
+You could backport the ARM audio changes between 2.6.7 and 2.6.12, or
+you could port Compulab's changes (if any) to 2.6.12.
 
-Package: ld10k1
-Version: 1.0.9-1
 
-On all 64bit systems (the easiest example is amd64) ld10k1 crashes on
-use by lo10k1, some debugging tracked down the problem fairly quickly.
-
-The bitops functions (set_bit and associated) that ld10k1 use come from
-the linux kernel, and assume that longs are 32bit only, causing a buffer
-overflow of the bit buffer.
-
-The attached patch fixes the bitops to be independent of the size of
-longs, and is confirmed to fix the bug on my box.
-
-Zephaniah E. Hull.
-
-diff -ur alsa-tools-1.0.9/ld10k1/src/bitops.h
-alsa-tools-1.0.9.mine/ld10k1/src/bitops.h
---- alsa-tools-1.0.9/ld10k1/src/bitops.h	2005-03-18 08:41:02.000000000
--0500
-+++ alsa-tools-1.0.9.mine/ld10k1/src/bitops.h	2005-08-15
-23:24:46.000000000 -0400
-@@ -15,13 +15,17 @@
-  * 
-  * C language equivalents written by Theodore Ts'o, 9/26/92
-  */
-+/*
-+ * Converted to be independent of the size of longs.
-+ * Zephaniah E. Hull 2005-08-15.
-+ */
- 
- __inline__ int set_bit(int nr, unsigned long * addr)
- {
- 	int	mask, retval;
- 
--	addr += nr >> 5;
--	mask = 1 << (nr & 0x1f);
-+	addr += nr >> (sizeof(long) + 1);
-+	mask = 1 << (nr & (sizeof(long) * 8 - 1));
- 	retval = (mask & *addr) != 0;
- 	*addr |= mask;
- 	return retval;
-@@ -31,8 +35,8 @@
- {
- 	int	mask, retval;
- 
--	addr += nr >> 5;
--	mask = 1 << (nr & 0x1f);
-+	addr += nr >> (sizeof(long) + 1);
-+	mask = 1 << (nr & (sizeof(long) * 8 - 1));
- 	retval = (mask & *addr) != 0;
- 	*addr &= ~mask;
- 	return retval;
-@@ -42,8 +46,8 @@
- {
- 	int	mask;
- 
--	addr += nr >> 5;
--	mask = 1 << (nr & 0x1f);
-+	addr += nr >> (sizeof(long) + 1);
-+	mask = 1 << (nr & (sizeof(long) * 8 - 1));
- 	return ((mask & *addr) != 0);
- }
-
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 08-16-05 21:13 
-----------------------------------------------------------------------
-This is used to set used (valid) GPRs, TRAM, code maps in CODE_POKE ioctl.
-
-----------------------------------------------------------------------
- tiwai - 08-17-05 12:23 
-----------------------------------------------------------------------
-Could you upload the patch file to be applicable to CVS?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-16-05 20:49 jdthood        New Issue                                    
-08-16-05 20:52 rlrevell       Note Added: 0005832                          
-08-16-05 21:13 pzad           Note Added: 0005833                          
-08-17-05 12:23 tiwai          Note Added: 0005836                          
-======================================================================
-
+HTH
+Clemens
 
 
 
