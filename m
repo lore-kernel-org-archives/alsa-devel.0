@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Thu, 18 Aug 2005 18:31:59 +0200
-Message-ID: <11616e8e7af74067bb6ee2195f102a29@bugtrack.alsa-project.org>
+From: "Alfredo Rueda Unsain" <alfredo@vida-software.com>
+Subject: Render audio data from a push source using event driven model
+Date: Wed, 17 Aug 2005 20:53:32 +0200
+Message-ID: <web-708262@vida-software.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDC5C1D5
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 18:31:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,118 +15,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
-======================================================================
-Reported By:                Xero
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              08-18-2005 18:31 CEST
-======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
-Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+I'm developing a Linux server that use poll as the event
+notification schema.
 
-This starts showing up when I start pressing play again:
+The server must render audio that receives from a push=20
+source in real time.
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+When I receive a UDP Datagram (audio packet) I must render=20
+the packet using write in NON BLOCKING mode.
 
+I have read all the ALSA documentation (including the=20
+examples) but I'm not sure how to proceed. The examples=20
+that use poll, use the snd_pcm_sw_params_set_avail_min=20
+function to specify when they want to be notified in order=20
+to write audio samples without blocking.
 
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
+In this sense I could use the following schema:
 
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
+When I receive an audio packet, store the packet in a FIFO=20
+queue.
+Use snd_pcm_sw_params_set_avail_min to specify the number=20
+of samples of an audio packet.
+When ALSA notifies the server, consume the next packet=20
+from the FIFO and write the packet.
+ =20
+I'm using another approach:
 
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
+1. Open the PCM device (with SND_PCM_NONBLOCK flag).
+2. Setup the PCM device (using=20
+snd_pcm_sw_params_set_start_threshold to prefetch 3=20
+packets).
+3. Prepare the PCM device. (What is the purpose of=20
+snd_pcm_prepare function?
+	I have read the states of a PCM device but, don't=20
+understand the changes between
+	SETUP and PREPARED states).
+4. When I receive an audio packet:
+	a) If there is enough space in the audio buffer, render=20
+the packet directly using snd_pcm_writei.
+	b) else, drop the packet.
 
-Attached is my asoundrc.
-======================================================================
+    The problem is that before calling snd_pcm_writei, I=20
+call snd_pcm_avail_update and returns only 336 samples to=20
+deliver (only 1 channel).
 
-----------------------------------------------------------------------
- perex - 08-18-05 13:06 
-----------------------------------------------------------------------
-The official fix is in ALSA CVS and will be available in 1.0.10rc1.
+    The examples show that event driven programs must use=20
+snd_pcm_sw_params_set_avail_min,
+    but I don't understant why snd_pcm_avail_update=20
+returns only 336 samples if I call snd_pcm_prepare a lot=20
+of seconds before.
 
-----------------------------------------------------------------------
- Xero - 08-18-05 18:31 
-----------------------------------------------------------------------
-I have never used suspend to disk on this computer, so I wouldn't know. I
-will have to try out CVS when I get the chance.
+    What is the right approach to proceed in this=20
+scenario?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
-06-27-05 16:22 tiwai          Note Added: 0005275                          
-06-27-05 22:05 Xero           Note Added: 0005288                          
-06-27-05 22:41 Xero           Note Added: 0005289                          
-08-01-05 23:43 skandalfo      Note Added: 0005597                          
-08-01-05 23:50 Xero           Note Added: 0005598                          
-08-15-05 14:59 perex          Status                   new => assigned     
-08-15-05 14:59 perex          Assigned To               => perex           
-08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
-direct PCM plugins (dmix+)
-08-18-05 12:00 perex          Note Added: 0005842                          
-08-18-05 13:06 perex          Note Added: 0005845                          
-08-18-05 13:10 perex          Status                   assigned => feedback
-08-18-05 18:31 Xero           Note Added: 0005850                          
-======================================================================
+    Thank you very much for your help.
 
-
+     Alfredo Rueda.
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
+es
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
+A
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
