@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001348]: On compaq persario v2311us external Amp needs to be turned on by defalt
-Date: Wed, 17 Aug 2005 16:49:28 +0200
-Message-ID: <8dc8d147a52a6ee522546f11568c2e6a@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: Alsa mix in HW
+Date: Wed, 17 Aug 2005 12:42:26 -0400
+Message-ID: <1124296946.3591.10.camel@mindpipe>
+References: <42EBAE72.9090608@e4a.it>  <430330CF.3090006@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DEDB224
-	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 16:49:28 +0200 (MEST)
+In-Reply-To: <430330CF.3090006@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +17,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2005-08-17 at 20:42 +0800, Raymond wrote:
+> Do anyone have a list of the sound cards ( alsa driver ) which support
+> the above features ? 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1348> 
-======================================================================
-Reported By:                J5
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1348
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             08-17-2005 16:49 CEST
-Last Modified:              08-17-2005 16:49 CEST
-======================================================================
-Summary:                    On compaq persario v2311us external Amp needs to be
-turned on by defalt
-Description: 
-The External Amplifier channel needs to be turned on or no sound will come
-fom the speakers or headphones.
+Vortex and emu10k1/2 at least...
 
-Let me know if you need any more details.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-17-05 16:49 J5             New Issue                                    
-08-17-05 16:49 J5             Distribution              => Fedora          
-08-17-05 16:49 J5             Kernel Version            => 2.6.12          
-======================================================================
-
+Lee
 
 
 
