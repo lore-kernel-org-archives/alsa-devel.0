@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001346]: Nforce3-250 has no working support for front microphone
-Date: Wed, 17 Aug 2005 11:04:51 +0200
-Message-ID: <e7bbf3d52c91e1aef78a32bb3f8eb3ab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001347]: unable to configure sound card
+Date: Wed, 17 Aug 2005 11:05:08 +0200
+Message-ID: <bcb86752da6fd010fa64a91cf6f242cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7D26210
-	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 11:04:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C83D8210
+	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 11:05:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,164 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
 ======================================================================
-Reported By:                alchemyx
-Assigned To:                
+Reported By:                CptS
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1346
-Category:                   PCI - intel8x0
+Issue ID:                   1347
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.12
+Status:                     assigned
+Distribution:               Knoppix 4.0
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             08-17-2005 11:04 CEST
-Last Modified:              08-17-2005 11:04 CEST
+Date Submitted:             08-17-2005 11:05 CEST
+Last Modified:              08-17-2005 11:05 CEST
 ======================================================================
-Summary:                    Nforce3-250 has no working support for front
-microphone
+Summary:                    unable to configure sound card
 Description: 
-I have nforce3-250 based motherboard. It uses i8x0 drivers for its sound
-chip, my output from lspci:
+I'm having problems configuring my sound card with alsa, here are the
+details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
 
-0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 250Gb
-AC'97 Audio Controller (rev a1)
-        Subsystem: Giga-byte Technology: Unknown device a002
-        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 21
-        I/O ports at e000
-        I/O ports at e400 [size=128]
-        Memory at fa002000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: [44] Power Management version 2
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
 
-That soundcard is supported quite well. Playing and also recording sounds
-just fine. Only problem is that I have front audio panel built in my case,
-where I can connect microphone and headphones. Headphones work fine, but I
-can't get recording from microphone connected to front panel.
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
 
-Tweaking with mixer didn't help. Only solution was to use binary nvsound
-from nvidia drivers which is, to be honest, poor quality. Also it works
-fine under Windows.
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
 
-So it seems that there is something missing or wrong in current i8x0
-driver.
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-05 11:04 alchemyx       New Issue                                    
-08-17-05 11:04 alchemyx       Distribution              => Gentoo          
-08-17-05 11:04 alchemyx       Kernel Version            => 2.6.12          
+08-17-05 11:05 CptS           New Issue                                    
+08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
+08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
 ======================================================================
 
 
