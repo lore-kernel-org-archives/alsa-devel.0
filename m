@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Wed, 17 Aug 2005 09:05:46 +0200
-Message-ID: <6b81cb807940bbf8adcaf301b4ce7d7c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001346]: Nforce3-250 has no working support for front microphone
+Date: Wed, 17 Aug 2005 11:04:51 +0200
+Message-ID: <e7bbf3d52c91e1aef78a32bb3f8eb3ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3F77210
-	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 09:05:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7D26210
+	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 11:04:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,79 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346> 
 ======================================================================
-Reported By:                colding
+Reported By:                alchemyx
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1276
-Category:                   PCI - emu10k1
+Issue ID:                   1346
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo AMD64 2005.0
-Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
-20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              08-17-2005 09:05 CEST
+Date Submitted:             08-17-2005 11:04 CEST
+Last Modified:              08-17-2005 11:04 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
-playing any sound.
+Summary:                    Nforce3-250 has no working support for front
+microphone
 Description: 
-I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
-I have enabled ALSA and OSS emulation in the kernel. I have tried as
-compiled in, no modules, and as module. The card is correctly detected on
-boot-up
-and apparently activated. 
+I have nforce3-250 based motherboard. It uses i8x0 drivers for its sound
+chip, my output from lspci:
 
-Everything seems to be configured correctly according to the alsa guide
-for Gentoo and all I could find at alsa-project and for Gnome. 
+0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 250Gb
+AC'97 Audio Controller (rev a1)
+        Subsystem: Giga-byte Technology: Unknown device a002
+        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 21
+        I/O ports at e000
+        I/O ports at e400 [size=128]
+        Memory at fa002000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
 
-The problem is that I am only hearing cyclically repeating clicks, with
-weak static noise in-between, when I am trying to play music. I have a
-set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
-analog output jack (Line Out 1) on the card.
+That soundcard is supported quite well. Playing and also recording sounds
+just fine. Only problem is that I have front audio panel built in my case,
+where I can connect microphone and headphones. Headphones work fine, but I
+can't get recording from microphone connected to front panel.
 
-It seems that my problems are the same as in this former post to the
-list:
+Tweaking with mixer didn't help. Only solution was to use binary nvsound
+from nvidia drivers which is, to be honest, poor quality. Also it works
+fine under Windows.
 
-http://sourceforge.net/mailarchive/message.php?msg_id=11662616
-
-That thread concluded with no solution but to revert to OSS.
-
+So it seems that there is something missing or wrong in current i8x0
+driver.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 08-16-05 16:52 
-----------------------------------------------------------------------
-Submitter: So did pzad's suggestion help?
-
-----------------------------------------------------------------------
- colding - 08-17-05 09:05 
-----------------------------------------------------------------------
-No. The card is absolutely silent when the "Audigy Analog/Digital Output
-Jack" is muted and has static noise when it is not. I can test with a
-debug patch if provided...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 22:13 colding        New Issue                                    
-07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
-07-22-05 22:13 colding        Kernel Version            => Linux omc-2
-2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
-Processor 252 AuthenticAMD GNU/Linux
-07-23-05 12:53 colding        Issue Monitored: colding                     
-07-23-05 15:47 colding        Note Added: 0005553                          
-08-16-05 12:34 pzad           Note Added: 0005826                          
-08-16-05 16:52 rlrevell       Note Added: 0005829                          
-08-16-05 16:53 rlrevell       Status                   new => feedback     
-08-17-05 09:05 colding        Note Added: 0005834                          
+08-17-05 11:04 alchemyx       New Issue                                    
+08-17-05 11:04 alchemyx       Distribution              => Gentoo          
+08-17-05 11:04 alchemyx       Kernel Version            => 2.6.12          
 ======================================================================
 
 
