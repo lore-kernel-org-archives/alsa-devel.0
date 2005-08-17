@@ -1,13 +1,14 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] Support for AD1889 PCI Soundchip
-Date: Tue, 16 Aug 2005 21:51:19 -0400
-Message-ID: <20050817015119.GA18244@roadwarrior.mcmartin.ca>
-References: <20050812021423.GB14400@roadwarrior.mcmartin.ca> <Pine.HPX.4.33n.0508120911590.10052-200000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001344]: Acer Laptop Card not working (3002WTCi)
+Date: Wed, 17 Aug 2005 07:33:46 +0200
+Message-ID: <86d3b18d5971d96315694f63fae182cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0508120911590.10052-200000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1670A20E
+	for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2005 07:33:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,27 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Thibaut VARENE <T-Bone@parisc-linux.org>, alsa-devel@lists.sourceforge.net, parisc-linux@lists.parisc-linux.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 12, 2005 at 09:17:47AM +0200, Clemens Ladisch wrote:
-> It should apply against both, but it seems somewhere some whitespaces
-> got lost ...
-> 
-> Here you go again.
 
-Sorry for taking so long to get back to you. Your patch appears to work
-fine in OSS mode, but native ALSA on PA-RISC still seems broken. Thibaut
-seems to point out that this is not the driver, but a more deep seated
-problem, as the driver seems to function properly in native ALSA playback
-mode on powerpc.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1344> 
+======================================================================
+Reported By:                bqtran
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1344
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.13-rc5 (mm-sources)
+======================================================================
+Date Submitted:             08-17-2005 07:33 CEST
+Last Modified:              08-17-2005 07:33 CEST
+======================================================================
+Summary:                    Acer Laptop Card not working (3002WTCi)
+Description: 
+The module fails to load for this card. Here is some info.
 
-I'll keep the patch in my tree, and give it a few days of beating.
+lspci -v:
+0000:00:01b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+         Subsystem: Acer Incorporated [ALI]: Unknown device 0067
+         Flags: bus master, fast devsel, latency 0
+         Memory at d000c000 (64-bit, non-prefetchable)
+         Capabilities: [50] Power Management version 2
+         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+         Capabilities: [70] #10 [0091]
 
-Cheers,
--- 
-Kyle McMartin
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-05 07:33 bqtran         New Issue                                    
+08-17-05 07:33 bqtran         Distribution              => Gentoo          
+08-17-05 07:33 bqtran         Kernel Version            => 2.6.13-rc5
+(mm-sources)
+======================================================================
+
+
 
 
 -------------------------------------------------------
