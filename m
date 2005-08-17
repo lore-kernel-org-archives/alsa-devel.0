@@ -1,13 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [parisc-linux] [PATCH] Support for AD1889 PCI
- Soundchip
-Date: Wed, 17 Aug 2005 15:50:26 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0508171547320.19860-100000@studcom.urz.uni-halle.de>
-References: <20050817015119.GA18244@roadwarrior.mcmartin.ca>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Alsa mix in HW
+Date: Wed, 17 Aug 2005 20:42:55 +0800
+Message-ID: <430330CF.3090006@netvigator.com>
+References: <42EBAE72.9090608@e4a.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050817015119.GA18244@roadwarrior.mcmartin.ca>
+In-Reply-To: <42EBAE72.9090608@e4a.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,22 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kyle McMartin <kyle@parisc-linux.org>
-Cc: Thibaut VARENE <T-Bone@parisc-linux.org>, alsa-devel@lists.sourceforge.net, parisc-linux@lists.parisc-linux.org
+To: alsa-devel@lists.sourceforge.net
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
-Kyle McMartin wrote:
-> Your patch appears to work fine in OSS mode, but native ALSA on
-> PA-RISC still seems broken.
 
-The biggest difference may be that OSS uses power-of-two period and
-buffer sizes.
+snd_pcm_hardware_t of the sound cards will need to support
 
-Does it work with "aplay --period-size=1024 --buffer-size=8192 ..."?
+1) Hardware Mixing ( spatializing mono audio stream into 2, 4, 5.1, .. 
+speakers
+
+.channels_min  = 1
+.formats =  SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8
+
+2) Doppler Effect ( Frequency shift by pitch )
+
+.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_48000 or 
+SNDRV_PCM_RATE_8000_44100
+
+3) Recording API ( full duplex )
+
+4) Mono/Stero Hint ( Playing stereo background music )
+
+.channels_max >= 2
+
+Do anyone have a list of the sound cards ( alsa driver ) which support 
+the above features ?
 
 
-Regards,
-Clemens
+Dino Puller wrote:
+
+> 
+> Hi all,
+>    here http://dino.e4a.it/openal-alsa you can find an implementation of 
+> OpenAL library that can mix sources in HW. It's based on C.J.Purnell 
+> openal-alsa-emu10k1 but in this one i've replaced all code relative to 
+> emu10k1 processor, with a more compatible one, so now it's should works 
+> with every sound card that supports multiple sub streams. It's not based 
+> on OpenAL official tree because it's play too much with conversions to a 
+> canonical format of samples witch slow down any trial to mix in 
+> hardware. Don't expect too much it's only a first release but it's seems 
+> to works.
+> 
+> 
+> bye,
+>    Dino Puller
 
 
 
