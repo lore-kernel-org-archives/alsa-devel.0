@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001346]: Nforce3-250 has no working support for front microphone
-Date: Thu, 18 Aug 2005 18:43:53 +0200
-Message-ID: <bcbb9e58af7505d1a6e1f9ed04957825@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
+Date: Thu, 18 Aug 2005 18:31:59 +0200
+Message-ID: <11616e8e7af74067bb6ee2195f102a29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67CE0207
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 18:43:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDC5C1D5
+	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 18:31:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
 ======================================================================
-Reported By:                alchemyx
-Assigned To:                
+Reported By:                Xero
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1346
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1184
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.12
+Status:                     feedback
 ======================================================================
-Date Submitted:             08-17-2005 11:04 CEST
-Last Modified:              08-18-2005 18:43 CEST
+Date Submitted:             06-11-2005 21:14 CEST
+Last Modified:              08-18-2005 18:31 CEST
 ======================================================================
-Summary:                    Nforce3-250 has no working support for front
-microphone
+Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
-I have nforce3-250 based motherboard. It uses i8x0 drivers for its sound
-chip, my output from lspci:
+When playing a song in beep sometimes it'll pop up a "couldn't open audio"
+box as if the device is in use. This is using dmix, however, so that
+seemed a bit weird. I normally have to close and reopen beep to resolve
+this. I believe xmms does the same thing because I've read about people
+having the exact same issue with xmms.
 
-0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 250Gb
-AC'97 Audio Controller (rev a1)
-        Subsystem: Giga-byte Technology: Unknown device a002
-        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 21
-        I/O ports at e000
-        I/O ports at e400 [size=128]
-        Memory at fa002000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: [44] Power Management version 2
+This starts showing up when I start pressing play again:
 
-That soundcard is supported quite well. Playing and also recording sounds
-just fine. Only problem is that I have front audio panel built in my case,
-where I can connect microphone and headphones. Headphones work fine, but I
-can't get recording from microphone connected to front panel.
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
 
-Tweaking with mixer didn't help. Only solution was to use binary nvsound
-from nvidia drivers which is, to be honest, poor quality. Also it works
-fine under Windows.
 
-So it seems that there is something missing or wrong in current i8x0
-driver.
+However one thing which I've never seen mentioned in the previous reports,
+is that when trying to use another app through dmix it doesn't work
+either. Here's what mplayer says, when trying to play a video:
+
+alsa-init: 1 soundcard found, using: default
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+alsa-init: playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+
+so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
+closed beep, all other applications started working properly again, and
+when I start it back up again, it works fine again too, until it does this
+again. It seems to do it sporadically so it's somewhat hard to test for.
+
+Attached is my asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- jirka - 08-18-05 18:43 
+ perex - 08-18-05 13:06 
 ----------------------------------------------------------------------
-This bug is probably duplicate of my bug #1232
+The official fix is in ALSA CVS and will be available in 1.0.10rc1.
 
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=1232
-
-try to record some very loud sound and maybe you will find that is is
-actually recorder, but with very very very low volume.
+----------------------------------------------------------------------
+ Xero - 08-18-05 18:31 
+----------------------------------------------------------------------
+I have never used suspend to disk on this computer, so I wouldn't know. I
+will have to try out CVS when I get the chance.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-05 11:04 alchemyx       New Issue                                    
-08-17-05 11:04 alchemyx       Distribution              => Gentoo          
-08-17-05 11:04 alchemyx       Kernel Version            => 2.6.12          
-08-18-05 18:43 jirka          Note Added: 0005851                          
+06-11-05 21:14 Xero           New Issue                                    
+06-11-05 21:14 Xero           File Added: asoundrc                         
+06-11-05 21:14 Xero           Note Added: 0004994                          
+06-15-05 15:03 tiwai          Note Added: 0005030                          
+06-15-05 22:31 Xero           Note Added: 0005046                          
+06-15-05 23:55 Xero           Note Added: 0005049                          
+06-22-05 18:22 tiwai          Note Added: 0005142                          
+06-22-05 19:01 Xero           Note Added: 0005144                          
+06-23-05 02:47 Xero           Note Added: 0005162                          
+06-26-05 22:08 Xero           Note Added: 0005267                          
+06-27-05 16:22 tiwai          Note Added: 0005275                          
+06-27-05 22:05 Xero           Note Added: 0005288                          
+06-27-05 22:41 Xero           Note Added: 0005289                          
+08-01-05 23:43 skandalfo      Note Added: 0005597                          
+08-01-05 23:50 Xero           Note Added: 0005598                          
+08-15-05 14:59 perex          Status                   new => assigned     
+08-15-05 14:59 perex          Assigned To               => perex           
+08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
+direct PCM plugins (dmix+)
+08-18-05 12:00 perex          Note Added: 0005842                          
+08-18-05 13:06 perex          Note Added: 0005845                          
+08-18-05 13:10 perex          Status                   assigned => feedback
+08-18-05 18:31 Xero           Note Added: 0005850                          
 ======================================================================
 
 
