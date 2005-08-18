@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001231]: Sharing soundcard via dmix does not work when mixing 32bit and 64bit applications.
-Date: Thu, 18 Aug 2005 22:29:20 +0200
-Message-ID: <11e68f1e26793490e6dd758234b13d48@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001346]: Nforce3-250 has no working support for front microphone
+Date: Thu, 18 Aug 2005 23:01:22 +0200
+Message-ID: <4869503455a34dc25a5323260e84123d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90CB022C
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 22:29:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B10322C
+	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 23:01:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1231> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346> 
 ======================================================================
-Reported By:                Tobias Diedrich
+Reported By:                alchemyx
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1231
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1346
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             07-04-2005 16:30 CEST
-Last Modified:              08-18-2005 22:29 CEST
+Date Submitted:             08-17-2005 11:04 CEST
+Last Modified:              08-18-2005 23:01 CEST
 ======================================================================
-Summary:                    Sharing soundcard via dmix does not work when mixing
-32bit and 64bit applications.
+Summary:                    Nforce3-250 has no working support for front
+microphone
 Description: 
-I have configured a friends AMD64-System to use dmix by default.
-I also made the same configuration for the 32bit-chroot and made sure
-that
-/tmp is a bind-mount, so the dmix-Socket is shared between 32bit and 64bit
-applications.
-However while sharing between one type of applications (either all 32bit
-or all 64bit) works fine, mixed sharing doesn't work.  A strace shows that
-the socket is opened by apparently communication fails.
-I suspect that the structures passed by dmix have problems with differntly
-sized fields between 32bit and 64bit.
+I have nforce3-250 based motherboard. It uses i8x0 drivers for its sound
+chip, my output from lspci:
+
+0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 250Gb
+AC'97 Audio Controller (rev a1)
+        Subsystem: Giga-byte Technology: Unknown device a002
+        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 21
+        I/O ports at e000
+        I/O ports at e400 [size=128]
+        Memory at fa002000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
+
+That soundcard is supported quite well. Playing and also recording sounds
+just fine. Only problem is that I have front audio panel built in my case,
+where I can connect microphone and headphones. Headphones work fine, but I
+can't get recording from microphone connected to front panel.
+
+Tweaking with mixer didn't help. Only solution was to use binary nvsound
+from nvidia drivers which is, to be honest, poor quality. Also it works
+fine under Windows.
+
+So it seems that there is something missing or wrong in current i8x0
+driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 12:00 
+ jirka - 08-18-05 18:43 
 ----------------------------------------------------------------------
-Yes, it's incompatible between 32 and 64bits.  The struct shared in shmem
-doesn't match.
-snd_pcm_direct_share_t in pcm_direct.h defines the shared struct and the
-size of snd_pcm_[su]frames_t is long, so it depends on architecture.
-Also, we should be careful about alignment, too...
+This bug is probably duplicate of my bug #1232
+
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=1232
+
+try to record some very loud sound and maybe you will find that is is
+actually recorder, but with very very very low volume.
 
 ----------------------------------------------------------------------
- ikonst - 08-18-05 22:29 
+ alchemyx - 08-18-05 23:01 
 ----------------------------------------------------------------------
-Same as bug 0001336 which I've filled and is indeed resolved in CVS (I've
-just checked). Please mark as resolved.
+You are completly right. I can hear myself, but I need to turn up the
+volume to the max and almost scream to the mic! :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-05 16:30 Tobias DiedrichNew Issue                                    
-07-08-05 12:00 tiwai          Note Added: 0005412                          
-08-18-05 22:29 ikonst         Note Added: 0005858                          
+08-17-05 11:04 alchemyx       New Issue                                    
+08-17-05 11:04 alchemyx       Distribution              => Gentoo          
+08-17-05 11:04 alchemyx       Kernel Version            => 2.6.12          
+08-18-05 18:43 jirka          Note Added: 0005851                          
+08-18-05 23:01 alchemyx       Note Added: 0005859                          
 ======================================================================
 
 
