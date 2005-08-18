@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Thu, 18 Aug 2005 13:10:54 +0200
-Message-ID: <a8fa9b93264b1ce6fb7c9f7abee2f8cc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
+Date: Thu, 18 Aug 2005 13:16:53 +0200
+Message-ID: <f4e14d6e4316872412cc57b3d01f47f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7638819E
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 13:10:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D15B0151
+	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 13:16:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,106 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
 ======================================================================
-Reported By:                Xero
+Reported By:                tek01
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1300
+Category:                   ISA - ad1816a
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12.3 and 2.6.13-rc4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              08-18-2005 13:10 CEST
+Date Submitted:             08-02-2005 16:56 CEST
+Last Modified:              08-18-2005 13:16 CEST
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    modprobe goes into D-state when inserting
+snd-ad1816a
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
+causes the modprobe process to go into D-state forever. 
 
-This starts showing up when I start pressing play again:
-
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-
-
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
-
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
+Linux 2.6.11.12 has been tested and is working fine.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001301 Kernel OSS emulation stops working afte...
+related to          0001302 Clicking noise when using kphone with t...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-18-05 12:00 
+ tek01 - 08-16-05 12:56 
 ----------------------------------------------------------------------
-It seems like similar bug to
-https://bugzilla.novell.com/show_bug.cgi?id=104884 .
+You are absolutly right. The snd-mpu401 module gets loaded earlier during
+system startup. After unloading the snd-mpu401 module the snd-ad1816a
+module loads fine. 
+I'll check if #1301 and #1302 are still valid with 2.6.13-rc6.
 
 ----------------------------------------------------------------------
- perex - 08-18-05 13:06 
+ perex - 08-18-05 13:16 
 ----------------------------------------------------------------------
-The official fix is in ALSA CVS and will be available in 1.0.10rc1.
+Okay, so the bug is resolved. I need only push the patch to mainstream
+Linux kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
-06-27-05 16:22 tiwai          Note Added: 0005275                          
-06-27-05 22:05 Xero           Note Added: 0005288                          
-06-27-05 22:41 Xero           Note Added: 0005289                          
-08-01-05 23:43 skandalfo      Note Added: 0005597                          
-08-01-05 23:50 Xero           Note Added: 0005598                          
-08-15-05 14:59 perex          Status                   new => assigned     
-08-15-05 14:59 perex          Assigned To               => perex           
-08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
-direct PCM plugins (dmix+)
-08-18-05 12:00 perex          Note Added: 0005842                          
-08-18-05 13:06 perex          Note Added: 0005845                          
-08-18-05 13:10 perex          Status                   assigned => feedback
+08-02-05 16:56 tek01          New Issue                                    
+08-02-05 16:56 tek01          Distribution              => Debian Sarge    
+08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
+2.6.13-rc4
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-02-05 22:26 perex          Note Added: 0005609                          
+08-03-05 10:10 perex          Relationship added       related to 0001301  
+08-03-05 10:11 perex          Relationship added       related to 0001302  
+08-09-05 12:57 perex          Assigned To               => perex           
+08-09-05 12:57 perex          Status                   new => feedback     
+08-13-05 22:51 tek01          Note Added: 0005811                          
+08-15-05 14:32 perex          File Added: pnp-card.c.patch                    
+08-15-05 14:33 perex          Note Added: 0005818                          
+08-15-05 20:34 tek01          Note Added: 0005821                          
+08-16-05 01:25 perex          Note Added: 0005825                          
+08-16-05 12:56 tek01          Note Added: 0005828                          
+08-18-05 13:16 perex          Status                   feedback => resolved
+08-18-05 13:16 perex          Resolution               open => fixed       
+08-18-05 13:16 perex          Note Added: 0005846                          
 ======================================================================
 
 
