@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
-Date: Thu, 18 Aug 2005 21:31:18 +0200
-Message-ID: <f7321593b8656e5dd8096c2ef90ea4cb@bugtrack.alsa-project.org>
+Date: Thu, 18 Aug 2005 21:33:19 +0200
+Message-ID: <2c2401f40e5168854ab299f122592f0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A24BC22A
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 21:31:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F4FE22C
+	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 21:33:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0001206 has been set as DUPLICATE OF the following issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
 ======================================================================
@@ -50,6 +50,27 @@ applications, like mplayer32, don't work with alsa anymore.  Second, the
 center channel on all 5.1 sound goes out.  Third, the a/v synchonization
 on mplayer gets hosed using alsa (oss emulation still ok.)
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001206 No Surround Sound (5.1) with analog spe...
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 06-15-05 14:01 
+----------------------------------------------------------------------
+Do the problems go away if you disable the dmix plugin?
+
+----------------------------------------------------------------------
+ robert - 06-15-05 22:00 
+----------------------------------------------------------------------
+How does one do that?
+
+----------------------------------------------------------------------
+ jdthood - 06-15-05 23:42 
+----------------------------------------------------------------------
+mplayer -ao alsa:device=hw=0
+
+should do it
 
 ----------------------------------------------------------------------
  robert - 08-18-05 21:12 
@@ -84,6 +105,7 @@ Date Modified  Username       Field                    Change
 06-15-05 23:42 jdthood        Note Added: 0005048                          
 08-18-05 21:12 robert         Note Added: 0005853                          
 08-18-05 21:31 rlrevell       Note Added: 0005855                          
+08-18-05 21:32 rlrevell       Relationship added       has duplicate 0001206
 ======================================================================
 
 
