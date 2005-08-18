@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
-Date: Thu, 18 Aug 2005 21:56:46 +0200
-Message-ID: <30117286e4680af3af6ae11b03bddf4a@bugtrack.alsa-project.org>
+Date: Thu, 18 Aug 2005 22:07:34 +0200
+Message-ID: <2bbc49a1ea048486383b28e66044f0fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CB7622C
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 21:56:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35E4022C
+	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 22:07:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             Linux cinemaxx 2.6.11.4-20a-smp-matrox #1 SMP Fri
 May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             06-20-2005 20:39 CEST
-Last Modified:              08-18-2005 21:56 CEST
+Last Modified:              08-18-2005 22:07 CEST
 ======================================================================
 Summary:                    No Surround Sound (5.1) with analog speaker set on
 ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
@@ -567,20 +567,22 @@ duplicate of        0001191 Center channel and 32-bit emulation bro...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-18-05 21:27 
-----------------------------------------------------------------------
-Because the ALSA developers can't possibly regression test every change
-with every combination of hardware.  Why is this to hard for people to
-understand?
-
-Shouting at the developers isn't going to help.
-
-How about some USEFUL info like a diff?
-
-----------------------------------------------------------------------
  marcmerz - 08-18-05 21:56 
 ----------------------------------------------------------------------
 BTW: The Asus P4P800VM Board does not have a NForce Chipset.
+
+----------------------------------------------------------------------
+ rlrevell - 08-18-05 22:07 
+----------------------------------------------------------------------
+So if it doesn't have an nforce chipset then why does changing NFORCE.conf
+fix the problem?  What kind of audio chipset does it have?
+
+Many users seem to be under the impression that there are hundreds of ALSA
+developers, and that we have access to every device that there's an ALSA
+driver for, because the vendors shower us with free hardware so that we
+can work on drivers or something.
+
+Anyway please try the attached patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -635,6 +637,8 @@ GNU/Linux
 08-18-05 21:27 rlrevell       Note Added: 0005854                          
 08-18-05 21:32 rlrevell       Relationship added       duplicate of 0001191
 08-18-05 21:56 marcmerz       Note Added: 0005856                          
+08-18-05 22:03 rlrevell       File Added: nforce.patch                     
+08-18-05 22:07 rlrevell       Note Added: 0005857                          
 ======================================================================
 
 
