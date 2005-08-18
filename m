@@ -1,19 +1,19 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+From: "Philip A. Prindeville" <philipp@redfish-solutions.com>
 Subject: Unknown PCI id
-Date: Thu, 18 Aug 2005 16:16:08 -0600
-Message-ID: <430508A8.6090705@redfish-solutions.com>
+Date: Thu, 18 Aug 2005 16:15:48 -0600
+Message-ID: <43050894.4060407@redfish-solutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.redfish-solutions.com (mail.redfish-solutions.com [71.36.29.88])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80FF71E7
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 00:16:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DA311E7
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 00:15:53 +0200 (MEST)
 Received: from [192.168.1.5] ([192.168.1.5])
 	(authenticated bits=0)
-	by mail.redfish-solutions.com (8.13.1/8.13.1) with ESMTP id j7IMG9Wd027489
+	by mail.redfish-solutions.com (8.13.1/8.13.1) with ESMTP id j7IMFmPS027485
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 16:16:09 -0600
+	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 16:15:49 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,6 @@ the MSI 7142 (K8MM-V) motherboard.
 Thanks,
 
 -Philip
-
 
 
 
