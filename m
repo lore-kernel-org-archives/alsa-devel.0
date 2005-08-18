@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Thu, 18 Aug 2005 12:56:52 +0200
-Message-ID: <da0b11f10b6863a7fcbfe52779f09771@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops working after a few seconds when used with VoIP softphones
+Date: Thu, 18 Aug 2005 13:18:18 +0200
+Message-ID: <9a0c6fb7165559e0117d85dfc9488112@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFD19214
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 12:56:52 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13B80151
+	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 13:18:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,124 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
 ======================================================================
-Reported By:                ahaning
-Assigned To:                perex
+Reported By:                tek01
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1326
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   1301
+Category:                   ISA - ad1816a
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
+2.6.8-2
 ======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-18-2005 12:56 CEST
+Date Submitted:             08-02-2005 17:16 CEST
+Last Modified:              08-18-2005 13:18 CEST
 ======================================================================
-Summary:                    ISA cards (opl3sa2 in particular) are not detected
-properly on 2.6 kernels
+Summary:                    Kernel OSS emulation stops working after a few
+seconds when used with VoIP softphones
 Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+Kernel OSS emulation fails a few seconds after a call is established when
+used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
+process using strace reveals, that the file descriptor of the sound device
+is no longer listed in the readset or writeset when the select() syscall
+returns. Audio Playback using XMMS is working fine using the OSS API
+ 
+Also the native OSS driver is working fine with both VoIP phones on the
+same system and kernel.
 
-According to perex (author of the opl3sa2 driver):
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
+related to          0001300 modprobe goes into D-state when inserti...
 ======================================================================
 
 ----------------------------------------------------------------------
- ahaning - 08-18-05 12:51 
+ tek01 - 08-05-05 11:20 
 ----------------------------------------------------------------------
-Sorry about the delay in my reply. I've been using my system recently and
-haven't been able to reboot in the case that things crashed.
-
-I'll test your latest patch again in a couple days when I'm done with
-other things. However, I did try it and if I remember correctly, it didn't
-work quite right with alsaconf or just modprobe. After running alsaconf, I
-couldn't run a mixer.
-
-Here's the output of that command:
-
-# grep opl3sa2 /lib/modules/`uname -r`/modules.isapnpmap
-snd-opl3sa2          0xa865     0x2000     0x00000000  0xa865     0x2100
-snd-opl3sa2          0xa865     0x3000     0x00000000  0xa865     0x2100
-snd-opl3sa2          0xa865     0x0008     0x00000000  0xa865     0x2100
-snd-opl3sa2          0xa865     0x0108     0x00000000  0xa865     0x2100
-snd-opl3sa2          0xb839     0x0022     0x00000000  0xa865     0x1022
-#
-
-Thanks.
+Which kernel and ALSA version should I use?
 
 ----------------------------------------------------------------------
- perex - 08-18-05 12:56 
+ perex - 08-18-05 13:18 
 ----------------------------------------------------------------------
-I see the problem. I've added this extra line to our CVS isa/opl3sa2.c
-source which is missing in the opl3sa2.c.patch posted here:
-
-MODULE_DEVICE_TABLE(pnp, snd_opl3sa2_pnpbiosids);
-
-Add this line right after snd_opl3sa2_pnpbiosids[] table definition (after
-ending }; ). Reinstall driver and now alsaconf should detect your card as
-PnP.
+Use the latest ALSA from CVS (you can compile ALSA as external module) and
+the latest kernel (with the patch from
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-08-10-05 13:26 perex          Status                   new => assigned     
-08-10-05 13:26 perex          Assigned To               => perex           
-08-10-05 13:26 perex          File Added: alsaconf                         
-08-10-05 13:28 perex          Note Added: 0005747                          
-08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
-utils
-08-10-05 13:30 perex          Relationship added       related to 0000879  
-08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
-08-10-05 14:55 ahaning        Note Added: 0005748                          
-08-11-05 00:24 ahaning        Note Added: 0005752                          
-08-11-05 23:59 ahaning        Note Added: 0005763                          
-08-12-05 00:00 ahaning        Note Edited: 0005763                         
-08-12-05 03:09 ahaning        Note Added: 0005764                          
-08-12-05 09:29 perex          Note Added: 0005766                          
-08-12-05 12:54 ahaning        Note Added: 0005767                          
-08-12-05 15:11 perex          Summary                  ISAPNP cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels
-08-12-05 15:14 perex          Note Added: 0005768                          
-08-12-05 15:35 tiwai          Note Added: 0005769                          
-08-12-05 15:36 ahaning        Note Added: 0005770                          
-08-12-05 15:44 tiwai          Note Added: 0005771                          
-08-12-05 15:45 tiwai          Note Added: 0005772                          
-08-12-05 15:56 perex          Note Added: 0005777                          
-08-12-05 16:08 perex          Note Added: 0005778                          
-08-12-05 16:44 ahaning        Note Added: 0005782                          
-08-12-05 18:00 perex          File Added: opl3sa2.c.patch                    
-08-12-05 18:03 perex          Note Added: 0005783                          
-08-12-05 18:52 ahaning        Note Added: 0005787                          
-08-13-05 15:10 perex          File Deleted: alsaconf                       
-08-13-05 15:10 perex          File Added: alsaconf                         
-08-13-05 15:11 perex          Note Added: 0005806                          
-08-13-05 19:06 ahaning        Note Added: 0005808                          
-08-13-05 19:08 ahaning        Note Edited: 0005808                         
-08-15-05 13:53 perex          File Added: opl3sa2-2.c.patch                    
-08-15-05 13:55 perex          Note Added: 0005817                          
-08-18-05 12:51 ahaning        Note Added: 0005843                          
-08-18-05 12:56 perex          Note Added: 0005844                          
+08-02-05 17:16 tek01          New Issue                                    
+08-02-05 17:16 tek01          Distribution              => Debian Sarge    
+08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
+vanilla 2.6.10 and Debians 2.6.8-2
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-03-05 10:10 perex          Relationship added       related to 0001300  
+08-03-05 10:47 perex          Note Added: 0005614                          
+08-05-05 11:20 tek01          Note Added: 0005664                          
+08-18-05 13:18 perex          Note Added: 0005847                          
 ======================================================================
 
 
