@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001300]: modprobe goes into D-state when inserting snd-ad1816a
-Date: Thu, 18 Aug 2005 13:16:53 +0200
-Message-ID: <f4e14d6e4316872412cc57b3d01f47f5@bugtrack.alsa-project.org>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: Last set of diffs for vt1617, etc.
+Date: Wed, 17 Aug 2005 18:06:58 -0600
+Message-ID: <4303D122.2090806@redfish-solutions.com>
+References: <42FE649B.70805@redfish-solutions.com>	<s5hpssf1i9d.wl%tiwai@suse.de>	<4300E835.5000608@redfish-solutions.com> <s5hd5oexkfo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (unknown [195.113.161.147])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D15B0151
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 13:16:53 +0200 (MEST)
+In-Reply-To: <s5hd5oexkfo.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +17,156 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300> 
-======================================================================
-Reported By:                tek01
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1300
-Category:                   ISA - ad1816a
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian Sarge
-Kernel Version:             2.6.12.3 and 2.6.13-rc4
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-02-2005 16:56 CEST
-Last Modified:              08-18-2005 13:16 CEST
-======================================================================
-Summary:                    modprobe goes into D-state when inserting
-snd-ad1816a
-Description: 
-Under Linux 2.6.12.3 and Linux 2.6.13-rc4 inserting the snd-ad1816a module
-causes the modprobe process to go into D-state forever. 
+>At Mon, 15 Aug 2005 13:08:37 -0600,
+>Philip Prindeville wrote:
+>  
+>
+>>Even though I've run "aclocal" and "autoconf" previously.  It seems it needs
+>>to be run every time???
+>>    
+>>
+>
+>No, once you update the tree and run cvscompile, you need to run only
+>make after that.
+>
+>  
+>
+>> And the version of /usr/share/gettext/gettext.h on
+>>FC3 isn't compatible with alsa-utils/include/gettext.h because the N_ macro
+>>isn't defined.
+>>    
+>>
+>
+>It's not that package.  Did you install gettext-devel.rpm?
+>
+>  
+>
+>>Not sure what the first paragraph is about.
+>>
+>>So I've tried all of this, with the diffs attached, and I still have 
+>>problems
+>>playing 44.1kHz sound.
+>>
+>>The next question is, how do we go about figuring out if the codec doesn't
+>>like 44.1kHz, or if there really is a bug in 
+>>snd_ac97_determine_spdif_rates()?
+>>    
+>>
+>
+>Needs a datasheet.
+>
+>As a test, you can add the line to force to reset the SPDIF_RATES
+>value after the line calling snd_ac97_determine_spdif_rates(), and try
+>aplay again.
+>
+>
+>  
+>
+>>Thanks,
+>>
+>>-Philip
+>>
+>>P.S. I've turned off "oss" in the diffs just because I'm trying to 
+>>isolate ALSA.
+>>    
+>>
+>
+>Use "cvs diff".  Also, use -u option to get the unified diff style.
+>
+>
+>Takashi
+>  
+>
 
-Linux 2.6.11.12 has been tested and is working fine.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001301 Kernel OSS emulation stops working afte...
-related to          0001302 Clicking noise when using kphone with t...
-======================================================================
+I applied the following "patch":
 
-----------------------------------------------------------------------
- tek01 - 08-16-05 12:56 
-----------------------------------------------------------------------
-You are absolutly right. The snd-mpu401 module gets loaded earlier during
-system startup. After unloading the snd-mpu401 module the snd-ad1816a
-module loads fine. 
-I'll check if #1301 and #1302 are still valid with 2.6.13-rc6.
+[root@media alsa]# diff -u alsa-driver/pci/ac97/ac97_codec.c.bak 
+alsa-driver/pci/ac97/ac97_codec.c
+--- alsa-driver/pci/ac97/ac97_codec.c.bak       2005-08-15 
+10:27:41.000000000 -0600
++++ alsa-driver/pci/ac97/ac97_codec.c   2005-08-17 17:57:01.000000000 -0600
+@@ -1521,6 +1521,8 @@
+                        /* consumer,PCM audio,no copyright,no 
+preemphasis,PCM coder,original,48000Hz */
+                        snd_ac97_write_cache(ac97, AC97_SPDIF, 0x2a20);
+                        ac97->rates[AC97_RATES_SPDIF] = 
+snd_ac97_determine_spdif_rates(ac97);
++// tweak...
++ac97->rates[AC97_RATES_SPDIF] = SNDRV_PCM_RATE_44100;
+                }
+                ac97->spdif_status = SNDRV_PCM_DEFAULT_CON_SPDIF;
+        }
+[root@media alsa]#
 
-----------------------------------------------------------------------
- perex - 08-18-05 13:16 
-----------------------------------------------------------------------
-Okay, so the bug is resolved. I need only push the patch to mainstream
-Linux kernel.
+and when I ran "aplay", this is what I got:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-02-05 16:56 tek01          New Issue                                    
-08-02-05 16:56 tek01          Distribution              => Debian Sarge    
-08-02-05 16:56 tek01          Kernel Version            => 2.6.12.3 and
-2.6.13-rc4
-08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-02-05 22:26 perex          Note Added: 0005609                          
-08-03-05 10:10 perex          Relationship added       related to 0001301  
-08-03-05 10:11 perex          Relationship added       related to 0001302  
-08-09-05 12:57 perex          Assigned To               => perex           
-08-09-05 12:57 perex          Status                   new => feedback     
-08-13-05 22:51 tek01          Note Added: 0005811                          
-08-15-05 14:32 perex          File Added: pnp-card.c.patch                    
-08-15-05 14:33 perex          Note Added: 0005818                          
-08-15-05 20:34 tek01          Note Added: 0005821                          
-08-16-05 01:25 perex          Note Added: 0005825                          
-08-16-05 12:56 tek01          Note Added: 0005828                          
-08-18-05 13:16 perex          Status                   feedback => resolved
-08-18-05 13:16 perex          Resolution               open => fixed       
-08-18-05 13:16 perex          Note Added: 0005846                          
-======================================================================
+[root@media alsa]# aplay -v -D spdif 
+/usr/share/system-config-soundcard/sound-sample.wav
+Playing WAVE '/usr/share/system-config-soundcard/sound-sample.wav' : 
+Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+Hooks PCM
+Its setup is:
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 4096
+period_time  : 92879
+tick_time    : 1000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 4096
+xfer_align   : 4096
+start_threshold  : 16384
+stop_threshold   : 16384
+silence_threshold: 0
+silence_size : 0
+boundary     : 4611686018427387904
+Slave: Hardware PCM card 0 'VIA 8237' device 0 subdevice 3
 
+Its setup is:
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 4096
+period_time  : 92879
+tick_time    : 1000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 4096
+xfer_align   : 4096
+start_threshold  : 16384
+stop_threshold   : 16384
+silence_threshold: 0
+silence_size : 0
+boundary     : 4611686018427387904
+[root@media alsa]#
+
+However my receiver says "PCM [48kHz]" in the LED display.
+
+I'm wondering if there might be other things that need to be changed
+as well...  Config files?
+
+-Philip
 
 
 
