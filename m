@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Fri, 19 Aug 2005 04:51:44 +0200
-Message-ID: <a80168c25bf3a9739488f1eb2c3ba3ba@bugtrack.alsa-project.org>
+From: "Deshaun Wu" <Wu@joemast.com>
+Subject: =?iso-8859-1?Q?V=CCAGRRA-well,_you_need_it?=
+Date: Fri, 19 Aug 2005 01:41:20 -0500
+Message-ID: <006501c5a489$01f16800$e38ba8c0@bubbler>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0062_01C5A45F.191B6000"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21E59207
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 04:51:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,133 +15,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Arata Hurley <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
-======================================================================
-Reported By:                ahaning
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1326
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-19-2005 04:51 CEST
-======================================================================
-Summary:                    ISA cards (opl3sa2 in particular) are not detected
-properly on 2.6 kernels
-Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+------=_NextPart_000_0062_01C5A45F.191B6000
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-According to perex (author of the opl3sa2 driver):
+Hello, 
+     `Where  did you get  the currency?  Nikanor Ivanovich was  asked  s=
+oul =
+    Styopa was a shrewd man and, sick as he was, realized that since he =
+had     Margarita  Nikolaevna  sat  in  front of the pier-glass,  with  =
+just  araised and lowered her hand and smiled uniformly to  the guests. =
+There was athe spear.to the mysterious consultant who needed no =
+interpreting, was he who now flewknowing already from bitter experience  =
+that only calm  would help him, so,     Chop wood -  hah! picked up the =
+garrulous cat. Id rather  work as a     Book OneMoscow would be the envy =
+of tens of thousands of people, was entirely at herasked, pressing =
+herself  to her  lover  and wiping the  blood from  his  cutfor the  =
+first  time also because  the  centurions face was disfigured: his     =
+Ivanushka brightened up and said:     Or maybe these were not the words =
+at all, but there were  others to the     `You clearly  recall  that  he =
+did not go  up to the turnstile  at  thethoughts?
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
-======================================================================
+------=_NextPart_000_0062_01C5A45F.191B6000
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- ahaning - 08-19-05 03:05 
-----------------------------------------------------------------------
-Okay, I've completely uninstalled and reinstalled ALSA 1.0.9 with the above
-patches. After installing alsa-driver, it seemed to configure the sound
-card, as well, and I was able to open the mixer and, by touching the PCM
-mixer, play audio.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
+border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>Welcom</TD><TD></TD><TD =
+rowSpan=3D2>&nbsp;to PharmcyByMail ST0RE</TD><TD></TD><TD =
+rowSpan=3D2>70% on all the 0rders</TD><TD></TD><TD =
+rowSpan=3D2>&nbsp;with us.</TD><TD></TD><TR><TD>e</TD><TD>&nbsp;- Save =
+huge&nbsp;</TD></TR></TABLE></FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
+border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>We&nbsp;</TD><TD></TD><T=
+D =
+rowSpan=3D2>e which gives this great</TD><TD></TD><TR><TD>are the only =
+stor</TD><TD>&nbsp;deal to you!</TD></TR></TABLE></FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR =
+vAlign=3Dbottom><TD rowSpan=3D2><FONT face=3DArial =
+size=3D4>VlAG</FONT></TD><TD><FONT face=3DArial size=3D4></FONT></TD><TD =
+=
+rowSpan=3D2><FONT face=3DArial size=3D4>ALLlS V</FONT></TD><TD><FONT =
+face=3DArial size=3D4></FONT></TD><TD rowSpan=3D2><FONT face=3DArial =
+size=3D4>&nbsp;many other dr</FONT></TD><TD><FONT face=3DArial =
+size=3D4></FONT></TD><TD rowSpan=3D2><FONT face=3DArial =
+size=3D4>op</FONT></TD><TD><FONT face=3DArial =
+size=3D4></FONT></TD></TR><TR><TD><FONT face=3DArial size=3D4>RRA =
+Cl</FONT></TD><TD><FONT face=3DArial size=3D4>ALlUUM =
+and</FONT></TD><TD><FONT face=3DArial size=3D4>ugs in our =
+sh</FONT></TD></TR></TABLE></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
+border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2><A =
+href=3D"http://www.qlcm.makpositorith.com">Chec</A></TD><TD></TD><TD =
+=
+rowSpan=3D2><A href=3D"http://www.qlcm.makpositorith.com">&nbsp;NEW =
+PRlCES</A></TD><TD></TD></TR><TR><TD><A =
+href=3D"http://www.qlcm.makpositorith.com">k out =
+our</A></TD><TD></TD></TR></TABLE></FONT></DIV>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>Have a nice day.</FONT></DIV></BODY></HTML>
 
-I thought this was weird since I didn't have to run alsaconf or modprobe.
-When I ran the alsaconf that came with 1.0.9 (not the above version) and
-had it brute force detect the card (no PnP cards were detected), I get
-lots and lots of "Unknown symbol" errors in snd_opl3sa2, snd_opl3_lib, and
-snd_cs4231_lib. I also get an occasional non-fatal Oops as this runs. I'm
-going to have to kill the script and see if I can try your attached one.
-
-Edit: I've killed the script and when I try to run alsamixer, I get an
-Oops. I'm not sure how to capture it, though. Maybe netterm(?).
-
-
-
-----------------------------------------------------------------------
- rlrevell - 08-19-05 04:51 
-----------------------------------------------------------------------
-Since Oopses can lead to corrupt kernel memory, only the first Oops since
-booting the machine is relevant.  You mentioned that the first Oops(es)
-were non-fatal so   just copy the first one from the logs.
-
-Those Unknown symbol errors mean that you compiled ALSA against a
-different kernel version than you are running.  Make sure your installed
-kernel source matches the running kernel version.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-08-10-05 13:26 perex          Status                   new => assigned     
-08-10-05 13:26 perex          Assigned To               => perex           
-08-10-05 13:26 perex          File Added: alsaconf                         
-08-10-05 13:28 perex          Note Added: 0005747                          
-08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
-utils
-08-10-05 13:30 perex          Relationship added       related to 0000879  
-08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
-08-10-05 14:55 ahaning        Note Added: 0005748                          
-08-11-05 00:24 ahaning        Note Added: 0005752                          
-08-11-05 23:59 ahaning        Note Added: 0005763                          
-08-12-05 00:00 ahaning        Note Edited: 0005763                         
-08-12-05 03:09 ahaning        Note Added: 0005764                          
-08-12-05 09:29 perex          Note Added: 0005766                          
-08-12-05 12:54 ahaning        Note Added: 0005767                          
-08-12-05 15:11 perex          Summary                  ISAPNP cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels
-08-12-05 15:14 perex          Note Added: 0005768                          
-08-12-05 15:35 tiwai          Note Added: 0005769                          
-08-12-05 15:36 ahaning        Note Added: 0005770                          
-08-12-05 15:44 tiwai          Note Added: 0005771                          
-08-12-05 15:45 tiwai          Note Added: 0005772                          
-08-12-05 15:56 perex          Note Added: 0005777                          
-08-12-05 16:08 perex          Note Added: 0005778                          
-08-12-05 16:44 ahaning        Note Added: 0005782                          
-08-12-05 18:00 perex          File Added: opl3sa2.c.patch                    
-08-12-05 18:03 perex          Note Added: 0005783                          
-08-12-05 18:52 ahaning        Note Added: 0005787                          
-08-13-05 15:10 perex          File Deleted: alsaconf                       
-08-13-05 15:10 perex          File Added: alsaconf                         
-08-13-05 15:11 perex          Note Added: 0005806                          
-08-13-05 19:06 ahaning        Note Added: 0005808                          
-08-13-05 19:08 ahaning        Note Edited: 0005808                         
-08-15-05 13:53 perex          File Added: opl3sa2-2.c.patch                    
-08-15-05 13:55 perex          Note Added: 0005817                          
-08-18-05 12:51 ahaning        Note Added: 0005843                          
-08-18-05 12:56 perex          Note Added: 0005844                          
-08-18-05 16:36 ahaning        Note Added: 0005848                          
-08-19-05 02:35 ahaning        Note Added: 0005861                          
-08-19-05 03:02 ahaning        Note Added: 0005864                          
-08-19-05 03:05 ahaning        Note Edited: 0005864                         
-08-19-05 04:51 rlrevell       Note Added: 0005866                          
-======================================================================
-
+------=_NextPart_000_0062_01C5A45F.191B6000--
 
 
 
