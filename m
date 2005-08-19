@@ -1,13 +1,13 @@
-From: "Isaac Winters" <lawanniiabasulto@yahoo.es>
-Subject: Replica Louis Vuitton Bags
-Date: Sat, 20 Aug 2005 03:34:56 +0600
-Message-ID: <oqaxjugxsmx4gx5efkdm8wv@pokemates.com>
-Reply-To: "Isaac Winters" <lawanniiabasulto@yahoo.es>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Disagreement about versions following CVS update
+Date: Fri, 19 Aug 2005 16:36:43 -0400
+Message-ID: <1124483804.25424.50.camel@mindpipe>
+References: <43063408.60402@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-           boundary="FriedmanDonn_uk7_6i9_8as8z96p4a1c8y46d"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <43063408.60402@redfish-solutions.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,26 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-         64-B
+On Fri, 2005-08-19 at 13:33 -0600, Philip Prindeville wrote:
+> Stupid question:  did a version number get changed somewhere?  And if
+> so, what's the fix?  I did a:
+> 
+> % make -C alsa-driver clean
+> 
+> and a rebuild, but I'm still seeing these.  What did I miss?
 
-http://Moran2510Reyna.goodreplicaz.net/
+Your kernel sources probably do not match the running kernel.
 
+Lee
 
-We respect your privacy and sincerely apologize if we have offended you.
-If you would prefer not to hear from us again,
-simply visit us and follow the link to unsubscribe 
-
-
-Thanks so much for reading this! 
-
-
-
-
-
-%CUSTOM_BOOK2[2-20]
 
 
 -------------------------------------------------------
