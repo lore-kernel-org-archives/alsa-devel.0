@@ -1,11 +1,14 @@
-From: "Deshaun Wu" <Wu@joemast.com>
-Subject: =?iso-8859-1?Q?V=CCAGRRA-well,_you_need_it?=
-Date: Fri, 19 Aug 2005 01:41:20 -0500
-Message-ID: <006501c5a489$01f16800$e38ba8c0@bubbler>
+From: "- eBay $ - Marketing -" <plasmaghy@satyam.net.in>
+Subject: Your Stock Momentum Alert
+Date: Fri, 19 Aug 2005 12:02:02 +0100
+Message-ID: <6789697369.i93ErrTw00005@diatomindenture.biz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0062_01C5A45F.191B6000"
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6244E1E8
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 12:07:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,86 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arata Hurley <alsa-devel@lists.sourceforge.net>
+To: 3a31f094.480aaafb@alsa-project.org
+Cc: 3b06dad2.52a2ee10@alsa-project.org, alsa-doc@alsa-project.org, alsa-devel@alsa-project.org, 385bd136.61b45cbf@alsa-project.org, 3a77ec5b.c2de4c61@alsa-project.org, 3b066b32.a6242fe5@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0062_01C5A45F.191B6000
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Irwin Energy Inc (IWNN)
+Current Price: 0.042
+Is IWNN Ready To Go? If You Think So, You Know what to Do...Watch This
+One Trade
 
-Hello, 
-     `Where  did you get  the currency?  Nikanor Ivanovich was  asked  s=
-oul =
-    Styopa was a shrewd man and, sick as he was, realized that since he =
-had     Margarita  Nikolaevna  sat  in  front of the pier-glass,  with  =
-just  araised and lowered her hand and smiled uniformly to  the guests. =
-There was athe spear.to the mysterious consultant who needed no =
-interpreting, was he who now flewknowing already from bitter experience  =
-that only calm  would help him, so,     Chop wood -  hah! picked up the =
-garrulous cat. Id rather  work as a     Book OneMoscow would be the envy =
-of tens of thousands of people, was entirely at herasked, pressing =
-herself  to her  lover  and wiping the  blood from  his  cutfor the  =
-first  time also because  the  centurions face was disfigured: his     =
-Ivanushka brightened up and said:     Or maybe these were not the words =
-at all, but there were  others to the     `You clearly  recall  that  he =
-did not go  up to the turnstile  at  thethoughts?
+Current Press Release Source: Irwin Energy Inc
 
-------=_NextPart_000_0062_01C5A45F.191B6000
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Irwin Announces Receipt of Logs on Concho Dome Well
+Irwin Energy, Inc. is pleased to announce the following update on its'
+NZOG 17-01 well currently being tested in Arizona.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
-border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>Welcom</TD><TD></TD><TD =
-rowSpan=3D2>&nbsp;to PharmcyByMail ST0RE</TD><TD></TD><TD =
-rowSpan=3D2>70% on all the 0rders</TD><TD></TD><TD =
-rowSpan=3D2>&nbsp;with us.</TD><TD></TD><TR><TD>e</TD><TD>&nbsp;- Save =
-huge&nbsp;</TD></TR></TABLE></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
-border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>We&nbsp;</TD><TD></TD><T=
-D =
-rowSpan=3D2>e which gives this great</TD><TD></TD><TR><TD>are the only =
-stor</TD><TD>&nbsp;deal to you!</TD></TR></TABLE></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR =
-vAlign=3Dbottom><TD rowSpan=3D2><FONT face=3DArial =
-size=3D4>VlAG</FONT></TD><TD><FONT face=3DArial size=3D4></FONT></TD><TD =
-=
-rowSpan=3D2><FONT face=3DArial size=3D4>ALLlS V</FONT></TD><TD><FONT =
-face=3DArial size=3D4></FONT></TD><TD rowSpan=3D2><FONT face=3DArial =
-size=3D4>&nbsp;many other dr</FONT></TD><TD><FONT face=3DArial =
-size=3D4></FONT></TD><TD rowSpan=3D2><FONT face=3DArial =
-size=3D4>op</FONT></TD><TD><FONT face=3DArial =
-size=3D4></FONT></TD></TR><TR><TD><FONT face=3DArial size=3D4>RRA =
-Cl</FONT></TD><TD><FONT face=3DArial size=3D4>ALlUUM =
-and</FONT></TD><TD><FONT face=3DArial size=3D4>ugs in our =
-sh</FONT></TD></TR></TABLE></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 =
-border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2><A =
-href=3D"http://www.qlcm.makpositorith.com">Chec</A></TD><TD></TD><TD =
-=
-rowSpan=3D2><A href=3D"http://www.qlcm.makpositorith.com">&nbsp;NEW =
-PRlCES</A></TD><TD></TD></TR><TR><TD><A =
-href=3D"http://www.qlcm.makpositorith.com">k out =
-our</A></TD><TD></TD></TR></TABLE></FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Have a nice day.</FONT></DIV></BODY></HTML>
+The well was drilled to a total depth of 2,320 feet to the base of the
+Permian Supai. The Company is now in receipt of the Schlumberger open
+hole logs and the mud logs. The well is being tested at the primary
+interval of 1,965 to 1,974 feet in the Permian Supai. There are 
+additional
+zones of interest between 1,447 and 2,241 feet that could be tested at
+a later date.
 
-------=_NextPart_000_0062_01C5A45F.191B6000--
+The well was completed with 4 1/2 inch steel casing and was cemented by
+Halliburton. Schlumberger also ran the cased hole logs and perforated
+the current interval being tested.
+
+President John Gaetz states, "We are very encouraged with our results
+so far. The upcoming weeks represent an exciting stage of development
+(exploration) for Irwin Energy."
+
+The Concho Dome Anticline is located along the upper edge of the
+Permian salt basin, and thus the subsurface reefs, beaches and sandbars 
+may
+contain oil, natural gas and/or helium.
+
+About Irwin Energy, Inc.
+
+Irwin Energy, Inc., based in Vancouver, B.C. was founded for the
+purpose of engaging in the exploration for and acquisition, development 
+and
+production of crude oil and natural gas, and for other related
+activities. In the oil and gas arena, Irwin Energy seeks out low-risk
+opportunities to develop positive cash flow from proven and probable 
+oil and gas
+plays. Irwin Energy plans to grow exclusively through efficient
+reinvestment of its internally generated cash flow in exploration and
+production operations, and through limited external financing to build
+ancillary businesses.
+
+Conclusion:
+
+The Examples Above Show The Awesome, Earning Potential of Little Known
+Companies That Explode Onto Investor's Radar Screens; Many of You Are
+Already Familiar with This. Is IWNN Poised and Positioned to Do that 
+For
+You? Then You May Feel the Time Has Come to Act... And Please Watch
+this One Trade Thursday! Go IWNN.
+
+Penny stocks are considered highly speculative and may be unsuitable
+for all but very aggressive investors.  This Profile is not in any way
+affiliated with the featured company.  We were compensated 3000 dollars
+to distribute this report.  This report is for entertainment and
+advertising purposes only and should not be used as investment advice.
+If you wish to stop future mailings, or if you feel you have been
+wrongfully placed in our membership, send a blank e mail with No Thanks 
+in the subject to
+
 
 
 
