@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001346]: Nforce3-250 has no working support for front microphone
-Date: Fri, 19 Aug 2005 12:41:07 +0200
-Message-ID: <848b894af0f06cce75a9eb2832e7f7ff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
+Date: Fri, 19 Aug 2005 12:58:13 +0200
+Message-ID: <51cbf74b88938d4c9243ba966a4d3ac2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83540203
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 12:41:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01F0E1DE
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 12:58:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,101 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
 ======================================================================
-Reported By:                alchemyx
+Reported By:                ahessling
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1346
-Category:                   PCI - intel8x0
+Issue ID:                   1058
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 Distribution:               Gentoo
-Kernel Version:             2.6.12
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             08-17-2005 11:04 CEST
-Last Modified:              08-19-2005 12:41 CEST
+Date Submitted:             04-16-2005 16:37 CEST
+Last Modified:              08-19-2005 12:58 CEST
 ======================================================================
-Summary:                    Nforce3-250 has no working support for front
-microphone
+Summary:                    CMI9880 sometimes produces distorted sound
 Description: 
-I have nforce3-250 based motherboard. It uses i8x0 drivers for its sound
-chip, my output from lspci:
+I am using the CVS version of alsa-kernel from a few days and because of
+the soundchip CMI9880, I have to activate Intel HDA in the kernel.
+Sound is working quite fine in stereo mode, but if I want to play a DVD
+with 5.1 sound, all speakers are activated but the sound is a little bit
+distorted.
+xine uses plug:surround51:0 as the surround device.
 
-0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 250Gb
-AC'97 Audio Controller (rev a1)
-        Subsystem: Giga-byte Technology: Unknown device a002
-        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 21
-        I/O ports at e000
-        I/O ports at e400 [size=128]
-        Memory at fa002000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: [44] Power Management version 2
+My asound.conf looks like this:
+pcm.!default {
+type plug
+slave.pcm "svol"
+}
 
-That soundcard is supported quite well. Playing and also recording sounds
-just fine. Only problem is that I have front audio panel built in my case,
-where I can connect microphone and headphones. Headphones work fine, but I
-can't get recording from microphone connected to front panel.
+pcm.svol {
+type softvol
+slave.pcm "hw:0,0"
+control {
+name "PCM Playback Volume"
+}
+}
 
-Tweaking with mixer didn't help. Only solution was to use binary nvsound
-from nvidia drivers which is, to be honest, poor quality. Also it works
-fine under Windows.
+I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
+Again, stereo sound works fine and also dmix does its work, but this time
+I only get stereo sound in xine although the same configuration of xine is
+used.
 
-So it seems that there is something missing or wrong in current i8x0
-driver.
+I also noticed that playing some files using aplay produces the same
+distortions, e.g.:
+
+aplay /usr/share/sounds/k3b_success1.wav
+Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
+8000 Hz, Mono
+
+Seems to have to do something with sample rate.
+Using the other asound.conf from the homepage above just gives an error:
+Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
+8000 Hz, Mono
+aplay: set_params:857: Sample format non available
+ 
+Is there a way to play 5.1 sound without these distortions? Maybe some
+lines added to my asound.conf would do the work.
+
+Thanks in advance!
+
+Regards,
+André
 ======================================================================
 
 ----------------------------------------------------------------------
- alchemyx - 08-18-05 23:01 
+ tiwai - 08-11-05 14:29 
 ----------------------------------------------------------------------
-You are completly right. I can hear myself, but I need to turn up the
-volume to the max and almost scream to the mic! :)
+You're using a too old version.
 
 ----------------------------------------------------------------------
- vsu - 08-19-05 12:41 
+ komanek - 08-19-05 12:58 
 ----------------------------------------------------------------------
-If your motherboard has the Realtek ALC850 codec, you need to upgrade ALSA
-drivers to 1.0.9 (or later) release - see bug #1232 for details.  The
-codec type is shown by alsamixer and in
-/proc/asound/card0/codec97#0/ac97#0-0.
-
-If your motherboard has some other codec, please upload
-/proc/asound/card0/codec97#0/* files and /etc/asound.state file, like the
-reporter of #1232 did.
+Thank you, with the 1.0.9b alsa drivers it seems to work much better. The
+sound still gets sometimes distorted, but only ocasionaly and for a moment
+only.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-05 11:04 alchemyx       New Issue                                    
-08-17-05 11:04 alchemyx       Distribution              => Gentoo          
-08-17-05 11:04 alchemyx       Kernel Version            => 2.6.12          
-08-18-05 18:43 jirka          Note Added: 0005851                          
-08-18-05 23:01 alchemyx       Note Added: 0005859                          
-08-18-05 23:04 alchemyx       Issue Monitored: alchemyx                    
-08-19-05 12:41 vsu            Note Added: 0005868                          
+04-16-05 16:37 ahessling      New Issue                                    
+04-16-05 16:37 ahessling      Distribution              => Gentoo          
+04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
+04-19-05 17:47 tiwai          Note Added: 0004527                          
+04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
+04-21-05 11:41 ahessling      Note Added: 0004550                          
+06-22-05 16:32 andersin       Note Added: 0005133                          
+06-22-05 17:49 tiwai          Note Added: 0005135                          
+08-08-05 12:26 komanek        Note Added: 0005704                          
+08-08-05 12:37 komanek        Note Added: 0005705                          
+08-11-05 14:29 tiwai          Note Added: 0005758                          
+08-19-05 12:58 komanek        Note Added: 0005869                          
 ======================================================================
 
 
