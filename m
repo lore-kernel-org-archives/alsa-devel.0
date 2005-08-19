@@ -1,10 +1,10 @@
-From: Sam <tzahm@punkass.com>
-Subject: emagic MT4
-Date: Fri, 19 Aug 2005 20:36:08 +0200
-Message-ID: <1124476568.430626984ab55@horde.hku.nl>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Disagreement about versions following CVS update
+Date: Fri, 19 Aug 2005 13:33:28 -0600
+Message-ID: <43063408.60402@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,44 +18,48 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I've been attempting to use the "snd-usb-audio" module to make an Emagic =
-MT4
-midi interface work under linux. At first, it appeared to be working fine=
-: 'cat
-/dev/snd/midiC0D0' would output more garbled characters everytime I'd str=
-uck a
-key on the keyboard.
+I did a CVS update yesterday, and a rebuild and tried to reinstall, and
+I'm seeing:
 
-Connecting the keyboard to a software synth via aconnect does work, but t=
-he
-result is not what one would expect: I hear one note when I first hit a k=
-ey,
-but the sound either gets stuck or the synth repeats the same note once I
-release the key. Trying to play a scale does not work. I always hear the =
-same
-note.=20
+WARNING: Error inserting snd_seq_device 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/seq/snd-seq-device.ko): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_rawmidi 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-rawmidi.ko): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_mpu401_uart 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_timer 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-timer.ko): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_timer 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-timer.ko): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_pcm 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-pcm.ko): Unknown 
+symbol in module, or unknown parameter (see dmesg)
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_ac97_codec 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/pci/ac97/snd-ac97-codec.ko): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_via82xx 
+(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/pci/snd-via82xx.ko): 
+Unknown symbol in module, or unknown parameter (see dmesg)
 
-I inspected the output of midiC0D0 with a midi monitor and I noticed that=
- no
-"Note Off" messages were being produced. After a while, the /snd/midiC0D0
-device sort of dies... still being there, but not outputting any data.
+Stupid question:  did a version number get changed somewhere?  And if
+so, what's the fix?  I did a:
 
-I've tried the same midi keyboard (Yamaha SY33) on OSX and it works prope=
-rly.
+% make -C alsa-driver clean
 
-Now, has anyone managed to get this midi interface (MT4) to work properly=
-? Is it
-fully operational at the moment? Could it be that the driver is generatin=
-g "Note
-On" messages instead of "Note Off" when keys are released?
+and a rebuild, but I'm still seeing these.  What did I miss?
 
-:::sam:::
+-Philip
+
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
-es
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
-A
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
