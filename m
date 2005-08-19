@@ -1,13 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: Compulab sound device
-Date: Fri, 19 Aug 2005 15:10:31 +0100
-Message-ID: <1124460631.2861.259.camel@cearnarfon>
-References: <20050819135108.3863.qmail@web54606.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001346]: Nforce3-250 has no working support for front microphone
+Date: Fri, 19 Aug 2005 17:36:02 +0200
+Message-ID: <c56a740380a49c1cbce938b3b35799d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050819135108.3863.qmail@web54606.mail.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 755961DA
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 17:36:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +18,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chow Raymond <usher_raymond82@yahoo.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-08-19 at 06:51 -0700, Chow Raymond wrote:
 
-> 
-> > This means that snd-pxa2xx-pcm.ko has not been
-> > inserted. It's built from
-> > pxa2xx-pcm.c
-> 
-> I cant even insmod snd-pxa2xx-pcm. It gives me the
-> following error. 
-> 
-> [root@ARMCore sound1]$ insmod snd-pxa2xx-pcm.ko
-> snd_pxa2xx_pcm: Unknown symbol dma_mmap_writecombine
-> insmod: error inserting 'snd-pxa2xx-pcm.ko': -1
-> Unknown symbol in module
->  
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346> 
+======================================================================
+Reported By:                alchemyx
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1346
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             08-17-2005 11:04 CEST
+Last Modified:              08-19-2005 17:36 CEST
+======================================================================
+Summary:                    Nforce3-250 has no working support for front
+microphone
+Description: 
+I have nforce3-250 based motherboard. It uses i8x0 drivers for its sound
+chip, my output from lspci:
 
-It looks like your arch/arm and include/asm/ also has to be back ported
-from 2.6.12. I've now read Clemens reply and also believe it's better to
-port your machine from 2.6.7 to 2.6.12.
+0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 250Gb
+AC'97 Audio Controller (rev a1)
+        Subsystem: Giga-byte Technology: Unknown device a002
+        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 21
+        I/O ports at e000
+        I/O ports at e400 [size=128]
+        Memory at fa002000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
 
-Liam
+That soundcard is supported quite well. Playing and also recording sounds
+just fine. Only problem is that I have front audio panel built in my case,
+where I can connect microphone and headphones. Headphones work fine, but I
+can't get recording from microphone connected to front panel.
+
+Tweaking with mixer didn't help. Only solution was to use binary nvsound
+from nvidia drivers which is, to be honest, poor quality. Also it works
+fine under Windows.
+
+So it seems that there is something missing or wrong in current i8x0
+driver.
+======================================================================
+
+----------------------------------------------------------------------
+ vsu - 08-19-05 12:41 
+----------------------------------------------------------------------
+If your motherboard has the Realtek ALC850 codec, you need to upgrade ALSA
+drivers to 1.0.9 (or later) release - see bug #1232 for details.  The
+codec type is shown by alsamixer and in
+/proc/asound/card0/codec97#0/ac97#0-0.
+
+If your motherboard has some other codec, please upload
+/proc/asound/card0/codec97#0/* files and /etc/asound.state file, like the
+reporter of #1232 did.
+
+----------------------------------------------------------------------
+ alchemyx - 08-19-05 17:36 
+----------------------------------------------------------------------
+It did solve that issue. Thank you! By the way I see some nice changes in
+drivers (like easy choosing channels number, great).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-05 11:04 alchemyx       New Issue                                    
+08-17-05 11:04 alchemyx       Distribution              => Gentoo          
+08-17-05 11:04 alchemyx       Kernel Version            => 2.6.12          
+08-18-05 18:43 jirka          Note Added: 0005851                          
+08-18-05 23:01 alchemyx       Note Added: 0005859                          
+08-18-05 23:04 alchemyx       Issue Monitored: alchemyx                    
+08-19-05 12:41 vsu            Note Added: 0005868                          
+08-19-05 17:36 alchemyx       Note Added: 0005870                          
+======================================================================
 
 
 
