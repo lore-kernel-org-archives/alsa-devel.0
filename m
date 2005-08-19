@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
-Date: Fri, 19 Aug 2005 12:58:13 +0200
-Message-ID: <51cbf74b88938d4c9243ba966a4d3ac2@bugtrack.alsa-project.org>
+From: Chow Raymond <usher_raymond82@yahoo.com>
+Subject: Re: Compulab sound device
+Date: Fri, 19 Aug 2005 05:47:10 -0700 (PDT)
+Message-ID: <20050819124710.36978.qmail@web54603.mail.yahoo.com>
+References: <Pine.HPX.4.33n.0508171538200.19860-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01F0E1DE
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 12:58:13 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0508171538200.19860-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,114 +17,98 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Ok..I backport ARM audio changes from 2.6.12 to 2.6.7.
+I manage to build a zImage file and manage to make
+modules too. However..there are few warnings that i
+encounter during make modules
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
-======================================================================
-Reported By:                ahessling
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1058
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11.6
-======================================================================
-Date Submitted:             04-16-2005 16:37 CEST
-Last Modified:              08-19-2005 12:58 CEST
-======================================================================
-Summary:                    CMI9880 sometimes produces distorted sound
-Description: 
-I am using the CVS version of alsa-kernel from a few days and because of
-the soundchip CMI9880, I have to activate Intel HDA in the kernel.
-Sound is working quite fine in stereo mode, but if I want to play a DVD
-with 5.1 sound, all speakers are activated but the sound is a little bit
-distorted.
-xine uses plug:surround51:0 as the surround device.
+sound/pci/ac97/ac97_codec.c: In function
+`snd_ac97_mixer':
+sound/pci/ac97/ac97_codec.c:1771: warning: unused
+variable `pid'
+sound/pci/ac97/ac97_codec.c: At top level:
+sound/pci/ac97/ac97_codec.c:1740: warning:
+`null_build_ops' defined but not used
 
-My asound.conf looks like this:
-pcm.!default {
-type plug
-slave.pcm "svol"
-}
+Building modules, stage 2.
+  MODPOST
+*** Warning: "dma_mmap_writecombine"
+[sound/arm/snd-pxa2xx-pcm.ko] undefined!
+*** Warning: "pxa_set_cken"
+[sound/arm/snd-pxa2xx-ac97.ko] undefined!
+*** Warning: "snd_ac97_get_short_name"
+[sound/arm/snd-pxa2xx-ac97.ko] undefined!
 
-pcm.svol {
-type softvol
-slave.pcm "hw:0,0"
-control {
-name "PCM Playback Volume"
-}
-}
+I thought warnings would be ok. I started inserting
+modules but when I want to insert the snd-pxa2xx-ac97
+module, I get the following error.
 
-I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
-Again, stereo sound works fine and also dmix does its work, but this time
-I only get stereo sound in xine although the same configuration of xine is
-used.
+[root@ARMCore sound1]$ insmod snd-pxa2xx-ac97.ko
+snd_pxa2xx_ac97: Unknown symbol pxa2xx_pcm_new
+snd_pxa2xx_ac97: Unknown symbol
+snd_ac97_get_short_name
+snd_pxa2xx_ac97: Unknown symbol pxa_set_cken
+insmod: error inserting 'snd-pxa2xx-ac97.ko': -1
+Unknown symbol in module
 
-I also noticed that playing some files using aplay produces the same
-distortions, e.g.:
+Which file should I fix? There is not any
+snd-pxa2xx-ac97.c file. What does unknown symbol in
+module means?
 
-aplay /usr/share/sounds/k3b_success1.wav
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
+Hope to hear from you soon.
 
-Seems to have to do something with sample rate.
-Using the other asound.conf from the homepage above just gives an error:
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-aplay: set_params:857: Sample format non available
- 
-Is there a way to play 5.1 sound without these distortions? Maybe some
-lines added to my asound.conf would do the work.
+Raymond
 
-Thanks in advance!
+--- Clemens Ladisch <clemens@ladisch.de> wrote:
 
-Regards,
-André
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 08-11-05 14:29 
-----------------------------------------------------------------------
-You're using a too old version.
-
-----------------------------------------------------------------------
- komanek - 08-19-05 12:58 
-----------------------------------------------------------------------
-Thank you, with the 1.0.9b alsa drivers it seems to work much better. The
-sound still gets sometimes distorted, but only ocasionaly and for a moment
-only.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-05 16:37 ahessling      New Issue                                    
-04-16-05 16:37 ahessling      Distribution              => Gentoo          
-04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
-04-19-05 17:47 tiwai          Note Added: 0004527                          
-04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
-04-21-05 11:41 ahessling      Note Added: 0004550                          
-06-22-05 16:32 andersin       Note Added: 0005133                          
-06-22-05 17:49 tiwai          Note Added: 0005135                          
-08-08-05 12:26 komanek        Note Added: 0005704                          
-08-08-05 12:37 komanek        Note Added: 0005705                          
-08-11-05 14:29 tiwai          Note Added: 0005758                          
-08-19-05 12:58 komanek        Note Added: 0005869                          
-======================================================================
+> Chow Raymond wrote:
+> > I can't compile a newer kernel version. This is
+> > because Compulab Armcore only supports till kernel
+> > 2.6.7 and in that contains ALSA 1.0.4.
+>=20
+> You could backport the ARM audio changes between
+> 2.6.7 and 2.6.12, or
+> you could port Compulab's changes (if any) to
+> 2.6.12.
+>=20
+>=20
+> HTH
+> Clemens
+>=20
+>=20
+>=20
+>
+-------------------------------------------------------
+> SF.Net email is Sponsored by the Better Software
+> Conference & EXPO
+> September 19-22, 2005 * San Francisco, CA *
+> Development Lifecycle Practices
+> Agile & Plan-Driven Development * Managing Projects
+> & Teams * Testing & QA
+> Security * Process Improvement & Measurement *
+> http://www.sqe.com/bsce5sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+>
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>=20
 
 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
+es
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
+A
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
