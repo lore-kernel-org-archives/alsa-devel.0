@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
-Date: Fri, 19 Aug 2005 03:10:44 +0200
-Message-ID: <e1d7a1894ea87dab88478d2ece072958@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
+Date: Fri, 19 Aug 2005 04:51:44 +0200
+Message-ID: <a80168c25bf3a9739488f1eb2c3ba3ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A752218
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 03:10:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21E59207
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 04:51:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,125 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
 ======================================================================
-Reported By:                robert
-Assigned To:                
+Reported By:                ahaning
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1191
-Category:                   hw specific configuration
+Project:                    ALSA - utils
+Issue ID:                   1326
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 ======================================================================
-Date Submitted:             06-14-2005 11:45 CEST
-Last Modified:              08-19-2005 03:10 CEST
+Date Submitted:             08-10-2005 03:39 CEST
+Last Modified:              08-19-2005 04:51 CEST
 ======================================================================
-Summary:                    Center channel and 32-bit emulation broken when
-upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Summary:                    ISA cards (opl3sa2 in particular) are not detected
+properly on 2.6 kernels
 Description: 
-I'm running AMD64 gentoo on an nforce4 system, audio is nVidia CK804 with
-ALC850. I can emerge the newest alsa-driver package (1.0.9b), but when I
-upgrade alsa-lib to 1.0.9, three things happen.  First, my 32 bit sound
-applications, like mplayer32, don't work with alsa anymore.  Second, the
-center channel on all 5.1 sound goes out.  Third, the a/v synchonization
-on mplayer gets hosed using alsa (oss emulation still ok.)
+When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
+are incorrectly detected by alsaconf from alsa-utils. For example, the
+default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
+IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
+detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
+to that, then the card will make sound (after touching the mixer while
+playing audio).
+
+According to perex (author of the opl3sa2 driver):
+
+"The alsaconf tries to gather free resources (irq/dma/ports) from the
+/proc filesystem. It might be extended to gather this information also
+from /sys filesystem."
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001206 No Surround Sound (5.1) with analog spe...
+related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
- robert - 08-19-05 02:45 
+ ahaning - 08-19-05 03:05 
 ----------------------------------------------------------------------
-If neither you nor the other developers have a nforce motherboard, WHO
-CHANGED NFORCE.conf, thereby introducing the bug?
+Okay, I've completely uninstalled and reinstalled ALSA 1.0.9 with the above
+patches. After installing alsa-driver, it seemed to configure the sound
+card, as well, and I was able to open the mixer and, by touching the PCM
+mixer, play audio.
+
+I thought this was weird since I didn't have to run alsaconf or modprobe.
+When I ran the alsaconf that came with 1.0.9 (not the above version) and
+had it brute force detect the card (no PnP cards were detected), I get
+lots and lots of "Unknown symbol" errors in snd_opl3sa2, snd_opl3_lib, and
+snd_cs4231_lib. I also get an occasional non-fatal Oops as this runs. I'm
+going to have to kill the script and see if I can try your attached one.
+
+Edit: I've killed the script and when I try to run alsamixer, I get an
+Oops. I'm not sure how to capture it, though. Maybe netterm(?).
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 08-19-05 03:10 
+ rlrevell - 08-19-05 04:51 
 ----------------------------------------------------------------------
-The change was made to fix some other bug.
+Since Oopses can lead to corrupt kernel memory, only the first Oops since
+booting the machine is relevant.  You mentioned that the first Oops(es)
+were non-fatal so   just copy the first one from the logs.
 
- Details here:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/cards/NFORCE.conf?rev=1.9&view=log
-
-What you are asking is that each change be fully regression tested with
-every single piece of hardware on the market.  We are not Microsoft, we
-don't have those kinds of resources.
-
-Try reverting the last three changes one at a time and see which causes
-the problem.  Or try the patch I posted to #1206.
+Those Unknown symbol errors mean that you compiled ALSA against a
+different kernel version than you are running.  Make sure your installed
+kernel source matches the running kernel version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-14-05 11:45 robert         New Issue                                    
-06-15-05 14:01 jdthood        Note Added: 0005023                          
-06-15-05 22:00 robert         Note Added: 0005045                          
-06-15-05 23:42 jdthood        Note Added: 0005048                          
-08-18-05 21:12 robert         Note Added: 0005853                          
-08-18-05 21:31 rlrevell       Note Added: 0005855                          
-08-18-05 21:32 rlrevell       Relationship added       has duplicate 0001206
-08-19-05 02:45 robert         Note Added: 0005863                          
-08-19-05 03:10 rlrevell       Note Added: 0005865                          
+08-10-05 03:39 ahaning        New Issue                                    
+08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
+it's not distribution-specific)
+08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
+08-10-05 13:26 perex          Status                   new => assigned     
+08-10-05 13:26 perex          Assigned To               => perex           
+08-10-05 13:26 perex          File Added: alsaconf                         
+08-10-05 13:28 perex          Note Added: 0005747                          
+08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
+utils
+08-10-05 13:30 perex          Relationship added       related to 0000879  
+08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
+08-10-05 14:55 ahaning        Note Added: 0005748                          
+08-11-05 00:24 ahaning        Note Added: 0005752                          
+08-11-05 23:59 ahaning        Note Added: 0005763                          
+08-12-05 00:00 ahaning        Note Edited: 0005763                         
+08-12-05 03:09 ahaning        Note Added: 0005764                          
+08-12-05 09:29 perex          Note Added: 0005766                          
+08-12-05 12:54 ahaning        Note Added: 0005767                          
+08-12-05 15:11 perex          Summary                  ISAPNP cards (opl3sa2 in
+particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
+particular) are not detected properly on 2.6 kernels
+08-12-05 15:14 perex          Note Added: 0005768                          
+08-12-05 15:35 tiwai          Note Added: 0005769                          
+08-12-05 15:36 ahaning        Note Added: 0005770                          
+08-12-05 15:44 tiwai          Note Added: 0005771                          
+08-12-05 15:45 tiwai          Note Added: 0005772                          
+08-12-05 15:56 perex          Note Added: 0005777                          
+08-12-05 16:08 perex          Note Added: 0005778                          
+08-12-05 16:44 ahaning        Note Added: 0005782                          
+08-12-05 18:00 perex          File Added: opl3sa2.c.patch                    
+08-12-05 18:03 perex          Note Added: 0005783                          
+08-12-05 18:52 ahaning        Note Added: 0005787                          
+08-13-05 15:10 perex          File Deleted: alsaconf                       
+08-13-05 15:10 perex          File Added: alsaconf                         
+08-13-05 15:11 perex          Note Added: 0005806                          
+08-13-05 19:06 ahaning        Note Added: 0005808                          
+08-13-05 19:08 ahaning        Note Edited: 0005808                         
+08-15-05 13:53 perex          File Added: opl3sa2-2.c.patch                    
+08-15-05 13:55 perex          Note Added: 0005817                          
+08-18-05 12:51 ahaning        Note Added: 0005843                          
+08-18-05 12:56 perex          Note Added: 0005844                          
+08-18-05 16:36 ahaning        Note Added: 0005848                          
+08-19-05 02:35 ahaning        Note Added: 0005861                          
+08-19-05 03:02 ahaning        Note Added: 0005864                          
+08-19-05 03:05 ahaning        Note Edited: 0005864                         
+08-19-05 04:51 rlrevell       Note Added: 0005866                          
 ======================================================================
 
 
