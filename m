@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001341]: No volume control
-Date: Thu, 18 Aug 2005 18:12:33 +0200
-Message-ID: <fddf2387f26d5192c0af3a3e0eb6f157@bugtrack.alsa-project.org>
+Date: Fri, 19 Aug 2005 02:35:37 +0200
+Message-ID: <5a3a5e5a267d3aeceee6a7760e7c0c6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA9B01B8
-	for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2005 18:12:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B443C207
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 02:35:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Arch
 Kernel Version:             2.6.12-ARCH
 ======================================================================
 Date Submitted:             08-16-2005 12:51 CEST
-Last Modified:              08-18-2005 18:12 CEST
+Last Modified:              08-19-2005 02:35 CEST
 ======================================================================
 Summary:                    No volume control
 Description: 
@@ -53,16 +53,18 @@ PCM appears as a switch, perhaps it should be a slider?
 ======================================================================
 
 ----------------------------------------------------------------------
- chui101 - 08-16-05 12:54 
-----------------------------------------------------------------------
-The IEC958 switch only appears to affect sound streamed through OSS.
-
-----------------------------------------------------------------------
  chui101 - 08-18-05 18:12 
 ----------------------------------------------------------------------
 actually, i have no idea what the iec958 is doing anymore, it doesn't seem
 to affect the mixer anymore. however, master slider still doesn't affect
 volume.
+
+----------------------------------------------------------------------
+ rlrevell - 08-19-05 02:35 
+----------------------------------------------------------------------
+Try the uploaded patch.  You can apply it (as root of course) against your
+existing /usr/share/alsa/cards/ATIIXP.conf, no need to recompile or
+reinstall anything, just restart the affected app(s).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +75,9 @@ Date Modified  Username       Field                    Change
 08-16-05 12:54 chui101        Note Added: 0005827                          
 08-16-05 12:58 chui101        Issue Monitored: chui101                     
 08-18-05 18:12 chui101        Note Added: 0005849                          
+08-19-05 02:33 rlrevell       File Added: atiixp-softvol.patch                  
+ 
+08-19-05 02:35 rlrevell       Note Added: 0005862                          
 ======================================================================
 
 
