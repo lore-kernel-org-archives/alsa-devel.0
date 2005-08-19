@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001349]: ATI SB400 chipset multiple problems
-Date: Fri, 19 Aug 2005 02:43:38 +0200
-Message-ID: <d3b23b7bfd8a189620db59ce1ed08e6a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Date: Fri, 19 Aug 2005 02:46:00 +0200
+Message-ID: <953d4f7a864ebc030523968ef09e444e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B0B207
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 02:43:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36B93207
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 02:46:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1349> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
 ======================================================================
-Reported By:                gopakita
-Assigned To:                tiwai
+Reported By:                robert
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1349
-Category:                   PCI - atiixp
+Project:                    ALSA - lib
+Issue ID:                   1191
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1487
+Status:                     new
 ======================================================================
-Date Submitted:             08-19-2005 02:43 CEST
-Last Modified:              08-19-2005 02:43 CEST
+Date Submitted:             06-14-2005 11:45 CEST
+Last Modified:              08-19-2005 02:45 CEST
 ======================================================================
-Summary:                    ATI SB400 chipset multiple problems
+Summary:                    Center channel and 32-bit emulation broken when
+upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
 Description: 
-# gst-launch-0.8 filesrc location="/usr/share/sounds/email.wav" ! wavparse
-! alsasink
-RUNNING pipeline ...
-ERROR: from element /pipeline0/alsasink0: ALSA device "default" had an
-error.
-Additional debug info:
-gstalsa.c(1613): gst_alsa_open_audio: /pipeline0/alsasink0:
-ALSA error -22: Invalid argument
-ERROR: from element /pipeline0/alsasink0: Internal GStreamer error: state
-change failed.  File a bug.
-Execution ended after 1 iterations (sum 75111000 ns, average 75111000 ns,
-min 75111000 ns, max 75111000 ns).
-
-I got this new Laptop - MSI 1013. Basically sound doesn't work on it.
-Running xmms/OSS output and using headphones I can hear someything very
-very quite.
-
-
-
-
+I'm running AMD64 gentoo on an nforce4 system, audio is nVidia CK804 with
+ALC850. I can emerge the newest alsa-driver package (1.0.9b), but when I
+upgrade alsa-lib to 1.0.9, three things happen.  First, my 32 bit sound
+applications, like mplayer32, don't work with alsa anymore.  Second, the
+center channel on all 5.1 sound goes out.  Third, the a/v synchonization
+on mplayer gets hosed using alsa (oss emulation still ok.)
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001206 No Surround Sound (5.1) with analog spe...
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 08-18-05 21:31 
+----------------------------------------------------------------------
+So are you volunteering to buy me an Nforce2 motherboard?
+
+Otherwise, please fuck off.
+
+----------------------------------------------------------------------
+ robert - 08-19-05 02:45 
+----------------------------------------------------------------------
+If neither you nor the other developers have a nforce motherboard, WHO
+CHANGED NFORCE.conf, thereby introducing the bug?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-19-05 02:43 gopakita       New Issue                                    
-08-19-05 02:43 gopakita       Distribution              => Fedora Core 4   
-08-19-05 02:43 gopakita       Kernel Version            => 2.6.12-1.1487   
+06-14-05 11:45 robert         New Issue                                    
+06-15-05 14:01 jdthood        Note Added: 0005023                          
+06-15-05 22:00 robert         Note Added: 0005045                          
+06-15-05 23:42 jdthood        Note Added: 0005048                          
+08-18-05 21:12 robert         Note Added: 0005853                          
+08-18-05 21:31 rlrevell       Note Added: 0005855                          
+08-18-05 21:32 rlrevell       Relationship added       has duplicate 0001206
+08-19-05 02:45 robert         Note Added: 0005863                          
 ======================================================================
 
 
