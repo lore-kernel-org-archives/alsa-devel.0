@@ -1,16 +1,13 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: [PATCH] hda-intel, correct a bug in detection of rate supported
-Date: Sat, 20 Aug 2005 02:19:57 +0300
-Message-ID: <20050819231956.GA11604@tecr>
-References: <43063A3E.4010903@free.fr>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: Disagreement about versions following CVS update
+Date: Fri, 19 Aug 2005 17:20:37 -0600
+Message-ID: <43066945.7020405@redfish-solutions.com>
+References: <43063408.60402@redfish-solutions.com>	 <1124483804.25424.50.camel@mindpipe>	 <43064B0B.9080402@redfish-solutions.com>	 <1124486050.25424.52.camel@mindpipe>	 <43065A7F.6070904@redfish-solutions.com> <1124490358.25424.72.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sa5.bezeqint.net (sa5.bezeqint.net [192.115.104.19])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D60F1DB
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 01:03:22 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <43063A3E.4010903@free.fr>
+In-Reply-To: <1124490358.25424.72.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,62 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nicolas GRAZIANO <nicolas.graziano@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 21:59 Fri 19 Aug     , Nicolas GRAZIANO wrote:
-> The insertion of the rate 9600 make a shift in detection of supported
-> rate, put this rate at the end of the list.
+Lee Revell wrote:
 
-Good point. Thanks for fixing.
+>On Fri, 2005-08-19 at 16:17 -0600, Philip Prindeville wrote:
+>  
+>
+>>Lee Revell wrote:
+>>
+>>    
+>>
+>>>On Fri, 2005-08-19 at 15:11 -0600, Philip Prindeville wrote:
+>>> 
+>>>
+>>>      
+>>>
+>>>>No, that's not the issue:
+>>>>   
+>>>>
+>>>>        
+>>>>
+>>>No idea then.  Try blowing away your tree and getting a fresh checkout?
+>>>
+>>>Lee
+>>> 
+>>>
+>>>      
+>>>
+>>No joy.  Changes nothing.
+>>    
+>>
+>
+>Did you update alsa-kernel as well as alsa-driver?
+>
+>Lee
+>
+>  
+>
 
-Sasha.
+Yep.
 
-> 
-> Signed-off-by: Nicolas Graziano <nicolas.graziano@wanadoo.fr>
-> 
-> 
-> Index: pci/hda/hda_codec.c
-> ===================================================================
-> RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_codec.c,v
-> retrieving revision 1.23
-> diff -u -r1.23 hda_codec.c
-> --- pci/hda/hda_codec.c 11 Aug 2005 10:00:16 -0000      1.23
-> +++ pci/hda/hda_codec.c 19 Aug 2005 19:43:51 -0000
-> @@ -1165,8 +1165,9 @@
->   */
->  static unsigned int rate_bits[][3] = {
->         /* rate in Hz, ALSA rate bitmask, HDA format value */
-> +
-> +       /* autodetected value used in snd_hda_query_supported_pcm */
->         { 8000, SNDRV_PCM_RATE_8000, 0x0500 }, /* 1/6 x 48 */
-> -       { 9600, SNDRV_PCM_RATE_KNOT, 0x0400 }, /* 1/5 x 48 */
->         { 11025, SNDRV_PCM_RATE_11025, 0x4300 }, /* 1/4 x 44 */
->         { 16000, SNDRV_PCM_RATE_16000, 0x0200 }, /* 1/3 x 48 */
->         { 22050, SNDRV_PCM_RATE_22050, 0x4100 }, /* 1/2 x 44 */
-> @@ -1177,6 +1178,9 @@
->         { 96000, SNDRV_PCM_RATE_96000, 0x0800 }, /* 2 x 48 */
->         { 176400, SNDRV_PCM_RATE_176400, 0x5800 },/* 4 x 44 */
->         { 192000, SNDRV_PCM_RATE_192000, 0x1800 }, /* 4 x 48 */
-> +
-> +       /* not autodetected value */
-> +       { 9600, SNDRV_PCM_RATE_KNOT, 0x0400 }, /* 1/5 x 48 */
->         { 0 }
->  };
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net email is Sponsored by the Better Software Conference & EXPO
-> September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-> Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-> Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-Philip
+
 
 
 -------------------------------------------------------
