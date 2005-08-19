@@ -1,11 +1,17 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: Disagreement about versions following CVS update
-Date: Fri, 19 Aug 2005 13:33:28 -0600
-Message-ID: <43063408.60402@redfish-solutions.com>
+From: Nicolas GRAZIANO <nicolas.graziano@free.fr>
+Subject: [PATCH] hda-intel, correct a bug in detection of rate supported
+Date: Fri, 19 Aug 2005 21:59:58 +0200
+Message-ID: <43063A3E.4010903@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from postfix3-2.free.fr (postfix3-2.free.fr [213.228.0.169])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22ACF1E2
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 22:00:00 +0200 (MEST)
+Received: from [82.66.38.107] (rob92-2-82-66-38-107.fbx.proxad.net [82.66.38.107])
+	by postfix3-2.free.fr (Postfix) with ESMTP id 89FB0C085
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 21:59:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,46 +21,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I did a CVS update yesterday, and a rebuild and tried to reinstall, and
-I'm seeing:
+The insertion of the rate 9600 make a shift in detection of supported
+rate, put this rate at the end of the list.
 
-WARNING: Error inserting snd_seq_device 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/seq/snd-seq-device.ko): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd_rawmidi 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-rawmidi.ko): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd_mpu401_uart 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd_timer 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-timer.ko): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd_timer 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-timer.ko): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-FATAL: Error inserting snd_pcm 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-pcm.ko): Unknown 
-symbol in module, or unknown parameter (see dmesg)
-WARNING: Error running install command for snd_pcm
-WARNING: Error inserting snd_ac97_codec 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/pci/ac97/snd-ac97-codec.ko): 
-Unknown symbol in module, or unknown parameter (see dmesg)
-FATAL: Error inserting snd_via82xx 
-(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/pci/snd-via82xx.ko): 
-Unknown symbol in module, or unknown parameter (see dmesg)
+Signed-off-by: Nicolas Graziano <nicolas.graziano@wanadoo.fr>
 
-Stupid question:  did a version number get changed somewhere?  And if
-so, what's the fix?  I did a:
 
-% make -C alsa-driver clean
+Index: pci/hda/hda_codec.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_codec.c,v
+retrieving revision 1.23
+diff -u -r1.23 hda_codec.c
+--- pci/hda/hda_codec.c 11 Aug 2005 10:00:16 -0000      1.23
++++ pci/hda/hda_codec.c 19 Aug 2005 19:43:51 -0000
+@@ -1165,8 +1165,9 @@
+  */
+ static unsigned int rate_bits[][3] = {
+        /* rate in Hz, ALSA rate bitmask, HDA format value */
++
++       /* autodetected value used in snd_hda_query_supported_pcm */
+        { 8000, SNDRV_PCM_RATE_8000, 0x0500 }, /* 1/6 x 48 */
+-       { 9600, SNDRV_PCM_RATE_KNOT, 0x0400 }, /* 1/5 x 48 */
+        { 11025, SNDRV_PCM_RATE_11025, 0x4300 }, /* 1/4 x 44 */
+        { 16000, SNDRV_PCM_RATE_16000, 0x0200 }, /* 1/3 x 48 */
+        { 22050, SNDRV_PCM_RATE_22050, 0x4100 }, /* 1/2 x 44 */
+@@ -1177,6 +1178,9 @@
+        { 96000, SNDRV_PCM_RATE_96000, 0x0800 }, /* 2 x 48 */
+        { 176400, SNDRV_PCM_RATE_176400, 0x5800 },/* 4 x 44 */
+        { 192000, SNDRV_PCM_RATE_192000, 0x1800 }, /* 4 x 48 */
++
++       /* not autodetected value */
++       { 9600, SNDRV_PCM_RATE_KNOT, 0x0400 }, /* 1/5 x 48 */
+        { 0 }
+ };
 
-and a rebuild, but I'm still seeing these.  What did I miss?
-
--Philip
 
 
 
