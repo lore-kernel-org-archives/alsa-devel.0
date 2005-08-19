@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001341]: No volume control
-Date: Fri, 19 Aug 2005 02:35:37 +0200
-Message-ID: <5a3a5e5a267d3aeceee6a7760e7c0c6e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
+Date: Fri, 19 Aug 2005 02:35:04 +0200
+Message-ID: <fde1407ea125f8f158d1eb7b99215cd8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B443C207
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 02:35:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3C5F207
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2005 02:35:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,126 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1341> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
 ======================================================================
-Reported By:                chui101
-Assigned To:                tiwai
+Reported By:                ahaning
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1341
-Category:                   PCI - atiixp
+Project:                    ALSA - utils
+Issue ID:                   1326
+Category:                   alsaconf
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Arch
-Kernel Version:             2.6.12-ARCH
 ======================================================================
-Date Submitted:             08-16-2005 12:51 CEST
+Date Submitted:             08-10-2005 03:39 CEST
 Last Modified:              08-19-2005 02:35 CEST
 ======================================================================
-Summary:                    No volume control
+Summary:                    ISA cards (opl3sa2 in particular) are not detected
+properly on 2.6 kernels
 Description: 
-Initially, there was no sound, but to enable sound output the "IEC958
-Capture Monitor" switch must be turned off.
+When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
+are incorrectly detected by alsaconf from alsa-utils. For example, the
+default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
+IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
+detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
+to that, then the card will make sound (after touching the mixer while
+playing audio).
 
-Once there is sound, there is no way to control the volume. All the volume
-sliders in the playback tab of the GNOME Volume Control are functionless.
-PCM appears as a switch, perhaps it should be a slider?
+According to perex (author of the opl3sa2 driver):
+
+"The alsaconf tries to gather free resources (irq/dma/ports) from the
+/proc filesystem. It might be extended to gather this information also
+from /sys filesystem."
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
- chui101 - 08-18-05 18:12 
+ ahaning - 08-18-05 16:36 
 ----------------------------------------------------------------------
-actually, i have no idea what the iec958 is doing anymore, it doesn't seem
-to affect the mixer anymore. however, master slider still doesn't affect
-volume.
+I tried adding that line and it did not immediately work. I tried using
+alsaconf and modprobe snd_opl3sa2 and neither worked. I may have
+unintentionally borked my machine though by removing /lib/modules/`uname
+-r`/kernel/sound after I was getting errors trying to insert the new
+module.
+
+When I get home later today, I'll try rebooting and reinstalling ALSA
+1.0.9 completely with all above patches and added lines. If that still
+doesn't work, I could try downloading from CVS and let you know how that
+goes, presuming all above patches are applied there.
+
+I'm starting to think that it might work better/faster if I just make you
+an account on my machine and let you poke and prod the hardware and try
+stuff. Would that work [better]? I'm pretty sure that I'm doing everything
+correctly in patching and testing, but in the case that I'm not, I don't
+want you to have to keep writing patches and code and being bothered with
+this when there is a PEBKAC on this end.
 
 ----------------------------------------------------------------------
- rlrevell - 08-19-05 02:35 
+ ahaning - 08-19-05 02:35 
 ----------------------------------------------------------------------
-Try the uploaded patch.  You can apply it (as root of course) against your
-existing /usr/share/alsa/cards/ATIIXP.conf, no need to recompile or
-reinstall anything, just restart the affected app(s).
+Another thing I've noticed and figured I'd add is the following message
+from dmesg:
+
+PnPBIOS: Disabled by ACPI PNP
+
+I've tried alsaconf and modprobe for installing the module with ACPI off
+and this PnPBIOS on and ACPI on and PnPBIOS off and I don't think there's
+a difference.
+
+However, if this will make a difference, well, now you know.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-16-05 12:51 chui101        New Issue                                    
-08-16-05 12:51 chui101        Distribution              => Arch            
-08-16-05 12:51 chui101        Kernel Version            => 2.6.12-ARCH     
-08-16-05 12:54 chui101        Note Added: 0005827                          
-08-16-05 12:58 chui101        Issue Monitored: chui101                     
-08-18-05 18:12 chui101        Note Added: 0005849                          
-08-19-05 02:33 rlrevell       File Added: atiixp-softvol.patch                  
- 
-08-19-05 02:35 rlrevell       Note Added: 0005862                          
+08-10-05 03:39 ahaning        New Issue                                    
+08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
+it's not distribution-specific)
+08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
+08-10-05 13:26 perex          Status                   new => assigned     
+08-10-05 13:26 perex          Assigned To               => perex           
+08-10-05 13:26 perex          File Added: alsaconf                         
+08-10-05 13:28 perex          Note Added: 0005747                          
+08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
+utils
+08-10-05 13:30 perex          Relationship added       related to 0000879  
+08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
+08-10-05 14:55 ahaning        Note Added: 0005748                          
+08-11-05 00:24 ahaning        Note Added: 0005752                          
+08-11-05 23:59 ahaning        Note Added: 0005763                          
+08-12-05 00:00 ahaning        Note Edited: 0005763                         
+08-12-05 03:09 ahaning        Note Added: 0005764                          
+08-12-05 09:29 perex          Note Added: 0005766                          
+08-12-05 12:54 ahaning        Note Added: 0005767                          
+08-12-05 15:11 perex          Summary                  ISAPNP cards (opl3sa2 in
+particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
+particular) are not detected properly on 2.6 kernels
+08-12-05 15:14 perex          Note Added: 0005768                          
+08-12-05 15:35 tiwai          Note Added: 0005769                          
+08-12-05 15:36 ahaning        Note Added: 0005770                          
+08-12-05 15:44 tiwai          Note Added: 0005771                          
+08-12-05 15:45 tiwai          Note Added: 0005772                          
+08-12-05 15:56 perex          Note Added: 0005777                          
+08-12-05 16:08 perex          Note Added: 0005778                          
+08-12-05 16:44 ahaning        Note Added: 0005782                          
+08-12-05 18:00 perex          File Added: opl3sa2.c.patch                    
+08-12-05 18:03 perex          Note Added: 0005783                          
+08-12-05 18:52 ahaning        Note Added: 0005787                          
+08-13-05 15:10 perex          File Deleted: alsaconf                       
+08-13-05 15:10 perex          File Added: alsaconf                         
+08-13-05 15:11 perex          Note Added: 0005806                          
+08-13-05 19:06 ahaning        Note Added: 0005808                          
+08-13-05 19:08 ahaning        Note Edited: 0005808                         
+08-15-05 13:53 perex          File Added: opl3sa2-2.c.patch                    
+08-15-05 13:55 perex          Note Added: 0005817                          
+08-18-05 12:51 ahaning        Note Added: 0005843                          
+08-18-05 12:56 perex          Note Added: 0005844                          
+08-18-05 16:36 ahaning        Note Added: 0005848                          
+08-19-05 02:35 ahaning        Note Added: 0005861                          
 ======================================================================
 
 
