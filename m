@@ -1,14 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/core/memalloc.c: fix PROC_FS=n compilation
-Date: Sat, 20 Aug 2005 21:02:58 +0200
-Message-ID: <20050820190258.GA3615__31701.9257731319$1124564672$gmane$org@stusta.de>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: [PATCH] HP nx6110 quirks
+Date: Sat, 20 Aug 2005 23:34:31 +0400
+Message-ID: <20050820193431.GB12485@procyon.home>
+References: <20050820181730.GA12485@procyon.home> <1124563311.26949.23.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A63DF1C1
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 21:02:59 +0200 (MEST)
 Content-Disposition: inline
+In-Reply-To: <1124563311.26949.23.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the following compile error with CONFIG_PROC_FS=n:
 
-<--  snip  -->
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-...
-  CC      sound/core/memalloc.o
-sound/core/memalloc.c: In function 'snd_mem_exit':
-sound/core/memalloc.c:658: error: 'snd_mem_proc' undeclared (first use in this function)
-sound/core/memalloc.c:658: error: (Each undeclared identifier is reported only once
-sound/core/memalloc.c:658: error: for each function it appears in.)
-make[2]: *** [sound/core/memalloc.o] Error 1
+On Sat, Aug 20, 2005 at 02:41:51PM -0400, Lee Revell wrote:
+> On Sat, 2005-08-20 at 22:17 +0400, Sergey Vlasov wrote:
+> >=20
+> > Also ac97_quirk=3Dhp_only is needed to make a single Master volume in
+> > the mixer instead of separate volumes for internal speakers and
+> > headphones, which just confuses the user.=20
+>=20
+> The ALSA driver is supposed to expose all the hardware functionality.
+> It's up to the mixer apps to present it to the user in a sane way.  So
+> if the hardware supports separate volume controls for the headphones and
+> internal speakers we should not disable this functionality.  Why not
+> make three controls, Master, External Speakers and Headphones?
 
-<--  snip  -->
+Then we will need to create virtual controls - the chip has only two
+volume control registers for this, so we will need to make three
+virtual controls for volumes, then combine values and write them to
+the chip.  And this will need to be done inside the driver (otherwise
+where the values of virtual controls will be stored while no ALSA
+programs are running?).  Would this be acceptable?
 
+--7AUc2qLy4jB3hD7Z
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+iD8DBQFDB4XHW82GfkQfsqIRAhAFAJwJdGJpnE+xQBoI0X+IwBciVRPBdwCfRPtB
+RGw9ix+2j9cCvuqFOqlZRxs=
+=/vMZ
+-----END PGP SIGNATURE-----
 
---- linux-2.6.13-rc6-mm1-full/sound/core/memalloc.c.old	2005-08-20 15:12:55.000000000 +0200
-+++ linux-2.6.13-rc6-mm1-full/sound/core/memalloc.c	2005-08-20 15:16:55.000000000 +0200
-@@ -506,13 +506,13 @@
- 	up(&list_mutex);
- }
- 
-+static struct proc_dir_entry *snd_mem_proc;
- 
- #ifdef CONFIG_PROC_FS
- /*
-  * proc file interface
-  */
- #define SND_MEM_PROC_FILE	"driver/snd-page-alloc"
--static struct proc_dir_entry *snd_mem_proc;
- 
- static int snd_mem_proc_read(char *page, char **start, off_t off,
- 			     int count, int *eof, void *data)
+--7AUc2qLy4jB3hD7Z--
 
 
 -------------------------------------------------------
