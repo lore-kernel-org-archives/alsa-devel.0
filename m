@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Redhat packaging...
-Date: Fri, 19 Aug 2005 22:20:12 -0400
-Message-ID: <1124504412.21810.0.camel@mindpipe>
+Date: Fri, 19 Aug 2005 23:09:05 -0400
+Message-ID: <1124507345.25916.30.camel@mindpipe>
 References: <43068E57.8090900@redfish-solutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -25,7 +25,13 @@ On Fri, 2005-08-19 at 19:58 -0600, Philip Prindeville wrote:
 > what do I need to tweak to have things go into the right places
 > (i.e. with a command-line build, "make install LIBDIR=..." etc). 
 
-You could try --with-redhat=yes also.
+This is a 64 bit FC3 system right?  Check the alsa-devel archives and
+the bug tracker for 64 bit Fedora issues, at one point ALSA definitely
+had a bug where it did not get the /lib64 or whatever path right.
+
+Also, I think perex changed the build system quite a bit over the past
+week.  Try reverting to 1.0.9b (cvs co -r1-0-9b) or go back a month and
+do a binary search by date (cvs update -D2005-07-19).
 
 Lee
 
