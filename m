@@ -1,13 +1,13 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: Re: Disagreement about versions following CVS update
-Date: Fri, 19 Aug 2005 18:06:41 -0600
-Message-ID: <43067411.3090703@redfish-solutions.com>
-References: <43063408.60402@redfish-solutions.com>	 <1124483804.25424.50.camel@mindpipe>	 <43064B0B.9080402@redfish-solutions.com>	 <1124486050.25424.52.camel@mindpipe>	 <43065A7F.6070904@redfish-solutions.com>	 <1124490358.25424.72.camel@mindpipe>	 <43066945.7020405@redfish-solutions.com>	 <1124494135.25424.98.camel@mindpipe>	 <43066E9A.3010705@redfish-solutions.com>	 <1124495247.25424.101.camel@mindpipe>	 <430670F5.5060103@redfish-solutions.com> <1124495786.25424.102.camel@mindpipe>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [PATCH] Support for AD1889 PCI Soundchip
+Date: Fri, 19 Aug 2005 19:36:55 -0600
+Message-ID: <20050820013655.GC6376@colo.lackof.org>
+References: <20050817101017.008D03658E8@mail.esiee.fr> <Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de> <20050819174655.GA6376@colo.lackof.org> <s5hr7cpdd9p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1124495786.25424.102.camel@mindpipe>
+Content-Disposition: inline
+In-Reply-To: <s5hr7cpdd9p.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,76 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Thibaut VARENE <T-Bone@parisc-linux.org>, alsa-devel@lists.sourceforge.net, parisc-linux@lists.parisc-linux.org, kyle@parisc-linux.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
+On Fri, Aug 19, 2005 at 07:53:22PM +0200, Takashi Iwai wrote:
+> Check his patch carefully.  It doesn't add any extra accesses (except
+> for one readl to flush in irq handler - I guess it was added to be
+> sure?).  The original driver didn't use these fields effectively at
+> all, too.
 
->On Fri, 2005-08-19 at 17:53 -0600, Philip Prindeville wrote:
->  
->
->>Lee Revell wrote:
->>
->>    
->>
->>>On Fri, 2005-08-19 at 17:43 -0600, Philip Prindeville wrote:
->>> 
->>>
->>>      
->>>
->>>>nd_seq_device: disagrees about version of symbol snd_info_register
->>>>snd_seq_device: Unknown symbol snd_info_register
->>>>snd_seq_device: disagrees about version of symbol 
->>>>snd_info_create_module_entry 
->>>>   
->>>>
->>>>        
->>>>
->>>Did you make sure to remove the previous modules with rmmod before
->>>modprobe'ing the new ones?
->>>
->>>Lee
->>>
->>> 
->>>
->>>      
->>>
->>Yessir.
->>
->>
->>    
->>
->
->Then I'm completely out of ideas.  This is either a bug in the Fedora
->kernel, or a bug in ALSA.
->
->Lee
->
->  
->
+Sorry - I didn't look at patch at all.
+If the fields were never used, removing them is fine.
+If they *could* have been used, then removing them is a bad idea.
 
-Yup.  I even pulled a fresh tree, too.
+In general, referencing parameters in IO device registers is NOT
+a good substitute for caching the values "locally" in host mem.
 
-Say, there's another issue that I'm struggling with...  I'm trying to get
-the makefiles to be a little more Fedora-friendly...
-
-As they are, things like libdir and datadir aren't set correctly by
-default...
-
-Not sure why the top-level Makefile has:
-
-HOST            = "$(ARCH)-suse-linux-gnu"
-
-either...
-
-Shouldn't that be passed in or discovered dynamically?
-
--Philip
-
-
--Philip
-
+hth,
+grant
 
 
 -------------------------------------------------------
