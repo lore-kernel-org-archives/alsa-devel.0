@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001347]: unable to configure sound card
-Date: Sat, 20 Aug 2005 20:32:34 +0200
-Message-ID: <16bf40b9e480806d99405d99f6a80e34@bugtrack.alsa-project.org>
+Date: Sat, 20 Aug 2005 20:37:38 +0200
+Message-ID: <b3c5399fb1edd550301d4d9ad84651a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 718A51DB
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 20:32:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D30B1DB
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 20:37:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Knoppix 4.0
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             08-17-2005 11:05 CEST
-Last Modified:              08-20-2005 20:32 CEST
+Last Modified:              08-20-2005 20:37 CEST
 ======================================================================
 Summary:                    unable to configure sound card
 Description: 
@@ -177,11 +177,6 @@ can you please assist??
 ======================================================================
 
 ----------------------------------------------------------------------
- CptS - 08-20-05 19:50 
-----------------------------------------------------------------------
-Is anybody monitoring this forum ?? Please, i need help ASAP!
-
-----------------------------------------------------------------------
  rlrevell - 08-20-05 20:32 
 ----------------------------------------------------------------------
 Because you didn't provide enough detail.
@@ -193,6 +188,12 @@ system crashed (on 3 differet linux installations)"
 What do you mean by "it crashed"?  What exactly happened?  You mean a
 kernel Oops?  How about posting the output?
 
+----------------------------------------------------------------------
+ rlrevell - 08-20-05 20:37 
+----------------------------------------------------------------------
+You also pasted the same bug report three times which makes it a little
+less likely that you'll get a response.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -203,6 +204,7 @@ Date Modified  Username       Field                    Change
 08-20-05 19:48 CptS           Issue Monitored: CptS                        
 08-20-05 19:50 CptS           Note Added: 0005883                          
 08-20-05 20:32 rlrevell       Note Added: 0005884                          
+08-20-05 20:37 rlrevell       Note Added: 0005885                          
 ======================================================================
 
 
