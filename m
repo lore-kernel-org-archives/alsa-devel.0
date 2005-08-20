@@ -1,13 +1,10 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: Re: Redhat packaging...
-Date: Sat, 20 Aug 2005 11:16:47 -0600
-Message-ID: <4307657F.5050402@redfish-solutions.com>
-References: <43068E57.8090900@redfish-solutions.com> <1124504412.21810.0.camel@mindpipe>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: 1.0.10rc1 packages
+Date: Sat, 20 Aug 2005 19:36:56 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0508201932550.8394@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1124504412.21810.0.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +14,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: ALSA Announce <alsa-announce@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
+Hi,
 
->On Fri, 2005-08-19 at 19:58 -0600, Philip Prindeville wrote:
->  
->
->>what do I need to tweak to have things go into the right places
->>(i.e. with a command-line build, "make install LIBDIR=..." etc). 
->>    
->>
->
->You could try --with-redhat=yes also.
->
->Lee
->
->  
->
+	all packages except alsa-firmare were released - version name is 
+1.0.10rc1. Please, test the packages and report the bugs (especially 
+packaging and compilation problems) to the ALSA bug-tracking-system.
+The changelog from 1.0.9b is on the ALSA main web site.
 
-I believe that's supposed to be autodetected, as the default, if it
-isn't specified.
+						Jaroslav
 
--Philip
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
