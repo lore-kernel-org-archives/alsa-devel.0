@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa drivers] Creatives X-Fi chip
-Date: Sat, 20 Aug 2005 03:08:07 -0400
-Message-ID: <1124521688.26949.15.camel@mindpipe>
-References: <4305AC77.3010907@cs.aau.dk>
-	 <1124491956.25424.95.camel@mindpipe>  <4306D254.3000401@cs.aau.dk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001232]: Microphone in front bracket - very low volume
+Date: Sat, 20 Aug 2005 09:36:45 +0200
+Message-ID: <2ba7de813c02ad15b668da6374c2f34c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4306D254.3000401@cs.aau.dk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E2791DB
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 09:36:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,17 +18,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Emmanuel Fleury <fleury@cs.aau.dk>
-Cc: Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-08-20 at 08:48 +0200, Emmanuel Fleury wrote:
-> So, there is no project about this yet
 
-No, not yet.  The ALSA team has a contact at Creative, I guess the next
-step is to ask them.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1232> 
+======================================================================
+Reported By:                jirka
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1232
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               latest Ubuntu, RedHat (I tried them both)
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             07-04-2005 16:47 CEST
+Last Modified:              08-20-2005 09:36 CEST
+======================================================================
+Summary:                    Microphone in front bracket - very low volume
+Description: 
+I have mainboard MicroStar K8N Neo2 Platinum-54G - nForce3 Ultra (it's
+nforce ultra chipset with integrated sound chip). This board has 7.1 audio
+and audio can be recorded via "sound in" jack (stereo jack connector) or
+"microphone" jack. These input jacks are placed on the back side of the
+case (on the mainboard). When I connect microphone to this jack and turn
+it on, it works great. But there is an option to connect some "sound
+bracket" to this board. You can buy computer case which has some input
+jacks on the front side and connect the cable from them to your mainboard.
+So you get two more jacks. One for phones and one for microphone. If you
+have headset (for internet telephony) with earphones and microphone, you
+don't need to connect them to the back side of your case. You connect them
+to the front side.
 
-Lee
+And this is a problem. If I connect my microphone to the front "sound
+bracket", the volume is very very low. If I connect it to the back jack
+(integrated on motherboard), it works normally (I can record with normal
+volume). 
+
+I think this is not a configuration problem. I tried every combination in
+alsamixer and nothing helps. Always front jack has very low audio. If I
+record something using it, I need set very high volume to hear something,
+if I play it.
+
+Lots of people has these computer cases with front bracket and  think it's
+very confusing when it works normally in Windows and in Linux you cannot
+use the front connector.
+======================================================================
+
+----------------------------------------------------------------------
+ alchemyx - 08-19-05 17:37 
+----------------------------------------------------------------------
+It did solve that issue. Thank you! By the way I see some nice changes in
+drivers (like easy choosing channels number, great).
+
+----------------------------------------------------------------------
+ jirka - 08-20-05 09:36 
+----------------------------------------------------------------------
+I don't have time now to test the change, but if alchemyx says it's working
+I think it will work for me too. I thought I had the 1.0.9 version but now
+I found that my version is 1.0.9a so it probably makes a difference.
+
+I think you can select this bug as solved and #0001346 too. Thanks for
+great support and high quality software.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-04-05 16:47 jirka          New Issue                                    
+07-04-05 16:47 jirka          Distribution              => latest Ubuntu, RedHat
+(I tried them both)
+07-04-05 16:47 jirka          Kernel Version            => 2.6.10          
+07-08-05 12:13 tiwai          Note Added: 0005416                          
+07-08-05 15:31 jirka          File Added: ac97_0_0                         
+07-08-05 15:31 jirka          File Added: ac97_0_0_regs                    
+07-08-05 15:34 jirka          File Added: asound.state                     
+07-08-05 16:18 jirka          Note Added: 0005432                          
+08-18-05 23:03 alchemyx       Note Added: 0005860                          
+08-18-05 23:04 alchemyx       Issue Monitored: alchemyx                    
+08-19-05 12:31 vsu            Note Added: 0005867                          
+08-19-05 17:37 alchemyx       Note Added: 0005871                          
+08-20-05 09:36 jirka          Note Added: 0005872                          
+======================================================================
+
 
 
 
