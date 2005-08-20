@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001347]: unable to configure sound card
-Date: Sat, 20 Aug 2005 19:50:49 +0200
-Message-ID: <6e00f7087e34b3d4f5b81328c2f3df40@bugtrack.alsa-project.org>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: [PATCH] HP nx6110 quirks
+Date: Sat, 20 Aug 2005 22:17:30 +0400
+Message-ID: <20050820181730.GA12485@procyon.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F4AD1D7
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 19:50:51 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,188 +15,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+The HP nx6110 laptop needs to have Headphone Jack Sense enabled so
+that the internal speakers will be turned off when headphones are
+plugged in.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
-======================================================================
-Reported By:                CptS
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1347
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Knoppix 4.0
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             08-17-2005 11:05 CEST
-Last Modified:              08-20-2005 19:50 CEST
-======================================================================
-Summary:                    unable to configure sound card
-Description: 
-I'm having problems configuring my sound card with alsa, here are the
-details:
-the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
-Presario 1920.
-I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+Also ac97_quirk=hp_only is needed to make a single Master volume in
+the mixer instead of separate volumes for internal speakers and
+headphones, which just confuses the user.
 
-here's lspci -vv outputs on the cards:
-0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
-[MagicMedia 256AV Audio] (rev 20)
-        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
-Device on Durango
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B+
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin B routed to IRQ 10
-        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
-        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: <available only to root>
+Signed-off-by: Sergey Vlasov <vsu@altlinux.ru>
+---
 
-I wouldn't have addressed you unless I've already tried everything:
-I've tried the solution of the same problem regarding HP Omni 4150 with
-the same card.
+The patch is for the current alsa-kernel CVS.
 
-I used alsaconf and it tried to load snd-nm256, after loading it crashed,
-dmesg suggested loading it with force_ac97=1 switch but once i did it the
-system crashed (on 3 differet linux installations)
+ pci/ac97/ac97_patch.c |    1 +
+ pci/intel8x0.c        |    6 ++++++
+ 2 files changed, 7 insertions(+)
 
-I did a legacy scan using alsaconf for all legacy drivers.
-
-I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
-etc..)
-
-I've edited the modules.conf and manually defined the dma and irq
-
-I removed alsa completly and re-install it.
-
-I had debian with 2.4 kernel installed and i've upgraded to 2.6
-
-I changed the distro from debian to Knoppix (kinda same thing but...)
-
-anyway, you get the point..
-
-can you please assist??I'm having problems configuring my sound card with
-alsa, here are the details:
-the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
-Presario 1920.
-I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
-
-here's lspci -vv outputs on the cards:
-0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
-[MagicMedia 256AV Audio] (rev 20)
-        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
-Device on Durango
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B+
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin B routed to IRQ 10
-        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
-        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: <available only to root>
-
-I wouldn't have addressed you unless I've already tried everything:
-I've tried the solution of the same problem regarding HP Omni 4150 with
-the same card.
-
-I used alsaconf and it tried to load snd-nm256, after loading it crashed,
-dmesg suggested loading it with force_ac97=1 switch but once i did it the
-system crashed (on 3 differet linux installations)
-
-I did a legacy scan using alsaconf for all legacy drivers.
-
-I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
-etc..)
-
-I've edited the modules.conf and manually defined the dma and irq
-
-I removed alsa completly and re-install it.
-
-I had debian with 2.4 kernel installed and i've upgraded to 2.6
-
-I changed the distro from debian to Knoppix (kinda same thing but...)
-
-anyway, you get the point..
-
-can you please assist??I'm having problems configuring my sound card with
-alsa, here are the details:
-the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
-Presario 1920.
-I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
-
-here's lspci -vv outputs on the cards:
-0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
-[MagicMedia 256AV Audio] (rev 20)
-        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
-Device on Durango
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B+
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin B routed to IRQ 10
-        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
-        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: <available only to root>
-
-I wouldn't have addressed you unless I've already tried everything:
-I've tried the solution of the same problem regarding HP Omni 4150 with
-the same card.
-
-I used alsaconf and it tried to load snd-nm256, after loading it crashed,
-dmesg suggested loading it with force_ac97=1 switch but once i did it the
-system crashed (on 3 differet linux installations)
-
-I did a legacy scan using alsaconf for all legacy drivers.
-
-I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
-etc..)
-
-I've edited the modules.conf and manually defined the dma and irq
-
-I removed alsa completly and re-install it.
-
-I had debian with 2.4 kernel installed and i've upgraded to 2.6
-
-I changed the distro from debian to Knoppix (kinda same thing but...)
-
-anyway, you get the point..
-
-can you please assist??
-======================================================================
-
-----------------------------------------------------------------------
- CptS - 08-17-05 11:24 
-----------------------------------------------------------------------
-ps. I've read the other PCI nm256 issues and found 2 identical threads, the
-problem is that they are un-resolved... Please HELP! (i can't afford a new
-laptop :))
-
-----------------------------------------------------------------------
- CptS - 08-20-05 19:50 
-----------------------------------------------------------------------
-Is anybody monitoring this forum ?? Please, i need help ASAP!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-17-05 11:05 CptS           New Issue                                    
-08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
-08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
-08-17-05 11:24 CptS           Note Added: 0005835                          
-08-20-05 19:48 CptS           Issue Monitored: CptS                        
-08-20-05 19:50 CptS           Note Added: 0005883                          
-======================================================================
-
-
+--- alsa-kernel/pci/ac97/ac97_patch.c.alt-hp-nx6110	2005-08-18 23:09:55 +0400
++++ alsa-kernel/pci/ac97/ac97_patch.c	2005-08-20 22:08:46 +0400
+@@ -1629,6 +1629,7 @@ static void check_ad1981_hp_jack_sense(a
+ 	u32 subid = ((u32)ac97->subsystem_vendor << 16) | ac97->subsystem_device;
+ 	switch (subid) {
+ 	case 0x103c0890: /* HP nc6000 */
++	case 0x103c099c: /* HP nx6110 */
+ 	case 0x103c006d: /* HP nx9105 */
+ 	case 0x17340088: /* FSC Scenic-W */
+ 		/* enable headphone jack sense */
+--- alsa-kernel/pci/intel8x0.c.alt-hp-nx6110	2005-08-20 22:08:49 +0400
++++ alsa-kernel/pci/intel8x0.c	2005-08-20 22:14:23 +0400
+@@ -1826,6 +1826,12 @@ static struct ac97_quirk ac97_quirks[] _
+ 	},
+ 	{
+ 		.subvendor = 0x103c,
++		.subdevice = 0x099c,
++		.name = "HP nx6110",	/* AD1981B */
++		.type = AC97_TUNE_HP_ONLY
++	},
++	{
++		.subvendor = 0x103c,
+ 		.subdevice = 0x129d,
+ 		.name = "HP xw8000",
+ 		.type = AC97_TUNE_HP_ONLY
 
 
 -------------------------------------------------------
