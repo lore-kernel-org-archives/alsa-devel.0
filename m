@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000618]: Can not play sound or no sound output
-Date: Sat, 20 Aug 2005 13:43:32 +0200
-Message-ID: <1228a1874b7c392ce530f9c385f03183@bugtrack.alsa-project.org>
+Date: Sat, 20 Aug 2005 15:53:13 +0200
+Message-ID: <eef012a6f1491fbec13267c35bb97e79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D806823A
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 13:43:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1FFA1CF
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 15:53:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=618> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Mandrake 9, Mandrake 10, Slackware 10
 Kernel Version:             2.4.19, 2.6.8, 2.4.26
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             10-31-2004 04:39 CET
-Last Modified:              08-20-2005 13:43 CEST
+Last Modified:              08-20-2005 15:53 CEST
 ======================================================================
 Summary:                    Can not play sound or no sound output
 Description: 
@@ -358,14 +360,14 @@ I woud apreciate that someone fixes this ASAP.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:52 
-----------------------------------------------------------------------
-Submitter: Has the problem been resolved in later ALSA releases?
-
-----------------------------------------------------------------------
  Electro - 08-20-05 13:43 
 ----------------------------------------------------------------------
 Yes, it is fixed when I upgraded to 1.0.7rc2. It still works with 1.0.9b.
+
+----------------------------------------------------------------------
+ jdthood - 08-20-05 15:53 
+----------------------------------------------------------------------
+Thanks for the update.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -377,6 +379,9 @@ Date Modified  Username       Field                    Change
 10-31-04 05:28 ungod          Note Added: 0002292                          
 04-09-05 16:52 jdthood        Note Added: 0004415                          
 08-20-05 13:43 Electro        Note Added: 0005873                          
+08-20-05 15:53 jdthood        Note Added: 0005874                          
+08-20-05 15:53 jdthood        Status                   new => resolved     
+08-20-05 15:53 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
