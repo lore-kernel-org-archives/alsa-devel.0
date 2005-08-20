@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000618]: Can not play sound or no sound output
-Date: Sat, 20 Aug 2005 15:53:13 +0200
-Message-ID: <eef012a6f1491fbec13267c35bb97e79@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000577]: Please make it possible for two (or more) mixer sliders to be locked together
+Date: Sat, 20 Aug 2005 15:57:50 +0200
+Message-ID: <739398f422182f1dd81e0d73b7ffda29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1FFA1CF
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 15:53:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF68D1CA
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 15:57:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,366 +22,111 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=577> 
 ======================================================================
-Reported By:                Electro
+Reported By:                ldarby
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   618
-Category:                   PCI - ice1724
+Project:                    ALSA - utils
+Issue ID:                   577
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Mandrake 9, Mandrake 10, Slackware 10
-Kernel Version:             2.4.19, 2.6.8, 2.4.26
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             10-31-2004 04:39 CET
-Last Modified:              08-20-2005 15:53 CEST
+Date Submitted:             10-10-2004 17:35 CEST
+Last Modified:              08-20-2005 15:57 CEST
 ======================================================================
-Summary:                    Can not play sound or no sound output
+Summary:                    Please make it possible for two (or more) mixer
+sliders to be locked together
 Description: 
-Can not play any sound with any program (mplayer, xine, aplay, vlc, totem,
-and many more). ALSA version 1.0.5a works but it seems that the ALSA
-developer for the ALSA version 1.0.6a module took out ADC and DAC mixer
-volume controls. The ADC and DAC mixer volume controls made it worked. I
-know that 1.0.6a works because the on-board intel sound works.
+I noticed that the only way to reduce the volume to the lowest (not muting
+it tho) is reducing both Master and PCM sliders, and to get the loudest
+non-distorted volume, both need to increased to almost max.  I think I
+remember a mixer for a windows driver that could lock two mixer sliders
+together to do this, and I've done this myself from within XMMS, but it
+relies on Master and PCM elems being in a certain position (probably sound
+card dependent).  Would it be a good idea to implement this in a general
+way in alsamixer, or has this already been done in another mixer?
+(googling for linux mixers reveals far too many to check through...)
 
-[cat /proc/asound/A71/ice1724]
-Audiotrak Prodigy 7.1 at 0x9400, irq 7
-
-EEPROM:
-  Subvendor        : 0x33495345
-  Size             : 19 bytes
-  Version          : 2
-  System Config    : 0x2b
-  ACLink           : 0x80
-  I2S              : 0xf8
-  S/PDIF           : 0xc3
-  GPIO direction   : 0xbfffff
-  GPIO mask        : 0x0
-  GPIO state       : 0x0
-  Extra #18        : 0x0
-
-Registers:
-  PSDOUT03 : 0x00000000
-  CCS00    : 0x00
-  CCS01    : 0x00
-  CCS02    : 0x00
-  CCS03    : 0x00
-  CCS04    : 0x2b
-  CCS05    : 0x80
-  CCS06    : 0xf8
-  CCS07    : 0xc3
-  CCS08    : 0x00
-  CCS09    : 0x00
-  CCS0a    : 0x00
-  CCS0b    : 0x00
-  CCS0c    : 0x00
-  CCS0d    : 0x0a
-  CCS0e    : 0x00
-  CCS0f    : 0x00
-  CCS10    : 0x00
-  CCS11    : 0x00
-  CCS12    : 0x33
-  CCS13    : 0x80
-  CCS14    : 0x00
-  CCS15    : 0x10
-  CCS16    : 0x00
-  CCS17    : 0x00
-  CCS18    : 0xff
-  CCS19    : 0xff
-  CCS1a    : 0xbf
-  CCS1b    : 0x00
-  CCS1c    : 0x00
-  CCS1d    : 0x00
-  CCS1e    : 0xda
-  CCS1f    : 0x00
-  MT00     : 0x00
-  MT01     : 0x00
-  MT02     : 0x00
-  MT03     : 0x08
-  MT04     : 0x00
-  MT05     : 0x00
-  MT06     : 0x00
-  MT07     : 0x00
-  MT08     : 0x00
-  MT09     : 0x00
-  MT0a     : 0x00
-  MT0b     : 0x00
-  MT0c     : 0x00
-  MT0d     : 0x00
-  MT0e     : 0x00
-  MT0f     : 0x00
-  MT10     : 0x00
-  MT11     : 0x00
-  MT12     : 0x00
-  MT13     : 0x00
-  MT14     : 0x00
-  MT15     : 0x00
-  MT16     : 0x00
-  MT17     : 0x00
-  MT18     : 0x00
-  MT19     : 0x00
-  MT1a     : 0x00
-  MT1b     : 0x00
-  MT1c     : 0x00
-  MT1d     : 0x00
-  MT1e     : 0x00
-  MT1f     : 0x00
-  MT20     : 0x00
-  MT21     : 0x00
-  MT22     : 0x00
-  MT23     : 0x00
-  MT24     : 0x00
-  MT25     : 0x00
-  MT26     : 0x00
-  MT27     : 0x00
-  MT28     : 0x00
-  MT29     : 0x00
-  MT2a     : 0x00
-  MT2b     : 0x00
-  MT2c     : 0x00
-  MT2d     : 0x00
-  MT2e     : 0x00
-  MT2f     : 0x00
-
-[cat /etc/modules.conf]
-# nVidia Video Card
-alias char-major-195 nvidia
-alias /dev/nvidia* nvidia
-options nvidia NVreg_RegAGPRate=4 NVreg_EnableAGPSBA=0
-NVreg_EnableAGPFW=0
-
-# ALSA 
-alias char-major-116 snd
-alias snd-card-0 snd-intel8x0
-alias snd-card-1 snd-ice1724
-options snd-intel8x0 index=0
-options snd-ice1724 index=1
-
-# OSS/Free portion
-alias char-major-14 soundcore
-alias sound-slot-0 snd-card-0
-alias sound-slot 1 snd-card-1
-
-# Intel Sound
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-
-# Audiotrak Prodigy 7.1
-alias sound-service-1-0 snd-mixer-oss
-alias sound-service-1-1 snd-seq-oss
-alias sound-service-1-3 snd-pcm-oss
-alias sound-service-1-8 snd-seq-oss
-alias sound-service-1-12 snd-pcm-oss
-
-# Haupauge PVR-250 (Model 980)
-alias char-major-81     videodev
-alias char-major-81-0   ivtv
-#alias char-major-61 lirc_i2c
-options ivtv ivtv_debug=1 mpg_buffers=100 yuv_buffers=400
-options tuner type=39 debug=5
-options msp3400 once=1 simple=1
-add below ivtv msp3400 saa7115 tuner
-#add above ivtv lirc_dev lirc_i2c
-
-
-[amixer printout]
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 255
-  Mono: Playback 220 [86%] [on]
-Simple mixer control 'Headphone Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 101
-  Mono: Playback 89 [88%]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 101
-  Mono: Playback 88 [87%]
-Simple mixer control 'Line',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities:
-  Mono:
-Simple mixer control 'IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958',1
-  Capabilities:
-  Mono:
-Simple mixer control 'Aux',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 31
-  Front Left: Capture 15 [48%] [on]
-  Front Right: Capture 15 [48%] [on]
-Simple mixer control 'AC97',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [on]
-  Front Right: Capture [on]
-Simple mixer control 'ADC Oversampling',0
-  Capabilities:
-  Mono:
-Simple mixer control 'DAC Deemphasis',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Front',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 101
-  Front Left: Playback 88 [87%]
-  Front Right: Playback 88 [87%]
-Simple mixer control 'H/W',0
-  Capabilities:
-  Mono:
-Simple mixer control 'H/W',1
-  Capabilities:
-  Mono:
-Simple mixer control 'H/W',2
-  Capabilities:
-  Mono:
-Simple mixer control 'H/W',3
-  Capabilities:
-  Mono:
-Simple mixer control 'H/W',4
-  Capabilities:
-  Mono:
-Simple mixer control 'H/W',5
-  Capabilities:
-  Mono:
-Simple mixer control 'H/W',6
-  Capabilities:
-  Mono:
-Simple mixer control 'H/W',7
-  Capabilities:
-  Mono:
-Simple mixer control 'Multi Track Internal Clock',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Multi Track Peak',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right - Front Center - Rear Left -
-Rear Right - Woofer - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? -
-? - ? - ?
-  Limits: 0 - 255
-  Mono: 0 [0%]
-  Front Left:
-  Front Right:
-  Front Center:
-  Rear Left:
-  Rear Right:
-  Woofer:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-  ?:
-Simple mixer control 'Multi Track Rate Locking',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Multi Track Rate Reset',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Rear',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 101
-  Front Left: Playback 88 [87%]
-  Front Right: Playback 88 [87%]
-Simple mixer control 'Side',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 101
-  Front Left: Playback 88 [87%]
-  Front Right: Playback 88 [87%]
-
-I do not have my parallel and seral ports enabled so there is no devices
-using IRQ7. Usually parallel ports uses IRQ7.
-
-I selected /dev/dsp1 and /dev/mixer1 but no sound.
-
-I woud apreciate that someone fixes this ASAP.
+Thanks,
+Laurence
 ======================================================================
 
 ----------------------------------------------------------------------
- Electro - 08-20-05 13:43 
+ tiwai - 10-11-04 16:15 
 ----------------------------------------------------------------------
-Yes, it is fixed when I upgraded to 1.0.7rc2. It still works with 1.0.9b.
+Please discuss on alsa-devel ML.
+(This is not a bug :)
 
 ----------------------------------------------------------------------
- jdthood - 08-20-05 15:53 
+ ldarby - 10-11-04 20:26 
 ----------------------------------------------------------------------
-Thanks for the update.
+Well, what would be the point? The alsa-devel list is just full of the bug
+reports from here anyway.  It seems this feature request has been added
+too.  Is something wrong or what?
+
+Laurence
+
+----------------------------------------------------------------------
+ tiwai - 10-12-04 11:49 
+----------------------------------------------------------------------
+Here is "bug tracking system", not a user/developer forum.
+
+----------------------------------------------------------------------
+ ldarby - 10-14-04 14:45 
+----------------------------------------------------------------------
+Let me make a couple of suggestions: 
+
+1) Remove the text "feature requests" from the link on the alsa-project
+front page, as I gather feature requests aren't welcome there.
+
+2) In the docs for the bug submissions, as hard to find as they are, the
+description for the severity of "feature" should be changed to reflect the
+fact feature requests aren't welcome.
+
+3) As the devel list is a user/developer forum, not a bug tracking system,
+the bugs shouldn't be forwarded to it.  Or maybe I'm wrong, and no new
+developments are being made to alsa.  The point is, I have implemented
+this feature for myself, and I was wondering if anyone else was
+interested.
+
+Laurence
+
+----------------------------------------------------------------------
+ tiwai - 10-14-04 14:58 
+----------------------------------------------------------------------
+Sending bugs to alsa-devel is fine, IMO, since alsa-devel is the
+place where every development process should be centralized.
+(Though, the message should be shorten, containing only diffs.)
+
+Again, BTS is not the place for DISCUSSION.  It's the place for
+REPORTING.
+If you ask something, or want to hear something from other people
+(like this case), then alsa-devel is the appropriate place.
+That's my point.
+
+The feature request itself is fine (although it will be likely in
+the low priority).
+
+BTW, any patches are very appreciated, of course :) !!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-04 04:39 Electro        New Issue                                    
-10-31-04 04:39 Electro        Distribution              => Mandrake 9, Mandrake
-10, Slackware 10
-10-31-04 04:39 Electro        Kernel Version            => 2.4.19, 2.6.8, 2.4.26
-10-31-04 05:28 ungod          Note Added: 0002292                          
-04-09-05 16:52 jdthood        Note Added: 0004415                          
-08-20-05 13:43 Electro        Note Added: 0005873                          
-08-20-05 15:53 jdthood        Note Added: 0005874                          
-08-20-05 15:53 jdthood        Status                   new => resolved     
-08-20-05 15:53 jdthood        Resolution               open => fixed       
+10-10-04 17:35 ldarby         New Issue                                    
+10-11-04 16:15 tiwai          Note Added: 0002082                          
+10-11-04 20:26 ldarby         Note Added: 0002084                          
+10-12-04 11:49 tiwai          Note Added: 0002088                          
+10-14-04 14:45 ldarby         Note Added: 0002147                          
+10-14-04 14:58 tiwai          Note Added: 0002148                          
+08-20-05 15:57 jdthood        Summary                  locking two (or more)
+mixer sliders together to get full volume range => Please make it possible for
+two (or more) mixer sliders to be locked together
 ======================================================================
 
 
