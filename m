@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001241]: alsaconf missing in the package alsa-utils
-Date: Sat, 20 Aug 2005 16:06:12 +0200
-Message-ID: <7564b6b086abaaac8f0fd1758fdc0b5a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001350]: Could someone add spec files to the tarballs, please?
+Date: Sat, 20 Aug 2005 16:37:09 +0200
+Message-ID: <9a9f4cc6623748a44376e924c23cfe64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0100D1DB
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 16:06:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 984251D4
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 16:37:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1241> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1350> 
 ======================================================================
-Reported By:                levy
-Assigned To:                
+Reported By:                Vic
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1241
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   1350
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-08-2005 11:46 CEST
-Last Modified:              08-20-2005 16:06 CEST
+Date Submitted:             08-20-2005 16:37 CEST
+Last Modified:              08-20-2005 16:37 CEST
 ======================================================================
-Summary:                    alsaconf missing in the package alsa-utils
+Summary:                    Could someone add spec files to the tarballs,
+please?
 Description: 
-system-config-soundcard was unable to detect the sound card of the toshiba
-310CDT.
-This card is a Chip set Yamaha OPL3-SA3 connected to ISA BUS.
+Those of us using RPM-based distributions generally like to keep everything
+within the RPM system.
 
-On the contrary, alsaconf was able to detect the card (module sb8) : I
-give you a copy of the part of /etc/modprobe.conf produced by alsaconf :
-alias sound-card-0 snd-sb8
-alias sound-slot-0 snd-sb8
-options snd-sb8 dma8=1 irq=9
+By adding a simple .spec file to the tarball, that can be achieved by a
+simple "rpmbuild -ta <tarball>". This is a fairly significant increase in
+usability for almost no work.
 
-
+The spec file I used for alsa-driver-1.0.9b is at
+http://beer.org.uk/alsa-driver.spec . As you can see, keeping this file
+up-to-date is very simple - just change the version number at the top of
+the file.
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 08-20-05 16:06 
-----------------------------------------------------------------------
-This is a problem with your GNU/Linux distribution, not with ALSA per se.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-08-05 11:46 levy           New Issue                                    
-08-20-05 16:06 jdthood        Status                   new => closed       
-08-20-05 16:06 jdthood        Note Added: 0005879                          
+08-20-05 16:37 Vic            New Issue                                    
 ======================================================================
 
 
