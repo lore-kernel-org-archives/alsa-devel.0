@@ -1,23 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
 Subject: Re: Disagreement about versions following CVS update
-Date: Fri, 19 Aug 2005 19:56:25 -0400
-Message-ID: <1124495786.25424.102.camel@mindpipe>
-References: <43063408.60402@redfish-solutions.com>
-	 <1124483804.25424.50.camel@mindpipe>
-	 <43064B0B.9080402@redfish-solutions.com>
-	 <1124486050.25424.52.camel@mindpipe>
-	 <43065A7F.6070904@redfish-solutions.com>
-	 <1124490358.25424.72.camel@mindpipe>
-	 <43066945.7020405@redfish-solutions.com>
-	 <1124494135.25424.98.camel@mindpipe>
-	 <43066E9A.3010705@redfish-solutions.com>
-	 <1124495247.25424.101.camel@mindpipe>
-	 <430670F5.5060103@redfish-solutions.com>
+Date: Fri, 19 Aug 2005 18:06:41 -0600
+Message-ID: <43067411.3090703@redfish-solutions.com>
+References: <43063408.60402@redfish-solutions.com>	 <1124483804.25424.50.camel@mindpipe>	 <43064B0B.9080402@redfish-solutions.com>	 <1124486050.25424.52.camel@mindpipe>	 <43065A7F.6070904@redfish-solutions.com>	 <1124490358.25424.72.camel@mindpipe>	 <43066945.7020405@redfish-solutions.com>	 <1124494135.25424.98.camel@mindpipe>	 <43066E9A.3010705@redfish-solutions.com>	 <1124495247.25424.101.camel@mindpipe>	 <430670F5.5060103@redfish-solutions.com> <1124495786.25424.102.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <430670F5.5060103@redfish-solutions.com>
+In-Reply-To: <1124495786.25424.102.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,39 +17,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philip Prindeville <philipp_subx@redfish-solutions.com>
+To: Lee Revell <rlrevell@joe-job.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-08-19 at 17:53 -0600, Philip Prindeville wrote:
-> Lee Revell wrote:
-> 
-> >On Fri, 2005-08-19 at 17:43 -0600, Philip Prindeville wrote:
-> >  
-> >
-> >>nd_seq_device: disagrees about version of symbol snd_info_register
-> >>snd_seq_device: Unknown symbol snd_info_register
-> >>snd_seq_device: disagrees about version of symbol 
-> >>snd_info_create_module_entry 
-> >>    
-> >>
-> >
-> >Did you make sure to remove the previous modules with rmmod before
-> >modprobe'ing the new ones?
-> >
-> >Lee
-> >
-> >  
-> >
-> 
-> Yessir.
-> 
-> 
+Lee Revell wrote:
 
-Then I'm completely out of ideas.  This is either a bug in the Fedora
-kernel, or a bug in ALSA.
+>On Fri, 2005-08-19 at 17:53 -0600, Philip Prindeville wrote:
+>  
+>
+>>Lee Revell wrote:
+>>
+>>    
+>>
+>>>On Fri, 2005-08-19 at 17:43 -0600, Philip Prindeville wrote:
+>>> 
+>>>
+>>>      
+>>>
+>>>>nd_seq_device: disagrees about version of symbol snd_info_register
+>>>>snd_seq_device: Unknown symbol snd_info_register
+>>>>snd_seq_device: disagrees about version of symbol 
+>>>>snd_info_create_module_entry 
+>>>>   
+>>>>
+>>>>        
+>>>>
+>>>Did you make sure to remove the previous modules with rmmod before
+>>>modprobe'ing the new ones?
+>>>
+>>>Lee
+>>>
+>>> 
+>>>
+>>>      
+>>>
+>>Yessir.
+>>
+>>
+>>    
+>>
+>
+>Then I'm completely out of ideas.  This is either a bug in the Fedora
+>kernel, or a bug in ALSA.
+>
+>Lee
+>
+>  
+>
 
-Lee
+Yup.  I even pulled a fresh tree, too.
+
+Say, there's another issue that I'm struggling with...  I'm trying to get
+the makefiles to be a little more Fedora-friendly...
+
+As they are, things like libdir and datadir aren't set correctly by
+default...
+
+Not sure why the top-level Makefile has:
+
+HOST            = "$(ARCH)-suse-linux-gnu"
+
+either...
+
+Shouldn't that be passed in or discovered dynamically?
+
+-Philip
+
+
+-Philip
 
 
 
