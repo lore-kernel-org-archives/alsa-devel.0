@@ -1,13 +1,11 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] Support for AD1889 PCI Soundchip
-Date: Fri, 19 Aug 2005 19:36:55 -0600
-Message-ID: <20050820013655.GC6376@colo.lackof.org>
-References: <20050817101017.008D03658E8@mail.esiee.fr> <Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de> <20050819174655.GA6376@colo.lackof.org> <s5hr7cpdd9p.wl%tiwai@suse.de>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Redhat packaging...
+Date: Fri, 19 Aug 2005 19:58:47 -0600
+Message-ID: <43068E57.8090900@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hr7cpdd9p.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +15,118 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Thibaut VARENE <T-Bone@parisc-linux.org>, alsa-devel@lists.sourceforge.net, parisc-linux@lists.parisc-linux.org, kyle@parisc-linux.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 19, 2005 at 07:53:22PM +0200, Takashi Iwai wrote:
-> Check his patch carefully.  It doesn't add any extra accesses (except
-> for one readl to flush in irq handler - I guess it was added to be
-> sure?).  The original driver didn't use these fields effectively at
-> all, too.
+Well, this is the packaging that Redhat uses, but not where
+the CVS build goes as it stands:
 
-Sorry - I didn't look at patch at all.
-If the fields were never used, removing them is fine.
-If they *could* have been used, then removing them is a bad idea.
+[root@mail share]# rpm --query --filesbypkg alsa-utils-1.0.6-3 
+alsa-lib-1.0.6-8.FC3
+alsa-utils                /etc/dev.d/sound
+alsa-utils                /etc/dev.d/sound/alsa.dev
+alsa-utils                /sbin/alsactl
+alsa-utils                /usr/bin/aconnect
+alsa-utils                /usr/bin/alsamixer
+alsa-utils                /usr/bin/amidi
+alsa-utils                /usr/bin/amixer
+alsa-utils                /usr/bin/aplay
+alsa-utils                /usr/bin/aplaymidi
+alsa-utils                /usr/bin/arecord
+alsa-utils                /usr/bin/arecordmidi
+alsa-utils                /usr/bin/aseqnet
+alsa-utils                /usr/bin/iecset
+alsa-utils                /usr/bin/speaker-test
+alsa-utils                /usr/sbin/alsactl
+alsa-utils                /usr/share/doc/alsa-utils-1.0.6
+alsa-utils                /usr/share/doc/alsa-utils-1.0.6/COPYING
+alsa-utils                /usr/share/doc/alsa-utils-1.0.6/ChangeLog
+alsa-utils                /usr/share/doc/alsa-utils-1.0.6/README
+alsa-utils                /usr/share/doc/alsa-utils-1.0.6/TODO
+alsa-utils                /usr/share/man/man1/aconnect.1.gz
+alsa-utils                /usr/share/man/man1/alsactl.1.gz
+alsa-utils                /usr/share/man/man1/alsamixer.1.gz
+alsa-utils                /usr/share/man/man1/amidi.1.gz
+alsa-utils                /usr/share/man/man1/amixer.1.gz
+alsa-utils                /usr/share/man/man1/aplay.1.gz
+alsa-utils                /usr/share/man/man1/aplaymidi.1.gz
+alsa-utils                /usr/share/man/man1/arecord.1.gz
+alsa-utils                /usr/share/man/man1/arecordmidi.1.gz
+alsa-utils                /usr/share/man/man1/aseqnet.1.gz
+alsa-utils                /usr/share/man/man1/iecset.1.gz
+alsa-lib                  /etc/alsa
+alsa-lib                  /etc/alsa/alsa.conf
+alsa-lib                  /etc/alsa/cards
+alsa-lib                  /etc/alsa/cards/ATIIXP-MODEM.conf
+alsa-lib                  /etc/alsa/cards/ATIIXP-SPDMA.conf
+alsa-lib                  /etc/alsa/cards/ATIIXP.conf
+alsa-lib                  /etc/alsa/cards/AU8810.conf
+alsa-lib                  /etc/alsa/cards/AU8820.conf
+alsa-lib                  /etc/alsa/cards/AU8830.conf
+alsa-lib                  /etc/alsa/cards/Audigy.conf
+alsa-lib                  /etc/alsa/cards/Audigy2.conf
+alsa-lib                  /etc/alsa/cards/AudigyLS.conf
+alsa-lib                  /etc/alsa/cards/CMI8338-SWIEC.conf
+alsa-lib                  /etc/alsa/cards/CMI8338.conf
+alsa-lib                  /etc/alsa/cards/CMI8738-MC6.conf
+alsa-lib                  /etc/alsa/cards/CS46xx.conf
+alsa-lib                  /etc/alsa/cards/EMU10K1.conf
+alsa-lib                  /etc/alsa/cards/EMU10K1X.conf
+alsa-lib                  /etc/alsa/cards/ENS1370.conf
+alsa-lib                  /etc/alsa/cards/ENS1371.conf
+alsa-lib                  /etc/alsa/cards/FM801.conf
+alsa-lib                  /etc/alsa/cards/GUS.conf
+alsa-lib                  /etc/alsa/cards/ICE1712.conf
+alsa-lib                  /etc/alsa/cards/ICE1724.conf
+alsa-lib                  /etc/alsa/cards/ICH-MODEM.conf
+alsa-lib                  /etc/alsa/cards/ICH.conf
+alsa-lib                  /etc/alsa/cards/NFORCE.conf
+alsa-lib                  /etc/alsa/cards/RME9636.conf
+alsa-lib                  /etc/alsa/cards/RME9652.conf
+alsa-lib                  /etc/alsa/cards/SI7018
+alsa-lib                  /etc/alsa/cards/SI7018.conf
+alsa-lib                  /etc/alsa/cards/SI7018/sndoc-mixer.alisp
+alsa-lib                  /etc/alsa/cards/SI7018/sndop-mixer.alisp
+alsa-lib                  /etc/alsa/cards/TRID4DWAVENX.conf
+alsa-lib                  /etc/alsa/cards/VIA686A.conf
+alsa-lib                  /etc/alsa/cards/VIA8233.conf
+alsa-lib                  /etc/alsa/cards/VIA8233A.conf
+alsa-lib                  /etc/alsa/cards/VX222.conf
+alsa-lib                  /etc/alsa/cards/VXPocket.conf
+alsa-lib                  /etc/alsa/cards/VXPocket440.conf
+alsa-lib                  /etc/alsa/cards/YMF744.conf
+alsa-lib                  /etc/alsa/cards/aliases.alisp
+alsa-lib                  /etc/alsa/cards/aliases.conf
+alsa-lib                  /etc/alsa/pcm
+alsa-lib                  /etc/alsa/pcm/center_lfe.conf
+alsa-lib                  /etc/alsa/pcm/front.conf
+alsa-lib                  /etc/alsa/pcm/iec958.conf
+alsa-lib                  /etc/alsa/pcm/modem.conf
+alsa-lib                  /etc/alsa/pcm/rear.conf
+alsa-lib                  /etc/alsa/pcm/side.conf
+alsa-lib                  /etc/alsa/pcm/surround40.conf
+alsa-lib                  /etc/alsa/pcm/surround41.conf
+alsa-lib                  /etc/alsa/pcm/surround50.conf
+alsa-lib                  /etc/alsa/pcm/surround51.conf
+alsa-lib                  /etc/alsa/pcm/surround71.conf
+alsa-lib                  /etc/alsa/sndo-mixer.alisp
+alsa-lib                  /lib64/libasound.so.2
+alsa-lib                  /lib64/libasound.so.2.0.0
+alsa-lib                  /usr/bin/alsalisp
+alsa-lib                  /usr/bin/aserver
+alsa-lib                  /usr/share/doc/alsa-lib-1.0.6
+alsa-lib                  /usr/share/doc/alsa-lib-1.0.6/COPYING
+alsa-lib                  /usr/share/doc/alsa-lib-1.0.6/ChangeLog
+alsa-lib                  /usr/share/doc/alsa-lib-1.0.6/TODO
+alsa-lib                  /usr/share/doc/alsa-lib-1.0.6/asoundrc.txt
+[root@mail share]#
 
-In general, referencing parameters in IO device registers is NOT
-a good substitute for caching the values "locally" in host mem.
 
-hth,
-grant
+what do I need to tweak to have things go into the right places
+(i.e. with a command-line build, "make install LIBDIR=..." etc).
+
+-Philip
+
 
 
 -------------------------------------------------------
