@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: Alsa mix in HW
-Date: Sat, 20 Aug 2005 16:30:31 +0800
-Message-ID: <4306EA27.7060000@netvigator.com>
-References: <42EBAE72.9090608@e4a.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000618]: Can not play sound or no sound output
+Date: Sat, 20 Aug 2005 13:43:32 +0200
+Message-ID: <1228a1874b7c392ce530f9c385f03183@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42EBAE72.9090608@e4a.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D806823A
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 13:43:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,93 +18,366 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dino Puller <dino@e4a.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Manuel Jander wrote:
-> On Wed, 2005-08-17 at 19:25 +0200, Takashi Iwai wrote:
->
->>At Wed, 17 Aug 2005 12:42:26 -0400,
->>Lee Revell wrote:
->>
->>>On Wed, 2005-08-17 at 20:42 +0800, Raymond wrote:
->>>
->>>>Do anyone have a list of the sound cards ( alsa driver ) which
->>>>support the above features ?
->>>
->>>Vortex and emu10k1/2 at least...
->>
->>You can count ymfpci and trident, too.
->
->
-> ESS Maestro. The 3D HRTF pipelines does not seem to be clear how they
-> can be used, but AFAIK the hardware mixing and pitch programming
-> should be possible.
->
 
-Since ALSA support multiple sound cards, it is possible to use onboard
-sound chip as capturing device.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=618> 
+======================================================================
+Reported By:                Electro
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   618
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Mandrake 9, Mandrake 10, Slackware 10
+Kernel Version:             2.4.19, 2.6.8, 2.4.26
+======================================================================
+Date Submitted:             10-31-2004 04:39 CET
+Last Modified:              08-20-2005 13:43 CEST
+======================================================================
+Summary:                    Can not play sound or no sound output
+Description: 
+Can not play any sound with any program (mplayer, xine, aplay, vlc, totem,
+and many more). ALSA version 1.0.5a works but it seems that the ALSA
+developer for the ALSA version 1.0.6a module took out ADC and DAC mixer
+volume controls. The ADC and DAC mixer volume controls made it worked. I
+know that 1.0.6a works because the on-board intel sound works.
 
-Is it feasible to use one or more sound cards for playback ? (e.g. 
-on-board sound chip with dmix is capable of playing stereo background 
-music, or you have two sound cards which support hardware mixing)
+[cat /proc/asound/A71/ice1724]
+Audiotrak Prodigy 7.1 at 0x9400, irq 7
+
+EEPROM:
+  Subvendor        : 0x33495345
+  Size             : 19 bytes
+  Version          : 2
+  System Config    : 0x2b
+  ACLink           : 0x80
+  I2S              : 0xf8
+  S/PDIF           : 0xc3
+  GPIO direction   : 0xbfffff
+  GPIO mask        : 0x0
+  GPIO state       : 0x0
+  Extra #18        : 0x0
+
+Registers:
+  PSDOUT03 : 0x00000000
+  CCS00    : 0x00
+  CCS01    : 0x00
+  CCS02    : 0x00
+  CCS03    : 0x00
+  CCS04    : 0x2b
+  CCS05    : 0x80
+  CCS06    : 0xf8
+  CCS07    : 0xc3
+  CCS08    : 0x00
+  CCS09    : 0x00
+  CCS0a    : 0x00
+  CCS0b    : 0x00
+  CCS0c    : 0x00
+  CCS0d    : 0x0a
+  CCS0e    : 0x00
+  CCS0f    : 0x00
+  CCS10    : 0x00
+  CCS11    : 0x00
+  CCS12    : 0x33
+  CCS13    : 0x80
+  CCS14    : 0x00
+  CCS15    : 0x10
+  CCS16    : 0x00
+  CCS17    : 0x00
+  CCS18    : 0xff
+  CCS19    : 0xff
+  CCS1a    : 0xbf
+  CCS1b    : 0x00
+  CCS1c    : 0x00
+  CCS1d    : 0x00
+  CCS1e    : 0xda
+  CCS1f    : 0x00
+  MT00     : 0x00
+  MT01     : 0x00
+  MT02     : 0x00
+  MT03     : 0x08
+  MT04     : 0x00
+  MT05     : 0x00
+  MT06     : 0x00
+  MT07     : 0x00
+  MT08     : 0x00
+  MT09     : 0x00
+  MT0a     : 0x00
+  MT0b     : 0x00
+  MT0c     : 0x00
+  MT0d     : 0x00
+  MT0e     : 0x00
+  MT0f     : 0x00
+  MT10     : 0x00
+  MT11     : 0x00
+  MT12     : 0x00
+  MT13     : 0x00
+  MT14     : 0x00
+  MT15     : 0x00
+  MT16     : 0x00
+  MT17     : 0x00
+  MT18     : 0x00
+  MT19     : 0x00
+  MT1a     : 0x00
+  MT1b     : 0x00
+  MT1c     : 0x00
+  MT1d     : 0x00
+  MT1e     : 0x00
+  MT1f     : 0x00
+  MT20     : 0x00
+  MT21     : 0x00
+  MT22     : 0x00
+  MT23     : 0x00
+  MT24     : 0x00
+  MT25     : 0x00
+  MT26     : 0x00
+  MT27     : 0x00
+  MT28     : 0x00
+  MT29     : 0x00
+  MT2a     : 0x00
+  MT2b     : 0x00
+  MT2c     : 0x00
+  MT2d     : 0x00
+  MT2e     : 0x00
+  MT2f     : 0x00
+
+[cat /etc/modules.conf]
+# nVidia Video Card
+alias char-major-195 nvidia
+alias /dev/nvidia* nvidia
+options nvidia NVreg_RegAGPRate=4 NVreg_EnableAGPSBA=0
+NVreg_EnableAGPFW=0
+
+# ALSA 
+alias char-major-116 snd
+alias snd-card-0 snd-intel8x0
+alias snd-card-1 snd-ice1724
+options snd-intel8x0 index=0
+options snd-ice1724 index=1
+
+# OSS/Free portion
+alias char-major-14 soundcore
+alias sound-slot-0 snd-card-0
+alias sound-slot 1 snd-card-1
+
+# Intel Sound
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+
+# Audiotrak Prodigy 7.1
+alias sound-service-1-0 snd-mixer-oss
+alias sound-service-1-1 snd-seq-oss
+alias sound-service-1-3 snd-pcm-oss
+alias sound-service-1-8 snd-seq-oss
+alias sound-service-1-12 snd-pcm-oss
+
+# Haupauge PVR-250 (Model 980)
+alias char-major-81     videodev
+alias char-major-81-0   ivtv
+#alias char-major-61 lirc_i2c
+options ivtv ivtv_debug=1 mpg_buffers=100 yuv_buffers=400
+options tuner type=39 debug=5
+options msp3400 once=1 simple=1
+add below ivtv msp3400 saa7115 tuner
+#add above ivtv lirc_dev lirc_i2c
 
 
-Refer to 4.3.2 Source Attributes
+[amixer printout]
+Simple mixer control 'Master',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 255
+  Mono: Playback 220 [86%] [on]
+Simple mixer control 'Headphone Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 101
+  Mono: Playback 89 [88%]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 101
+  Mono: Playback 88 [87%]
+Simple mixer control 'Line',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'CD',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities:
+  Mono:
+Simple mixer control 'IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'IEC958',1
+  Capabilities:
+  Mono:
+Simple mixer control 'Aux',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 15 [48%] [on]
+  Front Right: Capture 15 [48%] [on]
+Simple mixer control 'AC97',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [on]
+  Front Right: Capture [on]
+Simple mixer control 'ADC Oversampling',0
+  Capabilities:
+  Mono:
+Simple mixer control 'DAC Deemphasis',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Front',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 101
+  Front Left: Playback 88 [87%]
+  Front Right: Playback 88 [87%]
+Simple mixer control 'H/W',0
+  Capabilities:
+  Mono:
+Simple mixer control 'H/W',1
+  Capabilities:
+  Mono:
+Simple mixer control 'H/W',2
+  Capabilities:
+  Mono:
+Simple mixer control 'H/W',3
+  Capabilities:
+  Mono:
+Simple mixer control 'H/W',4
+  Capabilities:
+  Mono:
+Simple mixer control 'H/W',5
+  Capabilities:
+  Mono:
+Simple mixer control 'H/W',6
+  Capabilities:
+  Mono:
+Simple mixer control 'H/W',7
+  Capabilities:
+  Mono:
+Simple mixer control 'Multi Track Internal Clock',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Multi Track Peak',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right - Front Center - Rear Left -
+Rear Right - Woofer - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? -
+? - ? - ?
+  Limits: 0 - 255
+  Mono: 0 [0%]
+  Front Left:
+  Front Right:
+  Front Center:
+  Rear Left:
+  Rear Right:
+  Woofer:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+  ?:
+Simple mixer control 'Multi Track Rate Locking',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Multi Track Rate Reset',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Rear',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 101
+  Front Left: Playback 88 [87%]
+  Front Right: Playback 88 [87%]
+Simple mixer control 'Side',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 101
+  Front Left: Playback 88 [87%]
+  Front Right: Playback 88 [87%]
 
-Get/Set Offset
+I do not have my parallel and seral ports enabled so there is no devices
+using IRQ7. Usually parallel ports uses IRQ7.
 
-AL_SEC_OFFSET - the playback position expressed in seconds.
-...
-This value is based on byte position, so a pitch-shifted source will
-have an exaggerated playback speed. For example you can be 0.500 seconds
-into a buffer having taken only 0.250 seconds to get there if the pitch
-is set to 2.0
+I selected /dev/dsp1 and /dev/mixer1 but no sound.
 
-AL_SAMPLE_OFFSET - the playback position  expressed in samples
+I woud apreciate that someone fixes this ASAP.
+======================================================================
 
-AL_BYTE_OFFSET - the playback position, expressed in bytes.
+----------------------------------------------------------------------
+ jdthood - 04-09-05 16:52 
+----------------------------------------------------------------------
+Submitter: Has the problem been resolved in later ALSA releases?
 
+----------------------------------------------------------------------
+ Electro - 08-20-05 13:43 
+----------------------------------------------------------------------
+Yes, it is fixed when I upgraded to 1.0.7rc2. It still works with 1.0.9b.
 
-Do "SNDRV_PCM_RATE_CONTINUOUS" in snd_hardware_t mean that sample rate 
-can be any integer between .rate_min and .rate_max ?
-
-Since changing sample rate while playing is not offically supported by
-ALSA. The audio are usually play in LOOP, is it feasible to change the
-sample rate at the start of each loop if doppler effect is required ?
-
-
-Refer to src/alc_device.c
-
-#define _ALC_DEF_FREQ 44100
-#define _ALC_NUM_PERIODS 2
-#define _ALC_BUFFER_SIZE 4096
-
-
-	if (snd_pcm_hw_params_set_channels(src->handle, hw_params, 2))
-		return ALC_FALSE;
-
-	src->freq = dev->freq;
-	if (snd_pcm_hw_params_set_rate_near(src->handle, hw_params, &src->freq, 0))
-		return ALC_FALSE;
-
-	src->periods = _ALC_NUM_PERIODS;
-	if (snd_pcm_hw_params_set_periods_near(src->handle, hw_params, 
-&src->periods,0))
-		return ALC_FALSE;
-
-
-	size = _ALC_BUFFER_SIZE;
-	if (snd_pcm_hw_params_set_buffer_size_near(src->handle, hw_params, &size))
-		return ALC_FALSE;
-
-
-1) most of the audio are mono except those stereo backgroud music.
-2) is there any special reason to use _near() function to set rate, 
-period_size and buffer_size in that order ?
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-31-04 04:39 Electro        New Issue                                    
+10-31-04 04:39 Electro        Distribution              => Mandrake 9, Mandrake
+10, Slackware 10
+10-31-04 04:39 Electro        Kernel Version            => 2.4.19, 2.6.8, 2.4.26
+10-31-04 05:28 ungod          Note Added: 0002292                          
+04-09-05 16:52 jdthood        Note Added: 0004415                          
+08-20-05 13:43 Electro        Note Added: 0005873                          
+======================================================================
 
 
 
