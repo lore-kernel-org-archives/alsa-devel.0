@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000493]: Sound mixer decreases volume and mutes sound channels
-Date: Sat, 20 Aug 2005 15:59:27 +0200
-Message-ID: <db90aa7b2230c87a6ff7414d4b954cd7@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000166]: strange high-pitched noise
+Date: Sat, 20 Aug 2005 16:00:57 +0200
+Message-ID: <512a4804cb51df5200204a8310511d82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C30E1DB
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 15:59:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 458D01DB
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2005 16:00:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=493> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166> 
 ======================================================================
-Reported By:                Joe_Bogarde
+Reported By:                lichentrope
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   493
-Category:                   amixer
+Issue ID:                   166
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-09-2004 18:32 CEST
-Last Modified:              08-20-2005 15:59 CEST
+Date Submitted:             03-29-2004 22:45 CEST
+Last Modified:              08-20-2005 16:00 CEST
 ======================================================================
-Summary:                    Sound mixer decreases volume and mutes sound
-channels
+Summary:                    strange high-pitched noise
 Description: 
-Sound volume just drops off on its own (extigy).
-gtk based mixer seems slow to respond and locks up.  I recently tried the
-latest driver but downgraded to 1.0.6 to see if that helped, didn't.  It
-seems lkke the extigy did fine after first boot, but after that it didn't
-work too well.
+My HW: MSI K7N2 Delta-L with integrated AC97 soundcard (intel-8x0 with
+ac97_codec drivers used).
+
+I could always hear some high-pitched noise. It is quite low in volume,
+altough quite annoying when playing silent music/videos; the noise could
+be best described as "wind", there is some random static audible in it.
+The noise is independent from CPU load, whether some sound is being played
+or not. At first I thought it was caused by heat noise from the
+motherboard. Once I noticed it disappeared after reboot and reappeared
+after running alsamixer to restore previous mixer settings. I played a bit
+with the sound controls and found out what was the cause: the "Video"
+control caused this. I had to unmute it and put it at full volume, then
+the noise disappeared (strange though, I'd understand it if it were other
+way round).
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:25 
+ jdthood - 03-30-05 19:38 
 ----------------------------------------------------------------------
-Submitter: Any luck with later ALSA releases?
+It seems that there are two problems here:
 
-Does the sound drop in volume when mixers are running?
-Does the sound drop in volume when no mixers are running?
+* Video slider operates in reverse
+
+* alsamixer sets Video mixer level to an inappropriate value
+  without the user touching the control itself
+
+Submitter: Is that right? Do both problems still exist in the current ALSA
+release?
 
 ----------------------------------------------------------------------
- jdthood - 08-20-05 15:59 
+ jdthood - 08-20-05 16:00 
 ----------------------------------------------------------------------
-Closing, since no further information has been provided.
+No new information was provided.  Presumed fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-04 18:32 Joe_Bogarde    New Issue                                    
-09-09-04 18:35 Joe_Bogarde    File Added: bug.txt                          
-03-20-05 13:25 jdthood        Note Added: 0004082                          
-08-20-05 15:59 jdthood        Status                   new => closed       
-08-20-05 15:59 jdthood        Note Added: 0005875                          
+03-29-04 22:45 lichentrope    New Issue                                    
+03-19-05 13:05 jdthood        Note Added: 0004045                          
+03-30-05 19:38 jdthood        Note Added: 0004274                          
+08-20-05 16:00 jdthood        Status                   new => closed       
+08-20-05 16:00 jdthood        Note Added: 0005876                          
 ======================================================================
 
 
