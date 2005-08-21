@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001354]: Mixer problem on Logitech Quickcam Zoom with Integrated mic
-Date: Sun, 21 Aug 2005 18:17:45 +0200
-Message-ID: <100b9b253d7b41262d5c0efa47ac9871@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001355]: No sound after resume
+Date: Sun, 21 Aug 2005 21:07:14 +0200
+Message-ID: <e407a72264b50b6e00045ea51fe4c569@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8931223
-	for <alsa-devel@alsa-project.org>; Sun, 21 Aug 2005 18:17:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FBEB1E9
+	for <alsa-devel@alsa-project.org>; Sun, 21 Aug 2005 21:07:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,38 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1354> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1355> 
 ======================================================================
-Reported By:                Bourrindebase
-Assigned To:                Clemens Ladisch
+Reported By:                Adrian Bunk
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1354
-Category:                   USB - usb-audio
+Issue ID:                   1355
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrivalinux
-Kernel Version:             2.6.12-10mdk
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-21-2005 18:17 CEST
-Last Modified:              08-21-2005 18:17 CEST
+Date Submitted:             08-21-2005 21:07 CEST
+Last Modified:              08-21-2005 21:07 CEST
 ======================================================================
-Summary:                    Mixer problem on Logitech Quickcam Zoom with
-Integrated mic
+Summary:                    No sound after resume
 Description: 
-When I plug the webcam I get an error on mixer settings. Then the mic
-integrated on the webcam is not usable. There is no sound available from
-the webcam. I get the same error with Cooker Mandrivalinux and 10.2 (2005
-Limited Edition) Mandrivalinux. So mixer settings for the cam are note
-available under alsamixer.
+I'm currently trying suspend to disk for the first time.
+
+After resuming, there is no sound.
+
+If I build the driver modular and do manually unload and load it after
+resuming, sound is working again.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-05 18:17 Bourrindebase  New Issue                                    
-08-21-05 18:17 Bourrindebase  Distribution              => Mandrivalinux   
-08-21-05 18:17 Bourrindebase  Kernel Version            => 2.6.12-10mdk    
+08-21-05 21:07 Adrian Bunk    New Issue                                    
 ======================================================================
 
 
