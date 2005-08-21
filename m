@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
-Date: Sun, 21 Aug 2005 23:56:08 +0200
-Message-ID: <5c1cdb7d6b1e5e5525ee1c927d6bade2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001356]: Compile errors with 10.
+Date: Mon, 22 Aug 2005 00:02:23 +0200
+Message-ID: <4d190f9e77eb7db622c9a54886c9a541@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73117208
-	for <alsa-devel@alsa-project.org>; Sun, 21 Aug 2005 23:56:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE190208
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 00:02:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1356> 
 ======================================================================
 Reported By:                ammiellodebar
-Assigned To:                jcdutton
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1320
-Category:                   PCI - ca0106
+Issue ID:                   1356
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Arch Linux
+Status:                     assigned
+Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-08-2005 06:03 CEST
-Last Modified:              08-21-2005 23:56 CEST
+Date Submitted:             08-22-2005 00:01 CEST
+Last Modified:              08-22-2005 00:02 CEST
 ======================================================================
-Summary:                    CA0106 with Soundblaster 24-bit live does not allow
-recording
+Summary:                    Compile errors with 10.
 Description: 
-When I use the line in on the card, it will not capture unless i crank up
-the mixer to near peak, and then its garbled and distorted sound, my
-capture is up all the way and i know its not a dumb mistake of mine
-
-
+In file included from
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/                
+                                                                    
+pci/ac97/ac97_bus.c:1:
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:28: error: parse error before "pm_message_t"
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:29: warning: function declaration isn't a
+prototype
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c: In function `ac97_bus_suspend':
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: `dev' undeclared (first use in this
+function                                                                  
+                  
+)
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: (Each undeclared identifier is
+reported only                                                             
+                       
+ once
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: for each function it appears in.)
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:33: error: `state' undeclared (first use in this
+functi                                                                    
+                
+on)
+make[4]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
+                                                                          
+  
+/ac97_bus.o] Error 1
+make[3]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
+                                                                          
+  
+] Error 2
+make[2]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci] Err       
+                                                                          
+  
+or 2
+make[1]: ***
+[_module_/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1]       
+                                                                          
+  
+ Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.8.1'
+make: *** [compile] Error 2
 ======================================================================
 
 ----------------------------------------------------------------------
- ammiellodebar - 08-13-05 03:40 
+ ammiellodebar - 08-22-05 00:02 
 ----------------------------------------------------------------------
-Unfortunately it doesnt work with 1.0.9b, still the same problem
-
-----------------------------------------------------------------------
- ammiellodebar - 08-21-05 23:56 
-----------------------------------------------------------------------
-i see jcdutton has fixed this! now..... if only the development version
-would compile right without errors!!!!
+10.0.10rc1 that is... it got cut off somehow
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 06:03 ammiellodebar  New Issue                                    
-08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
-08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
-08-12-05 23:11 jcdutton       Note Added: 0005791                          
-08-12-05 23:11 jcdutton       Status                   assigned => feedback
-08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
-08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
+08-22-05 00:01 ammiellodebar  New Issue                                    
+08-22-05 00:01 ammiellodebar  Issue Monitored: ammiellodebar                    
+08-22-05 00:02 ammiellodebar  Note Added: 0005888                          
 ======================================================================
 
 
