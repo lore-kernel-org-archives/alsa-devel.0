@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001358]: 1.0.10rc1 ALSA driver doesn't have PC Speaker support in hda-intel (Uniwill)
-Date: Mon, 22 Aug 2005 20:53:35 +0200
-Message-ID: <411ac2ad88ab5a2effaebc878749675b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001359]: cs46xx DTS pass through works, but AC3/Dolby Digital does not
+Date: Mon, 22 Aug 2005 20:57:51 +0200
+Message-ID: <35fe0771e92d8f0a27e4257ec10d72fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68AC0224
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 20:53:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8BFB224
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 20:57:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1358> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1359> 
 ======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
+Reported By:                rjh
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1358
-Category:                   PCI - hda-intel
+Issue ID:                   1359
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12.5
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             Linux 2.6.12-1.1398_FC4 (a standard FC4 kernel)
 ======================================================================
-Date Submitted:             08-22-2005 20:53 CEST
-Last Modified:              08-22-2005 20:53 CEST
+Date Submitted:             08-22-2005 20:57 CEST
+Last Modified:              08-22-2005 20:57 CEST
 ======================================================================
-Summary:                    1.0.10rc1 ALSA driver doesn't have PC Speaker
-support in hda-intel (Uniwill)
+Summary:                    cs46xx DTS pass through works, but AC3/Dolby Digital
+does not
 Description: 
-My laptop is equiped with an Intel (IHC6M) integrated audio controller. The
-chipset is a Realtek ALC880 with a Uniwill subsystem.
+Dear Alsa developers.
 
-With the previous version of ALSA (1.0.9b), I had the LineIn/Speakers
-mixup issue. That problem is now fixed with the 1.0.10rc1 version (and
-previously with a CVS), but now the PC Speaker is muted and doesn't apear
-on AlsaMixer.
+I have an interesting situation with my Terratec XFire 1024 and Sony
+STR-DB930 external amplifier.
 
-I'm using ALSA 1.0.10rc1 drivers + libs + oss + utils.
+I have a dual boot system. When I use Windows and Windows DVD players,
+digital pass-through sound works perfectly. When I switch to Linux FC4 +
+Alsa + Xine, only DTS pass-though sound works. In particular, when playing
+a typical DVD that uses Dolby Digital sound by default, the amplifier
+recognizes that it is receiving Dolby Digital signal (Sony STD DB-930
+front panel shows text "Dolby Digital [3/2]", and all the apropriate
+status lights are turned on, too), but no sound comes out. Likewise, no
+DVD intro sounds that play before and during DVD menus can be heard (but
+Sony STD DB-930 front panel shows for example text "Dolby Digital [2/0]").
+There is no humming, rattling, popping, or some other artifact sounds
+either, just silence.
 
-Another thing! Does this sound card support multiplexing? Either by
-hardware, or if ALSA can achieve that by software. I'm having trouble
-playing more than one sound at the same time, and all the things I've read
-until now, didn't help me :-\
+If I on the other hand select a DTS sound track using Xine DVD menu
+functions, the aplifier recognizes that it is now receiving DTS signal
+(font panel shows "DTS [3/2]"), and sound plays as it should!
 
-If more information is needed, just let me know :-)
+If I configure Xine to do the decoding and output normal stereo sound,
+that works too, but without the benefits of surround sound, of course.
 
-Cheers,
-Quetzy Garcia
+It would therefore seem that current ALSA cs46xx driver can almost but not
+quite output Dolby Digital sound in a format that the Sony STR-DB930
+amplifier recognizes. One the other hand, DTS signal comes through ok. I
+hope that these observations will propably limit the number of locations
+where the problem may be.
+
+I would also point out that the amplifier status display reacts correctly
+to changes in signal type. This propably proves that at least something
+does indeed come though correctly. Finally, the fact that everything works
+perfectly with Windows drivers shows that the card and amplifier can work
+together.
+
+I have also tried to randomly change the control values in Xine iec958
+control string (the audio.device.alsa_passthrough_device parameter that
+has the default value of "iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2) but
+without any effect.
+
+I have also tried various control values with 'iecset' utility, but again
+without any effect.
+
+I have no custom .asoundrc settings in place.
+
+I have to admit that I have not tried other recent players than Xine
+0.99.4-1.2.fc4 yet, mainly because latest mplayer current crashes and I
+have had some trouble compiling it, too. However, I have observed the same
+problem earlier with older Xine and mplayer version is some older Linux
+distribution (and exactly the same hardware).
+
+I would be very thankfull for any advice. I would also be happy to run any
+additional tests you might consider usefull.
+
+  Rami
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-22-05 20:53 quetzyg        New Issue                                    
-08-22-05 20:53 quetzyg        Distribution              => Slackware 10.1  
-08-22-05 20:53 quetzyg        Kernel Version            => 2.6.12.5        
+08-22-05 20:57 rjh            New Issue                                    
+08-22-05 20:57 rjh            Distribution              => Fedora Core 4   
+08-22-05 20:57 rjh            Kernel Version            => Linux
+2.6.12-1.1398_FC4 (a standard FC4 kernel)
 ======================================================================
 
 
