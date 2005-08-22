@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001345]: microphone input does broken after upgrading from kernel 2.6.10 to 2.6.12
-Date: Mon, 22 Aug 2005 12:20:22 +0200
-Message-ID: <1831da5345bd9efdb66a59bf749ac5d6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001351]: The misc.c is reported to have incomplete type with thread_excited.
+Date: Mon, 22 Aug 2005 12:21:46 +0200
+Message-ID: <e5ebd1ba9bfcb1cb407254bcd5bf0231@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B1D620B
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 12:20:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F6DB20B
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 12:21:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue is now in status NEW (again)
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1345> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1351> 
 ======================================================================
-Reported By:                kayosiii
-Assigned To:                
+Reported By:                lionhead
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1345
-Category:                   PCI - intel8x0
+Issue ID:                   1351
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Mepis
-Kernel Version:             2.6.12 custom compiled
+Status:                     assigned
+Distribution:               the structure description of thread_excited in
+acore/misc.c caused failure during compilation.
+Kernel Version:             linux-2.4.7-10
 ======================================================================
-Date Submitted:             08-17-2005 08:13 CEST
-Last Modified:              08-22-2005 12:20 CEST
+Date Submitted:             08-21-2005 12:32 CEST
+Last Modified:              08-22-2005 12:21 CEST
 ======================================================================
-Summary:                    microphone input does broken after upgrading from
-kernel 2.6.10 to 2.6.12
+Summary:                    The misc.c is reported to have incomplete type with
+thread_excited.
 Description: 
-Basically When a boot using kernel 2.6.10 I can record using a microphone.
-With 2.6.12 I get no input... I am running the latest alsa-base in debian
-unstable. And have tried just about every setting in kmixer
+kernel :linux-2.4.7-10. 
+When I compile the alsa drive on my redhat7.2, it always failed with
+result as below.
+
+results:
+------------------------------------------------------------------------------
+[/home/ws/sound/alsa-driver-1.0.9rc4a]$ make
+make[1]: Entering directory `/home/ws/sound/alsa-driver-1.0.9rc4a/acore'
+gcc -D__KERNEL__ -DMODULE=1 -I/home/ws/sound/alsa-driver-1.0.9rc4a/include
+ -I/lib/modules/2.4.7-1
+0/build/include -O2 -mpreferred-stack-boundary=2 -march=athlon -DLINUX
+-Wall -Wstrict-prototypes -
+fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdi
+nc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.7-10/build/include/linux/modversio
+ns.h  -DKBUILD_BASENAME=misc   -c -o misc.o misc.c
+misc.c:289: field `thread_exited' has incomplete type <--------- 
+misc.c: In function `snd_compat_destroy_workqueue_Raba0304c':
+misc.c:340: warning: implicit declaration of function
+`wait_for_completion_R02032293'
+misc.c: In function `snd_compat_create_workqueue_R6659e20e':
+misc.c:388: warning: implicit declaration of function `init_completion'
+-------------------------------------------------------------------------------
 ======================================================================
+
+----------------------------------------------------------------------
+ perex - 08-22-05 12:21 
+----------------------------------------------------------------------
+Could you retest with 1.0.10rc1?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-05 08:13 kayosiii       New Issue                                    
-08-17-05 08:13 kayosiii       Distribution              => Mepis           
-08-17-05 08:13 kayosiii       Kernel Version            => 2.6.12 custom
-compiled
-08-22-05 12:20 perex          Assigned To              perex =>            
-08-22-05 12:20 perex          Status                   assigned => new     
-08-22-05 12:20 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
+08-21-05 12:32 lionhead       New Issue                                    
+08-21-05 12:32 lionhead       File Added: misc.c                           
+08-21-05 12:32 lionhead       Distribution              => the structure
+description of thread_excited in acore/misc.c caused failure during compilation.
+08-21-05 12:32 lionhead       Kernel Version            => linux-2.4.7-10  
+08-22-05 12:21 perex          Note Added: 0005891                          
 ======================================================================
 
 
