@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001356]: Compile errors with 10.
-Date: Mon, 22 Aug 2005 18:14:30 +0200
-Message-ID: <4cc48d88d91a6f22490b461fee0e0da2@bugtrack.alsa-project.org>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: Disagreement about versions following CVS update
+Date: Mon, 22 Aug 2005 10:27:13 -0600
+Message-ID: <4309FCE1.90107@redfish-solutions.com>
+References: <43063408.60402@redfish-solutions.com> <s5hll2up3rh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C20F7217
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 18:14:30 +0200 (MEST)
+In-Reply-To: <s5hll2up3rh.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,137 +17,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1356> 
-======================================================================
-Reported By:                ammiellodebar
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1356
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-22-2005 00:01 CEST
-Last Modified:              08-22-2005 18:14 CEST
-======================================================================
-Summary:                    Compile errors with 10.
-Description: 
-In file included from
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/                
-                                                                    
-pci/ac97/ac97_bus.c:1:
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:28: error: parse error before "pm_message_t"
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:29: warning: function declaration isn't a
-prototype
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c: In function `ac97_bus_suspend':
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:32: error: `dev' undeclared (first use in this
-function                                                                  
-                  
-)
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:32: error: (Each undeclared identifier is
-reported only                                                             
-                       
- once
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:32: error: for each function it appears in.)
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:33: error: `state' undeclared (first use in this
-functi                                                                    
-                
-on)
-make[4]: ***
-[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
-                                                                          
-  
-/ac97_bus.o] Error 1
-make[3]: ***
-[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
-                                                                          
-  
-] Error 2
-make[2]: ***
-[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci] Err       
-                                                                          
-  
-or 2
-make[1]: ***
-[_module_/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1]       
-                                                                          
-  
- Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.8.1'
-make: *** [compile] Error 2
-======================================================================
+>At Fri, 19 Aug 2005 13:33:28 -0600,
+>Philip Prindeville wrote:
+>  
+>
+>>I did a CVS update yesterday, and a rebuild and tried to reinstall, and
+>>I'm seeing:
+>>
+>>WARNING: Error inserting snd_seq_device 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/seq/snd-seq-device.ko): 
+>>Unknown symbol in module, or unknown parameter (see dmesg)
+>>WARNING: Error inserting snd_rawmidi 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-rawmidi.ko): 
+>>Unknown symbol in module, or unknown parameter (see dmesg)
+>>WARNING: Error inserting snd_mpu401_uart 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko): 
+>>Unknown symbol in module, or unknown parameter (see dmesg)
+>>WARNING: Error inserting snd_timer 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-timer.ko): 
+>>Unknown symbol in module, or unknown parameter (see dmesg)
+>>WARNING: Error inserting snd_timer 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-timer.ko): 
+>>Unknown symbol in module, or unknown parameter (see dmesg)
+>>FATAL: Error inserting snd_pcm 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/acore/snd-pcm.ko): Unknown 
+>>symbol in module, or unknown parameter (see dmesg)
+>>WARNING: Error running install command for snd_pcm
+>>WARNING: Error inserting snd_ac97_codec 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/pci/ac97/snd-ac97-codec.ko): 
+>>Unknown symbol in module, or unknown parameter (see dmesg)
+>>FATAL: Error inserting snd_via82xx 
+>>(/lib/modules/2.6.12-1.1372_FC3/kernel/sound/pci/snd-via82xx.ko): 
+>>Unknown symbol in module, or unknown parameter (see dmesg)
+>>
+>>Stupid question:  did a version number get changed somewhere?  And if
+>>so, what's the fix?  I did a:
+>>
+>>% make -C alsa-driver clean
+>>
+>>and a rebuild, but I'm still seeing these.  What did I miss?
+>>    
+>>
+>
+>After "alsasound stop", unload all remaining snd* modules including
+>snd-page-alloc.  "alsasound stop" keeps this module intentionally for
+>the buffer management.
+>
+>Then start alsasound again.
+>
+>
+>Takashi
+>  
+>
 
-----------------------------------------------------------------------
- perex - 08-22-05 12:29 
-----------------------------------------------------------------------
-Could you try this patch?
+The issue seemed to be that you can only rmmod/insmod the driver
+a finite number of times, and then it will start reporting this error
+about being the wrong kernel version number.
 
-diff -u -r1.1 ac97_bus.c
---- ac97_bus.c  29 Jul 2005 15:13:37 -0000      1.1
-+++ ac97_bus.c  22 Aug 2005 10:28:29 -0000
-@@ -11,7 +11,7 @@
-  * (at your option) any later version.
-  */
+Rebooting fixed the problem.
 
--#include <linux/module.h>
-+#include <sound/driver.h>
- #include <linux/init.h>
- #include <linux/device.h>
- #include <linux/string.h>
-
-
-
-----------------------------------------------------------------------
- ammiellodebar - 08-22-05 18:14 
-----------------------------------------------------------------------
-ill try the patch, I have to use 2.6.8.1 because somethings messed up in
-the kernel in later versions with my rtl8150 network driver... my
-connection doesnt work
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-22-05 00:01 ammiellodebar  New Issue                                    
-08-22-05 00:01 ammiellodebar  Issue Monitored: ammiellodebar                    
-08-22-05 00:02 ammiellodebar  Note Added: 0005888                          
-08-22-05 07:49 rlrevell       Note Added: 0005889                          
-08-22-05 12:29 perex          Note Added: 0005892                          
-08-22-05 12:29 perex          Status                   assigned => feedback
-08-22-05 18:14 ammiellodebar  Note Added: 0005899                          
-======================================================================
-
+-Philip
 
 
 
