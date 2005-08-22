@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: M-Audio Audiophile USB
-Date: Mon, 22 Aug 2005 18:04:45 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0508221801100.10838-100000@studcom.urz.uni-halle.de>
-References: <4309F0FC.9090209@liris.cnrs.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001356]: Compile errors with 10.
+Date: Mon, 22 Aug 2005 18:14:30 +0200
+Message-ID: <4cc48d88d91a6f22490b461fee0e0da2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 95AF5217
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 18:04:46 +0200 (MEST)
-In-Reply-To: <4309F0FC.9090209@liris.cnrs.fr>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C20F7217
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 18:14:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,29 +18,137 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pierre-Antoine Champin <pierre-antoine.champin@liris.cnrs.fr>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pierre-Antoine Champin wrote:
-> I bought an M-Audio Audiophile USB external sound interface, but I have
-> some problems to make it work properly: when recording audio, the signal
-> I get is completely saturated.
-> [...]
-> So I guess that the card has uses format S24_3BE for output, but *not*
-> for input; it uses instead some hybrid format, for which the conversion
-> to low endian would be:
->     a,b,c -> b,a,c
 
-The driver currently assumes that both playback and capture use
-big-endian samples.  I haven't heard any complaints since this was
-implemented 21 months ago.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1356> 
+======================================================================
+Reported By:                ammiellodebar
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1356
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-22-2005 00:01 CEST
+Last Modified:              08-22-2005 18:14 CEST
+======================================================================
+Summary:                    Compile errors with 10.
+Description: 
+In file included from
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/                
+                                                                    
+pci/ac97/ac97_bus.c:1:
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:28: error: parse error before "pm_message_t"
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:29: warning: function declaration isn't a
+prototype
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c: In function `ac97_bus_suspend':
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: `dev' undeclared (first use in this
+function                                                                  
+                  
+)
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: (Each undeclared identifier is
+reported only                                                             
+                       
+ once
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: for each function it appears in.)
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:33: error: `state' undeclared (first use in this
+functi                                                                    
+                
+on)
+make[4]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
+                                                                          
+  
+/ac97_bus.o] Error 1
+make[3]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
+                                                                          
+  
+] Error 2
+make[2]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci] Err       
+                                                                          
+  
+or 2
+make[1]: ***
+[_module_/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1]       
+                                                                          
+  
+ Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.8.1'
+make: *** [compile] Error 2
+======================================================================
 
-Does it work if you use plughw:3 and .wav files?
+----------------------------------------------------------------------
+ perex - 08-22-05 12:29 
+----------------------------------------------------------------------
+Could you try this patch?
+
+diff -u -r1.1 ac97_bus.c
+--- ac97_bus.c  29 Jul 2005 15:13:37 -0000      1.1
++++ ac97_bus.c  22 Aug 2005 10:28:29 -0000
+@@ -11,7 +11,7 @@
+  * (at your option) any later version.
+  */
+
+-#include <linux/module.h>
++#include <sound/driver.h>
+ #include <linux/init.h>
+ #include <linux/device.h>
+ #include <linux/string.h>
 
 
-Regards,
-Clemens
+
+----------------------------------------------------------------------
+ ammiellodebar - 08-22-05 18:14 
+----------------------------------------------------------------------
+ill try the patch, I have to use 2.6.8.1 because somethings messed up in
+the kernel in later versions with my rtl8150 network driver... my
+connection doesnt work
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-22-05 00:01 ammiellodebar  New Issue                                    
+08-22-05 00:01 ammiellodebar  Issue Monitored: ammiellodebar                    
+08-22-05 00:02 ammiellodebar  Note Added: 0005888                          
+08-22-05 07:49 rlrevell       Note Added: 0005889                          
+08-22-05 12:29 perex          Note Added: 0005892                          
+08-22-05 12:29 perex          Status                   assigned => feedback
+08-22-05 18:14 ammiellodebar  Note Added: 0005899                          
+======================================================================
+
 
 
 
