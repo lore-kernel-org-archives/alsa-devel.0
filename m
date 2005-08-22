@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
-Date: Mon, 22 Aug 2005 15:18:39 +0200
-Message-ID: <f5bec42060cc040aafec71e8671e9062@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001206]: No Surround Sound (5.1) with analog speaker set on ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
+Date: Mon, 22 Aug 2005 15:47:54 +0200
+Message-ID: <994b58a4c5388c60e534d657c0d78fea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 041F4219
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 15:18:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E49CC20B
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 15:47:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,138 +24,631 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1206> 
 ======================================================================
-Reported By:                ahaning
-Assigned To:                perex
+Reported By:                marcmerz
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1326
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   1206
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
+Distribution:               Suse 9.3
+Kernel Version:             Linux cinemaxx 2.6.11.4-20a-smp-matrox #1 SMP Fri
+May 27 20:49:09 CEST 2005 i686 i686 i386 GNU/Linux
 ======================================================================
-Date Submitted:             08-10-2005 03:39 CEST
-Last Modified:              08-22-2005 15:18 CEST
+Date Submitted:             06-20-2005 20:39 CEST
+Last Modified:              08-22-2005 15:47 CEST
 ======================================================================
-Summary:                    ISA cards (opl3sa2 in particular) are not detected
-properly on 2.6 kernels
+Summary:                    No Surround Sound (5.1) with analog speaker set on
+ASUS P4P800-VM and Suse 9.3 (Kernel 26.11.4-20a)
 Description: 
-When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
-are incorrectly detected by alsaconf from alsa-utils. For example, the
-default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
-IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
-detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
-to that, then the card will make sound (after touching the mixer while
-playing audio).
+The same hardware (Asus P4P800-VM with an analog surround set from
+creative) was working fine under Suse 9.1 with Kernel 2.6.5. I then had to
+change my HD (/dev/hda) due to harddisk crash and installed Suse 9.3 with
+Kernel 2.6.11.4-20a (where i included module support for my Matrox G400
+everything else is default config). It came with ALSA 1.08. I already got
+the sources from the alsa homepage and updated to the current versions
+(1.09b, 1.09a and 1.09 for drivers, utils, libs, tools etc.).
+ 
+Meanwhile i spent more than 7 days now to get my DD5.1 Surround working in
+6-channel mode but to no avail. When i do the speaker test, the front left
+and front right are ok. Rear Left comes from the Rear Right speaker and
+Rear Right comes from the left rear speaker. The center channel does not
+do any sounds at all and the LFE output is on the left front speaker.
+ 
+I checked my wirings a couple of times. I do have 'normal' sound in KDE
+playing MP3's etc. and i can also use the 'Spread Front to Surround/LFE'
+switch in kmix to get some sound from all speakers including center and
+lfe.
+ 
+When i play AC3 testfiles with a52dec, the center is always off (i.e. not
+to hear) and the lfe output is going to the front left speaker. With
+ac3dec i get the same result but on top of it, using 'ac3dec -6' the sound
+is crackling and therefore useless (btw. this was also the case with Alsa
+1.04|5 under Suse 9.1 with Kernel 2.6.5).
+ 
+I can not believe that the same setup did work flawlessly under ALSA 1.05
+and with a new kernel and current source drivers from the alsa project
+homepage it is just not working in DD5.1.
+ 
+Maybe there is a configuration mistake concerning plug:surround51 sending
+output to the wrong channels but a) i did not change anything there and b)
+i have no clue how to do that anyway.
+ 
+Any help would be greatly appreciated.
+ 
+Just some settings from my setup:
+# lspci -v|grep audio  // (using acpi=off noapic in /boot/grub/menu.lst
+does not make any difference
+0000:00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
 
-According to perex (author of the opl3sa2 driver):
+# hwinfo --sound
+21: PCI 1f.5: 0401 Multimedia audio controller
+  [Created at pci.273]
+  Unique ID: W60f.jRYEjR2QAA3
+  SysFS ID: /devices/pci0000:00/0000:00:1f.5
+  SysFS BusID: 0000:00:1f.5
+  Hardware Class: sound
+  Model: "ASUSTeK 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller"
+  Vendor: pci 0x8086 "Intel Corporation"
+  Device: pci 0x24d5 "82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller"
+  SubVendor: pci 0x1043 "ASUSTeK Computer Inc."
+  SubDevice: pci 0x80b0
+  Revision: 0x02
+  Driver: "Intel ICH"
+  I/O Ports: 0xe800-0xe8ff (rw)
+  I/O Ports: 0xee80-0xeebf (rw)
+  Memory Range: 0xfebff800-0xfebff9ff (rw,non-prefetchable)
+  Memory Range: 0xfebff400-0xfebff4ff (rw,non-prefetchable)
+  IRQ: 209 (170062 events)
+  Driver Info #0:
+    Driver Status: snd-intel8x0 is active
+    Driver Activation Cmd: "modprobe snd-intel8x0"
+  Driver Info #1:
+    Driver Status: i810_audio is not active
+    Driver Activation Cmd: "modprobe i810_audio"
+  Config Status: cfg=yes, avail=yes, need=no, active=unknown
 
-"The alsaconf tries to gather free resources (irq/dma/ports) from the
-/proc filesystem. It might be extended to gather this information also
-from /sys filesystem."
+# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Jun  8 2005 for kernel 2.6.11.4-20a-smp-matrox (SMP).
+ 
+# cat /proc/asound/cards
+0 [ICH5           ]: ICH4 - Intel ICH5
+                     Intel ICH5 with AD1980 at 0xfebff800, irq 209
+
+# cat /proc/asound/devices
+ 20: [0- 4]: digital audio playback
+ 27: [0- 3]: digital audio capture
+ 26: [0- 2]: digital audio capture
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+
+# cat /proc/asound/modules
+0 snd_intel8x0
+
+# cat /proc/asound/pcm
+00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
+00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
+00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
+00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
+
+/etc/asound.state:
+state.ICH5 {
+        control.1 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Master Surround Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Master Surround Playback Volume'
+                value.0 28
+                value.1 28
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Center Playback Switch'
+                value true
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Center Playback Volume'
+                value 31
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'LFE Playback Switch'
+                value true
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'LFE Playback Volume'
+                value 31
+        }
+        control.7 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Surround Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.8 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Surround Playback Volume'
+                value.0 31
+                value.1 31
+        }
+        control.9 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Master Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.10 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 28
+                value.1 28
+        }
+        control.11 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Master Mono Playback Switch'
+                value false
+        }
+        control.12 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Master Mono Playback Volume'
+                value 0
+        }
+        control.13 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Phone Playback Switch'
+                value false
+        }
+        control.14 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Phone Playback Volume'
+                value 0
+        }
+        control.15 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Playback Switch'
+                value true
+        }
+        control.16 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Mic Playback Volume'
+                value 31
+        }
+        control.17 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Boost (+20dB)'
+                value false
+        }
+        control.18 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Line Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.19 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Line Playback Volume'
+                value.0 31
+                value.1 31
+        }
+        control.20 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'CD Playback Switch'
+                value.0 false
+                value.1 false
+        }
+        control.21 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'CD Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.22 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Aux Playback Switch'
+                value.0 false
+                value.1 false
+        }
+        control.23 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Aux Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.24 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'PCM Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.25 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 31
+                value.1 31
+        }
+        control.26 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source'
+                value.0 Mic
+                value.1 Mic
+        }
+        control.27 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 true
+                value.1 true
+        }
+        control.28 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 0
+                value.1 0
+        }
+        control.29 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Mic1
+                comment.item.1 Mic2
+                iface MIXER
+                name 'Mic Select'
+                value Mic1
+        }
+        control.30 {
+                comment.access read
+                comment.type IEC958
+                comment.count 1
+                iface MIXER
+                name 'IEC958 Playback Con Mask'
+                value
+'0fff000f0000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000'
+        }
+        control.31 {
+                comment.access read
+                comment.type IEC958
+                comment.count 1
+                iface MIXER
+                name 'IEC958 Playback Pro Mask'
+                value
+cf00000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000
+        }
+        control.32 {
+                comment.access 'read write'
+                comment.type IEC958
+                comment.count 1
+                iface MIXER
+                name 'IEC958 Playback Default'
+                value
+'008200020000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000'
+        }
+        control.33 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'IEC958 Playback Switch'
+                value false
+        }
+        control.34 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 3'
+                iface MIXER
+                name 'IEC958 Playback AC97-SPSA'
+                value 0
+        }
+        control.35 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 AC-Link
+                comment.item.1 'A/D Converter'
+                iface MIXER
+                name 'IEC958 Playback Source'
+                value 'A/D Converter'
+        }
+        control.36 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Exchange Front/Surround'
+                value false
+        }
+        control.37 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Spread Front to Surround and Center/LFE'
+                value false
+        }
+        control.38 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Off
+                comment.item.1 '6 -> 4'
+                comment.item.2 '6 -> 2'
+                iface MIXER
+                name Downmix
+                value Off
+        }
+        control.39 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Shared
+                comment.item.1 Independent
+                iface MIXER
+                name 'Surround Jack Mode'
+                value Shared
+        }
+        control.40 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 '2ch'
+                comment.item.1 '4ch'
+                comment.item.2 '6ch'
+                iface MIXER
+                name 'Channel Mode'
+                value '6ch'
+        }
+        control.41 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Stereo Mic'
+                value false
+        }
+        control.42 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'External Amplifier'
+                value false
+        }
+}
+
+# lsmod|grep snd
+snd_intel8x0           35136  0
+snd_ac97_codec         84220  1 snd_intel8x0
+snd_pcm               106500  2 snd_intel8x0,snd_ac97_codec
+snd_timer              29700  1 snd_pcm
+snd                    65796  4
+snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
+soundcore              14048  1 snd
+snd_page_alloc         13060  2 snd_intel8x0,snd_pcm
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
+duplicate of        0001191 Center channel and 32-bit emulation bro...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-22-05 12:32 
+ rlrevell - 08-18-05 22:07 
 ----------------------------------------------------------------------
-Can you retest with 1.0.10rc1?
+So if it doesn't have an nforce chipset then why does changing NFORCE.conf
+fix the problem?  What kind of audio chipset does it have?
+
+Many users seem to be under the impression that there are hundreds of ALSA
+developers, and that we have access to every device that there's an ALSA
+driver for, because the vendors shower us with free hardware so that we
+can work on drivers or something.
+
+Anyway please try the attached patch.
 
 ----------------------------------------------------------------------
- ahaning - 08-22-05 15:18 
+ rraptorr - 08-22-05 15:47 
 ----------------------------------------------------------------------
-Building alsa-driver-1.0.10rc1 failed with:
+What the hell is happening here?
+P4P800-VM motherboard DOES NOT HAVE NFORCE chipset.
+It can be checked easily by strace -f -e open. It is not even touching
+NFORCE.conf, it uses ICH4.conf. I've also downgraded whole alsa-lib to
+1.0.8, no change at all. The only working solution is disabling lines with
+pbus->dra = 1;.
+It looks like the NFORCE issue was by mistake marked as a duplicate of
+this one.
 
-/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1/acore/misc.c:487:40: macro
-"create                                                        _workqueue"
-passed 2 arguments, but takes just 1
-/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1/acore/misc.c: In function
-`snd_com                                                       
-pat_create_workqueue2':
-/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1/acore/misc.c:487:
-`create_workqueu                                                        e'
-undeclared (first use in this function)
-/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1/acore/misc.c:487: (Each
-undeclared                                                        
-identifier is reported only once
-/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1/acore/misc.c:487: for each
-functio                                                        n it
-appears in.)
-make[4]: *** [/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1/acore/misc.o]
-Error                                                         1
-make[3]: *** [/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1/acore] Error
-2
-make[2]: *** [_module_/usr/src/alsa-1.0.10rc1/alsa-driver-1.0.10rc1] Error
-2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.12'
-make: *** [compile] Error 2
-
-
-create_workqueue was called with (name, 0) so I edited out the 0. I don't
-know if this is correct, but it seems to allow the build to continue.
-
-I'll edit this note with any later updates.
+PS. Will try 1.0.10rc1 as soon as possible.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-10-05 03:39 ahaning        New Issue                                    
-08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
-it's not distribution-specific)
-08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
-08-10-05 13:26 perex          Status                   new => assigned     
-08-10-05 13:26 perex          Assigned To               => perex           
-08-10-05 13:26 perex          File Added: alsaconf                         
-08-10-05 13:28 perex          Note Added: 0005747                          
-08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
-utils
-08-10-05 13:30 perex          Relationship added       related to 0000879  
-08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
-08-10-05 14:55 ahaning        Note Added: 0005748                          
-08-11-05 00:24 ahaning        Note Added: 0005752                          
-08-11-05 23:59 ahaning        Note Added: 0005763                          
-08-12-05 00:00 ahaning        Note Edited: 0005763                         
-08-12-05 03:09 ahaning        Note Added: 0005764                          
-08-12-05 09:29 perex          Note Added: 0005766                          
-08-12-05 12:54 ahaning        Note Added: 0005767                          
-08-12-05 15:11 perex          Summary                  ISAPNP cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
-particular) are not detected properly on 2.6 kernels
-08-12-05 15:14 perex          Note Added: 0005768                          
-08-12-05 15:35 tiwai          Note Added: 0005769                          
-08-12-05 15:36 ahaning        Note Added: 0005770                          
-08-12-05 15:44 tiwai          Note Added: 0005771                          
-08-12-05 15:45 tiwai          Note Added: 0005772                          
-08-12-05 15:56 perex          Note Added: 0005777                          
-08-12-05 16:08 perex          Note Added: 0005778                          
-08-12-05 16:44 ahaning        Note Added: 0005782                          
-08-12-05 18:00 perex          File Added: opl3sa2.c.patch                    
-08-12-05 18:03 perex          Note Added: 0005783                          
-08-12-05 18:52 ahaning        Note Added: 0005787                          
-08-13-05 15:10 perex          File Deleted: alsaconf                       
-08-13-05 15:10 perex          File Added: alsaconf                         
-08-13-05 15:11 perex          Note Added: 0005806                          
-08-13-05 19:06 ahaning        Note Added: 0005808                          
-08-13-05 19:08 ahaning        Note Edited: 0005808                         
-08-15-05 13:53 perex          File Added: opl3sa2-2.c.patch                    
-08-15-05 13:55 perex          Note Added: 0005817                          
-08-18-05 12:51 ahaning        Note Added: 0005843                          
-08-18-05 12:56 perex          Note Added: 0005844                          
-08-18-05 16:36 ahaning        Note Added: 0005848                          
-08-19-05 02:35 ahaning        Note Added: 0005861                          
-08-19-05 03:02 ahaning        Note Added: 0005864                          
-08-19-05 03:05 ahaning        Note Edited: 0005864                         
-08-19-05 04:51 rlrevell       Note Added: 0005866                          
-08-22-05 12:32 perex          Note Added: 0005893                          
-08-22-05 12:32 perex          Status                   assigned => feedback
-08-22-05 15:18 ahaning        Note Added: 0005897                          
+06-20-05 20:39 marcmerz       New Issue                                    
+06-20-05 20:39 marcmerz       Distribution              => Suse 9.3        
+06-20-05 20:39 marcmerz       Kernel Version            => Linux cinemaxx
+2.6.11.4-20a-smp-matrox #1 SMP Fri May 27 20:49:09 CEST 2005 i686 i686 i386
+GNU/Linux
+06-21-05 11:26 tiwai          Note Added: 0005105                          
+06-21-05 20:29 marcmerz       Note Added: 0005113                          
+06-22-05 01:08 marcmerz       Note Added: 0005115                          
+06-22-05 01:20 marcmerz       Note Added: 0005116                          
+06-22-05 01:43 rlrevell       Note Added: 0005117                          
+06-22-05 10:04 pzad           Note Added: 0005119                          
+06-22-05 11:49 tiwai          Note Added: 0005124                          
+06-22-05 11:53 tiwai          Note Added: 0005125                          
+06-22-05 12:37 marcmerz       Note Added: 0005127                          
+06-22-05 12:44 tiwai          Note Added: 0005128                          
+06-22-05 12:48 tiwai          Note Added: 0005129                          
+06-22-05 12:51 marcmerz       Note Added: 0005130                          
+06-22-05 12:55 marcmerz       Note Added: 0005131                          
+06-22-05 18:03 tiwai          Note Added: 0005138                          
+06-22-05 19:55 marcmerz       File Added: ac97#0-0                         
+06-22-05 19:55 marcmerz       File Added: ac97#0-0+regs                    
+06-22-05 19:55 marcmerz       Note Added: 0005146                          
+06-22-05 19:57 marcmerz       File Added: alsasound                        
+06-22-05 20:18 rraptorr       Note Added: 0005147                          
+06-22-05 20:19 rraptorr       File Added: codec97                          
+06-22-05 20:34 rraptorr       Note Added: 0005148                          
+06-22-05 20:35 rraptorr       Note Edited: 0005147                         
+06-22-05 20:35 rraptorr       Note Deleted: 0005148                        
+06-22-05 20:50 rraptorr       Issue Monitored: rraptorr                    
+06-22-05 21:06 marcmerz       Note Edited: 0005146                         
+06-22-05 21:13 marcmerz       Note Added: 0005149                          
+06-22-05 21:17 rlrevell       Note Added: 0005150                          
+06-22-05 21:18 marcmerz       File Added: codec97-marcmerz                    
+06-22-05 21:26 rraptorr       Note Added: 0005151                          
+06-22-05 22:24 marcmerz       Note Added: 0005152                          
+06-22-05 22:32 rraptorr       Note Added: 0005153                          
+06-22-05 22:59 marcmerz       Note Edited: 0005152                         
+06-23-05 20:21 marcmerz       Note Added: 0005194                          
+06-26-05 19:45 marcmerz       Issue Monitored: tiwai                       
+06-26-05 19:45 marcmerz       Note Added: 0005265                          
+06-28-05 10:49 perex          Assigned To              perex =>            
+06-28-05 10:49 perex          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+07-10-05 19:57 phision        Issue Monitored: phision                     
+07-10-05 20:08 phision        Note Added: 0005443                          
+08-18-05 21:03 robert         Note Added: 0005852                          
+08-18-05 21:05 robert         File Added: NFORCE.conf                      
+08-18-05 21:27 rlrevell       Note Added: 0005854                          
+08-18-05 21:32 rlrevell       Relationship added       duplicate of 0001191
+08-18-05 21:56 marcmerz       Note Added: 0005856                          
+08-18-05 22:03 rlrevell       File Added: nforce.patch                     
+08-18-05 22:07 rlrevell       Note Added: 0005857                          
+08-22-05 15:47 rraptorr       Note Added: 0005898                          
 ======================================================================
 
 
