@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001359]: cs46xx DTS pass through works, but AC3/Dolby Digital does not
-Date: Mon, 22 Aug 2005 20:57:51 +0200
-Message-ID: <35fe0771e92d8f0a27e4257ec10d72fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001347]: unable to configure sound card
+Date: Mon, 22 Aug 2005 22:00:40 +0200
+Message-ID: <8756e03e36fdce40413c61e37c4e9d31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8BFB224
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 20:57:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 114E6221
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 22:00:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,187 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1359> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
 ======================================================================
-Reported By:                rjh
-Assigned To:                
+Reported By:                CptS
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1359
-Category:                   PCI - cs46xx
+Issue ID:                   1347
+Category:                   PCI - nm256
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             Linux 2.6.12-1.1398_FC4 (a standard FC4 kernel)
+Status:                     assigned
+Distribution:               Knoppix 4.0
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             08-22-2005 20:57 CEST
-Last Modified:              08-22-2005 20:57 CEST
+Date Submitted:             08-17-2005 11:05 CEST
+Last Modified:              08-22-2005 22:00 CEST
 ======================================================================
-Summary:                    cs46xx DTS pass through works, but AC3/Dolby Digital
-does not
+Summary:                    unable to configure sound card
 Description: 
-Dear Alsa developers.
+I'm having problems configuring my sound card with alsa, here are the
+details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
 
-I have an interesting situation with my Terratec XFire 1024 and Sony
-STR-DB930 external amplifier.
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
 
-I have a dual boot system. When I use Windows and Windows DVD players,
-digital pass-through sound works perfectly. When I switch to Linux FC4 +
-Alsa + Xine, only DTS pass-though sound works. In particular, when playing
-a typical DVD that uses Dolby Digital sound by default, the amplifier
-recognizes that it is receiving Dolby Digital signal (Sony STD DB-930
-front panel shows text "Dolby Digital [3/2]", and all the apropriate
-status lights are turned on, too), but no sound comes out. Likewise, no
-DVD intro sounds that play before and during DVD menus can be heard (but
-Sony STD DB-930 front panel shows for example text "Dolby Digital [2/0]").
-There is no humming, rattling, popping, or some other artifact sounds
-either, just silence.
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
 
-If I on the other hand select a DTS sound track using Xine DVD menu
-functions, the aplifier recognizes that it is now receiving DTS signal
-(font panel shows "DTS [3/2]"), and sound plays as it should!
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
 
-If I configure Xine to do the decoding and output normal stereo sound,
-that works too, but without the benefits of surround sound, of course.
+I did a legacy scan using alsaconf for all legacy drivers.
 
-It would therefore seem that current ALSA cs46xx driver can almost but not
-quite output Dolby Digital sound in a format that the Sony STR-DB930
-amplifier recognizes. One the other hand, DTS signal comes through ok. I
-hope that these observations will propably limit the number of locations
-where the problem may be.
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
 
-I would also point out that the amplifier status display reacts correctly
-to changes in signal type. This propably proves that at least something
-does indeed come though correctly. Finally, the fact that everything works
-perfectly with Windows drivers shows that the card and amplifier can work
-together.
+I've edited the modules.conf and manually defined the dma and irq
 
-I have also tried to randomly change the control values in Xine iec958
-control string (the audio.device.alsa_passthrough_device parameter that
-has the default value of "iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2) but
-without any effect.
+I removed alsa completly and re-install it.
 
-I have also tried various control values with 'iecset' utility, but again
-without any effect.
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
 
-I have no custom .asoundrc settings in place.
+I changed the distro from debian to Knoppix (kinda same thing but...)
 
-I have to admit that I have not tried other recent players than Xine
-0.99.4-1.2.fc4 yet, mainly because latest mplayer current crashes and I
-have had some trouble compiling it, too. However, I have observed the same
-problem earlier with older Xine and mplayer version is some older Linux
-distribution (and exactly the same hardware).
+anyway, you get the point..
 
-I would be very thankfull for any advice. I would also be happy to run any
-additional tests you might consider usefull.
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
 
-  Rami
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 08-20-05 20:37 
+----------------------------------------------------------------------
+You also pasted the same bug report three times which makes it a little
+less likely that you'll get a response.
+
+----------------------------------------------------------------------
+ CptS - 08-22-05 22:00 
+----------------------------------------------------------------------
+It crashed = the system just stopped responding. no report found later in
+the logs. if you have any ways of logging the crash i'd be happy to hear.
+
+I didn't paste the bug 3 times... i just added 2 notes to the same bug.
+S.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-22-05 20:57 rjh            New Issue                                    
-08-22-05 20:57 rjh            Distribution              => Fedora Core 4   
-08-22-05 20:57 rjh            Kernel Version            => Linux
-2.6.12-1.1398_FC4 (a standard FC4 kernel)
+08-17-05 11:05 CptS           New Issue                                    
+08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
+08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
+08-17-05 11:24 CptS           Note Added: 0005835                          
+08-20-05 19:48 CptS           Issue Monitored: CptS                        
+08-20-05 19:50 CptS           Note Added: 0005883                          
+08-20-05 20:32 rlrevell       Note Added: 0005884                          
+08-20-05 20:37 rlrevell       Note Added: 0005885                          
+08-22-05 22:00 CptS           Note Added: 0005901                          
 ======================================================================
 
 
