@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001293]: trident: device supported by OSS but not by ALSA
-Date: Mon, 22 Aug 2005 10:05:07 +0200
-Message-ID: <ee00e83631de1389b9ffa3e27b715c0c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001345]: microphone input does broken after upgrading from kernel 2.6.10 to 2.6.12
+Date: Mon, 22 Aug 2005 12:20:22 +0200
+Message-ID: <1831da5345bd9efdb66a59bf749ac5d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C7E920F
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 10:05:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B1D620B
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 12:20:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue is now in status NEW (again)
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1293> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1345> 
 ======================================================================
-Reported By:                Adrian Bunk
+Reported By:                kayosiii
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1293
-Category:                   PCI - trident
+Issue ID:                   1345
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.13-rc4-mm1
+Distribution:               Mepis
+Kernel Version:             2.6.12 custom compiled
 ======================================================================
-Date Submitted:             07-31-2005 21:13 CEST
-Last Modified:              08-22-2005 10:05 CEST
+Date Submitted:             08-17-2005 08:13 CEST
+Last Modified:              08-22-2005 12:20 CEST
 ======================================================================
-Summary:                    trident: device supported by OSS but not by ALSA
+Summary:                    microphone input does broken after upgrading from
+kernel 2.6.10 to 2.6.12
 Description: 
-I'm currently creating a list of OSS drivers where all the hardware
-supported by them is also supported by ALSA. The goal is to schedule
-them for removal (except someone tells that for one or more of them ALSA
-support is inferior). I do not have this hardware, but this is currently
-the reason why the old OSS driver can't be removed from the kernel.
-
-
-The OSS trident driver has 5 different pci_device_id entries.
-
-For 4 of them there seems to be similar ALSA support, but I can't find
-any ALSA equivalent for the following entry:
-        {PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_5050,
-         PCI_ANY_ID, PCI_ANY_ID, 0, 0, CYBER5050},
-
-
-
-Alan Cox said about this:
-
-The OSS driver supports the CyberPro T-squared core integrated into the
-cyberpro chipset while the ALSA driver only supports the others. Should
-be easy for someone to resolve. I don't have any 5000 hardware to test
-it however.
-
+Basically When a boot using kernel 2.6.10 I can record using a microphone.
+With 2.6.12 I get no input... I am running the latest alsa-base in debian
+unstable. And have tried just about every setting in kmixer
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 08-03-05 12:01 
-----------------------------------------------------------------------
-TESTERS WANTED!
-
-----------------------------------------------------------------------
- pwaechtler - 08-22-05 10:05 
-----------------------------------------------------------------------
-The cyberpro 5050 is an old combined video+audio controller - and is/was
-used in some settop boxes (German Siemens Activity and also Loewe).
-
-There will be no "desktop users" around.
-And because I don't work for Loewe anymore: I don't have access to
-hardware.
-
-If you ask me: leave it out!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-05 21:13 Adrian Bunk    New Issue                                    
-07-31-05 21:13 Adrian Bunk    Kernel Version            => 2.6.13-rc4-mm1  
-08-03-05 12:01 perex          Note Added: 0005616                          
-08-22-05 10:05 pwaechtler     Note Added: 0005890                          
+08-17-05 08:13 kayosiii       New Issue                                    
+08-17-05 08:13 kayosiii       Distribution              => Mepis           
+08-17-05 08:13 kayosiii       Kernel Version            => 2.6.12 custom
+compiled
+08-22-05 12:20 perex          Assigned To              perex =>            
+08-22-05 12:20 perex          Status                   assigned => new     
+08-22-05 12:20 perex          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
 ======================================================================
 
 
