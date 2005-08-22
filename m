@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001351]: The misc.c is reported to have incomplete type with thread_excited.
-Date: Mon, 22 Aug 2005 12:31:25 +0200
-Message-ID: <a486bd6117b0f9c64e04bbb2e0d66daf@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001326]: ISA cards (opl3sa2 in particular) are not detected properly on 2.6 kernels
+Date: Mon, 22 Aug 2005 12:32:07 +0200
+Message-ID: <7937760b1fef317a8e1773f9d6e47586@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3877C20B
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 12:31:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD6F920B
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 12:32:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,112 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1351> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1326> 
 ======================================================================
-Reported By:                lionhead
+Reported By:                ahaning
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1351
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   1326
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     feedback
-Distribution:               the structure description of thread_excited in
-acore/misc.c caused failure during compilation.
-Kernel Version:             linux-2.4.7-10
 ======================================================================
-Date Submitted:             08-21-2005 12:32 CEST
-Last Modified:              08-22-2005 12:31 CEST
+Date Submitted:             08-10-2005 03:39 CEST
+Last Modified:              08-22-2005 12:32 CEST
 ======================================================================
-Summary:                    The misc.c is reported to have incomplete type with
-thread_excited.
+Summary:                    ISA cards (opl3sa2 in particular) are not detected
+properly on 2.6 kernels
 Description: 
-kernel :linux-2.4.7-10. 
-When I compile the alsa drive on my redhat7.2, it always failed with
-result as below.
+When brute-force detecting my OPL3SA2 card, the IRQ and DMA1/DMA2 settings
+are incorrectly detected by alsaconf from alsa-utils. For example, the
+default BIOS settings are IRQ=11, DMA1=0, DMA2=1, but alsaconf detects
+IRQ=5, DMA1=1, DMA2=0. No matter the BIOS settings, alsaconf always
+detects those settings (IRQ=5, DMA1=1, DMA2=0). If I set the BIOS settings
+to that, then the card will make sound (after touching the mixer while
+playing audio).
 
-results:
-------------------------------------------------------------------------------
-[/home/ws/sound/alsa-driver-1.0.9rc4a]$ make
-make[1]: Entering directory `/home/ws/sound/alsa-driver-1.0.9rc4a/acore'
-gcc -D__KERNEL__ -DMODULE=1 -I/home/ws/sound/alsa-driver-1.0.9rc4a/include
- -I/lib/modules/2.4.7-1
-0/build/include -O2 -mpreferred-stack-boundary=2 -march=athlon -DLINUX
--Wall -Wstrict-prototypes -
-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdi
-nc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.7-10/build/include/linux/modversio
-ns.h  -DKBUILD_BASENAME=misc   -c -o misc.o misc.c
-misc.c:289: field `thread_exited' has incomplete type <--------- 
-misc.c: In function `snd_compat_destroy_workqueue_Raba0304c':
-misc.c:340: warning: implicit declaration of function
-`wait_for_completion_R02032293'
-misc.c: In function `snd_compat_create_workqueue_R6659e20e':
-misc.c:388: warning: implicit declaration of function `init_completion'
--------------------------------------------------------------------------------
+According to perex (author of the opl3sa2 driver):
+
+"The alsaconf tries to gather free resources (irq/dma/ports) from the
+/proc filesystem. It might be extended to gather this information also
+from /sys filesystem."
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000879 (snd_)opl3sa2 (isa) doesn't work (fails...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-22-05 12:21 
+ rlrevell - 08-19-05 04:51 
 ----------------------------------------------------------------------
-Could you retest with 1.0.10rc1?
+Since Oopses can lead to corrupt kernel memory, only the first Oops since
+booting the machine is relevant.  You mentioned that the first Oops(es)
+were non-fatal so   just copy the first one from the logs.
+
+Those Unknown symbol errors mean that you compiled ALSA against a
+different kernel version than you are running.  Make sure your installed
+kernel source matches the running kernel version.
+
+----------------------------------------------------------------------
+ perex - 08-22-05 12:32 
+----------------------------------------------------------------------
+Can you retest with 1.0.10rc1?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-05 12:32 lionhead       New Issue                                    
-08-21-05 12:32 lionhead       File Added: misc.c                           
-08-21-05 12:32 lionhead       Distribution              => the structure
-description of thread_excited in acore/misc.c caused failure during compilation.
-08-21-05 12:32 lionhead       Kernel Version            => linux-2.4.7-10  
-08-22-05 12:21 perex          Note Added: 0005891                          
-08-22-05 12:31 perex          Status                   assigned => feedback
-08-22-05 12:31 perex          Steps to Reproduce Updated                    
+08-10-05 03:39 ahaning        New Issue                                    
+08-10-05 03:39 ahaning        Distribution              => Slackware 9.1 (but
+it's not distribution-specific)
+08-10-05 03:39 ahaning        Kernel Version            => 2.6.12.2        
+08-10-05 13:26 perex          Status                   new => assigned     
+08-10-05 13:26 perex          Assigned To               => perex           
+08-10-05 13:26 perex          File Added: alsaconf                         
+08-10-05 13:28 perex          Note Added: 0005747                          
+08-10-05 13:29 perex          Project                  ALSA - driver => ALSA -
+utils
+08-10-05 13:30 perex          Relationship added       related to 0000879  
+08-10-05 13:31 perex          Category                 1_OTHERS => alsaconf
+08-10-05 14:55 ahaning        Note Added: 0005748                          
+08-11-05 00:24 ahaning        Note Added: 0005752                          
+08-11-05 23:59 ahaning        Note Added: 0005763                          
+08-12-05 00:00 ahaning        Note Edited: 0005763                         
+08-12-05 03:09 ahaning        Note Added: 0005764                          
+08-12-05 09:29 perex          Note Added: 0005766                          
+08-12-05 12:54 ahaning        Note Added: 0005767                          
+08-12-05 15:11 perex          Summary                  ISAPNP cards (opl3sa2 in
+particular) are not detected properly on 2.6 kernels => ISA cards (opl3sa2 in
+particular) are not detected properly on 2.6 kernels
+08-12-05 15:14 perex          Note Added: 0005768                          
+08-12-05 15:35 tiwai          Note Added: 0005769                          
+08-12-05 15:36 ahaning        Note Added: 0005770                          
+08-12-05 15:44 tiwai          Note Added: 0005771                          
+08-12-05 15:45 tiwai          Note Added: 0005772                          
+08-12-05 15:56 perex          Note Added: 0005777                          
+08-12-05 16:08 perex          Note Added: 0005778                          
+08-12-05 16:44 ahaning        Note Added: 0005782                          
+08-12-05 18:00 perex          File Added: opl3sa2.c.patch                    
+08-12-05 18:03 perex          Note Added: 0005783                          
+08-12-05 18:52 ahaning        Note Added: 0005787                          
+08-13-05 15:10 perex          File Deleted: alsaconf                       
+08-13-05 15:10 perex          File Added: alsaconf                         
+08-13-05 15:11 perex          Note Added: 0005806                          
+08-13-05 19:06 ahaning        Note Added: 0005808                          
+08-13-05 19:08 ahaning        Note Edited: 0005808                         
+08-15-05 13:53 perex          File Added: opl3sa2-2.c.patch                    
+08-15-05 13:55 perex          Note Added: 0005817                          
+08-18-05 12:51 ahaning        Note Added: 0005843                          
+08-18-05 12:56 perex          Note Added: 0005844                          
+08-18-05 16:36 ahaning        Note Added: 0005848                          
+08-19-05 02:35 ahaning        Note Added: 0005861                          
+08-19-05 03:02 ahaning        Note Added: 0005864                          
+08-19-05 03:05 ahaning        Note Edited: 0005864                         
+08-19-05 04:51 rlrevell       Note Added: 0005866                          
+08-22-05 12:32 perex          Note Added: 0005893                          
+08-22-05 12:32 perex          Status                   assigned => feedback
 ======================================================================
 
 
