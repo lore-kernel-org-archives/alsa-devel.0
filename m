@@ -1,12 +1,14 @@
-From: =?windows-1251?B?MzAg4OLj8/Hy4A==?= <auto@myfamily.com>
-Subject: =?windows-1251?B?0c4zxMDNyMUgylDTw8AgysvIRc3SzsIsIMjNztHSUMDNzcDfINDAwS4g0cjLQQ==?=
-Date: Sun, 21 Aug 2005 13:48:59 +0000
-Message-ID: <4e6b01c5a657$3fc7a8d2$93b27e05@myfamily.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001356]: Compile errors with 10.
+Date: Mon, 22 Aug 2005 07:49:54 +0200
+Message-ID: <773b11bae70ba49fbffbbea9d147b404@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_078A8C33.4085494B"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD68D1FD
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 07:49:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,420 +18,122 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_078A8C33.4085494B
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_A309ECD2.8D7E12C1"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1356> 
+======================================================================
+Reported By:                ammiellodebar
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1356
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-22-2005 00:01 CEST
+Last Modified:              08-22-2005 07:49 CEST
+======================================================================
+Summary:                    Compile errors with 10.
+Description: 
+In file included from
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/                
+                                                                    
+pci/ac97/ac97_bus.c:1:
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:28: error: parse error before "pm_message_t"
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:29: warning: function declaration isn't a
+prototype
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c: In function `ac97_bus_suspend':
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: `dev' undeclared (first use in this
+function                                                                  
+                  
+)
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: (Each undeclared identifier is
+reported only                                                             
+                       
+ once
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:32: error: for each function it appears in.)
+/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
+                                                                          
+         
+rnel/pci/ac97/ac97_bus.c:33: error: `state' undeclared (first use in this
+functi                                                                    
+                
+on)
+make[4]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
+                                                                          
+  
+/ac97_bus.o] Error 1
+make[3]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
+                                                                          
+  
+] Error 2
+make[2]: ***
+[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci] Err       
+                                                                          
+  
+or 2
+make[1]: ***
+[_module_/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1]       
+                                                                          
+  
+ Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.8.1'
+make: *** [compile] Error 2
+======================================================================
 
+----------------------------------------------------------------------
+ ammiellodebar - 08-22-05 00:02 
+----------------------------------------------------------------------
+10.0.10rc1 that is... it got cut off somehow
 
-------=_NextPart_001_0001_A309ECD2.8D7E12C1
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ rlrevell - 08-22-05 07:49 
+----------------------------------------------------------------------
+2.6.8.1 is really old.  Does it work with the latest 2.6.12 kernel?
 
-   =CF=F0=E8=E3=EB=E0=F8=E0=E5=EC =F3=F7=E0=F1=F2=E2=EE=E2=E0=F2=FC
-
-=D1=CE3=C4=C0=CD=C8=C5 =D1=CE=C1=D1=D2=C2=C5=CD=CD=CE=C3=CE =CAP=D3=C3=C0=
- =CA=CB=C8=C5=CD=D2=CE=C2=20
-
-30 =C0=C2=C3=D3=D1=D2=C0 2005 =C3.=20
-
-=D2=EB=F4. (095) 7-3-0-0-1-5-5=20
-
-
-
-=C2e=E4=F3=F9=E8=E9: =C1ap=FB=F8=E5=E2=E0 =C0.=C2.: =CC=C3=D3, C=E5=F0=F2=
-=E8=F4=E8=F6=E8po=E2=E0=ED=ED=FB=E9 =F2=F0=E5=ED=E5p =EA=EE=ED=F1=F3=EB=FC=
-=F2a=ED=F2, =C0=E2=F2=EE=F0
-=EA=ED=E8=E3=E8: "K=E0=EA =EF=F0=EE=E4=E0=F2=FC =F1=EBo=ED=E0 =E8=EB=E8 5=
-1 =EFp=E8=E5=EC =E7a=EA=EB=FE=F7=E5=ED=E8=FF =F1=E4=E5=EB=EA=E8"
-
-
-=20
-=C8=C7 =D7=C5=C3=CE =D1=CA=CB=C0=C4=DB=C2=C0=DE=D2=D1=DF =D3=D1=CF=C5=D8=CD=
-=DB=C5 =CF=D0=CE=C4=C0=C6=C8? T=E5=EE=F0=E8=FF =E8=ED=F2=E5=E3=F0=E8=F0=EE=
-=E2=E0=ED=ED=EE=E3=EE =EC=E0=F0=EA=E5=F2=E8=ED=E3=E0.
-B=EB=E8=FF=ED=E8=E5 =F0=FB=ED=EE=F7=ED=FB=F5 =EC=E5=F5=E0=ED=E8=E7=EC=EE=E2=
- =ED=E0 =EF=EE=E2=E5=E4=E5=ED=E8=E5 =EA=EB=E8=E5=ED=F2=E0. =C7=E0=E2=E8=F1=
-=E8=EC=EE=F1=F2=FC =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8
-=EF=F0=EE=E4=E2=E8=E6=E5=ED=E8=FF =EF=F0=EE=E4=F3=EA=F2=E0 =EE=F2 =F1=F4=E5=
-=F0=FB =E1=E8=E7=ED=E5=F1=E0, =F6=E5=EB=E5=E2=EE=E3=EE =F1=E5=E3=EC=E5=ED=
-=F2=E0, =E7=E0=E4=E0=F7 =EA=EE=EC=EF=E0=ED=E8=E8
-=E8 =F3=F0=EE=E2=ED=FF =EA=EE=ED=EA=F3=F0=E5=ED=F6=E8=E8 =E2 =EE=F2=F0=E0=
-=F1=EB=E8.=20
-
-=C3=C4=C5 =C8=D1=CA=C0=D2=DC =CA=CB=C8=C5=CD=D2=CE=C2? A=ED=E0=EB=E8=E7 =E2=
-=EE=E7=EC=EE=E6=ED=EE=F1=F2=E5=E9 =F0=FB=ED=EA=E0. =C8=F1=EF=EE=EB=FC=E7=EE=
-=E2=E0=ED=E8=E5 =F1=E5=E3=EC=E5=ED=F2=E0=F6=E8=E8
-=E4=EB=FF =F1=EE=E7=E4=E0=ED=E8=FF =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =EF=F0=EE=
-=E4=E2=E8=E6=E5=ED=E8=FF =EF=F0=EE=E4=F3=EA=F2=E0. =CF=EE=F0=F2=F0=E5=F2 =
-=EA=EB=E8=E5=ED=F2=E0 - =EA=E0=EA =E5=E3=EE
-=E8=F1=EF=EE=EB=FC=E7=EE=E2=E0=F2=FC =E4=EB=FF =F0=E0=F1=F8=E8=F0=E5=ED=E8=
-=FF =EA=EB=E8=E5=ED=F2=F3=F0=FB? M=E5=F2=EE=E4=E8=EA=E8 =EF=EE=E4=F1=F7=E5=
-=F2=E0 =E5=EC=EA=EE=F1=F2=E8 =F0=FB=ED=EA=E0.
-
-
-=CC=C0=CB=CE=C7=C0=D2=D0=C0=D2=CD=DB=C5 =D1=CF=CE=D1=CE=C1=DB =CF=D0=CE=C4=
-=C2=C8=C6=C5=CD=C8=DF =D7=C5=D0=C5=C7 =D1=CC=C8. =C8=F1=EF=EE=EB=FC=E7=EE=
-=E2=E0=ED=E8=E5 =E8=ED=F4=EE=F0=EC=E0=F6=E8=E8 =E2
-=D1=CC=C8, =C8=ED=F2=E5=F0=ED=E5=F2=E5, =F1=EF=E5=F6=E8=E0=EB=E8=E7=E8=F0=
-=EE=E2=E0=ED=ED=EE=E9 =EB=E8=F2=E5=F0=E0=F2=F3=F0=E5 =E4=EB=FF =E2=EE=E7=E4=
-=E5=E9=F1=F2=E2=E8=FF =ED=E0 =EA=EB=E8=E5=ED=F2=E0.
-K=E0=EA=F3=FE =E8=ED=F4=EE=F0=EC=E0=F6=E8=FE =ED=E5=EE=E1=F5=EE=E4=E8=EC=EE=
- =E2=EA=EB=FE=F7=E8=F2=FC =E2 =EF=F0=E5=E7=E5=ED=F2=E0=F6=E8=FE =F1=E2=EE=
-=E5=E3=EE =EF=F0=E5=E4=EB=EE=E6=E5=ED=E8=FF.
-K=E0=EA =E8=F1=EF=EE=EB=FC=E7=EE=E2=E0=F2=FC =EF=EE=EB=F3=F7=E5=ED=ED=F3=FE=
- =E8=ED=F4=EE=F0=EC=E0=F6=E8=FE =E4=EB=FF =EF=EE=E2=FB=F8=E5=ED=E8=FF =F1=
-=EE=E1=F1=F2=E2=E5=ED=ED=EE=E3=EE =F1=F2=E0=F2=F3=F1=E0
-=EF=F0=EE=E4=E0=E2=F6=E0 =E8 =F1=F2=E0=F2=F3=F1=E0 =EA=EE=EC=EF=E0=ED=E8=E8=
-.=20
-
-=C4=C5=CB=CE=C2=C0=DF =CF=C5=D0=C5=CF=C8=D1=CA=C0 =CA=C0=CA =D1=CF=CE=D1=CE=
-=C1 =D0=C0=D1=D8=C8=D0=C5=CD=C8=DF =C8 =D3=C4=C5=D0=C6=C0=CD=C8=DF =CA=CB=
-=C8=C5=CD=D2=CE=C2. K=EE=E3=E4=E0 =ED=E0=E4=EE
-=E2=FB=F1=EB=E0=F2=FC =EF=F0=E0=E9=F1-=EB=E8=F1=F2, =EA=EE=E3=E4=E0 =F4=EE=
-=F2=EE=E3=F0=E0=F4=E8=FE "=F1 =F0=FB=E1=E0=EB=EA=E8", =E0 =EA=EE=E3=E4=E0=
- =EF=EE=E4=F0=EE=E1=ED=FB=E9 =E0=ED=E0=EB=E8=F2=E8=F7=E5=F1=EA=E8=E9
-=EE=F2=F7=E5=F2. =C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5 =EF=E8=F1=FC=EC=E5=
-=ED=ED=EE=E9 =EA=EE=EC=EC=F3=ED=E8=EA=E0=F6=E8=E8 =E4=EB=FF =E8=ED=F4=EE=F0=
-=EC=E8=F0=EE=E2=E0=ED=E8=FF =ED=EE=E2=FB=F5 =EA=EB=E8=E5=ED=F2=EE=E2,
-=E4=EB=FF =EF=EE=E4=E4=E5=F0=E6=E0=ED=E8=FF =EE=F2=ED=EE=F8=E5=ED=E8=E9 =F1=
- =F1=F3=F9=E5=F1=F2=E2=F3=FE=F9=E8=EC=E8 =EA=EB=E8=E5=ED=F2=E0=EC=E8, =E4=
-=EB=FF =E2=EE=E7=E4=E5=E9=F1=F2=E2=E8=FF =ED=E0
-=EF=F0=EE=F6=E5=F1=F1 =E7=E0=EA=EB=FE=F7=E5=ED=E8=FF =F1=E4=E5=EB=EA=E8, =
-=E4=EB=FF =E4=EE=F1=F2=F3=EF=E0 =EA "=F2=E5=EB=F3" =EB=E8=F6, =EF=F0=E8=ED=
-=E8=EC=E0=FE=F9=E8=F5 =F0=E5=F8=E5=ED=E8=FF.
-
-
-=CA=C0=CA =D1=C4=C5=CB=C0=D2=DC =D7=D2=CE=C1=DB =CF=C8=D1=DC=CC=CE =C1=DB=
-=CB=CE "=C2=CA=D3=D1=CD=CE=C5", "=C0=D0=CE=CC=C0=D2=CD=CE=C5" =E8 =E2=EE=E7=
-=E4=E5=E9=F1=F2=E2=EE=E2=E0=EB=EE =ED=E0
-=FD=EC=EE=F6=E8=EE=ED=E0=EB=FC=ED=F3=FE =F1=F4=E5=F0=F3 =EA=EB=E8=E5=ED=F2=
-=E0? O=F1=ED=EE=E2=ED=FB=E5 =E7=E0=EA=EE=ED=EE=EC=E5=F0=ED=EE=F1=F2=E8 =EE=
-=F4=EE=F0=EC=EB=E5=ED=E8=FF =EF=E8=F1=FC=EC=E5=ED=ED=EE=E3=EE
-=F1=EE=EE=E1=F9=E5=ED=E8=FF.=20
-
-=CA=D0=CE=D1=D1-=CF=D0=CE=C4=C0=C6=C8 =D7=C5=D0=C5=C7 =CF=C0=D0=D2=CD=C5=D0=
-=CE=C2. K=F2=EE =E5=F9=E5 =E7=E0=E8=ED=F2=E5=F0=E5=F1=EE=E2=E0=ED =E2 =EF=
-=F0=EE=E4=E0=E6=E5 =E4=EB=FF =ED=E0=F8=E8=F5
-=EA=EB=E8=E5=ED=F2=EE=E2? M=E5=F2=EE=E4=E8=EA=E0 =E1=E0=EB=FC=ED=EE=E9 =EE=
-=F6=E5=ED=EA=E8 =E2=EE=E7=EC=EE=E6=ED=FB=F5 =EF=E0=F0=F2=ED=E5=F0=EE=E2 =EF=
-=EE =EF=F0=EE=E4=E2=E8=E6=E5=ED=E8=FE =EF=F0=EE=E4=F3=EA=F6=E8=E8.
-K=E0=EA =EE=F0=E3=E0=ED=E8=E7=EE=E2=E0=F2=FC =EF=F0=EE=F6=E5=F1=F1 =F1=EE=
-=E2=EC=E5=F1=F2=ED=EE=E9 "=EE=E1=F0=E0=E1=EE=F2=EA=E8" =EA=EB=E8=E5=ED=F2=
-=F3=F0=FB. A=EA=F6=E8=E8 =F1=F2=E8=EC=F3=EB=E8=F0=EE=E2=E0=ED=E8=FF.
-O=F1=ED=EE=E2=ED=FB=E5 =E2=EE=EF=F0=EE=F1=FB: =EA=EE=E3=EE? =C8 =F7=F2=EE=
- =F5=EE=F2=E8=EC =EF=EE=EB=F3=F7=E8=F2=FC =E2 =F0=E5=E7=F3=EB=FC=F2=E0=F2=
-=E5? =D7=F2=EE =EF=EE=EC=EE=E3=E0=E5=F2
-=EF=F0=E8 =EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E8 =EF=F0=EE=EC=E0=EA=F6=E8=E8=
- =E4=EE=E1=E8=F2=FC=F1=FF =EF=EE=F1=F2=E0=E2=EB=E5=ED=ED=FB=F5 =F0=E5=E7=F3=
-=EB=FC=F2=E0=F2=EE=E2.=20
-
-=CA=C0=CA =CF=D0=CE=C4=C0=D2=DC =CD=C5 =D2=CE=CB=DC=CA=CE =CF=C5=D0=D7=C0=
-=D2=CA=C8, =CD=CE =C8 =C0=C2=D2=CE=C1=D3=D1. =C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=
-=ED=E8=E5 CRM - =F1=E8=F1=F2=E5=EC=FB
-=E4=EB=FF =F1=EE=E7=E4=E0=ED=E8=FF =F1=EE=E1=F1=F2=E2=E5=ED=ED=EE=E3=EE =EA=
-=F0=F3=E3=E0 =EA=EB=E8=E5=ED=F2=EE=E2. K=E0=EA=E0=FF =E8=ED=F4=EE=F0=EC=E0=
-=F6=E8=FF =E4=EE=EB=E6=ED=E0 =E1=FB=F2=FC
-=E4=EE=F1=F2=F3=EF=ED=E0 =EC=E5=ED=E5=E4=E6=E5=F0=E0=EC =EF=EE =EF=F0=EE=E4=
-=E0=E6=E0=EC. ABC - =E0=ED=E0=EB=E8=E7. =C2=FB=E4=E5=EB=E5=ED=E8=E5 =EA=EB=
-=FE=F7=E5=E2=FB=F5 =EA=EB=E8=E5=ED=F2=EE=E2.
-=CF=F0=E5=E4=EE=F1=F2=E0=E2=EB=E5=ED=E8=E5 =F1=EF=E5=F6=E8=E0=EB=FC=ED=EE=
-=E3=EE =F1=E5=F0=E2=E8=F1=E0 =E4=EB=FF =EA=EB=FE=F7=E5=E2=FB=F5 =EA=EB=E8=
-=E5=ED=F2=EE=E2. =CF=F0=EE=F6=E5=F1=F1 "=F0=E0=E7=EE=E3=F0=E5=E2=E0"
-=EA=EB=E8=E5=ED=F2=E0 =ED=E0 =E7=E0=EA=EB=FE=F7=E5=ED=E8=E5 =F1=E4=E5=EB=EA=
-=E8 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=E8=FF "=E2=E5=E4=E5=ED=E8=FF" =EA=E0=EA =
-=F7=E0=F1=F2=FC =EC=E0=F0=EA=E5=F2=E8=ED=E3=EE=E2=EE=E9
-=EF=EE=EB=E8=F2=E8=EA=E8. K=F0=F3=EF=ED=FB=E5 =E8 =EC=E5=EB=EA=E8=E5 =F8=E0=
-=E3=E8. =CA=E0=EA =EE=F6=E5=ED=E8=F2=FC =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=F1=
-=F2=FC?   =CF=F0=E8=E3=EB=E0=F8=E0=E5=EC
-=F3=F7=E0=F1=F2=E2=EE=E2=E0=F2=FC
-
-O=D1=CE=C1=C5=CD=CD=CE=D1=D2=C8 =C8=D1=CF=CE=CB=DC3=CE=C2=C0=CD=C8=DF =C8=
-=CD=CE=D1=D2P=C0=CD=CD=CE=C9 P=C0=C1O=D7=C5=C9 =D1=C8=CB=DCI=20
-
-30 =C0=C2=C3=D3=D1=D2=C0 2005 =C3.=20
-
-=D2=EB=F4. (095) 7-3-0-0-1-5-5
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-22-05 00:01 ammiellodebar  New Issue                                    
+08-22-05 00:01 ammiellodebar  Issue Monitored: ammiellodebar                    
+08-22-05 00:02 ammiellodebar  Note Added: 0005888                          
+08-22-05 07:49 rlrevell       Note Added: 0005889                          
+======================================================================
 
 
 
-=C2e=E4=F3=F9=E8=E9: =CC=E5=F2e=EB=E5=E2=E0 =DF=EDa =C2=E8=EA=F2o=F0=EE=E2=
-=ED=E0 =CF=F0=E5=EF=EE=E4=E0=E2=E0=F2=E5=EB=FC, =E8=EC=E5=FE=F9=E8=E9 =EC=
-=ED=EE=E3o=EB=E5=F2=ED=E8=E9 =EE=EF=FB=F2
-=F0=E0=E1=EE=F2=FB =E2 =EE=F0=E3=E0=ED=E5 =ED=E0=E4=E7=EE=F0=E0 =E8 =EA=EE=
-=ED=F2=F0=EE=EB=FF =E7=E0 =F1o=E1=EB=FE=E4=E5=ED=E8=E5=EC =F2=F0=F3=E4=EE=
-=E2=EE=E3=EE =E7=E0=EA=EE=EDo=E4=E0=F2=E5=EB=FC=F1=F2=E2=E0,
-=E0 =F2=E0=EA=E6=E5 =F1=F3=E4=E5=E1=ED=F3=FE =E8 =E0=E4=EC=E8=ED=E8=F1=F2=
-=F0=E0=F2=E8=E2=ED=F3=FE =EF=F0=E0=EA=F2=E8=EA=F3 =EFo =F2=F0=F3=E4=EE=E2=
-=FB=EC =F1=EF=EE=F0=E0=EC   =CFp=E0=E2=EE=E2=EE=E5
-=F0=E5=E3=F3=EB=E8=F0=EE=E2=E0=ED=E8=E5 =F2=F0=F3=E4=E0 =E8=ED=EE=F1=F2=F0=
-=E0=ED=ED=FB=F5 =F0=E0=E1=EE=F2=ED=E8=EA=EE=E2 =E2 =F1=EE=EE=F2=E2=E5=F2=F1=
-=F2=E2=E8=E8 =F1 - =D2=F0=F3=E4=EE=E2=FB=EC
-=CA=EE=E4=E5=EA=F1=EE=EC =D0=D4, =F4=E5=E4=E5=F0=E0=EB=FC=ED=FB=EC =E7=E0=
-=EA=EE=ED=EE=EC "=CE =EF=F0=E0=E2=EE=E2=EE=EC =EF=EE=EB=EE=E6=E5=ED=E8=E8=
- =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =E3=F0=E0=E6=E4=E0=ED
-=E2 =D0=D4" =EE=F2 25.07.2002 =E3. ( =EF=EE=F1=EB=E5=E4=ED=FF=FF =F0=E5=E4=
-=E0=EA=F6=E8=FF), =E8=E7=EC=E5=ED=E5=ED=E8=FF=EC=E8 =EF=EE=E4=E7=E0=EA=EE=
-=ED=ED=FB=F5 =E0=EA=F2=EE=E2
-=ED=E0 01.08.2005 =E3=EE=E4=E0  O=E3=F0=E0=ED=E8=F7=E5=ED=E8=FF =ED=E0 =F0=
-=E0=E1=EE=F2=F3 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =E3=F0=E0=E6=E4=E0=ED  =
-T=F0=E5=E1=EE=E2=E0=ED=E8=FF
-=EA =EE=E1=F0=E0=E7=EE=E2=E0=ED=E8=FE. =CF=F0=E8=E7=ED=E0=ED=E8=E5 =E4=EE=
-=EA=F3=EC=E5=ED=F2=EE=E2 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =E3=EE=F1=F3=E4=
-=E0=F0=F1=F2=E2 =EE=E1 =EE=E1=F0=E0=E7=EE=E2=E0=ED=E8=E8
- T=F0=E5=E1=EE=E2=E0=ED=E8=FF =EA =E2=EE=E7=F0=E0=F1=F2=F3 =E8=ED=EE=F1=F2=
-=F0=E0=ED=ED=EE=E3=EE =F0=E0=E1=EE=F2=ED=E8=EA=E0  O=E1=FF=E7=E0=F2=E5=EB=
-=FC=ED=FB=E5 =EC=E5=E4=E8=F6=E8=ED=F1=EA=E8=E5
-=EE=F1=EC=EE=F2=F0=FB  O=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8 =F2=F0=F3=E4=EE=E2=
-=EE=E3=EE =E4=EE=E3=EE=E2=EE=F0=E0 =F1 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=EC=E8=
- =F0=E0=E1=EE=F2=ED=E8=EA=E0=EC=E8  =CF=F0=EE=F6=E5=E4=F3=F0=E0
-=EF=F0=E8=E5=EC=E0 =ED=E0 =F0=E0=E1=EE=F2=F3 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=
-=F5 =E3=F0=E0=E6=E4=E0=ED  P=E0=E1=EE=F7=E5=E5 =E2=F0=E5=EC=FF =E8 =E2=F0=
-=E5=EC=FF =EE=F2=E4=FB=F5=E0 =F0=E0=E1=EE=F7=E8=F5
-=E8=ED=EE=F1=F2=F0=E0=ED=F6=E5=E2  =CE=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8 =EE=EF=
-=EB=E0=F2=FB =F2=F0=F3=E4=E0  =C8=E7=EC=E5=ED=E5=ED=E8=FF =F3=F1=EB=EE=E2=
-=E8=E9 =F2=F0=F3=E4=EE=E2=EE=E3=EE =E4=EE=E3=EE=E2=EE=F0=E0
- O=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8 =EF=F0=E5=EA=F0=E0=F9=E5=ED=E8=FF =F2=F0=
-=F3=E4=EE=E2=EE=E3=EE =E4=EE=E3=EE=E2=EE=F0=E0 =F1 =E8=ED=EE=F1=F2=F0=E0=ED=
-=ED=FB=EC=E8 =E3=F0=E0=E6=E4=E0=ED=E0=EC=E8=20
-=C3a=F0=E0=ED=F2=E8=E8 =E8 =EA=EE=EC=EF=E5=ED=F1=E0=F6=E8=E8  M=E8=E3=F0=E0=
-=F6=E8=EE=ED=ED=E0=FF =F1=E8=F2=F3=E0=F6=E8=FF =E2 =E3. =CC=EE=F1=EA=E2=E5=
-, =E3=EE=F1=F3=E4=E0=F0=F1=F2=E2=E5=ED=ED=FB=E5
-=EE=F0=E3=E0=ED=FB, =F0=E5=E3=F3=EB=E8=F0=F3=FE=F9=E8=E5 =F2=F0=F3=E4=EE=E2=
-=F3=FE =EC=E8=E3=F0=E0=F6=E8=FE  O=F1=ED=EE=E2=ED=FB=E5 =ED=EE=F0=EC=E0=F2=
-=E8=E2=ED=FB=E5 =E4=EE=EA=F3=EC=E5=ED=F2=FB,
-=EE=EF=F0=E5=E4=E5=EB=FF=FE=F9=E8=E5 =EF=EE=F0=FF=E4=EE=EA =EF=F0=E8=E2=EB=
-=E5=F7=E5=ED=E8=FF =E8 =E8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=FF =E8=ED=EE=F1=
-=F2=F0=E0=ED=ED=EE=E9 =F0=E0=E1=EE=F7=E5=E9 =F1=E8=EB=FB
-=E8 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=FE =EA=EE=ED=F2=F0=EE=EB=FF  =CFo=F0=FF=
-=E4=EE=EA =EE=F4=EE=F0=EC=EB=E5=ED=E8=FF =F0=E0=E7=F0=E5=F8=E8=F2=E5=EB=FC=
-=ED=FB=F5 =E4=EE=EA=F3=EC=E5=ED=F2=EE=E2 =20
-O=F0=E3=E0=ED=E8=E7=E0=F6=E8=FF =EA=EE=ED=F2=F0=EE=EB=FF:   =EA=EE=ED=F2=F0=
-=EE=EB=E8=F0=F3=FE=F9=E8=E5 =EE=F0=E3=E0=ED=FB =E8 =F1=EB=F3=E6=E1=FB;  =EF=
-=EE=F0=FF=E4=EE=EA =EF=F0=EE=E2=E5=E4=E5=ED=E8=FF
-=EF=F0=EE=E2=E5=F0=EE=EA;  =E2=E8=E4=FB =EE=F2=E2=E5=F2=F1=F2=E2=E5=ED=ED=
-=EE=F1=F2=E8   =20
-------=_NextPart_001_0001_A309ECD2.8D7E12C1
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
-251">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
-<BODY text=3D#000000 bgColor=3D#ffffff>
-<font face=3D"Times New Roman"><TABLE cellSpacing=3D0 cellPadding=3D5 wid=
-th=3D"100%" align=3Dcenter border=3D1><TR>
-<TD vAlign=3Dtop width=3D"50%">
-<P align=3Dcenter><FONT face=3DArial><FONT size=3D2>=CF=F0=E8=E3=EB=E0=F8=
-=E0=E5=EC =F3=F7=E0=F1=F2=E2=EE=E2=E0=F2=FC</FONT><br>
-<br>
-<FONT color=3D#00008b size=3D4><b>=D1=CE3=C4=C0=CD=C8=C5 =D1=CE=C1=D1=D2=C2=
-=C5=CD=CD=CE=C3=CE =CAP=D3=C3=C0 =CA=CB=C8=C5=CD=D2=CE=C2</b></FONT> <br>
-<br>
-<b>30 =C0=C2=C3=D3=D1=D2=C0 2005 =C3. <br>
-<br>
-=D2=EB=F4. (095) 7-3-0-0-1-5-5</b> <br>
-<FONT size=3D2><b><br>
-</P>
-
-<P align=3Dleft>=C2e=E4=F3=F9=E8=E9: =C1ap=FB=F8=E5=E2=E0 =C0.=C2.: =CC=C3=
-=D3, C=E5=F0=F2=E8=F4=E8=F6=E8po=E2=E0=ED=ED=FB=E9 =F2=F0=E5=ED=E5p =EA=EE=
-=ED=F1=F3=EB=FC=F2a=ED=F2, =C0=E2=F2=EE=F0 =EA=ED=E8=E3=E8: "K=E0=EA =EF=F0=
-=EE=E4=E0=F2=FC =F1=EBo=ED=E0 =E8=EB=E8 51 =EFp=E8=E5=EC =E7a=EA=EB=FE=F7=
-=E5=ED=E8=FF =F1=E4=E5=EB=EA=E8"<br>
-</P></b></FONT></FONT>
-<br>
-<FONT face=3DArial><FONT color=3D#00008b size=3D4><b>=C8=C7 =D7=C5=C3=CE =
-=D1=CA=CB=C0=C4=DB=C2=C0=DE=D2=D1=DF =D3=D1=CF=C5=D8=CD=DB=C5 =CF=D0=CE=C4=
-=C0=C6=C8?</b></FONT> T=E5=EE=F0=E8=FF =E8=ED=F2=E5=E3=F0=E8=F0=EE=E2=E0=ED=
-=ED=EE=E3=EE =EC=E0=F0=EA=E5=F2=E8=ED=E3=E0. B=EB=E8=FF=ED=E8=E5 =F0=FB=ED=
-=EE=F7=ED=FB=F5 =EC=E5=F5=E0=ED=E8=E7=EC=EE=E2 =ED=E0 =EF=EE=E2=E5=E4=E5=ED=
-=E8=E5 =EA=EB=E8=E5=ED=F2=E0. =C7=E0=E2=E8=F1=E8=EC=EE=F1=F2=FC =F2=E5=F5=
-=ED=EE=EB=EE=E3=E8=E8 =EF=F0=EE=E4=E2=E8=E6=E5=ED=E8=FF =EF=F0=EE=E4=F3=EA=
-=F2=E0 =EE=F2 =F1=F4=E5=F0=FB =E1=E8=E7=ED=E5=F1=E0, =F6=E5=EB=E5=E2=EE=E3=
-=EE =F1=E5=E3=EC=E5=ED=F2=E0, =E7=E0=E4=E0=F7 =EA=EE=EC=EF=E0=ED=E8=E8 =E8=
- =F3=F0=EE=E2=ED=FF =EA=EE=ED=EA=F3=F0=E5=ED=F6=E8=E8 =E2 =EE=F2=F0=E0=F1=
-=EB=E8. <br>
-<br>
-<FONT color=3D#00008b size=3D4><b>=C3=C4=C5 =C8=D1=CA=C0=D2=DC =CA=CB=C8=C5=
-=CD=D2=CE=C2?</b></FONT> A=ED=E0=EB=E8=E7 =E2=EE=E7=EC=EE=E6=ED=EE=F1=F2=E5=
-=E9 =F0=FB=ED=EA=E0. =C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5 =F1=E5=E3=EC=
-=E5=ED=F2=E0=F6=E8=E8 =E4=EB=FF =F1=EE=E7=E4=E0=ED=E8=FF =F2=E5=F5=ED=EE=EB=
-=EE=E3=E8=E8 =EF=F0=EE=E4=E2=E8=E6=E5=ED=E8=FF =EF=F0=EE=E4=F3=EA=F2=E0. =
-=CF=EE=F0=F2=F0=E5=F2 =EA=EB=E8=E5=ED=F2=E0 - =EA=E0=EA =E5=E3=EE =E8=F1=EF=
-=EE=EB=FC=E7=EE=E2=E0=F2=FC =E4=EB=FF =F0=E0=F1=F8=E8=F0=E5=ED=E8=FF =EA=EB=
-=E8=E5=ED=F2=F3=F0=FB? M=E5=F2=EE=E4=E8=EA=E8 =EF=EE=E4=F1=F7=E5=F2=E0 =E5=
-=EC=EA=EE=F1=F2=E8 =F0=FB=ED=EA=E0. <br>
-<br>
-<FONT color=3D#00008b size=3D4><b>=CC=C0=CB=CE=C7=C0=D2=D0=C0=D2=CD=DB=C5=
- =D1=CF=CE=D1=CE=C1=DB =CF=D0=CE=C4=C2=C8=C6=C5=CD=C8=DF =D7=C5=D0=C5=C7 =
-=D1=CC=C8.</b></FONT> =C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5 =E8=ED=F4=EE=
-=F0=EC=E0=F6=E8=E8 =E2 =D1=CC=C8, =C8=ED=F2=E5=F0=ED=E5=F2=E5, =F1=EF=E5=F6=
-=E8=E0=EB=E8=E7=E8=F0=EE=E2=E0=ED=ED=EE=E9 =EB=E8=F2=E5=F0=E0=F2=F3=F0=E5=
- =E4=EB=FF =E2=EE=E7=E4=E5=E9=F1=F2=E2=E8=FF =ED=E0 =EA=EB=E8=E5=ED=F2=E0=
-. K=E0=EA=F3=FE =E8=ED=F4=EE=F0=EC=E0=F6=E8=FE =ED=E5=EE=E1=F5=EE=E4=E8=EC=
-=EE =E2=EA=EB=FE=F7=E8=F2=FC =E2 =EF=F0=E5=E7=E5=ED=F2=E0=F6=E8=FE =F1=E2=
-=EE=E5=E3=EE =EF=F0=E5=E4=EB=EE=E6=E5=ED=E8=FF. K=E0=EA =E8=F1=EF=EE=EB=FC=
-=E7=EE=E2=E0=F2=FC =EF=EE=EB=F3=F7=E5=ED=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=F6=
-=E8=FE =E4=EB=FF =EF=EE=E2=FB=F8=E5=ED=E8=FF =F1=EE=E1=F1=F2=E2=E5=ED=ED=EE=
-=E3=EE =F1=F2=E0=F2=F3=F1=E0 =EF=F0=EE=E4=E0=E2=F6=E0 =E8 =F1=F2=E0=F2=F3=
-=F1=E0 =EA=EE=EC=EF=E0=ED=E8=E8. <br>
-<br>
-<FONT color=3D#00008b size=3D4><b>=C4=C5=CB=CE=C2=C0=DF =CF=C5=D0=C5=CF=C8=
-=D1=CA=C0 =CA=C0=CA =D1=CF=CE=D1=CE=C1 =D0=C0=D1=D8=C8=D0=C5=CD=C8=DF =C8=
- =D3=C4=C5=D0=C6=C0=CD=C8=DF =CA=CB=C8=C5=CD=D2=CE=C2.</b></FONT> K=EE=E3=
-=E4=E0 =ED=E0=E4=EE =E2=FB=F1=EB=E0=F2=FC =EF=F0=E0=E9=F1-=EB=E8=F1=F2, =EA=
-=EE=E3=E4=E0 =F4=EE=F2=EE=E3=F0=E0=F4=E8=FE "=F1 =F0=FB=E1=E0=EB=EA=E8", =
-=E0 =EA=EE=E3=E4=E0 =EF=EE=E4=F0=EE=E1=ED=FB=E9 =E0=ED=E0=EB=E8=F2=E8=F7=E5=
-=F1=EA=E8=E9 =EE=F2=F7=E5=F2. =C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5 =EF=
-=E8=F1=FC=EC=E5=ED=ED=EE=E9 =EA=EE=EC=EC=F3=ED=E8=EA=E0=F6=E8=E8 =E4=EB=FF=
- =E8=ED=F4=EE=F0=EC=E8=F0=EE=E2=E0=ED=E8=FF =ED=EE=E2=FB=F5 =EA=EB=E8=E5=ED=
-=F2=EE=E2, =E4=EB=FF =EF=EE=E4=E4=E5=F0=E6=E0=ED=E8=FF =EE=F2=ED=EE=F8=E5=
-=ED=E8=E9 =F1 =F1=F3=F9=E5=F1=F2=E2=F3=FE=F9=E8=EC=E8 =EA=EB=E8=E5=ED=F2=E0=
-=EC=E8, =E4=EB=FF =E2=EE=E7=E4=E5=E9=F1=F2=E2=E8=FF =ED=E0 =EF=F0=EE=F6=E5=
-=F1=F1 =E7=E0=EA=EB=FE=F7=E5=ED=E8=FF =F1=E4=E5=EB=EA=E8, =E4=EB=FF =E4=EE=
-=F1=F2=F3=EF=E0 =EA "=F2=E5=EB=F3" =EB=E8=F6, =EF=F0=E8=ED=E8=EC=E0=FE=F9=
-=E8=F5 =F0=E5=F8=E5=ED=E8=FF. <br>
-<br>
-<FONT color=3D#00008b size=3D4><b>=CA=C0=CA =D1=C4=C5=CB=C0=D2=DC =D7=D2=CE=
-=C1=DB =CF=C8=D1=DC=CC=CE =C1=DB=CB=CE "=C2=CA=D3=D1=CD=CE=C5", "=C0=D0=CE=
-=CC=C0=D2=CD=CE=C5"</b></FONT> =E8 =E2=EE=E7=E4=E5=E9=F1=F2=E2=EE=E2=E0=EB=
-=EE =ED=E0 =FD=EC=EE=F6=E8=EE=ED=E0=EB=FC=ED=F3=FE =F1=F4=E5=F0=F3 =EA=EB=
-=E8=E5=ED=F2=E0? O=F1=ED=EE=E2=ED=FB=E5 =E7=E0=EA=EE=ED=EE=EC=E5=F0=ED=EE=
-=F1=F2=E8 =EE=F4=EE=F0=EC=EB=E5=ED=E8=FF =EF=E8=F1=FC=EC=E5=ED=ED=EE=E3=EE=
- =F1=EE=EE=E1=F9=E5=ED=E8=FF. <br>
-<br>
-<FONT color=3D#00008b size=3D4><b>=CA=D0=CE=D1=D1-=CF=D0=CE=C4=C0=C6=C8 =D7=
-=C5=D0=C5=C7 =CF=C0=D0=D2=CD=C5=D0=CE=C2.</b> </FONT>K=F2=EE =E5=F9=E5 =E7=
-=E0=E8=ED=F2=E5=F0=E5=F1=EE=E2=E0=ED =E2 =EF=F0=EE=E4=E0=E6=E5 =E4=EB=FF =
-=ED=E0=F8=E8=F5 =EA=EB=E8=E5=ED=F2=EE=E2? M=E5=F2=EE=E4=E8=EA=E0 =E1=E0=EB=
-=FC=ED=EE=E9 =EE=F6=E5=ED=EA=E8 =E2=EE=E7=EC=EE=E6=ED=FB=F5 =EF=E0=F0=F2=ED=
-=E5=F0=EE=E2 =EF=EE =EF=F0=EE=E4=E2=E8=E6=E5=ED=E8=FE =EF=F0=EE=E4=F3=EA=F6=
-=E8=E8. K=E0=EA =EE=F0=E3=E0=ED=E8=E7=EE=E2=E0=F2=FC =EF=F0=EE=F6=E5=F1=F1=
- =F1=EE=E2=EC=E5=F1=F2=ED=EE=E9 "=EE=E1=F0=E0=E1=EE=F2=EA=E8" =EA=EB=E8=E5=
-=ED=F2=F3=F0=FB. A=EA=F6=E8=E8 =F1=F2=E8=EC=F3=EB=E8=F0=EE=E2=E0=ED=E8=FF=
-. O=F1=ED=EE=E2=ED=FB=E5 =E2=EE=EF=F0=EE=F1=FB: =EA=EE=E3=EE? =C8 =F7=F2=EE=
- =F5=EE=F2=E8=EC =EF=EE=EB=F3=F7=E8=F2=FC =E2 =F0=E5=E7=F3=EB=FC=F2=E0=F2=
-=E5? =D7=F2=EE =EF=EE=EC=EE=E3=E0=E5=F2 =EF=F0=E8 =EF=EB=E0=ED=E8=F0=EE=E2=
-=E0=ED=E8=E8 =EF=F0=EE=EC=E0=EA=F6=E8=E8 =E4=EE=E1=E8=F2=FC=F1=FF =EF=EE=F1=
-=F2=E0=E2=EB=E5=ED=ED=FB=F5 =F0=E5=E7=F3=EB=FC=F2=E0=F2=EE=E2. <br>
-<br>
-<FONT color=3D#00008b size=3D4><b>=CA=C0=CA =CF=D0=CE=C4=C0=D2=DC =CD=C5 =
-=D2=CE=CB=DC=CA=CE =CF=C5=D0=D7=C0=D2=CA=C8, =CD=CE =C8 =C0=C2=D2=CE=C1=D3=
-=D1.</b></FONT> =C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5 CRM - =F1=E8=F1=F2=
-=E5=EC=FB =E4=EB=FF =F1=EE=E7=E4=E0=ED=E8=FF =F1=EE=E1=F1=F2=E2=E5=ED=ED=EE=
-=E3=EE =EA=F0=F3=E3=E0 =EA=EB=E8=E5=ED=F2=EE=E2. K=E0=EA=E0=FF =E8=ED=F4=EE=
-=F0=EC=E0=F6=E8=FF =E4=EE=EB=E6=ED=E0 =E1=FB=F2=FC =E4=EE=F1=F2=F3=EF=ED=E0=
- =EC=E5=ED=E5=E4=E6=E5=F0=E0=EC =EF=EE =EF=F0=EE=E4=E0=E6=E0=EC. ABC - =E0=
-=ED=E0=EB=E8=E7. =C2=FB=E4=E5=EB=E5=ED=E8=E5 =EA=EB=FE=F7=E5=E2=FB=F5 =EA=
-=EB=E8=E5=ED=F2=EE=E2. =CF=F0=E5=E4=EE=F1=F2=E0=E2=EB=E5=ED=E8=E5 =F1=EF=E5=
-=F6=E8=E0=EB=FC=ED=EE=E3=EE =F1=E5=F0=E2=E8=F1=E0 =E4=EB=FF =EA=EB=FE=F7=E5=
-=E2=FB=F5 =EA=EB=E8=E5=ED=F2=EE=E2. =CF=F0=EE=F6=E5=F1=F1 "=F0=E0=E7=EE=E3=
-=F0=E5=E2=E0" =EA=EB=E8=E5=ED=F2=E0 =ED=E0 =E7=E0=EA=EB=FE=F7=E5=ED=E8=E5=
- =F1=E4=E5=EB=EA=E8 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=E8=FF "=E2=E5=E4=E5=ED=E8=
-=FF" =EA=E0=EA =F7=E0=F1=F2=FC =EC=E0=F0=EA=E5=F2=E8=ED=E3=EE=E2=EE=E9 =EF=
-=EE=EB=E8=F2=E8=EA=E8. K=F0=F3=EF=ED=FB=E5 =E8 =EC=E5=EB=EA=E8=E5 =F8=E0=E3=
-=E8. =CA=E0=EA =EE=F6=E5=ED=E8=F2=FC =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=F1=F2=
-=FC? </FONT></TD>
-<TD vAlign=3Dtop width=3D"50%">
-<P align=3Dcenter><FONT face=3DArial><FONT size=3D2>=CF=F0=E8=E3=EB=E0=F8=
-=E0=E5=EC =F3=F7=E0=F1=F2=E2=EE=E2=E0=F2=FC</FONT><br>
-<br>
-<FONT color=3Ddarkblue size=3D4><b>O=D1=CE=C1=C5=CD=CD=CE=D1=D2=C8 =C8=D1=
-=CF=CE=CB=DC3=CE=C2=C0=CD=C8=DF =C8=CD=CE=D1=D2P=C0=CD=CD=CE=C9 P=C0=C1O=D7=
-=C5=C9 =D1=C8=CB=DCI</b></FONT> <br>
-<br>
-<b>30 =C0=C2=C3=D3=D1=D2=C0 2005 =C3. <br>
-<br>
-=D2=EB=F4. (095) 7-3-0-0-1-5-5<br>
-</b></P>
-<br>
-<FONT size=3D2><b><U>=C2e=E4=F3=F9=E8=E9:</U></b> <b>=CC=E5=F2e=EB=E5=E2=E0=
- =DF=EDa =C2=E8=EA=F2o=F0=EE=E2=ED=E0</b> =CF=F0=E5=EF=EE=E4=E0=E2=E0=F2=E5=
-=EB=FC, =E8=EC=E5=FE=F9=E8=E9 =EC=ED=EE=E3o=EB=E5=F2=ED=E8=E9 =EE=EF=FB=F2=
- =F0=E0=E1=EE=F2=FB =E2 =EE=F0=E3=E0=ED=E5 =ED=E0=E4=E7=EE=F0=E0 =E8 =EA=EE=
-=ED=F2=F0=EE=EB=FF =E7=E0 =F1o=E1=EB=FE=E4=E5=ED=E8=E5=EC =F2=F0=F3=E4=EE=
-=E2=EE=E3=EE =E7=E0=EA=EE=EDo=E4=E0=F2=E5=EB=FC=F1=F2=E2=E0, =E0 =F2=E0=EA=
-=E6=E5 =F1=F3=E4=E5=E1=ED=F3=FE =E8 =E0=E4=EC=E8=ED=E8=F1=F2=F0=E0=F2=E8=E2=
-=ED=F3=FE =EF=F0=E0=EA=F2=E8=EA=F3 =EFo =F2=F0=F3=E4=EE=E2=FB=EC =F1=EF=EE=
-=F0=E0=EC</FONT> </FONT>
-<UL>
-<LI><FONT face=3DArial><b><U>=CFp=E0=E2=EE=E2=EE=E5 =F0=E5=E3=F3=EB=E8=F0=
-=EE=E2=E0=ED=E8=E5 =F2=F0=F3=E4=E0 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =F0=E0=
-=E1=EE=F2=ED=E8=EA=EE=E2 =E2 =F1=EE=EE=F2=E2=E5=F2=F1=F2=E2=E8=E8 =F1 - =D2=
-=F0=F3=E4=EE=E2=FB=EC =CA=EE=E4=E5=EA=F1=EE=EC =D0=D4, =F4=E5=E4=E5=F0=E0=
-=EB=FC=ED=FB=EC =E7=E0=EA=EE=ED=EE=EC "=CE =EF=F0=E0=E2=EE=E2=EE=EC =EF=EE=
-=EB=EE=E6=E5=ED=E8=E8 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =E3=F0=E0=E6=E4=E0=
-=ED =E2 =D0=D4" =EE=F2 25.07.2002 =E3. ( =EF=EE=F1=EB=E5=E4=ED=FF=FF =F0=E5=
-=E4=E0=EA=F6=E8=FF), =E8=E7=EC=E5=ED=E5=ED=E8=FF=EC=E8 =EF=EE=E4=E7=E0=EA=
-=EE=ED=ED=FB=F5 =E0=EA=F2=EE=E2 =ED=E0 01.08.2005 =E3=EE=E4=E0</U> </b></=
-FONT>
-<LI><FONT face=3DArial><b>O=E3=F0=E0=ED=E8=F7=E5=ED=E8=FF =ED=E0 =F0=E0=E1=
-=EE=F2=F3 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =E3=F0=E0=E6=E4=E0=ED </b></F=
-ONT>
-<LI><FONT face=3DArial><b>T=F0=E5=E1=EE=E2=E0=ED=E8=FF =EA =EE=E1=F0=E0=E7=
-=EE=E2=E0=ED=E8=FE. =CF=F0=E8=E7=ED=E0=ED=E8=E5 =E4=EE=EA=F3=EC=E5=ED=F2=EE=
-=E2 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =E3=EE=F1=F3=E4=E0=F0=F1=F2=E2 =EE=E1=
- =EE=E1=F0=E0=E7=EE=E2=E0=ED=E8=E8 </b></FONT>
-<LI><FONT face=3DArial><b>T=F0=E5=E1=EE=E2=E0=ED=E8=FF =EA =E2=EE=E7=F0=E0=
-=F1=F2=F3 =E8=ED=EE=F1=F2=F0=E0=ED=ED=EE=E3=EE =F0=E0=E1=EE=F2=ED=E8=EA=E0=
- </b></FONT>
-<LI><FONT face=3DArial><b>O=E1=FF=E7=E0=F2=E5=EB=FC=ED=FB=E5 =EC=E5=E4=E8=
-=F6=E8=ED=F1=EA=E8=E5 =EE=F1=EC=EE=F2=F0=FB </b></FONT>
-<LI><FONT face=3DArial><b>O=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8 =F2=F0=F3=E4=EE=
-=E2=EE=E3=EE =E4=EE=E3=EE=E2=EE=F0=E0 =F1 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=EC=
-=E8 =F0=E0=E1=EE=F2=ED=E8=EA=E0=EC=E8 </b></FONT>
-<LI><FONT face=3DArial><b>=CF=F0=EE=F6=E5=E4=F3=F0=E0 =EF=F0=E8=E5=EC=E0 =
-=ED=E0 =F0=E0=E1=EE=F2=F3 =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=F5 =E3=F0=E0=E6=E4=
-=E0=ED </b></FONT>
-<LI><FONT face=3DArial><b>P=E0=E1=EE=F7=E5=E5 =E2=F0=E5=EC=FF =E8 =E2=F0=E5=
-=EC=FF =EE=F2=E4=FB=F5=E0 =F0=E0=E1=EE=F7=E8=F5 =E8=ED=EE=F1=F2=F0=E0=ED=F6=
-=E5=E2 </b></FONT>
-<LI><FONT face=3DArial><b>=CE=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8 =EE=EF=EB=E0=F2=
-=FB =F2=F0=F3=E4=E0 </b></FONT>
-<LI><FONT face=3DArial><b>=C8=E7=EC=E5=ED=E5=ED=E8=FF =F3=F1=EB=EE=E2=E8=E9=
- =F2=F0=F3=E4=EE=E2=EE=E3=EE =E4=EE=E3=EE=E2=EE=F0=E0 </b></FONT>
-<LI><FONT face=3DArial><b>O=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8 =EF=F0=E5=EA=F0=
-=E0=F9=E5=ED=E8=FF =F2=F0=F3=E4=EE=E2=EE=E3=EE =E4=EE=E3=EE=E2=EE=F0=E0 =F1=
- =E8=ED=EE=F1=F2=F0=E0=ED=ED=FB=EC=E8 =E3=F0=E0=E6=E4=E0=ED=E0=EC=E8 </b>=
-</FONT>
-<LI><FONT face=3DArial><b>=C3a=F0=E0=ED=F2=E8=E8 =E8 =EA=EE=EC=EF=E5=ED=F1=
-=E0=F6=E8=E8 </b></FONT>
-<LI><FONT face=3DArial><b>M=E8=E3=F0=E0=F6=E8=EE=ED=ED=E0=FF =F1=E8=F2=F3=
-=E0=F6=E8=FF =E2 =E3. =CC=EE=F1=EA=E2=E5, =E3=EE=F1=F3=E4=E0=F0=F1=F2=E2=E5=
-=ED=ED=FB=E5 =EE=F0=E3=E0=ED=FB, =F0=E5=E3=F3=EB=E8=F0=F3=FE=F9=E8=E5 =F2=
-=F0=F3=E4=EE=E2=F3=FE =EC=E8=E3=F0=E0=F6=E8=FE </b></FONT>
-<LI><FONT face=3DArial><b>O=F1=ED=EE=E2=ED=FB=E5 =ED=EE=F0=EC=E0=F2=E8=E2=
-=ED=FB=E5 =E4=EE=EA=F3=EC=E5=ED=F2=FB, =EE=EF=F0=E5=E4=E5=EB=FF=FE=F9=E8=E5=
- =EF=EE=F0=FF=E4=EE=EA =EF=F0=E8=E2=EB=E5=F7=E5=ED=E8=FF =E8 =E8=F1=EF=EE=
-=EB=FC=E7=EE=E2=E0=ED=E8=FF =E8=ED=EE=F1=F2=F0=E0=ED=ED=EE=E9 =F0=E0=E1=EE=
-=F7=E5=E9 =F1=E8=EB=FB =E8 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=FE =EA=EE=ED=F2=
-=F0=EE=EB=FF </b></FONT>
-<LI><FONT face=3DArial><b>=CFo=F0=FF=E4=EE=EA =EE=F4=EE=F0=EC=EB=E5=ED=E8=
-=FF =F0=E0=E7=F0=E5=F8=E8=F2=E5=EB=FC=ED=FB=F5 =E4=EE=EA=F3=EC=E5=ED=F2=EE=
-=E2 </b></FONT>
-<LI><FONT face=3DArial><b>O=F0=E3=E0=ED=E8=E7=E0=F6=E8=FF =EA=EE=ED=F2=F0=
-=EE=EB=FF: </b></FONT>
-<UL>
-<LI><FONT face=3DArial><b>=EA=EE=ED=F2=F0=EE=EB=E8=F0=F3=FE=F9=E8=E5 =EE=F0=
-=E3=E0=ED=FB =E8 =F1=EB=F3=E6=E1=FB; </b></FONT>
-<LI><FONT face=3DArial><b>=EF=EE=F0=FF=E4=EE=EA =EF=F0=EE=E2=E5=E4=E5=ED=E8=
-=FF =EF=F0=EE=E2=E5=F0=EE=EA; </b></FONT>
-<LI><FONT face=3DArial><b>=E2=E8=E4=FB =EE=F2=E2=E5=F2=F1=F2=E2=E5=ED=ED=EE=
-=F1=F2=E8 </b></FONT></LI></UL></LI></UL></TD></TR></TABLE></font>
-</BODY>
-</HTML>
-
-------=_NextPart_001_0001_A309ECD2.8D7E12C1--
-
-
-
-------=_NextPart_000_0000_078A8C33.4085494B--
+-------------------------------------------------------
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
