@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001356]: Compile errors with 10.
-Date: Mon, 22 Aug 2005 18:30:17 +0200
-Message-ID: <57f3207f44dd693ad72fce25c8d2d2b7@bugtrack.alsa-project.org>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: Disagreement about versions following CVS update
+Date: Mon, 22 Aug 2005 10:30:43 -0600
+Message-ID: <4309FDB3.5070101@redfish-solutions.com>
+References: <43063408.60402@redfish-solutions.com>	<1124483804.25424.50.camel@mindpipe>	<43064B0B.9080402@redfish-solutions.com>	<1124486050.25424.52.camel@mindpipe>	<43065A7F.6070904@redfish-solutions.com>	<1124490358.25424.72.camel@mindpipe>	<43066945.7020405@redfish-solutions.com>	<1124494135.25424.98.camel@mindpipe>	<43066E9A.3010705@redfish-solutions.com>	<1124495247.25424.101.camel@mindpipe>	<430670F5.5060103@redfish-solutions.com>	<1124495786.25424.102.camel@mindpipe>	<43067411.3090703@redfish-solutions.com> <s5hmznap3uf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F26AF217
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 18:30:17 +0200 (MEST)
+In-Reply-To: <s5hmznap3uf.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,123 +17,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1356> 
-======================================================================
-Reported By:                ammiellodebar
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1356
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-22-2005 00:01 CEST
-Last Modified:              08-22-2005 18:30 CEST
-======================================================================
-Summary:                    Compile errors with 10.
-Description: 
-In file included from
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/                
-                                                                    
-pci/ac97/ac97_bus.c:1:
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:28: error: parse error before "pm_message_t"
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:29: warning: function declaration isn't a
-prototype
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c: In function `ac97_bus_suspend':
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:32: error: `dev' undeclared (first use in this
-function                                                                  
-                  
-)
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:32: error: (Each undeclared identifier is
-reported only                                                             
-                       
- once
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:32: error: for each function it appears in.)
-/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97/../../alsa-ke
-                                                                          
-         
-rnel/pci/ac97/ac97_bus.c:33: error: `state' undeclared (first use in this
-functi                                                                    
-                
-on)
-make[4]: ***
-[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
-                                                                          
-  
-/ac97_bus.o] Error 1
-make[3]: ***
-[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci/ac97       
-                                                                          
-  
-] Error 2
-make[2]: ***
-[/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1/pci] Err       
-                                                                          
-  
-or 2
-make[1]: ***
-[_module_/var/abs/multimedia/alsa-driver/src/alsa-driver-1.0.10rc1]       
-                                                                          
-  
- Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.8.1'
-make: *** [compile] Error 2
-======================================================================
+>At Fri, 19 Aug 2005 18:06:41 -0600,
+>Philip Prindeville wrote:
+>  
+>
+>>Lee Revell wrote:
+>>
+>>    
+>>
+>>>On Fri, 2005-08-19 at 17:53 -0600, Philip Prindeville wrote:
+>>> 
+>>>
+>>>      
+>>>
+>>>>Lee Revell wrote:
+>>>>
+>>>>   
+>>>>
+>>>>        
+>>>>
+>>>>>On Fri, 2005-08-19 at 17:43 -0600, Philip Prindeville wrote:
+>>>>>
+>>>>>
+>>>>>     
+>>>>>
+>>>>>          
+>>>>>
+>>>>>>nd_seq_device: disagrees about version of symbol snd_info_register
+>>>>>>snd_seq_device: Unknown symbol snd_info_register
+>>>>>>snd_seq_device: disagrees about version of symbol 
+>>>>>>snd_info_create_module_entry 
+>>>>>>  
+>>>>>>
+>>>>>>       
+>>>>>>
+>>>>>>            
+>>>>>>
+>>>>>Did you make sure to remove the previous modules with rmmod before
+>>>>>modprobe'ing the new ones?
+>>>>>
+>>>>>Lee
+>>>>>
+>>>>>
+>>>>>
+>>>>>     
+>>>>>
+>>>>>          
+>>>>>
+>>>>Yessir.
+>>>>
+>>>>
+>>>>   
+>>>>
+>>>>        
+>>>>
+>>>Then I'm completely out of ideas.  This is either a bug in the Fedora
+>>>kernel, or a bug in ALSA.
+>>>
+>>>Lee
+>>>
+>>> 
+>>>
+>>>      
+>>>
+>>Yup.  I even pulled a fresh tree, too.
+>>
+>>Say, there's another issue that I'm struggling with...  I'm trying to get
+>>the makefiles to be a little more Fedora-friendly...
+>>
+>>As they are, things like libdir and datadir aren't set correctly by
+>>default...
+>>
+>>Not sure why the top-level Makefile has:
+>>
+>>HOST            = "$(ARCH)-suse-linux-gnu"
+>>
+>>either...
+>>
+>>Shouldn't that be passed in or discovered dynamically?
+>>    
+>>
+>
+>I can't find any HOST in Makefile...
+>  
+>
 
-----------------------------------------------------------------------
- ammiellodebar - 08-22-05 18:14 
-----------------------------------------------------------------------
-ill try the patch, I have to use 2.6.8.1 because somethings messed up in
-the kernel in later versions with my rtl8150 network driver... my
-connection doesnt work
+Odd.  I got the package via CVS, andthe Makefile is in the directory
+above alsa-driver, alsa-lib, etc.
 
-----------------------------------------------------------------------
- ammiellodebar - 08-22-05 18:30 
-----------------------------------------------------------------------
-thanks for the patch! Works perfect! w00t!
+-Philip
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-22-05 00:01 ammiellodebar  New Issue                                    
-08-22-05 00:01 ammiellodebar  Issue Monitored: ammiellodebar                    
-08-22-05 00:02 ammiellodebar  Note Added: 0005888                          
-08-22-05 07:49 rlrevell       Note Added: 0005889                          
-08-22-05 12:29 perex          Note Added: 0005892                          
-08-22-05 12:29 perex          Status                   assigned => feedback
-08-22-05 18:14 ammiellodebar  Note Added: 0005899                          
-08-22-05 18:30 ammiellodebar  Note Added: 0005900                          
-======================================================================
-
+>
+>Takashi
+>  
+>
 
 
 
