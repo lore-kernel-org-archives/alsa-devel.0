@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001199]: oops with pdaudiocf after data stream abort
-Date: Mon, 22 Aug 2005 13:09:52 +0200
-Message-ID: <cefe4c79f60f0f3c13d03b473a13831e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001354]: Mixer problem on Logitech Quickcam Zoom with Integrated mic
+Date: Mon, 22 Aug 2005 13:11:43 +0200
+Message-ID: <76fda46b8459a51004da712094357ec2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DB3220D
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 13:09:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF74B20D
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2005 13:11:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1199> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1354> 
 ======================================================================
-Reported By:                zwelch
-Assigned To:                perex
+Reported By:                Bourrindebase
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1199
-Category:                   PCMCIA - pdaudiocf
+Issue ID:                   1354
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.11.12
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Mandrivalinux
+Kernel Version:             2.6.12-10mdk
 ======================================================================
-Date Submitted:             06-17-2005 02:50 CEST
-Last Modified:              08-22-2005 13:09 CEST
+Date Submitted:             08-21-2005 18:17 CEST
+Last Modified:              08-22-2005 13:11 CEST
 ======================================================================
-Summary:                    oops with pdaudiocf after data stream abort
+Summary:                    Mixer problem on Logitech Quickcam Zoom with
+Integrated mic
 Description: 
-The following oops report was generated while using `arecord | aplay` from
-the 1.0.9 alsa-utils release.  It was triggered by unplugging the pre-amp
-while recording, thus causing the optical signal to disappear
-unexpectedly.
-
-As it is, I need both the pdaudiocf and powermac drivers working, or I
-would be using the out-of-kernel alsa-driver package.  The powermac driver
-in 1.0.9a can't find the symbol 'macio_find', which I have reported
-separately (bug #1198).  Once that bug is fixed, I can retest this issue
-with the most current release, but I hope patches might be applied to
-2.6.11.12 to fix this problem.
-
-I can provide additional information about the kernel configuration,
-installed package versions, run further tests, or try possible patches.
-
+When I plug the webcam I get an error on mixer settings. Then the mic
+integrated on the webcam is not usable. There is no sound available from
+the webcam. I get the same error with Cooker Mandrivalinux and 10.2 (2005
+Limited Edition) Mandrivalinux. So mixer settings for the cam are note
+available under alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-20-05 11:52 
+ Clemens Ladisch - 08-22-05 13:11 
 ----------------------------------------------------------------------
-The culprit of this oops is not obvious. Could you try to remove
-snd_pcm_stop() line from i2c/other/ak4114.c file?
+What do you mean with "error on mixer settings"?
 
-----------------------------------------------------------------------
- perex - 08-22-05 13:09 
-----------------------------------------------------------------------
-No response.
+What are the contents of /proc/asound/cards?
+What is the output of "amixer -c <cardnumber> contents"?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-17-05 02:50 zwelch         New Issue                                    
-06-17-05 02:50 zwelch         Distribution              => Gentoo          
-06-17-05 02:50 zwelch         Kernel Version            => 2.6.11.12       
-06-19-05 09:58 zwelch         Note Added: 0005086                          
-06-20-05 11:52 perex          Note Added: 0005096                          
-08-22-05 13:09 perex          Status                   assigned => resolved
-08-22-05 13:09 perex          Resolution               open => won't fix   
-08-22-05 13:09 perex          Note Added: 0005895                          
+08-21-05 18:17 Bourrindebase  New Issue                                    
+08-21-05 18:17 Bourrindebase  Distribution              => Mandrivalinux   
+08-21-05 18:17 Bourrindebase  Kernel Version            => 2.6.12-10mdk    
+08-22-05 13:11 Clemens LadischNote Added: 0005896                          
 ======================================================================
 
 
