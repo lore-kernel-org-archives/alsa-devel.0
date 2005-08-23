@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001350]: Could someone add spec files to the tarballs, please?
-Date: Tue, 23 Aug 2005 16:57:37 +0200
-Message-ID: <5bf76f6bcf49ebd48d86c0443b864697@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Tue, 23 Aug 2005 23:20:00 +0800
+Message-ID: <430B3EA0.1000903@netvigator.com>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>	<s5h8y1n7af3.wl@alsa2.suse.de>	<42A5B7D4.50201@netvigator.com>	<200506071716.05194.alien999999999@users.sourceforge.net>	<s5hwtp6w2nw.wl@alsa2.suse.de>	<42A6B51F.20405@netvigator.com>	<s5h8y1lkv1c.wl@alsa2.suse.de>	<42EA4086.6030702@netvigator.com>	<s5hoe8lbqe0.wl%tiwai@suse.de>	<42F35F8F.4060808@netvigator.com>	<s5hbr4czc7o.wl%tiwai@suse.de>	<43067D3B.5040601@netvigator.com> <s5h1x4nqx72.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A856A261
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 16:57:37 +0200 (MEST)
+In-Reply-To: <s5h1x4nqx72.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +17,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Sat, 20 Aug 2005 08:45:47 +0800,
+> Raymond wrote:
+> 
+>>
+>>I am still using Kernel 2.4 which is not affected by the missing of 
+>>these two patches.
+>>
+>>Is the missing of "snd_card_set_dev(card, &pci->dev);" affected only 
+>>some distrubtion of Kernel 2.6 (32-bits platform) ?
+>>
+>>https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299
+> 
+> 
+> Sure, it's only for 2.6, and it can't be critical.
+> It just adds the sysfs entry for udev/hal.  It must work fine without
+> it.
+> 
+> 
+>>The reporter of bug 216 using Kernel 2.4 and the reporter of bug 299 
+>>using Kernel 2.6
+> 
+> 
+> Then this will fix that bug very unlikely.
+> 
+> 
+> Takashi
+> 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1350> 
-======================================================================
-Reported By:                Vic
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1350
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-20-2005 16:37 CEST
-Last Modified:              08-23-2005 16:57 CEST
-======================================================================
-Summary:                    Could someone add spec files to the tarballs,
-please?
-Description: 
-Those of us using RPM-based distributions generally like to keep everything
-within the RPM system.
+For au88x0 on AMD64
 
-By adding a simple .spec file to the tarball, that can be achieved by a
-simple "rpmbuild -ta <tarball>". This is a fairly significant increase in
-usability for almost no work.
+One of the au8810 user still experience hangs when using GAIM.
 
-The spec file I used for alsa-driver-1.0.9b is at
-http://beer.org.uk/alsa-driver.spec . As you can see, keeping this file
-up-to-date is very simple - just change the version number at the top of
-the file.
-======================================================================
+Igor V. Kovalenko reported his patch is OK for his au8820
 
-----------------------------------------------------------------------
- Vic - 08-20-05 16:45 
-----------------------------------------------------------------------
-Just noticed - there is a file alsa-driver.spec.in in the utils directory
-of the tarball. [N.B. this needs modifying for use with the current
-version of rpmbuild - bug already submitted to RedHat].
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948#comment43
 
-If this could be cooked & put in the tarball, that would do the job
-nicely!
+There are no feed back from the reporters of ALSA BTS and another au8830 
+user in the alsa.user mailing list.
 
-----------------------------------------------------------------------
- tiwai - 08-23-05 16:57 
-----------------------------------------------------------------------
-Since it's already there, I move this to NOT AN ISSUE.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047  au8810
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138  au8820
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025  au8830
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-20-05 16:37 Vic            New Issue                                    
-08-20-05 16:45 Vic            Note Added: 0005880                          
-08-23-05 16:57 tiwai          Status                   assigned => resolved
-08-23-05 16:57 tiwai          Resolution               open => not an issue
-08-23-05 16:57 tiwai          Note Added: 0005912                          
-======================================================================
+Would you related this three bugs report ?
 
+They can try Igor V. Kovalenko's patch at the openvortex project.
 
 
 
