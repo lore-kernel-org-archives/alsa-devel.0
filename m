@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001358]: 1.0.10rc1 ALSA driver doesn't have PC Speaker support in hda-intel (Uniwill)
-Date: Tue, 23 Aug 2005 20:55:23 +0200
-Message-ID: <ac837f3b50f063855dfe75f9e577ec6d@bugtrack.alsa-project.org>
+Date: Tue, 23 Aug 2005 21:04:07 +0200
+Message-ID: <cd0b7d9d1150da9df04d6df70fac3771@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C0C9268
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 20:55:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D462268
+	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 21:04:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1358> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Slackware 10.1
 Kernel Version:             2.6.12.5
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             08-22-2005 20:53 CEST
-Last Modified:              08-23-2005 20:55 CEST
+Last Modified:              08-23-2005 21:04 CEST
 ======================================================================
 Summary:                    1.0.10rc1 ALSA driver doesn't have PC Speaker
 support in hda-intel (Uniwill)
@@ -67,21 +69,29 @@ Quetzy Garcia
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-23-05 19:33 
-----------------------------------------------------------------------
-Ah, I understood wrongly.
-Then try another one, uniwil-beep.diff, instead.
-It's to ALSA CVS but should be applicable to 1.0.10rc1, too.
-
-----------------------------------------------------------------------
- quetzyg - 08-23-05 20:55 
+ quetzyg - 08-23-05 20:59 
 ----------------------------------------------------------------------
 It works!!! I had to download the CVS version of patch_realtek.c, because
 the 1.0.10rc1 version didn't patch correctly. By the way, can you tell me
 why does my /dev/dsp* /dev/mixer*, etc sound related devices dissapear
-everytime I turn off the laptop? That's another thing google couldn't find
-for me. ARGH! :-(
+everytime I turn off the laptop? I have to run the snddevices script to
+restore the missing devices. Altough the sound seems to work fine without
+/dev/dsp, and so forth. ARGH! :-(
 And, thanks again for the patch :-)
+
+
+
+----------------------------------------------------------------------
+ tiwai - 08-23-05 21:04 
+----------------------------------------------------------------------
+You can find alsa-kernel subdirectory in alsa-driver tree of 1.0.10rc1
+tarball.  That's the place to apply the patch.
+
+Anway, I committed the patch to CVS.
+
+The problem of /dev/dsp* comes definitely from udev, and I think it's
+intentional.  The device should appear again when the module is
+re-inserted.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +106,10 @@ Date Modified  Username       Field                    Change
 08-23-05 19:33 tiwai          Note Added: 0005915                          
 08-23-05 19:33 tiwai          File Added: uniwil-beep.diff                    
 08-23-05 20:55 quetzyg        Note Added: 0005917                          
+08-23-05 20:59 quetzyg        Note Edited: 0005917                         
+08-23-05 21:04 tiwai          Status                   assigned => resolved
+08-23-05 21:04 tiwai          Resolution               open => fixed       
+08-23-05 21:04 tiwai          Note Added: 0005918                          
 ======================================================================
 
 
