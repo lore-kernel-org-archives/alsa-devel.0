@@ -1,13 +1,14 @@
-From: lsorense@csclub.uwaterloo.ca (Lennart Sorensen)
-Subject: Re: Re: [Alsa drivers] Creatives X-Fi chip
-Date: Tue, 23 Aug 2005 14:48:34 -0400
-Message-ID: <20050823184834.GC28578@csclub.uwaterloo.ca>
-References: <4305AC77.3010907@cs.aau.dk> <1124491956.25424.95.camel@mindpipe> <4306D254.3000401@cs.aau.dk> <1124521688.26949.15.camel@mindpipe> <s5hirxyp3kh.wl%tiwai@suse.de> <430A37B5.9050300@superbug.co.uk> <1124747695.16064.46.camel@mindpipe> <1124829672.3351.5.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001358]: 1.0.10rc1 ALSA driver doesn't have PC Speaker support in hda-intel (Uniwill)
+Date: Tue, 23 Aug 2005 20:55:23 +0200
+Message-ID: <ac837f3b50f063855dfe75f9e577ec6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1124829672.3351.5.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C0C9268
+	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 20:55:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,48 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzubaj@gaya.sk>
-Cc: Lee Revell <rlrevell@joe-job.com>, James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>, Emmanuel Fleury <fleury@cs.aau.dk>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 23, 2005 at 09:41:11PM +0100, Peter Zubaj wrote:
-> This is too expensive card to be only able use it as simple card.
-> My advice buy something else.
-> I don't think fight with creative can bring anything good to linux.
-> Leave Creative as is. There is plenty of other hardware from other
-> manufacturer worth money.
 
-If I could get the same level of support as my sb live has, I would be
-quite happy.  I don't need EAX, but I do want midi synth and multi
-channel audio playback and recording and such to work, and all the line
-in and out on the device.  We have that on the emu10kx cards as far as I
-can tell (at least everything I have used on my sb live platinum works).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1358> 
+======================================================================
+Reported By:                quetzyg
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1358
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10.1
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             08-22-2005 20:53 CEST
+Last Modified:              08-23-2005 20:55 CEST
+======================================================================
+Summary:                    1.0.10rc1 ALSA driver doesn't have PC Speaker
+support in hda-intel (Uniwill)
+Description: 
+My laptop is equiped with an Intel (IHC6M) integrated audio controller. The
+chipset is a Realtek ALC880 with a Uniwill subsystem.
 
-I don't mind if the fancy DSP algorithms and EAX is windows only, since
-it really only applies to games, and if I want to play a windows game, I
-will reboot to windows.  Doesn't happen very often lately, but with an
-athlon 700, it isn't that surprising really.  Maybe when someday I get
-an athlon 64 instead.
+With the previous version of ALSA (1.0.9b), I had the LineIn/Speakers
+mixup issue. That problem is now fixed with the 1.0.10rc1 version (and
+previously with a CVS), but now the PC Speaker is muted and doesn't apear
+on AlsaMixer.
 
-So I would buy creative's new card if it had the same level of support in
-alsa as the current emu10kx cards do.  Any more I don't expect, but any
-less would mean I don't buy one.  The emu10k1 sb live was the first
-creative product I was ever willing to buy and with the support it has
-in linux I have been happy with it.  I didn't want their older cards,
-and I don't want most of the other cheap crap cards that have been
-around (I used to have a few gravis cards and liked those).
+I'm using ALSA 1.0.10rc1 drivers + libs + oss + utils.
 
-Most onboard audio seems to pretty decent these days, but if you expect
-midi to work, you want something a bit better.
+Another thing! Does this sound card support multiplexing? Either by
+hardware, or if ALSA can achieve that by software. I'm having trouble
+playing more than one sound at the same time, and all the things I've read
+until now, didn't help me :-\
 
-So I for one would love to see creative offer enough documentation or
-example code to replicate the features of the emu10kx on the new chip,
-even if we still don't get DSP algorithms.  If they don't, well I won't
-buy one, and I won't recomend it to anyone either.  If they do, I will
-highly recomend it (if it works as well as it appears it should), and I
-will buy one too.
+If more information is needed, just let me know :-)
 
-Len Sorensen
+Cheers,
+Quetzy Garcia
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 08-23-05 19:33 
+----------------------------------------------------------------------
+Ah, I understood wrongly.
+Then try another one, uniwil-beep.diff, instead.
+It's to ALSA CVS but should be applicable to 1.0.10rc1, too.
+
+----------------------------------------------------------------------
+ quetzyg - 08-23-05 20:55 
+----------------------------------------------------------------------
+It works!!! I had to download the CVS version of patch_realtek.c, because
+the 1.0.10rc1 version didn't patch correctly. By the way, can you tell me
+why does my /dev/dsp* /dev/mixer*, etc sound related devices dissapear
+everytime I turn off the laptop? That's another thing google couldn't find
+for me. ARGH! :-(
+And, thanks again for the patch :-)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-22-05 20:53 quetzyg        New Issue                                    
+08-22-05 20:53 quetzyg        Distribution              => Slackware 10.1  
+08-22-05 20:53 quetzyg        Kernel Version            => 2.6.12.5        
+08-23-05 00:19 quetzyg        Issue Monitored: quetzyg                     
+08-23-05 16:38 tiwai          Note Added: 0005907                          
+08-23-05 16:39 tiwai          File Added: uniwil.diff                      
+08-23-05 19:26 quetzyg        Note Added: 0005914                          
+08-23-05 19:33 tiwai          Note Added: 0005915                          
+08-23-05 19:33 tiwai          File Added: uniwil-beep.diff                    
+08-23-05 20:55 quetzyg        Note Added: 0005917                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
