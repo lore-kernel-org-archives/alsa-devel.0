@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001360]: 16bit mono -> 24bit stereo conversion (plughw) produces noise in right channel
-Date: Tue, 23 Aug 2005 16:25:48 +0200
-Message-ID: <64aa1a496f6a78a30af18bd208ea1a37@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001359]: cs46xx DTS pass through works, but AC3/Dolby Digital does not
+Date: Tue, 23 Aug 2005 16:35:27 +0200
+Message-ID: <f1f56623c9d936102c661852a9e50d7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F400C1AB
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 16:25:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32F2C255
+	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 16:35:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,107 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1360> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1359> 
 ======================================================================
-Reported By:                grabner
-Assigned To:                
+Reported By:                rjh
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1360
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1359
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Fedora Core 4
+Kernel Version:             Linux 2.6.12-1.1398_FC4 (a standard FC4 kernel)
+Resolution:                 duplicate
+Duplicate:                  542
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-22-2005 22:42 CEST
-Last Modified:              08-23-2005 16:25 CEST
+Date Submitted:             08-22-2005 20:57 CEST
+Last Modified:              08-23-2005 16:35 CEST
 ======================================================================
-Summary:                    16bit mono -> 24bit stereo conversion (plughw)
-produces noise in right channel
+Summary:                    cs46xx DTS pass through works, but AC3/Dolby Digital
+does not
 Description: 
-The sample conversion from 16bit mono format to 24bit stereo format (using
-plughw:n) produces the correct signal in the left channel, but only noise
-in the right channel.
-======================================================================
+Dear Alsa developers.
 
+I have an interesting situation with my Terratec XFire 1024 and Sony
+STR-DB930 external amplifier.
+
+I have a dual boot system. When I use Windows and Windows DVD players,
+digital pass-through sound works perfectly. When I switch to Linux FC4 +
+Alsa + Xine, only DTS pass-though sound works. In particular, when playing
+a typical DVD that uses Dolby Digital sound by default, the amplifier
+recognizes that it is receiving Dolby Digital signal (Sony STD DB-930
+front panel shows text "Dolby Digital [3/2]", and all the apropriate
+status lights are turned on, too), but no sound comes out. Likewise, no
+DVD intro sounds that play before and during DVD menus can be heard (but
+Sony STD DB-930 front panel shows for example text "Dolby Digital [2/0]").
+There is no humming, rattling, popping, or some other artifact sounds
+either, just silence.
+
+If I on the other hand select a DTS sound track using Xine DVD menu
+functions, the aplifier recognizes that it is now receiving DTS signal
+(font panel shows "DTS [3/2]"), and sound plays as it should!
+
+If I configure Xine to do the decoding and output normal stereo sound,
+that works too, but without the benefits of surround sound, of course.
+
+It would therefore seem that current ALSA cs46xx driver can almost but not
+quite output Dolby Digital sound in a format that the Sony STR-DB930
+amplifier recognizes. One the other hand, DTS signal comes through ok. I
+hope that these observations will propably limit the number of locations
+where the problem may be.
+
+I would also point out that the amplifier status display reacts correctly
+to changes in signal type. This propably proves that at least something
+does indeed come though correctly. Finally, the fact that everything works
+perfectly with Windows drivers shows that the card and amplifier can work
+together.
+
+I have also tried to randomly change the control values in Xine iec958
+control string (the audio.device.alsa_passthrough_device parameter that
+has the default value of "iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2) but
+without any effect.
+
+I have also tried various control values with 'iecset' utility, but again
+without any effect.
+
+I have no custom .asoundrc settings in place.
+
+I have to admit that I have not tried other recent players than Xine
+0.99.4-1.2.fc4 yet, mainly because latest mplayer current crashes and I
+have had some trouble compiling it, too. However, I have observed the same
+problem earlier with older Xine and mplayer version is some older Linux
+distribution (and exactly the same hardware).
+
+I would be very thankfull for any advice. I would also be happy to run any
+additional tests you might consider usefull.
+
+  Rami
+======================================================================
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- tiwai - 08-23-05 16:25 
-----------------------------------------------------------------------
-Is it still in the latest version (1.0.10rc1)?
+duplicate of        0000542 custom kernel with latest alsa-source f...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-22-05 22:42 grabner        New Issue                                    
-08-23-05 16:25 tiwai          Note Added: 0005906                          
+08-22-05 20:57 rjh            New Issue                                    
+08-22-05 20:57 rjh            Distribution              => Fedora Core 4   
+08-22-05 20:57 rjh            Kernel Version            => Linux
+2.6.12-1.1398_FC4 (a standard FC4 kernel)
+08-22-05 21:00 rjh            Issue Monitored: rjh                         
+08-23-05 16:35 tiwai          Relationship added       duplicate of 0000542
+08-23-05 16:35 tiwai          Duplicate ID             0 => 542            
+08-23-05 16:35 tiwai          Status                   new => resolved     
+08-23-05 16:35 tiwai          Resolution               open => duplicate   
+08-23-05 16:35 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
