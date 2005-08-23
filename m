@@ -1,13 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Compulab sound device
-Date: Mon, 22 Aug 2005 23:57:26 -0400
-Message-ID: <1124769447.27714.29.camel@mindpipe>
-References: <20050822070653.21964.qmail@web54605.mail.yahoo.com>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: DRS support for AC97
+Date: Tue, 23 Aug 2005 00:25:53 -0600
+Message-ID: <430AC171.4060903@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050822070653.21964.qmail@web54605.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +15,14 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chow Raymond <usher_raymond82@yahoo.com>
-Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-08-22 at 00:06 -0700, Chow Raymond wrote:
-> I also wish to port from 2.6.7 to 2.6.12. However,
-> Compulab only supports till 2.6.7. I can't build
-> 2.6.12 kernel to run on Compulab's board. 
+How much effort is involved in getting the AC97 to support
+DRS?  This might be a way to support 44.1kHz SPDIF
+playback (albeit upsampled to 88.2kHz).
 
-Do you mean the vendor won't provide support for anything but 2.6.7, or
-that 2.6.12 literally will not run on the board?
-
-If it's the former then ask your support rep how to get a new ALSA to
-work with it.  If it's the latter then report the bug to the kernel
-people.
-
-Lee
-
-
+-Philip
 
 
 
