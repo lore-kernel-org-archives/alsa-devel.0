@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001345]: microphone input does broken after upgrading from kernel 2.6.10 to 2.6.12
-Date: Tue, 23 Aug 2005 16:50:12 +0200
-Message-ID: <755dbbf0093966473806fcef7665acca@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001355]: No sound after resume
+Date: Tue, 23 Aug 2005 16:48:30 +0200
+Message-ID: <263eab73ab965505708c8f60791bfdf6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D560261
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 16:50:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87F30260
+	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 16:48:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1345> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1355> 
 ======================================================================
-Reported By:                kayosiii
+Reported By:                Adrian Bunk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1345
-Category:                   PCI - intel8x0
+Issue ID:                   1355
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Mepis
-Kernel Version:             2.6.12 custom compiled
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-17-2005 08:13 CEST
-Last Modified:              08-23-2005 16:50 CEST
+Date Submitted:             08-21-2005 21:07 CEST
+Last Modified:              08-23-2005 16:48 CEST
 ======================================================================
-Summary:                    microphone input does broken after upgrading from
-kernel 2.6.10 to 2.6.12
+Summary:                    No sound after resume
 Description: 
-Basically When a boot using kernel 2.6.10 I can record using a microphone.
-With 2.6.12 I get no input... I am running the latest alsa-base in debian
-unstable. And have tried just about every setting in kmixer
+I'm currently trying suspend to disk for the first time.
+
+After resuming, there is no sound.
+
+If I build the driver modular and do manually unload and load it after
+resuming, sound is working again.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-23-05 16:50 
+ tiwai - 08-23-05 16:48 
 ----------------------------------------------------------------------
-Upload the contents of /etc/asound.state and /proc/asound/card0/codec97#0/*
-files for debugging.
+No PM code is added to this driver yet...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-05 08:13 kayosiii       New Issue                                    
-08-17-05 08:13 kayosiii       Distribution              => Mepis           
-08-17-05 08:13 kayosiii       Kernel Version            => 2.6.12 custom
-compiled
-08-22-05 12:20 perex          Assigned To              perex =>            
-08-22-05 12:20 perex          Status                   assigned => new     
-08-22-05 12:20 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-08-23-05 16:50 tiwai          Note Added: 0005910                          
+08-21-05 21:07 Adrian Bunk    New Issue                                    
+08-23-05 16:48 tiwai          Note Added: 0005909                          
 ======================================================================
 
 
