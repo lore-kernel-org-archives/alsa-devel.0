@@ -1,17 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Alsa drivers] Creatives X-Fi chip
-Date: Tue, 23 Aug 2005 17:39:58 -0400
-Message-ID: <1124833199.30517.23.camel@mindpipe>
-References: <4305AC77.3010907@cs.aau.dk>
-	 <1124491956.25424.95.camel@mindpipe>	<4306D254.3000401@cs.aau.dk>
-	 <1124521688.26949.15.camel@mindpipe> <s5hirxyp3kh.wl%tiwai@suse.de>
-	 <430A37B5.9050300@superbug.co.uk>  <1124747695.16064.46.camel@mindpipe>
-	 <1124829672.3351.5.camel@localhost.localdomain>
+From: Alien <alien999999999@users.sourceforge.net>
+Subject: Re: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Tue, 23 Aug 2005 23:40:44 +0200
+Message-ID: <200508232340.46629.alien999999999@users.sourceforge.net>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org> <430B3EA0.1000903@netvigator.com> <s5hr7ck4lmt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed;
+  boundary="nextPart1329545.JetIxsENnS";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1124829672.3351.5.camel@localhost.localdomain>
+In-Reply-To: <s5hr7ck4lmt.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,29 +20,128 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzubaj@gaya.sk>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>, Emmanuel Fleury <fleury@cs.aau.dk>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, Raymond <rayau@netvigator.com>, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-08-23 at 21:41 +0100, Peter Zubaj wrote:
-> This is too expensive card to be only able use it as simple card.
-> My advice buy something else.
-> I don't think fight with creative can bring anything good to linux.
-> Leave Creative as is. There is plenty of other hardware from other
-> manufacturer worth money.
+--nextPart1329545.JetIxsENnS
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I agree, but the fact is that the emu10k* devices own the Windows gamer
-market and like it or not these devices will sell millions of units, and
-they've worked perfectly in Linux for years.  So these users have a
-reasonable expectation that Creative will provide them an upgrade path,
-just like they did for SBLive! -> Audigy1 and Audigy1 -> Audigy2.
+Op dinsdag 23 augustus 2005 19:18, schreef Takashi Iwai:
+> At Tue, 23 Aug 2005 23:20:00 +0800,
+>
+> Raymond wrote:
+> > Takashi Iwai wrote:
+> > > At Sat, 20 Aug 2005 08:45:47 +0800,
+> > >
+> > > Raymond wrote:
+> > >>I am still using Kernel 2.4 which is not affected by the missing of
+> > >>these two patches.
+> > >>
+> > >>Is the missing of "snd_card_set_dev(card, &pci->dev);" affected only
+> > >>some distrubtion of Kernel 2.6 (32-bits platform) ?
+> > >>
+> > >>https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D299
+> > >
+> > > Sure, it's only for 2.6, and it can't be critical.
+> > > It just adds the sysfs entry for udev/hal.  It must work fine without
+> > > it.
+> > >
+> > >>The reporter of bug 216 using Kernel 2.4 and the reporter of bug 299
+> > >>using Kernel 2.6
+> > >
+> > > Then this will fix that bug very unlikely.
+> > >
+> > >
+> > > Takashi
+> >
+> > For au88x0 on AMD64
+> >
+> > One of the au8810 user still experience hangs when using GAIM.
+> >
+> > Igor V. Kovalenko reported his patch is OK for his au8820
+> >
+> > http://savannah.nongnu.org/patch/?func=3Ddetailitem&item_id=3D3948#comm=
+ent43
+> >
+> > There are no feed back from the reporters of ALSA BTS and another au8830
+> > user in the alsa.user mailing list.
+> >
+> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1047  au8810
+> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1138  au8820
+> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1025  au8830
+> >
+> > Would you related this three bugs report ?
+> >
+> > They can try Igor V. Kovalenko's patch at the openvortex project.
+>
+> The current code can't work obviously on 64bit architecture because
+> of the following definition:
+>
+> struct snd_vortex {
+> 	...
+> 	unsigned long __iomem *mmio;
+> 	...
+> };
+>
+> It must be u32 if you want to be architecture independent.
 
-I'm not trying to pick a fight with Creative, but regardless of what I
-(or any Linux developer) does, there's going to be a fight if they try
-to lock out Linux users.
+that doesn't mean much, you need to see how it handles adding to it, with a=
+ll=20
+the typecasts...
 
-Lee
+the one i'm running has: (this IS architecture independent)
 
+=2E..
+        struct gameport *gameport;
+
+        /* PCI hardware resources */
+        unsigned long io;
+        void __iomem *mmio;
+        unsigned int irq;
+        spinlock_t lock;
+=2E..
+
+
+anyway, i really need to do the latest tests, i have way too many adb failu=
+res=20
+lately.
+
+it mostly happens, when watching a movie and gaim starts a little sound.
+
+i've determined that it's not likely to be the max available sounds, but mo=
+re=20
+likely to be the weird scheduling of sounds at the same time
+
+i urge you people to chat more using some program that starts little sounds=
+=20
+so, you have lots of short start and stops at the same time, maybe use gaim=
+=20
+for ICQ and IRCing, that always gives me plenty of sounds...
+
+PS: i forgot the latest patch i had to try out.
+
+I'll do one patch to try out, and hope it doesn't require me to reboot this=
+=20
+machine...
+
+i'm using alsa CVS from some weeks ago, i think
+
+--nextPart1329545.JetIxsENnS
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQBDC5feuBWKXETrtdcRAi+8AKDc7KLv/ZXQB+pfKOiHx4eq2ZGFyACfT+YC
+urWCZUVE5+HfYioYaFT8d9I=
+=I4t7
+-----END PGP SIGNATURE-----
+
+--nextPart1329545.JetIxsENnS--
 
 
 -------------------------------------------------------
