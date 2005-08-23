@@ -1,143 +1,42 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001362]: Compiler warnings
-Date: Tue, 23 Aug 2005 19:39:37 +0200
-Message-ID: <4b3a655f73822b71a66b8e6790cbc5c3@bugtrack.alsa-project.org>
+From: Peter Zubaj <pzubaj@gaya.sk>
+Subject: Re: [Alsa-devel] Re: [Alsa drivers] Creatives X-Fi chip
+Date: Tue, 23 Aug 2005 21:41:11 +0100
+Message-ID: <1124829672.3351.5.camel@localhost.localdomain>
+References: <4305AC77.3010907@cs.aau.dk>
+	 <1124491956.25424.95.camel@mindpipe>	<4306D254.3000401@cs.aau.dk>
+	 <1124521688.26949.15.camel@mindpipe> <s5hirxyp3kh.wl%tiwai@suse.de>
+	 <430A37B5.9050300@superbug.co.uk>  <1124747695.16064.46.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C472264
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 19:39:37 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932273AbVHWSh4@vger.kernel.org>
+In-Reply-To: <1124747695.16064.46.camel@mindpipe>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>, Emmanuel Fleury <fleury@cs.aau.dk>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is too expensive card to be only able use it as simple card.
+My advice buy something else.
+I don't think fight with creative can bring anything good to linux.
+Leave Creative as is. There is plenty of other hardware from other
+manufacturer worth money.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1362> 
-======================================================================
-Reported By:                Henne
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1362
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core release 1 (Yarrow)
-Kernel Version:             Linux version 2.4.22-1.2199.5.legacy.nptl
-(machbuild@jane.spidermaker.fedoralegacy.org) (gcc version 3.2.3 20030422 (Red
-Hat Linux 3.2.3-6)) #1 Sat Apr 30 20:01:22 EDT 2005
-Resolution:                 won't fix
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-23-2005 19:08 CEST
-Last Modified:              08-23-2005 19:39 CEST
-======================================================================
-Summary:                    Compiler warnings
-Description: 
-Hi!
+Peter Zubaj
 
-I've compiled the new release candidat on gcc 3.3.2 and got some errors.
-
-
-sound.c:42: Warnung: `device_mode' defined but not used
-aloop-kernel.c:43: Warnung: `pcm_devs' defined but not used
-In file included from darla20.c:99:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from darla24.c:106:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from echo3g.c:119:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from gina20.c:103:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from gina24.c:123:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from indigo.c:103:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from indigodj.c:103:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from indigoio.c:104:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from layla20.c:111:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from layla24.c:120:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from mia.c:116:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-In file included from mona.c:129:
-echoaudio.c: In function `snd_echo_free':
-echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
-qualifiers from pointer target type
-
-The first message seems very strange to me, cause device_mode is used by
-snd_register_device() and alsa_sound_init(). I'll test it on another box
-tomorrow. Maybe it's a error in the compiler.
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 08-23-05 19:39 
-----------------------------------------------------------------------
-They are all harmless warnings.  Just ignore them.
-(The first one is only for devfs, and you have no support for it on your
-kernel.)
-
-They appear only on older kernels, so I won't fix them.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-23-05 19:08 Henne          New Issue                                    
-08-23-05 19:08 Henne          Distribution              => Fedora Core release 1
-(Yarrow)
-08-23-05 19:08 Henne          Kernel Version            => Linux version
-2.4.22-1.2199.5.legacy.nptl (machbuild@jane.spidermaker.fedoralegacy.org) (gcc
-version 3.2.3 20030422 (Red Hat Lin
-08-23-05 19:39 tiwai          Status                   assigned => resolved
-08-23-05 19:39 tiwai          Resolution               open => won't fix   
-08-23-05 19:39 tiwai          Note Added: 0005916                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+On Mon, 2005-08-22 at 17:54 -0400, Lee Revell wrote:
+> On Mon, 2005-08-22 at 21:38 +0100, James Courtier-Dutton wrote:
+> > We are not going to get any support from Creative for the X-Fi chip.
+> > We do not get support from Creative for any Creative chip that has a
+> > DSP in it. 
+> 
+> Well, except for the emu10k1 driver that Creative wrote and released
+> years ago.  I don't see why they can't do something similar with the
+> X-Fi stuff.  We don't need or expect the DSP programming docs, just the
+> minimum to get sound in and out of the thing.
+> 
+> So do you expect Creative to leave thousands of emu10k1/emu10k2 Linux
+> users with no upgrade path?  I think if they tried to do this we could
+> make it a real PR nightmare for them.
+> 
+> Lee
