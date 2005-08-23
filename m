@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001358]: 1.0.10rc1 ALSA driver doesn't have PC Speaker support in hda-intel (Uniwill)
-Date: Tue, 23 Aug 2005 19:33:12 +0200
-Message-ID: <b7ea4f18c052360f94e40c8794c3b29a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001362]: Compiler warnings
+Date: Tue, 23 Aug 2005 19:39:37 +0200
+Message-ID: <4b3a655f73822b71a66b8e6790cbc5c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B21260
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 19:33:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C472264
+	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 19:39:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,85 +22,115 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1358> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1362> 
 ======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
+Reported By:                Henne
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1358
-Category:                   PCI - hda-intel
+Issue ID:                   1362
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12.5
+Status:                     resolved
+Distribution:               Fedora Core release 1 (Yarrow)
+Kernel Version:             Linux version 2.4.22-1.2199.5.legacy.nptl
+(machbuild@jane.spidermaker.fedoralegacy.org) (gcc version 3.2.3 20030422 (Red
+Hat Linux 3.2.3-6)) #1 Sat Apr 30 20:01:22 EDT 2005
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-22-2005 20:53 CEST
-Last Modified:              08-23-2005 19:33 CEST
+Date Submitted:             08-23-2005 19:08 CEST
+Last Modified:              08-23-2005 19:39 CEST
 ======================================================================
-Summary:                    1.0.10rc1 ALSA driver doesn't have PC Speaker
-support in hda-intel (Uniwill)
+Summary:                    Compiler warnings
 Description: 
-My laptop is equiped with an Intel (IHC6M) integrated audio controller. The
-chipset is a Realtek ALC880 with a Uniwill subsystem.
+Hi!
 
-With the previous version of ALSA (1.0.9b), I had the LineIn/Speakers
-mixup issue. That problem is now fixed with the 1.0.10rc1 version (and
-previously with a CVS), but now the PC Speaker is muted and doesn't apear
-on AlsaMixer.
+I've compiled the new release candidat on gcc 3.3.2 and got some errors.
 
-I'm using ALSA 1.0.10rc1 drivers + libs + oss + utils.
 
-Another thing! Does this sound card support multiplexing? Either by
-hardware, or if ALSA can achieve that by software. I'm having trouble
-playing more than one sound at the same time, and all the things I've read
-until now, didn't help me :-\
+sound.c:42: Warnung: `device_mode' defined but not used
+aloop-kernel.c:43: Warnung: `pcm_devs' defined but not used
+In file included from darla20.c:99:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from darla24.c:106:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from echo3g.c:119:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from gina20.c:103:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from gina24.c:123:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from indigo.c:103:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from indigodj.c:103:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from indigoio.c:104:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from layla20.c:111:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from layla24.c:120:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from mia.c:116:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
+In file included from mona.c:129:
+echoaudio.c: In function `snd_echo_free':
+echoaudio.c:1741: Warnung: passing arg 1 of `iounmap_R5fb196d4' discards
+qualifiers from pointer target type
 
-If more information is needed, just let me know :-)
+The first message seems very strange to me, cause device_mode is used by
+snd_register_device() and alsa_sound_init(). I'll test it on another box
+tomorrow. Maybe it's a error in the compiler.
 
-Cheers,
-Quetzy Garcia
 ======================================================================
 
 ----------------------------------------------------------------------
- quetzyg - 08-23-05 19:26 
+ tiwai - 08-23-05 19:39 
 ----------------------------------------------------------------------
-Yes, the PC Speaker mixer that I'm talking about, is the one that controls
-the beeps, not the built in speakers on the laptop (those work just fine
-now). Sorry if I made you confuse. As I said before, with the 1.0.10rc1
-version of ALSA, the PC Speaker is muted and doesn't even exist in
-AlsaMixer (it existed and could be controled just fine in the 1.0.9b
-version though). The PC Speaker works just fine, if I unload the ALSA
-modules. And I couldn't patch the "patch_realtek.c" file properly. It gave
-me this error while running "patch -p1 < /home/quetzyg/uniwill.diff": Hunk
-#1 FAILED at 1583.
+They are all harmless warnings.  Just ignore them.
+(The first one is only for devfs, and you have no support for it on your
+kernel.)
 
-This patch is for the 1.0.10rc1 driver version, correct? But, since you
-tought it was something else (the internal speakers, and not the PC
-Speaker), maybe the patch doesn't solve the problem you tought it was.
-
-----------------------------------------------------------------------
- tiwai - 08-23-05 19:33 
-----------------------------------------------------------------------
-Ah, I understood wrongly.
-Then try another one, uniwil-beep.diff, instead.
-It's to ALSA CVS but should be applicable to 1.0.10rc1, too.
+They appear only on older kernels, so I won't fix them.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-22-05 20:53 quetzyg        New Issue                                    
-08-22-05 20:53 quetzyg        Distribution              => Slackware 10.1  
-08-22-05 20:53 quetzyg        Kernel Version            => 2.6.12.5        
-08-23-05 00:19 quetzyg        Issue Monitored: quetzyg                     
-08-23-05 16:38 tiwai          Note Added: 0005907                          
-08-23-05 16:39 tiwai          File Added: uniwil.diff                      
-08-23-05 19:26 quetzyg        Note Added: 0005914                          
-08-23-05 19:33 tiwai          Note Added: 0005915                          
+08-23-05 19:08 Henne          New Issue                                    
+08-23-05 19:08 Henne          Distribution              => Fedora Core release 1
+(Yarrow)
+08-23-05 19:08 Henne          Kernel Version            => Linux version
+2.4.22-1.2199.5.legacy.nptl (machbuild@jane.spidermaker.fedoralegacy.org) (gcc
+version 3.2.3 20030422 (Red Hat Lin
+08-23-05 19:39 tiwai          Status                   assigned => resolved
+08-23-05 19:39 tiwai          Resolution               open => won't fix   
+08-23-05 19:39 tiwai          Note Added: 0005916                          
 ======================================================================
 
 
