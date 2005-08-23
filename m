@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001358]: 1.0.10rc1 ALSA driver doesn't have PC Speaker support in hda-intel (Uniwill)
-Date: Tue, 23 Aug 2005 16:38:27 +0200
-Message-ID: <3a232da199650f792cd37122e0ecb83d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001345]: microphone input does broken after upgrading from kernel 2.6.10 to 2.6.12
+Date: Tue, 23 Aug 2005 16:50:12 +0200
+Message-ID: <755dbbf0093966473806fcef7665acca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 191D9255
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 16:38:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D560261
+	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 16:50:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1358> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1345> 
 ======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
+Reported By:                kayosiii
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1358
-Category:                   PCI - hda-intel
+Issue ID:                   1345
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12.5
+Status:                     new
+Distribution:               Mepis
+Kernel Version:             2.6.12 custom compiled
 ======================================================================
-Date Submitted:             08-22-2005 20:53 CEST
-Last Modified:              08-23-2005 16:38 CEST
+Date Submitted:             08-17-2005 08:13 CEST
+Last Modified:              08-23-2005 16:50 CEST
 ======================================================================
-Summary:                    1.0.10rc1 ALSA driver doesn't have PC Speaker
-support in hda-intel (Uniwill)
+Summary:                    microphone input does broken after upgrading from
+kernel 2.6.10 to 2.6.12
 Description: 
-My laptop is equiped with an Intel (IHC6M) integrated audio controller. The
-chipset is a Realtek ALC880 with a Uniwill subsystem.
-
-With the previous version of ALSA (1.0.9b), I had the LineIn/Speakers
-mixup issue. That problem is now fixed with the 1.0.10rc1 version (and
-previously with a CVS), but now the PC Speaker is muted and doesn't apear
-on AlsaMixer.
-
-I'm using ALSA 1.0.10rc1 drivers + libs + oss + utils.
-
-Another thing! Does this sound card support multiplexing? Either by
-hardware, or if ALSA can achieve that by software. I'm having trouble
-playing more than one sound at the same time, and all the things I've read
-until now, didn't help me :-\
-
-If more information is needed, just let me know :-)
-
-Cheers,
-Quetzy Garcia
+Basically When a boot using kernel 2.6.10 I can record using a microphone.
+With 2.6.12 I get no input... I am running the latest alsa-base in debian
+unstable. And have tried just about every setting in kmixer
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-23-05 16:38 
+ tiwai - 08-23-05 16:50 
 ----------------------------------------------------------------------
-Do you mean "PC Speaker" = "internal speaker on laptop"?
-The "PC Speaker" mixer controls are for beep, so it's likely unrelated.
-
-Does the attached patch change the behavior?
-
-About the multi-play: ALSA native apps use dmix as default, so they should
-work as they are.  For OSS apps, use aoss wrapper instead.  It's not a
-bug.
+Upload the contents of /etc/asound.state and /proc/asound/card0/codec97#0/*
+files for debugging.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-22-05 20:53 quetzyg        New Issue                                    
-08-22-05 20:53 quetzyg        Distribution              => Slackware 10.1  
-08-22-05 20:53 quetzyg        Kernel Version            => 2.6.12.5        
-08-23-05 00:19 quetzyg        Issue Monitored: quetzyg                     
-08-23-05 16:38 tiwai          Note Added: 0005907                          
+08-17-05 08:13 kayosiii       New Issue                                    
+08-17-05 08:13 kayosiii       Distribution              => Mepis           
+08-17-05 08:13 kayosiii       Kernel Version            => 2.6.12 custom
+compiled
+08-22-05 12:20 perex          Assigned To              perex =>            
+08-22-05 12:20 perex          Status                   assigned => new     
+08-22-05 12:20 perex          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+08-23-05 16:50 tiwai          Note Added: 0005910                          
 ======================================================================
 
 
