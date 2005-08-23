@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001210]: Exaudio produces noise on all speakers for 5.1 channels
-Date: Wed, 24 Aug 2005 00:50:27 +0200
-Message-ID: <f2315ddc91c090119646d12d35c2a4ec@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Wed, 24 Aug 2005 00:56:00 +0200
+Message-ID: <93d0223ee2e97c1790bb0a6affb695a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D53DC21E
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 00:50:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8570323E
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 00:56:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,154 +24,141 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1210> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
 ======================================================================
-Reported By:                andersin
-Assigned To:                Clemens Ladisch
+Reported By:                misnagid
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1210
-Category:                   USB - usb-audio
+Issue ID:                   749
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             06-23-2005 23:54 CEST
-Last Modified:              08-24-2005 00:50 CEST
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              08-24-2005 00:55 CEST
 ======================================================================
-Summary:                    Exaudio produces noise on all speakers for 5.1
-channels
+Summary:                    Buzz from ALSA setup
 Description: 
-I am using a soundblaster extigy with ALSA ver. 1.0.9b and am happy to say
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
-that stereo sound works find and that all 6 speakers can produce some
-sound.
-
-With more than 2 channel output, I experience problems. speaker-test,
-which 
-works for 1 and 2 channels, results in a hissing/crackling for 3,5,6 
-channels, which changes in pitch depending on the number of channels. For
-4 
-channels, it loops, producing the following output
-
-
-speaker-test 0.0.8
-
-Playback device is extigy
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 96 to 8192
-Period size range from 48 to 4096
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 2048
-was set buffer_size = 8192
-Unable to set hw params for playback: Invalid argument
-Setting of hwparams failed: Invalid argument
-Rate set to 48000Hz (requested 48000Hz)
-[ The "Rate set to ..." part is repeated continuously ]
-
-
-Setting my capture device to mixer, I was able to record the output with 
-arecord -c 6 -f dat -r 48000 /root/speaker-test-6ch.wav . The distortion
-is 
-still present when playing the file, forcing 2 channels in aplay.
-
-In addition to using speaker test, I tried using the route plugin to
-isolate 
-the rear channels. When I route to any channel, I can hear the same output
-on 
-all 5 (not sure about Woofer) channels, no matter which channel I route
-to. 
-Here is the relevant setup:
-
-pcm.route1      {
-type            route;
-slave.pcm       "extigy";
-slave.channels  6;
-ttable.0.0      1.0;
-}
-
-The music that I played had similar distortions like the one for speaker
-test 
-and played considerably slower than when player with 2 channels. Again I 
-could record and replay the effect. The setup was slightly different in
-order 
-to route the stereo channels to all 6 speakers.
-
-For routing with 4 slave channels, I get a failure (as expected), this
-time 
-with the output:
-
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 48000 Hz,
-Stereo
-aplay: set_params:910: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 48000
-PERIOD_TIME: (42666 42667)
-PERIOD_SIZE: 2048
-PERIOD_BYTES: 8192
-PERIODS: 4
-BUFFER_TIME: (170666 170667)
-BUFFER_SIZE: 8192
-BUFFER_BYTES: 32768
-TICK_TIME: 1000
-
-This is all the relevant bits that I can think of at the moment. Thank you
-for 
-reading this far. If anybody thinks it is important to get the recorded 
-files, I am happy to sent them. I am grateful for any nudge on what I am 
-doing wrong with my setup.
-
-Christoph Burger-Scheidlin
 ======================================================================
 
 ----------------------------------------------------------------------
- andersin - 06-24-05 17:47 
+ stransky - 04-22-05 11:04 
 ----------------------------------------------------------------------
-I added two files, each representing one complete iteration of the
-speaker-test program. I hope the files are small enough.
+Have you updated udev package?
 
 ----------------------------------------------------------------------
- andersin - 08-24-05 00:50 
+ lonerider - 08-24-05 00:55 
 ----------------------------------------------------------------------
-Hmm, nothing happened in a while. Reading over the comments, I think I gave
-you the wrong files. I downloaded some ac3 test files and decoded them
-using ac3dec -6 -D extigy. The file I uploaded is a recording of the two
-front speakers.
+Hi friends :)
+
+I just want to add that misnagid is not hallucinating or day-dreaming at
+all. :)  Me too, I have the ASUS A7N8X Deluxe nforce2 mobo. 
+
+I have first installed knoppix on it then switched to gentoo after few
+weeks... I should say, same problem exists and persists in both distros.
+In my opninion this is absolutely not a bug related to FC3. 
+
+By the way, the oss modules provided by nvidia works just fine but
+unfortunately skype and gnome do not like it at all. As far as understarnd
+-well, not much- It  does something different than alsa to start the
+hardware.
+
+I noticed this damn buzz effect 6 months ago. Till now I compiled many
+kernels; sometimes I embedded ALSA in the kenel and sometimes I compiled
+it as a module. Nothing changed except one time... 
+
+I was toying with something related to USB in the kernel and
+(unfortunately I can't exactly remember what I did) one of the kernels
+that I compiled with alsa embedded, ceased the noise! At that time I was a
+super-noob and I didn't know about .config file -*sigh*-. As you may
+already have guessed, I lost those kernel settings. :(( Baaah yes yerright
+I'm a dumbass.
+After that, I could never get it working right. It buzzes... To keep my
+sanity and my mind in place I am using crappy oss drivers provided by
+nvidia.
+
+PS: I guess I should thank to pzad for its patience and sincere effort.
+:)
+
+PS of the PS: Err, by the way sorry about my tarzanish english, If I said
+sthg stupid this is not because I mean it for real...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-23-05 23:54 andersin       New Issue                                    
-06-24-05 09:21 Clemens LadischFile Added: alsa-lib-start-threshold-check.diff   
-                
-06-24-05 09:22 Clemens LadischFile Deleted: alsa-lib-start-threshold-check.diff 
-                  
-06-24-05 09:23 Clemens LadischNote Added: 0005205                          
-06-24-05 10:14 andersin       File Added: stream0.txt                      
-06-24-05 10:16 andersin       Note Added: 0005208                          
-06-24-05 10:25 Clemens LadischNote Added: 0005209                          
-06-24-05 13:38 andersin       Note Added: 0005218                          
-06-24-05 15:23 andersin       Note Edited: 0005218                         
-06-24-05 17:22 Clemens LadischNote Added: 0005239                          
-06-24-05 17:44 andersin       File Added: speaker-test-6ch.mp3                  
- 
-06-24-05 17:44 andersin       File Added: speaker-test-2ch.mp3                  
- 
-06-24-05 17:47 andersin       Note Added: 0005242                          
-08-24-05 00:50 andersin       Note Added: 0005920                          
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
+12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
+12-27-04 17:57 misnagid       Note Added: 0002969                          
+12-27-04 18:16 pzad           Note Added: 0002970                          
+12-27-04 18:43 misnagid       Note Added: 0002971                          
+12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-27-04 21:09 misnagid       Note Added: 0002975                          
+12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
+12-27-04 22:00 pzad           Note Added: 0002979                          
+12-27-04 22:29 misnagid       Note Added: 0002980                          
+12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
+12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
+12-27-04 23:48 misnagid       Note Added: 0002985                          
+12-28-04 21:13 rlrevell       Note Added: 0002987                          
+01-03-05 00:36 misnagid       Note Added: 0003049                          
+01-03-05 15:10 pzad           Note Added: 0003064                          
+01-09-05 00:27 misnagid       Note Added: 0003132                          
+01-11-05 10:36 pzad           Note Added: 0003141                          
+01-11-05 11:24 misnagid       Note Added: 0003142                          
+01-11-05 23:20 misnagid       Note Added: 0003159                          
+04-22-05 11:04 stransky       Note Added: 0004553                          
+08-24-05 00:55 lonerider      Note Added: 0005921                          
 ======================================================================
 
 
