@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001358]: 1.0.10rc1 ALSA driver doesn't have PC Speaker support in hda-intel (Uniwill)
-Date: Tue, 23 Aug 2005 19:26:46 +0200
-Message-ID: <2cfe251a4922670bd2b528672d74d117@bugtrack.alsa-project.org>
+Date: Tue, 23 Aug 2005 19:33:12 +0200
+Message-ID: <b7ea4f18c052360f94e40c8794c3b29a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D42F260
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 19:26:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B21260
+	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 19:33:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.1
 Kernel Version:             2.6.12.5
 ======================================================================
 Date Submitted:             08-22-2005 20:53 CEST
-Last Modified:              08-23-2005 19:26 CEST
+Last Modified:              08-23-2005 19:33 CEST
 ======================================================================
 Summary:                    1.0.10rc1 ALSA driver doesn't have PC Speaker
 support in hda-intel (Uniwill)
@@ -67,18 +67,6 @@ Quetzy Garcia
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-23-05 16:38 
-----------------------------------------------------------------------
-Do you mean "PC Speaker" = "internal speaker on laptop"?
-The "PC Speaker" mixer controls are for beep, so it's likely unrelated.
-
-Does the attached patch change the behavior?
-
-About the multi-play: ALSA native apps use dmix as default, so they should
-work as they are.  For OSS apps, use aoss wrapper instead.  It's not a
-bug.
-
-----------------------------------------------------------------------
  quetzyg - 08-23-05 19:26 
 ----------------------------------------------------------------------
 Yes, the PC Speaker mixer that I'm talking about, is the one that controls
@@ -95,6 +83,13 @@ This patch is for the 1.0.10rc1 driver version, correct? But, since you
 tought it was something else (the internal speakers, and not the PC
 Speaker), maybe the patch doesn't solve the problem you tought it was.
 
+----------------------------------------------------------------------
+ tiwai - 08-23-05 19:33 
+----------------------------------------------------------------------
+Ah, I understood wrongly.
+Then try another one, uniwil-beep.diff, instead.
+It's to ALSA CVS but should be applicable to 1.0.10rc1, too.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -105,6 +100,7 @@ Date Modified  Username       Field                    Change
 08-23-05 16:38 tiwai          Note Added: 0005907                          
 08-23-05 16:39 tiwai          File Added: uniwil.diff                      
 08-23-05 19:26 quetzyg        Note Added: 0005914                          
+08-23-05 19:33 tiwai          Note Added: 0005915                          
 ======================================================================
 
 
