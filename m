@@ -1,68 +1,28 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001363]: OPL3SA2 PCM mixer needs touched in order for sound to work
-Date: Wed, 24 Aug 2005 00:00:20 +0200
-Message-ID: <9d216f6cd250f61d437983e3f9b2b557@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-devel] Re: [Alsa drivers] Creatives X-Fi chip
+Date: Tue, 23 Aug 2005 18:12:07 -0400
+Message-ID: <1124835128.30517.30.camel@mindpipe>
+References: <4305AC77.3010907@cs.aau.dk>
+	 <1124491956.25424.95.camel@mindpipe> <4306D254.3000401@cs.aau.dk>
+	 <1124521688.26949.15.camel@mindpipe> <s5hirxyp3kh.wl%tiwai@suse.de>
+	 <430A37B5.9050300@superbug.co.uk> <1124747695.16064.46.camel@mindpipe>
+	 <1124829672.3351.5.camel@localhost.localdomain>
+	 <20050823184834.GC28578@csclub.uwaterloo.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF5DB24F
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 00:00:20 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932425AbVHWWMN@vger.kernel.org>
+In-Reply-To: <20050823184834.GC28578@csclub.uwaterloo.ca>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
+Cc: Peter Zubaj <pzubaj@gaya.sk>, James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>, Emmanuel Fleury <fleury@cs.aau.dk>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2005-08-23 at 14:48 -0400, Lennart Sorensen wrote:
+> I don't mind if the fancy DSP algorithms and EAX is windows only
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1363> 
-======================================================================
-Reported By:                ahaning
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1363
-Category:                   ISA - opl3sa2
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 9.1
-Kernel Version:             2.6.12.2
-======================================================================
-Date Submitted:             08-24-2005 00:00 CEST
-Last Modified:              08-24-2005 00:00 CEST
-======================================================================
-Summary:                    OPL3SA2 PCM mixer needs touched in order for sound
-to work
-Description: 
-On my system with a OPL3SA2 chip, I need to touch the PCM mixer each time I
-start to play audio before I hear anything. Touching can consist of moving
-the PCM volume up or down a notch or muting/unmuting the mixer.
-======================================================================
+Actually the emu10k1 DSP code to implement EAX 1.x, 2.x, and 3.x is
+known.  Someone could easily implement it on Linux, it's just never
+happened.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-24-05 00:00 ahaning        New Issue                                    
-08-24-05 00:00 ahaning        Distribution              => Slackware 9.1   
-08-24-05 00:00 ahaning        Kernel Version            => 2.6.12.2        
-======================================================================
-
-
-
-
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+Lee
