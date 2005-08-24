@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Wed, 24 Aug 2005 10:55:05 +0200
-Message-ID: <94abe38a567462c67e52b25e5012f1d8@bugtrack.alsa-project.org>
+Date: Wed, 24 Aug 2005 10:58:34 +0200
+Message-ID: <df27e680002d1cf98e2d6fc70b66ad6a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C15641F8
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 10:55:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24D6C24C
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 10:58:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               ubuntu 5.04
 Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
 ======================================================================
 Date Submitted:             05-28-2005 22:22 CEST
-Last Modified:              08-24-2005 10:55 CEST
+Last Modified:              08-24-2005 10:58 CEST
 ======================================================================
 Summary:                    errors when installing au8820 modules
 Description: 
@@ -60,12 +60,24 @@ to get this sound card working.
 ======================================================================
 
 ----------------------------------------------------------------------
- penguinparty - 06-08-05 04:43 
+ Raymond - 08-24-05 10:55 
 ----------------------------------------------------------------------
-See attached typescript for information on my system
+void __iomem *mmio; 
+
+should be used instead of 	
+
+unsigned long __iomem *mmio; 
+
+in snd_vortex_t for architecture independent (32-bits and 64-bits)
+
+
+Would you please try the patch diff11.diff (against alsa-driver-1.0.9b)
+at
+
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
 
 ----------------------------------------------------------------------
- Raymond - 08-24-05 10:55 
+ Raymond - 08-24-05 10:58 
 ----------------------------------------------------------------------
 void __iomem *mmio; 
 
@@ -92,6 +104,7 @@ and 2.6.10
 06-08-05 04:41 penguinparty   File Added: typescript                       
 06-08-05 04:43 penguinparty   Note Added: 0004914                          
 08-24-05 10:55 Raymond        Note Added: 0005925                          
+08-24-05 10:58 Raymond        Note Added: 0005926                          
 ======================================================================
 
 
