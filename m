@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001254]: "invalid argument" error when pressing tab
-Date: Wed, 24 Aug 2005 18:15:51 +0200
-Message-ID: <3a941ecba5242dd2afe07b85adc8f83b@bugtrack.alsa-project.org>
+Date: Wed, 24 Aug 2005 18:39:57 +0200
+Message-ID: <813602330cf4c2e5e4ebafe62614d57d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9D7D24F
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 18:15:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50DA822C
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 18:39:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1254> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
 Issue ID:                   1254
@@ -35,10 +35,12 @@ Category:                   alsamixer
 Reproducibility:            have not tried
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-12-2005 15:31 CEST
-Last Modified:              08-24-2005 18:15 CEST
+Last Modified:              08-24-2005 18:39 CEST
 ======================================================================
 Summary:                    "invalid argument" error when pressing tab
 Description: 
@@ -71,11 +73,20 @@ elements
 
 Is the change reported a fix for the bug reported here?
 
+----------------------------------------------------------------------
+ tiwai - 08-24-05 18:39 
+----------------------------------------------------------------------
+That's exactly the bug fixed in 1.0.10rc1.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-12-05 15:31 jdthood        New Issue                                    
 08-24-05 18:15 jdthood        Note Added: 0005932                          
+08-24-05 18:39 tiwai          Status                   new => resolved     
+08-24-05 18:39 tiwai          Resolution               open => fixed       
+08-24-05 18:39 tiwai          Assigned To               => tiwai           
+08-24-05 18:39 tiwai          Note Added: 0005933                          
 ======================================================================
 
 
