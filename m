@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001364]: Channel mapping mixed-up for SB Extigy
-Date: Wed, 24 Aug 2005 01:04:30 +0200
-Message-ID: <275d0e55da77c87770667204ecdde377@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
+Date: Wed, 24 Aug 2005 07:09:57 +0200
+Message-ID: <a9e534f08b0023001a0f2f9c3403d37e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60FE4244
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 01:04:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4FF0215
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 07:09:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1364> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
 ======================================================================
-Reported By:                andersin
-Assigned To:                Clemens Ladisch
+Reported By:                philneves
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1364
-Category:                   USB - usb-audio
+Issue ID:                   1337
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.12.1
+Status:                     new
+Distribution:               Slackware 10, and Redhat 7.3
+Kernel Version:             2.4 series.
 ======================================================================
-Date Submitted:             08-24-2005 01:00 CEST
-Last Modified:              08-24-2005 01:04 CEST
+Date Submitted:             08-15-2005 03:20 CEST
+Last Modified:              08-24-2005 07:09 CEST
 ======================================================================
-Summary:                    Channel mapping mixed-up for SB Extigy
+Summary:                    AWE 32/64 driver crashes when using the skype
+program.
 Description: 
-The channels mapping for my Extigy seems to be wrong.
-"Rear Left" controls the Subwoofer
-"Rear Right" controls the left rear speaker
-"Subwoofer" controls the right rear speaker
+This is a serious bug with the sb16/sbawe driver. It seems to crash when
+running the skype program. Problem can be reproduced on a regular basis.
+Although frequency of occurence is random. Once the driver crashes it
+disables all sound on my system and I must restart the computer to get the
+sound back. Reloading the driver doesn't work. Problem occurs on all
+versions of alsa and all versions of the 2.4 kernel. 
+
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- andersin - 08-24-05 01:04 
+ philneves - 08-24-05 07:09 
 ----------------------------------------------------------------------
-Sorry for the space, see bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001210 for details on 6
-channel problems
+Problem occures in all versions of linux. Even 2.6. It took me a couple of
+hours running skype but it finally crashed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-24-05 01:00 andersin       New Issue                                    
-08-24-05 01:00 andersin       Distribution              => Gentoo Linux    
-08-24-05 01:00 andersin       Kernel Version            => 2.6.12.1        
-08-24-05 01:04 andersin       Note Added: 0005923                          
+08-15-05 03:20 philneves      New Issue                                    
+08-15-05 03:20 philneves      Distribution              => Slackware 10, and
+Redhat 7.3
+08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
+08-24-05 07:09 philneves      Note Added: 0005924                          
 ======================================================================
 
 
