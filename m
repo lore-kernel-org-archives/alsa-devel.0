@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Wed, 24 Aug 2005 10:58:34 +0200
-Message-ID: <df27e680002d1cf98e2d6fc70b66ad6a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
+Date: Wed, 24 Aug 2005 11:04:08 +0200
+Message-ID: <c1b772eb97b355c021ececfa066be8e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24D6C24C
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 10:58:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B15324C
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 11:04:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,87 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
 ======================================================================
-Reported By:                penguinparty
+Reported By:                Osiris
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1138
+Issue ID:                   1025
 Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               ubuntu 5.04
-Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
+Distribution:               Debian
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             05-28-2005 22:22 CEST
-Last Modified:              08-24-2005 10:58 CEST
+Date Submitted:             03-30-2005 22:50 CEST
+Last Modified:              08-24-2005 11:04 CEST
 ======================================================================
-Summary:                    errors when installing au8820 modules
+Summary:                    kernel panic when trying to load module snd-au8830
 Description: 
-Please see the section additional information for a dump of my dmesg output
-regarding the au8820 module.
+kernel panic occurs on boot when system tries to load kernel module for
+Aureal Vortex 2. The same thing happens when driver is compiled into
+kernel, not module
 
-I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
-kernels. The shipping alsa support under each of these kerenls provies me
-with the same result. I have also tried installing each of these kernels
-without alsa support only CONFIG_SOUND and then installing the
-alsa-drivers 1.0.9rc4a
-
-I get the same result every time I do the modprobe snd-au8820
-
-Using older versions of debian as well as the ubuntu live cd's I am able
-to get this sound card working.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-24-05 10:55 
+ alien999999999 - 04-04-05 11:00 
 ----------------------------------------------------------------------
-void __iomem *mmio; 
+I had similar issues on 64bit, there are a few changes i did in the above
+files that make it work, but it's not yet cleaned up and some things just
+have been commented out...
 
-should be used instead of 	
+in a certain macro, some things are strictly for 32bit usage ( <<2 ), if
+you change a few files like this, it'll work.
 
-unsigned long __iomem *mmio; 
+i can't make a patch yet, since i don't have alsa CVS, and further testing
+is very uneasy, since i have only 1 64bit machine and it is this
+server...
+
+attached file
+
+----------------------------------------------------------------------
+ Raymond - 08-24-05 11:04 
+----------------------------------------------------------------------
+Have you try alien999999999 's alsa-changes.tar.bz2 ?
+
+If not,  would you please try the patch diff11.diff (against
+alsa-driver-1.0.9b) at
+
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948 
+
+
+void __iomem *mmio;
+
+should be used instead of
+
+unsigned long __iomem *mmio;
 
 in snd_vortex_t for architecture independent (32-bits and 64-bits)
 
-
-Would you please try the patch diff11.diff (against alsa-driver-1.0.9b)
-at
-
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
-
-----------------------------------------------------------------------
- Raymond - 08-24-05 10:58 
-----------------------------------------------------------------------
-void __iomem *mmio; 
-
-should be used instead of 	
-
-unsigned long __iomem *mmio; 
-
-in snd_vortex_t for architecture independent (32-bits and 64-bits)
-
-
-Would you please try the patch diff11.diff (against alsa-driver-1.0.9b)
-at
-
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+We need feedback from au8810/au8830 user in testing the Equalizer, MPU401,
+Gameport, .... on 64 bits platform.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 22:22 penguinparty   New Issue                                    
-05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
-05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
-and 2.6.10
-05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
-06-08-05 04:41 penguinparty   File Added: typescript                       
-06-08-05 04:43 penguinparty   Note Added: 0004914                          
-08-24-05 10:55 Raymond        Note Added: 0005925                          
-08-24-05 10:58 Raymond        Note Added: 0005926                          
+03-30-05 22:50 Osiris         New Issue                                    
+03-30-05 22:50 Osiris         Distribution              => Debian          
+03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
+03-31-05 11:34 mjander        Note Added: 0004278                          
+04-03-05 21:16 Osiris         Note Added: 0004320                          
+04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
+
+04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
+ 
+04-04-05 11:00 alien999999999 Note Added: 0004325                          
+08-24-05 11:04 Raymond        Note Added: 0005927                          
 ======================================================================
 
 
