@@ -1,12 +1,14 @@
-From: "=?GB2312?Q?=EE=A1=CE=C0=B7=E6?=" <weifengsui@163.com>
-Subject: Sound Card does not be detected
-Date: Wed, 24 Aug 2005 16:43:12 +0800
-Message-ID: <E1E7qqq-0002II-1J@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Wed, 24 Aug 2005 10:55:05 +0200
+Message-ID: <94abe38a567462c67e52b25e5012f1d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-      charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C15641F8
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 10:55:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,56 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: sui15274@sina.comsui15274@sina.com
-Cc: alsa-devel@lists.sourceforge.netalsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-sui15274=A3=AC=C4=FA=BA=C3=A3=A1
 
-=09I am facing a problem when program the driver of ALSA HDAudio.=
- My Redhat version is 9.01,the linux kernel version is 2.6.0 and=
- the ALSA version is 1.0.6a.The HDAudio driver can be detected by=
- the ALSA-utils aplay and the driver work OK, but it cann't be=
- detected by 'system settings/detect sound card'.
-    
-    the following is module configuration file /etc/modules.conf,=
- My HDAudio module name is snd-azx.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
+======================================================================
+Reported By:                penguinparty
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1138
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               ubuntu 5.04
+Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
+======================================================================
+Date Submitted:             05-28-2005 22:22 CEST
+Last Modified:              08-24-2005 10:55 CEST
+======================================================================
+Summary:                    errors when installing au8820 modules
+Description: 
+Please see the section additional information for a dump of my dmesg output
+regarding the au8820 module.
 
-#############################
-alias usb-controller ehci-hcd
-alias usb-controller1 usb-uhci
+I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
+kernels. The shipping alsa support under each of these kerenls provies me
+with the same result. I have also tried installing each of these kernels
+without alsa support only CONFIG_SOUND and then installing the
+alsa-drivers 1.0.9rc4a
 
-# ALSA native device support
-alias char-major-116 snd
-options snd major-116 cards_limit=3D1
-alias snd-card-0 snd-azx
-options snd-azx index=3D0 id "test"
+I get the same result every time I do the modprobe snd-au8820
 
-# OSS/Free setup
+Using older versions of debian as well as the ubuntu live cd's I am able
+to get this sound card working.
+======================================================================
 
-#alias char-major-14 soundcore
-#alias sound-slot-0 snd-card-0
-#alias sound-service-0-0 snd-mixer-oss
-#alias sound-service-0-1 snd-seq-oss
-#alias sound-service-0-3 snd-pcm-oss
-#alias sound-service-0-8 snd-seq-oss
-#alias sound-service-0-12 snd-pcm-oss
+----------------------------------------------------------------------
+ penguinparty - 06-08-05 04:43 
+----------------------------------------------------------------------
+See attached typescript for information on my system
 
-alias sound-slot-0 snd-azx
+----------------------------------------------------------------------
+ Raymond - 08-24-05 10:55 
+----------------------------------------------------------------------
+void __iomem *mmio; 
 
-################
+should be used instead of 	
 
-    "modprobe snd-azx", "rmmod snd-azx",and "lsmod", it seems to=
- work correctly. I dont know why.
+unsigned long __iomem *mmio; 
 
-=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=D6=C2
-=C0=F1=A3=A1
- =09=09=09=09
+in snd_vortex_t for architecture independent (32-bits and 64-bits)
 
-=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=EE=A1=CE=C0=B7=E6
-=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1weifengsui@163.com
-=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12004-11-08
 
+Would you please try the patch diff11.diff (against alsa-driver-1.0.9b)
+at
+
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 22:22 penguinparty   New Issue                                    
+05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
+05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
+and 2.6.10
+05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
+06-08-05 04:41 penguinparty   File Added: typescript                       
+06-08-05 04:43 penguinparty   Note Added: 0004914                          
+08-24-05 10:55 Raymond        Note Added: 0005925                          
+======================================================================
 
 
 
