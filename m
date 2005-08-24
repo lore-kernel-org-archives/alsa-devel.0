@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2 ZS mixer controls
-Date: Wed, 24 Aug 2005 09:22:20 +0200
-Message-ID: <d31995dbf189e63e6be44c921bb7b771@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001366]: 3D control, EQ peaks and EQ controls appear in capture view of alsamixer and they also have capture channels in amixer
+Date: Wed, 24 Aug 2005 09:26:01 +0200
+Message-ID: <a080a6afdc5a2b4494b748177b5d793e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B962246
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 09:22:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1405C246
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 09:26:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1366> 
 ======================================================================
-Reported By:                phineas
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1365
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   1366
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing (etch)
-Kernel Version:             2.6.12.4 vanilla
 ======================================================================
-Date Submitted:             08-24-2005 09:22 CEST
-Last Modified:              08-24-2005 09:22 CEST
+Date Submitted:             08-24-2005 09:26 CEST
+Last Modified:              08-24-2005 09:26 CEST
 ======================================================================
-Summary:                    Dell/Creative Labs Audigy 2 ZS mixer controls
+Summary:                    3D control, EQ peaks and EQ controls appear in
+capture view of alsamixer and they also have capture channels in amixer
 Description: 
-Unless this is a user overlooking a step...
+3D control (Depth and Rear Depth) appear in capture view of alsamixer.
 
-There is no mute control on the "Master" item (or most other items for
-that matter).
-More importantly, the capture items do not have a capture control; they
-have level adjustments, but one cannot actually select an item for
-capturing.
-It appears that this Dell-supplied device (with Audigy subsytem 1003) is
-generally unknown to the drivers -- but it does work well for sound
-playback.
+amixer display these controls have capture channels.
 
+
+
+EQ peaks
+
+alsamixer cannot display 10-bands EQ peaks properly.
+
+amixer display the wrong channel name for EQ peaks (Feature request).
+
+Refer to 5.2.3.4.2.6 Graphical Equalizer Controls in USB audio
+http://www.usb.org/developers/devclass_docs/audio10.pdf
+
+Is it feasible to adopt the naming convention of the EQ center frequency
+in amixer/alsamixer ?
+
+
+
+10-bands stereo EQ controls
+
+alsamixer display 10-bands stereo EQ controls in capture view.
+
+amixer display the 10 EQ controls have capture channels.
+
+In theory, the EQ controls can be connected to regulate the capture audio
+from AC97, but this will need a rewrite of the existing driver to support
+dynamic disconnect of the equalizer from the playback device and connect
+the capture device and vice versa.
+
+Most au8810/au8830 users perfer to use the Equalizer to control playback
+only.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-24-05 09:22 phineas        New Issue                                    
-08-24-05 09:22 phineas        File Added: vegan.state                      
-08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
-08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
+08-24-05 09:26 Raymond        New Issue                                    
 ======================================================================
 
 
