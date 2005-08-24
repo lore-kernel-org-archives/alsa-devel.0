@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
-Date: Wed, 24 Aug 2005 11:04:08 +0200
-Message-ID: <c1b772eb97b355c021ececfa066be8e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Wed, 24 Aug 2005 11:13:07 +0200
+Message-ID: <f31d903cb6c7ef754268df36a902b746@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B15324C
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 11:04:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12B1924C
+	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 11:13:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,112 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                Osiris
+Reported By:                alien999999999
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1025
+Issue ID:                   1047
 Category:                   PCI - au88x0
-Reproducibility:            always
+Reproducibility:            sometimes
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.11.6
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             03-30-2005 22:50 CEST
-Last Modified:              08-24-2005 11:04 CEST
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              08-24-2005 11:13 CEST
 ======================================================================
-Summary:                    kernel panic when trying to load module snd-au8830
+Summary:                    module hangs at seemingly random times
 Description: 
-kernel panic occurs on boot when system tries to load kernel module for
-Aureal Vortex 2. The same thing happens when driver is compiled into
-kernel, not module
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
+
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- alien999999999 - 04-04-05 11:00 
+ alien999999999 - 04-12-05 20:51 
 ----------------------------------------------------------------------
-I had similar issues on 64bit, there are a few changes i did in the above
-files that make it work, but it's not yet cleaned up and some things just
-have been commented out...
+i have attached the changed files (since i don't have a CVS version of alsa
+to diff against)
 
-in a certain macro, some things are strictly for 32bit usage ( <<2 ), if
-you change a few files like this, it'll work.
-
-i can't make a patch yet, since i don't have alsa CVS, and further testing
-is very uneasy, since i have only 1 64bit machine and it is this
-server...
-
-attached file
+these files are located in the alsa-driver-1.0.8/alsa-kernel/pci/au88x0/
+path
 
 ----------------------------------------------------------------------
- Raymond - 08-24-05 11:04 
+ Raymond - 08-24-05 11:13 
 ----------------------------------------------------------------------
-Have you try alien999999999 's alsa-changes.tar.bz2 ?
+When playing mono streams on hw:0,2 (16 subdevices) on my au8830 (32-bits
+platform), the 17th mono stream (aplay) seem to be blocked
+(snd_pcm_open).
 
-If not,  would you please try the patch diff11.diff (against
-alsa-driver-1.0.9b) at
+Is this the normal behaviour of snd_pcm_open when maximum number of
+subdevice have been opened ?
 
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948 
+When playing mono streams on hw:0,0 (32 subdevices) on au8830, the 17th
+mono stream (aplay) will aborted immediately since snd_pcm_hw_params()
+return no more SRC available error.
+
+Please note that the capture stream also using DMA, SRC and MIXER.
+
+I guess some weird things happen when there is only 1 SRC left and the
+ALSA application (stereo stream) request 2 SRC.
+
+au88x0 driver should check the available number of SRC >= the number of
+channels before it allocate the SRC and MIXER. THe error recovery may not
+released the SRC and MIXER properly.
 
 
-void __iomem *mmio;
-
-should be used instead of
-
-unsigned long __iomem *mmio;
-
-in snd_vortex_t for architecture independent (32-bits and 64-bits)
-
-We need feedback from au8810/au8830 user in testing the Equalizer, MPU401,
-Gameport, .... on 64 bits platform.
+You should add printk to log the resource DMA, SRC, MIXER usuage at the
+start and the end of a successful snd_pcm_vortex_hw_params().
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 22:50 Osiris         New Issue                                    
-03-30-05 22:50 Osiris         Distribution              => Debian          
-03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
-03-31-05 11:34 mjander        Note Added: 0004278                          
-04-03-05 21:16 Osiris         Note Added: 0004320                          
-04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
-
-04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
- 
-04-04-05 11:00 alien999999999 Note Added: 0004325                          
-08-24-05 11:04 Raymond        Note Added: 0005927                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
 ======================================================================
 
 
