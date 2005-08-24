@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001358]: 1.0.10rc1 ALSA driver doesn't have PC Speaker support in hda-intel (Uniwill)
-Date: Tue, 23 Aug 2005 21:04:07 +0200
-Message-ID: <cd0b7d9d1150da9df04d6df70fac3771@bugtrack.alsa-project.org>
+From: "Cody Barnes" <cbarnes_xu@tcfcu.com>
+Subject: News You Can Use
+Date: Wed, 24 Aug 2005 08:53:22 +0000
+Message-ID: <OCPNCCGOGFANGHFJDNGPKBCBHMAA.cbarnes_xu@tcfcu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D462268
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2005 21:04:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,100 +15,163 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1358> 
-======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1358
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12.5
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-22-2005 20:53 CEST
-Last Modified:              08-23-2005 21:04 CEST
-======================================================================
-Summary:                    1.0.10rc1 ALSA driver doesn't have PC Speaker
-support in hda-intel (Uniwill)
-Description: 
-My laptop is equiped with an Intel (IHC6M) integrated audio controller. The
-chipset is a Realtek ALC880 with a Uniwill subsystem.
-
-With the previous version of ALSA (1.0.9b), I had the LineIn/Speakers
-mixup issue. That problem is now fixed with the 1.0.10rc1 version (and
-previously with a CVS), but now the PC Speaker is muted and doesn't apear
-on AlsaMixer.
-
-I'm using ALSA 1.0.10rc1 drivers + libs + oss + utils.
-
-Another thing! Does this sound card support multiplexing? Either by
-hardware, or if ALSA can achieve that by software. I'm having trouble
-playing more than one sound at the same time, and all the things I've read
-until now, didn't help me :-\
-
-If more information is needed, just let me know :-)
-
-Cheers,
-Quetzy Garcia
-======================================================================
-
-----------------------------------------------------------------------
- quetzyg - 08-23-05 20:59 
-----------------------------------------------------------------------
-It works!!! I had to download the CVS version of patch_realtek.c, because
-the 1.0.10rc1 version didn't patch correctly. By the way, can you tell me
-why does my /dev/dsp* /dev/mixer*, etc sound related devices dissapear
-everytime I turn off the laptop? I have to run the snddevices script to
-restore the missing devices. Altough the sound seems to work fine without
-/dev/dsp, and so forth. ARGH! :-(
-And, thanks again for the patch :-)
-
-
-
-----------------------------------------------------------------------
- tiwai - 08-23-05 21:04 
-----------------------------------------------------------------------
-You can find alsa-kernel subdirectory in alsa-driver tree of 1.0.10rc1
-tarball.  That's the place to apply the patch.
-
-Anway, I committed the patch to CVS.
-
-The problem of /dev/dsp* comes definitely from udev, and I think it's
-intentional.  The device should appear again when the module is
-re-inserted.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-22-05 20:53 quetzyg        New Issue                                    
-08-22-05 20:53 quetzyg        Distribution              => Slackware 10.1  
-08-22-05 20:53 quetzyg        Kernel Version            => 2.6.12.5        
-08-23-05 00:19 quetzyg        Issue Monitored: quetzyg                     
-08-23-05 16:38 tiwai          Note Added: 0005907                          
-08-23-05 16:39 tiwai          File Added: uniwil.diff                      
-08-23-05 19:26 quetzyg        Note Added: 0005914                          
-08-23-05 19:33 tiwai          Note Added: 0005915                          
-08-23-05 19:33 tiwai          File Added: uniwil-beep.diff                    
-08-23-05 20:55 quetzyg        Note Added: 0005917                          
-08-23-05 20:59 quetzyg        Note Edited: 0005917                         
-08-23-05 21:04 tiwai          Status                   assigned => resolved
-08-23-05 21:04 tiwai          Resolution               open => fixed       
-08-23-05 21:04 tiwai          Note Added: 0005918                          
-======================================================================
-
+SG90X1N0MGNrIE5ld3NsZXR0ZXIgLSBBdWd1c3QgSXNzdWUsIDIwMDUNCioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKg0KSW4gQXVndXN0
+J3MgaXNzdWUgd2UgYXJlIGdvaW5nIHRvIHByb2ZpbGUgYSBjb21wYW55IGlu
+dm9sdmVkIGluIHRoZSBSZWQgSG90IA0KaG9tZWxhbmQgc2VjdXJpdHkgc2Vj
+dG9yLiAgVGhpcyBjb21wYW55J3Mgc3QwY2sgaXMgdmVyeSBtdWNoIHVuZGVy
+dmFsdWVkIA0KY29uc2lkZXJpbmcgdGhlIHBvdGVudGlhbCBvZiB0aGUgaW5k
+dXN0cnkgYW5kIHRoZSBwb3NpdGlvbiBvZiB0aGUgY29tcGFueS4gDQooVGhl
+IHBlcmZlY3QgdGltZSB0byBnZXQgaW4pDQoNCg0KVGhpcyBzbWFsbCB0cmVh
+c3VyZSBpczogVk5CTCAoVmlub2JsZSwgSW5jLikNCg0KVG9kYXkgdGhlIHBy
+aWNlIHdlbnQgdXAgKzI5LjQxJQ0KUGxlYXNlIHdhdGNoIHRoaXMgb25lIG9w
+ZW4gdG9tbW9yb3cgYW5kIEFMTCBXRUVLISENCllvdSBtYXkgd2FudCB0byBB
+Y3QgdmVyeSBlYXJseSEhDQoNClRoaXMgc3QwY2sgaXMgdHJhZGluZyBhdCBv
+bmx5IE8uMTEgY2VudHMgYW5kIHdlIGV4cGVjdCBpdCBjb3VsZCBoaXQgDQok
+MC4zMCAtICQwLjM1IGJ5IGxhdGUgU2VwdGVtYmVyLg0KDQpBIEh1Z2UgUFIg
+Y2FtcGFpZ24gd2lsbCBiZSB0aGlzIHdlZWsgc28gZ3JhYiBhcyBtdWNoIGFz
+IHlvdSBjYW4gdXAgdG8gJDAuMjUgDQpyYW5nZS4gIFdlIGFsbCBrbm93IGl0
+J3MgdGhlIGJpZyBhbm5vdW5jZW1lbnRzIHRoYXQgbWFrZSB0aGVzZSBzbWFs
+bCBnZW1zIA0KbW92ZS4NCg0KDQpzdDBjayBTeW1ib2w6IFZOQkwgLiBPQg0K
+DQpDdXJyZW50IFByaWNlOiAkTy4xMQ0KDQpUaGUgUHJpY2Ugd2VudCB1cCAr
+MjkuNDElIHRvZGF5LCBhbmQgdGhpcyBpcyBqdXN0IHRoZSBiZWdpbm5pbmcg
+b2YgdGhlIGNhbXBhaWduIA0KUGxlYXNlIHdhdGNoIHRoaXMgb25lIG9wZW4g
+dG9tbW9yb3cgYW5kIEFMTCBXRUVLISENCg0KV2UgZXhwZWN0IHRoZSBwcmlj
+ZSB0byBnbyB0byAkTy4xOCBpbiBuZXh0IDItMyBkYXlzDQpXZSBleHBlY3Qg
+dGhlIHByaWNlIHRvIGdvIHRvICRPLjNPIGluIG5leHQgMyB3ZWVrcy4NCg0K
+DQpBYm91dCB0aGUgY29tcGFueToNCg0KVmlub2JsZSwgSW5jLiBpcyBhIGhv
+bGRpbmcgY29tcGFueSwgd2hpY2ggaXMgaWRlbnRpZnlpbmcgYW5kIGFjcXVp
+cmluZyANCm9wZXJhdGlvbmFsIGJ1c2luZXNzIG9wcG9ydHVuaXRpZXMgaW4g
+dGhlIGFyZWFzIG9mIGhvbWVsYW5kIHNlY3VyaXR5LCANCnNlY3VyaXR5IGlu
+Zm9ybWF0aW9uIHN5c3RlbXMsIGFuZCBvdGhlciBzZWN1cml0eSBzZXJ2aWNl
+cyB0byBwcm92aWRlIGxvbmcgDQp0ZXJtIGdyb3d0aCBmb3IgaXRzIHNoYXJl
+aG9sZGVycy4gIFZpbm9ibGUgYmVsaWV2ZXMgdGhhdCB0aGUgb3Bwb3J0dW5p
+dHkgdG8gDQpidWlsZCBhIHN1Y2Nlc3NmdWwgYnVzaW5lc3MgaW4gdGhlIHNl
+Y3VyaXR5IHNlY3RvciBpcyB1bnByZWNlZGVudGVkLg0KDQpUaGUgdGVycm9y
+IGF0dGFja3Mgb24gdGhlIFVuaXRlZCBTdGF0ZXMgb24gU2VwdGVtYmVyIDEx
+LCAyME8xIGhhdmUgY2hhbmdlZCANCnRoZSBzZWN1cml0eSBsYW5kc2NhcGUg
+Zm9yIHRoZSBmb3Jlc2VlYWJsZSBmdXR1cmUuIEJvdGggcGh5c2ljYWwgYW5k
+IGxvZ2ljYWwgDQpzZWN1cml0eSBoYXZlIGJlY29tZSBwYXJhbW91bnQgZm9y
+IGFsbCBpbmR1c3RyeSBzZWdtZW50cywgZXNwZWNpYWxseSBpbiB0aGUgDQpi
+YW5raW5nLCBoZWFsdGhjYXJlIGFuZCBnb3Zlcm5tZW50IHNlY3RvcnMuIFdo
+aWxlIHRoZSBmb2N1cyBmb3IgVmlub2JsZSBpcyANCm9uIE5vcnRoIEFtZXJp
+Y2EsIHRoZSBvcHBvcnR1bml0eSBmb3Igc2VjdXJpdHkgc2VydmljZXMgaXMg
+d29ybGR3aWRlLiANCkFjY29yZGluZyB0byBHaWdhLCBhIHdob2xseSBvd25l
+ZCBzdWJzaWRpYXJ5IG9mIEZvcnJlc3RlciBSZXNlYXJjaCwgDQp3b3JsZHdp
+ZGUgZGVtYW5kIGZvciBpbmZvcm1hdGlvbiBzZWN1cml0eSBwcm9kdWN0cyBh
+bmQgc2VydmljZXMgaXMgc2V0IHRvIA0KZWNsaXBzZSAkNDZCIGJ5IDJPMDUu
+DQoNClZpbm9ibGUgaW50ZW5kcyB0byBjYXBpdGFsaXplIG9uIHRoZSBkcmFt
+YXRpYyBncm93dGggaW4gdGhlIHNlY3VyaXR5IG1hcmtldCANCmJ5IGRlbGl2
+ZXJpbmcgcHJvZmVzc2lvbmFsIHNlcnZpY2VzLCBzZWN1cml0eSBwcm9kdWN0
+cywgc2VjdXJpdHkgdHJhaW5pbmcsIA0KYW5kIG1hbmFnZWQgc2VjdXJpdHkg
+c2VydmljZXMuIEluIHB1cnN1aXQgb2YgdGhpcyBvYmplY3RpdmUsIFZpbm9i
+bGUgaGFzIA0KYXNzZW1ibGVkIGEgaGlnaGx5IHF1YWxpZmllZCB0ZWFtIG9m
+IHNlY3VyaXR5IHByb2Zlc3Npb25hbHMgb2ZmZXJpbmcgYSBmdWxsIA0KcmFu
+Z2Ugb2Ygc2VjdXJpdHkgc2VydmljZXMuIFRocm91Z2ggVmlub2JsZSdzIGNv
+bnN1bHRpbmcgc2VydmljZXMgYW5kIA0KaW50ZWdyYXRlZCBkZWxpdmVyeSBz
+b2x1dGlvbnMsIFZpbm9ibGUgd2lsbCBoZWxwIG9yZ2FuaXphdGlvbnMgcHJv
+dGVjdCBrZXkgDQphc3NldHMgaW5jbHVkaW5nIHBlcnNvbnMsIHByb3BlcnR5
+LCBpbmZvcm1hdGlvbiwgYnJhbmQsIGFuZCByZXB1dGF0aW9uLg0KDQoNCioq
+KldoeSB3ZSBiZWxpZXZlIFZOQkwgd2lsbCBnaXZlIGJpZyByZXR1cm5zIG9u
+IGludmVzdG1lbnQqKioNCg0KDQoqIEF0IHRoaXMgdGltZSBtdWNoIG9mIFZO
+QkwncyBmb2N1cyBpcyBvbiBSRklEIChSYWRpbyBmcmVxdWVuY3kgDQppZGVu
+dGlmaWNhdGlvbikgdGVjaG5vbG9neS4gIFRoaXMgaXMgdGVjaG5vbG9neSB3
+aGljaCB1c2VzIHRpbnkgc2Vuc29ycyB0byANCnRyYW5zbWl0IGluZm9ybWF0
+aW9uIGFib3V0IGEgcGVyc29uIG9yIG9iamVjdCB3aXJlbGVzc2x5Lg0KDQoq
+IFZOQkwgaXMgZGV2ZWxvcGluZyBhIGZvcm0gb2YgUkZJRCB0ZWNobm9sb2d5
+IHdoaWNoIGFsbG93cyBjb21wYW5pZXMgYW5kIA0KZ292ZXJubWVudHMgdG8g
+d2lyZWxlc3NseSB0cmFjayB0aGVpciBhc3NldHMgYW5kIHJlc291cmNlcy4g
+IFN1Y2ggdGVjaG5vbG9neSANCmhhcyBIVUdFIHBvdGVudGlhbCBpbiB0aGUg
+cHJvdGVjdGlvbiBhbmQgdHJhbnNwb3J0YXRpb24gb2YgbWF0ZXJpYWxzIA0K
+ZGVzaWduYXRlZCAiSGlnaCBSaXNrIiB3ZXJlIHRoZXkgdG8gZmFsbCBpbnRv
+IHRoZSB3cm9uZyBoYW5kcy4NCg0KKiBWTkJMIHdvcmtzIG9uIGludGVncmF0
+aW9uIG9mIHRoZSB0d28gYWZvcmUgbWVudGlvbmVkIHN5c3RlbXMgaW4gb3Jk
+ZXIgdG8gDQpjcmVhdGUgIkhpZ2ggU2VjdXJpdHkgU3BhY2UiIGluIGxvY2Fs
+ZXMgd2hlcmUgaXQgaXMgZGVlbWVkIG5lY2Vzc2FyeS4gIA0KTG9jYXRpb25z
+IHdoaWNoIG1heSB0YWtlIGFkdmFudGFnZSBvZiBzdWNoIHN5c3RlbXMgYXJl
+IGFpcnBvcnRzLCBzZWEgcG9ydHMsIA0KbWluZXMsIG51Y2xlYXIgZmFjaWxp
+dGllcywgYW5kIG1vcmUuDQoNCg0KKioqTiBFIFcgUyoqKg0KDQpWaW5vYmxl
+J3MgbGF0ZXN0IHN0cmF0ZWd5IGludm9sdmVzIGFwcGx5aW5nIHRoZWlyIFJG
+SUQgdGVjaG5vbG9neSB0byB0aGUgDQptaW5pbmcgYW5kIHBldHJvY2hlbWlj
+YWwgaW5kdXN0cmllcy4gIFRvIHRoaXMgZW5kIHRoZXkgaGF2ZSBhZ3JlZWQg
+dG8gDQpwdXJjaGFzZSBhIG1pbmluZyBwcm9wZXJ0eSB3aXRoIHdoaWNoIHRo
+ZXkgcGxhbiB0byBkZXZlbG9wIGFuZCB0ZXN0IHRoZWlyIA0KdGVjaG5vbG9n
+aWVzIGFuZCBzeXN0ZW1zLiAgUmVhZCB0aGlzIGxhdGVzdCBwcmVzcyByZWxl
+YXNlIHRvIGxlYXJuIG1vcmU6DQoNCg0KTUFMSUJVLCBDYWxpZi4tLShCVVNJ
+TkVTUyBXSVJFKS0tQXVnLiAxMiwgMjAwNS0tVmlub2JsZSwgSW5jLiAoT1RD
+QkI6IFZOQkwgLSANCk5ld3MpLCBhIGhvbGRpbmcgY29tcGFueSBzZWVraW5n
+IHRvIGlkZW50aWZ5IGxvbmctdGVybSBncm93dGggb3Bwb3J0dW5pdGllcyAN
+CmluIHRoZSBhcmVhcyBvZiBob21lbGFuZCBzZWN1cml0eSwgc2VjdXJpdHkg
+aW5mb3JtYXRpb24gc3lzdGVtcywgYW5kIG90aGVyIA0Kc2VjdXJpdHkgc2Vy
+dmljZXMsIGlzIHBsZWFzZWQgdG8gYW5ub3VuY2UgdGhhdCBwdXJzdWFudCB0
+byBpdHMgbmV3cyByZWxlYXNlIA0KZGF0ZWQgSnVseSA4LCAyMDA1LCB3aGVy
+ZSB0aGUgQ29tcGFueSBhZ3JlZWQgdG8gcHVyY2hhc2UgbWluaW5nIHByb3Bl
+cnR5IGluIA0KdGhlIFJlZCBMYWtlIERpc3RyaWN0LCBoYXMgaW5pdGlhdGVk
+IGEgNDMtMTAxIHJlcG9ydCBvbiB0aGUgSGF6YXJkIExha2UgDQpQcm9wZXJ0
+eS4NCg0KVGhlIEhhemFyZCBwcm9wZXJ0eSB3aWxsIHNlcnZlIGFzIGEgdmFs
+dWFibGUgdG9vbCBmb3IgVmlub2JsZSwgaW4gYXNzZXQgDQp2YWx1ZSBhbmQs
+IGluIGFkZGl0aW9uLCBpdCB3aWxsIHNlcnZlIGFzIGEgdGVzdGluZyBhbmQg
+ZGVtb25zdHJhdGlvbiANCmxvY2F0aW9uIGZvciBSRklEIGFuZCBHUFMgYXBw
+bGljYXRpb25zLiBSRklEIGFuZCBHUFMgdGVjaG5vbG9neSB3aWxsIGJlIGEg
+DQp2YWx1YWJsZSB0b29sIGZvciB0aGUgbWluaW5nIGluZHVzdHJ5IGFuZCB3
+aWxsIG9mZmVyIHByb3RlY3Rpb24gb2Ygb3VyIA0KY291bnRyeSdzIG5hdHVy
+YWwgcmVzb3VyY2VzIGFuZCBjb21tb2RpdGllcyBhZ2FpbnN0IHRocmVhdC4N
+Cg0KQWRkaXRpb25hbGx5LCB0aGUgQ29tcGFueSBpcyBjdXJyZW50bHkgc2Vl
+a2luZyBvdGhlciBvcHBvcnR1bml0aWVzIHRvIGFkZCANCnZhbHVlIHRvIGl0
+cyBwcm9wZXJ0eSBob2xkaW5ncyB0aHJvdWdoIGFjcXVpc2l0aW9uLiBWaW5v
+YmxlIHZpZXdzIHRoZSANCmFkZGl0aW9uYWwgYXNzZXRzIHdpbGwgcHJvdmlk
+ZSB0aGUgQ29tcGFueSBhbmQgaXRzIHNoYXJlaG9sZGVycyBhIA0KbXVjaC1p
+bXByb3ZlZCBpbmNyZWFzZSBpbiBzaGFyZWhvbGRlciB2YWx1ZS4NCg0KDQpz
+dG9jLmsgU3ltYm9sOiBWTkJMIC4gT0INCg0KQ3VycmVudCBQcmljZTogJDAu
+MTENCg0KV2UgZXhwZWN0IHRoZSBwcmljZSB0byBnbyB0byAkMC4xOCBpbiBu
+ZXh0IDItMyBkYXlzDQpXZSBleHBlY3QgdGhlIHByaWNlIHRvIGdvIHRvICQw
+LjMwIGluIG5leHQgMyB3ZWVrcy4NCg0KDQpQbGVhc2Ugd2F0Y2ggdGhpcyBv
+bmUgdHJhZGUgb24gQUxMIFdFRUshDQogICAgICAgICAgICAgICAgIF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KDQpJbmZvcm1h
+dGlvbiB3aXRoaW4gdGhpcyBlbWFpbCBjb250YWlucyAiZjByd2FyZGxvMGtp
+bmcgc3Q0dGVtZW50cyIgd2l0aGluIA0KdGhlIG1lYW5pbmcgb2YgU2VjdGlv
+biAyN0Egb2YgdGhlIFNlY3VyaXRpZXMgQWN0IG9mIDE5MzMgYW5kIFNlY3Rp
+b24gMjFCIG9mIA0KdGhlIFNlY3VyaXRpZXMgRXhjaGFuZ2UgQWN0IG9mIDE5
+MzQuIEFueSBzdGF0ZW1lbnRzIHRoYXQgZXhwcmVzcyBvciBpbnZvbHZlIA0K
+ZGlzY3Vzc2lvbnMgd2l0aCByZXNwZWN0IHRvIHByZWRpY3Rpb25zLCBnb2Fs
+cyxleHBlY3RhdGlvbnMsIGJlbGllZnMsIHBsYW5zLA0KIHByb2plY3Rpb25z
+LCBvYmplY3RpdmVzLCBhc3N1bXB0aW9ucyBvciBmdXR1cmUgZXZlbnRzIG9y
+IHBlcmZvcm1hbmNlIGFyZQ0KIG5vdCBzdGF0ZW1lbnRzIG9mIGhpc3Rvcmlj
+YWwgZmFjdCBhbmQgbWF5IGJlICJmMHJ3YXJkbG8wa2luZyBzdDR0ZW1lbnRz
+LiINCmYwcndhcmRsbzBraW5nIHN0NHRlbWVudHMgYXJlIGJhc2VkIG9uIGV4
+cGVjdGF0aW9ucywgZXN0aW1hdGVzIGFuZCANCnByb2plY3Rpb25zIGF0IHRo
+ZSB0aW1lIHRoZSBzdGF0ZW1lbnRzIGFyZSBtYWRlIHRoYXQgaW52b2x2ZSBh
+IG51bWJlciBvZiANCnJpc2tzIGFuZCB1bmNlcnRhaW50aWVzIHdoaWNoIGNv
+dWxkIGNhdXNlIGFjdHVhbCByZXN1bHRzIG9yIGV2ZW50cyB0byBkaWZmZXIg
+DQptYXRlcmlhbGx5IGZyb20gdGhvc2UgcHJlc2VudGx5IGFudGljaXBhdGVk
+Lg0KZjByd2FyZF9sbzBraW5nIHN0NHRlbWVudHMgaW4gdGhpcyBhY3Rpb24g
+bWF5IGJlIGlkZW50aWZpZWQgdGhyb3VnaCB0aGUgdXNlIA0Kb2Ygd29yZHMg
+c3VjaCBhczogInByb2plY3RzIiwgImZvcmVzZWUiLCAiZXhwZWN0cyIsICJl
+c3RpbWF0ZXMsIiAiYmVsaWV2ZXMsIiANCiJ1bmRlcnN0YW5kcyIgIndpbGws
+IiAicGFydCBvZjogImFudGljaXBhdGVzLCIgb3IgdGhhdCBieSBzdGF0ZW1l
+bnRzIA0KaW5kaWNhdGluZyBjZXJ0YWluIGFjdGlvbnMgIm1heSwiICJjb3Vs
+ZCwiIG9yICJtaWdodCIgb2NjdXIuIEFsbCBpbmZvcm1hdGlvbiANCnByb3Zp
+ZGVkIHdpdGhpbiB0aGlzIGVtYWlsIHBlcnRhaW5pbmcgdG8gaW52ZXN0aW5n
+LCBzdG9jLmtzLCBzZWN1cml0aWVzIG11c3QgDQpiZSB1bmRlcnN0b29kIGFz
+IGluZm9ybWF0aW9uIHByb3ZpZGVkIGFuZCBub3QgaW52ZXN0bWVudCBhZHZp
+Y2UuDQpFbWVyZ2luZyBFcXVpdHkgQWxlcnQgYWR2aXNlcyBhbGwgcmVhZGVy
+cyBhbmQgc3Vic2NyaWJlcnMgdG8gc2VlayBhZHZpY2UgDQpmcm9tIGEgcmVn
+aXN0ZXJlZCBwcm9mZXNzaW9uYWwgc2VjdXJpdGllcyByZXByZXNlbnRhdGl2
+ZSBiZWZvcmUgZGVjaWRpbmcgdG8gDQp0cmFkZSBpbiBzdG9jLmtzIGZlYXR1
+cmVkIHdpdGhpbiB0aGlzIGVtYWlsLiBOb25lIG9mIHRoZSBtYXRlcmlhbCB3
+aXRoaW4gDQp0aGlzIHJlcG9ydCBzaGFsbCBiZSBjb25zdHJ1ZWQgYXMgYW55
+IGtpbmQgb2YgaW52ZXN0bWVudCBhZHZpY2UuIFBsZWFzZSBoYXZlIA0KaW4g
+bWluZCB0aGF0IHRoZSBpbnRlcnByZXRhdGlvbiBvZiB0aGUgd3JpdGVyIG9m
+IHRoaXMgbmV3c2xldHRlciBhYm91dCB0aGUgDQpuZXdzIHB1Ymxpc2hlZCBi
+eSB0aGUgY29tcGFueSBkb2VzIG5vdCByZXByZXNlbnQgdGhlIGNvbXBhbnkg
+b2ZmaWNpYWwgDQpzdGF0ZW1lbnQgYW5kIGluIGZhY3QgbWF5IGRpZmZlciBm
+cm9tIHRoZSByZWFsIG1lYW5pbmcgb2Ygd2hhdCB0aGUgbmV3cyANCnJlbGVh
+c2UgbWVhbnQgdG8gc2F5LiAgTG9vayBhdCB0aGUgbmV3cyByZWxlYXNlIGJ5
+IHlvdXJzZWxmIGFuZCBqdWRnZSBieSANCnlvdXJzZWxmIGFib3V0IHRoZSBk
+ZXRhaWxzIGluIGl0Lg==
 
 
 
