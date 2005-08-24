@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001359]: cs46xx DTS pass through works, but AC3/Dolby Digital does not
-Date: Wed, 24 Aug 2005 23:53:05 +0200
-Message-ID: <9eac6492c0f0f4e9e7b1fc769426d22b@bugtrack.alsa-project.org>
+From: "Delio Brignoli" <dbrignoli@audioscience.com>
+Subject: [PATCH] asihpi driver, register as pci device and autoprobe support
+Date: Wed, 24 Aug 2005 15:41:03 -0700
+Message-ID: <5115c32ccf90428f82ed66e7dba266ad@audioscience.com>
+Reply-To: dbrignoli@audioscience.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary=----_SmarterMail_NextPart_2412570265770721
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 087CD26A
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2005 23:53:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,149 +16,147 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1359> 
-======================================================================
-Reported By:                rjh
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1359
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             Linux 2.6.12-1.1398_FC4 (a standard FC4 kernel)
-======================================================================
-Date Submitted:             08-22-2005 20:57 CEST
-Last Modified:              08-24-2005 23:53 CEST
-======================================================================
-Summary:                    cs46xx DTS pass through works, but AC3/Dolby Digital
-does not
-Description: 
-Dear Alsa developers.
+------_SmarterMail_NextPart_2412570265770721
+Content-Type: text/plain;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I have an interesting situation with my Terratec XFire 1024 and Sony
-STR-DB930 external amplifier.
+Hello,=0D=0A=0D=0Apatch attached, please apply :)=0D=0A=0D=0ACHANGELOG:=0D=
+=0A*register as pci device and add autoprobe support=0D=0A=0D=0Asigned-off-=
+by: Delio Brignoli dbrignoli@audioscience.com=0D=0A=0D=0Athanks=0D=0A--=0D=
+=0ADelio Brignoli=0D=0A
 
-I have a dual boot system. When I use Windows and Windows DVD players,
-digital pass-through sound works perfectly. When I switch to Linux FC4 +
-Alsa + Xine, only DTS pass-though sound works. In particular, when playing
-a typical DVD that uses Dolby Digital sound by default, the amplifier
-recognizes that it is receiving Dolby Digital signal (Sony STD DB-930
-front panel shows text "Dolby Digital [3/2]", and all the apropriate
-status lights are turned on, too), but no sound comes out. Likewise, no
-DVD intro sounds that play before and during DVD menus can be heard (but
-Sony STD DB-930 front panel shows for example text "Dolby Digital [2/0]").
-There is no humming, rattling, popping, or some other artifact sounds
-either, just silence.
+------_SmarterMail_NextPart_2412570265770721
+Content-Type: application/octet-stream;
+	name=patch.txt
+Content-Disposition: attachment; filename="patch.txt"
+Content-Transfer-Encoding: base64
 
-If I on the other hand select a DTS sound track using Xine DVD menu
-functions, the aplifier recognizes that it is now receiving DTS signal
-(font panel shows "DTS [3/2]"), and sound plays as it should!
+VGh1IEF1ZyAgNCAxNjozOTowOCBOWlNUIDIwMDUgIGRicmlnbm9saUBhdWRpb3NjaWVuY2UuY29t
+CiAgKiByZWdpc3Rlcl9hc19wY2lfZGV2aWNlX2FuZF9ob3RwbHVnX3N1cHBvcnQKZGlmZiAtck4g
+LXUgb2xkLWFsc2EtZHJpdmVyLTEuMC45Yi1yZWdpc3Rlcl9wY2kvcGNpL2FzaWhwaS5jIG5ldy1h
+bHNhLWRyaXZlci0xLjAuOWItcmVnaXN0ZXJfcGNpL3BjaS9hc2locGkuYwotLS0gb2xkLWFsc2Et
+ZHJpdmVyLTEuMC45Yi1yZWdpc3Rlcl9wY2kvcGNpL2FzaWhwaS5jCTIwMDUtMDgtMjUgMTA6MTM6
+NTEuMDAwMDAwMDAwICsxMjAwCisrKyBuZXctYWxzYS1kcml2ZXItMS4wLjliLXJlZ2lzdGVyX3Bj
+aS9wY2kvYXNpaHBpLmMJMjAwNS0wOC0yNSAxMDoxMzo1Mi4wMDAwMDAwMDAgKzEyMDAKQEAgLTI3
+LDYgKzI3LDcgQEAKICNkZWZpbmUgQVNJX1NUWUxFX05BTUVTIDEKICNlbmRpZgogCisjaW5jbHVk
+ZSA8bGludXgvcGNpLmg+CiAjaW5jbHVkZSA8c291bmQvZHJpdmVyLmg+CiAjaW5jbHVkZSA8bGlu
+dXgvdmVyc2lvbi5oPgogI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4KQEAgLTExMCw3ICsxMTEsOSBA
+QAogfSBzbmRfY2FyZF9hc2locGlfcGNtX3Q7CiAKIHN0YXRpYyBIUElfSFNVQlNZUyAqcGhTdWJT
+eXM7CS8qIGhhbmRsZSB0byBIUEkgYXVkaW8gc3Vic3lzdGVtICovCi1zdGF0aWMgc25kX2NhcmRf
+dCAqc25kX2FzaWhwaV9jYXJkc1tTTkRSVl9DQVJEU10gPSBTTkRSVl9ERUZBVUxUX1BUUjsKKwor
+dm9pZCBIUElfQWRhcHRlckluZGV4KCBjb25zdCBIUElfSFNVQlNZUyAqcGhTdWJTeXMsIHN0cnVj
+dCBwY2lfZGV2ICpwY2lfZGV2LAorCQkJCQljb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCAqcGNp
+X2lkLCBzaG9ydCAqIHdBZGFwdGVySW5kZXggKTsKIAogc3RhdGljIHZvaWQgX0hhbmRsZUVycm9y
+KEhXMTYgZXJyLCBpbnQgbGluZSwgY2hhciAqZmlsZW5hbWUpCiB7CkBAIC0yMjA3LDI3ICsyMjEw
+LDUxIEBACiAvKi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQogICAgQ0FSRAogIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSovCi1zdGF0aWMgaW50IF9faW5pdCBzbmRfY2Fy
+ZF9hc2locGlfcHJvYmUoaW50IGRldikKK3N0YXRpYyBpbnQgX19kZXZpbml0IHNuZF9hc2locGlf
+cHJvYmUoc3RydWN0IHBjaV9kZXYgKnBjaV9kZXYsCisJCQkJICAgICAgIGNvbnN0IHN0cnVjdCBw
+Y2lfZGV2aWNlX2lkICpwY2lfaWQpCiB7CisJaW50IGlkeCwgZXJyOworCisJc2hvcnQgZGV2X2lk
+eDsKKwlIVzMyIGR3VmVyc2lvbjsKKwogCUhXMTYgd1ZlcnNpb247CiAJaW50IHBjbV9zdWJzdHJl
+YW1zOwogCiAJc25kX2NhcmRfdCAqY2FyZDsKIAlzdHJ1Y3Qgc25kX2NhcmRfYXNpaHBpICphc2lo
+cGk7Ci0JaW50IGlkeCwgZXJyOwogCiAJSFBJX0hDT05UUk9MIGhDb250cm9sOwogCi0JLy8gIGlm
+ICghZW5hYmxlW2Rldl0pCi0JLy9yZXR1cm4gLUVOT0RFVjsKLQllcnIgPSBIUElfQWRhcHRlck9w
+ZW4ocGhTdWJTeXMsIGRldik7CisJc25kX3ByaW50ZChLRVJOX0lORk8gIkFTSUhQSSBkcml2ZXIg
+c3RhcnRcbiIpOworCisJcGhTdWJTeXMgPSBIUElfU3ViU3lzQ3JlYXRlKCk7CisJaWYgKHBoU3Vi
+U3lzID09IE5VTEwpIHsKKwkJc25kX3ByaW50ZChLRVJOX0VSUgorCQkJICAgInBoU3ViU3lzPT1O
+VUxMLCBBU0kgSFBJIGRyaXZlciBub3QgbG9hZGVkP1xuIik7CisJCXJldHVybiAwOworCX0KIAor
+CWVyciA9IEhQSV9TdWJTeXNHZXRWZXJzaW9uKHBoU3ViU3lzLCAmZHdWZXJzaW9uKTsKIAlIUElf
+SGFuZGxlRXJyb3IoZXJyKTsKLQlpZiAoZXJyKQorCXNuZF9wcmludGQoS0VSTl9JTkZPICJIUElf
+U3ViU3lzR2V0VmVyc2lvbj0lbHhcbiIsIGR3VmVyc2lvbik7CisKKwlIUElfQWRhcHRlckluZGV4
+KCBwaFN1YlN5cywgcGNpX2RldiwgcGNpX2lkLCAmZGV2X2lkeCApOworCXNuZF9wcmludGQoS0VS
+Tl9JTkZPICJQQ0kgZGV2aWNlICglMDR4OiUwNHgsJTA0eDolMDR4LCUwNHgpIGlzIEhQSSBpbmRl
+eCAjICVkXG4iLCAKKwkJcGNpX2Rldi0+dmVuZG9yLCBwY2lfZGV2LT5kZXZpY2UsIHBjaV9kZXYt
+PnN1YnN5c3RlbV92ZW5kb3IsIAorCQlwY2lfZGV2LT5zdWJzeXN0ZW1fZGV2aWNlLCBwY2lfZGV2
+LT5kZXZmbiwgZGV2X2lkeCApOworCisJaWYgKCBkZXZfaWR4ID49IDAgKSB7CisJCWVyciA9IEhQ
+SV9BZGFwdGVyT3BlbiggcGhTdWJTeXMsIChIVzE2KWRldl9pZHggKTsKKwkJSFBJX0hhbmRsZUVy
+cm9yKCBlcnIgKTsKKwkJaWYgKCBlcnIgKQorCQkJcmV0dXJuIC1FTk9ERVY7CisJfSBlbHNlIHsK
+IAkJcmV0dXJuIC1FTk9ERVY7CisJfQogCiAJLy8gZmlyc3QgdHJ5IHRvIGdpdmUgdGhlIGNhcmQg
+dGhlIHNhbWUgaW5kZXggYXMgaXRzIGhhcmR3YXJlIGluZGV4Ci0JY2FyZCA9IHNuZF9jYXJkX25l
+dyhkZXYsIFNORFJWX0RFRkFVTFRfU1RSMSwgVEhJU19NT0RVTEUsCisJY2FyZCA9IHNuZF9jYXJk
+X25ldyhkZXZfaWR4LCBTTkRSVl9ERUZBVUxUX1NUUjEsIFRISVNfTU9EVUxFLAogCQkJICAgIHNp
+emVvZihzdHJ1Y3Qgc25kX2NhcmRfYXNpaHBpKSk7CiAJaWYgKGNhcmQgPT0gTlVMTCkgewogCQkv
+LyBpZiB0aGF0IGZhaWxzLCB0cnkgdGhlIGRlZmF1bHQgaW5kZXg9PW5leHQgYXZhaWxhYmxlCkBA
+IC0yMjM5LDEyICsyMjY2LDEyIEBACiAJCQlyZXR1cm4gLUVOT01FTTsKIAkJc25kX3ByaW50ayhL
+RVJOX1dBUk5JTkcKIAkJCSAgICIqKioqIFdBUk5JTkcgKioqKiBBZGFwdGVyIGluZGV4ICVkLT5B
+TFNBIGluZGV4ICVkXG4iLAotCQkJICAgZGV2LCBjYXJkLT5udW1iZXIpOworCQkJICAgZGV2X2lk
+eCwgY2FyZC0+bnVtYmVyKTsKIAl9CiAKIAlhc2locGkgPSAoc3RydWN0IHNuZF9jYXJkX2FzaWhw
+aSAqKSBjYXJkLT5wcml2YXRlX2RhdGE7CiAJYXNpaHBpLT5jYXJkID0gY2FyZDsKLQlhc2locGkt
+PndBZGFwdGVySW5kZXggPSBkZXY7CisJYXNpaHBpLT53QWRhcHRlckluZGV4ID0gZGV2X2lkeDsK
+IAllcnIgPSBIUElfQWRhcHRlckdldEluZm8ocGhTdWJTeXMsCiAJCQkJIGFzaWhwaS0+d0FkYXB0
+ZXJJbmRleCwKIAkJCQkgJmFzaWhwaS0+d051bU91dFN0cmVhbXMsCkBAIC0yMjcyLDgwICsyMjk5
+LDU4IEBACiAJCQkJICBIUElfQ09OVFJPTF9TQU1QTEVDTE9DSywgJmhDb250cm9sKTsKIAogCWlm
+ICghZXJyKQotCQkJZXJyID0gSFBJX1NhbXBsZUNsb2NrX1NldFNhbXBsZVJhdGUocGhTdWJTeXMs
+IGhDb250cm9sLCBhZGFwdGVyX2ZzKTsKKwkJZXJyID0gSFBJX1NhbXBsZUNsb2NrX1NldFNhbXBs
+ZVJhdGUocGhTdWJTeXMsIGhDb250cm9sLCBhZGFwdGVyX2ZzKTsKIAogCXNuZF9hc2locGlfcHJv
+Y19pbml0KGFzaWhwaSk7CiAKIAlzdHJjcHkoY2FyZC0+ZHJpdmVyLCAiQVNJSFBJIik7CiAJc3By
+aW50ZihjYXJkLT5zaG9ydG5hbWUsICJBdWRpb1NjaWVuY2UgQVNJJTRYIiwgYXNpaHBpLT53VHlw
+ZSk7Ci0Jc3ByaW50ZihjYXJkLT5sb25nbmFtZSwgIiVzICVpIiwgY2FyZC0+c2hvcnRuYW1lLCBk
+ZXYgKyAxKTsKKwlzcHJpbnRmKGNhcmQtPmxvbmduYW1lLCAiJXMgJWkiLCBjYXJkLT5zaG9ydG5h
+bWUsIGRldl9pZHggKyAxKTsKIAlpZiAoKGVyciA9IHNuZF9jYXJkX3JlZ2lzdGVyKGNhcmQpKSA9
+PSAwKSB7Ci0JCXNuZF9hc2locGlfY2FyZHNbZGV2XSA9IGNhcmQ7CisJCXBjaV9zZXRfZHJ2ZGF0
+YSggcGNpX2RldiwgY2FyZCApOwogCQlyZXR1cm4gMDsKIAl9CiAgICAgICBfX25vZGV2OgogCXNu
+ZF9jYXJkX2ZyZWUoY2FyZCk7CiAJcmV0dXJuIGVycjsKLX0KIAorfQogCi1zdGF0aWMgaW50IF9f
+aW5pdCBhbHNhX2NhcmRfYXNpaHBpX2luaXQodm9pZCkKK3N0YXRpYyB2b2lkIF9fZGV2ZXhpdCBz
+bmRfYXNpaHBpX3JlbW92ZShzdHJ1Y3QgcGNpX2RldiAqcGNpX2RldikKIHsKLQlpbnQgZGV2LCBj
+YXJkczsKLQotCUhXMTYgZXJyID0gMDsJCS8vIEhQSSBlcnJvcgotCUhXMTYgd051bUFkYXB0ZXJz
+ID0gMDsKLQlIVzE2IGF3QWRhcHRlckxpc3RbSFBJX01BWF9BREFQVEVSU107Ci0JSFcxNiB3TGlz
+dExlbmd0aCA9IEhQSV9NQVhfQURBUFRFUlM7Ci0JSFczMiBkd1ZlcnNpb247Ci0KLQlzbmRfcHJp
+bnRkKEtFUk5fSU5GTyAiQVNJSFBJIGRyaXZlciBzdGFydFxuIik7CisJc25kX2NhcmRfZnJlZSgg
+cGNpX2dldF9kcnZkYXRhKCBwY2lfZGV2ICkgKTsKKwlwY2lfc2V0X2RydmRhdGEoIHBjaV9kZXYs
+IE5VTEwgKTsKK30KIAotCXBoU3ViU3lzID0gSFBJX1N1YlN5c0NyZWF0ZSgpOwotCWlmIChwaFN1
+YlN5cyA9PSBOVUxMKSB7Ci0JCXNuZF9wcmludGQoS0VSTl9FUlIKLQkJCSAgICJwaFN1YlN5cz09
+TlVMTCwgQVNJIEhQSSBkcml2ZXIgbm90IGxvYWRlZD9cbiIpOwotCQlyZXR1cm4gMDsKLQl9Citz
+dGF0aWMgc3RydWN0IHBjaV9kZXZpY2VfaWQgIGFzaWhwaV9wY2lfdGJsW10gPSB7CisgICAge0hQ
+SV9QQ0lfVkVORE9SX0lEX1RJLCBIUElfQURBUFRFUl9EU1A2MjA1LEhQSV9QQ0lfVkVORE9SX0lE
+X0FVRElPU0NJRU5DRSxQQ0lfQU5ZX0lELDAsMCwwLCB9LAorICAgIHtIUElfUENJX1ZFTkRPUl9J
+RF9USSwgSFBJX0FEQVBURVJfUENJMjA0MCxIUElfUENJX1ZFTkRPUl9JRF9BVURJT1NDSUVOQ0Us
+UENJX0FOWV9JRCwwLDAsMCwgfSwKKyAgICB7SFBJX1BDSV9WRU5ET1JfSURfTU9UT1JPTEEsSFBJ
+X0FEQVBURVJfRFNQNTYzMDEsSFBJX1BDSV9WRU5ET1JfSURfQVVESU9TQ0lFTkNFLFBDSV9BTllf
+SUQsMCwwLDAsIH0sCisgICAge0hQSV9QQ0lfVkVORE9SX0lEX01PVE9ST0xBLEhQSV9BREFQVEVS
+X0RTUDU2MzAxLEhQSV9QQ0lfVkVORE9SX0lEX0FVRElPU0NJRU5DRSxQQ0lfQU5ZX0lELDAsMCww
+LCB9LAorICAgICAvLyBsb29rIGZvciBBU0kgY2FyZHMgdGhhdCBoYXZlIDB4MTJjZiBzdWItdmVu
+ZG9yIElELCBsaWtlIHRoZSA0MzAwIGFuZCA0NjAxCisgICAge0hQSV9QQ0lfVkVORE9SX0lEX01P
+VE9ST0xBLEhQSV9BREFQVEVSX0RTUDU2MzAxLDB4MTJDRiAgICAgICAgICAgICAgICAgICAgICAg
+ICxQQ0lfQU5ZX0lELDAsMCwwLCB9LAorICAgIC8vIGxvb2sgZm9yIEFTSSBjYXJkcyB0aGF0IGhh
+dmUgc3ViLXZlbmRvci1JRCA9IDAsIGxpa2UgdGhlIDQ1MDEsIDQxMTMgYW5kIDQyMTUgcmV2QyBh
+bmQgYmVsb3cKKyAgICB7SFBJX1BDSV9WRU5ET1JfSURfTU9UT1JPTEEsSFBJX0FEQVBURVJfRFNQ
+NTYzMDEsMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLFBDSV9BTllfSUQsMCwwLDAsIH0s
+CisgICAgezAsfQorfTsKIAotCWVyciA9IEhQSV9TdWJTeXNHZXRWZXJzaW9uKHBoU3ViU3lzLCAm
+ZHdWZXJzaW9uKTsKLQlIUElfSGFuZGxlRXJyb3IoZXJyKTsKLQlzbmRfcHJpbnRkKEtFUk5fSU5G
+TyAiSFBJX1N1YlN5c0dldFZlcnNpb249JWx4XG4iLCBkd1ZlcnNpb24pOworTU9EVUxFX0RFVklD
+RV9UQUJMRShwY2ksIGFzaWhwaV9wY2lfdGJsKTsKIAotCWVyciA9IEhQSV9TdWJTeXNGaW5kQWRh
+cHRlcnMocGhTdWJTeXMsCi0JCQkJICAgICAmd051bUFkYXB0ZXJzLAotCQkJCSAgICAgYXdBZGFw
+dGVyTGlzdCwgd0xpc3RMZW5ndGgpOwotCUhQSV9IYW5kbGVFcnJvcihlcnIpOwotCXNuZF9wcmlu
+dGQoS0VSTl9JTkZPICJIUElfU3ViU3lzRmluZEFkYXB0ZXJzIE51bWJlckFkYXB0ZXJzPSVkIFxu
+IiwKLQkJICAgd051bUFkYXB0ZXJzKTsKK3N0YXRpYyBzdHJ1Y3QgcGNpX2RyaXZlciBhc2locGlf
+cGNpX2RyaXZlciA9IHsKKyAgICAgICAgLm5hbWUgICAgID0gImFzaWhwaSIsCisgICAgICAgIC5p
+ZF90YWJsZSA9IGFzaWhwaV9wY2lfdGJsLAorICAgICAgICAucHJvYmUgICAgPSBzbmRfYXNpaHBp
+X3Byb2JlLAorICAgICAgICAucmVtb3ZlICAgPSBfX2RldmV4aXRfcChzbmRfYXNpaHBpX3JlbW92
+ZSksCit9OwogCi0JZm9yIChkZXYgPSBjYXJkcyA9IDA7IGRldiA8IEhQSV9NQVhfQURBUFRFUlM7
+IGRldisrKSB7Ci0JCWlmIChhd0FkYXB0ZXJMaXN0W2Rldl0gJiYgc25kX2NhcmRfYXNpaHBpX3By
+b2JlKGRldikgPCAwKSB7Ci0jaWZkZWYgTU9EVUxFCi0JCQlzbmRfcHJpbnRrKEtFUk5fRVJSCi0J
+CQkJICAgIkFzaWhwaSBzb3VuZGNhcmQgIyVpIG5vdCBmb3VuZCBvciBkZXZpY2UgYnVzeVxuIiwK
+LQkJCQkgICBkZXYgKyAxKTsKLSNlbmRpZgotCQkJYnJlYWs7Ci0JCX0KLQkJY2FyZHMrKzsKLQl9
+Ci0JaWYgKCFjYXJkcykgewotI2lmZGVmIE1PRFVMRQotCQlzbmRfcHJpbnRrKEtFUk5fRVJSCi0J
+CQkgICAiQXNpaHBpIHNvdW5kY2FyZCBub3QgZm91bmQgb3IgZGV2aWNlIGJ1c3lcbiIpOwotI2Vu
+ZGlmCi0JCXJldHVybiAtRU5PREVWOwotCX0KLQlyZXR1cm4gMDsKK3N0YXRpYyBpbnQgX19pbml0
+IGFsc2FfY2FyZF9hc2locGlfaW5pdCh2b2lkKQoreworCXJldHVybiBwY2lfcmVnaXN0ZXJfZHJp
+dmVyKCZhc2locGlfcGNpX2RyaXZlcik7CiB9CiAKIHN0YXRpYyB2b2lkIF9fZXhpdCBhbHNhX2Nh
+cmRfYXNpaHBpX2V4aXQodm9pZCkKIHsKLQlpbnQgaWR4OwotCi0JZm9yIChpZHggPSAwOyBpZHgg
+PCBTTkRSVl9DQVJEUzsgaWR4KyspCi0JCXNuZF9jYXJkX2ZyZWUoc25kX2FzaWhwaV9jYXJkc1tp
+ZHhdKTsKKwlwY2lfdW5yZWdpc3Rlcl9kcml2ZXIoJmFzaWhwaV9wY2lfZHJpdmVyKTsKIH0KIAog
+bW9kdWxlX2luaXQoYWxzYV9jYXJkX2FzaWhwaV9pbml0KQoK
+------_SmarterMail_NextPart_2412570265770721--
 
-If I configure Xine to do the decoding and output normal stereo sound,
-that works too, but without the benefits of surround sound, of course.
-
-It would therefore seem that current ALSA cs46xx driver can almost but not
-quite output Dolby Digital sound in a format that the Sony STR-DB930
-amplifier recognizes. One the other hand, DTS signal comes through ok. I
-hope that these observations will propably limit the number of locations
-where the problem may be.
-
-I would also point out that the amplifier status display reacts correctly
-to changes in signal type. This propably proves that at least something
-does indeed come though correctly. Finally, the fact that everything works
-perfectly with Windows drivers shows that the card and amplifier can work
-together.
-
-I have also tried to randomly change the control values in Xine iec958
-control string (the audio.device.alsa_passthrough_device parameter that
-has the default value of "iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2) but
-without any effect.
-
-I have also tried various control values with 'iecset' utility, but again
-without any effect.
-
-I have no custom .asoundrc settings in place.
-
-I have to admit that I have not tried other recent players than Xine
-0.99.4-1.2.fc4 yet, mainly because latest mplayer current crashes and I
-have had some trouble compiling it, too. However, I have observed the same
-problem earlier with older Xine and mplayer version is some older Linux
-distribution (and exactly the same hardware).
-
-I would be very thankfull for any advice. I would also be happy to run any
-additional tests you might consider usefull.
-
-  Rami
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000542 custom kernel with latest alsa-source f...
-======================================================================
-
-----------------------------------------------------------------------
- rjh - 08-24-05 21:57 
-----------------------------------------------------------------------
-Unfortunately, I do not understand the suggested resolution for issue
-0001359 by 'tiwai'. In particular, I can not see how issue 0000542 could
-be a duplicate for this issue 0001359 I reported: 0000542 was a
-compilation problem, and it conserns an old kernel and Alsa version. This
-old issue should also be already fixed in the latest kernel and Alsa
-versions I'm using. Furthermore, issue 0001359 was also not a compilation
-problem at all, but about Alsa cs46xx driver pass-through working almost
-but not quite with AC3/Dolby Digital sound tracks.
-
-Could it be that the issue 0001359 is a duplication of some other issue
-than 0000542, and there just were a simple typing error when these issues
-were linked? In any case, I would very much appreciate some verification
-or elaboration about the suggested resolution, if possible.
-
-----------------------------------------------------------------------
- rjh - 08-24-05 23:53 
-----------------------------------------------------------------------
-After some browsing, I actually found issue number 0000562 which seems to
-be a much better match with this issue that 0000542. So maybe the correct
-duplicate ID would be 0000562, not 0000542 (the difference is only one
-digit, so the original entry was most propably a typo).
-
-Maybe some administrator could fix the duplicate relationship link?
-
-The real question is however, who could fix the actual problem, already
-cited by 'tiwai' as being "a long standing bug about AC3 on cs46xx" (a
-direct quote from issue 0000562, dated '10-06-04', over a year ago)!
-
-Is there anything I can do to help? I'm not AC3/cs46xx expert, but I can
-program, compile, and run test software. Most importantly, I can provide a
-test environment where the problem can be easily reproducted. So please
-instruct me what to do so that we may together kill this bug.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-22-05 20:57 rjh            New Issue                                    
-08-22-05 20:57 rjh            Distribution              => Fedora Core 4   
-08-22-05 20:57 rjh            Kernel Version            => Linux
-2.6.12-1.1398_FC4 (a standard FC4 kernel)
-08-22-05 21:00 rjh            Issue Monitored: rjh                         
-08-23-05 16:35 tiwai          Relationship added       duplicate of 0000542
-08-23-05 16:35 tiwai          Duplicate ID             0 => 542            
-08-23-05 16:35 tiwai          Status                   new => resolved     
-08-23-05 16:35 tiwai          Resolution               open => duplicate   
-08-23-05 16:35 tiwai          Assigned To               => tiwai           
-08-24-05 21:57 rjh            Status                   resolved => feedback
-08-24-05 21:57 rjh            Resolution               duplicate => reopened
-08-24-05 21:57 rjh            Note Added: 0005934                          
-08-24-05 23:53 rjh            Note Added: 0005935                          
-======================================================================
 
 
 
