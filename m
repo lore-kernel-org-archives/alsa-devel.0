@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000542]: custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
-Date: Thu, 25 Aug 2005 11:56:43 +0200
-Message-ID: <c9c073dac6a7ec772a48ce888a1891cc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
+Date: Thu, 25 Aug 2005 11:57:12 +0200
+Message-ID: <866315fa98d3f14d670a84eea32cc615@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03C9E206
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 11:56:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A0E01F4
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 11:57:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,111 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001359 has been removed as a DUPLICATE OF the following issue.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=542> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
 ======================================================================
-Reported By:                ahasver
-Assigned To:                perex
+Reported By:                jwiegley
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   542
-Category:                   0_compilation problem_!!!
+Issue ID:                   1064
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               debian sid
-Kernel Version:             2.6.9rc1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian-pure64
+Kernel Version:             2.6.12-rc2
 ======================================================================
-Date Submitted:             09-25-2004 19:31 CEST
-Last Modified:              11-09-2004 16:39 CET
+Date Submitted:             04-18-2005 20:42 CEST
+Last Modified:              08-25-2005 11:57 CEST
 ======================================================================
-Summary:                    custom kernel with latest alsa-source fails when
-CONFIG_SND_DEBUG_MEMORY is NOT set
+Summary:                    snd_hda_intel does not recognize acl880 sound chip
 Description: 
-Compiling a custom kernel with latest alsa-source from cvs fails:
+I bought a Shuttle ST20G5 box. Sound doesn't get detected or
+seem to work with manual load.
 
-[...]
-sound/built-in.o(.text+0x122c): In function `snd_card_new':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2b87): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2cb8): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2d68): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x343f): In function `snd_info_create_entry':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x38a9): more undefined references to `kcalloc'
-follow
-make[1]: *** [.tmp_vmlinux1] Fehler 1
-make[1]: Leaving directory `/usr/src/linux-2.6.9-rc1'
-make: *** [stamp-build] Fehler 2
+chipset:
+  ATI Xpress 200 northbridge
+  ULI 1573 southbridge
 
+The documentation says the sound is:
+  Realtek ALC880
+
+alsaconf detects nothing
+manually loading snd_hda_intel also doesn't print anything in the
+log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- ahasver - 09-26-04 11:48 
+ hubs - 08-23-05 14:40 
 ----------------------------------------------------------------------
-Seems to be corrected with linux 2.6.9rc2
-(alsa-cvs 1.0.6 is merged there)
-please close
+Hello
+I have the same problems on a Acer Aspire T630.
+I tried with the kernel 2.6.13-rc6, 2.6.13-rc6 patched with alsa
+1.0.10-rc1, and 2.6.13-rc6 patched with the latest alsa's CVS, on
+2005/08/23.
+I still have the same result of a kernel which loops with the message
+"azx_get_response timeout".
+When I try the acpi=off option, then I encounter the problems with the
+sata_uli module which are described on this bugzilla:
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=165103
+I emailed ALi Corporation 2 weeks ago about the sata controller and
+soundcard driver, but I've got no answer.
+
+Nevertheless, as described in this linuxquestions.org's thread
+http://www.linuxquestions.org/questions/history/340638 , a modified
+version of the old azx driver has been done months ago and is available
+here:
+http://kuhazor.dnsalias.com/1573_Linux_K2.6.x_Integrated_Driver_1.31.zip
+in the directory "HD Audio_M5461".
+Perhaps, it can help.
+I tried it, the module loads, but I can't hear any sound.
+
+Any idea?
+
+----------------------------------------------------------------------
+ hubs - 08-25-05 11:57 
+----------------------------------------------------------------------
+Thanks to tiwai last commits, the CVS version can now load the module.
+I've compiled and ran it on Fedora Core 4 with the kernel
+2.6.12-1.1398_FC4smp.
+About 7 seconds after the module loads, I can hear an ugly sound of about
+5 seconds (a kind of siren).
+The kernel logs say:
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+hda_codec: Cannot set up configuration from BIOS.  Using 3-stack mode...
+
+Then I can see in /dev that it has created the sound devices (mixer, dsp,
+...) owned by root (I'll have to check why, so that my user can access
+it).
+The sound quality is ... good, but not perfect. When the music volume is
+not too loud, I can hear some scratchs. As it's difficult to explain with
+words, the best example is with the song "Between rupture and rapture" by
+Thursday.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-04 19:31 ahasver        New Issue                                    
-09-25-04 19:31 ahasver        Distribution              => debian sid      
-09-25-04 19:31 ahasver        Kernel Version            => 2.6.9rc1        
-09-26-04 11:48 ahasver        Note Added: 0001917                          
-09-28-04 19:23 tiwai          Status                   assigned => resolved
-09-28-04 19:23 tiwai          Resolution               open => fixed       
-11-09-04 16:39 tiwai          Status                   resolved => closed  
-08-23-05 16:35 tiwai          Relationship added       has duplicate 0001359
-08-25-05 11:56 tiwai          Relationship deleted     has duplicate 0001359
+04-18-05 20:42 jwiegley       New Issue                                    
+04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
+04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
+04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
+04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 17:38 tiwai          Note Added: 0004523                          
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-12-05 20:52 jwiegley       Note Added: 0005001                          
+06-15-05 14:39 tiwai          Note Added: 0005026                          
+07-04-05 23:27 Christoph      Issue Monitored: Christoph                    
+07-04-05 23:39 Christoph      Note Added: 0005388                          
+07-08-05 12:03 tiwai          Note Added: 0005413                          
+07-08-05 17:04 Christoph      Note Added: 0005433                          
+08-12-05 18:11 Ballbreaker    Issue End Monitor: Ballbreaker                    
+08-23-05 14:40 hubs           Note Added: 0005905                          
+08-23-05 14:40 hubs           Issue Monitored: hubs                        
+08-25-05 11:57 hubs           Note Added: 0005938                          
 ======================================================================
 
 
