@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
-Date: Thu, 25 Aug 2005 14:59:46 +0200
-Message-ID: <08ff632b326af584e5699e79a7952b6f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2 ZS mixer controls
+Date: Thu, 25 Aug 2005 17:11:09 +0200
+Message-ID: <e88025f983e535d4e43e5ff1c051e1e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCE7A205
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 14:59:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C567F205
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 17:11:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
 ======================================================================
-Reported By:                jwiegley
+Reported By:                phineas
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1064
-Category:                   PCI - hda-intel
+Issue ID:                   1365
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian-pure64
-Kernel Version:             2.6.12-rc2
+Distribution:               Debian testing (etch)
+Kernel Version:             2.6.12.4 vanilla
 ======================================================================
-Date Submitted:             04-18-2005 20:42 CEST
-Last Modified:              08-25-2005 14:59 CEST
+Date Submitted:             08-24-2005 09:22 CEST
+Last Modified:              08-25-2005 17:11 CEST
 ======================================================================
-Summary:                    snd_hda_intel does not recognize acl880 sound chip
+Summary:                    Dell/Creative Labs Audigy 2 ZS mixer controls
 Description: 
-I bought a Shuttle ST20G5 box. Sound doesn't get detected or
-seem to work with manual load.
+Unless this is a user overlooking a step...
 
-chipset:
-  ATI Xpress 200 northbridge
-  ULI 1573 southbridge
+There is no mute control on the "Master" item (or most other items for
+that matter).
+More importantly, the capture items do not have a capture control; they
+have level adjustments, but one cannot actually select an item for
+capturing.
+It appears that this Dell-supplied device (with Audigy subsytem 1003) is
+generally unknown to the drivers -- but it does work well for sound
+playback.
 
-The documentation says the sound is:
-  Realtek ALC880
-
-alsaconf detects nothing
-manually loading snd_hda_intel also doesn't print anything in the
-log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-05 12:15 
+ pzad - 08-25-05 17:11 
 ----------------------------------------------------------------------
-The CVS version as of Aug 24 includes the better support of ULI controller.
- But, it may still lack of the proper support of your device.  Try
-different "model" module option.  The available models can be found in
-patch_realtek.c.
+All controls implemented in DSP don't have mute. No one implemented them.
 
-The scratch noise may be reduced by adding "position_fix=1" or "2" module
-option.  See ALSA-Configuration.txt for details.
+Capture problem is related to your card not detected correctly.
+You can try add this to CVS version of alsa to file
+alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c to table
+emu_chip_details[]
 
-----------------------------------------------------------------------
- hubs - 08-25-05 14:59 
-----------------------------------------------------------------------
-Thank you tiwai. For the scratch, both 1 and 2 values worked.
-Regarding the model, I chose 6stack which made the jack in front work. But
-I don't have 6 jacks in rear. I have 3 jacks in back and 2 in front. I
-don't care, the sound is now really good ;)
+{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10031102,
+	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0353]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 .ca0151_chip = 1,
+	 .spk71 = 1,
+	 .spdif_bug = 1,
+	 .ac97_chip = 1}
 
-For my information, has the patched azx driver been useful for you?
-Thanks again
+Then if your card is detected correctly look at
+http://alsa.opensrc.org/emu10k1
+7. How to record on Audigy and Audigy 2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-05 20:42 jwiegley       New Issue                                    
-04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
-04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
-04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
-04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
-hda-intel
-04-19-05 17:38 tiwai          Note Added: 0004523                          
-06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
-06-12-05 20:52 jwiegley       Note Added: 0005001                          
-06-15-05 14:39 tiwai          Note Added: 0005026                          
-07-04-05 23:27 Christoph      Issue Monitored: Christoph                    
-07-04-05 23:39 Christoph      Note Added: 0005388                          
-07-08-05 12:03 tiwai          Note Added: 0005413                          
-07-08-05 17:04 Christoph      Note Added: 0005433                          
-08-12-05 18:11 Ballbreaker    Issue End Monitor: Ballbreaker                    
-08-23-05 14:40 hubs           Note Added: 0005905                          
-08-23-05 14:40 hubs           Issue Monitored: hubs                        
-08-25-05 11:57 hubs           Note Added: 0005938                          
-08-25-05 12:15 tiwai          Note Added: 0005939                          
-08-25-05 14:59 hubs           Note Added: 0005940                          
+08-24-05 09:22 phineas        New Issue                                    
+08-24-05 09:22 phineas        File Added: vegan.state                      
+08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
+08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
+08-24-05 20:58 phineas        Issue Monitored: phineas                     
+08-25-05 17:11 pzad           Note Added: 0005941                          
 ======================================================================
 
 
