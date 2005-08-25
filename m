@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001359]: cs46xx DTS pass through works, but AC3/Dolby Digital does not
-Date: Thu, 25 Aug 2005 11:56:42 +0200
-Message-ID: <427b7bf1fae8065a4e9b0923e5d58338@bugtrack.alsa-project.org>
+Date: Thu, 25 Aug 2005 11:56:16 +0200
+Message-ID: <92de22350ee245b2f30fc32b7aaa00bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBB0F1F4
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 11:56:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50F321F4
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 11:56:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UNset as DUPLICATE OF issue 0000542.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1359> 
 ======================================================================
@@ -107,25 +107,9 @@ additional tests you might consider usefull.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
+duplicate of        0000542 custom kernel with latest alsa-source f...
 duplicate of        0000562 No AC3 sound playable through S/PDIF wi...
 ======================================================================
-
-----------------------------------------------------------------------
- rjh - 08-24-05 21:57 
-----------------------------------------------------------------------
-Unfortunately, I do not understand the suggested resolution for issue
-0001359 by 'tiwai'. In particular, I can not see how issue 0000542 could
-be a duplicate for this issue 0001359 I reported: 0000542 was a
-compilation problem, and it conserns an old kernel and Alsa version. This
-old issue should also be already fixed in the latest kernel and Alsa
-versions I'm using. Furthermore, issue 0001359 was also not a compilation
-problem at all, but about Alsa cs46xx driver pass-through working almost
-but not quite with AC3/Dolby Digital sound tracks.
-
-Could it be that the issue 0001359 is a duplication of some other issue
-than 0000542, and there just were a simple typing error when these issues
-were linked? In any case, I would very much appreciate some verification
-or elaboration about the suggested resolution, if possible.
 
 ----------------------------------------------------------------------
  rjh - 08-24-05 23:53 
@@ -173,7 +157,6 @@ Date Modified  Username       Field                    Change
 08-25-05 11:56 tiwai          Status                   feedback => resolved
 08-25-05 11:56 tiwai          Resolution               reopened => duplicate
 08-25-05 11:56 tiwai          Note Added: 0005937                          
-08-25-05 11:56 tiwai          Relationship deleted     duplicate of 0000542
 ======================================================================
 
 
