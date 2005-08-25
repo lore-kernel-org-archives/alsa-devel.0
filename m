@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Fri, 26 Aug 2005 01:12:45 +0800
-Message-ID: <430DFC0D.1010502@netvigator.com>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org> <430B3EA0.1000903@netvigator.com> <s5hr7ck4lmt.wl%tiwai@suse.de> <200508232340.46629.alien999999999@users.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001352]: 5.1 support in alsa 1.0.9a
+Date: Thu, 25 Aug 2005 19:20:44 +0200
+Message-ID: <cbe75955fef74f0f2de801ea46497aba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200508232340.46629.alien999999999@users.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0711B206
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 19:20:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alien <alien999999999@users.sourceforge.net>
-Cc: Manuel Jander <manuel.jander@gmail.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alien wrote:
 
-> 
-> anyway, i really need to do the latest tests, i have way too many adb failures 
-> lately.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1352> 
+======================================================================
+Reported By:                saa_1973
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1352
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     feedback
+Distribution:               
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             08-21-2005 14:51 CEST
+Last Modified:              08-25-2005 19:20 CEST
+======================================================================
+Summary:                    5.1 support in alsa 1.0.9a
+Description: 
+How do i get 5.1 audio support through alsa drivers. This is the
+information of my audio hardware.
 
-What do you means when you say "adb failures" ? ( any message in system
-log )
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02)
 
-> 
-> it mostly happens, when watching a movie and gaim starts a little sound.
-> 
-> i've determined that it's not likely to be the max available sounds, but more 
-> likely to be the weird scheduling of sounds at the same time
-> 
-> i urge you people to chat more using some program that starts little sounds 
-> so, you have lots of short start and stops at the same time, maybe use gaim 
-> for ICQ and IRCing, that always gives me plenty of sounds...
-> 
-> PS: i forgot the latest patch i had to try out.
+Please advise.
+======================================================================
 
-Don't forget the latest patch "Fixed missing spin_unlock" on CVS .
+----------------------------------------------------------------------
+ Clemens Ladisch - 08-22-05 13:08 
+----------------------------------------------------------------------
+5.1 support depends on the codec.
 
-> 
-> I'll do one patch to try out, and hope it doesn't require me to reboot this 
-> machine...
-> 
-> i'm using alsa CVS from some weeks ago, i think
+What are the contents of /proc/asound/cards?
 
-Although I can play multiple mono sound streams on device 2 on my au8830.
+----------------------------------------------------------------------
+ saa_1973 - 08-25-05 19:20 
+----------------------------------------------------------------------
+0 [ICH5           ]: ICH4 - Intel ICH5
+                     Intel ICH5 with AD1985 at 0xffa7f800, irq 3
 
-I don't know why the connection routine of device 2 is disabled only on
-au8810 driver.
-
-If you have any application using device 2 to playback (e.g. 3D demo in 
-vortexcontrol), wierd things may happen on au8810 since some of the 
-route and mixer of device 2 playback stream has not been assigned.
-
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-21-05 14:51 saa_1973       New Issue                                    
+08-21-05 14:51 saa_1973       Kernel Version            => 2.6.9           
+08-22-05 13:08 Clemens LadischNote Added: 0005894                          
+08-22-05 13:08 Clemens LadischStatus                   new => feedback     
+08-25-05 19:20 saa_1973       Note Added: 0005943                          
+======================================================================
 
 
 
