@@ -1,11 +1,14 @@
-From: "gmg666" <gmg666@126.com>
-Subject: =?GB2312?B?s7XWrvfILcqxydC547Ohv6rStcHLo6y7ttOtxOO1xLniwdk=?=
-Date: Thu, 25 Aug 2005 06:47:59 +0800
-Message-ID: <E1E842L-0006Vs-Aa@mail.sourceforge.net>
-Reply-To: gmg666@126.com
-Content-Type: text/plain;charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001368]: Feature request - Support for SoundBlaster X-Fi architecture
+Date: Thu, 25 Aug 2005 03:26:13 +0200
+Message-ID: <4d78d1afc5d6604ee4059a757067fa2e@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C629A230
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 03:26:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,21 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- =B3=B5=D6=AE=F7=C8-=CA=B1=C9=D0=B9=E3=B3=A1=BF=AA=D2=B5=C1=CB=A3=AC=BB=B6=
-=D3=AD=C4=E3=B5=C4=B9=E2=C1=D9
-=CF=EA=C7=E9=D7=C9=D1=AFQQ=A3=BA358882098
-http://gmg666.wdwd.cn/200502/9301/
-=D5=E2=CA=C7=D7=D4=B6=AF=C8=BA=B7=A2=A3=AC=C7=EB=CE=F0=BB=D8=B8=B4=A1=A3=C8=
-=E7=D3=D0=B4=F2=C8=C5=C7=EB=D4=AD=C1=C2=A3=A1=D0=BB=D0=BB=A1=A3
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1368> 
+======================================================================
+Reported By:                Livino
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1368
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-25-2005 03:26 CEST
+Last Modified:              08-25-2005 03:26 CEST
+======================================================================
+Summary:                    Feature request - Support for SoundBlaster X-Fi
+architecture
+Description: 
+Request for support for Creative's SoundBlaster X-Fi architecture.
+(http://us.creative.com/products/category.asp?category=1&subcategory=208)
+
+X-Fi XtremeMusic support.
+ 
+Thanks
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-25-05 03:26 Livino         New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
-es
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
-A
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
