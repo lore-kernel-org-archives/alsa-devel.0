@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2 ZS mixer controls
-Date: Thu, 25 Aug 2005 17:11:09 +0200
-Message-ID: <e88025f983e535d4e43e5ff1c051e1e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000343]: au8820 hangs the system at some occasions
+Date: Thu, 25 Aug 2005 18:51:58 +0200
+Message-ID: <d3878b54e18fe1f1a9314488c86a04fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C567F205
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 17:11:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DA7E1FF
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 18:51:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
 ======================================================================
-Reported By:                phineas
-Assigned To:                
+Reported By:                sandman
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1365
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   343
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Debian testing (etch)
-Kernel Version:             2.6.12.4 vanilla
+Status:                     acknowledged
+Distribution:               RedHat 9
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-24-2005 09:22 CEST
-Last Modified:              08-25-2005 17:11 CEST
+Date Submitted:             06-23-2004 07:20 CEST
+Last Modified:              08-25-2005 18:51 CEST
 ======================================================================
-Summary:                    Dell/Creative Labs Audigy 2 ZS mixer controls
+Summary:                    au8820 hangs the system at some occasions
 Description: 
-Unless this is a user overlooking a step...
-
-There is no mute control on the "Master" item (or most other items for
-that matter).
-More importantly, the capture items do not have a capture control; they
-have level adjustments, but one cannot actually select an item for
-capturing.
-It appears that this Dell-supplied device (with Audigy subsytem 1003) is
-generally unknown to the drivers -- but it does work well for sound
-playback.
-
+At some occasions the system hangs without any means
+to recover other than reset button. No mouse, no pings and
+even the alt-SysRq feature doesn't help.
+As a result I reboot the system a few times a day (sometimes).
+The problem is present in 2.6.5, 2.6.6 and 2.6.7 kernels at
+least. 
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 08-25-05 17:11 
+ sandman - 04-19-05 09:47 
 ----------------------------------------------------------------------
-All controls implemented in DSP don't have mute. No one implemented them.
+I currently have FC3 (with alsa-lib 1.0.6) on my box and the problem
+remains.
+A good way to reproduce this is by having firefox display a site with
+flash that
+uses sound and run xine at the same time
 
-Capture problem is related to your card not detected correctly.
-You can try add this to CVS version of alsa to file
-alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c to table
-emu_chip_details[]
+----------------------------------------------------------------------
+ Raymond - 08-25-05 18:51 
+----------------------------------------------------------------------
+Do ALSA support dual Opteron (Dual CPU) ?
 
-{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10031102,
-	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0353]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1,
-	 .ca0151_chip = 1,
-	 .spk71 = 1,
-	 .spdif_bug = 1,
-	 .ac97_chip = 1}
-
-Then if your card is detected correctly look at
-http://alsa.opensrc.org/emu10k1
-7. How to record on Audigy and Audigy 2
+The CVS version include the patch "Fixed missing spin_unlock" which may
+fix your problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-24-05 09:22 phineas        New Issue                                    
-08-24-05 09:22 phineas        File Added: vegan.state                      
-08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
-08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
-08-24-05 20:58 phineas        Issue Monitored: phineas                     
-08-25-05 17:11 pzad           Note Added: 0005941                          
+06-23-04 07:20 sandman        New Issue                                    
+06-23-04 07:20 sandman        Distribution              => RedHat 9        
+06-23-04 07:20 sandman        Kernel Version            => 2.6.7           
+04-07-05 21:04 jdthood        Note Added: 0004370                          
+04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
+
+04-19-05 09:47 sandman        Note Added: 0004519                          
+04-19-05 10:03 jdthood        Status                   assigned => acknowledged
+08-25-05 18:51 Raymond        Note Added: 0005942                          
 ======================================================================
 
 
