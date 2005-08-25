@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000343]: au8820 hangs the system at some occasions
-Date: Thu, 25 Aug 2005 18:51:58 +0200
-Message-ID: <d3878b54e18fe1f1a9314488c86a04fc@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Fri, 26 Aug 2005 01:12:45 +0800
+Message-ID: <430DFC0D.1010502@netvigator.com>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org> <430B3EA0.1000903@netvigator.com> <s5hr7ck4lmt.wl%tiwai@suse.de> <200508232340.46629.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DA7E1FF
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 18:51:58 +0200 (MEST)
+In-Reply-To: <200508232340.46629.alien999999999@users.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alien <alien999999999@users.sourceforge.net>
+Cc: Manuel Jander <manuel.jander@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Alien wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
-======================================================================
-Reported By:                sandman
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   343
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   crash
-Priority:                   normal
-Status:                     acknowledged
-Distribution:               RedHat 9
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             06-23-2004 07:20 CEST
-Last Modified:              08-25-2005 18:51 CEST
-======================================================================
-Summary:                    au8820 hangs the system at some occasions
-Description: 
-At some occasions the system hangs without any means
-to recover other than reset button. No mouse, no pings and
-even the alt-SysRq feature doesn't help.
-As a result I reboot the system a few times a day (sometimes).
-The problem is present in 2.6.5, 2.6.6 and 2.6.7 kernels at
-least. 
-======================================================================
+> 
+> anyway, i really need to do the latest tests, i have way too many adb failures 
+> lately.
 
-----------------------------------------------------------------------
- sandman - 04-19-05 09:47 
-----------------------------------------------------------------------
-I currently have FC3 (with alsa-lib 1.0.6) on my box and the problem
-remains.
-A good way to reproduce this is by having firefox display a site with
-flash that
-uses sound and run xine at the same time
+What do you means when you say "adb failures" ? ( any message in system
+log )
 
-----------------------------------------------------------------------
- Raymond - 08-25-05 18:51 
-----------------------------------------------------------------------
-Do ALSA support dual Opteron (Dual CPU) ?
+> 
+> it mostly happens, when watching a movie and gaim starts a little sound.
+> 
+> i've determined that it's not likely to be the max available sounds, but more 
+> likely to be the weird scheduling of sounds at the same time
+> 
+> i urge you people to chat more using some program that starts little sounds 
+> so, you have lots of short start and stops at the same time, maybe use gaim 
+> for ICQ and IRCing, that always gives me plenty of sounds...
+> 
+> PS: i forgot the latest patch i had to try out.
 
-The CVS version include the patch "Fixed missing spin_unlock" which may
-fix your problem.
+Don't forget the latest patch "Fixed missing spin_unlock" on CVS .
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-23-04 07:20 sandman        New Issue                                    
-06-23-04 07:20 sandman        Distribution              => RedHat 9        
-06-23-04 07:20 sandman        Kernel Version            => 2.6.7           
-04-07-05 21:04 jdthood        Note Added: 0004370                          
-04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
+> 
+> I'll do one patch to try out, and hope it doesn't require me to reboot this 
+> machine...
+> 
+> i'm using alsa CVS from some weeks ago, i think
 
-04-19-05 09:47 sandman        Note Added: 0004519                          
-04-19-05 10:03 jdthood        Status                   assigned => acknowledged
-08-25-05 18:51 Raymond        Note Added: 0005942                          
-======================================================================
+Although I can play multiple mono sound streams on device 2 on my au8830.
+
+I don't know why the connection routine of device 2 is disabled only on
+au8810 driver.
+
+If you have any application using device 2 to playback (e.g. 3D demo in 
+vortexcontrol), wierd things may happen on au8810 since some of the 
+route and mixer of device 2 playback stream has not been assigned.
+
+
+
+
 
 
 
