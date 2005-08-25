@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001368]: Feature request - Support for SoundBlaster X-Fi architecture
-Date: Thu, 25 Aug 2005 20:10:24 +0200
-Message-ID: <180fb6af299edce6478c181fc4ce863f@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@gmail.com>
+Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Thu, 25 Aug 2005 20:58:45 +0200
+Message-ID: <1124996325.17363.6.camel@localhost.localdomain>
+References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org>
+	 <430B3EA0.1000903@netvigator.com> <s5hr7ck4lmt.wl%tiwai@suse.de>
+	 <200508232340.46629.alien999999999@users.sourceforge.net>
+	 <430DFC0D.1010502@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5BAC20F
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 20:10:24 +0200 (MEST)
+In-Reply-To: <430DFC0D.1010502@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +20,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1368> 
-======================================================================
-Reported By:                Livino
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1368
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-25-2005 03:26 CEST
-Last Modified:              08-25-2005 20:10 CEST
-======================================================================
-Summary:                    Feature request - Support for SoundBlaster X-Fi
-architecture
-Description: 
-Request for support for Creative's SoundBlaster X-Fi architecture.
-(http://us.creative.com/products/category.asp?category=1&subcategory=208)
+On Fri, 2005-08-26 at 01:12 +0800, Raymond wrote:
+> Alien wrote:
+> > 
+> > PS: i forgot the latest patch i had to try out.
+> 
+> Don't forget the latest patch "Fixed missing spin_unlock" on CVS .
+> 
+> > 
+> > I'll do one patch to try out, and hope it doesn't require me to reboot this 
+> > machine...
+> > 
+> > i'm using alsa CVS from some weeks ago, i think
+> 
+> Although I can play multiple mono sound streams on device 2 on my au8830.
+> 
+> I don't know why the connection routine of device 2 is disabled only on
+> au8810 driver.
+> 
+> If you have any application using device 2 to playback (e.g. 3D demo in 
+> vortexcontrol), wierd things may happen on au8810 since some of the 
+> route and mixer of device 2 playback stream has not been assigned.
 
-X-Fi XtremeMusic support.
- 
-Thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001327 Creative X-Fi Support - Do you know any...
-======================================================================
+The WT and A3D subsystems for AU8810 are disabled, because:
 
-----------------------------------------------------------------------
- rlrevell - 08-25-05 20:10 
-----------------------------------------------------------------------
-Duplicate.  Please search for existing bugs before submitting a new one.
+- The AU8810 does not has any WT engine.
+- The AU8810 A3D slices/sources register addresses have not been
+confirmed and seem to be wrong. It looks like the AU8810 has 8 3D
+sources instead of the 16 that the AU8830 has, but further work is
+required, starting with the disassemble of a AU8810 WDM driver, in order
+to find out/conform the 3D slices/sources register addresses.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-25-05 03:26 Livino         New Issue                                    
-08-25-05 20:09 rlrevell       Relationship added       duplicate of 0001327
-08-25-05 20:10 rlrevell       Note Added: 0005944                          
-======================================================================
+
+Best Regards
+Manuel
 
 
 
