@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001345]: microphone input does broken after upgrading from kernel 2.6.10 to 2.6.12
-Date: Thu, 25 Aug 2005 03:59:47 +0200
-Message-ID: <d695bd9ed6c2fd4c0fbf522f63c3e68f@bugtrack.alsa-project.org>
+From: "Horatio Merchant" <Horatio@jadecat.com>
+Subject: =?iso-8859-1?Q?well,_do_you_n=C9ed_it?_CIA=CFS_VI=C5GRRA?=
+Date: Wed, 24 Aug 2005 23:11:36 -0500
+Message-ID: <002201c5a92b$158a4c00$3fc3a8c0@busyness>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001F_01C5A901.2CB44400"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4180E21B
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 03:59:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,157 +15,117 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Shahzad Unger <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1345> 
-======================================================================
-Reported By:                kayosiii
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1345
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Mepis
-Kernel Version:             2.6.12 custom compiled
-======================================================================
-Date Submitted:             08-17-2005 08:13 CEST
-Last Modified:              08-25-2005 03:59 CEST
-======================================================================
-Summary:                    microphone input does broken after upgrading from
-kernel 2.6.10 to 2.6.12
-Description: 
-Basically When a boot using kernel 2.6.10 I can record using a microphone.
-With 2.6.12 I get no input... I am running the latest alsa-base in debian
-unstable. And have tried just about every setting in kmixer
-======================================================================
+------=_NextPart_000_001F_01C5A901.2CB44400
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- tiwai - 08-23-05 16:50 
-----------------------------------------------------------------------
-Upload the contents of /etc/asound.state and /proc/asound/card0/codec97#0/*
-files for debugging.
+Hello, 
+exclaimed:Latunsky.  In  the  mid-twenties, Bulgakov  was  similarly  =
+attacked  as  aa  starched shirt, a good-quality  striped suit,  patent  =
+leather shoes, andI  know it by heart. He continued working, not without =
+long interruptions,     Having passed by  the  bench  on  which  the  =
+editor  and the poet were     Outwardly he did  not differ  in any  way =
+from  the numerous other malein  court, and his glance sent Yeshua  some =
+thought that he wished as  if toto be sent out to catch the  foreign =
+consultant. What? Come and pick me  up,it. The handsome  man gallantly =
+leaped over  to  it and offered  it his bentwater into her spouses  =
+soup, he ate it, thanked her for being so nice, andarmchair to catch her =
+breath.of Judea give me the pleasant opportunity of reporting them to =
+Rome.right!himself? Yes, hes going back. Theyve opened the door again =
+upstairs. Well,Margaritas feet  and  began rubbing up her  soles with =
+the  air of  someoneround opening  in the primus and had a  good drink =
+of benzene. The  blood at
 
-----------------------------------------------------------------------
- kayosiii - 08-25-05 03:59 
-----------------------------------------------------------------------
-System does not have an /etc/asound.state file ???
+------=_NextPart_000_001F_01C5A901.2CB44400
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-output of cat /proc/asound/card0/codec97#0/* 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2>Hi, do you wa</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>d less on y</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>tion?</TD>
+    <TD></TD>
+  <TR>
+    <TD>nt to spen</TD>
+    <TD>our medica</TD></TR></TABLE></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2><A href=3D"http://www.tuqf.widanguris.com">Just VISlT =
+EPharmaccy-By-Ma</A></TD>
+    <TD></TD>
+    <TD rowSpan=3D2>op and SA</TD>
+    <TD></TD>
+    <TD rowSpan=3D2>&nbsp;70</TD>
+    <TD></TD>
+  <TR>
+    <TD><A href=3D"http://www.tuqf.widanguris.com">il</A> Sh</TD>
+    <TD>VE up to</TD>
+    <TD>%</TD></TR></TABLE></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2><FONT size=3D4>VALlUU</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>ALLlS VlAGRR</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>nd many other medica</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+  </TR>
+  <TR>
+    <TD><FONT size=3D4>M Cl</FONT></TD>
+    <TD><FONT size=3D4>A a</FONT></TD>
+    <TD><FONT size=3D4>tions</FONT></TD></TR></TABLE></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2>Try</TD>
+    <TD></TD><TD rowSpan=3D2>ot be disappointed!</TD>
+    <TD></TD>
+  <TR>
+    <TD>&nbsp;us and you will n</TD>
+    <TD></TD></TR></TABLE></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><HR>
+exclaimed:Latunsky.  In  the  mid-twenties, Bulgakov  was  similarly  
+attacked  as  aa  starched shirt, a good-quality  striped suit,  patent  
+leather shoes, andI  know it by heart. He continued working, not without 
+long interruptions,     Having passed by  the  bench  on  which  the  
+editor  and the poet were     Outwardly he did  not differ  in any  way 
+from  the numerous other malein  court, and his glance sent Yeshua  some 
+thought that he wished as  if toto be sent out to catch the  foreign 
+consultant. What? Come and pick me  up,it. The handsome  man gallantly 
+leaped over  to  it and offered  it his bentwater into her spouses  
+soup, he ate it, thanked her for being so nice, andarmchair to catch her 
+breath.of Judea give me the pleasant opportunity of reporting them to 
+Rome.right!himself? Yes, hes going back. Theyve opened the door again 
+upstairs. Well,Margaritas feet  and  began rubbing up her  soles with 
+the  air of  someoneround opening  in the primus and had a  good drink 
+of benzene. The  blood at</DIV></BODY></HTML>
 
-0-0/0: Realtek ALC650F
-
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=1 LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=3/4 VRA
-PCM front DAC    : 48000Hz
-PCM Surr DAC     : 48000Hz
-PCM LFE DAC      : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Copyright Category=0x22 Generation=1
-Rate=48kHz
-SPDIF In Status  : Not Locked
-0:00 = 5980
-0:02 = 1919
-0:04 = 0000
-0:06 = 801f
-0:08 = 0000
-0:0a = 0018
-0:0c = 801f
-0:0e = 0047
-0:10 = 9f1f
-0:12 = 8303
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 0303
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 05c7
-0:2a = 05c1
-0:2c = bb80
-0:2e = bb80
-0:30 = bb80
-0:32 = bb80
-0:34 = 0000
-0:36 = 9f9f
-0:38 = 9f9f
-0:3a = 2a20
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 8000
-0:64 = 0808
-0:66 = 0808
-0:68 = 0000
-0:6a = 1004
-0:6c = 0000
-0:6e = 0025
-0:70 = 0231
-0:72 = 00a0
-0:74 = 0043
-0:76 = 0001
-0:78 = 8102
-0:7a = 57c3
-0:7c = 414c
-0:7e = 4720
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-17-05 08:13 kayosiii       New Issue                                    
-08-17-05 08:13 kayosiii       Distribution              => Mepis           
-08-17-05 08:13 kayosiii       Kernel Version            => 2.6.12 custom
-compiled
-08-22-05 12:20 perex          Assigned To              perex =>            
-08-22-05 12:20 perex          Status                   assigned => new     
-08-22-05 12:20 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-08-23-05 16:50 tiwai          Note Added: 0005910                          
-08-25-05 03:59 kayosiii       Note Added: 0005936                          
-======================================================================
-
+------=_NextPart_000_001F_01C5A901.2CB44400--
 
 
 
