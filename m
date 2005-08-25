@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
-Date: Thu, 25 Aug 2005 11:57:12 +0200
-Message-ID: <866315fa98d3f14d670a84eea32cc615@bugtrack.alsa-project.org>
+Date: Thu, 25 Aug 2005 12:15:26 +0200
+Message-ID: <441ecda786c768d999c5180ca5ba9246@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A0E01F4
-	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 11:57:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B67211FC
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2005 12:15:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian-pure64
 Kernel Version:             2.6.12-rc2
 ======================================================================
 Date Submitted:             04-18-2005 20:42 CEST
-Last Modified:              08-25-2005 11:57 CEST
+Last Modified:              08-25-2005 12:15 CEST
 ======================================================================
 Summary:                    snd_hda_intel does not recognize acl880 sound chip
 Description: 
@@ -58,33 +58,6 @@ alsaconf detects nothing
 manually loading snd_hda_intel also doesn't print anything in the
 log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
-
-----------------------------------------------------------------------
- hubs - 08-23-05 14:40 
-----------------------------------------------------------------------
-Hello
-I have the same problems on a Acer Aspire T630.
-I tried with the kernel 2.6.13-rc6, 2.6.13-rc6 patched with alsa
-1.0.10-rc1, and 2.6.13-rc6 patched with the latest alsa's CVS, on
-2005/08/23.
-I still have the same result of a kernel which loops with the message
-"azx_get_response timeout".
-When I try the acpi=off option, then I encounter the problems with the
-sata_uli module which are described on this bugzilla:
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=165103
-I emailed ALi Corporation 2 weeks ago about the sata controller and
-soundcard driver, but I've got no answer.
-
-Nevertheless, as described in this linuxquestions.org's thread
-http://www.linuxquestions.org/questions/history/340638 , a modified
-version of the old azx driver has been done months ago and is available
-here:
-http://kuhazor.dnsalias.com/1573_Linux_K2.6.x_Integrated_Driver_1.31.zip
-in the directory "HD Audio_M5461".
-Perhaps, it can help.
-I tried it, the module loads, but I can't hear any sound.
-
-Any idea?
 
 ----------------------------------------------------------------------
  hubs - 08-25-05 11:57 
@@ -105,6 +78,17 @@ The sound quality is ... good, but not perfect. When the music volume is
 not too loud, I can hear some scratchs. As it's difficult to explain with
 words, the best example is with the song "Between rupture and rapture" by
 Thursday.
+
+----------------------------------------------------------------------
+ tiwai - 08-25-05 12:15 
+----------------------------------------------------------------------
+The CVS version as of Aug 24 includes the better support of ULI controller.
+ But, it may still lack of the proper support of your device.  Try
+different "model" module option.  The available models can be found in
+patch_realtek.c.
+
+The scratch noise may be reduced by adding "position_fix=1" or "2" module
+option.  See ALSA-Configuration.txt for details.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -127,6 +111,7 @@ hda-intel
 08-23-05 14:40 hubs           Note Added: 0005905                          
 08-23-05 14:40 hubs           Issue Monitored: hubs                        
 08-25-05 11:57 hubs           Note Added: 0005938                          
+08-25-05 12:15 tiwai          Note Added: 0005939                          
 ======================================================================
 
 
