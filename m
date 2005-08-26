@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001343]: bitops not 64bit clean
-Date: Fri, 26 Aug 2005 14:42:44 +0200
-Message-ID: <ad23d0cdd86a56c2aa486fb59a4801ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001339]: does audio driver for Intel 945 chipset exist?
+Date: Fri, 26 Aug 2005 14:43:00 +0200
+Message-ID: <2dd969221dfe5d579f041dd11625b441@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 676C21E4
-	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2005 14:42:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 221261E4
+	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2005 14:43:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,115 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1343> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1339> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                zhllg
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1343
-Category:                   ld10k1
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   1339
+Category:                   PCI - intel8x0m
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-16-2005 20:49 CEST
-Last Modified:              08-26-2005 14:42 CEST
+Date Submitted:             08-15-2005 20:39 CEST
+Last Modified:              08-26-2005 14:43 CEST
 ======================================================================
-Summary:                    bitops not 64bit clean
+Summary:                    does audio driver for Intel 945 chipset exist?
 Description: 
-Quoting Debian bug report #323331:
-
-Package: ld10k1
-Version: 1.0.9-1
-
-On all 64bit systems (the easiest example is amd64) ld10k1 crashes on
-use by lo10k1, some debugging tracked down the problem fairly quickly.
-
-The bitops functions (set_bit and associated) that ld10k1 use come from
-the linux kernel, and assume that longs are 32bit only, causing a buffer
-overflow of the bit buffer.
-
-The attached patch fixes the bitops to be independent of the size of
-longs, and is confirmed to fix the bug on my box.
-
-Zephaniah E. Hull.
-
-diff -ur alsa-tools-1.0.9/ld10k1/src/bitops.h
-alsa-tools-1.0.9.mine/ld10k1/src/bitops.h
---- alsa-tools-1.0.9/ld10k1/src/bitops.h	2005-03-18 08:41:02.000000000
--0500
-+++ alsa-tools-1.0.9.mine/ld10k1/src/bitops.h	2005-08-15
-23:24:46.000000000 -0400
-@@ -15,13 +15,17 @@
-  * 
-  * C language equivalents written by Theodore Ts'o, 9/26/92
-  */
-+/*
-+ * Converted to be independent of the size of longs.
-+ * Zephaniah E. Hull 2005-08-15.
-+ */
- 
- __inline__ int set_bit(int nr, unsigned long * addr)
- {
- 	int	mask, retval;
- 
--	addr += nr >> 5;
--	mask = 1 << (nr & 0x1f);
-+	addr += nr >> (sizeof(long) + 1);
-+	mask = 1 << (nr & (sizeof(long) * 8 - 1));
- 	retval = (mask & *addr) != 0;
- 	*addr |= mask;
- 	return retval;
-@@ -31,8 +35,8 @@
- {
- 	int	mask, retval;
- 
--	addr += nr >> 5;
--	mask = 1 << (nr & 0x1f);
-+	addr += nr >> (sizeof(long) + 1);
-+	mask = 1 << (nr & (sizeof(long) * 8 - 1));
- 	retval = (mask & *addr) != 0;
- 	*addr &= ~mask;
- 	return retval;
-@@ -42,8 +46,8 @@
- {
- 	int	mask;
- 
--	addr += nr >> 5;
--	mask = 1 << (nr & 0x1f);
-+	addr += nr >> (sizeof(long) + 1);
-+	mask = 1 << (nr & (sizeof(long) * 8 - 1));
- 	return ((mask & *addr) != 0);
- }
-
+as stated in the title
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-17-05 12:23 
+ tiwai - 08-16-05 18:17 
 ----------------------------------------------------------------------
-Could you upload the patch file to be applicable to CVS?
-
-----------------------------------------------------------------------
- tiwai - 08-26-05 14:42 
-----------------------------------------------------------------------
-Already on CVS.  Thanks.
+It's either snd-hda-intel or snd-intel8x0, depending on the board.
+ICH6/7 has both HDA and AC97 interface.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-16-05 20:49 jdthood        New Issue                                    
-08-16-05 20:52 rlrevell       Note Added: 0005832                          
-08-16-05 21:13 pzad           Note Added: 0005833                          
-08-17-05 12:23 tiwai          Note Added: 0005836                          
-08-17-05 12:37 jdthood        File Added: ld10k1.diff                      
-08-26-05 14:42 tiwai          Status                   new => resolved     
-08-26-05 14:42 tiwai          Resolution               open => fixed       
-08-26-05 14:42 tiwai          Assigned To               => tiwai           
-08-26-05 14:42 tiwai          Note Added: 0005947                          
+08-15-05 20:39 zhllg          New Issue                                    
+08-16-05 18:17 tiwai          Note Added: 0005831                          
+08-26-05 14:43 tiwai          Status                   assigned => resolved
+08-26-05 14:43 tiwai          Resolution               open => not an issue
 ======================================================================
 
 
