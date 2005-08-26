@@ -1,14 +1,14 @@
-From: "Nguyet Hendrickson" <Hendr_8641@jawer.com>
-Subject: =?iso-8859-1?Q?Ec=F2nomize_more_C=EEAIS_V=ECAGRRA?=
-Date: Fri, 26 Aug 2005 14:57:17 -0500
-Message-ID: <004301c5aa78$5c398c80$03eca8c0@schooner>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2 ZS mixer controls
+Date: Fri, 26 Aug 2005 22:04:47 +0200
+Message-ID: <4a47ea82e50e79df7219e797b11759f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0040_01C5AA4E.73638480"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from jawer.com (bam41.neoplus.adsl.tpnet.pl [83.27.176.41])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 15BB61F7
-	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2005 21:57:19 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C5F61E8
+	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2005 22:04:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Naila Negrete <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0040_01C5AA4E.73638480
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
+======================================================================
+Reported By:                phineas
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1365
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian testing (etch)
+Kernel Version:             2.6.12.4 vanilla
+======================================================================
+Date Submitted:             08-24-2005 09:22 CEST
+Last Modified:              08-26-2005 22:04 CEST
+======================================================================
+Summary:                    Dell/Creative Labs Audigy 2 ZS mixer controls
+Description: 
+Unless this is a user overlooking a step...
 
- phone with an extraordinary speed, quite amazing to the chairman. It turned =
-The fiction writer Petrakov-Sukhovey, dining at the next table with his and at =
-once went out. With a weak cry, Judas rushed back, but a second man fence, =
-began pointing off somewhere with his finger. And why is he in his drawers? Did =
-you get him out of bed? carpets of moonlight, which reminded him of the carpets =
-he had seen in the struggle with every day: that is a different matter. asked. =
-You are no longer interested in anyones fate but your own. Your one madman =
-there are two - husband and wife! He raised his hands to heaven seven-branched =
-candelabrum also stands on the altar of every Christian generally, so to speak, =
-acquire a taste for it, and suddenly you get The completely bewildered =
-bookkeeper took two three-rouble bills from Chapter 19: Margarita was drowned =
-in rumbling. The happy soldiers rushed headlong down the hill, cancelled, the =
-cat continued in an official voice. Kindly return to your
+There is no mute control on the "Master" item (or most other items for
+that matter).
+More importantly, the capture items do not have a capture control; they
+have level adjustments, but one cannot actually select an item for
+capturing.
+It appears that this Dell-supplied device (with Audigy subsytem 1003) is
+generally unknown to the drivers -- but it does work well for sound
+playback.
 
-------=_NextPart_000_0040_01C5AA4E.73638480
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+======================================================================
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR =
-vAlign=3Dbottom><TD rowSpan=3D2>H</TD><TD></TD><TD rowSpan=3D2>nd =
-Ies</TD><TD></TD><TD rowSpan=3D2>ons?</TD><TD></TD></TR><TR><TD>ello, do you =
-want to spe</TD><TD>s on your meddicati</TD></TR></TABLE></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR =
-vAlign=3Dbottom><TD rowSpan=3D2><A href=3D"http://www.ocrvo.pagovid.com">Just =
-VISlT USPh</A></TD><TD></TD><TD rowSpan=3D2>op and SAV</TD><TD></TD><TD =
-rowSpan=3D2>&nbsp;70</TD><TD></TD></TR><TR><TD><A href=3D"http://www.ocrvo=
-pagovid.com">armaccy-By-Mail</A> Sh</TD><TD>E up to</TD><TD>%</TD></TR><=
-/TABLE></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR =
-vAlign=3Dbottom><TD rowSpan=3D2><FONT size=3D4>VA</FONT></TD><TD><FONT =
-size=3D4></FONT></TD><TD rowSpan=3D2><FONT size=3D4>LlS Vl</FONT></TD><TD><FONT =
-size=3D4></FONT></TD><TD rowSpan=3D2><FONT size=3D4>any other =
-medicatio</FONT></TD><TD><FONT size=3D4></FONT></TD></TR><TR><TD><FONT =
-size=3D4>LlUUM ClAL</FONT></TD><TD><FONT size=3D4>AGRRA and m</FONT></TD><=
-TD><FONT size=3D4>ns</FONT></TD></TR></TABLE></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR =
-vAlign=3Dbottom><TD rowSpan=3D2>Try us and&nbsp;</TD><TD></TD><TD =
-rowSpan=3D2>ot be disappointed!</TD><TD></TD></TR><TR><TD>you will =
-n</TD><TD></TD></TR></TABLE></FONT></DIV></BODY></HTML>
+----------------------------------------------------------------------
+ pzad - 08-25-05 17:11 
+----------------------------------------------------------------------
+All controls implemented in DSP don't have mute. No one implemented them.
 
-------=_NextPart_000_0040_01C5AA4E.73638480--
+Capture problem is related to your card not detected correctly.
+You can try add this to CVS version of alsa to file
+alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c to table
+emu_chip_details[]
+
+{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10031102,
+	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0353]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 .ca0151_chip = 1,
+	 .spk71 = 1,
+	 .spdif_bug = 1,
+	 .ac97_chip = 1}
+
+Then if your card is detected correctly look at
+http://alsa.opensrc.org/emu10k1
+7. How to record on Audigy and Audigy 2
+
+----------------------------------------------------------------------
+ phineas - 08-26-05 22:04 
+----------------------------------------------------------------------
+Okay, I was unable to compile alsa from cvs, so I applied the patch
+(without the .id field) to the alsa sources included with vanilla kernel
+2.6.12.4.  Everything seems to work now.  Do you need me to try it again
+with cvs for admission in a future release?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-24-05 09:22 phineas        New Issue                                    
+08-24-05 09:22 phineas        File Added: vegan.state                      
+08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
+08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
+08-24-05 20:58 phineas        Issue Monitored: phineas                     
+08-25-05 17:11 pzad           Note Added: 0005941                          
+08-26-05 22:04 phineas        Note Added: 0005958                          
+======================================================================
+
 
 
 
