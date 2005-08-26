@@ -1,12 +1,14 @@
-From: =?windows-1251?B?Ni03IPHl7fL/4fD/?= <addend@scra.com>
-Subject: =?windows-1251?B?0ODh7vLgINDz6u7i7uTo8uXr/w==?=
-Date: Fri, 26 Aug 2005 16:15:46 +0000
-Message-ID: <4be901c5aa59$d034917f$318226ca@scra.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001372]: Intel HD audio module timeout and xine audio output abnormal
+Date: Fri, 26 Aug 2005 05:10:46 +0200
+Message-ID: <b11cd47b082cbb9444b67ad23de1dfdc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_B0DF3B67.91695320"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7ADF4196
+	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2005 05:10:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,194 +18,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_B0DF3B67.91695320
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_1B154154.B0F03908"
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1372> 
+======================================================================
+Reported By:                KamMing
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1372
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.13-rc6
+======================================================================
+Date Submitted:             08-26-2005 05:10 CEST
+Last Modified:              08-26-2005 05:10 CEST
+======================================================================
+Summary:                    Intel HD audio module timeout and xine audio output
+abnormal
+Description: 
+As loading snd-hd-intel.ko , the system shows following message
+ceaselessly:
+
+" azx_get_response timeout "
 
 
-------=_NextPart_001_0001_1B154154.B0F03908
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+After replace function azx_get_response() by :
+{
+        azx_t *chip = codec->bus->private_data;
+        unsigned int wp, corbwp;
+        int timeout = 2;
 
- =D3=EF=F0=E0=E2=EB=FF=FE=F9=E8=E9 - =ED=E5 =F2=EE=F2, =EA=F2=EE=20
-=F3=EF=F0=E0=E2=EB=FF=E5=F2, =E0 =F2=EE=F2, =EA=F2=EE =F3=EF=F0=E0=E2=EB=FF=
-=E5=F2=F1=FF=20
-=D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =ED=E5 =F0=EE=E6=E4=E0=FE=F2=F1=FF=
-,=20
-=F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =F1=F2=E0=ED=EE=E2=FF=F2=F1=FF=20
+        corbwp = azx_readb(chip, CORBWP);
+        while ((wp = azx_readb(chip, RIRBWP)) != corbwp) {
+                if (! --timeout) {
+                        snd_printk(KERN_ERR "azx_get_response
+timeout\n");
+                        break;
+                }
+                msleep(1);
+        }
+        wp <<= 1; /* an RIRB entry is 8-bytes */
+        /* read the low value only */
+        return le32_to_cpu(chip->rirb.buf[wp]);
+} 
 
+timeout problem fixed. This code comes from alsa-1.0.8a which is modified
+by Intel and can be downloaded from Intel website.
 
-=CA=E0=EA =EF=EE=EB=F3=F7=E0=F2=FC =F0=E5=E7=F3=EB=FC=F2=E0=F2=FB =F1 =F2=
-=E5=EC=E8 =EB=FE=E4=FC=EC=E8, =EA=F2=EE =E5=F1=F2=FC =F1=E5=E9=F7=E0=F1:=20
+After fixed timeout problem, xine's audio output abnormal. As playing
+VCD/DVD , the audio output just repeat a piece of sound ceaslessly. And
+sometimes the xine hang with a few minutes. I encountered this problem on
+alsa-1.0.8a and alsa-1.0.10rc1(replaced function azx_get_response()). 
+======================================================================
 
-=D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF=20
-
- =F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47
-
- =CB=FE=E4=E8 =ED=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =F2=EE=E3=EE, =EA=F2=EE =
-=E8=F5 =EF=F0=E5=F1=F1=F3=E5=F2 - =EE=ED=E8 =EE=F0=E3=E0=ED=E8=E7=F3=FE=F2=
- =F2=E8=F5=E8=E9 =F1=E0=E1=EE=F2=E0=E6.
-=CD=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =E8 =F2=EE=E3=EE, =EA=F2=EE =EF=F0=EE=E3=
-=E8=E1=E0=E5=F2=F1=FF - =EE=ED=E8 =E5=E3=EE =ED=E5 =F3=E2=E0=E6=E0=FE=F2.=
- =CA=EE=E3=EE =EB=FE=E4=E8 =F1=EB=F3=F8=E0=FE=F2=F1=FF?
-=C8 =F7=F2=EE =E4=EB=FF =FD=F2=EE=E3=EE =ED=E0=E4=EE =E4=E5=EB=E0=F2=FC? =
- =CA=E0=EA =EF=F0=E0=E2=E8=EB=FC=ED=EE =F1=F2=E0=E2=E8=F2=FC =E7=E0=E4=E0=
-=F7=E8?  =CA=E0=EA =EA=EE=ED=F2=F0=EE=EB=E8=F0=EE=E2=E0=F2=FC?
-=D7=F2=EE =F2=E0=EA=EE=E5 "=F2=F0=E8 =EF=E5=F2=EB=E8 =EA=EE=ED=F2=F0=EE=EB=
-=FF"?  =D7=F2=EE =EC=EE=F2=E8=E2=E8=F0=F3=E5=F2 =EB=FE=E4=E5=E9 - =E8 =EF=
-=EE=F7=E5=EC=F3 =EE=E4=ED=E8=F5
-=EE=E4=ED=EE, =E0 =E4=F0=F3=E3=E8=F5 =E4=F0=F3=E3=EE=E5?  =CF=EE=F7=E5=EC=
-=F3 =EE=E1=FB=F7=ED=EE =EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E5 - =ED=E5 =F0=E0=
-=E1=EE=F2=E0=E5=F2? =C8 =EA=E0=EA=EE=E2=FB
-=EE=E1=FF=E7=E0=F2=E5=EB=FC=ED=FB=E5 =EA=EE=EC=EF=EE=ED=E5=ED=F2=FB, =E4=E5=
-=EB=E0=FE=F9=E8=E5 =EF=EB=E0=ED=FB =F0=E5=E0=EB=E8=F1=F2=E8=F7=ED=FB=EC=E8=
-, =E0 =E7=E0=EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=ED=EE=E5
-- =E2=FB=EF=EE=EB=ED=E5=ED=ED=FB=EC?  =CF=EE=F7=E5=EC=F3-=F2=EE, =F7=F2=EE=
- =EA=EE=E3=E4=E0-=F2=EE =F0=E0=E1=EE=F2=E0=EB=EE, =F0=E0=ED=EE =E8=EB=E8 =
-=EF=EE=E7=E4=ED=EE =F3=F1=F2=E0=F0=E5=E2=E0=E5=F2
-=E8 =F1=F2=E0=ED=EE=E2=E8=F2=F1=FF =ED=E5=FD=F4=F4=E5=EA=F2=E8=E2=ED=FB=EC=
-? =C8 =EA=E0=EA =FD=F2=EE=EC=F3 =EF=F0=EE=F2=E8=E2=EE=F1=F2=EE=FF=F2=FC? =
- =CF=EE=F7=E5=EC=F3 =ED=E5=F2 =E5=E4=E8=ED=EE=E9
-=F1=F5=E5=EC=FB =F0=E0=E1=EE=F2=FB? =CA=E0=EA =F0=E0=E7=E4=E5=EB=FF=F2=FC=
- =F4=F3=ED=EA=F6=E8=E8 =E8 =EF=EE=F7=E5=EC=F3 =EE=F0=E3=F1=F2=F0=F3=EA=F2=
-=F3=F0=E0 =ED=E8=EA=EE=E3=E4=E0 =ED=E5 =F1=EE=E2=EF=E0=E4=E0=E5=F2
-=F1 =F4=F3=ED=EA=F6=E8=EE=ED=E0=EB=FC=ED=EE=E9?  =CA=E0=EA =F1=EE=F7=E5=F2=
-=E0=F2=FC =E4=E5=EB=EE=E2=EE=E5 =E8 =EB=E8=F7=ED=EE=E5? =D7=F2=EE =F2=E0=EA=
-=EE=E5 "=F0=E0=E1=EE=F7=E8=E5 =EE=F2=ED=EE=F8=E5=ED=E8=FF"?
-=CA=E0=EA =E8=F5 =EF=EE=F1=F2=F0=EE=E8=F2=FC?  =D1=EB=EE=E6=ED=EE=F1=F2=E8=
- =E2=EE =E2=E7=E0=E8=EC=EE=EE=F2=ED=EE=F8=E5=ED=E8=FF=F5 - =EE=F2=EA=F3=E4=
-=E0 =E1=E5=F0=F3=F2=F1=FF, =E8 =EA=E0=EA
-=E8=F5 =F0=E5=F8=E0=F2=FC?  =CA=EE=ED=F4=EB=E8=EA=F2=FB - =F7=F2=EE =F1=EE=
-=E7=E4=E0=E5=F2 =E8=F5 =EF=EE=F7=E2=F3, =F7=F2=EE =E8=F5 =EF=F0=EE=E2=EE=F6=
-=E8=F0=F3=E5=F2, =E8 =EA=E0=EA=EE=E2=E0
-=EF=F0=EE=F4=E8=EB=E0=EA=F2=E8=EA=E0?  =D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=
-=EE=E4=E8=F2=E5=EB=FF=20
-
-=C2=F1=E5 =FD=F2=EE =E8 =EC=ED=EE=E3=EE=E5 =E4=F0=F3=E3=EE=E5 - =E2 =F0=E5=
-=E6=E8=EC=E5 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=EE=E3=EE =F2=F0=E5=ED=E8=ED=E3=
-=E0, =F1 =F3=EF=F0=E0=E6=ED=E5=ED=E8=FF=EC=E8
-=E8 =F0=E0=E7=E1=EE=F0=E0=EC=E8 =ED=E0 =F0=E5=E0=EB=FC=ED=FB=F5 =EF=F0=E8=
-=EC=E5=F0=E0=F5=20
-
-=D1=E5=EC=E8=ED=E0=F0-=F2=F0=E5=ED=E8=ED=E3 =F1=EE=F1=F2=EE=E8=F2=F1=FF 6=
--7 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.=20
-=CF=F0=EE=F5=EE=E4=E8=F2 2 =E4=ED=FF =F1 10:00 =E4=EE 18:00
-
-=D1=F2=EE=E8=EC=EE=F1=F2=FC =F3=F7=E0=F1=F2=E8=FF 13700 =F0=F3=E1.=20
-=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
-=F4=E5-=EF=E0=F3=E7=FB, =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=E8=E5 =EF=EE=F1=EE=
-=E1=E8=FF.=20
-=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =EF=F0=EE=E3=F0=E0=EC=
-=EC=F3 =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=
-=FB =EC=EE=E6=E5=F2=E5 =EF=EE=20
-=F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47
-
-=20
-------=_NextPart_001_0001_1B154154.B0F03908
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-<HTML>
-<BODY text=3D#000000 bgColor=3D#ffffff><FONT face=3D"Times New Roman">
-<P style=3D"BACKGROUND-COLOR: #96a2fc" align=3Dright><FONT=20
-face=3DArial><I><B>=D3=EF=F0=E0=E2=EB=FF=FE=F9=E8=E9 - =ED=E5 =F2=EE=F2, =
-=EA=F2=EE <BR>=F3=EF=F0=E0=E2=EB=FF=E5=F2, =E0 =F2=EE=F2, =EA=F2=EE =F3=EF=
-=F0=E0=E2=EB=FF=E5=F2=F1=FF=20
-<BR>=D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =ED=E5 =F0=EE=E6=E4=E0=FE=F2=F1=
-=FF, <BR>=F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =F1=F2=E0=ED=EE=E2=FF=F2=
-=F1=FF <BR></B></I></P>
-<P align=3Dcenter><FONT size=3D4><B>=CA=E0=EA =EF=EE=EB=F3=F7=E0=F2=FC =F0=
-=E5=E7=F3=EB=FC=F2=E0=F2=FB =F1=20
-=F2=E5=EC=E8 =EB=FE=E4=FC=EC=E8, =EA=F2=EE =E5=F1=F2=FC =F1=E5=E9=F7=E0=F1=
-: </B></FONT></P>
-<P style=3D"BACKGROUND-COLOR: #f6f000" align=3Dcenter><FONT size=3D6><I><=
-B>=D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF</B></I>=20
-</FONT></P>
-<P style=3D"BACKGROUND-COLOR: #96a2fc" align=3Dcenter><B>
-<FONT=20
-size=3D4>=F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47</FONT></B></FONT></P>
-<UL>
-  <LI><FONT face=3DArial><B>=CB=FE=E4=E8 =ED=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF=
- =F2=EE=E3=EE, =EA=F2=EE =E8=F5 =EF=F0=E5=F1=F1=F3=E5=F2 - =EE=ED=E8=20
-  =EE=F0=E3=E0=ED=E8=E7=F3=FE=F2 =F2=E8=F5=E8=E9 =F1=E0=E1=EE=F2=E0=E6. =CD=
-=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =E8 =F2=EE=E3=EE, =EA=F2=EE =EF=F0=EE=E3=E8=
-=E1=E0=E5=F2=F1=FF - =EE=ED=E8 =E5=E3=EE =ED=E5=20
-  =F3=E2=E0=E6=E0=FE=F2. =CA=EE=E3=EE =EB=FE=E4=E8 =F1=EB=F3=F8=E0=FE=F2=F1=
-=FF? =C8 =F7=F2=EE =E4=EB=FF =FD=F2=EE=E3=EE =ED=E0=E4=EE =E4=E5=EB=E0=F2=
-=FC? </B></FONT>
-  <LI><FONT face=3DArial><B>=CA=E0=EA =EF=F0=E0=E2=E8=EB=FC=ED=EE =F1=F2=E0=
-=E2=E8=F2=FC =E7=E0=E4=E0=F7=E8? </B></FONT>
-  <LI><FONT face=3DArial><B>=CA=E0=EA =EA=EE=ED=F2=F0=EE=EB=E8=F0=EE=E2=E0=
-=F2=FC? =D7=F2=EE =F2=E0=EA=EE=E5 "=F2=F0=E8 =EF=E5=F2=EB=E8 =EA=EE=ED=F2=
-=F0=EE=EB=FF"?=20
-  </B></FONT>
-  <LI><FONT face=3DArial><B>=D7=F2=EE =EC=EE=F2=E8=E2=E8=F0=F3=E5=F2 =EB=FE=
-=E4=E5=E9 - =E8 =EF=EE=F7=E5=EC=F3 =EE=E4=ED=E8=F5 =EE=E4=ED=EE, =E0 =E4=F0=
-=F3=E3=E8=F5=20
-  =E4=F0=F3=E3=EE=E5? </B></FONT>
-  <LI><FONT face=3DArial><B>=CF=EE=F7=E5=EC=F3 =EE=E1=FB=F7=ED=EE =EF=EB=E0=
-=ED=E8=F0=EE=E2=E0=ED=E8=E5 - =ED=E5 =F0=E0=E1=EE=F2=E0=E5=F2? =C8 =EA=E0=
-=EA=EE=E2=FB=20
-  =EE=E1=FF=E7=E0=F2=E5=EB=FC=ED=FB=E5 =EA=EE=EC=EF=EE=ED=E5=ED=F2=FB, =E4=
-=E5=EB=E0=FE=F9=E8=E5 =EF=EB=E0=ED=FB =F0=E5=E0=EB=E8=F1=F2=E8=F7=ED=FB=EC=
-=E8, =E0 =E7=E0=EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=ED=EE=E5 -=20
-  =E2=FB=EF=EE=EB=ED=E5=ED=ED=FB=EC? </B></FONT>
-  <LI><FONT face=3DArial><B>=CF=EE=F7=E5=EC=F3-=F2=EE, =F7=F2=EE =EA=EE=E3=
-=E4=E0-=F2=EE =F0=E0=E1=EE=F2=E0=EB=EE, =F0=E0=ED=EE =E8=EB=E8 =EF=EE=E7=E4=
-=ED=EE=20
-  =F3=F1=F2=E0=F0=E5=E2=E0=E5=F2 =E8 =F1=F2=E0=ED=EE=E2=E8=F2=F1=FF =ED=E5=
-=FD=F4=F4=E5=EA=F2=E8=E2=ED=FB=EC? =C8 =EA=E0=EA =FD=F2=EE=EC=F3 =EF=F0=EE=
-=F2=E8=E2=EE=F1=F2=EE=FF=F2=FC? </B></FONT>
-  <LI><FONT face=3DArial><B>=CF=EE=F7=E5=EC=F3 =ED=E5=F2 =E5=E4=E8=ED=EE=E9=
- =F1=F5=E5=EC=FB =F0=E0=E1=EE=F2=FB? =CA=E0=EA =F0=E0=E7=E4=E5=EB=FF=F2=FC=
- =F4=F3=ED=EA=F6=E8=E8=20
-  =E8 =EF=EE=F7=E5=EC=F3 =EE=F0=E3=F1=F2=F0=F3=EA=F2=F3=F0=E0 =ED=E8=EA=EE=
-=E3=E4=E0 =ED=E5 =F1=EE=E2=EF=E0=E4=E0=E5=F2 =F1 =F4=F3=ED=EA=F6=E8=EE=ED=
-=E0=EB=FC=ED=EE=E9? </B></FONT>
-  <LI><FONT face=3DArial><B>=CA=E0=EA =F1=EE=F7=E5=F2=E0=F2=FC =E4=E5=EB=EE=
-=E2=EE=E5 =E8 =EB=E8=F7=ED=EE=E5? =D7=F2=EE =F2=E0=EA=EE=E5 "=F0=E0=E1=EE=
-=F7=E8=E5=20
-  =EE=F2=ED=EE=F8=E5=ED=E8=FF"? =CA=E0=EA =E8=F5 =EF=EE=F1=F2=F0=EE=E8=F2=
-=FC? </B></FONT>
-  <LI><FONT face=3DArial><B>=D1=EB=EE=E6=ED=EE=F1=F2=E8 =E2=EE =E2=E7=E0=E8=
-=EC=EE=EE=F2=ED=EE=F8=E5=ED=E8=FF=F5 - =EE=F2=EA=F3=E4=E0 =E1=E5=F0=F3=F2=
-=F1=FF, =E8 =EA=E0=EA=20
-  =E8=F5 =F0=E5=F8=E0=F2=FC? </B></FONT>
-  <LI><FONT face=3DArial><B>=CA=EE=ED=F4=EB=E8=EA=F2=FB - =F7=F2=EE =F1=EE=
-=E7=E4=E0=E5=F2 =E8=F5 =EF=EE=F7=E2=F3, =F7=F2=EE =E8=F5 =EF=F0=EE=E2=EE=F6=
-=E8=F0=F3=E5=F2,=20
-  =E8 =EA=E0=EA=EE=E2=E0 =EF=F0=EE=F4=E8=EB=E0=EA=F2=E8=EA=E0? </B></FONT=
-></LI></UL><FONT face=3DArial><B>
-<P style=3D"BACKGROUND-COLOR: #f6f000" align=3Dcenter><FONT size=3D6><I>=D0=
-=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF</I>=20
-</FONT></P>=C2=F1=E5 =FD=F2=EE =E8 =EC=ED=EE=E3=EE=E5 =E4=F0=F3=E3=EE=E5 =
-- =E2 =F0=E5=E6=E8=EC=E5 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=EE=E3=EE =F2=F0=E5=
-=ED=E8=ED=E3=E0, =F1=20
-=F3=EF=F0=E0=E6=ED=E5=ED=E8=FF=EC=E8 =E8 =F0=E0=E7=E1=EE=F0=E0=EC=E8 =ED=E0=
- =F0=E5=E0=EB=FC=ED=FB=F5 =EF=F0=E8=EC=E5=F0=E0=F5 <BR><BR>
-<P style=3D"BACKGROUND-COLOR: #96a2fc" align=3Dcenter><FONT=20
-size=3D4><FONT size=3D5>=D1=E5=EC=E8=ED=E0=F0-=F2=F0=E5=ED=E8=ED=E3 =F1=EE=
-=F1=F2=EE=E8=F2=F1=FF 6-7 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.=20
-<BR></FONT><FONT size=3D3>=CF=F0=EE=F5=EE=E4=E8=F2 2 =E4=ED=FF =F1 10:00 =
-=E4=EE 18:00<BR></FONT><BR>=D1=F2=EE=E8=EC=EE=F1=F2=FC=20
-=F3=F7=E0=F1=F2=E8=FF 13700 =F0=F3=E1. <BR>=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC=
- =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=F4=E5-=EF=E0=F3=E7=FB, =EC=E5=
-=F2=EE=E4=E8=F7=E5=F1=EA=E8=E5=20
-=EF=EE=F1=EE=E1=E8=FF. <BR>=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=
-=F3=FE =EF=F0=EE=E3=F0=E0=EC=EC=F3 =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=
-=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE=20
-<BR>=F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47</FONT></B></FONT></P></FONT>=
-</BODY></HTML>
-
-------=_NextPart_001_0001_1B154154.B0F03908--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-26-05 05:10 KamMing        New Issue                                    
+08-26-05 05:10 KamMing        Kernel Version            => 2.6.13-rc6      
+======================================================================
 
 
 
-------=_NextPart_000_0000_B0DF3B67.91695320--
+
+-------------------------------------------------------
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
