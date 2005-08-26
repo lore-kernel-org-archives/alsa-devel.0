@@ -1,16 +1,12 @@
-From: Alien <alien999999999@users.sourceforge.net>
-Subject: Re: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Thu, 25 Aug 2005 22:04:34 +0200
-Message-ID: <200508252204.37294.alien999999999@users.sourceforge.net>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org> <430DFC0D.1010502@netvigator.com> <1124996325.17363.6.camel@localhost.localdomain>
+From: =?windows-1251?B?0ODh7vLgINDz6u7i7uTo8uXr/w==?= <armour@webit.se>
+Subject: =?windows-1251?B?0PPq7uLu5Ojy5evl7CDt5SDw7ubk4P7y8f8=?=
+Date: Fri, 26 Aug 2005 17:09:12 +0000
+Message-ID: <094d01c5aa60$058ae3a3$9fdc0d8a@webit.se>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1171561.J39TXXPXRn";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_B83CAB2F.8AE0362A"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1124996325.17363.6.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,70 +17,193 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1171561.J39TXXPXRn
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_B83CAB2F.8AE0362A
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_00FD5858.303B486B"
+
+
+------=_NextPart_001_0001_00FD5858.303B486B
 Content-Type: text/plain;
-  charset="utf-8"
+    charset="windows-1251"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Op donderdag 25 augustus 2005 20:58, schreef Manuel Jander:
-> Hi,
->
-> On Fri, 2005-08-26 at 01:12 +0800, Raymond wrote:
-> > Alien wrote:
-> > > PS: i forgot the latest patch i had to try out.
-> >
-> > Don't forget the latest patch "Fixed missing spin_unlock" on CVS .
-> >
-> > > I'll do one patch to try out, and hope it doesn't require me to reboot
-> > > this machine...
-> > >
-> > > i'm using alsa CVS from some weeks ago, i think
-> >
-> > Although I can play multiple mono sound streams on device 2 on my au883=
-0.
-> >
-> > I don't know why the connection routine of device 2 is disabled only on
-> > au8810 driver.
-> >
-> > If you have any application using device 2 to playback (e.g. 3D demo in
-> > vortexcontrol), wierd things may happen on au8810 since some of the
-> > route and mixer of device 2 playback stream has not been assigned.
->
-> The WT and A3D subsystems for AU8810 are disabled, because:
->
-> - The AU8810 does not has any WT engine.
-> - The AU8810 A3D slices/sources register addresses have not been
-> confirmed and seem to be wrong. It looks like the AU8810 has 8 3D
-> sources instead of the 16 that the AU8830 has, but further work is
-> required, starting with the disassemble of a AU8810 WDM driver, in order
-> to find out/conform the 3D slices/sources register addresses.
+ =D3=EF=F0=E0=E2=EB=FF=FE=F9=E8=E9 - =ED=E5 =F2=EE=F2, =EA=F2=EE=20
+=F3=EF=F0=E0=E2=EB=FF=E5=F2, =E0 =F2=EE=F2, =EA=F2=EE =F3=EF=F0=E0=E2=EB=FF=
+=E5=F2=F1=FF=20
+=D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =ED=E5 =F0=EE=E6=E4=E0=FE=F2=F1=FF=
+,=20
+=F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =F1=F2=E0=ED=EE=E2=FF=F2=F1=FF=20
 
-is it possible that this could have some negative outcome on the driver? in=
+
+=CA=E0=EA =EF=EE=EB=F3=F7=E0=F2=FC =F0=E5=E7=F3=EB=FC=F2=E0=F2=FB =F1 =F2=
+=E5=EC=E8 =EB=FE=E4=FC=EC=E8, =EA=F2=EE =E5=F1=F2=FC =F1=E5=E9=F7=E0=F1:=20
+
+=D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF=20
+
+ =F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47
+
+ =CB=FE=E4=E8 =ED=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =F2=EE=E3=EE, =EA=F2=EE =
+=E8=F5 =EF=F0=E5=F1=F1=F3=E5=F2 - =EE=ED=E8 =EE=F0=E3=E0=ED=E8=E7=F3=FE=F2=
+ =F2=E8=F5=E8=E9 =F1=E0=E1=EE=F2=E0=E6.
+=CD=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =E8 =F2=EE=E3=EE, =EA=F2=EE =EF=F0=EE=E3=
+=E8=E1=E0=E5=F2=F1=FF - =EE=ED=E8 =E5=E3=EE =ED=E5 =F3=E2=E0=E6=E0=FE=F2.=
+ =CA=EE=E3=EE =EB=FE=E4=E8 =F1=EB=F3=F8=E0=FE=F2=F1=FF?
+=C8 =F7=F2=EE =E4=EB=FF =FD=F2=EE=E3=EE =ED=E0=E4=EE =E4=E5=EB=E0=F2=FC? =
+ =CA=E0=EA =EF=F0=E0=E2=E8=EB=FC=ED=EE =F1=F2=E0=E2=E8=F2=FC =E7=E0=E4=E0=
+=F7=E8?  =CA=E0=EA =EA=EE=ED=F2=F0=EE=EB=E8=F0=EE=E2=E0=F2=FC?
+=D7=F2=EE =F2=E0=EA=EE=E5 "=F2=F0=E8 =EF=E5=F2=EB=E8 =EA=EE=ED=F2=F0=EE=EB=
+=FF"?  =D7=F2=EE =EC=EE=F2=E8=E2=E8=F0=F3=E5=F2 =EB=FE=E4=E5=E9 - =E8 =EF=
+=EE=F7=E5=EC=F3 =EE=E4=ED=E8=F5
+=EE=E4=ED=EE, =E0 =E4=F0=F3=E3=E8=F5 =E4=F0=F3=E3=EE=E5?  =CF=EE=F7=E5=EC=
+=F3 =EE=E1=FB=F7=ED=EE =EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E5 - =ED=E5 =F0=E0=
+=E1=EE=F2=E0=E5=F2? =C8 =EA=E0=EA=EE=E2=FB
+=EE=E1=FF=E7=E0=F2=E5=EB=FC=ED=FB=E5 =EA=EE=EC=EF=EE=ED=E5=ED=F2=FB, =E4=E5=
+=EB=E0=FE=F9=E8=E5 =EF=EB=E0=ED=FB =F0=E5=E0=EB=E8=F1=F2=E8=F7=ED=FB=EC=E8=
+, =E0 =E7=E0=EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=ED=EE=E5
+- =E2=FB=EF=EE=EB=ED=E5=ED=ED=FB=EC?  =CF=EE=F7=E5=EC=F3-=F2=EE, =F7=F2=EE=
+ =EA=EE=E3=E4=E0-=F2=EE =F0=E0=E1=EE=F2=E0=EB=EE, =F0=E0=ED=EE =E8=EB=E8 =
+=EF=EE=E7=E4=ED=EE =F3=F1=F2=E0=F0=E5=E2=E0=E5=F2
+=E8 =F1=F2=E0=ED=EE=E2=E8=F2=F1=FF =ED=E5=FD=F4=F4=E5=EA=F2=E8=E2=ED=FB=EC=
+? =C8 =EA=E0=EA =FD=F2=EE=EC=F3 =EF=F0=EE=F2=E8=E2=EE=F1=F2=EE=FF=F2=FC? =
+ =CF=EE=F7=E5=EC=F3 =ED=E5=F2 =E5=E4=E8=ED=EE=E9
+=F1=F5=E5=EC=FB =F0=E0=E1=EE=F2=FB? =CA=E0=EA =F0=E0=E7=E4=E5=EB=FF=F2=FC=
+ =F4=F3=ED=EA=F6=E8=E8 =E8 =EF=EE=F7=E5=EC=F3 =EE=F0=E3=F1=F2=F0=F3=EA=F2=
+=F3=F0=E0 =ED=E8=EA=EE=E3=E4=E0 =ED=E5 =F1=EE=E2=EF=E0=E4=E0=E5=F2
+=F1 =F4=F3=ED=EA=F6=E8=EE=ED=E0=EB=FC=ED=EE=E9?  =CA=E0=EA =F1=EE=F7=E5=F2=
+=E0=F2=FC =E4=E5=EB=EE=E2=EE=E5 =E8 =EB=E8=F7=ED=EE=E5? =D7=F2=EE =F2=E0=EA=
+=EE=E5 "=F0=E0=E1=EE=F7=E8=E5 =EE=F2=ED=EE=F8=E5=ED=E8=FF"?
+=CA=E0=EA =E8=F5 =EF=EE=F1=F2=F0=EE=E8=F2=FC?  =D1=EB=EE=E6=ED=EE=F1=F2=E8=
+ =E2=EE =E2=E7=E0=E8=EC=EE=EE=F2=ED=EE=F8=E5=ED=E8=FF=F5 - =EE=F2=EA=F3=E4=
+=E0 =E1=E5=F0=F3=F2=F1=FF, =E8 =EA=E0=EA
+=E8=F5 =F0=E5=F8=E0=F2=FC?  =CA=EE=ED=F4=EB=E8=EA=F2=FB - =F7=F2=EE =F1=EE=
+=E7=E4=E0=E5=F2 =E8=F5 =EF=EE=F7=E2=F3, =F7=F2=EE =E8=F5 =EF=F0=EE=E2=EE=F6=
+=E8=F0=F3=E5=F2, =E8 =EA=E0=EA=EE=E2=E0
+=EF=F0=EE=F4=E8=EB=E0=EA=F2=E8=EA=E0?  =D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=
+=EE=E4=E8=F2=E5=EB=FF=20
+
+=C2=F1=E5 =FD=F2=EE =E8 =EC=ED=EE=E3=EE=E5 =E4=F0=F3=E3=EE=E5 - =E2 =F0=E5=
+=E6=E8=EC=E5 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=EE=E3=EE =F2=F0=E5=ED=E8=ED=E3=
+=E0, =F1 =F3=EF=F0=E0=E6=ED=E5=ED=E8=FF=EC=E8
+=E8 =F0=E0=E7=E1=EE=F0=E0=EC=E8 =ED=E0 =F0=E5=E0=EB=FC=ED=FB=F5 =EF=F0=E8=
+=EC=E5=F0=E0=F5=20
+
+=D1=E5=EC=E8=ED=E0=F0-=F2=F0=E5=ED=E8=ED=E3 =F1=EE=F1=F2=EE=E8=F2=F1=FF 6=
+-7 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.=20
+=CF=F0=EE=F5=EE=E4=E8=F2 2 =E4=ED=FF =F1 10:00 =E4=EE 18:00
+
+=D1=F2=EE=E8=EC=EE=F1=F2=FC =F3=F7=E0=F1=F2=E8=FF 13700 =F0=F3=E1.=20
+=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
+=F4=E5-=EF=E0=F3=E7=FB, =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=E8=E5 =EF=EE=F1=EE=
+=E1=E8=FF.=20
+=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =EF=F0=EE=E3=F0=E0=EC=
+=EC=F3 =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=
+=FB =EC=EE=E6=E5=F2=E5 =EF=EE=20
+=F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47
+
 =20
-particular, that it's not initialized and might be trying to be used at som=
-e=20
-point?
+------=_NextPart_001_0001_00FD5858.303B486B
+Content-Type: text/html;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
---nextPart1171561.J39TXXPXRn
-Content-Type: application/pgp-signature
+<HTML>
+<BODY text=3D#000000 bgColor=3D#ffffff><FONT face=3D"Times New Roman">
+<P style=3D"BACKGROUND-COLOR: #96a2fc" align=3Dright><FONT=20
+face=3DArial><I><B>=D3=EF=F0=E0=E2=EB=FF=FE=F9=E8=E9 - =ED=E5 =F2=EE=F2, =
+=EA=F2=EE <BR>=F3=EF=F0=E0=E2=EB=FF=E5=F2, =E0 =F2=EE=F2, =EA=F2=EE =F3=EF=
+=F0=E0=E2=EB=FF=E5=F2=F1=FF=20
+<BR>=D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =ED=E5 =F0=EE=E6=E4=E0=FE=F2=F1=
+=FF, <BR>=F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =F1=F2=E0=ED=EE=E2=FF=F2=
+=F1=FF <BR></B></I></P>
+<P align=3Dcenter><FONT size=3D4><B>=CA=E0=EA =EF=EE=EB=F3=F7=E0=F2=FC =F0=
+=E5=E7=F3=EB=FC=F2=E0=F2=FB =F1=20
+=F2=E5=EC=E8 =EB=FE=E4=FC=EC=E8, =EA=F2=EE =E5=F1=F2=FC =F1=E5=E9=F7=E0=F1=
+: </B></FONT></P>
+<P style=3D"BACKGROUND-COLOR: #f6f000" align=3Dcenter><FONT size=3D6><I><=
+B>=D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF</B></I>=20
+</FONT></P>
+<P style=3D"BACKGROUND-COLOR: #96a2fc" align=3Dcenter><B>
+<FONT=20
+size=3D4>=F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47</FONT></B></FONT></P>
+<UL>
+  <LI><FONT face=3DArial><B>=CB=FE=E4=E8 =ED=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF=
+ =F2=EE=E3=EE, =EA=F2=EE =E8=F5 =EF=F0=E5=F1=F1=F3=E5=F2 - =EE=ED=E8=20
+  =EE=F0=E3=E0=ED=E8=E7=F3=FE=F2 =F2=E8=F5=E8=E9 =F1=E0=E1=EE=F2=E0=E6. =CD=
+=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =E8 =F2=EE=E3=EE, =EA=F2=EE =EF=F0=EE=E3=E8=
+=E1=E0=E5=F2=F1=FF - =EE=ED=E8 =E5=E3=EE =ED=E5=20
+  =F3=E2=E0=E6=E0=FE=F2. =CA=EE=E3=EE =EB=FE=E4=E8 =F1=EB=F3=F8=E0=FE=F2=F1=
+=FF? =C8 =F7=F2=EE =E4=EB=FF =FD=F2=EE=E3=EE =ED=E0=E4=EE =E4=E5=EB=E0=F2=
+=FC? </B></FONT>
+  <LI><FONT face=3DArial><B>=CA=E0=EA =EF=F0=E0=E2=E8=EB=FC=ED=EE =F1=F2=E0=
+=E2=E8=F2=FC =E7=E0=E4=E0=F7=E8? </B></FONT>
+  <LI><FONT face=3DArial><B>=CA=E0=EA =EA=EE=ED=F2=F0=EE=EB=E8=F0=EE=E2=E0=
+=F2=FC? =D7=F2=EE =F2=E0=EA=EE=E5 "=F2=F0=E8 =EF=E5=F2=EB=E8 =EA=EE=ED=F2=
+=F0=EE=EB=FF"?=20
+  </B></FONT>
+  <LI><FONT face=3DArial><B>=D7=F2=EE =EC=EE=F2=E8=E2=E8=F0=F3=E5=F2 =EB=FE=
+=E4=E5=E9 - =E8 =EF=EE=F7=E5=EC=F3 =EE=E4=ED=E8=F5 =EE=E4=ED=EE, =E0 =E4=F0=
+=F3=E3=E8=F5=20
+  =E4=F0=F3=E3=EE=E5? </B></FONT>
+  <LI><FONT face=3DArial><B>=CF=EE=F7=E5=EC=F3 =EE=E1=FB=F7=ED=EE =EF=EB=E0=
+=ED=E8=F0=EE=E2=E0=ED=E8=E5 - =ED=E5 =F0=E0=E1=EE=F2=E0=E5=F2? =C8 =EA=E0=
+=EA=EE=E2=FB=20
+  =EE=E1=FF=E7=E0=F2=E5=EB=FC=ED=FB=E5 =EA=EE=EC=EF=EE=ED=E5=ED=F2=FB, =E4=
+=E5=EB=E0=FE=F9=E8=E5 =EF=EB=E0=ED=FB =F0=E5=E0=EB=E8=F1=F2=E8=F7=ED=FB=EC=
+=E8, =E0 =E7=E0=EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=ED=EE=E5 -=20
+  =E2=FB=EF=EE=EB=ED=E5=ED=ED=FB=EC? </B></FONT>
+  <LI><FONT face=3DArial><B>=CF=EE=F7=E5=EC=F3-=F2=EE, =F7=F2=EE =EA=EE=E3=
+=E4=E0-=F2=EE =F0=E0=E1=EE=F2=E0=EB=EE, =F0=E0=ED=EE =E8=EB=E8 =EF=EE=E7=E4=
+=ED=EE=20
+  =F3=F1=F2=E0=F0=E5=E2=E0=E5=F2 =E8 =F1=F2=E0=ED=EE=E2=E8=F2=F1=FF =ED=E5=
+=FD=F4=F4=E5=EA=F2=E8=E2=ED=FB=EC? =C8 =EA=E0=EA =FD=F2=EE=EC=F3 =EF=F0=EE=
+=F2=E8=E2=EE=F1=F2=EE=FF=F2=FC? </B></FONT>
+  <LI><FONT face=3DArial><B>=CF=EE=F7=E5=EC=F3 =ED=E5=F2 =E5=E4=E8=ED=EE=E9=
+ =F1=F5=E5=EC=FB =F0=E0=E1=EE=F2=FB? =CA=E0=EA =F0=E0=E7=E4=E5=EB=FF=F2=FC=
+ =F4=F3=ED=EA=F6=E8=E8=20
+  =E8 =EF=EE=F7=E5=EC=F3 =EE=F0=E3=F1=F2=F0=F3=EA=F2=F3=F0=E0 =ED=E8=EA=EE=
+=E3=E4=E0 =ED=E5 =F1=EE=E2=EF=E0=E4=E0=E5=F2 =F1 =F4=F3=ED=EA=F6=E8=EE=ED=
+=E0=EB=FC=ED=EE=E9? </B></FONT>
+  <LI><FONT face=3DArial><B>=CA=E0=EA =F1=EE=F7=E5=F2=E0=F2=FC =E4=E5=EB=EE=
+=E2=EE=E5 =E8 =EB=E8=F7=ED=EE=E5? =D7=F2=EE =F2=E0=EA=EE=E5 "=F0=E0=E1=EE=
+=F7=E8=E5=20
+  =EE=F2=ED=EE=F8=E5=ED=E8=FF"? =CA=E0=EA =E8=F5 =EF=EE=F1=F2=F0=EE=E8=F2=
+=FC? </B></FONT>
+  <LI><FONT face=3DArial><B>=D1=EB=EE=E6=ED=EE=F1=F2=E8 =E2=EE =E2=E7=E0=E8=
+=EC=EE=EE=F2=ED=EE=F8=E5=ED=E8=FF=F5 - =EE=F2=EA=F3=E4=E0 =E1=E5=F0=F3=F2=
+=F1=FF, =E8 =EA=E0=EA=20
+  =E8=F5 =F0=E5=F8=E0=F2=FC? </B></FONT>
+  <LI><FONT face=3DArial><B>=CA=EE=ED=F4=EB=E8=EA=F2=FB - =F7=F2=EE =F1=EE=
+=E7=E4=E0=E5=F2 =E8=F5 =EF=EE=F7=E2=F3, =F7=F2=EE =E8=F5 =EF=F0=EE=E2=EE=F6=
+=E8=F0=F3=E5=F2,=20
+  =E8 =EA=E0=EA=EE=E2=E0 =EF=F0=EE=F4=E8=EB=E0=EA=F2=E8=EA=E0? </B></FONT=
+></LI></UL><FONT face=3DArial><B>
+<P style=3D"BACKGROUND-COLOR: #f6f000" align=3Dcenter><FONT size=3D6><I>=D0=
+=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF</I>=20
+</FONT></P>=C2=F1=E5 =FD=F2=EE =E8 =EC=ED=EE=E3=EE=E5 =E4=F0=F3=E3=EE=E5 =
+- =E2 =F0=E5=E6=E8=EC=E5 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=EE=E3=EE =F2=F0=E5=
+=ED=E8=ED=E3=E0, =F1=20
+=F3=EF=F0=E0=E6=ED=E5=ED=E8=FF=EC=E8 =E8 =F0=E0=E7=E1=EE=F0=E0=EC=E8 =ED=E0=
+ =F0=E5=E0=EB=FC=ED=FB=F5 =EF=F0=E8=EC=E5=F0=E0=F5 <BR><BR>
+<P style=3D"BACKGROUND-COLOR: #96a2fc" align=3Dcenter><FONT=20
+size=3D4><FONT size=3D5>=D1=E5=EC=E8=ED=E0=F0-=F2=F0=E5=ED=E8=ED=E3 =F1=EE=
+=F1=F2=EE=E8=F2=F1=FF 6-7 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.=20
+<BR></FONT><FONT size=3D3>=CF=F0=EE=F5=EE=E4=E8=F2 2 =E4=ED=FF =F1 10:00 =
+=E4=EE 18:00<BR></FONT><BR>=D1=F2=EE=E8=EC=EE=F1=F2=FC=20
+=F3=F7=E0=F1=F2=E8=FF 13700 =F0=F3=E1. <BR>=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC=
+ =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=F4=E5-=EF=E0=F3=E7=FB, =EC=E5=
+=F2=EE=E4=E8=F7=E5=F1=EA=E8=E5=20
+=EF=EE=F1=EE=E1=E8=FF. <BR>=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=
+=F3=FE =EF=F0=EE=E3=F0=E0=EC=EC=F3 =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=
+=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=FB =EC=EE=E6=E5=F2=E5 =EF=EE=20
+<BR>=F2=E5=EB=E5=F4=EE=ED=F3 (095) 514-50-47</FONT></B></FONT></P></FONT>=
+</BODY></HTML>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBDDiRVuBWKXETrtdcRAgwJAJ46Az5gB6J19XUgru4+0Bv0HvQTwwCguA/0
-dP4pIFJqneFbFtPsg9h3MgY=
-=0QBu
------END PGP SIGNATURE-----
-
---nextPart1171561.J39TXXPXRn--
+------=_NextPart_001_0001_00FD5858.303B486B--
 
 
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+
+------=_NextPart_000_0000_B83CAB2F.8AE0362A--
