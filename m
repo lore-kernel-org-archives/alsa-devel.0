@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Fri, 26 Aug 2005 17:01:05 +0800
-Message-ID: <430EDA51.4060401@netvigator.com>
-References: <add360993204c8039097fe7085524651@bugtrack.alsa-project.org> <200508232340.46629.alien999999999@users.sourceforge.net> <430DFC0D.1010502@netvigator.com> <200508251943.10332.alien999999999@users.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001240]: compile fails on ak4114, macro missing second parameter
+Date: Fri, 26 Aug 2005 13:55:24 +0200
+Message-ID: <a30f10ffc208854aa077d029dca2391b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200508251943.10332.alien999999999@users.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DAE3218
+	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2005 13:55:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,48 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alien <alien999999999@users.sourceforge.net>
-Cc: alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alien wrote:
-> Op donderdag 25 augustus 2005 19:12, schreef Raymond:
-> 
->>Alien wrote:
->>
->>>anyway, i really need to do the latest tests, i have way too many adb
->>>failures lately.
->>
->>What do you means when you say "adb failures" ? ( any message in system
->>log )
-> 
-> 
-> found one:
-> Aug 22 21:55:45 queen kernel: Vortex: vortex_fifo_setadbctrl fail
-> 
-> after that, i have to restart alsa
-> 
-> but this is only partly the problem, it's only lately that i see that error 
-> when there are problems, before i never saw anything in logs and it still had 
-> the same problem
-> 
-> there is one thing though, i haven't gotten the error where snd-au8810 has 210 
-> dependencies anymore.
-> 
-> if i now have an error with sound, i only have to kill all appl using alsa, 
-> and restart alsa (when that dep error was there, i had to reboot to have 
-> sound + ps aux crashed the console and lotsa other things, applications using 
-> alsa had weird statusses etc...)
-> 
-> 
 
-We cannot change NR_ADB of au8810 from 16 to 32 or change NR_ADB of 
-au8830 from 32 to 16.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1240> 
+======================================================================
+Reported By:                allanw
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1240
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Distribution:               Gentoo 2005.0 (amd64)
+Kernel Version:             2.6.11
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             07-07-2005 20:05 CEST
+Last Modified:              08-26-2005 13:55 CEST
+======================================================================
+Summary:                    compile fails on ak4114, macro missing second
+parameter
+Description: 
+In file included from
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.c:1:
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:49:
+macro "create_workqueue" requires 2 arguments, but only 1 given
+In file included from
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.c:1:
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:
+In function `snd_ak4114_create':
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
+error: `create_workqueue' undeclared (first use in this function)
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
+error: (Each undeclared identifier is reported only once
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/../../alsa-kernel/i2c/other/ak4114.c:109:
+error: for each function it appears in.)
+make[5]: ***
+[/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/i2c/other/ak4114.o]
+Error 1
 
-http://savannah.nongnu.org/support/?func=detailitem&item_id=102951
+I can fix the problem by editing ak4114.c and passing PF_SYNCTHREAD as the
+second argument to create_workqueue.
 
-This means hw:0,0 of au8810, au8820, au8830 behave differently even they 
-have 16 SRC
+Patch attached.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001160 Compilation hangs on hda_codec.c and ak...
+======================================================================
+
+----------------------------------------------------------------------
+ perex - 07-08-05 10:18 
+----------------------------------------------------------------------
+Yep, it's a dupe, but you're using another special kernel. Can we pass zero
+as the second parameter with the Gentoo kernel, too? The current CVS does
+it in this way.
+
+----------------------------------------------------------------------
+ perex - 08-26-05 13:55 
+----------------------------------------------------------------------
+No response to additional info and the issue is fixed in CVS.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-07-05 20:05 allanw         New Issue                                    
+07-07-05 20:05 allanw         File Added: ak4114-fix.patch                    
+07-07-05 20:05 allanw         Distribution              => Gentoo 2005.0 (amd64)
+07-07-05 20:05 allanw         Kernel Version            => 2.6.11          
+07-07-05 20:07 allanw         Note Added: 0005402                          
+07-08-05 10:15 perex          Relationship added       related to 0001160  
+07-08-05 10:18 perex          Note Added: 0005403                          
+08-26-05 13:55 perex          Status                   assigned => resolved
+08-26-05 13:55 perex          Resolution               open => fixed       
+08-26-05 13:55 perex          Note Added: 0005946                          
+======================================================================
+
 
 
 
