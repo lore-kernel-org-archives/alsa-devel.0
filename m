@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000203]: Line-In is not working with ICH - Intel ICH5 Intel8x0
-Date: Sun, 28 Aug 2005 00:02:19 +0200
-Message-ID: <00ba7717dad3d195d1fe69bdea68999b@bugtrack.alsa-project.org>
+Date: Sun, 28 Aug 2005 00:19:56 +0200
+Message-ID: <71dce504f77ec57e0a09b53e8a8dc69f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 213F9213
-	for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2005 00:02:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B9CA196
+	for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2005 00:19:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Crux Linux
 Kernel Version:             2.6.5
 ======================================================================
 Date Submitted:             04-12-2004 20:16 CEST
-Last Modified:              08-28-2005 00:02 CEST
+Last Modified:              08-28-2005 00:19 CEST
 ======================================================================
 Summary:                    Line-In is not working with ICH - Intel ICH5
 Intel8x0
@@ -53,17 +53,17 @@ card. It would be great if someone could help me.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:30 
-----------------------------------------------------------------------
-Submitter: Was this problem fixed in more recent ALSA releases?
-
-----------------------------------------------------------------------
  DavidALSA - 08-28-05 00:02 
 ----------------------------------------------------------------------
 Using MEPIS Linux here with kernel 2.6.7 on laptop with Intel 8x0 audio
 hardware, and cannot record from the mic input (laptop has no other
 external sound inputs available). Would appreciate this being added to
 ALSA.
+
+----------------------------------------------------------------------
+ rlrevell - 08-28-05 00:19 
+----------------------------------------------------------------------
+2.6.7 is way too old, does it work with a newer ALSA like 1.0.9b?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -75,6 +75,7 @@ Date Modified  Username       Field                    Change
 04-13-04 10:53 Voluspa        Note Edited: 0000787                         
 03-10-05 15:30 jdthood        Note Added: 0003865                          
 08-28-05 00:02 DavidALSA      Note Added: 0005960                          
+08-28-05 00:19 rlrevell       Note Added: 0005961                          
 ======================================================================
 
 
