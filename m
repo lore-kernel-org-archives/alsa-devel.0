@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: Alsa mix in HW
-Date: Sat, 27 Aug 2005 10:02:29 +0800
-Message-ID: <430FC9B5.8070101@netvigator.com>
-References: <42EBAE72.9090608@e4a.it>	<4306EA27.7060000@netvigator.com> <s5hwtmdorfh.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
+Date: Sat, 27 Aug 2005 04:43:18 +0200
+Message-ID: <f624c2f41f13d3421bec84f36f3a5b93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwtmdorfh.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2B00196
+	for <alsa-devel@alsa-project.org>; Sat, 27 Aug 2005 04:43:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,234 +18,117 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dino Puller <dino@e4a.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dino,
 
-Do your sound cards has devices (snd_hardware_t) support the following
-features ?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
+======================================================================
+Reported By:                kernel_bug
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   59
+Category:                   PCI - au88x0
+Reproducibility:            random
+Severity:                   major
+Priority:                   normal
+Status:                     confirmed
+Distribution:               
+Kernel Version:             2.6.2
+======================================================================
+Date Submitted:             02-13-2004 11:40 CET
+Last Modified:              08-27-2005 04:43 CEST
+======================================================================
+Summary:                    On au8820 left and right channels are swapped
+Description: 
+In most cases, left and right channels are swapped. But in approx. 5% cases
+all OK. Looks like the matter is somewhere in byte alignment...
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000949 Randomly, left and right tracks are swaped
+======================================================================
 
-1) Hardware mixing (no. of subdevices > 1 ??? )
-2) Panning mono to 2 or more speakers (.channels_min = 1 and pcm 
-volume/panning control for each subdevice)
-3) Playback 8/16 bits mono/stereo audio (.format )
-3) Doppler Effect (.rate = SNDRV_PCM_RATE_CONTINUOUS )
-4) Recording API (capture 8/16 bits mono/stereo audio)
-5) Background music (.channels_max >= 2 )
+----------------------------------------------------------------------
+ kernel_bug - 08-26-05 17:41 
+----------------------------------------------------------------------
+> Please upgrade to CVS if possible
+> perform speaker-test again after upgrade
+I have upgraded directory pci/au88x0 (I suppose it should be sufficient).
+No changes.
 
+> alsactl store
+> post the content of /etc/asound.state
+See attached file.
 
-Valid Formats are AL_FORMAT_MONO8, AL_FORMAT_MONO16, AL_FORMAT_STEREO8
-and AL_FORMAT_STEREO16.
+----------------------------------------------------------------------
+ Raymond - 08-27-05 04:43 
+----------------------------------------------------------------------
+0:7c = 574d
+0:7e = 4c00
 
-Refer to alsa-lib/include/pcm.h
+You may need to upgrade to CVS since there is a patch for WM codecs.
 
-	/** Signed 8 bit */
-	SND_PCM_FORMAT_S8 = 0,
-	/** Unsigned 8 bit */
-	SND_PCM_FORMAT_U8,
-	/** Signed 16 bit Little Endian */
-	SND_PCM_FORMAT_S16_LE,
-	/** Signed 16 bit Big Endian */
-	SND_PCM_FORMAT_S16_BE,
-	/** Unsigned 16 bit Little Endian */
-	SND_PCM_FORMAT_U16_LE,
-	/** Unsigned 16 bit Big Endian */
-	SND_PCM_FORMAT_U16_BE,
+This means you cannot just copy pci/ac97/*.*
+1) alsa-driver
+2) alsa-lib
+3) alsa-util
 
-Is the audio data stored in the alBuffer signed or unsigned ?
+02:02.0 Class 0401: 12eb:0001 (rev 02)
+        Subsystem: 12eb:0001
 
+Is your Vortex card OEM ?
 
-Takashi Iwai wrote:
-> At Sat, 20 Aug 2005 16:30:31 +0800,
-> Raymond wrote:
-> 
->>Manuel Jander wrote:
->>
->>>On Wed, 2005-08-17 at 19:25 +0200, Takashi Iwai wrote:
->>>
->>>
->>>>At Wed, 17 Aug 2005 12:42:26 -0400,
->>>>Lee Revell wrote:
->>>>
->>>>
->>>>>On Wed, 2005-08-17 at 20:42 +0800, Raymond wrote:
->>>>>
->>>>>
->>>>>>Do anyone have a list of the sound cards ( alsa driver ) which
->>>>>>support the above features ?
->>>>>
->>>>>Vortex and emu10k1/2 at least...
->>>>
->>>>You can count ymfpci and trident, too.
->>>
->>>
->>>ESS Maestro. The 3D HRTF pipelines does not seem to be clear how they
->>>can be used, but AFAIK the hardware mixing and pitch programming
->>>should be possible.
->>>
->>
->>Since ALSA support multiple sound cards, it is possible to use onboard
->>sound chip as capturing device.
->>
->>Is it feasible to use one or more sound cards for playback ? (e.g. 
->>on-board sound chip with dmix is capable of playing stereo background 
->>music, or you have two sound cards which support hardware mixing)
-> 
-> 
-> It's feasible via alsa-lib multi plugin.
-> 
-> 
->>Refer to 4.3.2 Source Attributes
->>
->>Get/Set Offset
->>
->>AL_SEC_OFFSET - the playback position expressed in seconds.
->>...
->>This value is based on byte position, so a pitch-shifted source will
->>have an exaggerated playback speed. For example you can be 0.500 seconds
->>into a buffer having taken only 0.250 seconds to get there if the pitch
->>is set to 2.0
->>
->>AL_SAMPLE_OFFSET - the playback position  expressed in samples
->>
->>AL_BYTE_OFFSET - the playback position, expressed in bytes.
->>
->>
->>Do "SNDRV_PCM_RATE_CONTINUOUS" in snd_hardware_t mean that sample rate 
->>can be any integer between .rate_min and .rate_max ?
-> 
-> 
-> Basically, yes.  A driver might add another restriction but in such a
-> case it should use RATE_KNOT instead.
-> 
-> 
->>Since changing sample rate while playing is not offically supported by
->>ALSA. The audio are usually play in LOOP, is it feasible to change the
->>sample rate at the start of each loop if doppler effect is required ?
-> 
-> 
-> Changing the rate during the DMA is running is not officially
-> supported.  This reads: you have to stop the stream once to change the
-> parameter.  This isn't what you want, I guess.
-> 
+http://portal.suse.com/sdb/en/2001/03/chofman_vortex.html
 
-Any significant change of frequency shift which can be detected by the 
-human ears. ( e.g. listener/source accelerate/decelerate or change 
-direction )
+Other user do not have your problem but his au8820 card use STAC9704 and
+your card use WM9701A. 
 
-Refer to 3.5.2 Velocity dependent Doppler Effect.
+The other user has WM9701A on his au8810.
 
-The doppler effect will depends on
-1) Source velocity
-2) Listener velocity
-3) AL_SPEED_OF_SOUND (speed of the sound in medium, default value 343.3)
-4) AL_DOPPLER_FACTOR (zero = disable doppler effect, default 1.0)
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
 
 
-Any sound card (alsa-driver) can produce doppler effect using special
-device/synth device other than changing sample rate ?
+Do you find "vortex: IRQ fifo error" in system log when you play sound ?
 
-> 
-> 
->>Refer to src/alc_device.c
->>
->>#define _ALC_DEF_FREQ 44100
->>#define _ALC_NUM_PERIODS 2
->>#define _ALC_BUFFER_SIZE 4096
->>
->>
->>	if (snd_pcm_hw_params_set_channels(src->handle, hw_params, 2))
->>		return ALC_FALSE;
->>
+http://lists.nongnu.org/archive/html/openvortex-dev/2005-03/msg00015.html
 
-Refer to 5.3.4 Specifying Buffer Content
+Using "vortex_adbdma_stopfifo()" instead of "vortex_adbdma_pausefifo()"
+in snd_vortex_pcm_trigger() (ie. in the same way before au88x0 migrated
+from alsa-driver to alsa-kernel) seem to fix the front/rear channels swap
+when playing 4 channels sound on my au8830.
 
-Buffer contains audio with more than one channels will be played with 3D
-spatialization features - these formats are normally used for background
-music.
-
-This means alcOpenDevice will base on the channels of the audio to find
-the suitable device from the available sound cards.
-
-The structure AL_source should contain format/channels of the audio and
-device/subdevice or "device name" to allow sound card use different
-devices to handle mono stream for 3D spatialization and the background 
-music.
-
-There is no existing ALSA-LIB functions which can set the pcm volume 
-control of the subdevice to the speakers for all sound cards.
-
-Each device of different sound cards may have different kcontrols to 
-change left/right volume , front/rear volume, reverb, delay, ...
-
-What is the best/fast method to identify the devices of different sound 
-cards in order to call the hardware depdendent routine ?
-
-const char *snd_pcm_info_get_id(const snd_pcm_info_t *obj);
-const char *snd_pcm_info_get_name(const snd_pcm_info_t *obj);
-const char *snd_pcm_info_get_subdevice_name(const snd_pcm_info_t *obj);
-
-
->>	src->freq = dev->freq;
->>	if (snd_pcm_hw_params_set_rate_near(src->handle, hw_params, &src->freq, 0))
->>		return ALC_FALSE;
->>
->>	src->periods = _ALC_NUM_PERIODS;
->>	if (snd_pcm_hw_params_set_periods_near(src->handle, hw_params, 
->>&src->periods,0))
->>		return ALC_FALSE;
->>
->>
->>	size = _ALC_BUFFER_SIZE;
->>	if (snd_pcm_hw_params_set_buffer_size_near(src->handle, hw_params, &size))
->>		return ALC_FALSE;
->>
->>
->>1) most of the audio are mono except those stereo backgroud music.
->>2) is there any special reason to use _near() function to set rate, 
->>period_size and buffer_size in that order ?
-> 
-> 
-> The requested rate isn't supported always.
-
-These should not be a problem if the device support 
-SNDRV_PCM_RATE_CONTINUOUS.
-
-Is there any software SRC ALSA plugin ?
-
-> 
-> The order of hw_params calls may influence the resultant parameters.
-> Especially, the parameters for period and buffer sizes are very
-> sensitive.
-> 
-> Usually, the order of period_size -> buffer_size is more stable than
-> buffer_size -> period_size.
-> 
-
-Do any devices of the sound cards in the above list require a special 
-period_size/buffer_size to produce special effect ?
-
->>Are the following result normal when using the following fuctions on
->>device "plughw:x,x" ?
->>
->>rate_min=4000 for snd_pcm_hw_params_get_rate_min()
->>rate_max=-1   for snd_pcm_hw_params_get_rate_max()
->
->
-> Judging the plug layer from such values is not recommended at all.
-> If you want to skip the software SRC, set 0 to
-> snd_pcm_hw_params_set_rate_resample().
->
-
-The OpenAL 1.1 specification do not have restriction on frequency and
-format when capturing audio.
-
-Do ALSA support rate_resample/reformat when using "plughw:0,0" to 
-capture 8/16 bits mono/stereo audio ?
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-04 11:40 kernel_bug     New Issue                                    
+02-21-04 15:40 kernel_bug     Note Added: 0000280                          
+03-02-04 02:56 Tim            Note Added: 0000429                          
+04-09-04 11:54 kernel_bug     Note Added: 0000774                          
+04-09-04 18:35 mjander        Note Added: 0000777                          
+04-17-04 18:59 mjander        Status                   assigned => closed  
+04-17-04 18:59 mjander        Note Added: 0000849                          
+04-26-04 17:04 kernel_bug     Status                   closed => feedback  
+04-26-04 17:04 kernel_bug     Resolution               open => reopened    
+04-26-04 17:04 kernel_bug     Note Added: 0000953                          
+04-26-04 23:27 mjander        Note Added: 0000956                          
+03-10-05 15:31 jdthood        Note Added: 0003866                          
+03-10-05 16:44 mjander        Note Added: 0003867                          
+03-10-05 21:25 kernel_bug     Note Added: 0003873                          
+03-22-05 22:33 jdthood        Relationship added       related to 0000949  
+03-28-05 04:27 jdthood        Note Added: 0004235                          
+03-28-05 04:27 jdthood        Status                   feedback => assigned
+03-28-05 04:29 jdthood        Status                   assigned => confirmed
+08-26-05 14:50 Raymond        Note Added: 0005951                          
+08-26-05 15:12 kernel_bug     Note Added: 0005955                          
+08-26-05 16:07 Raymond        Note Added: 0005956                          
+08-26-05 17:38 kernel_bug     File Added: asound.state                     
+08-26-05 17:41 kernel_bug     Note Added: 0005957                          
+08-27-05 04:43 Raymond        Note Added: 0005959                          
+======================================================================
 
 
 
