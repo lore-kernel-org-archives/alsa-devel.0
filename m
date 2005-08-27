@@ -1,83 +1,74 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000203]: Line-In is not working with ICH - Intel ICH5 Intel8x0
-Date: Sun, 28 Aug 2005 00:19:56 +0200
-Message-ID: <71dce504f77ec57e0a09b53e8a8dc69f@bugtrack.alsa-project.org>
+From: Thomas Zehetbauer <thomasz@hostmaster.org>
+Subject: Re: ALSA / emu10k1 / SPDIF / surround?
+Date: Sun, 28 Aug 2005 00:27:07 +0200
+Message-ID: <1125181627.22285.155.camel@hostmaster.org>
+References: <1124755115.5763.3.camel@hostmaster.org>
+	 <1125166820.22285.68.camel@hostmaster.org>
+	 <1125168446.25011.68.camel@mindpipe>
+	 <1125173150.22285.103.camel@hostmaster.org>
+	 <1125174445.25011.76.camel@mindpipe>
+	 <1125177706.22285.144.camel@hostmaster.org>
+	 <1125178767.25011.86.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B9CA196
-	for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2005 00:19:56 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-GTSRp9VGZf7e3LEw0P2Z"
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <1125178767.25011.86.camel@mindpipe>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=203> 
-======================================================================
-Reported By:                dkg
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   203
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Crux Linux
-Kernel Version:             2.6.5
-======================================================================
-Date Submitted:             04-12-2004 20:16 CEST
-Last Modified:              08-28-2005 00:19 CEST
-======================================================================
-Summary:                    Line-In is not working with ICH - Intel ICH5
-Intel8x0
-Description: 
- Today I upgraded to 2.6.5 because I thought it may help me in solving my
-problem with my soundcard. But it doesnt. It still exists. Mic and
-Line-Out are ok. But my Line-In is not working. I need it to record sound
-which comes from my turntables. Following are some informations about my
-card. It would be great if someone could help me.
-======================================================================
+--=-GTSRp9VGZf7e3LEw0P2Z
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- DavidALSA - 08-28-05 00:02 
-----------------------------------------------------------------------
-Using MEPIS Linux here with kernel 2.6.7 on laptop with Intel 8x0 audio
-hardware, and cannot record from the mic input (laptop has no other
-external sound inputs available). Would appreciate this being added to
-ALSA.
+On Sat, 2005-08-27 at 17:39 -0400, Lee Revell wrote:
+> What's the exact name of your card?  IOW, what does it say on the box
+> (SBLive! Value, Player, 5.1 ... ?)
 
-----------------------------------------------------------------------
- rlrevell - 08-28-05 00:19 
-----------------------------------------------------------------------
-2.6.7 is way too old, does it work with a newer ALSA like 1.0.9b?
+AFAIR I bought the card as a "SoundBlaster Live! 5.1" and that is also
+printed on the card. Model number is SB0220. There are a EMU10K1-JFF and
+a Sigmatel STC9708T on the card.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-12-04 20:16 dkg            New Issue                                    
-04-12-04 20:16 dkg            Distribution              => Crux Linux      
-04-12-04 20:16 dkg            Kernel Version            => 2.6.5           
-04-13-04 10:51 Voluspa        Note Added: 0000787                          
-04-13-04 10:53 Voluspa        Note Edited: 0000787                         
-03-10-05 15:30 jdthood        Note Added: 0003865                          
-08-28-05 00:02 DavidALSA      Note Added: 0005960                          
-08-28-05 00:19 rlrevell       Note Added: 0005961                          
-======================================================================
+Tom
 
+--=20
+  T h o m a s   Z e h e t b a u e r   ( TZ251 )
+  PGP encrypted mail preferred - KeyID 96FFCB89
+      finger thomasz@hostmaster.org for key
+
+Why do you call your dog 1234?
+My admin told me not to name my password after my dog.
+
+
+
+
+--=-GTSRp9VGZf7e3LEw0P2Z
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iQEVAwUAQxDou2D1OYqW/8uJAQKX0Af8C26z9eQaU2Mdv4gISnmusdWODCXq+a2J
+kzr/coY3MNuOXNi0N5FcvCI0AdkjBBVFTFLDIaVgmOeVZTSKLmCog4ywxErymPQ9
+YX5EYYlTPX0R5G1Ubp7pB2LGHaM2tVijh+SH/myVmh4E3K3D2EuAodE2Vck28Aq4
+jHHNUsKuvMMH3Q5yDv9DdvjdIzK+NnDW/NPgwFRwdLTBZ63DgaY9ACZLeljbPX+q
+lXEo07zPQVT/AZWmhTFpxb783nAdRaFRYXkFVNBHf0lMAFrveJC3nFySLHRtNhBm
+Dpr6j6ew+JwwUQpLWfv1zWLbDknaiiW0FJ9x0B+2B9GPFgLVl884Fw==
+=efaP
+-----END PGP SIGNATURE-----
+
+--=-GTSRp9VGZf7e3LEw0P2Z--
 
 
 
