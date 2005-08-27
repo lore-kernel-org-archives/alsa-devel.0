@@ -1,52 +1,59 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-devel] Re: ALSA / emu10k1 / SPDIF / surround?
-Date: Sat, 27 Aug 2005 17:49:00 -0400
-Message-ID: <1125179340.25011.97.camel@mindpipe>
-References: <1124755115.5763.3.camel@hostmaster.org>
-	 <1125166820.22285.68.camel@hostmaster.org>
-	 <1125168446.25011.68.camel@mindpipe>
-	 <1125173150.22285.103.camel@hostmaster.org>
-	 <1125174445.25011.76.camel@mindpipe>
-	 <1125177706.22285.144.camel@hostmaster.org>
-	 <1125178767.25011.86.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001374]: unplug usb audio device while streaming will lock up the usb kernel
+Date: Sat, 27 Aug 2005 23:53:58 +0200
+Message-ID: <ed91f993f2e26f1e27d00e4553170fab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <1125178767.25011.86.camel@mindpipe>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Thomas Zehetbauer <thomasz@hostmaster.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F24021DB
+	for <alsa-devel@alsa-project.org>; Sat, 27 Aug 2005 23:53:58 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-08-27 at 17:39 -0400, Lee Revell wrote:
-> [restored alsa-user and alsa-devel to cc: as this is a driver bug]
-> 
-> On Sat, 2005-08-27 at 23:21 +0200, Thomas Zehetbauer wrote:
-> > 02:08.0 Class 0401: 1102:0002 (rev 0a)
-> >         Subsystem: 1102:8065
-> >         Flags: bus master, medium devsel, latency 64, IRQ 27
-> >         I/O ports at b800 [size=32]
-> >         Capabilities: [dc] Power Management version 1 
-> 
-> Yup, just as I suspected, this card isn't in the driver's device table.
-> 
-> What's the exact name of your card?  IOW, what does it say on the box
-> (SBLive! Value, Player, 5.1 ... ?)
 
-Also, what's the model number (something like SB0350 or CT4870)?  You
-might have to get this info from the Windows driver, I think it can be
-extracted from the .inf files.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1374> 
+======================================================================
+Reported By:                byuan
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1374
+Category:                   0_general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-27-2005 23:53 CEST
+Last Modified:              08-27-2005 23:53 CEST
+======================================================================
+Summary:                    unplug usb audio device while streaming will lock up
+the usb kernel
+Description: 
+unplug usb audio device while streaming will lock up the usb kernel, the
+snd_pcm_close() doesn't help, unless the process that called the
+snd_pcm_open be closed.
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-27-05 23:53 byuan          New Issue                                    
+======================================================================
+
 
 
 
