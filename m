@@ -1,46 +1,63 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: ALSA / emu10k1 / SPDIF / surround?
-Date: Sat, 27 Aug 2005 17:39:26 -0400
-Message-ID: <1125178767.25011.86.camel@mindpipe>
-References: <1124755115.5763.3.camel@hostmaster.org>
-	 <1125166820.22285.68.camel@hostmaster.org>
-	 <1125168446.25011.68.camel@mindpipe>
-	 <1125173150.22285.103.camel@hostmaster.org>
-	 <1125174445.25011.76.camel@mindpipe>
-	 <1125177706.22285.144.camel@hostmaster.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001373]: Setting relative value is not possible with cset
+Date: Sat, 27 Aug 2005 23:48:39 +0200
+Message-ID: <26e5c85791b927e65d664bcadec1a69e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <1125177706.22285.144.camel@hostmaster.org>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Thomas Zehetbauer <thomasz@hostmaster.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC9FF213
+	for <alsa-devel@alsa-project.org>; Sat, 27 Aug 2005 23:48:39 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-[restored alsa-user and alsa-devel to cc: as this is a driver bug]
 
-On Sat, 2005-08-27 at 23:21 +0200, Thomas Zehetbauer wrote:
-> 02:08.0 Class 0401: 1102:0002 (rev 0a)
->         Subsystem: 1102:8065
->         Flags: bus master, medium devsel, latency 64, IRQ 27
->         I/O ports at b800 [size=32]
->         Capabilities: [dc] Power Management version 1 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1373> 
+======================================================================
+Reported By:                Griffon26
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1373
+Category:                   amixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-27-2005 23:48 CEST
+Last Modified:              08-27-2005 23:48 CEST
+======================================================================
+Summary:                    Setting relative value is not possible with cset
+Description: 
+The summary only suggests one of the two possible solutions to my problem.
+I want to be able to control the volume of PCM playback using relative
+values
+but without touching the volume of PCM capture. 
 
-Yup, just as I suspected, this card isn't in the driver's device table.
+With sset I can do the former, but not the latter. 
+With cset I can do the latter, but not the former.
 
-What's the exact name of your card?  IOW, what does it say on the box
-(SBLive! Value, Player, 5.1 ... ?)
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-27-05 23:48 Griffon26      New Issue                                    
+======================================================================
+
 
 
 
