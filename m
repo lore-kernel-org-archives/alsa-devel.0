@@ -1,15 +1,14 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] Support for AD1889 PCI
- Soundchip
-Date: Sun, 28 Aug 2005 14:57:11 +0200
-Message-ID: <20050828145711.07974414@Tatooine.r3z0>
-References: <20050817101017.008D03658E8@mail.esiee.fr>
-	<Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Sun, 28 Aug 2005 15:28:14 +0200
+Message-ID: <6430647eab3d43f445b47be015ecbded@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31AC022D
+	for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2005 15:28:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,55 +18,165 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net, parisc-linux@lists.parisc-linux.org, kyle@parisc-linux.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Aug 2005 17:35:20 +0200 (METDST)
-Clemens Ladisch <clemens@ladisch.de> wrote:
 
-> Thibaut VARENE wrote:
-> > > -/* "<ggg> T-Bone: parisc IOMMU can start DMA at any address.
-> > > -   But the IOMMU can only map at page size granularity."
-> > > -   This affects in particular .period_bytes_min */
-> > > -#define BUF_SIZE        PAGE_SIZE
-> > > -#define MAX_BUFS        32
-> > > -#define DMA_SIZE	(MAX_BUFS*BUF_SIZE)
-> >
-> > don't remove these defines please, i'd rather have every constants
-> > defined in the header file.
-> 
-> I removed them because it wouldn't make sense to derive the buffer
-> size from the period size in the patched driver.  I used some more or
-> less random values because these values aren't anymore restricted by
-> the chip's constraints.
-> 
-> > Besides, the comment is very relevant to PA-RISC architecture,
-> > where no matter what the value is, the minimum allocated space
-> > will always be at page size granularity.
-> 
-> Most IOMMUs have this restriction.  ALSA's PCM buffer is always page
-> aligned, so drivers that do DMA over the entire buffer just don't
-> care.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+======================================================================
+Reported By:                liangalei
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1134
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
+======================================================================
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              08-28-2005 15:28 CEST
+======================================================================
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
+Description: 
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-ok fine then.
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-> 
-> Attached is a new patch with symbols for buffer size etc.
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
-Tested and it works fine, as far as i can tell. I can't see any other
-objection against it being merged in our tree and in the patch i sent
-upstream ;) As far as I'm concerned, the driver is now ok to be included
-in mainline.
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
-kyle: if it's fine for you too, please let us know and commit this patch
-to the parisc tree, i'll be offline for yet another bunch of days alas :P
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
 
-HTH
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
 
-Thibaut VARENE
-The PA/Linux Team
-http://www.pateam.org/
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ liangalei - 06-24-05 03:18 
+----------------------------------------------------------------------
+thanks for reply. 
+
+I have attach three very long file, see above "attach files".
+
+and here is some simply info, does any more info is needed ? 
+
+[lal@lal ~]$ cat /proc/asound/card0/intel8x0
+Intel8x0
+
+Global control        : 0xc0000002
+Global status         : 0x00700100
+SDM                   : 0x00000008
+AC'97 codecs ready    : primary
+AC'97 codecs SDIN     : 0 0 0
+
+
+[lal@lal ~]$ tree /proc/asound/card*
+/proc/asound/card0
+|-- codec97#0
+|   |-- ac97#0-0
+|   `-- ac97#0-0+regs
+|-- id
+|-- intel8x0
+|-- oss_mixer
+|-- pcm0c
+|   |-- info
+|   |-- oss
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm0p
+|   |-- info
+|   |-- oss
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm1c
+|   |-- info
+|   |-- oss
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm2c
+|   |-- info
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+|-- pcm3c
+|   |-- info
+|   `-- sub0
+|       |-- hw_params
+|       |-- info
+|       |-- prealloc
+|       |-- status
+|       `-- sw_params
+`-- pcm4p
+    |-- info
+    `-- sub0
+        |-- hw_params
+        |-- info
+        |-- prealloc
+        |-- status
+        `-- sw_params
+/proc/asound/cards [error opening dir]
+
+----------------------------------------------------------------------
+ ybar - 08-28-05 15:28 
+----------------------------------------------------------------------
+i ran alsamixer and set External amplifier to "on" to listen to music
+without headphone.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
