@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 28 Aug 2005 15:56:48 +0200
-Message-ID: <6b7ca47836739d2ba98491c1d6fec834@bugtrack.alsa-project.org>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: writing an alsa driver for an MPEG decoder chip
+Date: Sun, 28 Aug 2005 16:46:42 +0200
+Message-ID: <20050828144637.GA4452@home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5993022D
-	for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2005 15:56:48 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,137 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
-======================================================================
-Reported By:                Hetfield
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              08-28-2005 15:56 CEST
-======================================================================
-Summary:                    artsd-like style
-Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+I am a member of the dxr3 project, that tries to write a linux driver 
+for the MPEG decoder em8300 chip that is mainly used in Sigma Design's 
+Hollywood+ and Creative Labs DXR3 boards.
+This chip handles hardware decoding of MPEG video, but is also able do 
+perform some limited audio playback.
+We corrently have a working OSS interface for the audio playbak, that 
+I'd like to replace with an ALSA one.
+I tried to write one, using Takashi Iwai's excellent "Writing an ALSA 
+Driver" guide. Unfortunately, the driver that I managed to write seems 
+to work fine when playing sound with xmms, but all other apps that I 
+tried failed to get any sound.
 
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
-Relazioni           ID      Riassunto
-----------------------------------------------------------------------
-é duplicata da      0001228 Skype Does not work with aoss
-======================================================================
+Anyone can help me figure out whet I missed?
+You can grab the relevant file at
+http://dxr3.sourceforge.net/download/em8300_alsa.c
 
-----------------------------------------------------------------------
- Hetfield - 08-01-05 10:20 
-----------------------------------------------------------------------
-deleting my .asoundrc file i have no more 100% cpu usage.
+Thanks in advance,
 
-where the problem is? i attacched my config file.
-
-however kiax doesn't work...
-it starts but i get (debug disabled actually)
-
-PortAudio error at opening separate input stream: Invalid device ID.
-lun ago 1 10:16:06 2005 IaxWrapper::event_text() Message: Type=3
-Message=Can't start audio
-lun ago 1 10:16:06 2005 IaxWrapper::event_text() Message: Type=4
-Message=iaxclient audio: Can't open Audio Device, we tried 5 times. 
-Perhaps you do not have an input or output device?
-PortAudio error at opening separate input stream: Invalid device ID.
-PortAudio error at opening separate input stream: Invalid device ID.
+Nicolas Boullis
 
 
-any other idea?
-
-----------------------------------------------------------------------
- Hetfield - 08-28-05 15:56 
-----------------------------------------------------------------------
-continuing my voip client selection....
-
-i tried gizmo and it works perfectly without aoss, partially with aoss.
-
-when i start a call i can hear a phone sound and stop.
-in debug i see:
-read error, res = -1 , handle = 34
-
-error i didn't see without aoss.
-
-kiax, skype, gizmo...is that possibile that all this voip client are using
-wrongly libs?
-
-guess the bug in real big and it's in aoss lib.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-07-04-05 11:49 pzad           File Added: aoss.patch                       
-07-04-05 11:53 pzad           Note Added: 0005384                          
-07-04-05 14:02 Hetfield       Note Added: 0005385                          
-07-08-05 12:16 tiwai          Note Added: 0005417                          
-07-08-05 12:27 Hetfield       Note Added: 0005418                          
-07-17-05 10:25 Hetfield       Note Added: 0005503                          
-07-17-05 10:29 rlrevell       Note Added: 0005504                          
-07-17-05 10:46 rlrevell       Note Added: 0005505                          
-07-17-05 11:10 Hetfield       Note Added: 0005506                          
-07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
-07-17-05 19:41 rlrevell       Note Added: 0005508                          
-07-17-05 19:50 Hetfield       Note Added: 0005509                          
-07-17-05 19:51 rlrevell       Note Added: 0005510                          
-07-17-05 20:21 Hetfield       Note Added: 0005511                          
-07-17-05 21:14 rlrevell       Note Added: 0005512                          
-07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
-07-17-05 21:22 Hetfield       File Added: log2                             
-07-17-05 21:23 Hetfield       Note Added: 0005513                          
-07-17-05 22:21 rlrevell       Note Added: 0005514                          
-07-17-05 23:28 Hetfield       Note Added: 0005515                          
-07-17-05 23:43 rlrevell       Note Added: 0005516                          
-07-18-05 03:33 rlrevell       Note Added: 0005517                          
-07-18-05 06:04 rlrevell       Note Added: 0005518                          
-07-18-05 07:33 rlrevell       Note Added: 0005519                          
-07-18-05 09:23 Hetfield       Note Added: 0005520                          
-07-18-05 09:24 Hetfield       File Added: asoundrc                         
-07-18-05 22:08 rlrevell       Note Added: 0005524                          
-07-21-05 19:55 Hetfield       Note Added: 0005540                          
-07-21-05 19:56 Hetfield       Note Added: 0005541                          
-07-24-05 09:55 Hetfield       Note Added: 0005556                          
-07-24-05 19:10 rlrevell       Note Added: 0005558                          
-07-28-05 22:40 rlrevell       Note Added: 0005578                          
-07-29-05 17:43 tiwai          Note Added: 0005579                          
-08-01-05 10:20 Hetfield       Note Added: 0005595                          
-08-10-05 00:49 rlrevell       Relationship added       has duplicate 0001228
-08-28-05 15:56 Hetfield       Note Added: 0005963                          
-======================================================================
-
-
+PS: I am not subscribed to this list, please CC replies to me.
 
 
 -------------------------------------------------------
