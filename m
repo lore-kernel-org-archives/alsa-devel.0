@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: ALSA / emu10k1 / SPDIF / surround?
-Date: Sat, 27 Aug 2005 22:25:01 -0400
-Message-ID: <1125195901.25011.108.camel@mindpipe>
+Date: Sat, 27 Aug 2005 22:28:51 -0400
+Message-ID: <1125196132.25011.111.camel@mindpipe>
 References: <1124755115.5763.3.camel@hostmaster.org>
 	 <1125166820.22285.68.camel@hostmaster.org>
 	 <1125168446.25011.68.camel@mindpipe>
@@ -31,15 +31,20 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lis
 List-Id: alsa-devel@alsa-project.org
 
 On Sun, 2005-08-28 at 04:18 +0200, Thomas Zehetbauer wrote:
-> On Sat, 2005-08-27 at 19:00 -0400, Lee Revell wrote:
-> > Try this patch.
+> > If you still get both a PCM and a Wave control, and distortion at high
+> > levels, try removing the "ac97_chip = 1" line.
 > 
-> Please send patches attached, not inline, I had to manually apply. Used
-> alsa-driver-1.0.9b as basis.
+> I still got the PCM control and distortions with the "ac97_chip=1" line.
+> Without it I lost many controls including "Master" and could not hear
+> any sound at all.
 
-Sorry, no.  Inline should work, that's the whole point of patches.
+You are supposed to have only a PCM control - there should be no Wave
+control.
 
-Did my mailer mangle the patch?
+Sorry, I don't know what's wrong.  It's definitely some kind of driver
+bug.  Please file a bug report:
+
+https://bugtrack.alsa-project.org/alsa-bug/main_page.php
 
 Lee
 
