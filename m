@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Sun, 28 Aug 2005 15:28:14 +0200
-Message-ID: <6430647eab3d43f445b47be015ecbded@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Sun, 28 Aug 2005 15:56:48 +0200
+Message-ID: <6b7ca47836739d2ba98491c1d6fec834@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31AC022D
-	for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2005 15:28:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5993022D
+	for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2005 15:56:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,156 +24,128 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
-Reported By:                liangalei
+Reported By:                Hetfield
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1224
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              08-28-2005 15:28 CEST
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              08-28-2005 15:56 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    artsd-like style
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
-
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
-
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
+that could be very important for example using skype voip and listening
+music at the same time.
+======================================================================
+Relazioni           ID      Riassunto
+----------------------------------------------------------------------
+é duplicata da      0001228 Skype Does not work with aoss
 ======================================================================
 
 ----------------------------------------------------------------------
- liangalei - 06-24-05 03:18 
+ Hetfield - 08-01-05 10:20 
 ----------------------------------------------------------------------
-thanks for reply. 
+deleting my .asoundrc file i have no more 100% cpu usage.
 
-I have attach three very long file, see above "attach files".
+where the problem is? i attacched my config file.
 
-and here is some simply info, does any more info is needed ? 
+however kiax doesn't work...
+it starts but i get (debug disabled actually)
 
-[lal@lal ~]$ cat /proc/asound/card0/intel8x0
-Intel8x0
+PortAudio error at opening separate input stream: Invalid device ID.
+lun ago 1 10:16:06 2005 IaxWrapper::event_text() Message: Type=3
+Message=Can't start audio
+lun ago 1 10:16:06 2005 IaxWrapper::event_text() Message: Type=4
+Message=iaxclient audio: Can't open Audio Device, we tried 5 times. 
+Perhaps you do not have an input or output device?
+PortAudio error at opening separate input stream: Invalid device ID.
+PortAudio error at opening separate input stream: Invalid device ID.
 
-Global control        : 0xc0000002
-Global status         : 0x00700100
-SDM                   : 0x00000008
-AC'97 codecs ready    : primary
-AC'97 codecs SDIN     : 0 0 0
 
-
-[lal@lal ~]$ tree /proc/asound/card*
-/proc/asound/card0
-|-- codec97#0
-|   |-- ac97#0-0
-|   `-- ac97#0-0+regs
-|-- id
-|-- intel8x0
-|-- oss_mixer
-|-- pcm0c
-|   |-- info
-|   |-- oss
-|   `-- sub0
-|       |-- hw_params
-|       |-- info
-|       |-- prealloc
-|       |-- status
-|       `-- sw_params
-|-- pcm0p
-|   |-- info
-|   |-- oss
-|   `-- sub0
-|       |-- hw_params
-|       |-- info
-|       |-- prealloc
-|       |-- status
-|       `-- sw_params
-|-- pcm1c
-|   |-- info
-|   |-- oss
-|   `-- sub0
-|       |-- hw_params
-|       |-- info
-|       |-- prealloc
-|       |-- status
-|       `-- sw_params
-|-- pcm2c
-|   |-- info
-|   `-- sub0
-|       |-- hw_params
-|       |-- info
-|       |-- prealloc
-|       |-- status
-|       `-- sw_params
-|-- pcm3c
-|   |-- info
-|   `-- sub0
-|       |-- hw_params
-|       |-- info
-|       |-- prealloc
-|       |-- status
-|       `-- sw_params
-`-- pcm4p
-    |-- info
-    `-- sub0
-        |-- hw_params
-        |-- info
-        |-- prealloc
-        |-- status
-        `-- sw_params
-/proc/asound/cards [error opening dir]
+any other idea?
 
 ----------------------------------------------------------------------
- ybar - 08-28-05 15:28 
+ Hetfield - 08-28-05 15:56 
 ----------------------------------------------------------------------
-i ran alsamixer and set External amplifier to "on" to listen to music
-without headphone.
+continuing my voip client selection....
+
+i tried gizmo and it works perfectly without aoss, partially with aoss.
+
+when i start a call i can hear a phone sound and stop.
+in debug i see:
+read error, res = -1 , handle = 34
+
+error i didn't see without aoss.
+
+kiax, skype, gizmo...is that possibile that all this voip client are using
+wrongly libs?
+
+guess the bug in real big and it's in aoss lib.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
+07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
+07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
+07-02-05 21:47 pzad           Note Added: 0005361                          
+07-03-05 09:25 Hetfield       Note Added: 0005370                          
+07-03-05 14:09 pzad           Note Added: 0005376                          
+07-03-05 15:57 Hetfield       Note Added: 0005378                          
+07-04-05 11:49 pzad           File Added: aoss.patch                       
+07-04-05 11:53 pzad           Note Added: 0005384                          
+07-04-05 14:02 Hetfield       Note Added: 0005385                          
+07-08-05 12:16 tiwai          Note Added: 0005417                          
+07-08-05 12:27 Hetfield       Note Added: 0005418                          
+07-17-05 10:25 Hetfield       Note Added: 0005503                          
+07-17-05 10:29 rlrevell       Note Added: 0005504                          
+07-17-05 10:46 rlrevell       Note Added: 0005505                          
+07-17-05 11:10 Hetfield       Note Added: 0005506                          
+07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
+07-17-05 19:41 rlrevell       Note Added: 0005508                          
+07-17-05 19:50 Hetfield       Note Added: 0005509                          
+07-17-05 19:51 rlrevell       Note Added: 0005510                          
+07-17-05 20:21 Hetfield       Note Added: 0005511                          
+07-17-05 21:14 rlrevell       Note Added: 0005512                          
+07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
+07-17-05 21:22 Hetfield       File Added: log2                             
+07-17-05 21:23 Hetfield       Note Added: 0005513                          
+07-17-05 22:21 rlrevell       Note Added: 0005514                          
+07-17-05 23:28 Hetfield       Note Added: 0005515                          
+07-17-05 23:43 rlrevell       Note Added: 0005516                          
+07-18-05 03:33 rlrevell       Note Added: 0005517                          
+07-18-05 06:04 rlrevell       Note Added: 0005518                          
+07-18-05 07:33 rlrevell       Note Added: 0005519                          
+07-18-05 09:23 Hetfield       Note Added: 0005520                          
+07-18-05 09:24 Hetfield       File Added: asoundrc                         
+07-18-05 22:08 rlrevell       Note Added: 0005524                          
+07-21-05 19:55 Hetfield       Note Added: 0005540                          
+07-21-05 19:56 Hetfield       Note Added: 0005541                          
+07-24-05 09:55 Hetfield       Note Added: 0005556                          
+07-24-05 19:10 rlrevell       Note Added: 0005558                          
+07-28-05 22:40 rlrevell       Note Added: 0005578                          
+07-29-05 17:43 tiwai          Note Added: 0005579                          
+08-01-05 10:20 Hetfield       Note Added: 0005595                          
+08-10-05 00:49 rlrevell       Relationship added       has duplicate 0001228
+08-28-05 15:56 Hetfield       Note Added: 0005963                          
 ======================================================================
 
 
