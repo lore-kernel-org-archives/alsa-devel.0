@@ -1,10 +1,13 @@
-From: peter plessas <plessas@mur.at>
-Subject: errors inserting snd-powermac
-Date: Mon, 29 Aug 2005 00:34:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.56L0.0508290030570.31656@hornet.mur.at>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: Re: writing an alsa driver for an MPEG decoder chip
+Date: Mon, 29 Aug 2005 00:35:56 +0200
+Message-ID: <20050828223555.GA16031@home>
+References: <20050828144637.GA4452@home> <431233D5.4020502@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <431233D5.4020502@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,36 +20,44 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear List,
+Hi,
 
-i have run across a strange thing compiling alsa-drivers for a 
-2.6.11.5 powerpc kernel. This happens with all sort of alsa-driver 
-sources: 1.0.9rc4, 1.0.9, cvs
-I had them running already but decided to recompile, as i had some strange 
-noises with the hdsp. This problem here is about the snd-pwermac module 
-though...
+On Sun, Aug 28, 2005 at 10:59:49PM +0100, James Courtier-Dutton wrote:
+> 
+> I looked at the code. The period and buffer size selection looks a bit 
+> wrong. Can you explain to me what the actual buffer contraints are for 
+> the em8300 card? It looks to me that the only current contraint is 
+> number of periods. This seems to me to be rather a strange contrain to have.
 
-./configure --with-sequencer=yes --with-oss=yes --with-cards=hdsp,powermac
+First of all, thanks for your answer.
+Unfortunately, I have to admit that I'm not sure I have undestood what 
+periods really are.
 
-make
-*** Warning: "macio_find" 
-[/usr/local/src/alsa-1.0.9rc4/alsa-driver-1.0.9rc4/ppc/snd-powermac.ko] 
-undefined!
+The em8300 chip uses a small on-chip circular buffer (whose size is 
+given by the read_ucregister(MA_PCISize) call) as a FIFO. This FIFO is 
+fed with structs that contain both a pointer to some sound data in main 
+memory and size of this buffer. The structs have a size of 3, which 
+means the cicrular buffer has a size of read_ucregister(MA_PCISize)/3 
+elements.
 
-make install
+A fifo engine takes all elements in the fifo in order. For each element, 
+the DMA engine gets the sound data from main memory, and the sound is 
+played. Sometimes, the chip raises an interruption when the DMA engine 
+as finished reading a buffer. (That's generally once every two buffers, 
+but it happens that 2 consecutive buffers both lead to an interruption. 
+I never understood how that works...)
 
-modconf:
-FATAL: Error inserting snd_powermac 
-(/lib/modules/2.6.11.5uhci/kernel/sound/ppc/snd-powermac.ko): Unknown 
-symbol in module, or unknown parameter (see dmesg)
-FATAL: Error running install command for snd_powermac
+Hence, I thought I should set up read_ucregister(MA_PCISize)/3 static 
+buffers of random (well, <65536 bytes) size, and let each buffer 
+correspond to 1 period.
 
-dmesg:
-snd_powermac: Unknown symbol macio_find
+Do you think this is broken and this could explain why most applications 
+fail to get any sound, while xmms succeeds?
 
-is this my fault and where can i start searching?
 
-regards, Peter
+Thanks for your help,
+
+Nicolas Boullis
 
 
 -------------------------------------------------------
