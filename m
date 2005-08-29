@@ -1,90 +1,83 @@
-From: Nicolas Boullis <nboullis@debian.org>
-Subject: Re: writing an alsa driver for an MPEG decoder chip
-Date: Mon, 29 Aug 2005 19:45:34 +0200
-Message-ID: <20050829174533.GA3822@home>
-References: <20050828144637.GA4452@home> <431233D5.4020502@superbug.co.uk> <20050828223555.GA16031@home> <43124005.4030709@superbug.co.uk> <20050828233639.GB16031@home> <43125102.5020101@superbug.co.uk>
+From: Thomas Zehetbauer <thomasz@hostmaster.org>
+Subject: Re: [Alsa-devel] Re: ALSA / emu10k1 / SPDIF / surround?
+Date: Mon, 29 Aug 2005 21:04:06 +0200
+Message-ID: <1125342246.21560.2.camel@hostmaster.org>
+References: <1124755115.5763.3.camel@hostmaster.org>
+	 <1125166820.22285.68.camel@hostmaster.org>
+	 <1125168446.25011.68.camel@mindpipe>
+	 <1125173150.22285.103.camel@hostmaster.org>
+	 <1125174445.25011.76.camel@mindpipe>
+	 <1125177706.22285.144.camel@hostmaster.org>
+	 <1125178767.25011.86.camel@mindpipe>
+	 <1125181627.22285.155.camel@hostmaster.org>
+	 <1125183623.25011.102.camel@mindpipe>
+	 <1125195487.2684.8.camel@hostmaster.org>
+	 <1125196132.25011.111.camel@mindpipe>  <s5hbr3h3xxy.wl%tiwai@suse.de>
+	 <1125325907.4598.23.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <43125102.5020101@superbug.co.uk>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-JoW8aTdj1FAsEr4K5Hgz"
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <1125325907.4598.23.camel@mindpipe>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 29, 2005 at 01:04:18AM +0100, James Courtier-Dutton wrote:
-> >Anyway, explanations and suggestions for improvement are still very 
-> >welcome... ;-)
-> 
-> Well, get it working first, then improve it.
 
-And as it now seems to be working, it's now time for improvements... ;-)
+--=-JoW8aTdj1FAsEr4K5Hgz
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> For example, all the "magic" stuff is unneeded now.
+On Mon, 2005-08-29 at 10:31 -0400, Lee Revell wrote:
+> As I understand the emu10k1 driver, after initializing the AC97, it's
+> supposed to rename the "Wave" control to "PCM".  Why is this user
+> getting both?
 
-I kept this stuff because I thought it was useful for compatibility with 
-older alsa, but it seems I was mistaken. Thanks for pointing this, I 
-will replace the magic stuff with the non-magic one... ;-)
+No, they are definitely different controls. From what I have seen "Wave"
+appears to be handled by the EMU10K1 and attenuates the PCM data stream
+for both digital (SPDIF) and analog output. "PCM" appears to control the
+DAC of the Sigmatel STAC9708T AC97 codec.
 
+Tom
 
-> The Linux kernel has it's own scatter gather framework, but I can't 
-> remember off hand how best to use it.
+--=20
+  T h o m a s   Z e h e t b a u e r   ( TZ251 )
+  PGP encrypted mail preferred - KeyID 96FFCB89
+      finger thomasz@hostmaster.org for key
 
-OK. But do you think it is worth spending some time. Isn't it fine the 
-way I do it?
-
-
-> Is the number of entries in the scatter-gather list a fixed size? If so, 
-> how big is it? If the number of entries in the scatter-gather list can 
-> be varied each time you open the device, then set the "periods_min/max 
-> to the range of values it can take. Most sound cards generally do 
-> between 2 and 8 periods.
-
-The number of entries in the scatter-gather list is computed by dividing 
-the size of the list (MA_PCISize) by the size of an entry. I used to 
-think that MA_PCISize was read-only, which leads to a fixed-size list. 
-But it certainly is worth trying to write it and see if it works fine... 
-;-)
-
-(With the firware I am using, there are 32 elements in the list.)
+"Memory is like gasoline. You use it up when you are running. Of course you
+get it all back when you reboot..."
+                                        Microsoft Helpdesk
 
 
-> You would generally pre allocate all the DMA memory use for sound in the
-> snd_em8300_create() function.
-
-I do call snd_pcm_lib_preallocate_pages_for_all in snd_em8300_pcm(). 
-Should I move the call to snd_em8300_create()?
 
 
-> One would then fill the scatter-gather list with pointers to the DMA
-> memory in the snd_em8300_pcm_prepare() function.
+--=-JoW8aTdj1FAsEr4K5Hgz
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-That's already what I do... ;-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
+iQEVAwUAQxNcJmD1OYqW/8uJAQKeVwf+NFnCT9ryYAcXAxLg9pzog/0xdZhXbP55
+NDsHyaZQSG05dKiDtg72qWgCaMmm8wBMxstWI+F/Pq3RzbB3d3hiQ3GqlcVngEua
+RuKQVSCe0u9Ifow2STJB6Lt9NzjQuEgXGTkvcs4wj1IhSFP5YeIIn7/rjJqoQKB3
+I/df+iI/Gmp43DPBnSYRyqasFaYoBqDnveWQ3am0zxcNNrN/ef+VuPoQd/7XCzij
+dnIQzI6byTTdVtsAaPn7eK675t2Vn0Jr28WeuVxUZszHaCsBdPe20vpDtJnCHXDI
+JrE6RXgPYOsfC4JqW+cqfvwiJUwdEHesTgUACx53iWK0GcFKN9vp6A==
+=Aur7
+-----END PGP SIGNATURE-----
 
-> One would also try to do the fewest number of read/write to IO memory in 
-> the em8300_alsa_audio_interrupt() function. I.e. remove the 
-> read_ucregister(MA_PCISize) calls etc, and cache their values in the 
-> em8300_alsa_t structure.
-> You might want to write to the MA_PCISize register if you want the 
-> application to be able to select a different number of periods. It would 
-> be set in the prepare() function.
+--=-JoW8aTdj1FAsEr4K5Hgz--
 
-Or I guess I might use the number of periods instead of re-computing 
-it... ;-)
-
-
-Thanks for your help,
-
-Nicolas
 
 
 -------------------------------------------------------
