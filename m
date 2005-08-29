@@ -1,7 +1,7 @@
-From: Thomas Zehetbauer <thomasz@hostmaster.org>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: [Alsa-devel] Re: ALSA / emu10k1 / SPDIF / surround?
-Date: Mon, 29 Aug 2005 21:04:06 +0200
-Message-ID: <1125342246.21560.2.camel@hostmaster.org>
+Date: Mon, 29 Aug 2005 15:55:14 -0400
+Message-ID: <1125345314.4598.58.camel@mindpipe>
 References: <1124755115.5763.3.camel@hostmaster.org>
 	 <1125166820.22285.68.camel@hostmaster.org>
 	 <1125168446.25011.68.camel@mindpipe>
@@ -14,10 +14,12 @@ References: <1124755115.5763.3.camel@hostmaster.org>
 	 <1125195487.2684.8.camel@hostmaster.org>
 	 <1125196132.25011.111.camel@mindpipe>  <s5hbr3h3xxy.wl%tiwai@suse.de>
 	 <1125325907.4598.23.camel@mindpipe>
+	 <1125342246.21560.2.camel@hostmaster.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-JoW8aTdj1FAsEr4K5Hgz"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <1125325907.4598.23.camel@mindpipe>
+In-Reply-To: <1125342246.21560.2.camel@hostmaster.org>
 Sender: alsa-user-admin@lists.sourceforge.net
 Errors-To: alsa-user-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
@@ -27,56 +29,33 @@ List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
 	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Thomas Zehetbauer <thomasz@hostmaster.org>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2005-08-29 at 21:04 +0200, Thomas Zehetbauer wrote:
+> On Mon, 2005-08-29 at 10:31 -0400, Lee Revell wrote:
+> > As I understand the emu10k1 driver, after initializing the AC97, it's
+> > supposed to rename the "Wave" control to "PCM".  Why is this user
+> > getting both?
+> 
+> No, they are definitely different controls. From what I have seen "Wave"
+> appears to be handled by the EMU10K1 and attenuates the PCM data stream
+> for both digital (SPDIF) and analog output. "PCM" appears to control the
+> DAC of the Sigmatel STAC9708T AC97 codec.
 
---=-JoW8aTdj1FAsEr4K5Hgz
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+OK, thanks.  As Takashi-san pointed out I was confused by the difference
+between the Audigy and Live! mixers.
 
-On Mon, 2005-08-29 at 10:31 -0400, Lee Revell wrote:
-> As I understand the emu10k1 driver, after initializing the AC97, it's
-> supposed to rename the "Wave" control to "PCM".  Why is this user
-> getting both?
+I still think these are poor choices for mixer control names.  The kX
+driver solves this problem nicely by separating the AC97 mixer controls
+from the ones implemented with EMU10K1 DSP microcode.  I guess to have
+this option on Linux, we'd need some way for driver to report which
+controls are part of the AC97 codec.
 
-No, they are definitely different controls. From what I have seen "Wave"
-appears to be handled by the EMU10K1 and attenuates the PCM data stream
-for both digital (SPDIF) and analog output. "PCM" appears to control the
-DAC of the Sigmatel STAC9708T AC97 codec.
+Lee
 
-Tom
-
---=20
-  T h o m a s   Z e h e t b a u e r   ( TZ251 )
-  PGP encrypted mail preferred - KeyID 96FFCB89
-      finger thomasz@hostmaster.org for key
-
-"Memory is like gasoline. You use it up when you are running. Of course you
-get it all back when you reboot..."
-                                        Microsoft Helpdesk
-
-
-
-
---=-JoW8aTdj1FAsEr4K5Hgz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iQEVAwUAQxNcJmD1OYqW/8uJAQKeVwf+NFnCT9ryYAcXAxLg9pzog/0xdZhXbP55
-NDsHyaZQSG05dKiDtg72qWgCaMmm8wBMxstWI+F/Pq3RzbB3d3hiQ3GqlcVngEua
-RuKQVSCe0u9Ifow2STJB6Lt9NzjQuEgXGTkvcs4wj1IhSFP5YeIIn7/rjJqoQKB3
-I/df+iI/Gmp43DPBnSYRyqasFaYoBqDnveWQ3am0zxcNNrN/ef+VuPoQd/7XCzij
-dnIQzI6byTTdVtsAaPn7eK675t2Vn0Jr28WeuVxUZszHaCsBdPe20vpDtJnCHXDI
-JrE6RXgPYOsfC4JqW+cqfvwiJUwdEHesTgUACx53iWK0GcFKN9vp6A==
-=Aur7
------END PGP SIGNATURE-----
-
---=-JoW8aTdj1FAsEr4K5Hgz--
+Lee
 
 
 
