@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Re: [Alsa-user] ALSA / emu10k1 / SPDIF / surround?
-Date: Mon, 29 Aug 2005 12:26:07 -0400
-Message-ID: <1125332767.4598.39.camel@mindpipe>
+Date: Mon, 29 Aug 2005 12:32:22 -0400
+Message-ID: <1125333143.4598.44.camel@mindpipe>
 References: <1124755115.5763.3.camel@hostmaster.org>
 	 <1125166820.22285.68.camel@hostmaster.org>
 	 <1125168446.25011.68.camel@mindpipe>
@@ -16,11 +16,12 @@ References: <1124755115.5763.3.camel@hostmaster.org>
 	 <1125325907.4598.23.camel@mindpipe> <s5h1x4c4ust.wl%tiwai@suse.de>
 	 <1125330291.4598.28.camel@mindpipe> <s5hy86k3fls.wl%tiwai@suse.de>
 	 <1125330827.4598.34.camel@mindpipe>  <s5hwtm43fay.wl%tiwai@suse.de>
+	 <1125332767.4598.39.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwtm43fay.wl%tiwai@suse.de>
+In-Reply-To: <1125332767.4598.39.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -34,66 +35,33 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Thomas Zehetbauer <thomasz@hostmaster.org>, alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-08-29 at 17:59 +0200, Takashi Iwai wrote:
-> At Mon, 29 Aug 2005 11:53:47 -0400,
-> Lee Revell wrote:
-> > 
-> > On Mon, 2005-08-29 at 17:52 +0200, Takashi Iwai wrote:
-> > > At Mon, 29 Aug 2005 11:44:50 -0400,
-> > > Lee Revell wrote:
-> > > > 
-> > > > On Mon, 2005-08-29 at 17:38 +0200, Takashi Iwai wrote:
-> > > > > But ac97 chip is never initialized if ac97_chip == 0.
-> > > > 
-> > > > Right, but the user tried my patch to set ac97_chip to 1 for that model,
-> > > > and is still getting a "Wave" and a "PCM" control.  Is this the expected
-> > > > behavior?
-> > > 
-> > > Yes.  As mentioned in the last mail, "Wave" -> "PCM" is done only on
-> > > audigy, not on sb live.
-> > 
-> > So then what is the ddifference between the Wave and PCM controls?
-> > Don't they do the same thing?
-> 
-> Wave = emu10k1 DSP digital volume
-> PCM = ac97 PCM analog volume
-> 
-> IIRC, Wave is renamed to PCM on audigy because audigy doesn't use ac97
-> PCM control.
+On Mon, 2005-08-29 at 12:26 -0400, Lee Revell wrote:
+> On Mon, 2005-08-29 at 17:59 +0200, Takashi Iwai wrote:
 
-OK, thanks for clarifying.  So maybe the distortion problem here is just
-an app that's sending a clipped signal.
-
-Please apply my patch from earlier in the thread, here it is again for
-convenience.
-
-Summary: Add identification for Live 5.1 [SB0220]
-
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+Sorry, the patch was word wrapped.
 
 Index: alsa-kernel/pci/emu10k1/emu10k1_main.c
 ===================================================================
 RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
 retrieving revision 1.66
 diff -u -r1.66 emu10k1_main.c
---- alsa-kernel/pci/emu10k1/emu10k1_main.c      26 Aug 2005 16:26:40
--0000      1.66
-+++ alsa-kernel/pci/emu10k1/emu10k1_main.c      27 Aug 2005 22:58:59
--0000
+--- alsa-kernel/pci/emu10k1/emu10k1_main.c	26 Aug 2005 16:26:40 -0000	1.66
++++ alsa-kernel/pci/emu10k1/emu10k1_main.c	29 Aug 2005 16:31:37 -0000
 @@ -741,6 +741,13 @@
-         .emu10k1_chip = 1,
-         .ac97_chip = 1,
-         .sblive51 = 1} ,
-+       /* Tested by Thomas Zehetbauer 27th Aug 2005 */
-+       {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80651102,
-+        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
-+        .id = "Live",
-+        .emu10k1_chip = 1,
-+        .ac97_chip = 1,
-+        .sblive51 = 1} ,
-        {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
-         .driver = "EMU10K1", .name = "SB Live 5.1", 
-         .id = "Live",
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
++	/* Tested by Thomas Zehetbauer 27th Aug 2005 */
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80651102,
++	 .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
++	 .id = "Live",
++	 .emu10k1_chip = 1,
++	 .ac97_chip = 1,
++	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
+ 	 .driver = "EMU10K1", .name = "SB Live 5.1", 
+ 	 .id = "Live",
+
 
 
 
