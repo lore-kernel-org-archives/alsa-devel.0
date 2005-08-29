@@ -1,16 +1,26 @@
-From: =?iso-8859-1?q?Ren=E9_Rebe?= <rene@exactcode.de>
-Subject: Re: No sound on ATI IXP with Realtek ALC655 rev0 (MSI Megabook S270)
-Date: Mon, 29 Aug 2005 18:20:20 +0200
-Message-ID: <200508291820.23408.rene@exactcode.de>
-References: <200508291419.34270.rene@exactcode.de> <s5hzmr03g65.wl%tiwai@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [Alsa-user] ALSA / emu10k1 / SPDIF / surround?
+Date: Mon, 29 Aug 2005 12:26:07 -0400
+Message-ID: <1125332767.4598.39.camel@mindpipe>
+References: <1124755115.5763.3.camel@hostmaster.org>
+	 <1125166820.22285.68.camel@hostmaster.org>
+	 <1125168446.25011.68.camel@mindpipe>
+	 <1125173150.22285.103.camel@hostmaster.org>
+	 <1125174445.25011.76.camel@mindpipe>
+	 <1125177706.22285.144.camel@hostmaster.org>
+	 <1125178767.25011.86.camel@mindpipe>
+	 <1125181627.22285.155.camel@hostmaster.org>
+	 <1125183623.25011.102.camel@mindpipe>
+	 <1125195487.2684.8.camel@hostmaster.org>
+	 <1125196132.25011.111.camel@mindpipe> <s5hbr3h3xxy.wl%tiwai@suse.de>
+	 <1125325907.4598.23.camel@mindpipe> <s5h1x4c4ust.wl%tiwai@suse.de>
+	 <1125330291.4598.28.camel@mindpipe> <s5hy86k3fls.wl%tiwai@suse.de>
+	 <1125330827.4598.34.camel@mindpipe>  <s5hwtm43fay.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1901573.em0IzHPm6q";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzmr03g65.wl%tiwai@suse.de>
+In-Reply-To: <s5hwtm43fay.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,50 +30,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Thomas Zehetbauer <thomasz@hostmaster.org>, alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1901573.em0IzHPm6q
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Mon, 2005-08-29 at 17:59 +0200, Takashi Iwai wrote:
+> At Mon, 29 Aug 2005 11:53:47 -0400,
+> Lee Revell wrote:
+> > 
+> > On Mon, 2005-08-29 at 17:52 +0200, Takashi Iwai wrote:
+> > > At Mon, 29 Aug 2005 11:44:50 -0400,
+> > > Lee Revell wrote:
+> > > > 
+> > > > On Mon, 2005-08-29 at 17:38 +0200, Takashi Iwai wrote:
+> > > > > But ac97 chip is never initialized if ac97_chip == 0.
+> > > > 
+> > > > Right, but the user tried my patch to set ac97_chip to 1 for that model,
+> > > > and is still getting a "Wave" and a "PCM" control.  Is this the expected
+> > > > behavior?
+> > > 
+> > > Yes.  As mentioned in the last mail, "Wave" -> "PCM" is done only on
+> > > audigy, not on sb live.
+> > 
+> > So then what is the ddifference between the Wave and PCM controls?
+> > Don't they do the same thing?
+> 
+> Wave = emu10k1 DSP digital volume
+> PCM = ac97 PCM analog volume
+> 
+> IIRC, Wave is renamed to PCM on audigy because audigy doesn't use ac97
+> PCM control.
 
-Hi,
+OK, thanks for clarifying.  So maybe the distortion problem here is just
+an app that's sending a clipped signal.
 
-On Monday 29 August 2005 17:40, Takashi Iwai wrote:
+Please apply my patch from earlier in the thread, here it is again for
+convenience.
 
-> Ren=E9 Rebe wrote:
-> > despite enabling all mixel elements and increasing all sliders to the
-> > maximum (or to other reasonable values) there is no sound from the
-> > internal speakers on an AMD Turion based MSI Megabook with ATI chip and
-> > ALC655 rev0.
->
-> It's a known device which doesn't work so far.
-> Possibly missing a vendor specific configuration like GPIO...
+Summary: Add identification for Live 5.1 [SB0220]
 
-Anything I could look into to find out?
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-Yours,
+Index: alsa-kernel/pci/emu10k1/emu10k1_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+retrieving revision 1.66
+diff -u -r1.66 emu10k1_main.c
+--- alsa-kernel/pci/emu10k1/emu10k1_main.c      26 Aug 2005 16:26:40
+-0000      1.66
++++ alsa-kernel/pci/emu10k1/emu10k1_main.c      27 Aug 2005 22:58:59
+-0000
+@@ -741,6 +741,13 @@
+         .emu10k1_chip = 1,
+         .ac97_chip = 1,
+         .sblive51 = 1} ,
++       /* Tested by Thomas Zehetbauer 27th Aug 2005 */
++       {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80651102,
++        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
++        .id = "Live",
++        .emu10k1_chip = 1,
++        .ac97_chip = 1,
++        .sblive51 = 1} ,
+        {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
+         .driver = "EMU10K1", .name = "SB Live 5.1", 
+         .id = "Live",
 
-=2D-=20
-Ren=E9 Rebe - Rubensstr. 64 - 12157 Berlin (Europe / Germany)
-            http://www.exactcode.de | http://www.t2-project.org
-            +49 (0)30  255 897 45
-
---nextPart1901573.em0IzHPm6q
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQBDEzXHQuICExGFvYIRAjIEAJ4wXArMgBskXKXv3NNT05YrWUb8YwCfaxHy
-0aRbODll7Mf4LjHfU7bvby8=
-=Gz8Q
------END PGP SIGNATURE-----
-
---nextPart1901573.em0IzHPm6q--
 
 
 -------------------------------------------------------
