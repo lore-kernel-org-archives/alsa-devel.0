@@ -1,14 +1,12 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Question about Surround (4.0) and the Revolution 7.1 card
-Date: Mon, 29 Aug 2005 19:59:08 -0700 (PDT)
-Message-ID: <20050830025908.30143.qmail@web60824.mail.yahoo.com>
-References: <20050830002654.0468C33DB5@sc8-sf-spam1.sourceforge.net>
-Reply-To: tsw@johana.com
+From: =?windows-1251?B?MTIgLSAxNiDx5e3y/+Hw/w==?= <aegis@myrealbox.com>
+Subject: =?windows-1251?B?z/Dg6vLo9+Xx6ujpIOrz8PEg7+4g8err4OTx6u7pIOvu4+jx8ujq5Q==?=
+Date: Mon, 29 Aug 2005 17:02:31 +0000
+Message-ID: <c01601c5acbb$5e9ce7e1$dc1eaefb@myrealbox.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_1C29E2D7.3116544E"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050830002654.0468C33DB5@sc8-sf-spam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,93 +19,182 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In futzing around with the M-Audio Revolution card and newer ALSA (1.0.10=
-rc1),
-I found that surround40 doesn't appear to work.  It gives an invalid slav=
-e
-channel:
+This is a multi-part message in MIME format.
 
-[tsw alsa]$ aplay -Dsurround40 quad_id.wav
-ALSA lib pcm_route.c:1005:(snd_pcm_route_load_ttable) Invalid slave chann=
-el: 4
-aplay: main:540: audio open error: Invalid argument
-
-Of course, using 'default' works just fine (without the '-DSurround40'). =
- This
-is an example the problem I'm having.  I believe that this because someth=
-ing
-changed in the Revo driver.  Here are some files that I believe shed some=
- light
-on the problem:
-
->>>>>>>>>>The soundcard list from 'aplay':
-[tsw alsa]$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Revolution71 [M Audio Revolution-7.1], device 0: ICE1724 [ICE1724=
-]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Revolution71 [M Audio Revolution-7.1], device 1: IEC1724 IEC958
-[IEC1724 IEC958]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Revolution71 [M Audio Revolution-7.1], device 2: ICE1724 Surround=
-s
-[ICE1724 Surround PCM]
-  Subdevices: 3/3
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-
->>>>>>>A portion of ICE1724.conf
-...
-ICE1724.pcm.surround40.0 {
-        @args [ CARD ]
-        @args.CARD {
-                type string
-        }
-        type route
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.2.4 1
-        ttable.3.5 1
-        slave {
-                channels 4
-                pcm {
-                        type hw
-                        card $CARD
-                }
-        }
-}
-...
-
-All I know is that something changed in recent versions.  I was using one
-of the 0.9.x versions and (insert doubting words here) it did work.
-
-I think it is because the device seperates the "normal" (front) channels
-from the "surround" (the other 6) channels.  Are the routes correct?
-
-I'm not an expert in the configuration files, thus the message.
-
-Thanks
+------=_NextPart_000_0000_1C29E2D7.3116544E
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_CD0EADE7.A2BAF9E9"
 
 
---=20
-Tom Watson
-tsw@johana.com
+------=_NextPart_001_0001_CD0EADE7.A2BAF9E9
+Content-Type: text/plain;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+ =D1=CA=CB=C0=C4=D1=CA=C0=DF =CB=CE=C3=C8=D1=D2=C8=CA=C0=20
+12 - 16 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.
 
 
-	=09
-____________________________________________________
-Start your day with Yahoo! - make it your home page=20
-http://www.yahoo.com/r/hs=20
-=20
+=C5=F1=EB=E8 =E2=FB =F1=F2=EE=EB=EA=ED=F3=EB=E8=F1=FC =F1 =EE=E4=ED=EE=E9=
+ =E8=E7 =F2=E8=EF=E8=F7=ED=FB=F5 =EF=F0=EE=E1=EB=E5=EC - =F1=EA=EE=EB=FC=EA=
+=EE =F2=EE=E2=E0=F0=E0 =E4=EE=EB=E6=ED=EE
+=F5=F0=E0=ED=E8=F2=FC=F1=FF =ED=E0 =F1=EA=EB=E0=E4=E5? =F1=EA=EE=EB=FC=EA=
+=EE =E8 =EA=EE=E3=E4=E0 =E7=E0=EA=F3=EF=E0=F2=FC? =E2=FB=E3=EE=E4=ED=EE =EB=
+=E8 =EF=EE=EB=FC=E7=EE=E2=E0=F2=FC=F1=FF
+=F1=EA=E8=E4=EA=E0=EC=E8 =EE=F2 =EF=EE=F1=F2=E0=E2=F9=E8=EA=E0? =EA=E0=EA=
+ =F1=EF=F0=EE=E3=ED=EE=E7=E8=F0=EE=E2=E0=F2=FC =EF=F0=EE=E4=E0=E6=E8? - =F2=
+=EE =E4=E0=ED=ED=FB=E9 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E9
+=EA=F3=F0=F1 =EF=EE=EC=EE=E6=E5=F2 =E2=E0=EC =ED=E5 =F2=EE=EB=FC=EA=EE =F0=
+=E5=F8=E8=F2=FC =FD=F2=E8 =EF=F0=EE=E1=EB=E5=EC=FB, =ED=EE =E8 =E4=E0=F1=F2=
+ =EE=F2=E2=E5=F2=FB =ED=E0 =ED=E5
+=EC=E5=ED=E5=E5 =E0=EA=F2=F3=E0=EB=FC=ED=FB=E5 =E2=EE=EF=F0=EE=F1=FB: =CA=
+=E0=EA =F1=E4=E5=EB=E0=F2=FC =E2=ED=F3=F2=F0=E5=ED=ED=FE=FE =EB=EE=E3=E8=F1=
+=F2=E8=EA=F3 =F1=EA=EB=E0=E4=E0 =E1=EE=EB=E5=E5
+=FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E9? =CA=E0=EA =F1=E4=E5=EB=E0=F2=FC =F2=E0=
+=EA, =F7=F2=EE=E1=FB =F2=EE=E2=E0=F0 =ED=E5 =E7=E0=EB=E5=E6=E8=E2=E0=EB=F1=
+=FF? =CA=E0=EA =F3=EC=E5=ED=FC=F8=E8=F2=FC
+=F1=F2=EE=E8=EC=EE=F1=F2=FC =F5=F0=E0=ED=E5=ED=E8=FF =E8 =E4=EE=F1=F2=E0=E2=
+=EA=E8? =C2=F1=E5 =EB=E8 =F2=EE=E2=E0=F0=FB =F0=E0=E2=ED=EE=F6=E5=ED=ED=FB=
+?=20
+
+=CA=F3=F0=F1 =EF=EE=F1=F2=F0=EE=E5=ED =ED=E0 =EE=F1=ED=EE=E2=E5 =EE=E1=EE=
+=E1=F9=E5=ED=E8=FF =F0=E5=E0=EB=FC=ED=EE=E3=EE =EE=EF=FB=F2=E0 =EE=F0=E3=E0=
+=ED=E8=E7=E0=F6=E8=E8 =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E3=EE
+=F1=EA=EB=E0=E4=F1=EA=EE=E3=EE =F5=EE=E7=FF=E9=F1=F2=E2=E0. =C1=EE=EB=FC=F8=
+=EE=E5 =E2=ED=E8=EC=E0=ED=E8=E5 =F3=E4=E5=EB=E5=ED=EE =EE=E4=ED=EE=E9 =E8=
+=E7 =E3=EB=E0=E2=ED=FB=F5 =E7=E0=E4=E0=F7 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8
+=FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E3=EE =F1=EA=EB=E0=E4=F1=EA=EE=E3=EE =F5=EE=
+=E7=FF=E9=F1=F2=E2=E0, =E0 =E8=EC=E5=ED=ED=EE =F2=E5=F5=ED=EE=EB=EE=E3=E8=
+=F7=E5=F1=EA=EE=EC=F3 =EF=F0=EE=E5=EA=F2=E8=F0=EE=E2=E0=ED=E8=FE
+=F1=EA=EB=E0=E4=F1=EA=EE=E3=EE =EA=EE=EC=EF=EB=E5=EA=F1=E0. =CD=E0 =F1=E5=
+=EC=E8=ED=E0=F0=E5 =E2=FB =F3=E7=ED=E0=E5=F2=E5 =EE =F1=EE=E2=F0=E5=EC=E5=
+=ED=ED=EE=E9 =F1=E8=F1=F2=E5=EC=E5 =E8 =F1=F2=F0=F3=EA=F2=F3=F0=E5
+=F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =F1=EA=EB=E0=E4=EE=EC, =EC=E5=F2=EE=E4=E8=EA=
+=E5 =EF=F0=EE=E3=ED=EE=E7=E8=F0=EE=E2=E0=ED=E8=FF =EE=E1=FA=E5=EC=E0 =EF=F0=
+=EE=E4=E0=E6, =F0=E0=ED=E6=E8=F0=EE=E2=E0=ED=E8=E8
+=E0=F1=F1=EE=F0=F2=E8=EC=E5=ED=F2=E0, =E0 =F2=E0=EA=E6=E5 =EA=E0=EA=EE=E5=
+ =F1=EA=EB=E0=E4=F1=EA=EE=E5 =EE=E1=EE=F0=F3=E4=EE=E2=E0=ED=E8=E5 =ED=E0=E8=
+=E1=EE=EB=E5=E5 =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE
+=E8=EC=E5=ED=ED=EE =E4=EB=FF =C2=E0=F8=E5=E3=EE =F1=EA=EB=E0=E4=E0.=20
+
+=CF=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8, =E8=ED=F1=F2=
+=F0=F3=EC=E5=ED=F2=FB =E8 =F0=E5=EA=EE=EC=E5=ED=E4=E0=F6=E8=E8 =EE=E1=FA=E5=
+=E4=E8=ED=E5=ED=FB =E2 =EF=F0=EE=E3=F0=E0=EC=EC=F3
+=F7=E5=F2=FB=F0=E5=F5=E4=ED=E5=E2=ED=EE=E3=EE =F1=EF=E5=F6=E8=E0=EB=E8=E7=
+=E8=F0=EE=E2=E0=ED=ED=EE=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0-=EF=F0=E0=EA=F2=E8=
+=EA=F3=EC=E0:=20
+
+=D1=CA=CB=C0=C4=D1=CA=C0=DF =CB=CE=C3=C8=D1=D2=C8=CA=C0=20
+12 - 16 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.
 
 
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
-es
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
-A
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+=D1=E5=EC=E8=ED=E0=F0 =F1=F2=F0=F3=EA=F2=F3=F0=E8=F0=F3=E5=F2 =F1=EE=E2=F0=
+=E5=EC=E5=ED=ED=FB=E9 =E8 =ED=E0=E8=E1=EE=EB=E5=E5 =FD=F4=F4=E5=EA=F2=E8=E2=
+=ED=FB=E9 =EE=EF=FB=F2 =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF
+=E7=E0=EF=E0=F1=E0=EC=E8. =CF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E5 =EF=F0=E8=EC=
+=E5=F0=FB, =F0=E0=E7=E1=EE=F0 =E0=EA=F2=F3=E0=EB=FC=ED=FB=F5 =F1=E8=F2=F3=
+=E0=F6=E8=E9 =E8 =EA=E5=E9=F1=EE=E2 =EF=EE=EC=EE=E3=F3=F2
+=E2=E0=EC =ED=E0=E9=F2=E8 =EE=EF=F2=E8=EC=E0=EB=FC=ED=FB=E5 =E8 =FD=F4=F4=
+=E5=EA=F2=E8=E2=ED=FB=E5 =F0=E5=F8=E5=ED=E8=FF =F1=EE=E1=F1=F2=E2=E5=ED=ED=
+=FB=F5 =EF=F0=EE=E1=EB=E5=EC.=20
+
+=C2 =EF=F0=EE=E3=F0=E0=EC=EC=E5 =EA=F3=F0=F1=E0:=20
+
+ =D2=E5=F5=ED=EE=EB=EE=E3=E8=F7=E5=F1=EA=EE=E5 =EF=F0=EE=E5=EA=F2=E8=F0=EE=
+=E2=E0=ED=E8=E5 =F1=EA=EB=E0=E4=F1=EA=EE=E3=EE =EA=EE=EC=EF=EB=E5=EA=F1=E0=
+ =E8 =E8=F1=EF=EE=EB=FC=E7=F3=E5=EC=E0=FF =F2=E5=F5=ED=E8=EA=E0
+ =CF=F0=EE=E3=ED=EE=E7=E8=F0=EE=E2=E0=ED=E8=E5 =E8 =EE=EF=F2=E8=EC=E8=E7=E0=
+=F6=E8=FF =F2=EE=E2=E0=F0=ED=EE=E3=EE =E7=E0=EF=E0=F1=E0  =C7=E2=EE=ED=E8=
+=F2=E5: (095) 98O-65-I6
+
+  =20
+------=_NextPart_001_0001_CD0EADE7.A2BAF9E9
+Content-Type: text/html;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<HTML>
+<BODY text=3D#000000 bgColor=3D#ffffff>
+
+<font face=3D"Times New Roman"><P align=3Dcenter><FONT face=3DArial><FONT=
+ size=3D5><B>=D1=CA=CB=C0=C4=D1=CA=C0=DF =CB=CE=C3=C8=D1=D2=C8=CA=C0</B><=
+/FONT> <br>
+<FONT size=3D4><B>12 - 16 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.<br>
+</B></FONT></P>
+<P align=3Djustify>=C5=F1=EB=E8 =E2=FB =F1=F2=EE=EB=EA=ED=F3=EB=E8=F1=FC =
+=F1 =EE=E4=ED=EE=E9 =E8=E7 =F2=E8=EF=E8=F7=ED=FB=F5 =EF=F0=EE=E1=EB=E5=EC=
+ - =F1=EA=EE=EB=FC=EA=EE =F2=EE=E2=E0=F0=E0 =E4=EE=EB=E6=ED=EE =F5=F0=E0=ED=
+=E8=F2=FC=F1=FF =ED=E0 =F1=EA=EB=E0=E4=E5? =F1=EA=EE=EB=FC=EA=EE =E8 =EA=EE=
+=E3=E4=E0 =E7=E0=EA=F3=EF=E0=F2=FC? =E2=FB=E3=EE=E4=ED=EE =EB=E8 =EF=EE=EB=
+=FC=E7=EE=E2=E0=F2=FC=F1=FF =F1=EA=E8=E4=EA=E0=EC=E8 =EE=F2 =EF=EE=F1=F2=E0=
+=E2=F9=E8=EA=E0? =EA=E0=EA =F1=EF=F0=EE=E3=ED=EE=E7=E8=F0=EE=E2=E0=F2=FC =
+=EF=F0=EE=E4=E0=E6=E8? - =F2=EE =E4=E0=ED=ED=FB=E9 =EF=F0=E0=EA=F2=E8=F7=E5=
+=F1=EA=E8=E9 =EA=F3=F0=F1 =EF=EE=EC=EE=E6=E5=F2 =E2=E0=EC =ED=E5 =F2=EE=EB=
+=FC=EA=EE =F0=E5=F8=E8=F2=FC =FD=F2=E8 =EF=F0=EE=E1=EB=E5=EC=FB, =ED=EE =E8=
+ =E4=E0=F1=F2 =EE=F2=E2=E5=F2=FB =ED=E0 =ED=E5 =EC=E5=ED=E5=E5 =E0=EA=F2=F3=
+=E0=EB=FC=ED=FB=E5 =E2=EE=EF=F0=EE=F1=FB: =CA=E0=EA =F1=E4=E5=EB=E0=F2=FC=
+ =E2=ED=F3=F2=F0=E5=ED=ED=FE=FE =EB=EE=E3=E8=F1=F2=E8=EA=F3 =F1=EA=EB=E0=E4=
+=E0 =E1=EE=EB=E5=E5 =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E9? =CA=E0=EA =F1=E4=E5=
+=EB=E0=F2=FC =F2=E0=EA, =F7=F2=EE=E1=FB =F2=EE=E2=E0=F0 =ED=E5 =E7=E0=EB=E5=
+=E6=E8=E2=E0=EB=F1=FF? =CA=E0=EA =F3=EC=E5=ED=FC=F8=E8=F2=FC =F1=F2=EE=E8=
+=EC=EE=F1=F2=FC =F5=F0=E0=ED=E5=ED=E8=FF =E8 =E4=EE=F1=F2=E0=E2=EA=E8? =C2=
+=F1=E5 =EB=E8 =F2=EE=E2=E0=F0=FB =F0=E0=E2=ED=EE=F6=E5=ED=ED=FB? <br>
+<br>
+=CA=F3=F0=F1 =EF=EE=F1=F2=F0=EE=E5=ED =ED=E0 =EE=F1=ED=EE=E2=E5 =EE=E1=EE=
+=E1=F9=E5=ED=E8=FF =F0=E5=E0=EB=FC=ED=EE=E3=EE =EE=EF=FB=F2=E0 =EE=F0=E3=E0=
+=ED=E8=E7=E0=F6=E8=E8 =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E3=EE =F1=EA=EB=E0=E4=
+=F1=EA=EE=E3=EE =F5=EE=E7=FF=E9=F1=F2=E2=E0. =C1=EE=EB=FC=F8=EE=E5 =E2=ED=
+=E8=EC=E0=ED=E8=E5 =F3=E4=E5=EB=E5=ED=EE =EE=E4=ED=EE=E9 =E8=E7 =E3=EB=E0=
+=E2=ED=FB=F5 =E7=E0=E4=E0=F7 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8 =FD=F4=F4=E5=
+=EA=F2=E8=E2=ED=EE=E3=EE =F1=EA=EB=E0=E4=F1=EA=EE=E3=EE =F5=EE=E7=FF=E9=F1=
+=F2=E2=E0, =E0 =E8=EC=E5=ED=ED=EE =F2=E5=F5=ED=EE=EB=EE=E3=E8=F7=E5=F1=EA=
+=EE=EC=F3 =EF=F0=EE=E5=EA=F2=E8=F0=EE=E2=E0=ED=E8=FE =F1=EA=EB=E0=E4=F1=EA=
+=EE=E3=EE =EA=EE=EC=EF=EB=E5=EA=F1=E0. =CD=E0 =F1=E5=EC=E8=ED=E0=F0=E5 =E2=
+=FB =F3=E7=ED=E0=E5=F2=E5 =EE =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=E9 =F1=E8=F1=
+=F2=E5=EC=E5 =E8 =F1=F2=F0=F3=EA=F2=F3=F0=E5 =F3=EF=F0=E0=E2=EB=E5=ED=E8=FF=
+ =F1=EA=EB=E0=E4=EE=EC, =EC=E5=F2=EE=E4=E8=EA=E5 =EF=F0=EE=E3=ED=EE=E7=E8=
+=F0=EE=E2=E0=ED=E8=FF =EE=E1=FA=E5=EC=E0 =EF=F0=EE=E4=E0=E6, =F0=E0=ED=E6=
+=E8=F0=EE=E2=E0=ED=E8=E8 =E0=F1=F1=EE=F0=F2=E8=EC=E5=ED=F2=E0, =E0 =F2=E0=
+=EA=E6=E5 =EA=E0=EA=EE=E5 =F1=EA=EB=E0=E4=F1=EA=EE=E5 =EE=E1=EE=F0=F3=E4=EE=
+=E2=E0=ED=E8=E5 =ED=E0=E8=E1=EE=EB=E5=E5 =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE =E8=
+=EC=E5=ED=ED=EE =E4=EB=FF =C2=E0=F8=E5=E3=EE =F1=EA=EB=E0=E4=E0. <br>
+<br>
+=CF=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8, =E8=ED=F1=F2=
+=F0=F3=EC=E5=ED=F2=FB =E8 =F0=E5=EA=EE=EC=E5=ED=E4=E0=F6=E8=E8 =EE=E1=FA=E5=
+=E4=E8=ED=E5=ED=FB =E2 =EF=F0=EE=E3=F0=E0=EC=EC=F3 =F7=E5=F2=FB=F0=E5=F5=E4=
+=ED=E5=E2=ED=EE=E3=EE =F1=EF=E5=F6=E8=E0=EB=E8=E7=E8=F0=EE=E2=E0=ED=ED=EE=
+=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0-=EF=F0=E0=EA=F2=E8=EA=F3=EC=E0: </P>
+<P align=3Dcenter><B><FONT size=3D5>=D1=CA=CB=C0=C4=D1=CA=C0=DF =CB=CE=C3=
+=C8=D1=D2=C8=CA=C0</FONT></B> <br>
+<FONT size=3D4><B>12 - 16 =F1=E5=ED=F2=FF=E1=F0=FF 2005 =E3.</B></FONT><b=
+r>
+</P>
+<P align=3Dleft><B>=D1=E5=EC=E8=ED=E0=F0 =F1=F2=F0=F3=EA=F2=F3=F0=E8=F0=F3=
+=E5=F2</B> =F1=EE=E2=F0=E5=EC=E5=ED=ED=FB=E9 =E8 =ED=E0=E8=E1=EE=EB=E5=E5=
+ =FD=F4=F4=E5=EA=F2=E8=E2=ED=FB=E9 =EE=EF=FB=F2 =F3=EF=F0=E0=E2=EB=E5=ED=E8=
+=FF =E7=E0=EF=E0=F1=E0=EC=E8. <B><I>=CF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E5 =
+=EF=F0=E8=EC=E5=F0=FB, =F0=E0=E7=E1=EE=F0 =E0=EA=F2=F3=E0=EB=FC=ED=FB=F5 =
+=F1=E8=F2=F3=E0=F6=E8=E9 =E8 =EA=E5=E9=F1=EE=E2</I></B> =EF=EE=EC=EE=E3=F3=
+=F2 =E2=E0=EC =ED=E0=E9=F2=E8 =EE=EF=F2=E8=EC=E0=EB=FC=ED=FB=E5 =E8 =FD=F4=
+=F4=E5=EA=F2=E8=E2=ED=FB=E5 =F0=E5=F8=E5=ED=E8=FF =F1=EE=E1=F1=F2=E2=E5=ED=
+=ED=FB=F5 =EF=F0=EE=E1=EB=E5=EC. <br>
+<br>
+<B>=C2 =EF=F0=EE=E3=F0=E0=EC=EC=E5 =EA=F3=F0=F1=E0:</B> </FONT></P>
+<UL>
+<LI><FONT face=3DArial>=D2=E5=F5=ED=EE=EB=EE=E3=E8=F7=E5=F1=EA=EE=E5 =EF=F0=
+=EE=E5=EA=F2=E8=F0=EE=E2=E0=ED=E8=E5 =F1=EA=EB=E0=E4=F1=EA=EE=E3=EE =EA=EE=
+=EC=EF=EB=E5=EA=F1=E0 =E8 =E8=F1=EF=EE=EB=FC=E7=F3=E5=EC=E0=FF =F2=E5=F5=ED=
+=E8=EA=E0 </FONT>
+<LI><FONT face=3DArial>=CF=F0=EE=E3=ED=EE=E7=E8=F0=EE=E2=E0=ED=E8=E5 =E8 =
+=EE=EF=F2=E8=EC=E8=E7=E0=F6=E8=FF =F2=EE=E2=E0=F0=ED=EE=E3=EE =E7=E0=EF=E0=
+=F1=E0 </FONT></LI></UL>
+<P align=3Dcenter><FONT face=3DArial><B>=C7=E2=EE=ED=E8=F2=E5: (095) 98O-=
+65-I6</B></FONT></P></font>
+</BODY>
+</HTML>
+
+------=_NextPart_001_0001_CD0EADE7.A2BAF9E9--
+
+
+
+------=_NextPart_000_0000_1C29E2D7.3116544E--
