@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
-Date: Tue, 30 Aug 2005 22:37:22 +0200
-Message-ID: <03f0d6e5ac43b88b0c2c4cda0fbbbfd5@bugtrack.alsa-project.org>
+Date: Tue, 30 Aug 2005 23:08:26 +0200
+Message-ID: <cec20379f782be0e42cbb688fb89d6c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E339A208
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 22:37:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C8EF1F1
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 23:08:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Mandrake 9.2
 Kernel Version:             2.6.8
 ======================================================================
 Date Submitted:             09-15-2004 00:44 CEST
-Last Modified:              08-30-2005 22:37 CEST
+Last Modified:              08-30-2005 23:08 CEST
 ======================================================================
 Summary:                    Mp3+ crackles when on alsa, not when on oss
 emulation
@@ -72,33 +72,15 @@ alsamixer -c1 fails and the card stil works as an oss-card.
 ======================================================================
 
 ----------------------------------------------------------------------
- hhg - 09-15-04 13:09 
-----------------------------------------------------------------------
-After reading a previous bug, I discovered that when I plug my mp3+
-directly into my pc and not via my usb2.0-hub (sweex hub) the crackling
-goes away when on alsa-driver.
-
-This is very strange. How can alsa not send good data through the hub when
-the oss-emulator (audio) can do it just fine?
-
-----------------------------------------------------------------------
- jdthood - 08-30-05 12:22 
-----------------------------------------------------------------------
-Hi.  What's the status of this bug.  Any improvement in later ALSA
-releases?
-
-----------------------------------------------------------------------
- rlrevell - 08-30-05 20:12 
-----------------------------------------------------------------------
-I think this is user error.  The "audio" module is not related to OSS
-emulation, it's the real OSS driver, so of course when you remove
-snd-usb-audio and modprobe audio then alsamixer will not work.
-
-----------------------------------------------------------------------
  jdthood - 08-30-05 22:37 
 ----------------------------------------------------------------------
 AIUI the user is just showing that OSS works properly whereas ALSA does
 not.
+
+----------------------------------------------------------------------
+ rlrevell - 08-30-05 23:08 
+----------------------------------------------------------------------
+OK. My guess is that this is an upstream USB bug fixed in newer kernels.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +92,7 @@ Date Modified  Username       Field                    Change
 08-30-05 12:22 jdthood        Note Added: 0005974                          
 08-30-05 20:12 rlrevell       Note Added: 0005980                          
 08-30-05 22:37 jdthood        Note Added: 0005982                          
+08-30-05 23:08 rlrevell       Note Added: 0005983                          
 ======================================================================
 
 
