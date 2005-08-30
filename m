@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
-Date: Tue, 30 Aug 2005 20:21:54 +0200
-Message-ID: <924fceb7aaa17fb1f001617594c7a0cc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
+Date: Tue, 30 Aug 2005 22:37:22 +0200
+Message-ID: <03f0d6e5ac43b88b0c2c4cda0fbbbfd5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA1291F6
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 20:21:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E339A208
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 22:37:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
 ======================================================================
-Reported By:                garden
-Assigned To:                pzad
+Reported By:                hhg
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   324
-Category:                   PCI - emu10k1
+Issue ID:                   502
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Distribution:               Mandrake 9.2
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              08-30-2005 20:21 CEST
+Date Submitted:             09-15-2004 00:44 CEST
+Last Modified:              08-30-2005 22:37 CEST
 ======================================================================
-Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Summary:                    Mp3+ crackles when on alsa, not when on oss
+emulation
 Description: 
-Both the input and output levels of my Audigy2 Platinum seem to be very low
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge.
+this shell-cut-and-paste wil ilustrate my problem:
+
+At first when I plug my mp3+ in, it crackles. It is not scraping or
+static, it is a distinct pop in the sound about 2-3 times/sec not
+rythmical. The card shows up in alsamixer -c1, and everything about
+controling it works. Then, without plugging my card in or out, I do this:
+
+[root@localhost hhg]# rmmod snd_usb_audio
+[root@localhost hhg]# modprobe audio
+[root@localhost hhg]# alsamixer -c1
+ 
+alsamixer: function snd_ctl_open failed for hw:1: No such file or
+directory
+
+I also have a boult-in intel-8x0-card working fine with alsa. But now the
+mp3+card works great. Using oss-emulated mixer the card can also be
+controled. I have to use oss-output, though, as the card no longer is
+registrered by alsa.
+
+even if I do
+
+[root@localhost hhg]# modprobe snd-usb-audio
+
+alsamixer -c1 fails and the card stil works as an oss-card.
 ======================================================================
 
 ----------------------------------------------------------------------
- garden - 08-30-05 12:32 
+ hhg - 09-15-04 13:09 
 ----------------------------------------------------------------------
-No changes for me. It is still quite low.
+After reading a previous bug, I discovered that when I plug my mp3+
+directly into my pc and not via my usb2.0-hub (sweex hub) the crackling
+goes away when on alsa-driver.
+
+This is very strange. How can alsa not send good data through the hub when
+the oss-emulator (audio) can do it just fine?
 
 ----------------------------------------------------------------------
- rlrevell - 08-30-05 20:21 
+ jdthood - 08-30-05 12:22 
 ----------------------------------------------------------------------
-When you say Windows do you mean with the Creative driver?  Unfortunately
-it's a black box.  Do you get the same results with this (vastly superior)
-driver:
+Hi.  What's the status of this bug.  Any improvement in later ALSA
+releases?
 
-http://www.kxproject.com
+----------------------------------------------------------------------
+ rlrevell - 08-30-05 20:12 
+----------------------------------------------------------------------
+I think this is user error.  The "audio" module is not related to OSS
+emulation, it's the real OSS driver, so of course when you remove
+snd-usb-audio and modprobe audio then alsamixer will not work.
 
-If so then we can compare the AC97 registers.
+----------------------------------------------------------------------
+ jdthood - 08-30-05 22:37 
+----------------------------------------------------------------------
+AIUI the user is just showing that OSS works properly whereas ALSA does
+not.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 13:17 garden         New Issue                                    
-06-06-04 13:17 garden         Distribution              => Debian sid      
-06-06-04 13:17 garden         Kernel Version            => 2.6.5           
-06-28-04 09:17 pzad           Status                   new => assigned     
-06-28-04 09:17 pzad           Assigned To               => pzad            
-09-14-04 15:24 garden         Note Added: 0001758                          
-09-16-04 10:16 pzad           Note Added: 0001766                          
-09-16-04 11:32 garden         File Added: amixer.out                       
-09-16-04 11:37 garden         Note Added: 0001769                          
-09-16-04 12:17 pzad           Note Added: 0001772                          
-09-16-04 13:23 garden         Note Added: 0001773                          
-08-30-05 12:23 jdthood        Note Added: 0005975                          
-08-30-05 12:32 garden         Note Added: 0005978                          
-08-30-05 20:21 rlrevell       Note Added: 0005981                          
+09-15-04 00:44 hhg            New Issue                                    
+09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
+09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
+09-15-04 13:09 hhg            Note Added: 0001760                          
+08-30-05 12:22 jdthood        Note Added: 0005974                          
+08-30-05 20:12 rlrevell       Note Added: 0005980                          
+08-30-05 22:37 jdthood        Note Added: 0005982                          
 ======================================================================
 
 
