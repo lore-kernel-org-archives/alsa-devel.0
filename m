@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000168]: Two sound blaster mp3+ USB sound cards cause applications and OS to start core dumping (crash).
-Date: Tue, 30 Aug 2005 12:16:16 +0200
-Message-ID: <f10e679708d5f8eba245b25ecdc27e37@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000326]: Emagic EMI 6/2m: no recording
+Date: Tue, 30 Aug 2005 12:17:20 +0200
+Message-ID: <36e7bb19be38ca969f4910056c2052c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C1401C7
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:16:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29E191DC
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:17:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,36 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=168> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=326> 
 ======================================================================
-Reported By:                paperclip
+Reported By:                kompi
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   168
+Issue ID:                   326
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake 10.0
-Kernel Version:             2.6.5 rc2 mm5 (and 2.6 kernel version)
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.7-rc2 (also tested earlier stable versions)
 ======================================================================
-Date Submitted:             03-30-2004 07:17 CEST
-Last Modified:              08-30-2005 12:16 CEST
+Date Submitted:             06-07-2004 19:52 CEST
+Last Modified:              08-30-2005 12:17 CEST
 ======================================================================
-Summary:                    Two sound blaster mp3+ USB sound cards cause
-applications and OS to start core dumping (crash).
+Summary:                    Emagic EMI 6/2m: no recording
 Description: 
-USB sound works great in ALSA except when I try to run two USB sound cards.
-I use it for portable sound recording for guitar fx processing. Any
-application using two different DSPs will start causing applications to
-crash, until the entire system is unusable. Tried different kernel
-versions and alsa versions. regular OSS sound driver does not seem to work
-with mp3+ so I can't even verify if it is the kernel or alsa or both. I
-have been able to use the built in sound card (VIA dsp) and one USB sound
-card with no problems. so it has nothing to do with 2 sound cards. but if
-I compile in with just the USB driver or USB driver and VIA driver and
-plug in two sound cards the system crashes. 
+Cannot get a recording stream from the USB device Emagic EMI 6/2m running
+with snd-usb-audio. 
+No errors oder hangs are produced. Just a zero stream is outputted (in
+every data rate the emi can work with).
+The mixer controls are set correctly, nothing is muted.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- paperclip - 04-22-04 22:06 
-----------------------------------------------------------------------
-I don't have a non VIA chipset for testing this either. Both my desktop and
-my laptop use VIA chipsets--I hope someone else could test this at some
-point ;-) (PLEASE). I suspected USB first actually, but have not had
-problems with other USB devices. I did have problems getting the system to
-the detect USB bus in the first place (PCI IRQ PROBLEMS) and I was able to
-get it to finally work by changing from APM to ACPI and setting the PCI
-access to direct. I  will work on getting the OSS USB driver working and
-test it to see if that causes similar problems. I suspected the ALSA
-driver only because I have not had problems with other USB devices,
-including a USB Zip drive. Also, I use a USB mouse--which I tried
-disabling and enabling in the kernel as well as Mass storage to see if
-anything was causing a problem or conflict. It seems like some sort of
-buffer overflow (Array out of bounds or screwy pointers, when timing gets
-screwy during a lot of system load?), which would make sense that it could
-be USB, but I would think we would see problems with other devices? With a
-single USB sound card it works flawlessly, which still makes me wonder. I
-am sure it is a headache on your end because you don't control the USB
-(EHCI, OHCI, UHCI) driver end of things--still without anyway to test
-other chipsets, I would hope someone reading these would have two USB
-audio devices to try? Some people not loading their system as much may not
-notice these crashes because it could be some sort of concurrency issue
-(example using the same memory location and trashing the contents). Card 1
-caches something, Card 2 tries to use the same memory location that Card 1
-is using at the same time, trashing the memory. I have seen this sort of
-thing with servers. In this instance I could be totally wrong. I know it
-is just a binary stream out to a /dev device, like a dsp, so it may not
-even work that way. I don't know.
-
-Oh well =-),
-
--Ron
-
-----------------------------------------------------------------------
- jdthood - 08-30-05 12:16 
+ jdthood - 08-30-05 12:17 
 ----------------------------------------------------------------------
 Hi.  What's the status of this bug.  Any improvement in later ALSA
 releases?
@@ -101,19 +61,11 @@ releases?
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 07:17 paperclip      New Issue                                    
-03-30-04 07:17 paperclip      File Added: config.gz                        
-03-30-04 07:17 paperclip      Distribution              => Mandrake 10.0   
-03-30-04 07:17 paperclip      Kernel Version            => 2.6.5 rc2 mm5 (and
-2.6 kernel version)
-04-01-04 19:29 paperclip      Issue Monitored: paperclip                    
-04-05-04 16:11 Clemens LadischNote Added: 0000752                          
-04-08-04 22:24 paperclip      Note Added: 0000770                          
-04-08-04 22:31 paperclip      Note Added: 0000771                          
-04-20-04 00:15 paperclip      Note Added: 0000867                          
-04-22-04 15:39 Clemens LadischNote Added: 0000894                          
-04-22-04 22:06 paperclip      Note Added: 0000896                          
-08-30-05 12:16 jdthood        Note Added: 0005967                          
+06-07-04 19:52 kompi          New Issue                                    
+06-07-04 19:52 kompi          Distribution              => Gentoo Linux    
+06-07-04 19:52 kompi          Kernel Version            => 2.6.7-rc2 (also
+tested earlier stable versions)
+08-30-05 12:17 jdthood        Note Added: 0005968                          
 ======================================================================
 
 
