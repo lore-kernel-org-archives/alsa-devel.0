@@ -1,14 +1,14 @@
-From: "Corin Waugh" <info@verybest-onthenet.info>
-Subject: Property for sale and rent
-Date: Mon, 29 Aug 2005 21:40:40 -0500
-Message-ID: <20050830024040.55E351F3@alsa.jcu.cz>
-Reply-To: info@verybest-onthenet.info
-Content-Type: text/html;
-	charset="us-ascii"
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Question about Surround (4.0) and the Revolution 7.1 card
+Date: Mon, 29 Aug 2005 19:59:08 -0700 (PDT)
+Message-ID: <20050830025908.30143.qmail@web60824.mail.yahoo.com>
+References: <20050830002654.0468C33DB5@sc8-sf-spam1.sourceforge.net>
+Reply-To: tsw@johana.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from verybest-onthenet.info (verybest-onthenet.info [72.26.223.40])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55E351F3
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 04:40:40 +0200 (MEST)
+In-Reply-To: <20050830002654.0468C33DB5@sc8-sf-spam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +18,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html><body bgcolor=#CCCCCC text="#000000" link="#0000ff" vlink="#0000ff" alink="#0000ff" 
-leftmargin=0 topmargin=0 marginwidth=0 marginheight=0 rightmargin=0 bottommargin=0><center>
+In futzing around with the M-Audio Revolution card and newer ALSA (1.0.10=
+rc1),
+I found that surround40 doesn't appear to work.  It gives an invalid slav=
+e
+channel:
 
-<table bgcolor="#999999" border="0" cellpadding="9" cellspacing="0">
-	<tr>
-		<td align="center">
+[tsw alsa]$ aplay -Dsurround40 quad_id.wav
+ALSA lib pcm_route.c:1005:(snd_pcm_route_load_ttable) Invalid slave chann=
+el: 4
+aplay: main:540: audio open error: Invalid argument
 
-			<table border="0" cellpadding="0" cellspacing="0">
-				<tr>
-					<td valign="top" bgcolor="#ffffff" width="508" valign="top" align="center">
+Of course, using 'default' works just fine (without the '-DSurround40'). =
+ This
+is an example the problem I'm having.  I believe that this because someth=
+ing
+changed in the Revo driver.  Here are some files that I believe shed some=
+ light
+on the problem:
 
-						<img src="http://www.thegraphichost.com/emailtheplanet/email-white.jpg" width="508" height="162"><br>
+>>>>>>>>>>The soundcard list from 'aplay':
+[tsw alsa]$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Revolution71 [M Audio Revolution-7.1], device 0: ICE1724 [ICE1724=
+]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Revolution71 [M Audio Revolution-7.1], device 1: IEC1724 IEC958
+[IEC1724 IEC958]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Revolution71 [M Audio Revolution-7.1], device 2: ICE1724 Surround=
+s
+[ICE1724 Surround PCM]
+  Subdevices: 3/3
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
 
-						<table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0">
-							<tr>
-								<td width="480">
-									<br><font face=arial size=2>
+>>>>>>>A portion of ICE1724.conf
+...
+ICE1724.pcm.surround40.0 {
+        @args [ CARD ]
+        @args.CARD {
+                type string
+        }
+        type route
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.2.4 1
+        ttable.3.5 1
+        slave {
+                channels 4
+                pcm {
+                        type hw
+                        card $CARD
+                }
+        }
+}
+...
 
+All I know is that something changed in recent versions.  I was using one
+of the 0.9.x versions and (insert doubting words here) it did work.
 
-<center><h3>	Property for sale or rent		</h3></center>
+I think it is because the device seperates the "normal" (front) channels
+from the "surround" (the other 6) channels.  Are the routes correct?
 
-<b>
-Selling or renting - Advertise your home or holiday accommodation - free! Agent or Owner.
-<br><br>
-Find property to buy or rent - Search the worldwide database - free!
-<br><br>
-PropertyWorld.com generates many 1,000s of enquiries for it's advertisers. Get your share.
-<br><br>
-</b>
+I'm not an expert in the configuration files, thus the message.
 
-
-
-									<font size=1><br>
-									Please note; that by clicking the link below, you have automatically opted-in, and have agreed to view their website.
-									<br><br></font>
-									<center><h3>
-
-<a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E4144440E400E4142434B4543440E08.aspx'>
-
-									Click here to visit their website
-									</a></h3></center>
-									<br>
-
-									Thank you for taking the time to read this special report <br><br>
-
-									Regards, <br><b> The Web Reporter </b><br> The very best on the net	<br><br>
-
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-
-<br><a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E4144440E400E4142434A4347400E08.aspx'><img src="http://www.thegraphichost.com/emailtheplanet/sendamillion179.gif" width="518" height="45" border="0" alt="Send ONE MILLION EMAILS for just 99 dollars"></a><br><br>
-
-<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
-<div align='center'><a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E4144440E08.aspx'><img src='http://verybest-onthenet.info/img.gif' width='531' height='80' border='0'></a>
-<font size='1' face='Arial, Helvetica, sans-serif'><br><img src='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E4144440E430E420E08.aspx'>
-</font><font color="#999999" face="arial, verdana" size="2">Webworld S.L. &#183; Edificio Jupiter, Avendida El Gamonal 12 &#183; Benalmadena Costa, Malaga 29630 Spain<br>This e-mail message is an advertisement and/or solicitation.</font></p></td></tr></table></body>
-</html>
+Thanks
 
 
+--=20
+Tom Watson
+tsw@johana.com
+
+
+	=09
+____________________________________________________
+Start your day with Yahoo! - make it your home page=20
+http://www.yahoo.com/r/hs=20
+=20
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
+es
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
+A
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
