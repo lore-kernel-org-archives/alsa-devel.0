@@ -1,14 +1,14 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: No sound on ATI IXP with Realtek ALC655 rev0 (MSI Megabook S270)
-Date: Tue, 30 Aug 2005 16:36:36 +0200
-Message-ID: <20050830143635.GH4221@rama.de.gnumonks.org>
-References: <s5hhdd73glc.wl%tiwai@suse.de> <200508301149.46320.rene@exactcode.de> <s5hek8b3fpu.wl%tiwai@suse.de> <s5h7je33d59.wl%tiwai@suse.de> <20050830122423.GC4295@rama.de.gnumonks.org> <s5hek8bk34d.wl%tiwai@suse.de> <20050830130652.GI4295@rama.de.gnumonks.org> <s5hacizk1mf.wl%tiwai@suse.de> <20050830135940.GA4221@rama.de.gnumonks.org> <s5h1x4bjyxy.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000168]: Two sound blaster mp3+ USB sound cards cause applications and OS to start core dumping (crash).
+Date: Tue, 30 Aug 2005 18:12:31 +0200
+Message-ID: <411de78fdbe2e02787b378b7617c1d82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1ou9v+QBCNysIXaH"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h1x4bjyxy.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7CC5203
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 18:12:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +18,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---1ou9v+QBCNysIXaH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=168> 
+======================================================================
+Reported By:                paperclip
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   168
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake 10.0
+Kernel Version:             2.6.5 rc2 mm5 (and 2.6 kernel version)
+======================================================================
+Date Submitted:             03-30-2004 07:17 CEST
+Last Modified:              08-30-2005 18:12 CEST
+======================================================================
+Summary:                    Two sound blaster mp3+ USB sound cards cause
+applications and OS to start core dumping (crash).
+Description: 
+USB sound works great in ALSA except when I try to run two USB sound cards.
+I use it for portable sound recording for guitar fx processing. Any
+application using two different DSPs will start causing applications to
+crash, until the entire system is unusable. Tried different kernel
+versions and alsa versions. regular OSS sound driver does not seem to work
+with mp3+ so I can't even verify if it is the kernel or alsa or both. I
+have been able to use the built in sound card (VIA dsp) and one USB sound
+card with no problems. so it has nothing to do with 2 sound cards. but if
+I compile in with just the USB driver or USB driver and VIA driver and
+plug in two sound cards the system crashes. 
+======================================================================
 
-On Tue, Aug 30, 2005 at 04:12:41PM +0200, Takashi Iwai wrote:
-> At Tue, 30 Aug 2005 15:59:40 +0200,
-> Harald Welte wrote:
-> >=20
-> > > Could you try to tune this manually by writing like
-> > > 	# echo 7a 40b2 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-> > > as root?
-> >=20
-> > done.  doesn't change anything.  I again re-tried with EA on/off and
-> > headphones plugged in and not plugged in.  It still behaves exactly like
-> > the original kernel.
->=20
-> It's a pity.  Just to be sure, compare the value of 0x7a in
-> /proc/asound/card0/codec97#0/ac97#0-0+regs file after the procedure
-> above.
+----------------------------------------------------------------------
+ jdthood - 08-30-05 12:16 
+----------------------------------------------------------------------
+Hi.  What's the status of this bug.  Any improvement in later ALSA
+releases?
 
-yes, I did that.  the register has been set to the value I wrote to it.
+----------------------------------------------------------------------
+ paperclip - 08-30-05 18:12 
+----------------------------------------------------------------------
+I have not tried it in a while but it did not work with all the way up to
+2.6.10 -- I need to reinstall linux (been using windows 2k lately for
+doing sound processing). I will give it a look when I get a chance. 
 
-> I have no other clue yet...
+-R
 
-No problem, it's not all that important... I didn't buy the device
-because of it's lousy notebook speakers anyway ;)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-04 07:17 paperclip      New Issue                                    
+03-30-04 07:17 paperclip      File Added: config.gz                        
+03-30-04 07:17 paperclip      Distribution              => Mandrake 10.0   
+03-30-04 07:17 paperclip      Kernel Version            => 2.6.5 rc2 mm5 (and
+2.6 kernel version)
+04-01-04 19:29 paperclip      Issue Monitored: paperclip                    
+04-05-04 16:11 Clemens LadischNote Added: 0000752                          
+04-08-04 22:24 paperclip      Note Added: 0000770                          
+04-08-04 22:31 paperclip      Note Added: 0000771                          
+04-20-04 00:15 paperclip      Note Added: 0000867                          
+04-22-04 15:39 Clemens LadischNote Added: 0000894                          
+04-22-04 22:06 paperclip      Note Added: 0000896                          
+08-30-05 12:16 jdthood        Note Added: 0005967                          
+08-30-05 18:12 paperclip      Note Added: 0005979                          
+======================================================================
 
-Thanks again,
---=20
-- Harald Welte <laforge@gnumonks.org>          	        http://gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-"Privacy in residential applications is a desirable marketing option."
-                                                  (ETSI EN 300 175-7 Ch. A6)
 
---1ou9v+QBCNysIXaH
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFDFG7zXaXGVTD0i/8RAg+sAJ9OjWJPX7J9J3JQMcyTL2eRvMwdrgCbBT9k
-KmjddjppV17WsCn1odHp0yM=
-=cjjO
------END PGP SIGNATURE-----
-
---1ou9v+QBCNysIXaH--
 
 
 -------------------------------------------------------
