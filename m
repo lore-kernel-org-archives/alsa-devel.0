@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Tue, 30 Aug 2005 20:07:24 +0200
-Message-ID: <aaac92cc466404e5533706d687965a49@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
+Date: Tue, 30 Aug 2005 20:12:50 +0200
+Message-ID: <617648c511669e59e5bd81d8b8d0e0dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DD471F6
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 20:07:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 482ED1C9
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 20:12:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,102 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1380> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
 ======================================================================
-Reported By:                Varanger
-Assigned To:                tiwai
+Reported By:                hhg
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1380
-Category:                   PCI - hda-intel
+Issue ID:                   502
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
-Kernel Version:             Linux 2.6.11-1-686-smp
+Distribution:               Mandrake 9.2
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              08-30-2005 20:07 CEST
+Date Submitted:             09-15-2004 00:44 CEST
+Last Modified:              08-30-2005 20:12 CEST
 ======================================================================
-Summary:                    Scratchy Intel HDA
+Summary:                    Mp3+ crackles when on alsa, not when on oss
+emulation
 Description: 
-Hello.
+this shell-cut-and-paste wil ilustrate my problem:
 
-I am getting very scratchy audio in my Intel HDA card besides the sound is
-very low.
+At first when I plug my mp3+ in, it crackles. It is not scraping or
+static, it is a distinct pop in the sound about 2-3 times/sec not
+rythmical. The card shows up in alsamixer -c1, and everything about
+controling it works. Then, without plugging my card in or out, I do this:
 
-lspci output is:  
+[root@localhost hhg]# rmmod snd_usb_audio
+[root@localhost hhg]# modprobe audio
+[root@localhost hhg]# alsamixer -c1
+ 
+alsamixer: function snd_ctl_open failed for hw:1: No such file or
+directory
 
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
+I also have a boult-in intel-8x0-card working fine with alsa. But now the
+mp3+card works great. Using oss-emulated mixer the card can also be
+controled. I have to use oss-output, though, as the card no longer is
+registrered by alsa.
 
-Reading every article I could have found on the net regarding this
-card, I discovered that i needed snd-azx (ALSA 1.0.8 ) or
-snd-hda-intel modules (ALSA 1.0.9rc* or later).
+even if I do
 
-I have downloaded every sources from 1.0.8 up to 1.0.10rc1 (including
-1.0.9 release candidates) from http://www.alsa-project.org, then built and
-installed them.
+[root@localhost hhg]# modprobe snd-usb-audio
 
-In all those versions, I have followed this steps:
-alsa-driver : ./configure --with-oss=yes --with-cards=hda-intel && make &&
-make install
-library / oss-lib / utils : ./configure && make && make install
-
-I've looked every on the net and found that I could use position_fix=1
-or position_fix=2 to help me  but no good either.
-
-I've tried in Ubuntu, Kubuntu, Debian, even Mandriva 2005 LE and
-Fedora Core 4 (using the modules from the kernel) and it's the same
-problem in all of them.
-
-The card came with the mainboard Intel 915G (D915GEV or 915GEV)  
-
-more info about my soundcard:
-
-Running: "lspci -v" 
-
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e200
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at ff43c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] #10 [0091]
-
-/proc/sound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jul  7 2005 for kernel 2.6.10-5-686-smp (SMP).
-
-/proc/asound/devices
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Thanks for the help,
-Varanger
+alsamixer -c1 fails and the card stil works as an oss-card.
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 08-30-05 12:22 
+----------------------------------------------------------------------
+Hi.  What's the status of this bug.  Any improvement in later ALSA
+releases?
+
+----------------------------------------------------------------------
+ rlrevell - 08-30-05 20:12 
+----------------------------------------------------------------------
+I think this is user error.  The "audio" module is not related to OSS
+emulation, it's the real OSS driver, so of course when you remove
+snd-usb-audio and modprobe audio then alsamixer will not work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 20:07 Varanger       New Issue                                    
-08-30-05 20:07 Varanger       Distribution              => Ubuntu 5.04 "Hoary
-Hedgehog"
-08-30-05 20:07 Varanger       Kernel Version            => Linux
-2.6.11-1-686-smp
+09-15-04 00:44 hhg            New Issue                                    
+09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
+09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
+09-15-04 13:09 hhg            Note Added: 0001760                          
+08-30-05 12:22 jdthood        Note Added: 0005974                          
+08-30-05 20:12 rlrevell       Note Added: 0005980                          
 ======================================================================
 
 
