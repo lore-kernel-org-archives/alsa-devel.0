@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000168]: Two sound blaster mp3+ USB sound cards cause applications and OS to start core dumping (crash).
-Date: Tue, 30 Aug 2005 18:12:31 +0200
-Message-ID: <411de78fdbe2e02787b378b7617c1d82@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001379]: 1.0.9 produces very low volume on all volumes set to 100%; 1.0.10rc1 fails to modprobe
+Date: Tue, 30 Aug 2005 18:47:13 +0200
+Message-ID: <93ea1b2508a7e54a4956bbdaa9b7ca67@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7CC5203
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 18:12:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49F0B204
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 18:47:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,113 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=168> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1379> 
 ======================================================================
-Reported By:                paperclip
-Assigned To:                Clemens Ladisch
+Reported By:                kSh
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   168
-Category:                   USB - usb-audio
+Issue ID:                   1379
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake 10.0
-Kernel Version:             2.6.5 rc2 mm5 (and 2.6 kernel version)
+Distribution:               SUSE Linux Professional 9.3
+Kernel Version:             Linux 2.6.11.4-21.8-default
 ======================================================================
-Date Submitted:             03-30-2004 07:17 CEST
-Last Modified:              08-30-2005 18:12 CEST
+Date Submitted:             08-30-2005 18:47 CEST
+Last Modified:              08-30-2005 18:47 CEST
 ======================================================================
-Summary:                    Two sound blaster mp3+ USB sound cards cause
-applications and OS to start core dumping (crash).
+Summary:                    1.0.9 produces very low volume on all volumes set to
+100%; 1.0.10rc1 fails to modprobe
 Description: 
-USB sound works great in ALSA except when I try to run two USB sound cards.
-I use it for portable sound recording for guitar fx processing. Any
-application using two different DSPs will start causing applications to
-crash, until the entire system is unusable. Tried different kernel
-versions and alsa versions. regular OSS sound driver does not seem to work
-with mp3+ so I can't even verify if it is the kernel or alsa or both. I
-have been able to use the built in sound card (VIA dsp) and one USB sound
-card with no problems. so it has nothing to do with 2 sound cards. but if
-I compile in with just the USB driver or USB driver and VIA driver and
-plug in two sound cards the system crashes. 
+Hello.
+I have a problem with my Asus M5A laptop. ALSA drivers 1.0.9 that come
+with SUSE produce very low volume even with all volumes set to 100%. I
+tried removing the driver and compiling my own, the same result. And yes,
+I read the 0001176 bug report that speaks of exactly the same issue. The
+problem is 1.0.9 runs flawlessly but very quiet and although the
+compilation and installation of 1.0.10rc1 went fine, while modprobing I
+get:
+
+# /etc/init.d/alsasound start
+Starting sound driver: snd-hda-intel WARNING: Error inserting snd_pcm
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/acore/snd-pcm.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-codec.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-intel.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+done
+
+The dmesg is as follows:
+
+# dmesg -c
+snd: module not supported by Novell, setting U taint flag.
+snd_timer: module not supported by Novell, setting U taint flag.
+snd_pcm: module not supported by Novell, setting U taint flag.
+snd_pcm: disagrees about version of symbol snd_dma_reserve_buf
+snd_pcm: Unknown symbol snd_dma_reserve_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_free_pages
+snd_pcm: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_get_reserved_buf
+snd_pcm: Unknown symbol snd_dma_get_reserved_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_alloc_pages
+snd_pcm: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_codec: module not supported by Novell, setting U taint flag.
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_list, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_format_width, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_intel: module not supported by Novell, setting U taint flag.
+snd_hda_intel: Unknown symbol snd_pcm_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_limit_hw_rates, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_preallocate_pages_for_all,
+st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_bus_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_build_pcms, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_codec_new, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_free_pages
+snd_hda_intel: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_queue_unsol_event, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_malloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_ioctl, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_calc_stream_format, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_set_ops, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_suspend, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_suspend_all, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_resume, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_integer, st_info ==
+0x1
+snd_hda_intel: Unknown symbol snd_hda_build_controls, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_alloc_pages
+snd_hda_intel: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_period_elapsed, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+
+It seems like the drivers were compiled for another kernel, am I right?
+But the strange thing is the same ./configure, make, make install
+procedure with 1.0.9 works just flawlessly.
+
+I'm sorry if the problem comes from my lack of Linux knowledge. I just
+hope we'll get a solution to this one. I'll provide any help you'll need.
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 08-30-05 12:16 
-----------------------------------------------------------------------
-Hi.  What's the status of this bug.  Any improvement in later ALSA
-releases?
-
-----------------------------------------------------------------------
- paperclip - 08-30-05 18:12 
-----------------------------------------------------------------------
-I have not tried it in a while but it did not work with all the way up to
-2.6.10 -- I need to reinstall linux (been using windows 2k lately for
-doing sound processing). I will give it a look when I get a chance. 
-
--R
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 07:17 paperclip      New Issue                                    
-03-30-04 07:17 paperclip      File Added: config.gz                        
-03-30-04 07:17 paperclip      Distribution              => Mandrake 10.0   
-03-30-04 07:17 paperclip      Kernel Version            => 2.6.5 rc2 mm5 (and
-2.6 kernel version)
-04-01-04 19:29 paperclip      Issue Monitored: paperclip                    
-04-05-04 16:11 Clemens LadischNote Added: 0000752                          
-04-08-04 22:24 paperclip      Note Added: 0000770                          
-04-08-04 22:31 paperclip      Note Added: 0000771                          
-04-20-04 00:15 paperclip      Note Added: 0000867                          
-04-22-04 15:39 Clemens LadischNote Added: 0000894                          
-04-22-04 22:06 paperclip      Note Added: 0000896                          
-08-30-05 12:16 jdthood        Note Added: 0005967                          
-08-30-05 18:12 paperclip      Note Added: 0005979                          
+08-30-05 18:47 kSh            New Issue                                    
+08-30-05 18:47 kSh            Distribution              => SUSE Linux
+Professional 9.3
+08-30-05 18:47 kSh            Kernel Version            => Linux
+2.6.11.4-21.8-default
 ======================================================================
 
 
