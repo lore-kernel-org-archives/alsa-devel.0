@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000541]: Tascam US-122 drivers fails with jackd
-Date: Tue, 30 Aug 2005 12:27:03 +0200
-Message-ID: <5f5130b6d9dcab94775e88fe74da2852@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
+Date: Tue, 30 Aug 2005 12:32:22 +0200
+Message-ID: <b9914596a3af4b250001cb9e8c6781c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E99F5207
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:27:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A99DE207
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:32:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=541> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
 ======================================================================
-Reported By:                roswel
-Assigned To:                karsten
+Reported By:                garden
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   541
-Category:                   USB - usb-usx2y
+Issue ID:                   324
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             Linux 2.6.9-rc2
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             09-25-2004 16:11 CEST
-Last Modified:              08-30-2005 12:27 CEST
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              08-30-2005 12:32 CEST
 ======================================================================
-Summary:                    Tascam US-122 drivers fails with jackd
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
 Description: 
-When i start jackd everything seems allright, but if i try to play some
-audio through jack, like for example with alsaplayer or ardour, nothing
-happen.
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
 ======================================================================
 
 ----------------------------------------------------------------------
- roswel - 09-26-04 22:22 
+ jdthood - 08-30-05 12:23 
 ----------------------------------------------------------------------
-That work now! :) I use CONFIG_USB_BANDWIDTH, but if i force 16bit mode,
-that work. I will rebuilt a kernel without it!
-
-Thank very much for your help, and you quick answer! :)
+Hi.  What's the status of this bug.  Any improvement in later ALSA
+releases?
 
 ----------------------------------------------------------------------
- jdthood - 08-30-05 12:27 
+ garden - 08-30-05 12:32 
 ----------------------------------------------------------------------
-Fix was to reconfigure kernel.
+No changes for me. It is still quite low.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-04 16:11 roswel         New Issue                                    
-09-25-04 16:11 roswel         Distribution              => Debian          
-09-25-04 16:11 roswel         Kernel Version            => Linux 2.6.9-rc2 
-09-25-04 16:12 roswel         Issue Monitored: roswel                      
-09-25-04 16:22 karsten        Note Added: 0001910                          
-09-26-04 12:47 roswel         Note Added: 0001920                          
-09-26-04 15:48 karsten        Note Added: 0001923                          
-09-26-04 20:55 roswel         Note Added: 0001924                          
-09-26-04 22:09 karsten        Note Added: 0001926                          
-09-26-04 22:22 roswel         Note Added: 0001928                          
-08-30-05 12:27 jdthood        Status                   assigned => resolved
-08-30-05 12:27 jdthood        Resolution               open => fixed       
-08-30-05 12:27 jdthood        Note Added: 0005976                          
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
+08-30-05 12:32 garden         Note Added: 0005978                          
 ======================================================================
 
 
