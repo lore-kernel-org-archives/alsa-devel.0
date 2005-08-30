@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000322]: oops while removing au8810
-Date: Tue, 30 Aug 2005 12:22:27 +0200
-Message-ID: <1291738c74051eecf800be855fef0db3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
+Date: Tue, 30 Aug 2005 12:22:58 +0200
+Message-ID: <31a73b60fdc038dbd239270a6282f381@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F05131C7
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:22:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 822551C7
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:22:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
 ======================================================================
-Reported By:                aris
-Assigned To:                mjander
+Reported By:                hhg
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   322
-Category:                   PCI - au88x0
+Issue ID:                   502
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               conectiva linux 10 snapshot with custom kernel
-Kernel Version:             2.6.7-rc2
+Distribution:               Mandrake 9.2
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             06-02-2004 13:24 CEST
+Date Submitted:             09-15-2004 00:44 CEST
 Last Modified:              08-30-2005 12:22 CEST
 ======================================================================
-Summary:                    oops while removing au8810
+Summary:                    Mp3+ crackles when on alsa, not when on oss
+emulation
 Description: 
-after getting an error on activating IRQ (not sure if this board is
-working)
-and trying to remove module I get an oops. I tryed to dig in but couldn't
-find where exactly it is happening.
-the IRQ error message:
-PCI: Found IRQ 11 for device 0000:00:0b.0
-PCI: Sharing IRQ 11 with 0000:00:01.1
-Vortex: init.... <6>done.
-vortex: IRQ reg error
+this shell-cut-and-paste wil ilustrate my problem:
 
+At first when I plug my mp3+ in, it crackles. It is not scraping or
+static, it is a distinct pop in the sound about 2-3 times/sec not
+rythmical. The card shows up in alsamixer -c1, and everything about
+controling it works. Then, without plugging my card in or out, I do this:
+
+[root@localhost hhg]# rmmod snd_usb_audio
+[root@localhost hhg]# modprobe audio
+[root@localhost hhg]# alsamixer -c1
+ 
+alsamixer: function snd_ctl_open failed for hw:1: No such file or
+directory
+
+I also have a boult-in intel-8x0-card working fine with alsa. But now the
+mp3+card works great. Using oss-emulated mixer the card can also be
+controled. I have to use oss-output, though, as the card no longer is
+registrered by alsa.
+
+even if I do
+
+[root@localhost hhg]# modprobe snd-usb-audio
+
+alsamixer -c1 fails and the card stil works as an oss-card.
 ======================================================================
 
 ----------------------------------------------------------------------
- mjander - 06-03-04 17:51 
+ hhg - 09-15-04 13:09 
 ----------------------------------------------------------------------
-Thanks to Jeff Muizelaar who came up with what seems to be the problem
-behind this, i made this patch, which hopefuly fixes the segfault. Please
-try it out and tell me if it works.
+After reading a previous bug, I discovered that when I plug my mp3+
+directly into my pc and not via my usb2.0-hub (sweex hub) the crackling
+goes away when on alsa-driver.
 
-Best Regards
-
-Manuel Jander
+This is very strange. How can alsa not send good data through the hub when
+the oss-emulator (audio) can do it just fine?
 
 ----------------------------------------------------------------------
  jdthood - 08-30-05 12:22 
 ----------------------------------------------------------------------
-Hi.  What's the status of this bug.  Did the patch mentioned fix the bug?
+Hi.  What's the status of this bug.  Any improvement in later ALSA
+releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-02-04 13:24 aris           New Issue                                    
-06-02-04 13:24 aris           Distribution              => conectiva linux 10
-snapshot with custom kernel
-06-02-04 13:24 aris           Kernel Version            => 2.6.7-rc2       
-06-03-04 17:51 mjander        Note Added: 0001289                          
-06-03-04 17:51 mjander        Note Added: 0001290                          
-06-03-04 17:52 mjander        File Added: aureal-quadfix.patch                  
- 
-04-12-05 20:45 alien999999999 Issue Monitored: alien999999999                   
-
-08-30-05 12:22 jdthood        Note Added: 0005973                          
+09-15-04 00:44 hhg            New Issue                                    
+09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
+09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
+09-15-04 13:09 hhg            Note Added: 0001760                          
+08-30-05 12:22 jdthood        Note Added: 0005974                          
 ======================================================================
 
 
