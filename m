@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
-Date: Tue, 30 Aug 2005 12:22:58 +0200
-Message-ID: <31a73b60fdc038dbd239270a6282f381@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
+Date: Tue, 30 Aug 2005 12:23:59 +0200
+Message-ID: <d7468ccca347f7731351bc1a8fdc9da6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 822551C7
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:22:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BEFB1C7
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 12:23:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
 ======================================================================
-Reported By:                hhg
-Assigned To:                Clemens Ladisch
+Reported By:                garden
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   502
-Category:                   USB - usb-audio
+Issue ID:                   324
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake 9.2
-Kernel Version:             2.6.8
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             09-15-2004 00:44 CEST
-Last Modified:              08-30-2005 12:22 CEST
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              08-30-2005 12:23 CEST
 ======================================================================
-Summary:                    Mp3+ crackles when on alsa, not when on oss
-emulation
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
 Description: 
-this shell-cut-and-paste wil ilustrate my problem:
-
-At first when I plug my mp3+ in, it crackles. It is not scraping or
-static, it is a distinct pop in the sound about 2-3 times/sec not
-rythmical. The card shows up in alsamixer -c1, and everything about
-controling it works. Then, without plugging my card in or out, I do this:
-
-[root@localhost hhg]# rmmod snd_usb_audio
-[root@localhost hhg]# modprobe audio
-[root@localhost hhg]# alsamixer -c1
- 
-alsamixer: function snd_ctl_open failed for hw:1: No such file or
-directory
-
-I also have a boult-in intel-8x0-card working fine with alsa. But now the
-mp3+card works great. Using oss-emulated mixer the card can also be
-controled. I have to use oss-output, though, as the card no longer is
-registrered by alsa.
-
-even if I do
-
-[root@localhost hhg]# modprobe snd-usb-audio
-
-alsamixer -c1 fails and the card stil works as an oss-card.
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
 ======================================================================
 
 ----------------------------------------------------------------------
- hhg - 09-15-04 13:09 
+ garden - 09-16-04 13:23 
 ----------------------------------------------------------------------
-After reading a previous bug, I discovered that when I plug my mp3+
-directly into my pc and not via my usb2.0-hub (sweex hub) the crackling
-goes away when on alsa-driver.
+I tried to record a CD track (1st mov. of 5th symphony by Beethoven :-))
+with a CD player with the optical output connected to the input on the
+audigy2 and IEC958 Capture at 100, then I tried connecting it to the RCA
+connectors (analog inputs, 100% volume), then I recorded it playing the CD
+in my CD-ROM reader (connected to the audigy2 "Audigy CD" digital input,
+100% volume), then I ripped it with cdparanoia. These are the results
+(well, I think I went wrong with "very low level". It appears just to be
+"lower".)
 
-This is very strange. How can alsa not send good data through the hub when
-the oss-emulator (audio) can do it just fine?
+arecord (IEC958 optical input, Sony MXD-D1)
+Maximum amplitude:     0.835510
+Minimum amplitude:    -0.828491
+
+arecord (Aux IN 2 on the front panel, Sony MXD-D1)
+Maximum amplitude:     0.727905
+Minimum amplitude:    -0.715240
+
+arecord (AudigyCD digital audio CD input, LiteON something DVD-ROM)
+Maximum amplitude:     0.832703
+Minimum amplitude:    -0.828522
+
+cdparanoia:
+Maximum amplitude:     0.933868
+Minimum amplitude:    -0.923676
+
+As for the comparison windows vs linux, I'll reboot in a few minutes then
+I'll post the results.
 
 ----------------------------------------------------------------------
- jdthood - 08-30-05 12:22 
+ jdthood - 08-30-05 12:23 
 ----------------------------------------------------------------------
 Hi.  What's the status of this bug.  Any improvement in later ALSA
 releases?
@@ -90,11 +96,18 @@ releases?
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-04 00:44 hhg            New Issue                                    
-09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
-09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
-09-15-04 13:09 hhg            Note Added: 0001760                          
-08-30-05 12:22 jdthood        Note Added: 0005974                          
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
 ======================================================================
 
 
