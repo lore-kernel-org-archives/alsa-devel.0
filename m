@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001382]: audio stuttered when playing DVD/VCD using xine
-Date: Wed, 31 Aug 2005 10:20:45 +0200
-Message-ID: <8cae21de36d7a408b533018432cdc005@bugtrack.alsa-project.org>
+Date: Wed, 31 Aug 2005 10:30:47 +0200
+Message-ID: <ad3db33b969d76e321572253468fd545@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1889206
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 10:20:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B1FB214
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 10:30:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1382> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-31-2005 10:20 CEST
-Last Modified:              08-31-2005 10:20 CEST
+Last Modified:              08-31-2005 10:30 CEST
 ======================================================================
 Summary:                    audio stuttered when playing DVD/VCD using xine
 Description: 
@@ -53,10 +53,18 @@ happened to the audio of next sec.
 What could be the cause?
 ======================================================================
 
+----------------------------------------------------------------------
+ zhllg - 08-31-05 10:30 
+----------------------------------------------------------------------
+Correction:
+mplayer just work well for a little while, then similar problem occurs,
+too
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-31-05 10:20 zhllg          New Issue                                    
+08-31-05 10:30 zhllg          Note Added: 0005985                          
 ======================================================================
 
 
