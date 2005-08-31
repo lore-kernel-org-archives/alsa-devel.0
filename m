@@ -1,69 +1,44 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
-Date: Wed, 31 Aug 2005 09:50:29 +0200
-Message-ID: <1b095c513e937e9f78b21bdf9a8bb14b@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [Alsa-devel] Re: ALSA / emu10k1 / SPDIF / surround?
+Date: Wed, 31 Aug 2005 09:54:43 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0508310923410.18516-100000@studcom.urz.uni-halle.de>
+References: <1125424773.19563.3.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80A871F6
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 09:50:29 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <1125424773.19563.3.camel@mindpipe>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Thomas Zehetbauer <thomasz@hostmaster.org>, alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Tue, 2005-08-30 at 11:53 +0200, Clemens Ladisch wrote:
+> > Lee Revell wrote:
+> > > So maybe the distortion problem here is just an app that's sending
+> > > a clipped signal.
+> >
+> > It's a known problem with several cards that use the STAC9708 codec.
+> > It seems the chip doesn't get initialized/configured correctly;
+> > several registers aren't documented.
+>
+> Should be trivial to RE using the kX driver (the kxctrl utility lets you
+> read and write AC97 registers).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
-======================================================================
-Reported By:                Soft
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1381
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             
-======================================================================
-Date Submitted:             08-31-2005 09:50 CEST
-Last Modified:              08-31-2005 09:50 CEST
-======================================================================
-Summary:                    No sound on Thinkpad T40p
-Description: 
-When attempting to play a sound on a Thinkpad T40p, all sound players
-behave as if playing normally, but no sound comes out of the speakers. 
-This is with Debian Sarge + various package upgrades to testing, with a
-number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
-1.0.8/1.0.9/1.0.10rc1.
+I already read the AC97 registers of my ymfpci card in Windows, but
+didn't find anything useful.
 
-I have already tried various "tricks", including muting Headphone Jack
-Sense and Line Jack Sense.  Please see the following thread on alsa-user
-mailing-list:
-http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
-for more information.
-======================================================================
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-31-05 09:50 Soft           New Issue                                    
-08-31-05 09:50 Soft           Distribution              => Debian          
-======================================================================
-
+Regards,
+Clemens
 
 
 
