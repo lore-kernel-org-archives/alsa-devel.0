@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001371]: IEC958 controls/recording/sound quality not working right
-Date: Wed, 31 Aug 2005 07:18:17 +0200
-Message-ID: <bbd91604e4e2f3ecade7af55367c1b08@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
+Date: Wed, 31 Aug 2005 09:50:29 +0200
+Message-ID: <1b095c513e937e9f78b21bdf9a8bb14b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48EF4208
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 07:18:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80A871F6
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 09:50:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1371> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
 ======================================================================
-Reported By:                sprockkets
-Assigned To:                tiwai
+Reported By:                Soft
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1371
-Category:                   PCI - cmipci
+Issue ID:                   1381
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE 9.3
-Kernel Version:             2.6.11.4-21.8
+Status:                     new
+Distribution:               Debian
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-25-2005 21:27 CEST
-Last Modified:              08-31-2005 07:18 CEST
+Date Submitted:             08-31-2005 09:50 CEST
+Last Modified:              08-31-2005 09:50 CEST
 ======================================================================
-Summary:                    IEC958 controls/recording/sound quality not working
-right
+Summary:                    No sound on Thinkpad T40p
 Description: 
-Using acrecord to record with the cd profile for whatever reason will
-record the spdif material coming into it but the end result file will
-sound higher pitched. 
-Whereas before to hear the spdif material you would activate the "IEC958
-In Monitor" control, but now you need that and the "IEC958 In Select"
-control to be on. Could be related to bug 000423 but not sure. While that
-wouldn't seem to be a pain or a bug, the sound quality of the spdif is
-poor, with a little white noise.
+When attempting to play a sound on a Thinkpad T40p, all sound players
+behave as if playing normally, but no sound comes out of the speakers. 
+This is with Debian Sarge + various package upgrades to testing, with a
+number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
+1.0.8/1.0.9/1.0.10rc1.
 
-The input of the spdif comes from a Sony minidisc recorder. 
-Using SuSE 9.1 on the same machine works perfectly like it always had.
+I have already tried various "tricks", including muting Headphone Jack
+Sense and Line Jack Sense.  Please see the following thread on alsa-user
+mailing-list:
+http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
+for more information.
 ======================================================================
-
-----------------------------------------------------------------------
- sprockkets - 08-31-05 07:18 
-----------------------------------------------------------------------
-It seems that now just having In Monitor selected works under SuSE 9.3
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-25-05 21:27 sprockkets     New Issue                                    
-08-25-05 21:27 sprockkets     Distribution              => SuSE 9.3        
-08-25-05 21:27 sprockkets     Kernel Version            => 2.6.11.4-21.8   
-08-31-05 07:18 sprockkets     Note Added: 0005984                          
+08-31-05 09:50 Soft           New Issue                                    
+08-31-05 09:50 Soft           Distribution              => Debian          
 ======================================================================
 
 
