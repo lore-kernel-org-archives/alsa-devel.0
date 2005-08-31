@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: [Alsa-devel] Re: ALSA / emu10k1 / SPDIF / surround?
-Date: Tue, 30 Aug 2005 20:23:56 -0400
-Message-ID: <1125447837.19563.31.camel@mindpipe>
+Date: Tue, 30 Aug 2005 20:26:14 -0400
+Message-ID: <1125447974.19563.34.camel@mindpipe>
 References: <1124755115.5763.3.camel@hostmaster.org>
 	 <1125166820.22285.68.camel@hostmaster.org>
 	 <1125168446.25011.68.camel@mindpipe>
@@ -47,11 +47,34 @@ On Wed, 2005-08-31 at 02:04 +0200, Thomas Zehetbauer wrote:
 > stereo upmixing. I guess that is why I have seen these controls going to
 > zero when using 6 channel output.
 
-Right.  If you play a stereo PCM these control the level that goes to
-the other 4 channels.  So when using 6 channel output they go to zero.
+Actually the docs are correct:
 
-Rather than posting your own docs on the web, how about submitting a
-patch to correct the documentation?
+name='Wave Playback Volume',index=0
+
+This control is used to attenuate samples for left and right PCM FX-bus
+accumulators. ALSA uses accumulators 0 and 1 for left and right PCM samples.
+The result samples are forwarded to the front DAC PCM slots of the AC97 codec.
+
+name='Wave Surround Playback Volume',index=0
+
+This control is used to attenuate samples for left and right PCM FX-bus
+accumulators. ALSA uses accumulators 0 and 1 for left and right PCM samples.
+The result samples are forwarded to the rear I2S DACs. These DACs operates
+separately (they are not inside the AC97 codec). 
+
+name='Wave Center Playback Volume',index=0
+
+This control is used to attenuate samples for left and right PCM FX-bus
+accumulators. ALSA uses accumulators 0 and 1 for left and right PCM samples.
+The result is mixed to mono signal (single channel) and forwarded to
+the ??rear?? right DAC PCM slot of the AC97 codec.
+
+name='Wave LFE Playback Volume',index=0
+
+This control is used to attenuate samples for left and right PCM FX-bus
+accumulators. ALSA uses accumulators 0 and 1 for left and right PCM.
+The result is mixed to mono signal (single channel) and forwarded to
+the ??rear?? left DAC PCM slot of the AC97 codec.
 
 Lee
 
