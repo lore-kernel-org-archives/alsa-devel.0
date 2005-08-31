@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001383]: ac3 passthrough lost in 2.6.12 and later
-Date: Wed, 31 Aug 2005 11:52:30 +0200
-Message-ID: <b1dea520c61775c075790afcb99e23a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001382]: audio stuttered when playing DVD/VCD using xine
+Date: Wed, 31 Aug 2005 12:15:09 +0200
+Message-ID: <0cedf09b0a2a7e0e6796435be90a68d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2125C208
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 11:52:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F8AF208
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 12:15:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1383> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1382> 
 ======================================================================
-Reported By:                Antonio
-Assigned To:                fmoraes
+Reported By:                zhllg
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1383
-Category:                   PCI - emu10k1x
+Issue ID:                   1382
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.12-1.1376_FC3
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-31-2005 11:52 CEST
-Last Modified:              08-31-2005 11:52 CEST
+Date Submitted:             08-31-2005 10:20 CEST
+Last Modified:              08-31-2005 12:15 CEST
 ======================================================================
-Summary:                    ac3 passthrough lost in 2.6.12 and later
+Summary:                    audio stuttered when playing DVD/VCD using xine
 Description: 
-i have an audigy2 board
-when i used an 2.6.11 FC kernel (2.6.11-1.35_FC3) and earlier ones all was
-fine.
-when i updated to 2.6.12 fc3 kernels (2.6.12-1.1372_FC3 and
-2.6.12-1.1376_FC3) ac3 passthrough works no more.
-When i boot back to 2.6.11 ac3 is back....
-
-i consider the following patch(2.6.12 kernel changelog) is the reason:
-
-<perex@suse.cz>
-        [ALSA] Enables SPDIF output on the Audigy2 Value
-        
-        EMU10K1/EMU10K2 driver
-        Enables SPDIF output on the Audigy2 Value.
-        It seems to work for PCM, but not AC3 yet.
-
-
+The motherboard is intel D945GTP
+Other application works well, like mplayer
+but audio will stutter when playing DVD/VCD using xine
+The symptom is one second's audio in the movie will be played for several
+times consecutively, before next sec's sound can be played. Then the same
+happened to the audio of next sec.
+What could be the cause?
 ======================================================================
+
+----------------------------------------------------------------------
+ zhllg - 08-31-05 10:30 
+----------------------------------------------------------------------
+Correction:
+mplayer just work well for a little while, then similar problem occurs,
+too
+
+----------------------------------------------------------------------
+ zhllg - 08-31-05 12:15 
+----------------------------------------------------------------------
+solved
+just enable APIC in the kernel
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 11:52 Antonio        New Issue                                    
-08-31-05 11:52 Antonio        Distribution              => Fedora Core 3   
-08-31-05 11:52 Antonio        Kernel Version            => 2.6.12-1.1376_FC3
+08-31-05 10:20 zhllg          New Issue                                    
+08-31-05 10:30 zhllg          Note Added: 0005985                          
+08-31-05 10:42 zhllg          Issue Monitored: zhllg                       
+08-31-05 12:15 zhllg          Note Added: 0005987                          
 ======================================================================
 
 
