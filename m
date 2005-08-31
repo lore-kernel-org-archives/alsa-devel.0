@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Wed, 31 Aug 2005 18:59:51 +0200
-Message-ID: <3d06b555341e6ccc1f90b8f1e2f3d938@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
+Date: Wed, 31 Aug 2005 18:54:55 +0200
+Message-ID: <d459bbba294cef6337a0e98a7302dc85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17BF41FE
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 18:59:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AB9521F
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 18:54:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
+Reported By:                garden
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1331
-Category:                   PCI - ca0106
+Issue ID:                   324
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398-x86_64
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              08-31-2005 18:59 CEST
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              08-31-2005 18:54 CEST
 ======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
 Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
-
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
-
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 08-31-05 15:14 
+ pzad - 08-31-05 14:01 
 ----------------------------------------------------------------------
-What I have to do? Waiting for an answer...
+This is not in AC97 - it is used only for recording - and is already on
+max. I think diffrence are in DSP code.
 
 ----------------------------------------------------------------------
- rlrevell - 08-31-05 18:59 
+ rlrevell - 08-31-05 18:54 
 ----------------------------------------------------------------------
-It's clearly a driver bug so all you can do at this point is wait for a
-response from the driver developer.
+Could this be related to the "x4" stuff in the kX driver?  Inputs from the
+ADC are multiplied by 4 (since the ADC is 16 bit and the DSP 32 bit) then
+divided by 4 at the output.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
-08-13-05 18:30 Cimmo          Note Added: 0005807                          
-08-31-05 15:14 Cimmo          Note Added: 0005989                          
-08-31-05 18:59 rlrevell       Note Added: 0005991                          
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
+08-30-05 12:32 garden         Note Added: 0005978                          
+08-30-05 20:21 rlrevell       Note Added: 0005981                          
+08-31-05 14:01 pzad           Note Added: 0005988                          
+08-31-05 18:54 rlrevell       Note Added: 0005990                          
 ======================================================================
 
 
