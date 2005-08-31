@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
-Date: Wed, 31 Aug 2005 14:01:21 +0200
-Message-ID: <7443c84f3f2b7e6ab030f662c01d91fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
+Date: Wed, 31 Aug 2005 15:14:06 +0200
+Message-ID: <4bb99676b28b90a619b8d7d9ef967527@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5269A1DE
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 14:01:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5248E1D5
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 15:14:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
 ======================================================================
-Reported By:                garden
-Assigned To:                pzad
+Reported By:                Cimmo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   324
-Category:                   PCI - emu10k1
+Issue ID:                   1331
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Status:                     feedback
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398-x86_64
 ======================================================================
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              08-31-2005 14:01 CEST
+Date Submitted:             08-13-2005 01:27 CEST
+Last Modified:              08-31-2005 15:14 CEST
 ======================================================================
-Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
 Description: 
-Both the input and output levels of my Audigy2 Platinum seem to be very low
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge.
+I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
+integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack like the pci version of the sb live 24
+bit.
+
+With this card I cannot hear any sound that come from line-in.
+For Example I have a tv card, its output audio go into line-in: result is
+I cannot hear nothing from the tv, I can only see channels without audio.
+
+The "Capture feedback into playback" in the mixer change the mic's
+volume.
+There is nothing that change line-in's volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-30-05 20:21 
+ Cimmo - 08-13-05 18:30 
 ----------------------------------------------------------------------
-When you say Windows do you mean with the Creative driver?  Unfortunately
-it's a black box.  Do you get the same results with this (vastly superior)
-driver:
+There are some problems, none of the 4 lines works, this is what I have
+done:
 
-http://www.kxproject.com
-
-If so then we can compare the AC97 registers.
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,0 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+Aborted by signal Interrupt...
+Aborted by signal Interrupt...
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,1 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+Aborted by signal Interrupt...
+Aborted by signal Interrupt...
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,2 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+arecord: pcm_read:1252: read error: Input/output error
+[cimmo@localhost ~]$ arecord -fdat -Dhw:0,3 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+arecord: pcm_read:1252: read error: Input/output error
 
 ----------------------------------------------------------------------
- pzad - 08-31-05 14:01 
+ Cimmo - 08-31-05 15:14 
 ----------------------------------------------------------------------
-This is not in AC97 - it is used only for recording - and is already on
-max. I think diffrence are in DSP code.
+What I have to do? Waiting for an answer...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 13:17 garden         New Issue                                    
-06-06-04 13:17 garden         Distribution              => Debian sid      
-06-06-04 13:17 garden         Kernel Version            => 2.6.5           
-06-28-04 09:17 pzad           Status                   new => assigned     
-06-28-04 09:17 pzad           Assigned To               => pzad            
-09-14-04 15:24 garden         Note Added: 0001758                          
-09-16-04 10:16 pzad           Note Added: 0001766                          
-09-16-04 11:32 garden         File Added: amixer.out                       
-09-16-04 11:37 garden         Note Added: 0001769                          
-09-16-04 12:17 pzad           Note Added: 0001772                          
-09-16-04 13:23 garden         Note Added: 0001773                          
-08-30-05 12:23 jdthood        Note Added: 0005975                          
-08-30-05 12:32 garden         Note Added: 0005978                          
-08-30-05 20:21 rlrevell       Note Added: 0005981                          
-08-31-05 14:01 pzad           Note Added: 0005988                          
+08-13-05 01:27 Cimmo          New Issue                                    
+08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
+08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
+08-13-05 01:41 jcdutton       Note Added: 0005798                          
+08-13-05 01:42 jcdutton       Status                   assigned => feedback
+08-13-05 18:30 Cimmo          Note Added: 0005807                          
+08-31-05 15:14 Cimmo          Note Added: 0005989                          
 ======================================================================
 
 
