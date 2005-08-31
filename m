@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001382]: audio stuttered when playing DVD/VCD using xine
-Date: Wed, 31 Aug 2005 10:30:47 +0200
-Message-ID: <ad3db33b969d76e321572253468fd545@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Wed, 31 Aug 2005 11:44:32 +0200
+Message-ID: <a2376e477ca5aa6d1ae1c64011faf879@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B1FB214
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 10:30:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A114C1F6
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 11:44:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,113 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1382> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
 ======================================================================
-Reported By:                zhllg
+Reported By:                Quietti
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1382
-Category:                   PCI - hda-intel
+Issue ID:                   306
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
-Date Submitted:             08-31-2005 10:20 CEST
-Last Modified:              08-31-2005 10:30 CEST
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              08-31-2005 11:44 CEST
 ======================================================================
-Summary:                    audio stuttered when playing DVD/VCD using xine
+Summary:                    compiles, but no sound comes out
 Description: 
-The motherboard is intel D945GTP
-Other application works well, like mplayer
-but audio will stutter when playing DVD/VCD using xine
-The symptom is one second's audio in the movie will be played for several
-times consecutively, before next sec's sound can be played. Then the same
-happened to the audio of next sec.
-What could be the cause?
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
+
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
+
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- zhllg - 08-31-05 10:30 
+ Johannes Berg - 08-11-05 13:09 
 ----------------------------------------------------------------------
-Correction:
-mplayer just work well for a little while, then similar problem occurs,
-too
+Power management on the driver is also broken (well, doesn't exist at all)
+and after hibernation the module has to be reloaded to get sound at all.
+
+Note that this is with a chipset where I actually *do* get sound (the one
+in a PowerBook5,6), not a chipset where sound doesn't work at all.
+
+----------------------------------------------------------------------
+ Quietti - 08-31-05 11:44 
+----------------------------------------------------------------------
+Kernel 2.6.13 shows some major improvements: 
+Almost everything ALSA works on Burgundy as it should! :-) 
+Whoever worked on this since 2.6.11 deserves a big hug!
+
+master volume:    works as expected.
+headphone volume: seems to control the internal stereo speakers instead.
+Oops!
+headphone detect: (what is this supposed to do?)
+analog CD volume: works as expected.
+line input:       (no analog signal to feed the input jack and test it)
+microphone input: (feedbacks if I rise it high enough, so I'd assume it
+works)
+mono PC speaker:  seems to control the stereo headphones instead. Oops!
+auto-mute:        (what is this supposed to do?)
+console beep:     works as expected.
+
+On a general note, I cannot seem to completely silence the internal stereo
+speakers or the headphones, other than by muting the master volume.
+
+Still, this is already a *major* improvement over previous ALSA releases:
+I finally get some sound on this iMac CRT's Burgundy chip! Many thanks!
+:-)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 10:20 zhllg          New Issue                                    
-08-31-05 10:30 zhllg          Note Added: 0005985                          
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
+02-04-05 09:22 Quietti        Note Added: 0003496                          
+02-04-05 13:04 tiwai          Note Added: 0003499                          
+04-02-05 13:33 Quietti        Note Added: 0004297                          
+08-06-05 20:24 Quietti        Note Added: 0005682                          
+08-06-05 20:31 rlrevell       Note Added: 0005683                          
+08-06-05 20:32 rlrevell       Note Added: 0005684                          
+08-06-05 20:53 rlrevell       Note Added: 0005685                          
+08-06-05 21:17 rlrevell       Note Added: 0005686                          
+08-06-05 23:54 rlrevell       Note Added: 0005687                          
+08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
+08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
+08-07-05 10:03 pochini        Note Added: 0005689                          
+08-07-05 10:31 Quietti        Note Added: 0005690                          
+08-07-05 10:46 rlrevell       Note Added: 0005691                          
+08-07-05 11:36 Quietti        Note Added: 0005692                          
+08-07-05 11:44 Quietti        Note Added: 0005693                          
+08-07-05 20:27 rlrevell       Note Added: 0005697                          
+08-08-05 14:53 Quietti        Note Added: 0005708                          
+08-08-05 19:42 rlrevell       Note Added: 0005711                          
+08-11-05 13:09 Johannes Berg  Note Added: 0005755                          
+08-11-05 13:09 Johannes Berg  Issue Monitored: Johannes Berg                    
+08-31-05 11:44 Quietti        Note Added: 0005986                          
 ======================================================================
 
 
