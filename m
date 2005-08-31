@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Alsa-user] ALSA / emu10k1 / SPDIF / surround?
-Date: Wed, 31 Aug 2005 12:58:16 -0400
-Message-ID: <1125507496.19563.55.camel@mindpipe>
-References: <Pine.HPX.4.33n.0508310923410.18516-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
+Date: Wed, 31 Aug 2005 18:59:51 +0200
+Message-ID: <3d06b555341e6ccc1f90b8f1e2f3d938@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0508310923410.18516-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17BF41FE
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2005 18:59:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Thomas Zehetbauer <thomasz@hostmaster.org>, alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-08-31 at 09:54 +0200, Clemens Ladisch wrote:
-> Lee Revell wrote:
-> > On Tue, 2005-08-30 at 11:53 +0200, Clemens Ladisch wrote:
-> > > Lee Revell wrote:
-> > > > So maybe the distortion problem here is just an app that's sending
-> > > > a clipped signal.
-> > >
-> > > It's a known problem with several cards that use the STAC9708 codec.
-> > > It seems the chip doesn't get initialized/configured correctly;
-> > > several registers aren't documented.
-> >
-> > Should be trivial to RE using the kX driver (the kxctrl utility lets you
-> > read and write AC97 registers).
-> 
-> I already read the AC97 registers of my ymfpci card in Windows, but
-> didn't find anything useful.
 
-OK, then I guess someone just needs to fire up SoftICE and set some IO
-breakpoints to log all read/write to the AC97 codec.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+======================================================================
+Reported By:                Cimmo
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1331
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398-x86_64
+======================================================================
+Date Submitted:             08-13-2005 01:27 CEST
+Last Modified:              08-31-2005 18:59 CEST
+======================================================================
+Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Description: 
+I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
+integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack like the pci version of the sb live 24
+bit.
 
-Lee
+With this card I cannot hear any sound that come from line-in.
+For Example I have a tv card, its output audio go into line-in: result is
+I cannot hear nothing from the tv, I can only see channels without audio.
+
+The "Capture feedback into playback" in the mixer change the mic's
+volume.
+There is nothing that change line-in's volume.
+======================================================================
+
+----------------------------------------------------------------------
+ Cimmo - 08-31-05 15:14 
+----------------------------------------------------------------------
+What I have to do? Waiting for an answer...
+
+----------------------------------------------------------------------
+ rlrevell - 08-31-05 18:59 
+----------------------------------------------------------------------
+It's clearly a driver bug so all you can do at this point is wait for a
+response from the driver developer.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-13-05 01:27 Cimmo          New Issue                                    
+08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
+08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
+08-13-05 01:41 jcdutton       Note Added: 0005798                          
+08-13-05 01:42 jcdutton       Status                   assigned => feedback
+08-13-05 18:30 Cimmo          Note Added: 0005807                          
+08-31-05 15:14 Cimmo          Note Added: 0005989                          
+08-31-05 18:59 rlrevell       Note Added: 0005991                          
+======================================================================
+
 
 
 
