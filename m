@@ -1,100 +1,85 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
-Date: Tue, 30 Aug 2005 23:08:26 +0200
-Message-ID: <cec20379f782be0e42cbb688fb89d6c4@bugtrack.alsa-project.org>
+From: Thomas Zehetbauer <thomasz@hostmaster.org>
+Subject: Re: [Alsa-devel] Re: ALSA / emu10k1 / SPDIF / surround?
+Date: Wed, 31 Aug 2005 02:01:45 +0200
+Message-ID: <1125446505.1785.11.camel@hostmaster.org>
+References: <1124755115.5763.3.camel@hostmaster.org>
+	 <1125166820.22285.68.camel@hostmaster.org>
+	 <1125168446.25011.68.camel@mindpipe>
+	 <1125173150.22285.103.camel@hostmaster.org>
+	 <1125174445.25011.76.camel@mindpipe>
+	 <1125177706.22285.144.camel@hostmaster.org>
+	 <1125178767.25011.86.camel@mindpipe>
+	 <1125181627.22285.155.camel@hostmaster.org>
+	 <1125183623.25011.102.camel@mindpipe>
+	 <1125195487.2684.8.camel@hostmaster.org>
+	 <1125196132.25011.111.camel@mindpipe> <s5hbr3h3xxy.wl%tiwai@suse.de>
+	 <1125325907.4598.23.camel@mindpipe>
+	 <1125342246.21560.2.camel@hostmaster.org>
+	 <1125345314.4598.58.camel@mindpipe>
+	 <1125356738.21560.27.camel@hostmaster.org>
+	 <1125356936.4598.83.camel@mindpipe>  <s5hll2j3i7h.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C8EF1F1
-	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2005 23:08:27 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-AqiovAJWxKFHAu920Bjk"
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <s5hll2j3i7h.wl%tiwai@suse.de>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
-======================================================================
-Reported By:                hhg
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   502
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 9.2
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             09-15-2004 00:44 CEST
-Last Modified:              08-30-2005 23:08 CEST
-======================================================================
-Summary:                    Mp3+ crackles when on alsa, not when on oss
-emulation
-Description: 
-this shell-cut-and-paste wil ilustrate my problem:
+--=-AqiovAJWxKFHAu920Bjk
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-At first when I plug my mp3+ in, it crackles. It is not scraping or
-static, it is a distinct pop in the sound about 2-3 times/sec not
-rythmical. The card shows up in alsamixer -c1, and everything about
-controling it works. Then, without plugging my card in or out, I do this:
+On Tue, 2005-08-30 at 11:08 +0200, Takashi Iwai wrote:
+> Could you check whether they influence on sounds?  If not, we can
+> remove them.
 
-[root@localhost hhg]# rmmod snd_usb_audio
-[root@localhost hhg]# modprobe audio
-[root@localhost hhg]# alsamixer -c1
- 
-alsamixer: function snd_ctl_open failed for hw:1: No such file or
-directory
+"3D Control (Switch|Front|Rear)" and "Sigmatel Surround" definitely do
+influence sound appearance.
 
-I also have a boult-in intel-8x0-card working fine with alsa. But now the
-mp3+card works great. Using oss-emulated mixer the card can also be
-controled. I have to use oss-output, though, as the card no longer is
-registrered by alsa.
+Tom
 
-even if I do
+--=20
+  T h o m a s   Z e h e t b a u e r   ( TZ251 )
+  PGP encrypted mail preferred - KeyID 96FFCB89
+      finger thomasz@hostmaster.org for key
 
-[root@localhost hhg]# modprobe snd-usb-audio
+All governments suffer a recurring problem: Power attracts pathological
+personalities. It is not that power corrupts but that it is magnetic to the
+corruptible. Such people have a tendency to become drunk on violence, a
+condition to which they are quickly addicted.
+                                       Missionaria Protectiva
 
-alsamixer -c1 fails and the card stil works as an oss-card.
-======================================================================
 
-----------------------------------------------------------------------
- jdthood - 08-30-05 22:37 
-----------------------------------------------------------------------
-AIUI the user is just showing that OSS works properly whereas ALSA does
-not.
 
-----------------------------------------------------------------------
- rlrevell - 08-30-05 23:08 
-----------------------------------------------------------------------
-OK. My guess is that this is an upstream USB bug fixed in newer kernels.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-15-04 00:44 hhg            New Issue                                    
-09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
-09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
-09-15-04 13:09 hhg            Note Added: 0001760                          
-08-30-05 12:22 jdthood        Note Added: 0005974                          
-08-30-05 20:12 rlrevell       Note Added: 0005980                          
-08-30-05 22:37 jdthood        Note Added: 0005982                          
-08-30-05 23:08 rlrevell       Note Added: 0005983                          
-======================================================================
+--=-AqiovAJWxKFHAu920Bjk
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iQEVAwUAQxTzaGD1OYqW/8uJAQKkiAgAhq8Pa4iycGugevBDZ8iz/JIkMiZvO3dm
+H/RLabSOYB1GBnQB2GJKXZdjO0ktY3zXPLZs6kwe7FKNjuZZrNGOe55YmgeZbogh
+XfFGax63UFisyzzJL9MVyXdFM3tyDXD8tVYBeR2uFVeg1NKucLszLIRm7ivNR0lJ
+IiwhXh+JX9EXkLq0tMBQwqmo7mymk8h6vJlAehy38Ehz9AEeUHJt6V2Go6kDebnq
+SUP0j2YIqH9qyoWb/2DhB+16zYnJ1y2a7zwy0GAw9TrooVaJ8A2oII2GRpH4IcTy
+MDSK2T/+QcbrNEofGCHLpGrHj9MEY00OnfP4SLltHCZqLpRAEjnkrw==
+=Mi6X
+-----END PGP SIGNATURE-----
+
+--=-AqiovAJWxKFHAu920Bjk--
 
 
 
