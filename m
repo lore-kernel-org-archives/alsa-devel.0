@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative Ectiva silent playout + new line-in capture failure
-Date: Thu, 1 Sep 2005 20:32:35 +0200
-Message-ID: <73848796dfbf5ffad7fdfaf024d6e800@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: [Fwd: Re: Support for platform bus]
+Date: Thu, 01 Sep 2005 19:34:30 +0100
+Message-ID: <1125599670.3384.7.camel@mayday.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1DF41A0
-	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 20:32:35 +0200 (MEST)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 89C4F1AF
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 20:34:47 +0200 (MEST)
+Received: from [192.168.62.101] ([192.168.62.101])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id j81IYU7R002741
+	for <alsa-devel@alsa-project.org>; Thu, 1 Sep 2005 19:34:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +25,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389> 
-======================================================================
-Reported By:                wood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1389
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Modified Redhat 9.0
-Kernel Version:             2.4.24 self compiled
-======================================================================
-Date Submitted:             09-01-2005 20:32 CEST
-Last Modified:              09-01-2005 20:32 CEST
-======================================================================
-Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
-+ new line-in capture failure
-Description: 
-Soundcard: Creative Soundblaster PCI (Ectiva) Model:CT4730
-Chip Label: Creative EV1938
 
-Platform: Stable 2.4.24 Linux kernel on VIA MiniITX ME6000/M10000
-          w/ multiple soundcards. ALSA compiled from source
-          works with VIA motherboard Audio
-          and some other Creative PCI soundcards. Need a stable ALSA
-driver
-          for this soundcard.
+On Thu, 2005-09-01 at 16:44 +0200, Takashi Iwai wrote:
+> At Thu, 01 Sep 2005 00:42:36 +0100,
+> Adrian McMenamin wrote:
+> > 
+> > I am attempting to write an ALSA driver for the sound card on the
+> > Dreamcast.
+> > 
+> > I have this in the code:
+> > 
+> > 	snd_card_set_dev(dreamcastcard, &platform_bus);
+> 
+> The second argument is the pointer to struct device.
+> You should have got a compiler warning about pointer cast.
 
-Problem:
-The snd-ens1371 module loads correctly as 3rd sound device (First audio
-device is VIA 8235 from motherboard, 2nd is PCSP).
-
-Alsamixer -c 2 shows a reasonable set of
-controls. Playout either with OSS emulation (play) or ALSA player
-(aplay) plays WAV files but only silence for both 1.0.9 and 1.0.10rc1
-releases.  
-On ALSA 1.0.9 codebase,the Master Volume does not always show in
-alsamixer. 
-In 1.0.10rc1 it does always show.
-ALSO:
-  On ALSA 1.0.9 code, the Line-In capture works under both OSS Emulation
-and with ALSA arecord.
-On the latest development release ALSA 1.0.10rc1, the Line-In
-capture no longer works. So a new problem has been introduced from .9 to
-.10.
+Sorry are you saying it is, or it should be... because plaform_bus is
+defined in patform.c as below:
 
 
-Other info:
-Native OSS driver es1371 works fine with this card. But I want to switch
-to ALSA.
+20 struct device platform_bus = {
+21         .bus_id         = "platform",
+22 };
 
-Earlier model Creative PCI128, Model CT4750 loads snd-ens1371 and
-works fine with both tested ALSA releases using same platform
-configuration.
+and is declared in device.h:
 
-Audigy 2 Value also works fine using snd-emu10k1 with same configuration
-(I included this card info to rule out basic config problems).
 
-======================================================================
+384 extern struct device platform_bus;
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-01-05 20:32 wood           New Issue                                    
-09-01-05 20:32 wood           Distribution              => Modified Redhat 9.0
-09-01-05 20:32 wood           Kernel Version            => 2.4.24 self compiled
-======================================================================
+(lines are from 2.6.12)
+
+And the guide to writing a driver states:
+
+At some point, typically after calling snd_device_new(), you need to register the struct device of the chip you're handling for udev and co. ALSA provides a macro for compatibility with older kernels. Simply call like the following: 
+
+  snd_card_set_dev(card, &pci->dev);
+          
+
+so that it stores the PCI's device pointer to the card. This will be
+referred by ALSA core functions later when the devices are registered. 
+
+In the case of non-PCI, pass the proper device struct pointer of the BUS
+instead. (In the case of legacy ISA without PnP, you don't have to do
+anything.) 
+
+
+So what have I done wrong?
+
+
+I don't get a compiler error either:
+
+[adrian@mayday aica]$ touch snd_card_aica.c
+[adrian@mayday aica]$ make ARCH=sh
+CROSS_COMPILE=/home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-
+make -C /home/adrian/linux-sh/linux-2.6.12.3
+M=/home/adrian/linux-sh/aica modules
+make[1]: Entering directory `/home/adrian/linux-sh/linux-2.6.12.3'
+  CC [M]  /home/adrian/linux-sh/aica/snd_card_aica.o
+  Building modules, stage 2.
+  MODPOST
+  LD [M]  /home/adrian/linux-sh/aica/snd_card_aica.ko
+make[1]: Leaving directory `/home/adrian/linux-sh/linux-2.6.12.3'
+
 
 
 
