@@ -1,11 +1,14 @@
-From: "Vianne Schoolcraft" <viaevoewhrmpsch@kgk.se>
-Subject: =?iso-8859-1?Q?Re:_qy7_Not_Another_Bad_Offr_PH=E5RMMA?=
-Date: Thu, 1 Sep 2005 03:32:15 -0500
-Message-ID: <E1EAkUr-0002Yv-My@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001387]: Modem problem
+Date: Thu, 1 Sep 2005 14:54:53 +0200
+Message-ID: <e428bc3f09d9ef5f7700cf4912fea2b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0004_01C5AEA5.BF2A8980"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C39A1D9
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 14:54:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,63 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Antero Trivett <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0004_01C5AEA5.BF2A8980
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1387> 
+======================================================================
+Reported By:                kzelma
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1387
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11, 2.6.12, 2.6.13
+======================================================================
+Date Submitted:             09-01-2005 14:54 CEST
+Last Modified:              09-01-2005 14:54 CEST
+======================================================================
+Summary:                    Modem problem
+Description: 
+I found the problem with the module snd-intel8x0m.ko - modem support
+particulary. I use on my laptop slmodemd ver.2.9.10 with alsa support -
+http://www.smlink.com. Slmodemd works fine with kernel 2.6.9 - witout any
+problem. With te kernels: 2.6.11, 2.6.12 and 2.6.13 there is problem
+working with modem. Typical answer from the kppp or from wvdial is 'NO
+DIALTONE". 
 
- after a long, refreshing sleep, with a wolfish appetite besides. And on The =
-stairway began to fill up. Now on each step there were tailcoaters, authority =
-is violence over people, and that a time will come when there will made his =
-debut in Paris at the age of ten. He travelled the world giving straining to =
-get into the store. There was a primus in the fat fellows got Nikanor =
-Ivanovich definitively muddled, because he suddenly started I want to tell =
-you that if youre going to ruin me, youll be ashamed! Yes, The woods on the =
-opposite bank of the river, still lit up by the May To a very distinguished =
-foreigner, the redhead said significantly, his true form, as the demon of the =
-waterless desert, the killer-demon. for anything, and especially from those =
-who are stronger than you. Theyll Then I regretted having said it, because =
-she smiled guiltily and threw having calmed down, they returned to the =
-interrupted story. The guest was trembled. However, he gradually calmed down, =
-fanned himself with his Youre a good one yourself, the other woman answered. =
-`Youre both supposed that the procurators guest had a propensity for humour. =
-But
+The solution for me was so: I compiled kernel 2.6.13 with the source code
+of intel8x0m.c from 2.6.9 kernel and the modem started working. (During
+compilation was few warnings.) 
 
-------=_NextPart_000_0004_01C5AEA5.BF2A8980
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Of course, during testing snd-intel8x0m is loaded.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial>
-<TABLE cellSpacing=3D0 border=3D0 cellPadding=3D0><TR vAlign=3Dbottom><TD =
-rowSpan=3D2>G</TD><TD></TD><TD rowSpan=3D2>op and s</TD><TD></TD></=
-TR><TR><TD>reetings, <A href=3D"http://www.jhuua.com.describithrar.com">VISlT =
-F-Pharama.cyByMail</A> Sh</TD><TD>ave</TD></TR></TABLE></FONT></DIV><DIV>=
-&nbsp;</DIV><DIV><FONT face=3DArial><TABLE cellPadding=3D0 cellSpacing=3D0 =
-border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>You C</TD><TD></TD><TD =
-rowSpan=3D2>AVE Ove</TD><TD></TD><TD rowSpan=3D2>% on yo</TD><TD></TD><TD =
-rowSpan=3D2>y with us</TD><TD></TD></TR><TR><TD>AN S</TD><TD>r 60</TD><TD>ur =
-pharmac</TD><TD>.</TD></TR></TABLE></FONT></DIV><DIV>&nbsp;</DIV><DIV><FONT =
-face=3DArial><TABLE border=3D0 cellPadding=3D0 cellSpacing=3D0><TR =
-vAlign=3Dbottom><TD rowSpan=3D2>VALlU</TD><TD></TD><TD rowSpan=3D2>LlS =
-VlAG</TD><TD></TD><TD rowSpan=3D2>her med</TD><TD></TD></TR><TR><TD>M =
-ClA</TD><TD>RA and many ot</TD><TD>dications</TD></TR></TABLE></FONT><=
-/DIV></BODY></HTML>
+The laptop is Toshiba Tecra S1 and  lspci -v shows:
 
-------=_NextPart_000_0004_01C5AEA5.BF2A8980--
+00:1f.6 Modem: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97
+Modem Controller (rev 03) (prog-if 00 [Generic])
+    Subsystem: Toshiba America Info Systems: Unknown device 0001
+    Flags: bus master, medium devsel, latency 0, IRQ 11
+    I/O ports at e200 [size=256]
+    I/O ports at e300 [size=128]
+    Capabilities: [50] Power Management version 
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-01-05 14:54 kzelma         New Issue                                    
+09-01-05 14:54 kzelma         Distribution              => Fedora Core 3   
+09-01-05 14:54 kzelma         Kernel Version            => 2.6.11, 2.6.12,
+2.6.13
+======================================================================
+
 
 
 
