@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Fri, 2 Sep 2005 20:31:31 +0200
-Message-ID: <9eab12c8b011571878de04633c4bab63@bugtrack.alsa-project.org>
+From: "Lonnie A. Powers" <powershl@amfam.com>
+Subject: Take it to The Bank Stocks
+Date: Thu, 01 Sep 2005 20:52:55 +0000
+Message-ID: <BFCAKKGDDLKECAOBCAAKBKPPKDAB.powershl@amfam.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8422D175
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 20:31:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,124 +15,156 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
-======================================================================
-Reported By:                Hetfield
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-02-2005 20:31 CEST
-======================================================================
-Summary:                    artsd-like style
-Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
-
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
-Relazioni           ID      Riassunto
-----------------------------------------------------------------------
-é duplicata da      0001228 Skype Does not work with aoss
-======================================================================
-
-----------------------------------------------------------------------
- Hetfield - 09-02-05 20:26 
-----------------------------------------------------------------------
-oops i forgot:
-
-even with alsa application i get some errors:
-ALSA lib pcm_dmix.c:746:(snd_pcm_dmix_open) The dmix plugin supports only
-playback stream
-
-lots application crash, others, simply don't work.
-
-actually i could use dmix with xmms/beepmediaplayer/mplayer/mpg123
-
-others, alsa or oss, seems not to like dmix
-
-----------------------------------------------------------------------
- Hetfield - 09-02-05 20:31 
-----------------------------------------------------------------------
-even cvs...i'd pefer wait for rc2 if it's on the air...
-
-however i will test them on monday afternoon, if rc2 is out i'll test it,
-if not i'll test cvs.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-07-04-05 11:49 pzad           File Added: aoss.patch                       
-07-04-05 11:53 pzad           Note Added: 0005384                          
-07-04-05 14:02 Hetfield       Note Added: 0005385                          
-07-08-05 12:16 tiwai          Note Added: 0005417                          
-07-08-05 12:27 Hetfield       Note Added: 0005418                          
-07-17-05 10:25 Hetfield       Note Added: 0005503                          
-07-17-05 10:29 rlrevell       Note Added: 0005504                          
-07-17-05 10:46 rlrevell       Note Added: 0005505                          
-07-17-05 11:10 Hetfield       Note Added: 0005506                          
-07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
-07-17-05 19:41 rlrevell       Note Added: 0005508                          
-07-17-05 19:50 Hetfield       Note Added: 0005509                          
-07-17-05 19:51 rlrevell       Note Added: 0005510                          
-07-17-05 20:21 Hetfield       Note Added: 0005511                          
-07-17-05 21:14 rlrevell       Note Added: 0005512                          
-07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
-07-17-05 21:22 Hetfield       File Added: log2                             
-07-17-05 21:23 Hetfield       Note Added: 0005513                          
-07-17-05 22:21 rlrevell       Note Added: 0005514                          
-07-17-05 23:28 Hetfield       Note Added: 0005515                          
-07-17-05 23:43 rlrevell       Note Added: 0005516                          
-07-18-05 03:33 rlrevell       Note Added: 0005517                          
-07-18-05 06:04 rlrevell       Note Added: 0005518                          
-07-18-05 07:33 rlrevell       Note Added: 0005519                          
-07-18-05 09:23 Hetfield       Note Added: 0005520                          
-07-18-05 09:24 Hetfield       File Added: asoundrc                         
-07-18-05 22:08 rlrevell       Note Added: 0005524                          
-07-21-05 19:55 Hetfield       Note Added: 0005540                          
-07-21-05 19:56 Hetfield       Note Added: 0005541                          
-07-24-05 09:55 Hetfield       Note Added: 0005556                          
-07-24-05 19:10 rlrevell       Note Added: 0005558                          
-07-28-05 22:40 rlrevell       Note Added: 0005578                          
-07-29-05 17:43 tiwai          Note Added: 0005579                          
-08-01-05 10:20 Hetfield       Note Added: 0005595                          
-08-10-05 00:49 rlrevell       Relationship added       has duplicate 0001228
-08-28-05 15:56 Hetfield       Note Added: 0005963                          
-09-02-05 19:57 tiwai          Note Added: 0006020                          
-09-02-05 20:22 Hetfield       Note Added: 0006021                          
-09-02-05 20:24 tiwai          Note Added: 0006022                          
-09-02-05 20:26 Hetfield       Note Added: 0006023                          
-09-02-05 20:31 Hetfield       Note Added: 0006024                          
-======================================================================
-
+SG90X1N0MGNrIFJlcG9ydCAtIEVhcmx5IFNlcHRlbWJlciBJc3N1ZQ0KIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMNCg0KRmlyc3Qgd2Ugd291bGQgbGlrZSB0byBzYXkgVGhhbmsgWW91IHRv
+IGFsbCBvZiBvdXIgYXZpZCByZWFkZXJzISAgV2UgaGF2ZSANCmhhZCBIVUdF
+IHN1Y2Nlc3Mgb3ZlciB0aGUgbGFzdCBmZXcgbW9udGhzIGFuZCBoYXZlIGJl
+Y29tZSBvbmUgb2YgdGhlIG1vc3QgDQp3aWRlbHkgcmVhZCBpbnZlc3RtZW50
+IG5ld3NsZXR0ZXJzIGluIHRoZSB3b3JsZC4gIFdlIGhhdmUgYWNjb21wbGlz
+aGVkDQp0aGlzIGJ5IHByb3ZpZGluZyB0aW1lbHksIGFjY3VyYXRlIGluZm9y
+bWF0aW9uIG9uIHN0MGNrcyB3aXRoIHRoZSBwb3RlbnRpYWwgZm9yIA0KZ3Jl
+YXQgcmV0dXJucy4NCg0KSW4gdGhpcyBtb250aCdzIGlzc3VlIHdlIHdvdWxk
+IGxpa2UgdG8gdGFsayBhYm91dCBzbWFsbCBjb21wYW5pZXMgYW5kIHRoZSAN
+CmVmZmVjdCB0aGF0IHNvbWUgZ29vZCBuZXdzIGNhbiBoYXZlLiAgT2Z0ZW4g
+dGltZXMgc21hbGwgY29tcGFuaWVzIGdvIHRocm91Z2ggDQp0aGUgbW90aW9u
+cyBvZiBidXNpbmVzcywgbWFraW5nIHJlYXNvbmFibGUgcHJvZml0cywgYnV0
+IGFsbCB0aGUgd2hpbGUgDQpwcmVwYXJpbmcgYW5kIHBsYW5ubmcgZm9yIHRo
+YXQgb25lIGJpZyBvcHBvcnR1bml0eSB0byBtb3ZlIGludG8gdGhlIGFyZW5h
+IG9mIA0Kc2VyaW91cyBlYXJuaW5ncy4gIEEgY29tcGFueSBsaWtlIHRoaXMg
+aXMgbGlrZSBhIHNsaWdzaG90LCBwdWxsZWQgYmFjayBhbmQgDQpyZWFkeSB0
+byBnby4gIE9uZSBmb3J0dW5hdGUgdHVybiBvZiBldmVudHMsIG9uZSBCSUcg
+Y29udHJhY3QsIGFuZCB0aGUgc3QwY2sgDQpvZiBhIHNtYWxsIGNvbXBhbnkg
+c3VjaCBhcyB0aGlzIGNhbiBzaG9vdCB1cCEgIE91ciBmZWF0dXJlZCBjb21w
+YW55IGlzIGluDQpqdXN0IHRoYXQga2luZCBvZiBzaXR1YXRpb24uICAiVGhl
+IEJpZyBOZXdzIiBoYXMgYmVlbiBSZWxlYXNlZCENCg0KDQpOZXcgRGV2ZWxv
+cG1lbnRzIEV4cGVjdGVkIFRvIE1vdmUgU3VzaGkgVHJlbmQgQ28uLCBJbmMu
+IChTVVNaKSANCg0KU3ltYm9sOiBTVVNaIC4gcGsNCg0KQ3VycmVudCBQcmlj
+ZSAkMC4yMA0KDQoNCklzIHRoaXMgYW4gdW5kaXNjb3ZlcmVkIEdlbSBhYm91
+dCB0byBCbG93IFVwPyBBbHJlYWR5IHVwIDQwJSBUT0RBWSEhDQoNCldFIFRP
+TEQgWU9VISENCg0KQSBIdWdlIFBSIGNhbXBhaWduIGp1c3Qgc3RhcnRlZCBU
+b2RheSEgDQpTbyBncmFiIGFzIG11Y2ggYXMgeW91IGNhbiBCZWZvcmUgTWFy
+a2V0IGNsb3NlIGJlY2F1c2UsIA0KDQoNCiAgICoqKiBNb25kYXkgaXMgZ29p
+bmcgdG8gYmUgYSByZWFsbHkgQklHIERBWS4qKiogDQoNCg0KV2UgYWxsIGtu
+b3cgaXQncyB0aGUgYmlnIGFubm91bmNlbWVudHMgdGhhdCBtYWtlIHRoZXNl
+IHNtYWxsIGdlbXMgbW92ZS4NCg0KSG93IFdpbGwgU1VTWiBSZWFjdCB0byBi
+ZWluZyBCbGFzdGVkIG9udG8gDQpJbnZlc3RvcidzIFJhZGFyIFNjcmVlbnMg
+d2l0aCB0aGlzIGtpbmQgb2YgbmV3cywNClRoaXMgb25lIGlzIGFsc28gY2Vy
+dGFpbmx5IHdvcnRoIHdhdGNoaW5nIE1vbmRheSBtb3JuaW5nISENCllvdSBt
+YXkgd2FudCB0byBBY3QgdmVyeSBlYXJseSBvciBldmVuIG5vdyEhDQoNCk9u
+ZSBicmVha3Rocm91Z2gsIG9uZSBmb3J0dW5hdGUgdHVybiBvZiBldmVudHMs
+IG9uZSBCSUcgY29udHJhY3QsIGFuZCB0aGUgDQpzdDBjayBvZiBhIHNtYWxs
+IGNvbXBhbnkgc3VjaCBhcyB0aGlzIGNhbiBFeHBsb2RlIQ0KDQpQbGVhc2Ug
+cmVhZCB0aGUgZm9sbG93aW5nIEFubm91bmNlbWVudCBpbiBpdHMgRW50aXJl
+dHkgYW5kIENvbnNpZGVyIHRoZSBQb3NzaWJpbGl0aWVzhQ0KV2F0Y2ggdGhp
+cyBPbmUgdG8gVHJhZGUgRnJpZGF5IGFuZCBBTEwgTmV4dCBXZWVrIQ0KDQpT
+VVNaIGhhcyBpbmNyZWFzZWQgc2FsZXMgdXAgdG8gMzAwJSBwZXIgbW9udGgg
+d2l0aCAzIG5ldyBhbm51YWwgb3BlbiBQdXJjaGFzZSBPcmRlcnMNCmZyb20g
+bWFqb3IgaG90ZWwgYW5kIGNhc2lub3MsIGluY2x1ZGluZyB0aGUgQWxhZGRp
+biwgbG9jYXRlZCBpbiB0aGUgTGFzIFZlZ2FzIHJlZ2lvbi4NCg0KU1VTWiB2
+b2x1bWUgdHJhZGluZyB3aWxsIGJlZ2luIHRvIHN1cmdlIHdpdGggdGhpcyBs
+YW5kc2xpZGUgQW5ub3VuY2VtZW50IHN0YXJ0aW5nIEZyaWRheS4NClRoZSB2
+YWx1ZSBvZiB0aGlzIHN0MGNrIGFwcGVhcnMgaGlnaGx5IHBvaXNlZCBmb3Ig
+Z3Jvd3RoISBUaGlzIG9uZSBzaG91bGQgbm90IHJlbWFpbiANCm9uIHRoZSBn
+cm91bmQgZmxvb3IgZm9yIGxvbmcuIA0KIA0KDQogICAgICAgICAgICAgICAg
+ICAqKiogVEhFIE1BSk9SIEJSRUFLSU5HIE5FV1MhISAqKioNCg0KU3VzaGkg
+VHJlbmQgQ28uLCBJbmMuIChTVVNaKSBoYXMgc2lnbmVkIG9wZW4gUHVyY2hh
+c2UgT3JkZXIgYWdyZWVtZW50cyB3aXRoIDMgbWFqb3IgaG90ZWwgYW5kIGNh
+c2lub3MsIA0KaW5jcmVhc2luZyBtb250aGx5IHNhbGVzIG9mIHVwIHRvIDEu
+NSBtaWxsaW9uIHBpZWNlcywgd2hpY2ggaXMgYSAzMDAlIGluY3JlYXNlIG92
+ZXIgY3VycmVudCBzYWxlcy4gDQoNCldpdGggc2VydmljZSBiZWluZyBwcm92
+aWRlZCB0byBvdmVyIDUwIG1ham9yIGhvdGVscyBhbmQgY2FzaW5vcyBpbiB0
+aGUgTGFzIFZlZ2FzLCBOViByZWdpb24NCmluY2x1ZGluZyB0aGUgTWlyYWdl
+LCBUcmVhc3VyZSBJc2xhbmQsIHRoZSBIaWx0b24gSG90ZWwsIHRoZSBNR00s
+IHRoZSBNb250ZSBDYXJsbyBhbmQgbWFueSBtb3JlLA0KU3VzaGkgVHJlbmQg
+aGFzIHJlY2VudGx5IGludmVzdGVkIGluIGVxdWlwbWVudCB0aGF0IHdpbGwg
+aW5jcmVhc2UgY3VycmVudCBvdXRwdXQgbGV2ZWxzIHRvIG92ZXIgNjAwJS4g
+IA0KDQpFZGRpZSBPa2l0YSwgcHJlc2lkZW50IGFuZCBmb3VuZGVyIG9mIFN1
+c2hpIFRyZW5kcywgc3RhdGVkLCAiV2UgYXJlIGdvaW5nIHRocm91Z2ggYSBo
+dWdlIGdyb3d0aCBzcHVydCANCmluIG91ciBidXNpbmVzcy4gV2UgaGF2ZSBt
+YWRlIHRoZSBkZWNpc2lvbiB0byBpbnZlc3QgaW4gbmV3IGVxdWlwbWVudCBh
+bmQgYnVpbGRpbmcgc3BhY2UgdG8gc2lnbmlmaWNhbnRseSANCmluY3JlYXNl
+IG91ciBvdXRwdXQgY2FwYWJpbGl0aWVzLiBPdXIgaW52ZXN0bWVudCB3aWxs
+IGFsbG93IHVzIHRvIHByb2R1Y2UgdXAgdG8gMSBtaWxsaW9uIHBpZWNlcyBv
+ZiBzdXNoaSBwZXIgDQpkYXksIGhlbHBpbmcgdXMgbWVldCBwcm9qZWN0ZWQg
+ZGVtYW5kLpQgDQoNCkFsdGhvdWdoIHN1c2hpIGhhcyBiZWVuIGRlY2xhcmVk
+IHRoZSBmYXN0ZXN0IGdyb3dpbmcgZmFzdCBmb29kIGluIHRoZSBVLlMuLCBT
+dXNoaSBUcmVuZHMgY3JlZGl0cw0KdGhlIGxhcmdlIGluY3JlYXNlIGluIHNh
+bGVzIHZvbHVtZSB0byBpdHMgcmV2b2x1dGlvbmFyeSBwYXRlbnQgcGVuZGlu
+ZyBmcmVlemluZyBwcm9jZXNzLCB3aGljaCB1c2VzIGEgDQpzcGVjaWFsIHBy
+b2Nlc3MgdG8gYnJpbmcgdGhlIHRlbXBlcmF0dXJlIG9mIGl0cyBzdXNoaSB0
+byAtNTAgZGVncmVlcyBGLCBhbmQgaXRzIHNvbmljIHNpZ25hbGluZyBkZXZp
+Y2UgDQp3aGljaCBicmluZ3MgaXQgYmFjayB0byByb29tIHRlbXBlcmF0dXJl
+IGluIDUgbWludXRlcy4gIFRoaXMgdGVjaG5vbG9naWNhbCBicmVhayB0aHJv
+dWdoIGFsbG93cyB0aGUgDQpzdXNoaSB0byByZXRhaW4gaXRzICBjb3JlIGZy
+ZXNobmVzcyBhbmQgdGFzdGUsIGtlZXBpbmcgY2xpZW50cyBoYXBweSBhbmQg
+Y3VzdG9tZXIgY29taW5nIGJhY2sgZm9yIG1vcmUuDQoNCkFib3V0IFN1c2hp
+IFRyZW5kIENvLiwgSW5jLiAoU1VTWikNCg0KU3VzaGkgcHJvZHVjdGlvbiBo
+YXMgbG9uZyBiZWVuIGtlcHQgd2l0aGluIHRoZSBjb25zdHJhaW50cyBvZiB0
+aW1lIGFuZCBkaXN0YW5jZSBkdWUgdG8gaXRzJyBzaG9ydCBzaGVsZiBsaWZl
+LiANClN1c2hpIFRyZW5kIHByb3ZpZGVzIHRoZSBzb2x1dGlvbiB3aXRoIGl0
+cyBwYXRlbnRlZCBmcmVlemluZyB0ZWNobm9sb2d5LiBBbGwgb2YgU3VzaGkg
+VHJlbmSScyBzZWFmb29kIGlzIA0Kc3VzaGkgLyBzYXNoaW1pIGdyYWRlLCB3
+aGljaCBtZWFucyBpdHMgZXh0cmVtZWx5IGhpZ2ggcXVhbGl0eSwgZnJlc2gs
+IGFuZCBzdWl0YWJsZSBmb3IgZWF0aW5nIHJhdy4gQWxsIG9mIHRoZSANCmZp
+c2ggaXMgZmlsbGV0ZWQgYW5kIGxvaW5lZCwgcmVhZHkgdG8gYmUgbWFkZSBp
+bnRvIHN1c2hpIG9yIHNlcnZlZCBhcyBzYXNoaW1pLiBTdXNoaSBUcmVuZCBp
+cyBoZWFkcXVhcnRlcmVkIA0KaW4gTGFzIFZlZ2FzLCBOVi4gDQoNCg0KQ29u
+Y2x1c2lvbjoNCg0KVGhpcyBzdG9jayB3aWxsIG5vdCBiZSBhIFNlY3JldCBm
+b3IgbG9uZy4gWW91IE1heSB3YW50IHRvIEFjdCBSaWdodCBBd2F5ISBUaGlz
+IG9uZSBpcyBTb2xpZCENClBsZWFzZSBQdXQgVGhpcyBPbmUgT24geW91ciBS
+YWRhciBTY3JlZW4gaXRzIGNlcnRhaW5seSB3b3J0aCB3YXRjaGluZyEgR08g
+U1VTWiENCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18NCg0KQWxsIHN0YXRlbWVudHMgbWFkZSBhcmUgb3VyIGV4cHJl
+c3Mgb3BpbmlvbiBvbmx5IGFuZCBzaG91bGQgYmUgdHJlYXRlZCBhcyBzdWNo
+LiBXZSBtYXkgb3duLCB0YWtlIHBvc2l0aW9uIA0KYW5kIHNlbGwgYW55IHNl
+Y3VyaXRpZXMgbWVudGlvbmVkIGF0IGFueSB0aW1lLiBBbnkgc3RhdGVtZW50
+cyB0aGF0IGV4cHJlc3Mgb3IgaW52b2x2ZSBkaXNjdXNzaW9ucyB3aXRoIHJl
+c3BlY3QgDQp0byBwcmVkaWN0aW9ucywgZ29hbHMsIGV4cGVjdGF0aW9ucywg
+YmVsaWVmcywgcGxhbnMsIHByb2plY3Rpb25zLCBvYmplY3RpdmVzLCBhc3N1
+bXB0aW9ucyBvciBmdXR1cmUgZXZlbnRzIG9yIHBlcmZvcm1hbmNlIA0KYXJl
+IG5vdCBzdGF0ZW1lbnRzIG9mIGhpc3RvcmljYWwgZmFjdCBhbmQgbWF5IGJl
+ICJmMHJ3YXJkX2wwMGtpbmdfc3Q0dGVtZW50cy4iIGYwcndhcmRfbDAwa2lu
+Z19zdDR0ZW1lbnRzIGFyZSBiYXNlZCANCm9uIGV4cGVjdGF0aW9ucywgZXN0
+aW1hdGVzIGFuZCBwcm9qZWN0aW9ucyBhdCB0aGUgdGltZSB0aGUgc3RhdGVt
+ZW50cyBhcmUgbWFkZSB0aGF0IGludm9sdmUgYSBudW1iZXIgb2Ygcmlza3Mg
+YW5kIA0KdW5jZXJ0YWludGllcyB3aGljaCBjb3VsZCBjYXVzZSBhY3R1YWwg
+cmVzdWx0cyBvciBldmVudHMgdG8gZGlmZmVyIG1hdGVyaWFsbHkgZnJvbSB0
+aG9zZSBwcmVzZW50bHkgYW50aWNpcGF0ZWQuIA0KVGhpcyBuZXdzbGV0dGVy
+IHdhcyBwYWlkIHRocmVlIHBvaW50IGZpdmUgdGhvdXNhbmQgZG9sbGFycyBm
+cm9tIHRoaXJkIHBhcnR5IChJUiBNYXJrZXRpbmcpLiBmb3J3YXJkX2wwMGtp
+bmdfc3Q0dGVtZW50cyBpbiANCnRoaXMgYWN0aW9uIG1heSBiZSBpZGVudGlm
+aWVkIHRocm91Z2ggdGhlIHVzZSBvZiB3b3JkcyBzdWNoIGFzOiAicHJvamVj
+dHMiLCAiZm9yZXNlZSIsICJleHBlY3RzIi4gaW4gY29tcGxpYW5jZSANCndp
+dGggU2VjdGkwbiAxNyhiKSwgd2UgZGlzY2xvc2UgdGhlIGhvbGRpbmcgb2Yg
+IFNVU1ogc2g0cmVzIHByaW9yIHRvIHRoZSBwdWJsaWNhdGlvbiBvZiB0aGlz
+IHJlcG9ydC4gQmUgYXdhcmUgDQpvZiBhbiBpbmhlcmVudCBjb25mbGljdCBv
+ZiBpbnRlcmVzdCByZXN1bHRpbmcgZnJvbSBzdWNoIGhvbGRpbmdzIGR1ZSB0
+byBvdXIgaW50ZW50IHRvIHByb2ZpdCBmcm9tIHRoZSBsaXF1aWRhdGlvbiAN
+Cm9mIHRoZXNlIHNoYXJlcy4gU2hhcmVzIG1heSBiZSBzb2xkIGF0IGFueSB0
+aW1lLCBldmVuIGFmdGVyIHBvc2l0aXZlIHN0YXRlbWVudHMgaGF2ZSBiZWVu
+IG1hZGUgcmVnYXJkaW5nIHRoZSANCmFib3ZlIGNvbXBhbnkuIFNpbmNlIHdl
+IG93biBzaGFyZXMsIHRoZXJlIGlzIGFuIGluaGVyZW50IGNvbmZsaWN0IG9m
+IGludGVyZXN0IGluIG91ciBzdGF0ZW1lbnRzIGFuZCBvcGluaW9ucy4gDQpS
+ZWFkZXJzIG9mIHRoaXMgcHVibGljYXRpb24gYXJlIGNhdXRpb25lZCBub3Qg
+dG8gcGxhY2UgdW5kdWUgcmVsaWFuY2Ugb24gZjByd2FyZF9sMDBraW5nX3N0
+NHRlbWVudHMsIHdoaWNoIGFyZSANCmJhc2VkIG9uIGNlcnRhaW4gYXNzdW1w
+dGlvbnMgYW5kIGV4cGVjdGF0aW9ucyBpbnZvbHZpbmcgdmFyaW91cyByaXNr
+cyBhbmQgdW5jZXJ0YWludGllcyB0aGF0IGNvdWxkIGNhdXNlIHJlc3VsdHMg
+DQp0byBkaWZmZXIgbWF0ZXJpYWxseSBmcm9tIHRob3NlIHNldCBmb3J0aCBp
+biB0aGUgZjByd2FyZF9sMDBraW5nX3N0NHRlbWVudHMuIFRoaXMgaXMgbm90
+IHNvbGljaXRhdGlvbiB0byBidXkgb3Igc2VsbCANCnN0MGNrcywgdGhpcyB0
+ZXh0IGlzIGZvciBpbmZvcm1hdGlvbmFsIHB1cnBvc2Ugb25seSBhbmQgeW91
+IHNob3VsZCBzZWVrIHByMGZlc3Npb25hbCBhZHZpY2UgZnJvbSByZWdpc3Rl
+cmVkIGZpbmFuY2lhbCANCmFkdmlzb3IgYmVmb3JlIHlvdSBkbyBhbnl0aGlu
+ZyByZWxhdGVkIHdpdGggYnV5aW5nIG9yIHNlbGxpbmcgc3QwLmNrcywgcGVu
+bnkgc3QwY2tzIGFyZSB2ZXJ5IGhpZ2ggcmlzayBhbmQgeW91IGNhbiANCmxv
+c2UgeW91ciBlbnRpcmUgaW52ZXN0bWVudC4gSWYgeW91IHdpc2ggdG8gc3Rv
+cCBmdXR1cmUgbTRpbGluZ3MsIA0KcGxlYXNlIG00aWwgdG86IG5vdDFwc2Yw
+cm1lIEAgeWFob28uY29t
 
 
 
