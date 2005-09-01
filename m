@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001388]: Some patches from Cyberlink
-Date: Thu, 1 Sep 2005 18:41:53 +0200
-Message-ID: <53163fa348784f8b6b0527298784b061@bugtrack.alsa-project.org>
+Date: Thu, 1 Sep 2005 18:04:23 +0200
+Message-ID: <484ca14b902e2a1cce942dc2303fdba1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 239991A3
-	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 18:41:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 095691F4
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 18:04:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1388> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.12.5
 ======================================================================
 Date Submitted:             09-01-2005 18:04 CEST
-Last Modified:              09-01-2005 18:41 CEST
+Last Modified:              09-01-2005 18:04 CEST
 ======================================================================
 Summary:                    Some patches from Cyberlink
 Description: 
@@ -63,18 +63,6 @@ dirs in the cyberlink distribution.
 
 ======================================================================
 
-----------------------------------------------------------------------
- tiwai - 09-01-05 18:10 
-----------------------------------------------------------------------
-The patch looks like an update to pre-1.0.10rc1 with some modification.
-Could you make diff with 1.0.10rc1?  You need to compare only files under
-alsa-kernel directory, BTW.
-
-----------------------------------------------------------------------
- DrData - 09-01-05 18:41 
-----------------------------------------------------------------------
-Just uploaded it.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -82,10 +70,6 @@ Date Modified  Username       Field                    Change
 09-01-05 18:04 DrData         File Added:
 alsa-driver-1.0.9rc2.cyberlink.patch.bz2                    
 09-01-05 18:04 DrData         Kernel Version            => 2.6.12.5        
-09-01-05 18:10 tiwai          Note Added: 0005996                          
-09-01-05 18:30 DrData         File Added: cyberlink.patch.bz2                   
-
-09-01-05 18:41 DrData         Note Added: 0005998                          
 ======================================================================
 
 
