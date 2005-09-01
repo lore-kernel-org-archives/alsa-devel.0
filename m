@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [Alsa-user] CS4232 Sound & Fedora Core3
-Date: Thu, 1 Sep 2005 20:25:48 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0509012023410.12210@tm8103.perex-int.cz>
-References: <Pine.HPX.4.33n.0508081559130.1089-100000@studcom.urz.uni-halle.de>
-  <42F8D075.3030307@optimus.co.uk> <43141A58.5070001@rambler.ru>
- <200508302148.20909.cave.dnb@tiscali.fr>  <4316D8B7.1030601@rambler.ru>
- <1125598881.4464.19.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative Ectiva silent playout + new line-in capture failure
+Date: Thu, 1 Sep 2005 20:32:35 +0200
+Message-ID: <73848796dfbf5ffad7fdfaf024d6e800@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1125598881.4464.19.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1DF41A0
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 20:32:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,30 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Yury Aliaev <mutab0r@rambler.ru>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 1 Sep 2005, Lee Revell wrote:
 
-> On Thu, 2005-09-01 at 14:32 +0400, Yury Aliaev wrote:
-> > I read some description of IBM TP600E, it says that CS4232 chip is used 
-> > for the compatibility with old MS-DOS games, and CS4610 -- for sound in 
-> > modern apps (but not Linux :( )
-> 
-> OK, so let's write a driver.  Where's the CS4610 datasheet?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389> 
+======================================================================
+Reported By:                wood
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1389
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Modified Redhat 9.0
+Kernel Version:             2.4.24 self compiled
+======================================================================
+Date Submitted:             09-01-2005 20:32 CEST
+Last Modified:              09-01-2005 20:32 CEST
+======================================================================
+Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
++ new line-in capture failure
+Description: 
+Soundcard: Creative Soundblaster PCI (Ectiva) Model:CT4730
+Chip Label: Creative EV1938
 
-We have already driver snd-cs46xx, but it does only support AC97 codec as 
-mixer and AD/DA chip. The CS46xx->CS423x connection is unsupported 
-(because it is rare and probably no developer has this hardware and
-we don't have the documented DSP code which supports this connection).
+Platform: Stable 2.4.24 Linux kernel on VIA MiniITX ME6000/M10000
+          w/ multiple soundcards. ALSA compiled from source
+          works with VIA motherboard Audio
+          and some other Creative PCI soundcards. Need a stable ALSA
+driver
+          for this soundcard.
 
-						Jaroslav
+Problem:
+The snd-ens1371 module loads correctly as 3rd sound device (First audio
+device is VIA 8235 from motherboard, 2nd is PCSP).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Alsamixer -c 2 shows a reasonable set of
+controls. Playout either with OSS emulation (play) or ALSA player
+(aplay) plays WAV files but only silence for both 1.0.9 and 1.0.10rc1
+releases.  
+On ALSA 1.0.9 codebase,the Master Volume does not always show in
+alsamixer. 
+In 1.0.10rc1 it does always show.
+ALSO:
+  On ALSA 1.0.9 code, the Line-In capture works under both OSS Emulation
+and with ALSA arecord.
+On the latest development release ALSA 1.0.10rc1, the Line-In
+capture no longer works. So a new problem has been introduced from .9 to
+.10.
+
+
+Other info:
+Native OSS driver es1371 works fine with this card. But I want to switch
+to ALSA.
+
+Earlier model Creative PCI128, Model CT4750 loads snd-ens1371 and
+works fine with both tested ALSA releases using same platform
+configuration.
+
+Audigy 2 Value also works fine using snd-emu10k1 with same configuration
+(I included this card info to rule out basic config problems).
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-01-05 20:32 wood           New Issue                                    
+09-01-05 20:32 wood           Distribution              => Modified Redhat 9.0
+09-01-05 20:32 wood           Kernel Version            => 2.4.24 self compiled
+======================================================================
+
+
 
 
 -------------------------------------------------------
