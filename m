@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001390]: aoss script should use $LIB in preload path
-Date: Thu, 1 Sep 2005 23:50:15 +0200
-Message-ID: <e265fad392e8f0badf8bf57497aacd9c@bugtrack.alsa-project.org>
+Date: Fri, 2 Sep 2005 00:12:27 +0200
+Message-ID: <c3ca69f953d2522a363894bf5cb2ac23@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBB421BA
-	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 23:50:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4410213E
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 00:12:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             09-01-2005 23:15 CEST
-Last Modified:              09-01-2005 23:50 CEST
+Last Modified:              09-02-2005 00:12 CEST
 ======================================================================
 Summary:                    aoss script should use $LIB in preload path
 Description: 
@@ -55,15 +55,33 @@ LD_PRELOAD=${exec_prefix}/\$LIB/libaoss.so exec "$@"
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-01-05 23:50 
+ ikonst - 09-01-05 23:53 
 ----------------------------------------------------------------------
-We ensure that on all distros, or just yours?
+You should just change the 'aoss' script inside your package. The distros
+will pick it up. All distros have ld.so and each distro can patch their
+libc to use whatever library dir policy on x86-64 as they wish; fact is,
+$LIB will be following their policy, whatever it is.
+
+----------------------------------------------------------------------
+ rlrevell - 09-02-05 00:12 
+----------------------------------------------------------------------
+Please forgive my ignorance of 32/64 bitness issues (all my machines are 32
+bit)...
+
+Doesn't each distro handle the mixed 32/64 bit environment differently? 
+Or do they all use the same ld.so hack, the only difference being the
+directory where 64 bit libs live?
+
+If it's the latter case then please rephrase your question the form of a
+patch ;-)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-01-05 23:15 ikonst         New Issue                                    
 09-01-05 23:50 rlrevell       Note Added: 0005999                          
+09-01-05 23:53 ikonst         Note Added: 0006000                          
+09-02-05 00:12 rlrevell       Note Added: 0006001                          
 ======================================================================
 
 
