@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001388]: Some patches from Cyberlink
-Date: Thu, 1 Sep 2005 18:10:09 +0200
-Message-ID: <98e5c6cc90cb8940ba19b297c2421e24@bugtrack.alsa-project.org>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: 1.0.10-rc1, envy24control, segfault
+Date: Thu, 01 Sep 2005 12:59:24 -0700
+Message-ID: <1125604764.21764.13.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90E311F7
-	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 18:10:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +15,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all, I'm getting a segfault on startup of envy24control (alsa-tools
+1.0.10-rc1 - the rest of the packages are 1.0.10-rc1, of course). This
+is a backtrace:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1388> 
-======================================================================
-Reported By:                DrData
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1388
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.12.5
-======================================================================
-Date Submitted:             09-01-2005 18:04 CEST
-Last Modified:              09-01-2005 18:10 CEST
-======================================================================
-Summary:                    Some patches from Cyberlink
-Description: 
-Cyberlink released in 
-http://download.gocyberlink.com//ftpdload/linux/source/PCMLinux_GPL_sources-01.zip
-some patches to alsa-driver-1.0.9rc2.
-One of them cured the problem on my Targa Traveller 826, where I had sound
-only over the headphone. It appears to be a ac97 device named ALC658D.
+Starting program: /zap/alsa-tools-1.0.10rc1/envy24control/envy24control
+Reading symbols from shared object read from target memory...done.
+Loaded system supplied DSO at 0xffffe000
+[Thread debugging using libthread_db enabled]
+[New Thread -1208341600 (LWP 6320)]
+using    --- input_channels: 8
+         --- output_channels: 8
+         --- pcm_output_channels: 8
+         --- spdif in/out channels: 2
 
-I included the diff against the standard 1.0.9.rc2 version.
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread -1208341600 (LWP 6320)]
+0x080542c6 in midi_controller (c=0, v=0) at midi.c:153
+153       do_controller(c,v2);
+(gdb) back
+#0  0x080542c6 in midi_controller (c=0, v=0) at midi.c:153
+#1  0x0805492b in mixer_update_stream (stream=1, vol_flag=1, sw_flag=1)
+    at mixer.c:67
+#2  0x080552a3 in mixer_postinit () at mixer.c:255
+#3  0x08053518 in main (argc=1, argv=0xbfcc2254) at envy24control.c:2185
+(gdb)
 
-I would be more than happy, if at least that patch would make it in the
-main strem and possibly also in the kernel sources.
-
-Michael
-
-PS: I got a kernel with working sound be exchanging the sound and
-include/sound directories in the kernel 2.6.12.5 sources by the respective
-dirs in the cyberlink distribution.
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-01-05 18:10 
-----------------------------------------------------------------------
-The patch looks like an update to pre-1.0.10rc1 with some modification.
-Could you make diff with 1.0.10rc1?  You need to compare only files under
-alsa-kernel directory, BTW.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-01-05 18:04 DrData         New Issue                                    
-09-01-05 18:04 DrData         File Added:
-alsa-driver-1.0.9rc2.cyberlink.patch.bz2                    
-09-01-05 18:04 DrData         Kernel Version            => 2.6.12.5        
-09-01-05 18:10 tiwai          Note Added: 0005996                          
-======================================================================
+-- Fernando
 
 
 
