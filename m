@@ -1,11 +1,14 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: 1.0.10-rc1, envy24control, segfault
-Date: Thu, 01 Sep 2005 12:59:24 -0700
-Message-ID: <1125604764.21764.13.camel@cmn3.stanford.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001390]: aoss script should use $LIB in preload path
+Date: Thu, 1 Sep 2005 23:15:47 +0200
+Message-ID: <9a18280a9278b8a850fb46993cf79f66@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCF621BA
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 23:15:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,36 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all, I'm getting a segfault on startup of envy24control (alsa-tools
-1.0.10-rc1 - the rest of the packages are 1.0.10-rc1, of course). This
-is a backtrace:
 
-Starting program: /zap/alsa-tools-1.0.10rc1/envy24control/envy24control
-Reading symbols from shared object read from target memory...done.
-Loaded system supplied DSO at 0xffffe000
-[Thread debugging using libthread_db enabled]
-[New Thread -1208341600 (LWP 6320)]
-using    --- input_channels: 8
-         --- output_channels: 8
-         --- pcm_output_channels: 8
-         --- spdif in/out channels: 2
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1390> 
+======================================================================
+Reported By:                ikonst
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1390
+Category:                   0_general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-01-2005 23:15 CEST
+Last Modified:              09-01-2005 23:15 CEST
+======================================================================
+Summary:                    aoss script should use $LIB in preload path
+Description: 
+The $LIB variable (the $ should be escaped with \$ in shell scripts) is
+substituted by the shared library loader with "lib" in the 32-bit loader
+and "lib64" in the 64-bit loader (or whatever policy the distro hardcodes
+into their ld.so). By using $LIB, we ensure that when both x86 and x86-64
+libalsa-oss packages are installed, the right one will be chosen for each
+app.
 
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread -1208341600 (LWP 6320)]
-0x080542c6 in midi_controller (c=0, v=0) at midi.c:153
-153       do_controller(c,v2);
-(gdb) back
-#0  0x080542c6 in midi_controller (c=0, v=0) at midi.c:153
-#1  0x0805492b in mixer_update_stream (stream=1, vol_flag=1, sw_flag=1)
-    at mixer.c:67
-#2  0x080552a3 in mixer_postinit () at mixer.c:255
-#3  0x08053518 in main (argc=1, argv=0xbfcc2254) at envy24control.c:2185
-(gdb)
+For example, here's what I put in my aoss script:
+LD_PRELOAD=${exec_prefix}/\$LIB/libaoss.so exec "$@"
 
--- Fernando
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-01-05 23:15 ikonst         New Issue                                    
+======================================================================
 
 
 
