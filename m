@@ -1,17 +1,12 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: [Fwd: Re: Support for platform bus]
-Date: Thu, 01 Sep 2005 19:34:30 +0100
-Message-ID: <1125599670.3384.7.camel@mayday.localdomain>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problems or bugs in snd-usb-audio.ko
+Date: Thu, 1 Sep 2005 10:11:48 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509011008210.24687-100000@studcom.urz.uni-halle.de>
+References: <1125547912.19563.74.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 89C4F1AF
-	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 20:34:47 +0200 (MEST)
-Received: from [192.168.62.101] ([192.168.62.101])
-	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id j81IYU7R002741
-	for <alsa-devel@alsa-project.org>; Thu, 1 Sep 2005 19:34:30 +0100
+In-Reply-To: <1125547912.19563.74.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,73 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Smery <luca_ing@libero.it>, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+> On Wed, 2005-08-31 at 19:26 +0000, Smery wrote:
+> > I have an USB 2.0 device with one Audio Class interface.
+> > snd_snd-usb_audio.ko detects it and register the corresponding card.
+> > But there seems to be some problems with in snd-usb-audio module when
+> > reading from this device, (while another USB 1.1 device work fine).
+> >
+> > My kernel version is: 2.6.12-1.1372_FC3 (I also tried many other kernels)
+
+Please make sure you're using 2.6.13 and the latest ALSA (1.0.10rc1).
+
+Lee Revell wrote:
+> Because your device probably doesn'y support 8 bit mono at 8000Hz, which
+> is the default format of arecord.
+
+As it happens, this is the only format supported by this device.
+arecord would have complained if the format wasn't supported.
 
 
-On Thu, 2005-09-01 at 16:44 +0200, Takashi Iwai wrote:
-> At Thu, 01 Sep 2005 00:42:36 +0100,
-> Adrian McMenamin wrote:
-> > 
-> > I am attempting to write an ALSA driver for the sound card on the
-> > Dreamcast.
-> > 
-> > I have this in the code:
-> > 
-> > 	snd_card_set_dev(dreamcastcard, &platform_bus);
-> 
-> The second argument is the pointer to struct device.
-> You should have got a compiler warning about pointer cast.
-
-Sorry are you saying it is, or it should be... because plaform_bus is
-defined in patform.c as below:
-
-
-20 struct device platform_bus = {
-21         .bus_id         = "platform",
-22 };
-
-and is declared in device.h:
-
-
-384 extern struct device platform_bus;
-
-(lines are from 2.6.12)
-
-And the guide to writing a driver states:
-
-At some point, typically after calling snd_device_new(), you need to register the struct device of the chip you're handling for udev and co. ALSA provides a macro for compatibility with older kernels. Simply call like the following: 
-
-  snd_card_set_dev(card, &pci->dev);
-          
-
-so that it stores the PCI's device pointer to the card. This will be
-referred by ALSA core functions later when the devices are registered. 
-
-In the case of non-PCI, pass the proper device struct pointer of the BUS
-instead. (In the case of legacy ISA without PnP, you don't have to do
-anything.) 
-
-
-So what have I done wrong?
-
-
-I don't get a compiler error either:
-
-[adrian@mayday aica]$ touch snd_card_aica.c
-[adrian@mayday aica]$ make ARCH=sh
-CROSS_COMPILE=/home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-
-make -C /home/adrian/linux-sh/linux-2.6.12.3
-M=/home/adrian/linux-sh/aica modules
-make[1]: Entering directory `/home/adrian/linux-sh/linux-2.6.12.3'
-  CC [M]  /home/adrian/linux-sh/aica/snd_card_aica.o
-  Building modules, stage 2.
-  MODPOST
-  LD [M]  /home/adrian/linux-sh/aica/snd_card_aica.ko
-make[1]: Leaving directory `/home/adrian/linux-sh/linux-2.6.12.3'
-
-
+HTH
+Clemens
 
 
 
