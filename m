@@ -1,11 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: [Fwd: Re: Support for platform bus]
-Date: Thu, 01 Sep 2005 19:44:49 +0100
-Message-ID: <1125600289.3384.11.camel@mayday.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001388]: Some patches from Cyberlink
+Date: Thu, 1 Sep 2005 18:10:09 +0200
+Message-ID: <98e5c6cc90cb8940ba19b297c2421e24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90E311F7
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 18:10:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,72 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1388> 
+======================================================================
+Reported By:                DrData
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1388
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             09-01-2005 18:04 CEST
+Last Modified:              09-01-2005 18:10 CEST
+======================================================================
+Summary:                    Some patches from Cyberlink
+Description: 
+Cyberlink released in 
+http://download.gocyberlink.com//ftpdload/linux/source/PCMLinux_GPL_sources-01.zip
+some patches to alsa-driver-1.0.9rc2.
+One of them cured the problem on my Targa Traveller 826, where I had sound
+only over the headphone. It appears to be a ac97 device named ALC658D.
 
-On Thu, 2005-09-01 at 16:44 +0200, Takashi Iwai wrote:
-> At Thu, 01 Sep 2005 00:42:36 +0100,
-> Adrian McMenamin wrote:
-> > 
-> > I am attempting to write an ALSA driver for the sound card on the
-> > Dreamcast.
-> > 
-> > I have this in the code:
-> > 
-> > 	snd_card_set_dev(dreamcastcard, &platform_bus);
-> 
-> The second argument is the pointer to struct device.
-> You should have got a compiler warning about pointer cast.
+I included the diff against the standard 1.0.9.rc2 version.
 
-Sorry are you saying it is, or it should be... because plaform_bus is
-defined in patform.c as below:
+I would be more than happy, if at least that patch would make it in the
+main strem and possibly also in the kernel sources.
 
+Michael
 
-20 struct device platform_bus = {
-21         .bus_id         = "platform",
-22 };
+PS: I got a kernel with working sound be exchanging the sound and
+include/sound directories in the kernel 2.6.12.5 sources by the respective
+dirs in the cyberlink distribution.
 
-and is declared in device.h:
+======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 09-01-05 18:10 
+----------------------------------------------------------------------
+The patch looks like an update to pre-1.0.10rc1 with some modification.
+Could you make diff with 1.0.10rc1?  You need to compare only files under
+alsa-kernel directory, BTW.
 
-384 extern struct device platform_bus;
-
-(lines are from 2.6.12)
-
-And the guide to writing a driver states:
-
-At some point, typically after calling snd_device_new(), you need to register the struct device of the chip you're handling for udev and co. ALSA provides a macro for compatibility with older kernels. Simply call like the following: 
-
-  snd_card_set_dev(card, &pci->dev);
-          
-
-so that it stores the PCI's device pointer to the card. This will be
-referred by ALSA core functions later when the devices are registered. 
-
-In the case of non-PCI, pass the proper device struct pointer of the BUS
-instead. (In the case of legacy ISA without PnP, you don't have to do
-anything.) 
-
-
-So what have I done wrong?
-
-
-I don't get a compiler error either:
-
-[adrian@mayday aica]$ touch snd_card_aica.c
-[adrian@mayday aica]$ make ARCH=sh
-CROSS_COMPILE=/home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-
-make -C /home/adrian/linux-sh/linux-2.6.12.3
-M=/home/adrian/linux-sh/aica modules
-make[1]: Entering directory `/home/adrian/linux-sh/linux-2.6.12.3'
-  CC [M]  /home/adrian/linux-sh/aica/snd_card_aica.o
-  Building modules, stage 2.
-  MODPOST
-  LD [M]  /home/adrian/linux-sh/aica/snd_card_aica.ko
-make[1]: Leaving directory `/home/adrian/linux-sh/linux-2.6.12.3'
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-01-05 18:04 DrData         New Issue                                    
+09-01-05 18:04 DrData         File Added:
+alsa-driver-1.0.9rc2.cyberlink.patch.bz2                    
+09-01-05 18:04 DrData         Kernel Version            => 2.6.12.5        
+09-01-05 18:10 tiwai          Note Added: 0005996                          
+======================================================================
 
 
 
