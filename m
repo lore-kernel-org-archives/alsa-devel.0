@@ -1,14 +1,14 @@
-From: 9anne <015hon@yahoo.com>
-Subject: =?windows-1251?B?8CDP8O7k4P7y8f8g7vTo8fsg4iDB6OHo8OXi7iDj5/z4/OTr++Hm4e3i?=
-Date: Thu, 01 Sep 2005 01:42:11 +0000
-Message-ID: <a71801c5ae96$664cb1a3$4bba3718@yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Thu, 1 Sep 2005 05:58:09 +0200
+Message-ID: <915deb795d3410be6793bc698b3ee0b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-    format=flowed;
-    charset="windows-1251";
-    reply-type=original
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3ECD1D9
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 05:58:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +18,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-=CF=F0=EE=E4=E0=E6=E0 =EE=F4=E8=F1=EE=E2 =E2 =F1=EE=E2=F0=E5=EC=E5=ED=ED=EE=
-=EC =E1=E8=E7=ED=E5=F1-=F6=E5=ED=F2=F0=E5 =EA=EB=E0=F1=F1=E0 =AB=C2+=BB=20
 
-=D0=E0=F1=EF=EE=EB=EE=E6=E5=ED=E8=E5: =EC. =C1=E8=E1=E8=F0=E5=E2=EE
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
+======================================================================
+Reported By:                penguinparty
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1138
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               ubuntu 5.04
+Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
+======================================================================
+Date Submitted:             05-28-2005 22:22 CEST
+Last Modified:              09-01-2005 05:58 CEST
+======================================================================
+Summary:                    errors when installing au8820 modules
+Description: 
+Please see the section additional information for a dump of my dmesg output
+regarding the au8820 module.
 
-=CF=F0=E5=E4=EB=E0=E3=E0=E5=EC=FB=E5 =EF=EB=EE=F9=E0=E4=E8: =EE=F2 610 =E4=
-=EE 3300 =EA=E2.=EC
-=C7=E4=E0=ED=E8=E5 =EE=E1=EE=F0=F3=E4=EE=E2=E0=ED=EE =F1=EE=E2=F0=E5=EC=E5=
-=ED=ED=FB=EC=E8 =F1=E8=F1=F2=E5=EC=E0=EC=E8: =F6=E5=ED=F2=F0=E0=EB=FC=ED=FB=
-=EC =EA=EE=ED=E4=E8=F6=E8=EE=ED=E8=F0=EE=E2=E0=ED=E8=E5=EC, =EF=EE=E6=E0=F0=
-=ED=EE=E9 =F1=E8=E3=ED=E0=EB=E8=E7=E0=F6=E8=E5=E9, =EA=EE=ED=F2=F0=EE=EB=FC=
- =F1=E8=F1=F2=E5=EC =E6=E8=E7=ED=E5=EE=E1=E5=F1=EF=E5=F7=E5=ED=E8=FF =E8 =
-=F2.=E4.=D2=E5=EB=E5=F4=EE=ED=FB =E8 =E2=FB=E4=E5=EB=E5=ED=ED=E0=FF =EB=E8=
-=ED=E8=FF =E8=ED=F2=E5=F0=ED=E5=F2 =CA=EE=EC=E1=E5=EB=E3=E0 =E8 =D1=EE=E2=
-=E8=ED=F2=E5=EB
+I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
+kernels. The shipping alsa support under each of these kerenls provies me
+with the same result. I have also tried installing each of these kernels
+without alsa support only CONFIG_SOUND and then installing the
+alsa-drivers 1.0.9rc4a
 
-=D1=E4=E0=F7=E0 =EE=E1=FA=E5=EA=F2=E0 =E3=EE=F1=EA=EE=EC=E8=F1=E8=E8 =ED=E0=
-=EC=E5=F7=E5=ED=E0 =ED=E0 =F1=E5=ED=F2=FF=E1=F0=FC 2005 =E3=EE=E4=E0. =CD=
-=E0 =F1=E5=E3=EE=E4=ED=FF =E7=E0=EA=EE=ED=F7=E5=ED=FB =EE=F1=ED=EE=E2=ED=FB=
-=E5 =F4=E0=F1=E0=E4=ED=FB=E5 =F0=E0=E1=EE=F2=FB (=F4=E0=F1=E0=E4 =F1=EE=E2=
-=F0=E5=EC=E5=ED=ED=FB=E9 =E4=EE=F0=EE=E3=EE=E9 =E2=E5=ED=F2=E8=EB=E8=F0=F3=
-=E5=EC=FB=E9), =EE=F1=ED=EE=E2=ED=FB=E5 =F1=F2=F0=EE=E8=F2=E5=EB=FC=ED=FB=
-=E5 =F0=E0=E1=EE=F2=FB =E2=ED=F3=F2=F0=E8  (=F1=F2=FF=E6=EA=E8, =EF=EE=EB=
-=FB, =F8=E0=F5=F2=FB), =F1=EC=EE=ED=F2=E8=F0=EE=E2=E0=ED=FB =EB=E8=F4=F2=FB=
-, =E7=E0=EA=E0=ED=F7=E8=E2=E0=E5=F2=F1=FF  =EC=EE=ED=F2=E0=E6 =E2=ED=F3=F2=
-=F0=E5=ED=ED=E5=E9 =E8=ED=E6=E5=ED=E5=F0=E8=E8
+I get the same result every time I do the modprobe snd-au8820
 
-=D6=C5=CD=C0 $ 2100 =E7=E0 =EA=E2.=EC, =E2=EA=EB=FE=F7=E0=FF =CD=C4=D1. =C2=
- =E7=E0=E2=E8=F1=E8=EC=EE=F1=F2=E8 =EE=F2 =F3=F1=EB=EE=E2=E8=E9 =EE=EF=EB=
-=E0=F2=FB =E2=EE=E7=EC=EE=E6=ED=EE =EE=E1=F1=F3=E6=E4=E5=ED=E8=E5 =F6=E5=ED=
-=FB.
-=C2=EE=E7=EC=EE=E6=ED=E0 =E0=F0=E5=ED=E4=E0 =EF=EE =F6=E5=ED=E5 $ 320 =E7=
-=E0 =EA=E2.=EC + =FD=EA=F1=EF=EB=F3=E0=F2=E0=F6=E8=EE=ED=ED=FB=E5 (=EF=EE=
- =F1=E5=E1=E5=F1=F2=EE=E8=EC=EE=F1=F2=E8, =F7=F2=EE =F1=EE=F1=F2=E0=E2=E8=
-=F2 =EE=EA=EE=EB=EE $ 40 =E7=E0 =EA=E2.=EC =E2 =E3=EE=E4), + =CD=C4=D1.
+Using older versions of debian as well as the ubuntu live cd's I am able
+to get this sound card working.
+======================================================================
 
-=CA=EE=ED=F2=E0=EA=F2=ED=FB=E5 =F2=E5=EB=E5=F4=EE=ED=FB: 137-50-68, 651-2=
-1-73, 8-926-204-70-77 =C5=EB=E5=ED=E0, 8-926-226-56-27 =CD=E0=F2=E0=EB=FC=
-=FF
+----------------------------------------------------------------------
+ penguinparty - 09-01-05 04:25 
+----------------------------------------------------------------------
+Compile fails . . . see makefile-typescript
+
+----------------------------------------------------------------------
+ Raymond - 09-01-05 05:58 
+----------------------------------------------------------------------
+There is a thread related to the AMD64 problems for au88x0 in openvortex
+developer mailing list mailto:openvortex-dev@nongnu.org
+
+http://lists.nongnu.org/archive/html/openvortex-dev/2005-06/msg00002.html
+
+The error in you make-typescript is related to au8810
 
 
+You should use ./configure --with-cards=au8820
+
+You can ask Maarten Vanraes for his au8810 patch in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001047
+
+or 
+
+Igor V. Kovalenko au8820 patch in #3948 overview: patch to fix oopses on
+amd64
+
+http://savannah.nongnu.org/patch/?group=openvortex
 
 
+Do you have left/right channels problem on your au8820 ?
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000059
 
-=00
+lspci -vvn
+
+cat /proc/asound/au8820/codec97#0/ac97#0-0+regs
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 22:22 penguinparty   New Issue                                    
+05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
+05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
+and 2.6.10
+05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
+06-08-05 04:41 penguinparty   File Added: typescript                       
+06-08-05 04:43 penguinparty   Note Added: 0004914                          
+08-24-05 10:55 Raymond        Note Added: 0005925                          
+08-24-05 10:58 Raymond        Note Added: 0005926                          
+08-24-05 10:59 Raymond        Note Deleted: 0005926                        
+09-01-05 04:24 penguinparty   File Added: make-typescript                    
+09-01-05 04:25 penguinparty   Note Added: 0005993                          
+09-01-05 05:58 Raymond        Note Added: 0005994                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
-es
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
-A
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
