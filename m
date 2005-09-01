@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Thu, 1 Sep 2005 18:15:21 +0200
-Message-ID: <b778051acf30e3bd5e43c0b63bfd21cb@bugtrack.alsa-project.org>
+Date: Thu, 1 Sep 2005 10:51:13 +0200
+Message-ID: <9c70a76439940544597b5ba601e99971@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F9321F7
-	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 18:15:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 516F41D1
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 10:51:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              09-01-2005 18:15 CEST
+Last Modified:              09-01-2005 10:51 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -67,6 +67,16 @@ alias eth0 8139too
 
 
 ======================================================================
+
+----------------------------------------------------------------------
+ gwennou - 07-11-05 22:52 
+----------------------------------------------------------------------
+Hi !
+I've just posted a bug report concerning a ens-1370 card. I've got a Sun
+SPARC so it may differ on several points.
+
+cf. issue # 1252 for further detail
+Thank you
 
 ----------------------------------------------------------------------
  yafrank - 09-01-05 10:51 
@@ -102,11 +112,6 @@ error was reported without it.
 Ensoniq AudioPCI
     
     If there is any info needed, please let me know.
-
-----------------------------------------------------------------------
- tiwai - 09-01-05 18:15 
-----------------------------------------------------------------------
-It's another problem, most likely due to changes of ACPI.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -154,7 +159,6 @@ ens1371
 07-11-05 22:52 gwennou        Note Added: 0005451                          
 09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
 09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
 ======================================================================
 
 
