@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001390]: aoss script should use $LIB in preload path
-Date: Thu, 1 Sep 2005 23:15:47 +0200
-Message-ID: <9a18280a9278b8a850fb46993cf79f66@bugtrack.alsa-project.org>
+Date: Thu, 1 Sep 2005 23:50:15 +0200
+Message-ID: <e265fad392e8f0badf8bf57497aacd9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCF621BA
-	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 23:15:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBB421BA
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 23:50:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1390> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             09-01-2005 23:15 CEST
-Last Modified:              09-01-2005 23:15 CEST
+Last Modified:              09-01-2005 23:50 CEST
 ======================================================================
 Summary:                    aoss script should use $LIB in preload path
 Description: 
@@ -54,10 +54,16 @@ LD_PRELOAD=${exec_prefix}/\$LIB/libaoss.so exec "$@"
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 09-01-05 23:50 
+----------------------------------------------------------------------
+We ensure that on all distros, or just yours?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-01-05 23:15 ikonst         New Issue                                    
+09-01-05 23:50 rlrevell       Note Added: 0005999                          
 ======================================================================
 
 
