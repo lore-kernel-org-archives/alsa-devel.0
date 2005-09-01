@@ -1,14 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Support for platform bus
-Date: Thu, 01 Sep 2005 07:55:45 +0100
-Message-ID: <1125557745.3636.5.camel@mayday.localdomain>
-References: <1125531756.3348.11.camel@mayday.localdomain>
-	 <1125547962.19563.76.camel@mindpipe>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+From: "Samantha" <info@verybestonthenet.info>
+Subject: Turn your favourite photo into a work of art
+Date: Thu, 1 Sep 2005 10:33:00 -0500
+Message-ID: <20050901153300.53A5A1F7@alsa.jcu.cz>
+Reply-To: info@verybestonthenet.info
+Content-Type: text/html;
+	charset="us-ascii"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1125547962.19563.76.camel@mindpipe>
+Received: from verybestonthenet.info (verybestonthenet.info [72.26.223.6])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53A5A1F7
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 17:33:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-09-01 at 00:12 -0400, Lee Revell wrote:
-> On Thu, 2005-09-01 at 00:42 +0100, Adrian McMenamin wrote:
-> > I am attempting to write an ALSA driver for the sound card on the
-> > Dreamcast.
-> 
-> Please post your driver source code.
-> 
-> Lee
+<html><body bgcolor="#993300" text="#000000" link="#0000ff" vlink="#0000ff" alink="#0000ff"
+leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" rightmargin="0" bottommargin="0"><center>
 
-Anybody who wants to see all of it can look at
-http://newgolddream.dyndns.info/repos but here's the relevant bit
-(obviously this is a work in progress so be gentle with me):
+<table bgcolor="#CC3300" border="0" cellpadding="9" cellspacing="0">
+	<tr>
+		<td align="center">
 
-static int __init aica_pcm_init(void)
-{
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td valign="top" bgcolor="#FF9900" width="508" valign="top" align="center">
 
-	
-	int err;
-	int idx;
-	struct snd_aicapcmchip *chip;
-	snd_printk("Probing for AICA device\n");
+						<img src="http://www.thegraphichost.com/emailtheplanet/email-orange.jpg" width="508" height="162"><br>
 
-	
-	/* Are we in a Dreamcast at all? */
-	if (!mach_is_dreamcast()) return -ENODEV;
-	dreamcastcard = NULL;
-	/* Can only be one real device on a Dreamcast
-	   but we might have the dummy or some other driver loaded */
-	for (idx = 0; idx < SNDRV_CARDS; idx++)
-	{	
-		dreamcastcard = snd_card_new(idx, "AICA", THIS_MODULE, 0);
-		if (dreamcastcard) break;
-	}
-	if (!dreamcastcard) return -ENODEV;
-	strcpy(dreamcastcard->shortname, "AICA ");
-	strcpy(dreamcastcard->longname, "Dreamcast AICA PCM Sound device ");
-
-	/* Load the PCM 'chip' */
-	if ((err = snd_aicapcmchip(dreamcastcard, &chip)) < 0) {
-		snd_card_free(dreamcastcard);
-		snd_printk("Could not initialise AICA PCM device\n");
-		return err;
-	}
-
-	/* Set up the ALSA PCM subsystem */
+						<table bgcolor="#FF9900" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="480">
+									<br><font face=arial color=#000000 size=2>
 
 
-	/* register with sysfs etc - this is not on a 'proper' bus so just use
-the generic */
-	snd_card_set_dev(dreamcastcard, &platform_bus);
+<center><h3>	Turn Your Favourite Photo Into a Work of Art		</h3></center>
 
-	/* Register the card with ALSA subsystem */
-	if ((err = snd_card_register(dreamcastcard)) < 0) {
-		snd_card_free(dreamcastcard);
-		return err;
-	}
-	snd_printk("Dreamcast AICA device registered on slot %d\n", idx);
+<b>
+While surfing the web, looking at new websites, we came across an excellent concept. You can now
+have an amazing oil painting done from any photo or picture, by simply uploading it online!
+<br><br>
+The cost starts at only $129, which includes packaging and delivery to anywhere in the world!
+Take a look at this brilliant new website, and what a great new gift idea!
+<br><br>
+Click the link below to view the website. Please note; by clicking the link, you have opted in and
+agreed to view the website. If you wish to opt-out from any further mailings, please click the opt
+out link, at the bottom of the page.
+<br><br>
+</b>
 
 
 
-	return 0; 
+									<font size=1><br>
+									Please note; that by clicking the link below, you have automatically opted-in, and have agreed to view their website.
+									<br><br></font>
+									<center><h3>
+
+<a href='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4744450E400E414246424A47410E08.aspx'>
+
+									Click here to visit their website
+									</a></h3></center>
+									<br>
+
+									Thank you for taking the time to read this special report <br><br>
+
+									Regards, <br><b> The Web Reporter </b><br> The very best on the net	<br><br>
+
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<br><a href='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4744450E400E4142434A4347400E08.aspx'><img src="http://www.thegraphichost.com/emailtheplanet/sendamillion179.gif" width="518" height="45" border="0" alt="Send ONE MILLION EMAILS for just 99 dollars"></a><br><br>
+
+
+<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
+<div align='center'><a href='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4744450E08.aspx'><img src='http://verybestonthenet.info/img.gif' width='531' height='80' border='0'></a>
+<font size='1' face='Arial, Helvetica, sans-serif'><br><img src='http://verybestonthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E444A4345400E4744450E430E420E08.aspx'>
+</font><font color="#999999" face="arial, verdana" size="2">Webworld S.L. &#183; Edificio Jupiter, Avendida El Gamonal 12 &#183; Benalmadena Costa, Malaga 29630 Spain<br>This e-mail message is an advertisement and/or solicitation.</font></p></td></tr></table></body>
+</html>
+
 
 
 
