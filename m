@@ -1,11 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Support for platform bus
-Date: Thu, 01 Sep 2005 00:42:36 +0100
-Message-ID: <1125531756.3348.11.camel@mayday.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Thu, 1 Sep 2005 04:25:12 +0200
+Message-ID: <e028ac4f95f1850db04433dadcfb439d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 952E51D8
+	for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2005 04:25:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,38 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am attempting to write an ALSA driver for the sound card on the
-Dreamcast.
 
-I have this in the code:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
+======================================================================
+Reported By:                penguinparty
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1138
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               ubuntu 5.04
+Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
+======================================================================
+Date Submitted:             05-28-2005 22:22 CEST
+Last Modified:              09-01-2005 04:25 CEST
+======================================================================
+Summary:                    errors when installing au8820 modules
+Description: 
+Please see the section additional information for a dump of my dmesg output
+regarding the au8820 module.
 
-	snd_card_set_dev(dreamcastcard, &platform_bus);
+I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
+kernels. The shipping alsa support under each of these kerenls provies me
+with the same result. I have also tried installing each of these kernels
+without alsa support only CONFIG_SOUND and then installing the
+alsa-drivers 1.0.9rc4a
 
-No errors are reported but the card doesn't show up in sysfs as a device
-registered to the platform bus - is this because I need to do more to
-force the device to appear there? (it doesn't appear under any bus but
-it does show up as a module in sysfs):
+I get the same result every time I do the modprobe snd-au8820
 
-sh-3.00# cd module
-sh-3.00# ls -l
-drwxr-xr-x    3 root     root            0 Aug 31 18:23 lockd
-drwxr-xr-x    3 root     root            0 Aug 31 18:23 psmouse
-drwxr-xr-x    3 root     root            0 Aug 31 18:26 snd
-drwxr-xr-x    2 root     root            0 Aug 31 18:26 snd_card_aica
-drwxr-xr-x    2 root     root            0 Aug 31 18:26 soundcore
-sh-3.00# ls -l snd_card_aica/
--r--r--r--    1 root     root         4096 Aug 31 18:29 refcnt
+Using older versions of debian as well as the ubuntu live cd's I am able
+to get this sound card working.
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 08-24-05 10:55 
+----------------------------------------------------------------------
+void __iomem *mmio; 
+
+should be used instead of 	
+
+unsigned long __iomem *mmio; 
+
+in snd_vortex_t for architecture independent (32-bits and 64-bits)
 
 
-Please cc me into any replies as I am not (yet - mailman seems slow)
-subscribed to the list.
+Would you please try the patch diff11.diff (against alsa-driver-1.0.9b)
+at
 
-Thanks
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
 
-Adrian
+----------------------------------------------------------------------
+ penguinparty - 09-01-05 04:25 
+----------------------------------------------------------------------
+Compile fails . . . see makefile-typescript
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 22:22 penguinparty   New Issue                                    
+05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
+05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
+and 2.6.10
+05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
+06-08-05 04:41 penguinparty   File Added: typescript                       
+06-08-05 04:43 penguinparty   Note Added: 0004914                          
+08-24-05 10:55 Raymond        Note Added: 0005925                          
+08-24-05 10:58 Raymond        Note Added: 0005926                          
+08-24-05 10:59 Raymond        Note Deleted: 0005926                        
+09-01-05 04:24 penguinparty   File Added: make-typescript                    
+09-01-05 04:25 penguinparty   Note Added: 0005993                          
+======================================================================
+
 
 
 
