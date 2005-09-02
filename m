@@ -1,14 +1,11 @@
-From: "Mark Layton" <info@verybest-onthenet.info>
-Subject: Great Value Packaging perfect for ebay, etc
-Date: Fri, 2 Sep 2005 22:45:07 -0500
-Message-ID: <20050903034504.8D2E416A@alsa.jcu.cz>
-Reply-To: info@verybest-onthenet.info
-Content-Type: text/html;
-	charset="us-ascii"
+From: "Jeannie Booker" <jeannie_bookerwn@neo.rr.com>
+Subject: Shooting Stars Stock Report
+Date: Fri, 02 Sep 2005 08:26:09 +0000
+Message-ID: <LMLKFAOJICGPGOOOADCBIKEOPHAA.jeannie_bookerwn@neo.rr.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from verybest-onthenet.info (verybest-onthenet.info [72.26.223.40])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D2E416A
-	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 05:45:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +15,156 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html><body bgcolor=#CCCCCC text="#000000" link="#0000ff" vlink="#0000ff" alink="#0000ff" 
-leftmargin=0 topmargin=0 marginwidth=0 marginheight=0 rightmargin=0 bottommargin=0><center>
-
-<table bgcolor="#999999" border="0" cellpadding="9" cellspacing="0">
-	<tr>
-		<td align="center">
-
-			<table border="0" cellpadding="0" cellspacing="0">
-				<tr>
-					<td valign="top" bgcolor="#ffffff" width="508" valign="top" align="center">
-
-						<img src="http://www.thegraphichost.com/emailtheplanet/email-white.jpg" width="508" height="162"><br>
-
-						<table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0">
-							<tr>
-								<td width="480">
-									<br><font face=arial size=2>
-
-
-<center><h3>	Great Value Packaging (perfect for ebay, etc)		</h3></center>
-
-<b>
-If you send items through the post you'll love our packaging prices.
-<br><br>
-Do You Need:
-<br><br>
-Lightweight packaging?
-<br><br>
-Great value packaging?
-<br><br>
-Yes?
-<br><br>
-We have: Poly Mailing Bags, Padded Envelopes, Grip Seal Bags, Document Labels, etc
-<br><br>
-Save &pound;&pound;&pound;&pound;'s
-<br><br>
-</b>
-
-
-
-									<font size=1><br>
-									Please note; that by clicking the link below, you have automatically opted-in, and have agreed to view their website.
-									<br><br></font>
-									<center><h3>
-
-<a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E414A420E400E414247464141430E08.aspx'>
-
-									Click here to visit their website
-									</a></h3></center>
-									<br>
-
-									Thank you for taking the time to read this special report <br><br>
-
-									Regards, <br><b> The Web Reporter </b><br> The very best on the net	<br><br>
-
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-
-<br><a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E414A420E400E4142434A4347400E08.aspx'><img src="http://www.thegraphichost.com/emailtheplanet/sendamillion179.gif" width="518" height="45" border="0" alt="Send ONE MILLION EMAILS for just 99 dollars"></a><br><br>
-
-<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
-<div align='center'><a href='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E414A420E08.aspx'><img src='http://verybest-onthenet.info/img.gif' width='531' height='80' border='0'></a>
-<font size='1' face='Arial, Helvetica, sans-serif'><br><img src='http://verybest-onthenet.info/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E45404647420E414A420E430E420E08.aspx'>
-</font><font color="#999999" face="arial, verdana" size="2">Webworld S.L. &#183; Edificio Jupiter, Avendida El Gamonal 12 &#183; Benalmadena Costa, Malaga 29630 Spain<br>This e-mail message is an advertisement and/or solicitation.</font></p></td></tr></table></body>
-</html>
-
+SG90X1N0MGNrIFJlcG9ydCAtIEVhcmx5IFNlcHRlbWJlciBJc3N1ZQ0KIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMNCg0KRmlyc3Qgd2Ugd291bGQgbGlrZSB0byBzYXkgVGhhbmsgWW91IHRv
+IGFsbCBvZiBvdXIgYXZpZCByZWFkZXJzISAgV2UgaGF2ZSANCmhhZCBIVUdF
+IHN1Y2Nlc3Mgb3ZlciB0aGUgbGFzdCBmZXcgbW9udGhzIGFuZCBoYXZlIGJl
+Y29tZSBvbmUgb2YgdGhlIG1vc3QgDQp3aWRlbHkgcmVhZCBpbnZlc3RtZW50
+IG5ld3NsZXR0ZXJzIGluIHRoZSB3b3JsZC4gIFdlIGhhdmUgYWNjb21wbGlz
+aGVkDQp0aGlzIGJ5IHByb3ZpZGluZyB0aW1lbHksIGFjY3VyYXRlIGluZm9y
+bWF0aW9uIG9uIHN0MGNrcyB3aXRoIHRoZSBwb3RlbnRpYWwgZm9yIA0KZ3Jl
+YXQgcmV0dXJucy4NCg0KSW4gdGhpcyBtb250aCdzIGlzc3VlIHdlIHdvdWxk
+IGxpa2UgdG8gdGFsayBhYm91dCBzbWFsbCBjb21wYW5pZXMgYW5kIHRoZSAN
+CmVmZmVjdCB0aGF0IHNvbWUgZ29vZCBuZXdzIGNhbiBoYXZlLiAgT2Z0ZW4g
+dGltZXMgc21hbGwgY29tcGFuaWVzIGdvIHRocm91Z2ggDQp0aGUgbW90aW9u
+cyBvZiBidXNpbmVzcywgbWFraW5nIHJlYXNvbmFibGUgcHJvZml0cywgYnV0
+IGFsbCB0aGUgd2hpbGUgDQpwcmVwYXJpbmcgYW5kIHBsYW5ubmcgZm9yIHRo
+YXQgb25lIGJpZyBvcHBvcnR1bml0eSB0byBtb3ZlIGludG8gdGhlIGFyZW5h
+IG9mIA0Kc2VyaW91cyBlYXJuaW5ncy4gIEEgY29tcGFueSBsaWtlIHRoaXMg
+aXMgbGlrZSBhIHNsaWdzaG90LCBwdWxsZWQgYmFjayBhbmQgDQpyZWFkeSB0
+byBnby4gIE9uZSBmb3J0dW5hdGUgdHVybiBvZiBldmVudHMsIG9uZSBCSUcg
+Y29udHJhY3QsIGFuZCB0aGUgc3QwY2sgDQpvZiBhIHNtYWxsIGNvbXBhbnkg
+c3VjaCBhcyB0aGlzIGNhbiBzaG9vdCB1cCEgIE91ciBmZWF0dXJlZCBjb21w
+YW55IGlzIGluDQpqdXN0IHRoYXQga2luZCBvZiBzaXR1YXRpb24uICAiVGhl
+IEJpZyBOZXdzIiBoYXMgYmVlbiBSZWxlYXNlZCENCg0KDQpOZXcgRGV2ZWxv
+cG1lbnRzIEV4cGVjdGVkIFRvIE1vdmUgU3VzaGkgVHJlbmQgQ28uLCBJbmMu
+IChTVVNaKSANCg0KU3ltYm9sOiBTVVNaIC4gcGsNCg0KQ3VycmVudCBQcmlj
+ZSAkMC4yMA0KDQoNCklzIHRoaXMgYW4gdW5kaXNjb3ZlcmVkIEdlbSBhYm91
+dCB0byBCbG93IFVwPyBBbHJlYWR5IHVwIDQwJSBUT0RBWSEhDQoNCldFIFRP
+TEQgWU9VISENCg0KQSBIdWdlIFBSIGNhbXBhaWduIGp1c3Qgc3RhcnRlZCBU
+b2RheSEgDQpTbyBncmFiIGFzIG11Y2ggYXMgeW91IGNhbiBCZWZvcmUgTWFy
+a2V0IGNsb3NlIGJlY2F1c2UsIA0KDQoNCiAgICoqKiBNb25kYXkgaXMgZ29p
+bmcgdG8gYmUgYSByZWFsbHkgQklHIERBWS4qKiogDQoNCg0KV2UgYWxsIGtu
+b3cgaXQncyB0aGUgYmlnIGFubm91bmNlbWVudHMgdGhhdCBtYWtlIHRoZXNl
+IHNtYWxsIGdlbXMgbW92ZS4NCg0KSG93IFdpbGwgU1VTWiBSZWFjdCB0byBi
+ZWluZyBCbGFzdGVkIG9udG8gDQpJbnZlc3RvcidzIFJhZGFyIFNjcmVlbnMg
+d2l0aCB0aGlzIGtpbmQgb2YgbmV3cywNClRoaXMgb25lIGlzIGFsc28gY2Vy
+dGFpbmx5IHdvcnRoIHdhdGNoaW5nIE1vbmRheSBtb3JuaW5nISENCllvdSBt
+YXkgd2FudCB0byBBY3QgdmVyeSBlYXJseSBvciBldmVuIG5vdyEhDQoNCk9u
+ZSBicmVha3Rocm91Z2gsIG9uZSBmb3J0dW5hdGUgdHVybiBvZiBldmVudHMs
+IG9uZSBCSUcgY29udHJhY3QsIGFuZCB0aGUgDQpzdDBjayBvZiBhIHNtYWxs
+IGNvbXBhbnkgc3VjaCBhcyB0aGlzIGNhbiBFeHBsb2RlIQ0KDQpQbGVhc2Ug
+cmVhZCB0aGUgZm9sbG93aW5nIEFubm91bmNlbWVudCBpbiBpdHMgRW50aXJl
+dHkgYW5kIENvbnNpZGVyIHRoZSBQb3NzaWJpbGl0aWVzhQ0KV2F0Y2ggdGhp
+cyBPbmUgdG8gVHJhZGUgRnJpZGF5IGFuZCBBTEwgTmV4dCBXZWVrIQ0KDQpT
+VVNaIGhhcyBpbmNyZWFzZWQgc2FsZXMgdXAgdG8gMzAwJSBwZXIgbW9udGgg
+d2l0aCAzIG5ldyBhbm51YWwgb3BlbiBQdXJjaGFzZSBPcmRlcnMNCmZyb20g
+bWFqb3IgaG90ZWwgYW5kIGNhc2lub3MsIGluY2x1ZGluZyB0aGUgQWxhZGRp
+biwgbG9jYXRlZCBpbiB0aGUgTGFzIFZlZ2FzIHJlZ2lvbi4NCg0KU1VTWiB2
+b2x1bWUgdHJhZGluZyB3aWxsIGJlZ2luIHRvIHN1cmdlIHdpdGggdGhpcyBs
+YW5kc2xpZGUgQW5ub3VuY2VtZW50IHN0YXJ0aW5nIEZyaWRheS4NClRoZSB2
+YWx1ZSBvZiB0aGlzIHN0MGNrIGFwcGVhcnMgaGlnaGx5IHBvaXNlZCBmb3Ig
+Z3Jvd3RoISBUaGlzIG9uZSBzaG91bGQgbm90IHJlbWFpbiANCm9uIHRoZSBn
+cm91bmQgZmxvb3IgZm9yIGxvbmcuIA0KIA0KDQogICAgICAgICAgICAgICAg
+ICAqKiogVEhFIE1BSk9SIEJSRUFLSU5HIE5FV1MhISAqKioNCg0KU3VzaGkg
+VHJlbmQgQ28uLCBJbmMuIChTVVNaKSBoYXMgc2lnbmVkIG9wZW4gUHVyY2hh
+c2UgT3JkZXIgYWdyZWVtZW50cyB3aXRoIDMgbWFqb3IgaG90ZWwgYW5kIGNh
+c2lub3MsIA0KaW5jcmVhc2luZyBtb250aGx5IHNhbGVzIG9mIHVwIHRvIDEu
+NSBtaWxsaW9uIHBpZWNlcywgd2hpY2ggaXMgYSAzMDAlIGluY3JlYXNlIG92
+ZXIgY3VycmVudCBzYWxlcy4gDQoNCldpdGggc2VydmljZSBiZWluZyBwcm92
+aWRlZCB0byBvdmVyIDUwIG1ham9yIGhvdGVscyBhbmQgY2FzaW5vcyBpbiB0
+aGUgTGFzIFZlZ2FzLCBOViByZWdpb24NCmluY2x1ZGluZyB0aGUgTWlyYWdl
+LCBUcmVhc3VyZSBJc2xhbmQsIHRoZSBIaWx0b24gSG90ZWwsIHRoZSBNR00s
+IHRoZSBNb250ZSBDYXJsbyBhbmQgbWFueSBtb3JlLA0KU3VzaGkgVHJlbmQg
+aGFzIHJlY2VudGx5IGludmVzdGVkIGluIGVxdWlwbWVudCB0aGF0IHdpbGwg
+aW5jcmVhc2UgY3VycmVudCBvdXRwdXQgbGV2ZWxzIHRvIG92ZXIgNjAwJS4g
+IA0KDQpFZGRpZSBPa2l0YSwgcHJlc2lkZW50IGFuZCBmb3VuZGVyIG9mIFN1
+c2hpIFRyZW5kcywgc3RhdGVkLCAiV2UgYXJlIGdvaW5nIHRocm91Z2ggYSBo
+dWdlIGdyb3d0aCBzcHVydCANCmluIG91ciBidXNpbmVzcy4gV2UgaGF2ZSBt
+YWRlIHRoZSBkZWNpc2lvbiB0byBpbnZlc3QgaW4gbmV3IGVxdWlwbWVudCBh
+bmQgYnVpbGRpbmcgc3BhY2UgdG8gc2lnbmlmaWNhbnRseSANCmluY3JlYXNl
+IG91ciBvdXRwdXQgY2FwYWJpbGl0aWVzLiBPdXIgaW52ZXN0bWVudCB3aWxs
+IGFsbG93IHVzIHRvIHByb2R1Y2UgdXAgdG8gMSBtaWxsaW9uIHBpZWNlcyBv
+ZiBzdXNoaSBwZXIgDQpkYXksIGhlbHBpbmcgdXMgbWVldCBwcm9qZWN0ZWQg
+ZGVtYW5kLpQgDQoNCkFsdGhvdWdoIHN1c2hpIGhhcyBiZWVuIGRlY2xhcmVk
+IHRoZSBmYXN0ZXN0IGdyb3dpbmcgZmFzdCBmb29kIGluIHRoZSBVLlMuLCBT
+dXNoaSBUcmVuZHMgY3JlZGl0cw0KdGhlIGxhcmdlIGluY3JlYXNlIGluIHNh
+bGVzIHZvbHVtZSB0byBpdHMgcmV2b2x1dGlvbmFyeSBwYXRlbnQgcGVuZGlu
+ZyBmcmVlemluZyBwcm9jZXNzLCB3aGljaCB1c2VzIGEgDQpzcGVjaWFsIHBy
+b2Nlc3MgdG8gYnJpbmcgdGhlIHRlbXBlcmF0dXJlIG9mIGl0cyBzdXNoaSB0
+byAtNTAgZGVncmVlcyBGLCBhbmQgaXRzIHNvbmljIHNpZ25hbGluZyBkZXZp
+Y2UgDQp3aGljaCBicmluZ3MgaXQgYmFjayB0byByb29tIHRlbXBlcmF0dXJl
+IGluIDUgbWludXRlcy4gIFRoaXMgdGVjaG5vbG9naWNhbCBicmVhayB0aHJv
+dWdoIGFsbG93cyB0aGUgDQpzdXNoaSB0byByZXRhaW4gaXRzICBjb3JlIGZy
+ZXNobmVzcyBhbmQgdGFzdGUsIGtlZXBpbmcgY2xpZW50cyBoYXBweSBhbmQg
+Y3VzdG9tZXIgY29taW5nIGJhY2sgZm9yIG1vcmUuDQoNCkFib3V0IFN1c2hp
+IFRyZW5kIENvLiwgSW5jLiAoU1VTWikNCg0KU3VzaGkgcHJvZHVjdGlvbiBo
+YXMgbG9uZyBiZWVuIGtlcHQgd2l0aGluIHRoZSBjb25zdHJhaW50cyBvZiB0
+aW1lIGFuZCBkaXN0YW5jZSBkdWUgdG8gaXRzJyBzaG9ydCBzaGVsZiBsaWZl
+LiANClN1c2hpIFRyZW5kIHByb3ZpZGVzIHRoZSBzb2x1dGlvbiB3aXRoIGl0
+cyBwYXRlbnRlZCBmcmVlemluZyB0ZWNobm9sb2d5LiBBbGwgb2YgU3VzaGkg
+VHJlbmSScyBzZWFmb29kIGlzIA0Kc3VzaGkgLyBzYXNoaW1pIGdyYWRlLCB3
+aGljaCBtZWFucyBpdHMgZXh0cmVtZWx5IGhpZ2ggcXVhbGl0eSwgZnJlc2gs
+IGFuZCBzdWl0YWJsZSBmb3IgZWF0aW5nIHJhdy4gQWxsIG9mIHRoZSANCmZp
+c2ggaXMgZmlsbGV0ZWQgYW5kIGxvaW5lZCwgcmVhZHkgdG8gYmUgbWFkZSBp
+bnRvIHN1c2hpIG9yIHNlcnZlZCBhcyBzYXNoaW1pLiBTdXNoaSBUcmVuZCBp
+cyBoZWFkcXVhcnRlcmVkIA0KaW4gTGFzIFZlZ2FzLCBOVi4gDQoNCg0KQ29u
+Y2x1c2lvbjoNCg0KVGhpcyBzdG9jayB3aWxsIG5vdCBiZSBhIFNlY3JldCBm
+b3IgbG9uZy4gWW91IE1heSB3YW50IHRvIEFjdCBSaWdodCBBd2F5ISBUaGlz
+IG9uZSBpcyBTb2xpZCENClBsZWFzZSBQdXQgVGhpcyBPbmUgT24geW91ciBS
+YWRhciBTY3JlZW4gaXRzIGNlcnRhaW5seSB3b3J0aCB3YXRjaGluZyEgR08g
+U1VTWiENCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18NCg0KQWxsIHN0YXRlbWVudHMgbWFkZSBhcmUgb3VyIGV4cHJl
+c3Mgb3BpbmlvbiBvbmx5IGFuZCBzaG91bGQgYmUgdHJlYXRlZCBhcyBzdWNo
+LiBXZSBtYXkgb3duLCB0YWtlIHBvc2l0aW9uIA0KYW5kIHNlbGwgYW55IHNl
+Y3VyaXRpZXMgbWVudGlvbmVkIGF0IGFueSB0aW1lLiBBbnkgc3RhdGVtZW50
+cyB0aGF0IGV4cHJlc3Mgb3IgaW52b2x2ZSBkaXNjdXNzaW9ucyB3aXRoIHJl
+c3BlY3QgDQp0byBwcmVkaWN0aW9ucywgZ29hbHMsIGV4cGVjdGF0aW9ucywg
+YmVsaWVmcywgcGxhbnMsIHByb2plY3Rpb25zLCBvYmplY3RpdmVzLCBhc3N1
+bXB0aW9ucyBvciBmdXR1cmUgZXZlbnRzIG9yIHBlcmZvcm1hbmNlIA0KYXJl
+IG5vdCBzdGF0ZW1lbnRzIG9mIGhpc3RvcmljYWwgZmFjdCBhbmQgbWF5IGJl
+ICJmMHJ3YXJkX2wwMGtpbmdfc3Q0dGVtZW50cy4iIGYwcndhcmRfbDAwa2lu
+Z19zdDR0ZW1lbnRzIGFyZSBiYXNlZCANCm9uIGV4cGVjdGF0aW9ucywgZXN0
+aW1hdGVzIGFuZCBwcm9qZWN0aW9ucyBhdCB0aGUgdGltZSB0aGUgc3RhdGVt
+ZW50cyBhcmUgbWFkZSB0aGF0IGludm9sdmUgYSBudW1iZXIgb2Ygcmlza3Mg
+YW5kIA0KdW5jZXJ0YWludGllcyB3aGljaCBjb3VsZCBjYXVzZSBhY3R1YWwg
+cmVzdWx0cyBvciBldmVudHMgdG8gZGlmZmVyIG1hdGVyaWFsbHkgZnJvbSB0
+aG9zZSBwcmVzZW50bHkgYW50aWNpcGF0ZWQuIA0KVGhpcyBuZXdzbGV0dGVy
+IHdhcyBwYWlkIHRocmVlIHBvaW50IGZpdmUgdGhvdXNhbmQgZG9sbGFycyBm
+cm9tIHRoaXJkIHBhcnR5IChJUiBNYXJrZXRpbmcpLiBmb3J3YXJkX2wwMGtp
+bmdfc3Q0dGVtZW50cyBpbiANCnRoaXMgYWN0aW9uIG1heSBiZSBpZGVudGlm
+aWVkIHRocm91Z2ggdGhlIHVzZSBvZiB3b3JkcyBzdWNoIGFzOiAicHJvamVj
+dHMiLCAiZm9yZXNlZSIsICJleHBlY3RzIi4gaW4gY29tcGxpYW5jZSANCndp
+dGggU2VjdGkwbiAxNyhiKSwgd2UgZGlzY2xvc2UgdGhlIGhvbGRpbmcgb2Yg
+IFNVU1ogc2g0cmVzIHByaW9yIHRvIHRoZSBwdWJsaWNhdGlvbiBvZiB0aGlz
+IHJlcG9ydC4gQmUgYXdhcmUgDQpvZiBhbiBpbmhlcmVudCBjb25mbGljdCBv
+ZiBpbnRlcmVzdCByZXN1bHRpbmcgZnJvbSBzdWNoIGhvbGRpbmdzIGR1ZSB0
+byBvdXIgaW50ZW50IHRvIHByb2ZpdCBmcm9tIHRoZSBsaXF1aWRhdGlvbiAN
+Cm9mIHRoZXNlIHNoYXJlcy4gU2hhcmVzIG1heSBiZSBzb2xkIGF0IGFueSB0
+aW1lLCBldmVuIGFmdGVyIHBvc2l0aXZlIHN0YXRlbWVudHMgaGF2ZSBiZWVu
+IG1hZGUgcmVnYXJkaW5nIHRoZSANCmFib3ZlIGNvbXBhbnkuIFNpbmNlIHdl
+IG93biBzaGFyZXMsIHRoZXJlIGlzIGFuIGluaGVyZW50IGNvbmZsaWN0IG9m
+IGludGVyZXN0IGluIG91ciBzdGF0ZW1lbnRzIGFuZCBvcGluaW9ucy4gDQpS
+ZWFkZXJzIG9mIHRoaXMgcHVibGljYXRpb24gYXJlIGNhdXRpb25lZCBub3Qg
+dG8gcGxhY2UgdW5kdWUgcmVsaWFuY2Ugb24gZjByd2FyZF9sMDBraW5nX3N0
+NHRlbWVudHMsIHdoaWNoIGFyZSANCmJhc2VkIG9uIGNlcnRhaW4gYXNzdW1w
+dGlvbnMgYW5kIGV4cGVjdGF0aW9ucyBpbnZvbHZpbmcgdmFyaW91cyByaXNr
+cyBhbmQgdW5jZXJ0YWludGllcyB0aGF0IGNvdWxkIGNhdXNlIHJlc3VsdHMg
+DQp0byBkaWZmZXIgbWF0ZXJpYWxseSBmcm9tIHRob3NlIHNldCBmb3J0aCBp
+biB0aGUgZjByd2FyZF9sMDBraW5nX3N0NHRlbWVudHMuIFRoaXMgaXMgbm90
+IHNvbGljaXRhdGlvbiB0byBidXkgb3Igc2VsbCANCnN0MGNrcywgdGhpcyB0
+ZXh0IGlzIGZvciBpbmZvcm1hdGlvbmFsIHB1cnBvc2Ugb25seSBhbmQgeW91
+IHNob3VsZCBzZWVrIHByMGZlc3Npb25hbCBhZHZpY2UgZnJvbSByZWdpc3Rl
+cmVkIGZpbmFuY2lhbCANCmFkdmlzb3IgYmVmb3JlIHlvdSBkbyBhbnl0aGlu
+ZyByZWxhdGVkIHdpdGggYnV5aW5nIG9yIHNlbGxpbmcgc3QwLmNrcywgcGVu
+bnkgc3QwY2tzIGFyZSB2ZXJ5IGhpZ2ggcmlzayBhbmQgeW91IGNhbiANCmxv
+c2UgeW91ciBlbnRpcmUgaW52ZXN0bWVudC4gSWYgeW91IHdpc2ggdG8gc3Rv
+cCBmdXR1cmUgbTRpbGluZ3MsIA0KcGxlYXNlIG00aWwgdG86IG5vdDFwc2Yw
+cm1lIEAgeWFob28uY29t
 
 
 
