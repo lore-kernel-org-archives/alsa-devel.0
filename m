@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001388]: Some patches from Cyberlink
-Date: Fri, 2 Sep 2005 15:11:32 +0200
-Message-ID: <5990cb45f22b8891ea0b1527f7076fa6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
+Date: Fri, 2 Sep 2005 19:51:12 +0200
+Message-ID: <7873549b5468ce9b3e15e92f24eae9f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9E3D184
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 15:11:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EBD5175
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:51:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1388> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
 ======================================================================
-Reported By:                DrData
+Reported By:                spiral
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1388
-Category:                   PCI - atiixp
+Issue ID:                   1377
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.12.5
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Kubuntu Hoary
+Kernel Version:             2.6.13 final
 ======================================================================
-Date Submitted:             09-01-2005 18:04 CEST
-Last Modified:              09-02-2005 15:11 CEST
+Date Submitted:             08-30-2005 09:34 CEST
+Last Modified:              09-02-2005 19:51 CEST
 ======================================================================
-Summary:                    Some patches from Cyberlink
+Summary:                    tons of unknown symbols with 2.6.13 final
 Description: 
-Cyberlink released in 
-http://download.gocyberlink.com//ftpdload/linux/source/PCMLinux_GPL_sources-01.zip
-some patches to alsa-driver-1.0.9rc2.
-One of them cured the problem on my Targa Traveller 826, where I had sound
-only over the headphone. It appears to be a ac97 device named ALC658D.
+Hello !
 
-I included the diff against the standard 1.0.9.rc2 version.
+I have a laptop with a hda-intel based sound card... I recently tried to
+update my kernel to 2.6.13 with the official kernel.org source, with
+almost the same configuration I have on my 2.6.12.5... This worked nicely
+except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
+(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
 
-I would be more than happy, if at least that patch would make it in the
-main strem and possibly also in the kernel sources.
+In both cases, I can't load snd-hda-intel and I get a lot of unknown
+symbol messages in dmesg...
 
-Michael
-
-PS: I got a kernel with working sound be exchanging the sound and
-include/sound directories in the kernel 2.6.12.5 sources by the respective
-dirs in the cyberlink distribution.
-
+I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-02-05 12:19 
+ tiwai - 09-02-05 19:51 
 ----------------------------------------------------------------------
-There was a typo in the first patch.  Use alc658-fix2.diff.
-
-----------------------------------------------------------------------
- tiwai - 09-02-05 15:11 
-----------------------------------------------------------------------
-The patch is on alsa CVS tree.  Thanks.
+Please show the kernel messages wrt unknown symbols.  Otherwise hard to
+guess.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-01-05 18:04 DrData         New Issue                                    
-09-01-05 18:04 DrData         File Added:
-alsa-driver-1.0.9rc2.cyberlink.patch.bz2                    
-09-01-05 18:04 DrData         Kernel Version            => 2.6.12.5        
-09-01-05 18:10 tiwai          Note Added: 0005996                          
-09-01-05 18:30 DrData         File Added: cyberlink.patch.bz2                   
-
-09-01-05 18:41 DrData         Note Added: 0005998                          
-09-02-05 11:54 tiwai          File Added: alc658d-fix.diff                    
-09-02-05 11:55 tiwai          Note Added: 0006006                          
-09-02-05 12:19 tiwai          File Added: alc658d-fix2.diff                    
-09-02-05 12:19 tiwai          Note Added: 0006007                          
-09-02-05 15:11 tiwai          Status                   assigned => resolved
-09-02-05 15:11 tiwai          Resolution               open => fixed       
-09-02-05 15:11 tiwai          Note Added: 0006009                          
+08-30-05 09:34 spiral         New Issue                                    
+08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
+08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
+09-02-05 19:51 tiwai          Note Added: 0006017                          
 ======================================================================
 
 
