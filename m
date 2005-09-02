@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001388]: Some patches from Cyberlink
-Date: Fri, 2 Sep 2005 12:19:23 +0200
-Message-ID: <060bd54809fe00c6bb17fa22a6031529@bugtrack.alsa-project.org>
+Date: Fri, 2 Sep 2005 11:55:16 +0200
+Message-ID: <ee8c36cbea6d3ca190da23b17730adc1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D77A18A
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 12:19:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC09D18A
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 11:55:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.12.5
 ======================================================================
 Date Submitted:             09-01-2005 18:04 CEST
-Last Modified:              09-02-2005 12:19 CEST
+Last Modified:              09-02-2005 11:55 CEST
 ======================================================================
 Summary:                    Some patches from Cyberlink
 Description: 
@@ -64,15 +64,15 @@ dirs in the cyberlink distribution.
 ======================================================================
 
 ----------------------------------------------------------------------
+ DrData - 09-01-05 18:41 
+----------------------------------------------------------------------
+Just uploaded it.
+
+----------------------------------------------------------------------
  tiwai - 09-02-05 11:55 
 ----------------------------------------------------------------------
 Could you try alc658d-fix.diff on the top of ALSA 1.0.10rc1 (or better 
 ALSA CVS)?
-
-----------------------------------------------------------------------
- tiwai - 09-02-05 12:19 
-----------------------------------------------------------------------
-There was a typo in the first patch.  Use alc658-fix2.diff.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -87,8 +87,6 @@ alsa-driver-1.0.9rc2.cyberlink.patch.bz2
 09-01-05 18:41 DrData         Note Added: 0005998                          
 09-02-05 11:54 tiwai          File Added: alc658d-fix.diff                    
 09-02-05 11:55 tiwai          Note Added: 0006006                          
-09-02-05 12:19 tiwai          File Added: alc658d-fix2.diff                    
-09-02-05 12:19 tiwai          Note Added: 0006007                          
 ======================================================================
 
 
