@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001386]: aplay.1.gz: two SYNOPSIS sections
-Date: Fri, 2 Sep 2005 19:36:49 +0200
-Message-ID: <77d010c03bcbff893cb2a4bdff2c77a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001387]: Modem problem
+Date: Fri, 2 Sep 2005 19:37:35 +0200
+Message-ID: <e909d4e765a7ee24e437b2fe6968163e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65F27127
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:36:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C3B2175
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:37:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1386> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1387> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                kzelma
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1386
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   1387
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   trivial
-Priority:                   low
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11, 2.6.12, 2.6.13
 ======================================================================
-Date Submitted:             08-31-2005 22:38 CEST
-Last Modified:              09-02-2005 19:36 CEST
+Date Submitted:             09-01-2005 14:54 CEST
+Last Modified:              09-02-2005 19:37 CEST
 ======================================================================
-Summary:                    aplay.1.gz: two SYNOPSIS sections
+Summary:                    Modem problem
 Description: 
->From Debian bug report #325771:
+I found the problem with the module snd-intel8x0m.ko - modem support
+particulary. I use on my laptop slmodemd ver.2.9.10 with alsa support -
+http://www.smlink.com. Slmodemd works fine with kernel 2.6.9 - witout any
+problem. With te kernels: 2.6.11, 2.6.12 and 2.6.13 there is problem
+working with modem. Typical answer from the kppp or from wvdial is 'NO
+DIALTONE". 
 
-aplay.1 has two SYNOPSIS sections.  For consistency with other man pages
-that cover multiple programs it should have only one SYNOPSIS section,
-with two entries.
+The solution for me was so: I compiled kernel 2.6.13 with the source code
+of intel8x0m.c from 2.6.9 kernel and the modem started working. (During
+compilation was few warnings.) 
 
-Also, the INVOKING and SYNOPSIS sections should be combined.
+Of course, during testing snd-intel8x0m is loaded.
+
+The laptop is Toshiba Tecra S1 and  lspci -v shows:
+
+00:1f.6 Modem: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97
+Modem Controller (rev 03) (prog-if 00 [Generic])
+    Subsystem: Toshiba America Info Systems: Unknown device 0001
+    Flags: bus master, medium devsel, latency 0, IRQ 11
+    I/O ports at e200 [size=256]
+    I/O ports at e300 [size=128]
+    Capabilities: [50] Power Management version 
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-02-05 19:36 
-----------------------------------------------------------------------
-Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 22:38 jdthood        New Issue                                    
-09-02-05 19:36 tiwai          Status                   new => resolved     
-09-02-05 19:36 tiwai          Resolution               open => fixed       
-09-02-05 19:36 tiwai          Assigned To               => tiwai           
-09-02-05 19:36 tiwai          Note Added: 0006015                          
+09-01-05 14:54 kzelma         New Issue                                    
+09-01-05 14:54 kzelma         Distribution              => Fedora Core 3   
+09-01-05 14:54 kzelma         Kernel Version            => 2.6.11, 2.6.12,
+2.6.13
+09-02-05 19:37 tiwai          Category                 PCI - intel8x0 => PCI -
+intel8x0m
 ======================================================================
 
 
