@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001387]: Modem problem
-Date: Sat, 3 Sep 2005 00:01:51 +0200
-Message-ID: <c676e1ea2b4a6b8ffafc3fda8ed933e7@bugtrack.alsa-project.org>
+From: "Alvah Pablo" <alva@ktl.elf.stuba.sk>
+Subject: =?iso-8859-1?Q?Re:_Special_prop_-_Pharmac=EButical?=
+Date: Fri, 2 Sep 2005 17:05:30 -0500
+Message-ID: <006601c5b00a$6e807100$9c4fa8c0@carousal>
+Reply-To: "Alvah Pablo" <alva@ktl.elf.stuba.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0063_01C5AFE0.85AA6900"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19D17E3
-	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:01:51 +0200 (MEST)
+Received: from ktl.elf.stuba.sk (200-206-228-195.dsl.telesp.net.br [200.206.228.195])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E622F171
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:05:47 +0200 (MEST)
+Received: from [192.168.79.156] (helo=carousal)
+	by ktl.elf.stuba.sk with smtp (Cursive vl 2.49 (Dogmata))
+	id DDABgd-INaydH-qZ
+	for alsa-devel@alsa-project.org; Fri, 2 Sep 2005 17:05:34 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +23,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Francine Macinnis <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1387> 
-======================================================================
-Reported By:                kzelma
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1387
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11, 2.6.12, 2.6.13
-======================================================================
-Date Submitted:             09-01-2005 14:54 CEST
-Last Modified:              09-03-2005 00:01 CEST
-======================================================================
-Summary:                    Modem problem
-Description: 
-I found the problem with the module snd-intel8x0m.ko - modem support
-particulary. I use on my laptop slmodemd ver.2.9.10 with alsa support -
-http://www.smlink.com. Slmodemd works fine with kernel 2.6.9 - witout any
-problem. With te kernels: 2.6.11, 2.6.12 and 2.6.13 there is problem
-working with modem. Typical answer from the kppp or from wvdial is 'NO
-DIALTONE". 
+------=_NextPart_000_0063_01C5AFE0.85AA6900
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-The solution for me was so: I compiled kernel 2.6.13 with the source code
-of intel8x0m.c from 2.6.9 kernel and the modem started working. (During
-compilation was few warnings.) 
+PrCeViUlMeCiXaLe=
+VaAm
+opleag=
+trrialnavilibi
+eciabrexraamdiaisxt=
+raumen
+64 72 69 85 99 99 12&nb=
+sp;99 85 68
+95.00.85.55.96.753.45.94.45.00
+http://www.afteoldinvi=
+de.com flashed fire in Azazellos hand, something clapped softly, the baron =
+began second armchair sat the same type he had imagined in the front hall. =
+Now he
 
-Of course, during testing snd-intel8x0m is loaded.
+------=_NextPart_000_0063_01C5AFE0.85AA6900
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-The laptop is Toshiba Tecra S1 and  lspci -v shows:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DCourier>
+<DIV style=3D"FLOAT: left">Pr<BR><BR>Ce<BR><BR><STRONG>Vi</STRONG><=
+BR><BR>Ul<BR><BR>Me<BR><BR><STRONG>Ci</STRONG><BR><BR>Xa<BR><BR>Le<BR><BR>=
+<STRONG>Va</STRONG><BR><BR>Am</DIV>
+<DIV style=3D"FLOAT: left">op<BR><BR>le<BR><BR><STRONG>ag</STRONG><BR><BR>=
+tr<BR><BR>ri<BR><BR><STRONG>al</STRONG><BR><BR>na<BR><BR>vi<BR><BR><STRONG=
+>li</STRONG><BR><BR>bi</DIV>
+<DIV style=3D"FLOAT: left">ecia<BR><BR>brex<BR><BR><STRONG>ra</STRON=
+G><BR><BR>am<BR><BR>dia<BR><BR><STRONG>is</STRONG><BR><BR>x<BR><BR>t=
+ra<BR><BR><STRONG>um</STRONG><BR><BR>en</DIV>
+<DIV style=3D"FLOAT: left">&nbsp;64<BR><BR>&nbsp;72<BR><BR>&nbsp;69<BR><=
+BR>&nbsp;85<BR><BR>&nbsp;99<BR><BR>&nbsp;99<BR><BR>&nbsp;12<BR><BR>&nb=
+sp;99<BR><BR>&nbsp;85<BR><BR>&nbsp;68</DIV>
+<DIV style=3D"FLOAT: left">.95<BR><BR>.00<BR><BR>.85<BR><BR>.55<BR><B=
+R>.96<BR><BR>.75<BR><BR>3.45<BR><BR>.94<BR><BR>.45<BR><BR>.00</DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV><A href=3D"http://www.afteoldinvide.com">http://www.afteoldinvi=
+de.com</A></DIV></FONT></DIV></B></B></BODY></HTML>
 
-00:1f.6 Modem: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97
-Modem Controller (rev 03) (prog-if 00 [Generic])
-    Subsystem: Toshiba America Info Systems: Unknown device 0001
-    Flags: bus master, medium devsel, latency 0, IRQ 11
-    I/O ports at e200 [size=256]
-    I/O ports at e300 [size=128]
-    Capabilities: [50] Power Management version 
-
-======================================================================
-
-----------------------------------------------------------------------
- sashak - 09-03-05 00:01 
-----------------------------------------------------------------------
-It is something related to slmodem and not to alsa drivers. Version
-slmodem-2.9.10 is outdated and does not work with modern systems, use one
-from http://linmodems.technion.ac.il, recent slmodem-2.9.9x should be ok.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-01-05 14:54 kzelma         New Issue                                    
-09-01-05 14:54 kzelma         Distribution              => Fedora Core 3   
-09-01-05 14:54 kzelma         Kernel Version            => 2.6.11, 2.6.12,
-2.6.13
-09-02-05 19:37 tiwai          Category                 PCI - intel8x0 => PCI -
-intel8x0m
-09-02-05 23:58 sashak         Status                   new => assigned     
-09-02-05 23:58 sashak         Assigned To               => sashak          
-09-03-05 00:01 sashak         Note Added: 0006025                          
-======================================================================
-
+------=_NextPart_000_0063_01C5AFE0.85AA6900--
 
 
 
