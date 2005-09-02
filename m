@@ -1,12 +1,12 @@
 From: Jiri Slaby <jirislaby@gmail.com>
-Subject: [PATCH 3/6] include, sound: pci_find_device remove (s/pci/ali5451/ali5451.c)
-Date: Fri, 2 Sep 2005 23:44:54 +0200
-Message-ID: <200509022144.j82Lis1O031338__9152.2294482731$1125697783$gmane$org@wscnet.wsc.cz>
+Subject: [PATCH 2/6] include, sound: pci_find_device remove (s/core/memalloc.c)
+Date: Fri, 2 Sep 2005 23:44:55 +0200
+Message-ID: <200509022144.j82LitUL031342__41479.6984558508$1125697898$gmane$org@wscnet.wsc.cz>
 References: <200509022122.j82LMMwV030426@wscnet.wsc.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from wscnet.wsc.cz (wscnet.wsc.cz [212.80.64.118])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0ABF172
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 23:44:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 601F9172
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 23:44:55 +0200 (MEST)
 In-reply-to: <200509022122.j82LMMwV030426@wscnet.wsc.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -27,65 +27,47 @@ Generated in 2.6.13-mm1 kernel version.
 
 Signed-off-by: Jiri Slaby <xslaby@fi.muni.cz>
 
- ali5451.c |   16 +++++++++-------
- 1 files changed, 9 insertions(+), 7 deletions(-)
+ memalloc.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
---- a/sound/pci/ali5451/ali5451.c
-+++ b/sound/pci/ali5451/ali5451.c
-@@ -326,13 +326,12 @@ static void ali_read_regs(ali_t *codec, 
- static void ali_read_cfg(unsigned int vendor, unsigned deviceid)
- {
- 	unsigned int dwVal;
--	struct pci_dev *pci_dev = NULL;
-+	struct pci_dev *pci_dev;
- 	int i,j;
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -567,8 +567,8 @@ static int snd_mem_proc_write(struct fil
+ 		char *endp;
+ 		int vendor, device, size, buffers;
+ 		long mask;
+-		int i, alloced;
+-		struct pci_dev *pci;
++		int i, alloced = 0;
++		struct pci_dev *pci = NULL;
  
--
--        pci_dev = pci_find_device(vendor, deviceid, pci_dev);
--        if (pci_dev == NULL)
--                return ;
-+	pci_dev = pci_get_device(vendor, deviceid, NULL);
-+	if (pci_dev == NULL)
-+		return ;
+ 		if ((token = gettoken(&p)) == NULL ||
+ 		    (vendor = simple_strtol(token, NULL, 0)) <= 0 ||
+@@ -588,13 +588,12 @@ static int snd_mem_proc_write(struct fil
+ 		vendor &= 0xffff;
+ 		device &= 0xffff;
  
- 	printk("\nM%x PCI CFG\n", deviceid);
- 	printk("    ");
-@@ -349,6 +348,7 @@ static void ali_read_cfg(unsigned int ve
- 		}
- 		printk("\n");
- 	}
-+	pci_dev_put(pci_dev);
-  }
- static void ali_read_ac97regs(ali_t *codec, int secondary)
- {
-@@ -2112,6 +2112,8 @@ static int snd_ali_free(ali_t * codec)
- #ifdef CONFIG_PM
- 	kfree(codec->image);
- #endif
-+	pci_dev_put(codec->pci_m1533);
-+	pci_dev_put(codec->pci_m7101);
- 	kfree(codec);
- 	return 0;
- }
-@@ -2301,7 +2303,7 @@ static int __devinit snd_ali_create(snd_
- 	codec->chregs.data.ainten = 0x00;
- 
- 	/* M1533: southbridge */
--       	pci_dev = pci_find_device(0x10b9, 0x1533, NULL);
-+	pci_dev = pci_get_device(0x10b9, 0x1533, NULL);
- 	codec->pci_m1533 = pci_dev;
- 	if (! codec->pci_m1533) {
- 		snd_printk(KERN_ERR "ali5451: cannot find ALi 1533 chip.\n");
-@@ -2309,7 +2311,7 @@ static int __devinit snd_ali_create(snd_
- 		return -ENODEV;
- 	}
- 	/* M7101: power management */
--       	pci_dev = pci_find_device(0x10b9, 0x7101, NULL);
-+	pci_dev = pci_get_device(0x10b9, 0x7101, NULL);
- 	codec->pci_m7101 = pci_dev;
- 	if (! codec->pci_m7101 && codec->revision == ALI_5451_V02) {
- 		snd_printk(KERN_ERR "ali5451: cannot find ALi 7101 chip.\n");
+-		alloced = 0;
+-		pci = NULL;
+-		while ((pci = pci_find_device(vendor, device, pci)) != NULL) {
++		while ((pci = pci_get_device(vendor, device, pci)) != NULL) {
+ 			if (mask > 0 && mask < 0xffffffff) {
+ 				if (pci_set_dma_mask(pci, mask) < 0 ||
+ 				    pci_set_consistent_dma_mask(pci, mask) < 0) {
+ 					printk(KERN_ERR "snd-page-alloc: cannot set DMA mask %lx for pci %04x:%04x\n", mask, vendor, device);
++					pci_dev_put(pci);
+ 					return (int)count;
+ 				}
+ 			}
+@@ -604,6 +603,7 @@ static int snd_mem_proc_write(struct fil
+ 				if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
+ 							size, &dmab) < 0) {
+ 					printk(KERN_ERR "snd-page-alloc: cannot allocate buffer pages (size = %d)\n", size);
++					pci_dev_put(pci);
+ 					return (int)count;
+ 				}
+ 				snd_dma_reserve_buf(&dmab, snd_dma_pci_buf_id(pci));
 
 
 -------------------------------------------------------
