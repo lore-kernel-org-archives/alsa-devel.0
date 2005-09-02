@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: why is card #2 being set to default?
-Date: Fri, 2 Sep 2005 09:50:16 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0509020941300.12225-100000@studcom.urz.uni-halle.de>
-References: <5bdc1c8b0509011643199f3101@mail.gmail.com>
+From: "Elma Tidmore" <tidmoelma@telegraph-nh.com>
+Subject: =?iso-8859-1?Q?Re:_ht5_Another_stuff_PH=E3RAMCY?=
+Date: Fri, 2 Sep 2005 00:04:59 -0500
+Message-ID: <20050902050543.79FE9129@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_005F_01C5AF51.F5254780"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5bdc1c8b0509011643199f3101@mail.gmail.com>
+Received: from telegraph-nh.com (174.Red-81-37-147.pooles.rima-tde.net [81.37.147.174])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 79FE9129
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 07:05:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Coreen Lown <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Knecht wrote:
-> Why is it that on my new AMD64 system the HDSP 9652 is listed as default?
->
-> # cat /proc/asound/cards
-> 0 [CK804          ]: NFORCE - NVidia CK804
->                      NVidia CK804 with ALC850 at 0xda103000, irq 185
-> 1 [default        ]: H-DSP - Hammerfall DSP
->                      RME Hammerfall HDSP 9652 at 0xda000000, irq 209
->
-> On my previous systems I believe that card 0 has been default.
+This is a multi-part message in MIME format.
 
-This is^H^Hwas a bug in the hdsp driver.  When using the kernel
-firmware loader, it registered the card before setting the card name,
-so ALSA used the string "default" as card ID instead of the last word
-of the card name.
+------=_NextPart_000_005F_01C5AF51.F5254780
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-The ID string has nothing to do with which card actually is the
-default card.
+Greetihop and sngs, VISlT&nb=
+sp;.P-PharamacyByMail Save YouE Over% on =
+yormacy with us CAN SAV 60ur pha.=
+VaIiuIis Vlher mem Ciaagra and many =
+otddications Moscow was a telegram received late in the evening two days =
+before with the An hour later, in the basement of the small house in the lane =
+off the
 
+------=_NextPart_000_005F_01C5AF51.F5254780
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-HTH
-Clemens
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0><TR vAlign=3Dbottom><TD =
+rowSpan=3D2>Greeti</TD><TD></TD><TD rowSpan=3D2>hop and s</TD><TD></=
+TD></TR><TR><TD>ngs, <A href=3D"http://www.kikc.downtowarea.com">VISlT&nb=
+sp;.P-PharamacyByMail</A> S</TD><TD>ave</TD></TR></TABLE></FONT></DI=
+V><DIV>&nbsp;</DIV><DIV><FONT face=3DArial><TABLE cellPadding=3D0 =
+cellSpacing=3D0 border=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2>You</TD><T=
+D></TD><TD rowSpan=3D2>E Over</TD><TD></TD><TD rowSpan=3D2>% on =
+yo</TD><TD></TD><TD rowSpan=3D2>rmacy with us</TD><TD></TD></TR><TR><=
+TD>&nbsp;CAN SAV</TD><TD>&nbsp;60</TD><TD>ur pha</TD><TD>.</TD></TR>=
+</TABLE></FONT></DIV><DIV>&nbsp;</DIV><DIV><TABLE border=3D0 cellSpacing=3D0 =
+cellPadding=3D0><TR vAlign=3Dbottom><TD rowSpan=3D2><FONT face=3DArial =
+size=3D4>VaIiu</FONT></TD><TD></TD><TD rowSpan=3D2><FONT face=3DArial =
+size=3D4>Iis Vl</FONT></TD><TD></TD><TD rowSpan=3D2><FONT face=3DArial =
+size=3D4>her me</FONT></TD><TD></TD></TR><TR><TD><FONT face=3DArial =
+size=3D4>m Cia</FONT></TD><TD><FONT face=3DArial size=3D4>agra and many =
+ot</FONT></TD><TD><FONT face=3DArial size=3D4>ddications</FONT></TD></=
+TR></TABLE></DIV></BODY></HTML>
+
+------=_NextPart_000_005F_01C5AF51.F5254780--
 
 
 
