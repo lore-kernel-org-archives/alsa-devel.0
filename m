@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Fri, 2 Sep 2005 20:22:28 +0200
-Message-ID: <b269f1ddcdeab44037485fe462ebd3ce@bugtrack.alsa-project.org>
+Date: Fri, 2 Sep 2005 20:26:17 +0200
+Message-ID: <0529c10dfe8f464e24a73892433b2d2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E57E4175
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 20:22:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C37C16B
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 20:26:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-02-2005 20:22 CEST
+Last Modified:              09-02-2005 20:26 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -56,19 +56,27 @@ Relazioni           ID      Riassunto
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-02-05 19:57 
+ tiwai - 09-02-05 20:24 
 ----------------------------------------------------------------------
-Could you try the latest ALSA CVS version (both alsa-lib and alsa-oss)?
-
-If the problem persits, please run strace with it...
+Kernel should be ok as it is (but better to pick up the latest one).
+My request was about alsa-lib and alsa-oss.  I fixed some bugs in them
+right now on cvs, so please wait a bit until the anon cvs tree on
+sourceforge gets sync'd.  It should be done within 24 hours.
 
 ----------------------------------------------------------------------
- Hetfield - 09-02-05 20:22 
+ Hetfield - 09-02-05 20:26 
 ----------------------------------------------------------------------
-do you mean 1.0.10rc1?
+oops i forgot:
 
-i have 2.6.13 kernel with alsa builtin, do i need to update to lastest
--git version to get the last committed version?
+even with alsa application i get some errors:
+ALSA lib pcm_dmix.c:746:(snd_pcm_dmix_open) The dmix plugin supports only
+playback stream
+
+lots application crash, others, simply don't work.
+
+actually i could use dmix with xmms/beepmediaplayer/mplayer/mpg123
+
+others, alsa or oss, seems not to like dmix
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +131,8 @@ Date Modified  Username       Field                    Change
 08-28-05 15:56 Hetfield       Note Added: 0005963                          
 09-02-05 19:57 tiwai          Note Added: 0006020                          
 09-02-05 20:22 Hetfield       Note Added: 0006021                          
+09-02-05 20:24 tiwai          Note Added: 0006022                          
+09-02-05 20:26 Hetfield       Note Added: 0006023                          
 ======================================================================
 
 
