@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001387]: Modem problem
-Date: Fri, 2 Sep 2005 23:58:48 +0200
-Message-ID: <e4588fdc2acd1183cf1d5ad99caa9f4c@bugtrack.alsa-project.org>
+Date: Sat, 3 Sep 2005 00:01:51 +0200
+Message-ID: <c676e1ea2b4a6b8ffafc3fda8ed933e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 557D5171
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 23:58:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19D17E3
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:01:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1387> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11, 2.6.12, 2.6.13
 ======================================================================
 Date Submitted:             09-01-2005 14:54 CEST
-Last Modified:              09-02-2005 23:58 CEST
+Last Modified:              09-03-2005 00:01 CEST
 ======================================================================
 Summary:                    Modem problem
 Description: 
@@ -69,6 +69,13 @@ Modem Controller (rev 03) (prog-if 00 [Generic])
 
 ======================================================================
 
+----------------------------------------------------------------------
+ sashak - 09-03-05 00:01 
+----------------------------------------------------------------------
+It is something related to slmodem and not to alsa drivers. Version
+slmodem-2.9.10 is outdated and does not work with modern systems, use one
+from http://linmodems.technion.ac.il, recent slmodem-2.9.9x should be ok.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -80,6 +87,7 @@ Date Modified  Username       Field                    Change
 intel8x0m
 09-02-05 23:58 sashak         Status                   new => assigned     
 09-02-05 23:58 sashak         Assigned To               => sashak          
+09-03-05 00:01 sashak         Note Added: 0006025                          
 ======================================================================
 
 
