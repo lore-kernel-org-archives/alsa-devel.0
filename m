@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Fri, 2 Sep 2005 05:49:06 +0200
-Message-ID: <30bcfad98b6ef8abd985b1091ec7b069@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: problems with snd_au8830 module under mandriva 2005
+Date: Fri, 02 Sep 2005 11:51:45 +0800
+Message-ID: <4317CC51.3040709@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B2F313E
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 05:49:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,90 +15,165 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Erik <assie2@zonnet.nl>
+Cc: Alien <alien999999999@users.sourceforge.net>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
+au8820 patch. They seem to have their own patches.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
-======================================================================
-Reported By:                penguinparty
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1138
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               ubuntu 5.04
-Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
-======================================================================
-Date Submitted:             05-28-2005 22:22 CEST
-Last Modified:              09-02-2005 05:49 CEST
-======================================================================
-Summary:                    errors when installing au8820 modules
-Description: 
-Please see the section additional information for a dump of my dmesg output
-regarding the au8820 module.
+The EQ part in diff11.diff seem to be not tested since EQ is not present
+in au8820.
 
-I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
-kernels. The shipping alsa support under each of these kerenls provies me
-with the same result. I have also tried installing each of these kernels
-without alsa support only CONFIG_SOUND and then installing the
-alsa-drivers 1.0.9rc4a
+You should cc your reply to openvortex-dev@nongnu.org and
+alsa-devel@lists.sourceforge.net so that the others can keep track of
+your problem.
 
-I get the same result every time I do the modprobe snd-au8820
+There are 3 bug reports for AMD64 in ALSA BTS.
+1047 - au8810
+1138 - au8820
+1025 - au8830
 
-Using older versions of debian as well as the ubuntu live cd's I am able
-to get this sound card working.
-======================================================================
+Need feedback from testers with au8810/au8820/au8830 and 32bits/64bits
+machines to debug this patch.
 
-----------------------------------------------------------------------
- penguinparty - 09-02-05 02:49 
-----------------------------------------------------------------------
-the patch diff11.diff did the trick.
+1) EQ, SPDIF of au8810/au8830 are not present in au8820,
+2) WT of au8820/au8830 are not present in au8810,
+3) SoftModem of au8810 are not present in au8820.
+4) 3D of au8830 is not present in au8810/au8820.
 
-I can finally hear again!!! :)
+Please correct me if I am wrong, I think au8810 do not have any 3D
+effect hardware.
 
-Thanks
+The essential part of the AMD64 patch is
 
-----------------------------------------------------------------------
- Raymond - 09-02-05 05:49 
-----------------------------------------------------------------------
-Please post the result
+void __iomem *mmio
+#define    hwread(x,y) readl((x)+(y))
+#define    hwwrite(x,y,z) writel((z),(x)+(y))
 
-lspci -vvn  (for your au8820)
+read/write 32bits data from/to memory-mapped I/O with 32bits address on
+32bits machines and 64bits address on 64bits machines.
 
-cat /proc/asound/au8820/codec97#0/ac97#0-0+regs
+There are other 32bits and 64bits incompatibilites in different part of
+the driver.
 
-This may help us to find out the left/right channels swap problem for
-other au8820 user
+1) DMA, SRC, Hardware Mixer, Equalizer, Capturing
+2) MPU401, Gameport, SPDIF
+3) 3D, XTALK, WT
 
-Need more feedback from testers with au8810/au8830 on AMD64 and
-au8810/au8820/au8830 on 32 bits machines to test this patch.
+Please clearly describe your volume bar problem.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-28-05 22:22 penguinparty   New Issue                                    
-05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
-05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
-and 2.6.10
-05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
-06-08-05 04:41 penguinparty   File Added: typescript                       
-06-08-05 04:43 penguinparty   Note Added: 0004914                          
-08-24-05 10:55 Raymond        Note Added: 0005925                          
-08-24-05 10:58 Raymond        Note Added: 0005926                          
-08-24-05 10:59 Raymond        Note Deleted: 0005926                        
-09-01-05 04:24 penguinparty   File Added: make-typescript                    
-09-01-05 04:25 penguinparty   Note Added: 0005993                          
-09-01-05 05:58 Raymond        Note Added: 0005994                          
-09-02-05 02:49 penguinparty   Note Added: 0006002                          
-09-02-05 05:49 Raymond        Note Added: 0006003                          
-======================================================================
+The error is the parameters in functions declared in au88x0_xtalk.c not
+matched with those in au88x0_xtalk.h.
+
+It's diffcult to say the change of XTALK part in diff1.diff is right or
+wrong.
+
+Any hint on how to debug the XTALK canceller ?
+
+How about implement a kcontrol to change xt_mode by alsamixer ?
+
+WARNING : Select narrow mode seem to produce a VERY HIGH pitch.
+
+static int
+snd_vortex_xtalk_info(snd_kcontrol_t * kcontrol, snd_ctl_elem_info_t *
+uinfo)
+{	
+	static char *texts[] = {"Default", "Headphone", "Wide", "Narrow",
+"Diamond"};
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+	uinfo->count = 1;
+	uinfo->value.enumerated.items = 5;
+	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
+		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
+	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
+	return 0;
+}
+
+static int
+snd_vortex_xtalk_get(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t *
+ucontrol)
+{
+	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
+	ucontrol->value.enumerated.item[0]=vortex->xt_mode;
+	return 0;
+}
+
+static int
+snd_vortex_xtalk_put(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t *
+ucontrol)
+{
+	int changed;
+	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
+	if ( vortex->xt_mode == ucontrol->value.enumerated.item[0] )
+		changed=0;
+	else
+		changed=1;
+	Vort3DRend_Initialize(vortex, ucontrol->value.enumerated.item[0] );
+	return changed;
+}
+
+static snd_kcontrol_new_t snd_vortex_xtalk_kcontrol __devinitdata = {
+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+	.name = "XTALK Playback",
+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+	.info = snd_vortex_xtalk_info,
+	.get = snd_vortex_xtalk_get,
+	.put = snd_vortex_xtalk_put,
+
+};
+
+
+Please post the output
+
+lspci -vvn
+
+cat /proc/asound/au8830/codec97#0/ac97#0-0+regs
+
+using the patch manager at openvortex
+
+http://savannah.nongnu.org/patch/download.php?item_id=3948
+
+
+
+> this is what i get when compiling the kernel
+> but maybe i have to delete the kernel source tree
+> because i can remember that i had allready patched the alsa part before
+> a long time ago
+> it was in june i posted the error and not long after that alien from
+> nongnu list contacted me and told me about a patch/.diff
+> i have a working alsa driver with that diff but the only problem still
+> is that the volume bar is acting strange so i think i have allready done
+> this patch
+> but i was glad i could compile it under 64 bit kernel
+>
+> do you know if this is the same patch if not i will clean all sources
+> and compile the kernel again.
+>
+> Erik
+>
+>
+>
+> CC [M]  sound/pci/au88x0/au8830.o
+> In file included from sound/pci/au88x0/au8830.c:17:
+> sound/pci/au88x0/au88x0_xtalk.c:645: error: conflicting types for
+> 'vortex_XtalkHw_SetSampleRate'
+> sound/pci/au88x0/au88x0_xtalk.h:51: error: previous declaration of
+> 'vortex_XtalkHw_SetSampleRate' was here
+> sound/pci/au88x0/au88x0_xtalk.c:645: error: conflicting types for
+> 'vortex_XtalkHw_SetSampleRate'
+> sound/pci/au88x0/au88x0_xtalk.h:51: error: previous declaration of
+> 'vortex_XtalkHw_SetSampleRate' was here
+> sound/pci/au88x0/au88x0_xtalk.h:51: warning:
+> 'vortex_XtalkHw_SetSampleRate' declared `static' but never defined
+> sound/pci/au88x0/au88x0_xtalk.c:645: warning:
+> 'vortex_XtalkHw_SetSampleRate' defined but not used
+> make[3]: *** [sound/pci/au88x0/au8830.o] Error 1
+> make[2]: *** [sound/pci/au88x0] Error 2
+> make[1]: *** [sound/pci] Error 2
+> make: *** [sound] Error 2
+>
+>
 
 
 
