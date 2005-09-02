@@ -1,11 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: Alsa mix in HW
-Date: Fri, 02 Sep 2005 21:07:17 +0800
-Message-ID: <43184E85.3090100@netvigator.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001390]: aoss script should use $LIB in preload path
+Date: Fri, 2 Sep 2005 15:13:19 +0200
+Message-ID: <b9ca8d5bb08c260869f0dd021a6d493f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A92E3184
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 15:13:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,129 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Dino Puller <dino@e4a.it>, Lee Revell <rlrevell@joe-job.com>, Takashi Iwai <tiwai@suse.de>, Manuel Jander <manuel.jander@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Dino wrote:
->> Raymond wrote:
->>
->> Dino,
->>
->> Do your sound cards has devices (snd_hardware_t) support the
->> following  features ?
->>
-> I've got an Hercules Fortissimo II (cs46xx)
 
->> 1) Hardware mixing (no. of subdevices > 1 ??? )
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1390> 
+======================================================================
+Reported By:                ikonst
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1390
+Category:                   0_general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             09-01-2005 23:15 CEST
+Last Modified:              09-02-2005 15:13 CEST
+======================================================================
+Summary:                    aoss script should use $LIB in preload path
+Description: 
+The $LIB variable (the $ should be escaped with \$ in shell scripts) is
+substituted by the shared library loader with "lib" in the 32-bit loader
+and "lib64" in the 64-bit loader (or whatever policy the distro hardcodes
+into their ld.so). By using $LIB, we ensure that when both x86 and x86-64
+libalsa-oss packages are installed, the right one will be chosen for each
+app.
 
-> Yes 31 subdevices
+For example, here's what I put in my aoss script:
+LD_PRELOAD=${exec_prefix}/\$LIB/libaoss.so exec "$@"
 
->> 2) Panning mono to 2 or more speakers (.channels_min = 1 and pcm
->> volume/panning control for each subdevice)
+======================================================================
 
-> Nope i'm working on volume control per voice but i need more help from
-> alsa developers. I can access to each volume control but when i change
-> the volume the bass are cutting off and i don't know why :(
+----------------------------------------------------------------------
+ ikonst - 09-02-05 13:00 
+----------------------------------------------------------------------
+> Or do they all use the same ld.so hack, the only difference being the
+directory where 64 bit libs live?
 
-The patch for the volume control per voice of au88x0 has just been sent
-to openvortex for review. For attenutation by distance, what dB range
-can be provided by the volume control of cs46xx ?
+Yes, it is so.
 
-16-bits audio data need gain when passing through cs46xx to
-18-bits/20-bits DAC of AC97
+----------------------------------------------------------------------
+ tiwai - 09-02-05 15:13 
+----------------------------------------------------------------------
+Fixed on CVS.  The old aoss is kept as aoss-old in the tree but not
+installed as default.
 
-Does anyone know the dB_to_volume conversion forumla of those pcm volume
-control of trident, ymfpci, maestro3, emu10k1 ?
+Thanks.
 
->> 3) Playback 8/16 bits mono/stereo audio (.format )
-
-> Yep
-
->> Valid Formats are AL_FORMAT_MONO8, AL_FORMAT_MONO16,
->> AL_FORMAT_STEREO8  and AL_FORMAT_STEREO16.
-
-Although cs46xx and trident support S8 ,U8, S16 and U16.
-
-ymfpci, au88x0, maestro3 and emu10k1 only support U8 snd S16
-
-It would be better to store audio in U8 and S16.
-
-The structure AL_source should contain format/channels of the audio to
-mono stream for 3D spatialization and the background music.
-
-THe au88x0 driver may use different devices to spatialize mono audio
-and stereo background music.
-
->> 3) Doppler Effect (.rate = SNDRV_PCM_RATE_CONTINUOUS )
-
-> Nope but i souldn't spent too much time for this issue. Pitch shifting
-> cost us only 1 addiction in floating point for each word.
-
-Do cs46xx have hardware to perform pitch shift ?
-
->> 4) Recording API (capture 8/16 bits mono/stereo audio)
-
-> Yep but openal-alsa doesn't support it yet
-
-Do the alsa driver (.info = SNDRV_PCM_INFO_PAUSE) 
-snd_pcm_hw_params_can_pause() perform the alcCaptureStop() by calling 
-snd_pcm_pause(pcm, 1) and restart by calling snd_pcm_pause(pcm, 0) 
-without calling snd_pcm_close() ?
-
-Capture audio
-
-If the application doesn't need to capture audio for an amount of time,
-they can halt the device without closing it via the alCaptureStop entry
-point.
-
-The implementation is encouraged to optimize for this case. The amount
-of audio samples available after restarting a stopped capture device is
-reset to zero. The application does not need to stop the capture device
-to read from it.
-
->> 5) Background music (.channels_max >= 2 )
-
-> Yes
-
->>
->>
->> Valid Formats are AL_FORMAT_MONO8, AL_FORMAT_MONO16,
->> AL_FORMAT_STEREO8  and AL_FORMAT_STEREO16.
->>
->> Refer to alsa-lib/include/pcm.h
->>
->> /** Signed 8 bit */
->> SND_PCM_FORMAT_S8 = 0,
->> /** Unsigned 8 bit */
->> SND_PCM_FORMAT_U8,
->> /** Signed 16 bit Little Endian */
->> SND_PCM_FORMAT_S16_LE,
->> /** Signed 16 bit Big Endian */
->> SND_PCM_FORMAT_S16_BE,
->> /** Unsigned 16 bit Little Endian */
->> SND_PCM_FORMAT_U16_LE,
->> /** Unsigned 16 bit Big Endian */
->> SND_PCM_FORMAT_U16_BE,
->>
->> Is the audio data stored in the alBuffer signed or unsigned ?
-
-> Is 16bit(also for 8bit wave) signed.
-
-Do the audio convert to U8 and S16 in alutLoadWav?
-
-> But openal-alsa works for you? Did you noticed a system improvement?
-> I've obtained 2fps in ut2004 about 5% not bad :)
-
-NO,  I cannot link any demo using the re-compiled openal-alsa library.
-
-> bye,
-> Dino
-
-
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-01-05 23:15 ikonst         New Issue                                    
+09-01-05 23:50 rlrevell       Note Added: 0005999                          
+09-01-05 23:53 ikonst         Note Added: 0006000                          
+09-02-05 00:12 rlrevell       Note Added: 0006001                          
+09-02-05 11:53 tiwai          Note Added: 0006005                          
+09-02-05 13:00 ikonst         Note Added: 0006008                          
+09-02-05 13:08 ikonst         File Added: alsa-aoss.patch                    
+09-02-05 15:13 tiwai          Status                   new => resolved     
+09-02-05 15:13 tiwai          Resolution               open => fixed       
+09-02-05 15:13 tiwai          Assigned To               => tiwai           
+09-02-05 15:13 tiwai          Note Added: 0006010                          
+======================================================================
 
 
 
