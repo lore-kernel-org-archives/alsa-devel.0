@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001391]: The driver of the sound card onboard to a motherboard is not found.
-Date: Fri, 2 Sep 2005 19:18:36 +0200
-Message-ID: <4534b81df1f59214182138125b1d5d27@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001386]: aplay.1.gz: two SYNOPSIS sections
+Date: Fri, 2 Sep 2005 19:36:49 +0200
+Message-ID: <77d010c03bcbff893cb2a4bdff2c77a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C9EE176
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:18:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65F27127
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:36:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1391> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1386> 
 ======================================================================
-Reported By:                moja93xp
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1391
-Category:                   1_OTHERS
+Project:                    ALSA - utils
+Issue ID:                   1386
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
+Severity:                   trivial
+Priority:                   low
 Status:                     resolved
-Distribution:               Fedoracore 4, SUSE 9.3
-Kernel Version:             2.6
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-02-2005 03:15 CEST
-Last Modified:              09-02-2005 19:18 CEST
+Date Submitted:             08-31-2005 22:38 CEST
+Last Modified:              09-02-2005 19:36 CEST
 ======================================================================
-Summary:                    The driver of the sound card onboard to a
-motherboard is not found.
+Summary:                    aplay.1.gz: two SYNOPSIS sections
 Description: 
-C-Media CM9739A carried in the mother board of the Linux server which I am
-using There is no ALSA driver. 
-I want you to make a formal correspondence driver from the ALSA.
+>From Debian bug report #325771:
+
+aplay.1 has two SYNOPSIS sections.  For consistency with other man pages
+that cover multiple programs it should have only one SYNOPSIS section,
+with two entries.
+
+Also, the INVOKING and SYNOPSIS sections should be combined.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-02-05 19:18 
+ tiwai - 09-02-05 19:36 
 ----------------------------------------------------------------------
-It's snd-intel8x0 driver.  Try alsaconf, for example.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-05 03:15 moja93xp       New Issue                                    
-09-02-05 03:15 moja93xp       Distribution              => Fedoracore 4, SUSE
-9.3
-09-02-05 03:15 moja93xp       Kernel Version            => 2.6             
-09-02-05 19:18 tiwai          Status                   new => resolved     
-09-02-05 19:18 tiwai          Resolution               open => not an issue
-09-02-05 19:18 tiwai          Assigned To               => tiwai           
-09-02-05 19:18 tiwai          Note Added: 0006014                          
+08-31-05 22:38 jdthood        New Issue                                    
+09-02-05 19:36 tiwai          Status                   new => resolved     
+09-02-05 19:36 tiwai          Resolution               open => fixed       
+09-02-05 19:36 tiwai          Assigned To               => tiwai           
+09-02-05 19:36 tiwai          Note Added: 0006015                          
 ======================================================================
 
 
