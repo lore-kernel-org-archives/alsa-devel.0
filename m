@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001393]: HDSP 9652 name under /proc/asound/cards shows 'default'
-Date: Sat, 3 Sep 2005 00:24:04 +0200
-Message-ID: <e285c45bb03ae6e0507f37b43c8d0e41@bugtrack.alsa-project.org>
+Date: Sat, 3 Sep 2005 00:23:40 +0200
+Message-ID: <5cd6e49744f3b1e6ec0f6e25c0528f3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4419A171
-	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:24:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 738E2171
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:23:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1393> 
 ======================================================================
@@ -35,14 +35,12 @@ Category:                   PCI - RME HDSP
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               Gentoo
 Kernel Version:             2.6.12-gentoo-r9 and 2.6.13-gentoo
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
 Date Submitted:             09-03-2005 00:16 CEST
-Last Modified:              09-03-2005 00:24 CEST
+Last Modified:              09-03-2005 00:23 CEST
 ======================================================================
 Summary:                    HDSP 9652 name under /proc/asound/cards shows
 'default'
@@ -64,11 +62,6 @@ Cheers.
 ----------------------------------------------------------------------
 Already fixed in CVS.
 
-----------------------------------------------------------------------
- rlrevell - 09-03-05 00:24 
-----------------------------------------------------------------------
-fixed in CVS
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -77,9 +70,6 @@ Date Modified  Username       Field                    Change
 09-03-05 00:16 Mark Knecht    Kernel Version            => 2.6.12-gentoo-r9 and
 2.6.13-gentoo
 09-03-05 00:23 rlrevell       Note Added: 0006027                          
-09-03-05 00:24 rlrevell       Status                   assigned => resolved
-09-03-05 00:24 rlrevell       Resolution               open => fixed       
-09-03-05 00:24 rlrevell       Note Added: 0006028                          
 ======================================================================
 
 
