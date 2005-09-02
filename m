@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001392]: Configuration file ICE1724.conf is oncorrect for surround40 (among others)
-Date: Fri, 2 Sep 2005 09:02:43 +0200
-Message-ID: <ebfe38ff06f1688e8048e205a8eb2bcf@bugtrack.alsa-project.org>
+Date: Fri, 2 Sep 2005 09:04:56 +0200
+Message-ID: <804bc2ae596b0d310fb0a5accebd637b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9C1417E
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 09:02:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6923D192
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 09:04:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1392> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             09-02-2005 09:02 CEST
-Last Modified:              09-02-2005 09:02 CEST
+Last Modified:              09-02-2005 09:04 CEST
 ======================================================================
 Summary:                    Configuration file ICE1724.conf is oncorrect for
 surround40 (among others)
@@ -57,10 +57,17 @@ surround71 all probably need some modification.  I don't know if ALL
 ICE1724 cards need this, but the M-Audio Revolution 7.1 cards needs this.
 ======================================================================
 
+----------------------------------------------------------------------
+ herby - 09-02-05 09:04 
+----------------------------------------------------------------------
+s/oncorrect/incorrect/ in title.  Sorry.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-02-05 09:02 herby          New Issue                                    
+09-02-05 09:03 herby          Issue Monitored: herby                       
+09-02-05 09:04 herby          Note Added: 0006004                          
 ======================================================================
 
 
