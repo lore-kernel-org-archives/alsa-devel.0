@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001333]: NO CARRIER
-Date: Sat, 3 Sep 2005 00:05:57 +0200
-Message-ID: <9cd86611fcb4f8ef1ba8ab132d5d95bf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001393]: HDSP 9652 name under /proc/asound/cards shows 'default'
+Date: Sat, 3 Sep 2005 00:16:58 +0200
+Message-ID: <89c6f1b08ae25e516a33f70436fc8d56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12557171
-	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:05:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07CD0171
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:16:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1333> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1393> 
 ======================================================================
-Reported By:                Chermisi
-Assigned To:                sashak
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1333
-Category:                   PCI - atiixp-modem
+Issue ID:                   1393
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.12.4
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.12-gentoo-r9 and 2.6.13-gentoo
 ======================================================================
-Date Submitted:             08-13-2005 22:47 CEST
-Last Modified:              09-03-2005 00:05 CEST
+Date Submitted:             09-03-2005 00:16 CEST
+Last Modified:              09-03-2005 00:16 CEST
 ======================================================================
-Summary:                    NO CARRIER
+Summary:                    HDSP 9652 name under /proc/asound/cards shows
+'default'
 Description: 
-I don't have carrier on modem after loading module snd-atiixp-modem and
-after loading slmodemd script.
-I have a ATI Modem (1002:4378) 
-The output of 
-/usr/sbin/slmodemd --alsa --country=ITALY hw:1
-is
-SmartLink Soft Modem: version 2.9.9 Aug  9 2005 04:23:29
-symbolic link `/dev/ttySL0' -> `/dev/pts/2' created.
-modem `hw:0,0' created. TTY is `/dev/pts/2'
-Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
-error: cannot set channels for playback: Invalid argument
+mark@lightning ~ $ cat /proc/asound/cards
+0 [CK804          ]: NFORCE - NVidia CK804
+                     NVidia CK804 with ALC850 at 0xda103000, irq 185
+1 [default        ]: H-DSP - Hammerfall DSP
+                     RME Hammerfall HDSP 9652 at 0xda000000, irq 217
+mark@lightning ~ $
 
+The HDSP should identify itself with a name other than 'default'.
+
+Cheers.
 ======================================================================
-
-----------------------------------------------------------------------
- sashak - 08-14-05 01:14 
-----------------------------------------------------------------------
-You are with buggy slmodem version. Use recent one (probably with '-alsa'
-suffix) from http://linmodems.technion.ac.il/packages/smartlink .
-
-Warning about MC'97 converters should not be fatal if you don't have
-unsupported Conexant modem codec and is be fixed in recent alsa-driver.
-
-----------------------------------------------------------------------
- sashak - 09-03-05 00:05 
-----------------------------------------------------------------------
-Hope it is ok now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 22:47 Chermisi       New Issue                                    
-08-13-05 22:47 Chermisi       Kernel Version            => 2.6.12.4        
-08-14-05 01:14 sashak         Note Added: 0005814                          
-09-03-05 00:05 sashak         Status                   assigned => resolved
-09-03-05 00:05 sashak         Resolution               open => fixed       
-09-03-05 00:05 sashak         Note Added: 0006026                          
+09-03-05 00:16 Mark Knecht    New Issue                                    
+09-03-05 00:16 Mark Knecht    Distribution              => Gentoo          
+09-03-05 00:16 Mark Knecht    Kernel Version            => 2.6.12-gentoo-r9 and
+2.6.13-gentoo
 ======================================================================
 
 
