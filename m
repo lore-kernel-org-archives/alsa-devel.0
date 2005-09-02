@@ -1,12 +1,14 @@
-From: Mark Knecht <markknecht@gmail.com>
-Subject: why is card #2 being set to default?
-Date: Thu, 1 Sep 2005 16:43:07 -0700
-Message-ID: <5bdc1c8b0509011643199f3101@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Fri, 2 Sep 2005 02:49:54 +0200
+Message-ID: <f15af4582f4eac33fd6f3b46d4262cd1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 215061AD
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 02:49:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,128 +18,107 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alsa Developers,
-   Why is it that on my new AMD64 system the HDSP 9652 is listed as default=
-?
 
-lightning ~ # cat /proc/asound/cards
-0 [CK804          ]: NFORCE - NVidia CK804
-                     NVidia CK804 with ALC850 at 0xda103000, irq 185
-1 [default        ]: H-DSP - Hammerfall DSP
-                     RME Hammerfall HDSP 9652 at 0xda000000, irq 209
-lightning ~ #
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
+======================================================================
+Reported By:                penguinparty
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1138
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               ubuntu 5.04
+Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
+======================================================================
+Date Submitted:             05-28-2005 22:22 CEST
+Last Modified:              09-02-2005 02:49 CEST
+======================================================================
+Summary:                    errors when installing au8820 modules
+Description: 
+Please see the section additional information for a dump of my dmesg output
+regarding the au8820 module.
 
-   On my previous systems I believe that card 0 has been default. Due
-to clocking problems with the HDSP 9652 with OSS emulation I never run
-OSS on the HDSP 9652 and want sound from general apps to go to the
-NVidia on-board chip. The output of that chip is hooked to an input on
-the HDSP which drives the main D/A so I get the best of both worlds -
-NVidia does the low-end OSS and Jack runs all day on the HDSP 9652.
+I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
+kernels. The shipping alsa support under each of these kerenls provies me
+with the same result. I have also tried installing each of these kernels
+without alsa support only CONFIG_SOUND and then installing the
+alsa-drivers 1.0.9rc4a
 
-   Except on this new system it seems to not work that way.
+I get the same result every time I do the modprobe snd-au8820
 
-   I do not use any .asoundrc files.
+Using older versions of debian as well as the ubuntu live cd's I am able
+to get this sound card working.
+======================================================================
 
-   Technical stuff follows.
+----------------------------------------------------------------------
+ Raymond - 09-01-05 05:58 
+----------------------------------------------------------------------
+There is a thread related to the AMD64 problems for au88x0 in openvortex
+developer mailing list mailto:openvortex-dev@nongnu.org
 
-Thanks in advance,
-Mark
+http://lists.nongnu.org/archive/html/openvortex-dev/2005-06/msg00002.html
 
-Distro: Gentoo, Alsa drivers from kernel
+The error in you make-typescript is related to au8810
 
-lightning ~ # uname -a
-Linux lightning 2.6.12-gentoo-r9 #7 SMP Thu Sep 1 14:26:41 PDT 2005
-x86_64 AMD Athlon(tm) 64 Processor 3000+ AuthenticAMD GNU/Linux
-lightning ~ #
 
-lightning ~ # emerge -pv alsa-tools alsa-utils alsa-oss alsa-headers
-alsa-lib alsa-jack
+You should use ./configure --with-cards=au8820
 
-These are the packages that I would merge, in order:
+You can ask Maarten Vanraes for his au8810 patch in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001047
 
-Calculating dependencies ...done!
-[ebuild   R   ] media-sound/alsa-tools-1.0.9  +X 0 kB
-[ebuild   R   ] media-sound/alsa-utils-1.0.9a-r1  +nls 0 kB
-[ebuild   R   ] media-libs/alsa-oss-1.0.8-r1  0 kB
-[ebuild   R   ] media-sound/alsa-headers-1.0.9b  0 kB
-[ebuild   R   ] media-libs/alsa-lib-1.0.9  -doc +jack 0 kB
-[ebuild   R   ] media-plugins/alsa-jack-1.0.9  0 kB
+or 
 
-Total size of downloads: 0 kB
-lightning ~ #
+Igor V. Kovalenko au8820 patch in #3948 overview: patch to fix oopses on
+amd64
 
-lightning ~ # cat /etc/modules.d/alsa
-# Alsa 0.9.X kernel modules' configuration file.
-# $Header: /var/cvsroot/gentoo-x86/media-sound/alsa-utils/files/alsa-module=
-s.con
-f-rc,v 1.4 2004/11/16 01:31:22 eradicator Exp $
+http://savannah.nongnu.org/patch/?group=openvortex
 
-# ALSA portion
-alias char-major-116 snd
-# OSS/Free portion
-alias char-major-14 soundcore
 
-##
-## IMPORTANT:
-## You need to customise this section for your specific sound card(s)
-## and then run `update-modules' command.
-## Read alsa-driver's INSTALL file in /usr/share/doc for more info.
-##
-##  ALSA portion
-alias snd-card-0 snd-intel8x0
-options snd-intel8x0 index=3D0
-alias snd-card-1 snd-hdsp
-options snd-hdsp index=3D1
-##  OSS/Free portion
-alias sound-slot-0 snd-card-0
-## alias sound-slot-1 snd-card-1
-##
+Do you have left/right channels problem on your au8820 ?
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000059
 
-# OSS/Free portion - card #1
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-##  OSS/Free portion - card #2
-## alias sound-service-1-0 snd-mixer-oss
-## alias sound-service-1-3 snd-pcm-oss
-## alias sound-service-1-12 snd-pcm-oss
+lspci -vvn
 
-alias /dev/mixer snd-mixer-oss
-alias /dev/dsp snd-pcm-oss
-alias /dev/midi snd-seq-oss
+cat /proc/asound/au8820/codec97#0/ac97#0-0+regs
 
-# Set this to the correct number of cards.
-options snd cards_limit=3D2
-lightning ~ #
+----------------------------------------------------------------------
+ penguinparty - 09-02-05 02:49 
+----------------------------------------------------------------------
+the patch diff11.diff did the trick.
 
-lightning ~ # lsmod
-Module                  Size  Used by
-snd_seq_midi            7872  0
-snd_pcm_oss            50912  0
-snd_mixer_oss          16960  1 snd_pcm_oss
-snd_seq_oss            33152  0
-snd_seq_midi_event      8256  2 snd_seq_midi,snd_seq_oss
-snd_seq                54752  5 snd_seq_midi,snd_seq_oss,snd_seq_midi_event
-snd_hdsp               49860  0
-snd_rawmidi            24032  2 snd_seq_midi,snd_hdsp
-snd_seq_device          7436  3 snd_seq_midi,snd_seq_oss,snd_rawmidi
-snd_hwdep               9376  1 snd_hdsp
-snd_intel8x0           32128  1
-snd_ac97_codec         85392  1 snd_intel8x0
-snd_pcm                89928  4 snd_pcm_oss,snd_hdsp,snd_intel8x0,snd_ac97_=
-codec
-snd_timer              22408  2 snd_seq,snd_pcm
-snd                    51080  14
-snd_pcm_oss,snd_mixer_oss,snd_seq_oss,snd_seq,snd_hdsp,snd_rawmidi,snd_seq_=
-device,snd_hwdep,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-soundcore               9120  1 snd
-snd_page_alloc          9480  3 snd_hdsp,snd_intel8x0,snd_pcm
-lightning ~ #
+I can finally hear again!!! :)
+
+Thanks
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 22:22 penguinparty   New Issue                                    
+05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
+05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
+and 2.6.10
+05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
+06-08-05 04:41 penguinparty   File Added: typescript                       
+06-08-05 04:43 penguinparty   Note Added: 0004914                          
+08-24-05 10:55 Raymond        Note Added: 0005925                          
+08-24-05 10:58 Raymond        Note Added: 0005926                          
+08-24-05 10:59 Raymond        Note Deleted: 0005926                        
+09-01-05 04:24 penguinparty   File Added: make-typescript                    
+09-01-05 04:25 penguinparty   Note Added: 0005993                          
+09-01-05 05:58 Raymond        Note Added: 0005994                          
+09-02-05 02:49 penguinparty   Note Added: 0006002                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
