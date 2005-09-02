@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001390]: aoss script should use $LIB in preload path
-Date: Fri, 2 Sep 2005 15:13:19 +0200
-Message-ID: <b9ca8d5bb08c260869f0dd021a6d493f@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Re: why is card #2 being set to default?
+Date: Fri, 2 Sep 2005 06:45:36 -0700
+Message-ID: <5bdc1c8b05090206457e6959a4@mail.gmail.com>
+References: <5bdc1c8b0509011643199f3101@mail.gmail.com>
+	 <Pine.HPX.4.33n.0509020941300.12225-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A92E3184
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 15:13:20 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0509020941300.12225-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +19,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On 9/2/05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Mark Knecht wrote:
+> > Why is it that on my new AMD64 system the HDSP 9652 is listed as defaul=
+t?
+> >
+> > # cat /proc/asound/cards
+> > 0 [CK804          ]: NFORCE - NVidia CK804
+> >                      NVidia CK804 with ALC850 at 0xda103000, irq 185
+> > 1 [default        ]: H-DSP - Hammerfall DSP
+> >                      RME Hammerfall HDSP 9652 at 0xda000000, irq 209
+> >
+> > On my previous systems I believe that card 0 has been default.
+>=20
+> This is^H^Hwas a bug in the hdsp driver.  When using the kernel
+> firmware loader, it registered the card before setting the card name,
+> so ALSA used the string "default" as card ID instead of the last word
+> of the card name.
+>=20
+> The ID string has nothing to do with which card actually is the
+> default card.
+>=20
+Thanks Clemens. So this is just the word 'default' as a name and not
+the card being the 'default' which does have a special meaning in Alsa
+lingo? ue to major changes in the studio I haven't even hooked up
+cables to this machine yet so maybe all sound is actually coming out
+of the card I want to use. I just wrote since this didn't look right.
+Thanks!
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1390> 
-======================================================================
-Reported By:                ikonst
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1390
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             09-01-2005 23:15 CEST
-Last Modified:              09-02-2005 15:13 CEST
-======================================================================
-Summary:                    aoss script should use $LIB in preload path
-Description: 
-The $LIB variable (the $ should be escaped with \$ in shell scripts) is
-substituted by the shared library loader with "lib" in the 32-bit loader
-and "lib64" in the 64-bit loader (or whatever policy the distro hardcodes
-into their ld.so). By using $LIB, we ensure that when both x86 and x86-64
-libalsa-oss packages are installed, the right one will be chosen for each
-app.
+Even though it's very minor I'll submit a bug report. It would be nice
+to have it use the card's name.
 
-For example, here's what I put in my aoss script:
-LD_PRELOAD=${exec_prefix}/\$LIB/libaoss.so exec "$@"
-
-======================================================================
-
-----------------------------------------------------------------------
- ikonst - 09-02-05 13:00 
-----------------------------------------------------------------------
-> Or do they all use the same ld.so hack, the only difference being the
-directory where 64 bit libs live?
-
-Yes, it is so.
-
-----------------------------------------------------------------------
- tiwai - 09-02-05 15:13 
-----------------------------------------------------------------------
-Fixed on CVS.  The old aoss is kept as aoss-old in the tree but not
-installed as default.
-
-Thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-01-05 23:15 ikonst         New Issue                                    
-09-01-05 23:50 rlrevell       Note Added: 0005999                          
-09-01-05 23:53 ikonst         Note Added: 0006000                          
-09-02-05 00:12 rlrevell       Note Added: 0006001                          
-09-02-05 11:53 tiwai          Note Added: 0006005                          
-09-02-05 13:00 ikonst         Note Added: 0006008                          
-09-02-05 13:08 ikonst         File Added: alsa-aoss.patch                    
-09-02-05 15:13 tiwai          Status                   new => resolved     
-09-02-05 15:13 tiwai          Resolution               open => fixed       
-09-02-05 15:13 tiwai          Assigned To               => tiwai           
-09-02-05 15:13 tiwai          Note Added: 0006010                          
-======================================================================
-
-
+cheers,
+Mark
 
 
 -------------------------------------------------------
