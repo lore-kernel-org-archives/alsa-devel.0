@@ -1,19 +1,14 @@
-From: "Alvah Pablo" <alva@ktl.elf.stuba.sk>
-Subject: =?iso-8859-1?Q?Re:_Special_prop_-_Pharmac=EButical?=
-Date: Fri, 2 Sep 2005 17:05:30 -0500
-Message-ID: <006601c5b00a$6e807100$9c4fa8c0@carousal>
-Reply-To: "Alvah Pablo" <alva@ktl.elf.stuba.sk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001333]: NO CARRIER
+Date: Sat, 3 Sep 2005 00:05:57 +0200
+Message-ID: <9cd86611fcb4f8ef1ba8ab132d5d95bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0063_01C5AFE0.85AA6900"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ktl.elf.stuba.sk (200-206-228-195.dsl.telesp.net.br [200.206.228.195])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E622F171
-	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:05:47 +0200 (MEST)
-Received: from [192.168.79.156] (helo=carousal)
-	by ktl.elf.stuba.sk with smtp (Cursive vl 2.49 (Dogmata))
-	id DDABgd-INaydH-qZ
-	for alsa-devel@alsa-project.org; Fri, 2 Sep 2005 17:05:34 -0500
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12557171
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:05:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,63 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Francine Macinnis <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0063_01C5AFE0.85AA6900
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1333> 
+======================================================================
+Reported By:                Chermisi
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1333
+Category:                   PCI - atiixp-modem
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.12.4
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             08-13-2005 22:47 CEST
+Last Modified:              09-03-2005 00:05 CEST
+======================================================================
+Summary:                    NO CARRIER
+Description: 
+I don't have carrier on modem after loading module snd-atiixp-modem and
+after loading slmodemd script.
+I have a ATI Modem (1002:4378) 
+The output of 
+/usr/sbin/slmodemd --alsa --country=ITALY hw:1
+is
+SmartLink Soft Modem: version 2.9.9 Aug  9 2005 04:23:29
+symbolic link `/dev/ttySL0' -> `/dev/pts/2' created.
+modem `hw:0,0' created. TTY is `/dev/pts/2'
+Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
+error: cannot set channels for playback: Invalid argument
 
-PrCeViUlMeCiXaLe=
-VaAm
-opleag=
-trrialnavilibi
-eciabrexraamdiaisxt=
-raumen
-64 72 69 85 99 99 12&nb=
-sp;99 85 68
-95.00.85.55.96.753.45.94.45.00
-http://www.afteoldinvi=
-de.com flashed fire in Azazellos hand, something clapped softly, the baron =
-began second armchair sat the same type he had imagined in the front hall. =
-Now he
+======================================================================
 
-------=_NextPart_000_0063_01C5AFE0.85AA6900
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ sashak - 08-14-05 01:14 
+----------------------------------------------------------------------
+You are with buggy slmodem version. Use recent one (probably with '-alsa'
+suffix) from http://linmodems.technion.ac.il/packages/smartlink .
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DCourier>
-<DIV style=3D"FLOAT: left">Pr<BR><BR>Ce<BR><BR><STRONG>Vi</STRONG><=
-BR><BR>Ul<BR><BR>Me<BR><BR><STRONG>Ci</STRONG><BR><BR>Xa<BR><BR>Le<BR><BR>=
-<STRONG>Va</STRONG><BR><BR>Am</DIV>
-<DIV style=3D"FLOAT: left">op<BR><BR>le<BR><BR><STRONG>ag</STRONG><BR><BR>=
-tr<BR><BR>ri<BR><BR><STRONG>al</STRONG><BR><BR>na<BR><BR>vi<BR><BR><STRONG=
->li</STRONG><BR><BR>bi</DIV>
-<DIV style=3D"FLOAT: left">ecia<BR><BR>brex<BR><BR><STRONG>ra</STRON=
-G><BR><BR>am<BR><BR>dia<BR><BR><STRONG>is</STRONG><BR><BR>x<BR><BR>t=
-ra<BR><BR><STRONG>um</STRONG><BR><BR>en</DIV>
-<DIV style=3D"FLOAT: left">&nbsp;64<BR><BR>&nbsp;72<BR><BR>&nbsp;69<BR><=
-BR>&nbsp;85<BR><BR>&nbsp;99<BR><BR>&nbsp;99<BR><BR>&nbsp;12<BR><BR>&nb=
-sp;99<BR><BR>&nbsp;85<BR><BR>&nbsp;68</DIV>
-<DIV style=3D"FLOAT: left">.95<BR><BR>.00<BR><BR>.85<BR><BR>.55<BR><B=
-R>.96<BR><BR>.75<BR><BR>3.45<BR><BR>.94<BR><BR>.45<BR><BR>.00</DIV>
-<DIV style=3D"CLEAR: both">&nbsp;</DIV>
-<DIV><A href=3D"http://www.afteoldinvide.com">http://www.afteoldinvi=
-de.com</A></DIV></FONT></DIV></B></B></BODY></HTML>
+Warning about MC'97 converters should not be fatal if you don't have
+unsupported Conexant modem codec and is be fixed in recent alsa-driver.
 
-------=_NextPart_000_0063_01C5AFE0.85AA6900--
+----------------------------------------------------------------------
+ sashak - 09-03-05 00:05 
+----------------------------------------------------------------------
+Hope it is ok now.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-13-05 22:47 Chermisi       New Issue                                    
+08-13-05 22:47 Chermisi       Kernel Version            => 2.6.12.4        
+08-14-05 01:14 sashak         Note Added: 0005814                          
+09-03-05 00:05 sashak         Status                   assigned => resolved
+09-03-05 00:05 sashak         Resolution               open => fixed       
+09-03-05 00:05 sashak         Note Added: 0006026                          
+======================================================================
+
 
 
 
