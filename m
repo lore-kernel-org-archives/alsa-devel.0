@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001387]: Modem problem
-Date: Fri, 2 Sep 2005 19:37:35 +0200
-Message-ID: <e909d4e765a7ee24e437b2fe6968163e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001382]: audio stuttered when playing DVD/VCD using xine
+Date: Fri, 2 Sep 2005 19:39:28 +0200
+Message-ID: <d72feff4a9b6656b449523098a0a2045@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C3B2175
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:37:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A284F175
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:39:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1387> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1382> 
 ======================================================================
-Reported By:                kzelma
-Assigned To:                
+Reported By:                zhllg
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1387
-Category:                   PCI - intel8x0m
+Issue ID:                   1382
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11, 2.6.12, 2.6.13
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-01-2005 14:54 CEST
-Last Modified:              09-02-2005 19:37 CEST
+Date Submitted:             08-31-2005 10:20 CEST
+Last Modified:              09-02-2005 19:39 CEST
 ======================================================================
-Summary:                    Modem problem
+Summary:                    audio stuttered when playing DVD/VCD using xine
 Description: 
-I found the problem with the module snd-intel8x0m.ko - modem support
-particulary. I use on my laptop slmodemd ver.2.9.10 with alsa support -
-http://www.smlink.com. Slmodemd works fine with kernel 2.6.9 - witout any
-problem. With te kernels: 2.6.11, 2.6.12 and 2.6.13 there is problem
-working with modem. Typical answer from the kppp or from wvdial is 'NO
-DIALTONE". 
-
-The solution for me was so: I compiled kernel 2.6.13 with the source code
-of intel8x0m.c from 2.6.9 kernel and the modem started working. (During
-compilation was few warnings.) 
-
-Of course, during testing snd-intel8x0m is loaded.
-
-The laptop is Toshiba Tecra S1 and  lspci -v shows:
-
-00:1f.6 Modem: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97
-Modem Controller (rev 03) (prog-if 00 [Generic])
-    Subsystem: Toshiba America Info Systems: Unknown device 0001
-    Flags: bus master, medium devsel, latency 0, IRQ 11
-    I/O ports at e200 [size=256]
-    I/O ports at e300 [size=128]
-    Capabilities: [50] Power Management version 
-
+The motherboard is intel D945GTP
+Other application works well, like mplayer
+but audio will stutter when playing DVD/VCD using xine
+The symptom is one second's audio in the movie will be played for several
+times consecutively, before next sec's sound can be played. Then the same
+happened to the audio of next sec.
+What could be the cause?
 ======================================================================
+
+----------------------------------------------------------------------
+ zhllg - 08-31-05 10:30 
+----------------------------------------------------------------------
+Correction:
+mplayer just work well for a little while, then similar problem occurs,
+too
+
+----------------------------------------------------------------------
+ zhllg - 08-31-05 12:15 
+----------------------------------------------------------------------
+solved
+just enable APIC in the kernel
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-01-05 14:54 kzelma         New Issue                                    
-09-01-05 14:54 kzelma         Distribution              => Fedora Core 3   
-09-01-05 14:54 kzelma         Kernel Version            => 2.6.11, 2.6.12,
-2.6.13
-09-02-05 19:37 tiwai          Category                 PCI - intel8x0 => PCI -
-intel8x0m
+08-31-05 10:20 zhllg          New Issue                                    
+08-31-05 10:30 zhllg          Note Added: 0005985                          
+08-31-05 10:42 zhllg          Issue Monitored: zhllg                       
+08-31-05 12:15 zhllg          Note Added: 0005987                          
+09-02-05 19:39 tiwai          Status                   assigned => resolved
+09-02-05 19:39 tiwai          Resolution               open => not an issue
 ======================================================================
 
 
