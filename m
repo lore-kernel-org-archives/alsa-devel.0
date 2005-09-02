@@ -1,11 +1,11 @@
 From: Jiri Slaby <jirislaby@gmail.com>
-Subject: [PATCH 2/6] include, sound: pci_find_device remove (s/core/memalloc.c)
+Subject: [PATCH 4/6] include, sound: pci_find_device remove (s/pci/au88x0/au88x0.c)
 Date: Fri, 2 Sep 2005 23:44:55 +0200
-Message-ID: <200509022144.j82LitUL031342__41479.6984558508$1125697898$gmane$org@wscnet.wsc.cz>
+Message-ID: <200509022144.j82Lit5m031351__26631.9390190349$1125697898$gmane$org@wscnet.wsc.cz>
 References: <200509022122.j82LMMwV030426@wscnet.wsc.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from wscnet.wsc.cz (wscnet.wsc.cz [212.80.64.118])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 601F9172
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04C7D172
 	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 23:44:55 +0200 (MEST)
 In-reply-to: <200509022122.j82LMMwV030426@wscnet.wsc.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -27,47 +27,62 @@ Generated in 2.6.13-mm1 kernel version.
 
 Signed-off-by: Jiri Slaby <xslaby@fi.muni.cz>
 
- memalloc.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+ au88x0.c |   26 ++++++++++++++++----------
+ 1 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -567,8 +567,8 @@ static int snd_mem_proc_write(struct fil
- 		char *endp;
- 		int vendor, device, size, buffers;
- 		long mask;
--		int i, alloced;
--		struct pci_dev *pci;
-+		int i, alloced = 0;
-+		struct pci_dev *pci = NULL;
+diff --git a/sound/pci/au88x0/au88x0.c b/sound/pci/au88x0/au88x0.c
+--- a/sound/pci/au88x0/au88x0.c
++++ b/sound/pci/au88x0/au88x0.c
+@@ -79,19 +79,21 @@ static void vortex_fix_agp_bridge(struct
  
- 		if ((token = gettoken(&p)) == NULL ||
- 		    (vendor = simple_strtol(token, NULL, 0)) <= 0 ||
-@@ -588,13 +588,12 @@ static int snd_mem_proc_write(struct fil
- 		vendor &= 0xffff;
- 		device &= 0xffff;
+ static void __devinit snd_vortex_workaround(struct pci_dev *vortex, int fix)
+ {
+-	struct pci_dev *via;
++	struct pci_dev *via = NULL;
  
--		alloced = 0;
--		pci = NULL;
--		while ((pci = pci_find_device(vendor, device, pci)) != NULL) {
-+		while ((pci = pci_get_device(vendor, device, pci)) != NULL) {
- 			if (mask > 0 && mask < 0xffffffff) {
- 				if (pci_set_dma_mask(pci, mask) < 0 ||
- 				    pci_set_consistent_dma_mask(pci, mask) < 0) {
- 					printk(KERN_ERR "snd-page-alloc: cannot set DMA mask %lx for pci %04x:%04x\n", mask, vendor, device);
-+					pci_dev_put(pci);
- 					return (int)count;
- 				}
- 			}
-@@ -604,6 +603,7 @@ static int snd_mem_proc_write(struct fil
- 				if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
- 							size, &dmab) < 0) {
- 					printk(KERN_ERR "snd-page-alloc: cannot allocate buffer pages (size = %d)\n", size);
-+					pci_dev_put(pci);
- 					return (int)count;
- 				}
- 				snd_dma_reserve_buf(&dmab, snd_dma_pci_buf_id(pci));
+ 	/* autodetect if workarounds are required */
+ 	if (fix == 255) {
+ 		/* VIA KT133 */
+-		via = pci_find_device(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_8365_1, NULL);
++		via = pci_get_device(PCI_VENDOR_ID_VIA,
++			PCI_DEVICE_ID_VIA_8365_1, NULL);
+ 		/* VIA Apollo */
+ 		if (via == NULL) {
+-			via = pci_find_device(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C598_1, NULL);
+-		}
+-		/* AMD Irongate */
+-		if (via == NULL) {
+-			via = pci_find_device(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_FE_GATE_7007, NULL);
++			via = pci_get_device(PCI_VENDOR_ID_VIA,
++				PCI_DEVICE_ID_VIA_82C598_1, NULL);
++			/* AMD Irongate */
++			if (via == NULL)
++				via = pci_get_device(PCI_VENDOR_ID_AMD,
++					PCI_DEVICE_ID_AMD_FE_GATE_7007, NULL);
+ 		}
+ 		if (via) {
+ 			printk(KERN_INFO CARD_NAME ": Activating latency workaround...\n");
+@@ -101,13 +103,17 @@ static void __devinit snd_vortex_workaro
+ 	} else {
+ 		if (fix & 0x1)
+ 			vortex_fix_latency(vortex);
+-		if ((fix & 0x2) && (via = pci_find_device(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_8365_1, NULL)))
++		if ((fix & 0x2) && (via = pci_get_device(PCI_VENDOR_ID_VIA,
++				PCI_DEVICE_ID_VIA_8365_1, NULL)))
+ 			vortex_fix_agp_bridge(via);
+-		if ((fix & 0x4) && (via = pci_find_device(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C598_1, NULL)))
++		if ((fix & 0x4) && (via = pci_get_device(PCI_VENDOR_ID_VIA,
++				PCI_DEVICE_ID_VIA_82C598_1, NULL)))
+ 			vortex_fix_agp_bridge(via);
+-		if ((fix & 0x8) && (via = pci_find_device(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_FE_GATE_7007, NULL)))
++		if ((fix & 0x8) && (via = pci_get_device(PCI_VENDOR_ID_AMD,
++				PCI_DEVICE_ID_AMD_FE_GATE_7007, NULL)))
+ 			vortex_fix_agp_bridge(via);
+ 	}
++	pci_dev_put(via);
+ }
+ 
+ // component-destructor
 
 
 -------------------------------------------------------
