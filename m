@@ -1,12 +1,12 @@
-From: Mark Knecht <markknecht@gmail.com>
-Subject: hdspmixer segfaults on AMD64
-Date: Fri, 2 Sep 2005 15:33:24 -0700
-Message-ID: <5bdc1c8b050902153359513ac2@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: [PATCH] fix some warnings in sound
+Date: Sat, 3 Sep 2005 00:43:53 +0200
+Message-ID: <200509022243.j82MhrAZ002660@wscnet.wsc.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from wscnet.wsc.cz (wscnet.wsc.cz [212.80.64.118])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDF5E171
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 00:43:56 +0200 (MEST)
+In-reply-to: 
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,38 +16,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Andrew Morton <akpm@osdl.org>
+Cc: alsa-devel@alsa-project.org, perex@suse.cz, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   I think this may possibly be fixed already but I couldn't find an
-associated bug in Mantis. When I run hdspmixer on my AMD64 system
-using 2.6.13-gentoo or 2.6.12-gentoo-r9 it segfaults. I'm running
-Alsa-1.0.9 mostly:
+Some drivers don't control return values, that can fail.
 
-lightning hdspmixer # emerge -pv alsa-tools alsa-utils alsa-headers
-alsa-lib alsa-oss alsa-jack
+Generated in 2.6.13-mm1 kernel version.
 
-These are the packages that I would merge, in order:
+Signed-off-by: Jiri Slaby <xslaby@fi.muni.cz>
 
-Calculating dependencies ...done!
-[ebuild   R   ] media-sound/alsa-tools-1.0.9  +X 0 kB
-[ebuild   R   ] media-sound/alsa-utils-1.0.9a-r1  +nls 0 kB
-[ebuild   R   ] media-sound/alsa-headers-1.0.9b  0 kB
-[ebuild   R   ] media-libs/alsa-lib-1.0.9  -doc +jack 0 kB
-[ebuild   R   ] media-libs/alsa-oss-1.0.8-r1  0 kB
-[ebuild   R   ] media-plugins/alsa-jack-1.0.9  0 kB
+ ali5451/ali5451.c   |    3 ++-
+ cs46xx/cs46xx_lib.c |    6 ++++--
+ via82xx.c           |    8 +++++---
+ 3 files changed, 11 insertions(+), 6 deletions(-)
 
-Total size of downloads: 0 kB
-lightning hdspmixer #
-
-   Has this been addressed already? If so where in the system is the
-fix? I'm sort of at a stand still without hdspmixer. I'm hoping there
-is a code drop somewhere that I could build and install by hand if
-it's just the hdspmixer app.
-
-Thanks,
-Mark
+diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
+--- a/sound/pci/ali5451/ali5451.c
++++ b/sound/pci/ali5451/ali5451.c
+@@ -2067,7 +2067,8 @@ static int ali_resume(snd_card_t *card)
+ 	if (! im)
+ 		return 0;
+ 
+-	pci_enable_device(chip->pci);
++	if ((i = pci_enable_device(chip->pci)))
++		return i;
+ 
+ 	spin_lock_irq(&chip->reg_lock);
+ 	
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -3722,9 +3722,11 @@ static int snd_cs46xx_suspend(snd_card_t
+ static int snd_cs46xx_resume(snd_card_t *card)
+ {
+ 	cs46xx_t *chip = card->pm_private_data;
+-	int amp_saved;
++	int amp_saved, err;
++
++	if ((err = pci_enable_device(chip->pci)))
++		return err;
+ 
+-	pci_enable_device(chip->pci);
+ 	pci_set_master(chip->pci);
+ 	amp_saved = chip->amplifier;
+ 	chip->amplifier = 0;
+diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
+--- a/sound/pci/via82xx.c
++++ b/sound/pci/via82xx.c
+@@ -1977,7 +1977,8 @@ static int snd_via82xx_suspend(snd_card_
+ 		chip->capture_src_saved[1] = inb(chip->port + VIA_REG_CAPTURE_CHANNEL + 0x10);
+ 	}
+ 
+-	pci_set_power_state(chip->pci, 3);
++	if ((i = pci_set_power_state(chip->pci, 3)))
++		return i;
+ 	pci_disable_device(chip->pci);
+ 	return 0;
+ }
+@@ -1987,8 +1988,9 @@ static int snd_via82xx_resume(snd_card_t
+ 	via82xx_t *chip = card->pm_private_data;
+ 	int i;
+ 
+-	pci_enable_device(chip->pci);
+-	pci_set_power_state(chip->pci, 0);
++	if ((i = pci_enable_device(chip->pci)) ||
++			(i = pci_set_power_state(chip->pci, 0)))
++		return i;
+ 
+ 	snd_via82xx_chip_init(chip);
+ 
 
 
 -------------------------------------------------------
