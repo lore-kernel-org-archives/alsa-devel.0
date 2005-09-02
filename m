@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001390]: aoss script should use $LIB in preload path
-Date: Fri, 2 Sep 2005 13:00:47 +0200
-Message-ID: <b5b0681c64943af333dc6f66f108e6c8@bugtrack.alsa-project.org>
+From: Smery <luca_ing@libero.it>
+Subject: Re: Problems or bugs in snd-usb-audio.ko
+Date: Fri, 2 Sep 2005 13:38:24 +0000
+Message-ID: <200509021338.25330.luca_ing@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D75D172
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 13:00:47 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+> Lee Revell wrote:
+> > Pardon my ignorance but what's the point of a soundcard that only does 8
+> > bit mono at 8000Hz?  VoIP?
+>
+> The product name ("USB 2.0 Video") seems to indicate a webcam or
+> something like that.  Otherwise, using USB 2.0 for 8000 bytes/s would
+> look like a _somewhat_ strange design decision. :-)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1390> 
-======================================================================
-Reported By:                ikonst
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1390
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-01-2005 23:15 CEST
-Last Modified:              09-02-2005 13:00 CEST
-======================================================================
-Summary:                    aoss script should use $LIB in preload path
-Description: 
-The $LIB variable (the $ should be escaped with \$ in shell scripts) is
-substituted by the shared library loader with "lib" in the 32-bit loader
-and "lib64" in the 64-bit loader (or whatever policy the distro hardcodes
-into their ld.so). By using $LIB, we ensure that when both x86 and x86-64
-libalsa-oss packages are installed, the right one will be chosen for each
-app.
+Okay. I tried the latest ALSA and I obtain the same error as above:
 
-For example, here's what I put in my aoss script:
-LD_PRELOAD=${exec_prefix}/\$LIB/libaoss.so exec "$@"
+$ arecord -d 10 -D hw:1,0 foobar.wav
+Recording WAVE 'foobar.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+arecord: pcm_read:1263: read error: Input/output error
 
-======================================================================
+Any other ideas? Could you also give me a starting point where to
+look at in the code? I would appreciate your help and I am available
+for help.
 
-----------------------------------------------------------------------
- tiwai - 09-02-05 11:53 
-----------------------------------------------------------------------
-I believe $LIB is the best solution for mixed architecture.
-We can provide the old aoss, in the case the old ld.so doesn't support
-$LIB feature.
-
-----------------------------------------------------------------------
- ikonst - 09-02-05 13:00 
-----------------------------------------------------------------------
-> Or do they all use the same ld.so hack, the only difference being the
-directory where 64 bit libs live?
-
-Yes, it is so.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-01-05 23:15 ikonst         New Issue                                    
-09-01-05 23:50 rlrevell       Note Added: 0005999                          
-09-01-05 23:53 ikonst         Note Added: 0006000                          
-09-02-05 00:12 rlrevell       Note Added: 0006001                          
-09-02-05 11:53 tiwai          Note Added: 0006005                          
-09-02-05 13:00 ikonst         Note Added: 0006008                          
-======================================================================
-
-
+Thanks
 
 
 -------------------------------------------------------
