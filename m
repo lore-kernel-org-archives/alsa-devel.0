@@ -1,13 +1,12 @@
-From: Smery <luca_ing@libero.it>
-Subject: Re: Problems or bugs in snd-usb-audio.ko
-Date: Fri, 2 Sep 2005 09:13:05 +0000
-Message-ID: <200509020913.06795.luca_ing@libero.it>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: why is card #2 being set to default?
+Date: Fri, 2 Sep 2005 09:50:16 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509020941300.12225-100000@studcom.urz.uni-halle.de>
+References: <5bdc1c8b0509011643199f3101@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <5bdc1c8b0509011643199f3101@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: Mark Knecht <markknecht@gmail.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> Lee Revell wrote:
-> > Pardon my ignorance but what's the point of a soundcard that only does 8
-> > bit mono at 8000Hz?  VoIP?
+Mark Knecht wrote:
+> Why is it that on my new AMD64 system the HDSP 9652 is listed as default?
 >
-> The product name ("USB 2.0 Video") seems to indicate a webcam or
-> something like that.  Otherwise, using USB 2.0 for 8000 bytes/s would
-> look like a _somewhat_ strange design decision. :-)
+> # cat /proc/asound/cards
+> 0 [CK804          ]: NFORCE - NVidia CK804
+>                      NVidia CK804 with ALC850 at 0xda103000, irq 185
+> 1 [default        ]: H-DSP - Hammerfall DSP
+>                      RME Hammerfall HDSP 9652 at 0xda000000, irq 209
+>
+> On my previous systems I believe that card 0 has been default.
 
-Correct. I am doing some test with the latest alsa modules. I will let you know.
+This is^H^Hwas a bug in the hdsp driver.  When using the kernel
+firmware loader, it registered the card before setting the card name,
+so ALSA used the string "default" as card ID instead of the last word
+of the card name.
 
-Thanks.
+The ID string has nothing to do with which card actually is the
+default card.
+
+
+HTH
+Clemens
+
 
 
 -------------------------------------------------------
