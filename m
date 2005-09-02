@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001392]: Configuration file ICE1724.conf is oncorrect for surround40 (among others)
-Date: Fri, 2 Sep 2005 18:41:13 +0200
-Message-ID: <b74257129fe4ebade36d6d8b614afcc2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001391]: The driver of the sound card onboard to a motherboard is not found.
+Date: Fri, 2 Sep 2005 19:18:36 +0200
+Message-ID: <4534b81df1f59214182138125b1d5d27@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3374169
-	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 18:41:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C9EE176
+	for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2005 19:18:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1392> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1391> 
 ======================================================================
-Reported By:                herby
+Reported By:                moja93xp
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1392
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   1391
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Resolution:                 fixed
+Distribution:               Fedoracore 4, SUSE 9.3
+Kernel Version:             2.6
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-02-2005 09:02 CEST
-Last Modified:              09-02-2005 18:41 CEST
+Date Submitted:             09-02-2005 03:15 CEST
+Last Modified:              09-02-2005 19:18 CEST
 ======================================================================
-Summary:                    Configuration file ICE1724.conf is oncorrect for
-surround40 (among others)
+Summary:                    The driver of the sound card onboard to a
+motherboard is not found.
 Description: 
-The file ICE1724.conf (installed normally in /usr/share/alsa/cards has an
-incorrect definition for surround40.  The ICE1724 driver was changed a few
-versions ago to split the two codecs used (on the M-Audio revolution 7.1
-one is 2 channels, the other is 6 channels).  The definition for the
-'rear' channels was added and specified "device 2" (see paragraph
-ICE1724.pcm.rear.0).  Unfortunately the definition for
-"ICE1724.pcm.surround40.0" does NOT refer to the second device.  Honestly
-I'd like to modify the definition, but I am not versed in the minutia of
-'asoundrc' type files.  I'm sure that it is possible to do this.  In
-addition, the definitions for surround41, surround50, surround51, and
-surround71 all probably need some modification.  I don't know if ALL
-ICE1724 cards need this, but the M-Audio Revolution 7.1 cards needs this.
+C-Media CM9739A carried in the mother board of the Linux server which I am
+using There is no ALSA driver. 
+I want you to make a formal correspondence driver from the ALSA.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-02-05 16:35 
+ tiwai - 09-02-05 19:18 
 ----------------------------------------------------------------------
-Except for that the wrong channel number 4 is set in surround40 definition,
-it's not bad at all.  Instead, this is because of a bug happening with the
-combination of plug and route plugins.  If you pass S32 samples to
-surround40/51/71, it should work fine.
-
-----------------------------------------------------------------------
- tiwai - 09-02-05 18:41 
-----------------------------------------------------------------------
-Fixed on CVS.
+It's snd-intel8x0 driver.  Try alsaconf, for example.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-05 09:02 herby          New Issue                                    
-09-02-05 09:03 herby          Issue Monitored: herby                       
-09-02-05 09:04 herby          Note Added: 0006004                          
-09-02-05 16:35 tiwai          Note Added: 0006011                          
-09-02-05 18:41 tiwai          Status                   new => resolved     
-09-02-05 18:41 tiwai          Resolution               open => fixed       
-09-02-05 18:41 tiwai          Assigned To               => tiwai           
-09-02-05 18:41 tiwai          Note Added: 0006012                          
+09-02-05 03:15 moja93xp       New Issue                                    
+09-02-05 03:15 moja93xp       Distribution              => Fedoracore 4, SUSE
+9.3
+09-02-05 03:15 moja93xp       Kernel Version            => 2.6             
+09-02-05 19:18 tiwai          Status                   new => resolved     
+09-02-05 19:18 tiwai          Resolution               open => not an issue
+09-02-05 19:18 tiwai          Assigned To               => tiwai           
+09-02-05 19:18 tiwai          Note Added: 0006014                          
 ======================================================================
 
 
