@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000349]: can't play MIDI through ALSA / MPU-401 but non-ALSA "midiplayer" to MIDI device works
-Date: Sat, 3 Sep 2005 03:42:35 +0200
-Message-ID: <6f4fe9847bf1b49ba47acec9dedcb2ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001394]: alsa nforce3 5.1 no sound from rear / center using most programs
+Date: Sat, 3 Sep 2005 03:51:00 +0200
+Message-ID: <94e8811a70c101ecc5bd8653c2f91a9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B7BD16A
-	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 03:42:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B92E416A
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 03:51:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=349> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1394> 
 ======================================================================
-Reported By:                amarsh04
+Reported By:                necrophage
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   349
-Category:                   ISA - sb16/sbawe
+Issue ID:                   1394
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Debian
-Kernel Version:             2.6.5-1 (problem also showed with 2.4.24)
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             06-29-2004 07:58 CEST
-Last Modified:              09-03-2005 03:42 CEST
+Date Submitted:             09-03-2005 03:51 CEST
+Last Modified:              09-03-2005 03:51 CEST
 ======================================================================
-Summary:                    can't play MIDI through ALSA / MPU-401 but non-ALSA
-"midiplayer" to MIDI device works
+Summary:                    alsa nforce3 5.1 no sound from rear / center using
+most programs
 Description: 
-With ISA SB16 PNP, aplaymidi -l reports:
-Port    Client name                      Port name
- 64:0    Sound Blaster 16 MIDI - Rawmidi  Sound Blaster 16 MIDI
- 65:0    OPL3 FM synth                    OPL3 FM Port
+no sound from the rear and center speakers...
+alsa compiled as module with oss emulation
+no sound from the rear speakers or center speakers
+using the default nvidia ck8s (nforce3) ac97 thing
 
-Neither 
-aplaymidi -p 64:0 myfile.mid
-nor 
-aplaymidi -p 65:0 myfile.mid 
-work, but the non-ALSA "midiplayer" works playing directly to the MIDI
-device:
-
-playmidi -v -D0 myfile.mid
-
-
+applications affected
+everything except doom3
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-02-05 19:53 
-----------------------------------------------------------------------
-Do you want to play via an external MIDI device or with OPL3 FM synth?
-
-----------------------------------------------------------------------
- amarsh04 - 09-03-05 03:42 
-----------------------------------------------------------------------
-I just want to be able to play MIDI files through the OPL3 FM synth - I
-have no external MIDI hardware.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-04 07:58 amarsh04       New Issue                                    
-06-29-04 07:58 amarsh04       Distribution              => Debian          
-06-29-04 07:58 amarsh04       Kernel Version            => 2.6.5-1 (problem also
-showed with 2.4.24)
-04-07-05 20:57 jdthood        Note Added: 0004365                          
-04-10-05 07:54 amarsh04       Note Added: 0004434                          
-04-10-05 09:53 jdthood        Status                   new => acknowledged 
-04-12-05 16:38 tiwai          Note Added: 0004450                          
-08-29-05 06:23 amarsh04       Note Added: 0005964                          
-08-29-05 06:25 amarsh04       Note Edited: 0005964                         
-09-02-05 19:53 tiwai          Note Added: 0006018                          
-09-03-05 03:42 amarsh04       Note Added: 0006029                          
+09-03-05 03:51 necrophage     New Issue                                    
+09-03-05 03:51 necrophage     Distribution              => gentoo          
+09-03-05 03:51 necrophage     Kernel Version            => 2.6.12          
 ======================================================================
 
 
