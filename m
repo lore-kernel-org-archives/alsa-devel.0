@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001395]: USB sound device does not work
-Date: Sat, 3 Sep 2005 19:12:53 +0200
-Message-ID: <c17144c9620eef498d6327a88f94e4d4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
+Date: Sat, 3 Sep 2005 22:43:23 +0200
+Message-ID: <1781fb67ece9d5d00430141b7970e40f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D22F1121
-	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 19:12:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2137614B
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 22:43:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1395> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
 ======================================================================
-Reported By:                draft
-Assigned To:                Clemens Ladisch
+Reported By:                aaronkaplan
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1395
-Category:                   USB - usb-audio
+Issue ID:                   328
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398_FC4
+Kernel Version:             2.6.12-1.1398
 ======================================================================
-Date Submitted:             09-03-2005 19:12 CEST
-Last Modified:              09-03-2005 19:12 CEST
+Date Submitted:             06-08-2004 23:13 CEST
+Last Modified:              09-03-2005 22:43 CEST
 ======================================================================
-Summary:                    USB sound device does not work
+Summary:                    snd-nm256 freezes Dell Latitude LS
 Description: 
-The device is a (lsusb): Bus 001 Device 003: ID 0e6a:0310 Megawin
-Technology Co., Ltd. According to the manual, it is fully compliant with
-USB audio device class spec v 1.0, fully compliant with USB DCD for HID
-spec v. 1.11 and supports more than 44.1Khz sample frequency. However,
-this device does not work with snd_usb_audio. Xmms gives an immediate
-Feedback, that the device is not configured properly. Aplay does not
-output any message, but there is no sound. The fancy fedora sound card
-detection setup does not work either.
+My Dell Latitude LS with an NM256AV hangs when I insert the
+snd-nm256 module.
 
-dmesg:
+The OSS driver works fine.
 
-ALSA /usr/src/alsa-driver-1.0.10rc1/usb/usbaudio.c:1212: current rate
-33024 is different from the runtime rate 46875
-usbcore: registered new driver snd-usb-audio
-
-Tested alsa driver versions: 1.0.10rc1, 1.09b
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 08-19-04 19:18 
+----------------------------------------------------------------------
+Ok now I close this.  Reopen if still something gets wrong.
+
+----------------------------------------------------------------------
+ aaronkaplan - 09-03-05 22:43 
+----------------------------------------------------------------------
+I upgraded to FC4 and the problem is back again.  When I modprobe
+snd_nm256, sometimes it works, but more than half the time it hangs the
+system.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-03-05 19:12 draft          New Issue                                    
-09-03-05 19:12 draft          Distribution              => Fedora Core 4   
-09-03-05 19:12 draft          Kernel Version            => 2.6.12-1.1398_FC4
+06-08-04 23:13 aaronkaplan    New Issue                                    
+06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
+06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
+06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
+06-30-04 16:55 tiwai          Note Added: 0001362                          
+06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
+
+07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
+07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
+08-13-04 01:33 fridolin       Note Added: 0001559                          
+08-13-04 12:46 fridolin       Note Added: 0001562                          
+08-13-04 15:17 fridolin       Note Added: 0001564                          
+08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
+08-19-04 19:18 tiwai          Status                   assigned => resolved
+08-19-04 19:18 tiwai          Resolution               open => fixed       
+08-19-04 19:18 tiwai          Note Added: 0001593                          
+09-24-04 13:43 tiwai          Status                   resolved => closed  
+09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
+Core 4
+09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
+2.6.12-1.1398
+09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
+09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
+09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
 ======================================================================
 
 
