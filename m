@@ -1,14 +1,15 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: hdspmixer segfaults on AMD64
-Date: Fri, 02 Sep 2005 20:25:39 -0400
-Message-ID: <1125707139.4991.29.camel@mindpipe>
+Date: Fri, 02 Sep 2005 20:27:59 -0400
+Message-ID: <1125707279.4991.33.camel@mindpipe>
 References: <5bdc1c8b050902153359513ac2@mail.gmail.com>
 	 <1125706745.4991.25.camel@mindpipe>
+	 <5bdc1c8b050902172552be43d1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1125706745.4991.25.camel@mindpipe>
+In-Reply-To: <5bdc1c8b050902172552be43d1@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,21 +23,22 @@ To: Mark Knecht <markknecht@gmail.com>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-09-02 at 20:19 -0400, Lee Revell wrote:
-> On Fri, 2005-09-02 at 15:33 -0700, Mark Knecht wrote:
-> > Hi,
-> >    I think this may possibly be fixed already but I couldn't find an
-> > associated bug in Mantis. When I run hdspmixer on my AMD64 system
-> > using 2.6.13-gentoo or 2.6.12-gentoo-r9 it segfaults. I'm running
-> > Alsa-1.0.9 mostly:
+On Fri, 2005-09-02 at 17:25 -0700, Mark Knecht wrote:
+> Hi Lee,
+>    I downloaded alsa-tools-1.0.10-rc1 and built just the hdspmixer app
+> from that tarball. Same segfault. I have a fairly useless (I think)
+> back trace. I haven't figured out how to get good symbols. (I'm not a
+> programmer - sorry!)
 > 
-> Try ALSA 1.0.10-rc1.
+> Here's what I have so far, the important point being that it segfaults
+> exactly like the one in 1.0.9.
 
-Actually before you try upgrading, use gdb to get a backtrace.
+I think you can get a better backtrace by running gdb from the source
+directory you compiled the program in.  Also install the debug version
+of libfltk if possible.
 
-$ gdb ./hdspmixer
-
-Then when it crashes do "thread apply all bt" and post the output.
+Anyway it looks like the problem is libfltk related.  Maybe try to
+upgrade or downgrade libfltk?
 
 Lee
 
