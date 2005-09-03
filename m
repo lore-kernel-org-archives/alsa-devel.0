@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Sun, 4 Sep 2005 00:33:14 +0200
-Message-ID: <7cf762e3a465641be2bef6f8387ef2cc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001396]: Unable to set capture source
+Date: Sun, 4 Sep 2005 00:33:55 +0200
+Message-ID: <fe0ca6c17c8a8345e494e1421b4fd714@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C66A8116
-	for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2005 00:33:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6FE4B11B
+	for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2005 00:33:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1396> 
 ======================================================================
-Reported By:                aaronkaplan
-Assigned To:                tiwai
+Reported By:                keirlawson
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   328
-Category:                   PCI - nm256
+Issue ID:                   1396
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
+Date Submitted:             09-03-2005 22:53 CEST
 Last Modified:              09-04-2005 00:33 CEST
 ======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
+Summary:                    Unable to set capture source
 Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
-
-The OSS driver works fine.
-
+using amixer, alsamixer or gnome-volume-control it seems to be impossible
+to capture from microphone on my audigy 2 value.  alsamixer does nothign
+when i attempt to select a capture device, the amixer error is below,
+gnome-volume-manager displays only playback volume sliders, no capture
+ones
 ======================================================================
-
-----------------------------------------------------------------------
- aaronkaplan - 09-03-05 22:43 
-----------------------------------------------------------------------
-I upgraded to FC4 and the problem is back again.  When I modprobe
-snd_nm256, sometimes it works, but more than half the time it hangs the
-system.
 
 ----------------------------------------------------------------------
  rlrevell - 09-04-05 00:33 
 ----------------------------------------------------------------------
-The ALSA version shipped with FC4 is old and quite buggy.  Try the latest
-ALSA version (1.0.10-rc1) or ALSA CVS.
+Your ALSA version is too old.  Try kernel 2.6.13.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-04 23:13 aaronkaplan    New Issue                                    
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Note Added: 0001362                          
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
-
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
-08-13-04 01:33 fridolin       Note Added: 0001559                          
-08-13-04 12:46 fridolin       Note Added: 0001562                          
-08-13-04 15:17 fridolin       Note Added: 0001564                          
-08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
-08-19-04 19:18 tiwai          Status                   assigned => resolved
-08-19-04 19:18 tiwai          Resolution               open => fixed       
-08-19-04 19:18 tiwai          Note Added: 0001593                          
-09-24-04 13:43 tiwai          Status                   resolved => closed  
-09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
-Core 4
-09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
-2.6.12-1.1398
-09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
-09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
-09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
-09-04-05 00:33 rlrevell       Note Added: 0006031                          
+09-03-05 22:53 keirlawson     New Issue                                    
+09-03-05 22:53 keirlawson     Kernel Version            => 2.6.12          
+09-04-05 00:33 rlrevell       Note Added: 0006032                          
 ======================================================================
 
 
