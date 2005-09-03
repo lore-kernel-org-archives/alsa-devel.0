@@ -1,17 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: hdspmixer segfaults on AMD64
-Date: Fri, 02 Sep 2005 21:34:54 -0400
-Message-ID: <1125711294.4991.35.camel@mindpipe>
-References: <5bdc1c8b050902153359513ac2@mail.gmail.com>
-	 <1125706745.4991.25.camel@mindpipe>
-	 <5bdc1c8b050902172552be43d1@mail.gmail.com>
-	 <1125707279.4991.33.camel@mindpipe>
-	 <5bdc1c8b05090217476fe9ba06@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000349]: can't play MIDI through ALSA / MPU-401 but non-ALSA "midiplayer" to MIDI device works
+Date: Sat, 3 Sep 2005 03:42:35 +0200
+Message-ID: <6f4fe9847bf1b49ba47acec9dedcb2ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5bdc1c8b05090217476fe9ba06@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B7BD16A
+	for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2005 03:42:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,39 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-09-02 at 17:47 -0700, Mark Knecht wrote:
-> On 9/2/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> > On Fri, 2005-09-02 at 17:25 -0700, Mark Knecht wrote:
-> > > Hi Lee,
-> > >    I downloaded alsa-tools-1.0.10-rc1 and built just the hdspmixer app
-> > > from that tarball. Same segfault. I have a fairly useless (I think)
-> > > back trace. I haven't figured out how to get good symbols. (I'm not a
-> > > programmer - sorry!)
-> > >
-> > > Here's what I have so far, the important point being that it segfaults
-> > > exactly like the one in 1.0.9.
-> > 
-> > I think you can get a better backtrace by running gdb from the source
-> > directory you compiled the program in.  Also install the debug version
-> > of libfltk if possible.
-> > 
-> > Anyway it looks like the problem is libfltk related.  Maybe try to
-> > upgrade or downgrade libfltk?
-> > 
-> > Lee
-> 
-> Bingo - Upgrading fltk from 1.1.4 to 1.1.6 fixed the problem.
-> hdspmixer is up. Time to hook up ADAT cables and see if this puppy
-> makes noise!
-> 
 
-Wow, cool!  That was a complete shot in the dark!
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=349> 
+======================================================================
+Reported By:                amarsh04
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   349
+Category:                   ISA - sb16/sbawe
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     acknowledged
+Distribution:               Debian
+Kernel Version:             2.6.5-1 (problem also showed with 2.4.24)
+======================================================================
+Date Submitted:             06-29-2004 07:58 CEST
+Last Modified:              09-03-2005 03:42 CEST
+======================================================================
+Summary:                    can't play MIDI through ALSA / MPU-401 but non-ALSA
+"midiplayer" to MIDI device works
+Description: 
+With ISA SB16 PNP, aplaymidi -l reports:
+Port    Client name                      Port name
+ 64:0    Sound Blaster 16 MIDI - Rawmidi  Sound Blaster 16 MIDI
+ 65:0    OPL3 FM synth                    OPL3 FM Port
 
-Lee
+Neither 
+aplaymidi -p 64:0 myfile.mid
+nor 
+aplaymidi -p 65:0 myfile.mid 
+work, but the non-ALSA "midiplayer" works playing directly to the MIDI
+device:
+
+playmidi -v -D0 myfile.mid
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-02-05 19:53 
+----------------------------------------------------------------------
+Do you want to play via an external MIDI device or with OPL3 FM synth?
+
+----------------------------------------------------------------------
+ amarsh04 - 09-03-05 03:42 
+----------------------------------------------------------------------
+I just want to be able to play MIDI files through the OPL3 FM synth - I
+have no external MIDI hardware.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-29-04 07:58 amarsh04       New Issue                                    
+06-29-04 07:58 amarsh04       Distribution              => Debian          
+06-29-04 07:58 amarsh04       Kernel Version            => 2.6.5-1 (problem also
+showed with 2.4.24)
+04-07-05 20:57 jdthood        Note Added: 0004365                          
+04-10-05 07:54 amarsh04       Note Added: 0004434                          
+04-10-05 09:53 jdthood        Status                   new => acknowledged 
+04-12-05 16:38 tiwai          Note Added: 0004450                          
+08-29-05 06:23 amarsh04       Note Added: 0005964                          
+08-29-05 06:25 amarsh04       Note Edited: 0005964                         
+09-02-05 19:53 tiwai          Note Added: 0006018                          
+09-03-05 03:42 amarsh04       Note Added: 0006029                          
+======================================================================
+
 
 
 
