@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001396]: Unable to set capture source
-Date: Sun, 4 Sep 2005 14:26:43 +0200
-Message-ID: <fa3e146aab882e8fcb191f1f1f7e688e@bugtrack.alsa-project.org>
+From: Alien <alien999999999@users.sourceforge.net>
+Subject: Re: problems with snd_au8830 module under mandriva 2005
+Date: Sun, 4 Sep 2005 21:34:20 +0200
+Message-ID: <200509042134.23916.alien999999999@users.sourceforge.net>
+References: <4317CC51.3040709@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/signed;
+  boundary="nextPart1363588.Z7H6E7qnQd";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A457176
-	for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2005 14:26:44 +0200 (MEST)
+In-Reply-To: <4317CC51.3040709@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +20,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>
+Cc: Erik <assie2@zonnet.nl>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+--nextPart1363588.Z7H6E7qnQd
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1396> 
-======================================================================
-Reported By:                keirlawson
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1396
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             09-03-2005 22:53 CEST
-Last Modified:              09-04-2005 14:26 CEST
-======================================================================
-Summary:                    Unable to set capture source
-Description: 
-using amixer, alsamixer or gnome-volume-control it seems to be impossible
-to capture from microphone on my audigy 2 value.  alsamixer does nothign
-when i attempt to select a capture device, the amixer error is below,
-gnome-volume-manager displays only playback volume sliders, no capture
-ones
-======================================================================
+Op vrijdag 2 september 2005 05:51, schreef Raymond:
+> I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
+> au8820 patch. They seem to have their own patches.
+>
+> The EQ part in diff11.diff seem to be not tested since EQ is not present
+> in au8820.
+>
+> You should cc your reply to openvortex-dev@nongnu.org and
+> alsa-devel@lists.sourceforge.net so that the others can keep track of
+> your problem.
+>
+> There are 3 bug reports for AMD64 in ALSA BTS.
+> 1047 - au8810
+> 1138 - au8820
+> 1025 - au8830
+>
+> Need feedback from testers with au8810/au8820/au8830 and 32bits/64bits
+> machines to debug this patch.
+>
+> 1) EQ, SPDIF of au8810/au8830 are not present in au8820,
+> 2) WT of au8820/au8830 are not present in au8810,
+> 3) SoftModem of au8810 are not present in au8820.
+> 4) 3D of au8830 is not present in au8810/au8820.
+>
+> Please correct me if I am wrong, I think au8810 do not have any 3D
+> effect hardware.
 
-----------------------------------------------------------------------
- rlrevell - 09-04-05 00:35 
-----------------------------------------------------------------------
-Also you forgot the attachment containing the amixer error.
+i'm not entirely sure, but i think it has some 3D stuff, since i've always =
+had=20
+controls to manage 3D depth, etc...
 
-----------------------------------------------------------------------
- keirlawson - 09-04-05 14:26 
-----------------------------------------------------------------------
-Sorry, this problem was fixed when i upgraded to kernel 2.6.13
+unless you are speaking of something else...
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-03-05 22:53 keirlawson     New Issue                                    
-09-03-05 22:53 keirlawson     Kernel Version            => 2.6.12          
-09-04-05 00:33 rlrevell       Note Added: 0006032                          
-09-04-05 00:35 rlrevell       Note Added: 0006033                          
-09-04-05 14:26 keirlawson     Note Added: 0006037                          
-======================================================================
+--nextPart1363588.Z7H6E7qnQd
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
 
+iD8DBQBDG0w/uBWKXETrtdcRAvCBAKDiRCgzU/9tbpDbWmRqcjEgfgf6hgCgqZHy
+4XlNk+PjamB0g/nsv8hzPSo=
+=jHG0
+-----END PGP SIGNATURE-----
+
+--nextPart1363588.Z7H6E7qnQd--
 
 
 -------------------------------------------------------
