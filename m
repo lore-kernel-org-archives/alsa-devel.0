@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001354]: Mixer problem on Logitech Quickcam Zoom with Integrated mic
-Date: Sun, 4 Sep 2005 09:29:55 +0200
-Message-ID: <a7aa0a2a38430d801b792a4194fe5bb7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001396]: Unable to set capture source
+Date: Sun, 4 Sep 2005 14:26:43 +0200
+Message-ID: <fa3e146aab882e8fcb191f1f1f7e688e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCAEF168
-	for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2005 09:29:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A457176
+	for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2005 14:26:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1354> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1396> 
 ======================================================================
-Reported By:                Bourrindebase
-Assigned To:                Clemens Ladisch
+Reported By:                keirlawson
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1354
-Category:                   USB - usb-audio
+Issue ID:                   1396
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrivalinux
-Kernel Version:             2.6.12-10mdk
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             08-21-2005 18:17 CEST
-Last Modified:              09-04-2005 09:29 CEST
+Date Submitted:             09-03-2005 22:53 CEST
+Last Modified:              09-04-2005 14:26 CEST
 ======================================================================
-Summary:                    Mixer problem on Logitech Quickcam Zoom with
-Integrated mic
+Summary:                    Unable to set capture source
 Description: 
-When I plug the webcam I get an error on mixer settings. Then the mic
-integrated on the webcam is not usable. There is no sound available from
-the webcam. I get the same error with Cooker Mandrivalinux and 10.2 (2005
-Limited Edition) Mandrivalinux. So mixer settings for the cam are note
-available under alsamixer.
+using amixer, alsamixer or gnome-volume-control it seems to be impossible
+to capture from microphone on my audigy 2 value.  alsamixer does nothign
+when i attempt to select a capture device, the amixer error is below,
+gnome-volume-manager displays only playback volume sliders, no capture
+ones
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 08-22-05 13:11 
+ rlrevell - 09-04-05 00:35 
 ----------------------------------------------------------------------
-What do you mean with "error on mixer settings"?
-
-What are the contents of /proc/asound/cards?
-What is the output of "amixer -c <cardnumber> contents"?
+Also you forgot the attachment containing the amixer error.
 
 ----------------------------------------------------------------------
- Bourrindebase - 09-04-05 09:29 
+ keirlawson - 09-04-05 14:26 
 ----------------------------------------------------------------------
-Sorry for to answer lately, but I got some personnal problem.
-
-cat /proc/asound/cards give me:
-0 [ICH5           ]: ICH4 - Intel ICH5
-                     Intel ICH5 with ALC658 at 0xf2101000, irq 17
-1 [U0x46d0x8b4    ]: USB-Audio - USB Device 0x46d:0x8b4
-                     USB Device 0x46d:0x8b4 at usb-0000:00:1d.2-2, full
-speed
-
-
-and amixer on the usb webcam give me:
-Simple mixer control 'Mic',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 3
-  Mono: Capture 0 [0%] [off]
-
-cat /proc/asound/card1/stream0
-USB Device 0x46d:0x8b4 at usb-0000:00:1d.2-2, full speed : USB Audio
-
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 44100
-  Interface 2
-    Altset 2
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 22050
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 11025
-  Interface 2
-    Altset 4
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 8000
+Sorry, this problem was fixed when i upgraded to kernel 2.6.13
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-05 18:17 Bourrindebase  New Issue                                    
-08-21-05 18:17 Bourrindebase  Distribution              => Mandrivalinux   
-08-21-05 18:17 Bourrindebase  Kernel Version            => 2.6.12-10mdk    
-08-22-05 13:11 Clemens LadischNote Added: 0005896                          
-09-04-05 09:29 Bourrindebase  Note Added: 0006036                          
+09-03-05 22:53 keirlawson     New Issue                                    
+09-03-05 22:53 keirlawson     Kernel Version            => 2.6.12          
+09-04-05 00:33 rlrevell       Note Added: 0006032                          
+09-04-05 00:35 rlrevell       Note Added: 0006033                          
+09-04-05 14:26 keirlawson     Note Added: 0006037                          
 ======================================================================
 
 
