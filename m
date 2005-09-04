@@ -1,16 +1,11 @@
-From: Alien <alien999999999@users.sourceforge.net>
-Subject: Re: problems with snd_au8830 module under mandriva 2005
-Date: Sun, 4 Sep 2005 21:34:20 +0200
-Message-ID: <200509042134.23916.alien999999999@users.sourceforge.net>
-References: <4317CC51.3040709@netvigator.com>
+From: "Luanna Fraise" <luanna@ngc.no>
+Subject: =?iso-8859-1?Q?Re:_Works_Very_Good_Me_ddiacat=EDons?=
+Date: Sun, 4 Sep 2005 14:20:33 -0500
+Message-ID: <E1EC02e-0004wV-EJ@mail.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1363588.Z7H6E7qnQd";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0018_01C5B15B.CF6B8E80"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4317CC51.3040709@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,61 +15,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>
-Cc: Erik <assie2@zonnet.nl>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
+To: Nicolas Manfre <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1363588.Z7H6E7qnQd
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0018_01C5B15B.CF6B8E80
 Content-Type: text/plain;
-  charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Op vrijdag 2 september 2005 05:51, schreef Raymond:
-> I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
-> au8820 patch. They seem to have their own patches.
->
-> The EQ part in diff11.diff seem to be not tested since EQ is not present
-> in au8820.
->
-> You should cc your reply to openvortex-dev@nongnu.org and
-> alsa-devel@lists.sourceforge.net so that the others can keep track of
-> your problem.
->
-> There are 3 bug reports for AMD64 in ALSA BTS.
-> 1047 - au8810
-> 1138 - au8820
-> 1025 - au8830
->
-> Need feedback from testers with au8810/au8820/au8830 and 32bits/64bits
-> machines to debug this patch.
->
-> 1) EQ, SPDIF of au8810/au8830 are not present in au8820,
-> 2) WT of au8820/au8830 are not present in au8810,
-> 3) SoftModem of au8810 are not present in au8820.
-> 4) 3D of au8830 is not present in au8810/au8820.
->
-> Please correct me if I am wrong, I think au8810 do not have any 3D
-> effect hardware.
+ViAmCeVa=
+PrLeUlCiXaMe
+agbileliopvitralnari
+raenbrexu=
+meciatraamisxdia
+$3 $3 $1
+33.75.21
+http://www.bornavinroas.c=
+om truck: fences with sentry boxes and stacks of wood, tall posts and some =
+sort terror, Ivan Nikolaevich began swimming through the black, oil-smelling
 
-i'm not entirely sure, but i think it has some 3D stuff, since i've always =
-had=20
-controls to manage 3D depth, etc...
+------=_NextPart_000_0018_01C5B15B.CF6B8E80
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-unless you are speaking of something else...
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DCourier>
+<DIV style=3D"FLOAT: left;"><STRONG>Vi</STRONG><BR>Am<BR>Ce<BR><STRONG>Va=
+</STRONG><BR>Pr<BR>Le<BR>Ul<BR><STRONG>Ci</STRONG><BR>Xa<BR>Me</DIV>
+<DIV style=3D"FLOAT: left;"><STRONG>ag</STRONG><BR>bi<BR>le<BR><STRONG=
+>li</STRONG><BR>op<BR>vi<BR>tr<BR><STRONG>al</STRONG><BR>na<BR>ri</DIV>
+<DIV style=3D"FLOAT: left;"><STRONG>ra</STRONG><BR>en<BR>brex<BR><STRONG>u=
+m</STRONG><BR>ecia<BR>tra<BR>am<BR><STRONG>is</STRONG><BR>x<BR>dia</DIV>
+<DIV style=3D"FLOAT: left;">&nbsp;$3<BR><BR><BR>&nbsp;$3<BR><BR><BR=
+><BR>&nbsp;$1<BR><BR></DIV>
+<DIV style=3D"FLOAT: left;">.33<BR><BR><BR>.75<BR><BR><BR><BR>.21<BR=
+><BR></DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV><A href=3D"http://www.bornavinroas.com">http://www.bornavinroas.c=
+om</A></DIV></FONT></DIV></B></B></BODY></HTML>
 
---nextPart1363588.Z7H6E7qnQd
-Content-Type: application/pgp-signature
+------=_NextPart_000_0018_01C5B15B.CF6B8E80--
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBDG0w/uBWKXETrtdcRAvCBAKDiRCgzU/9tbpDbWmRqcjEgfgf6hgCgqZHy
-4XlNk+PjamB0g/nsv8hzPSo=
-=jHG0
------END PGP SIGNATURE-----
-
---nextPart1363588.Z7H6E7qnQd--
 
 
 -------------------------------------------------------
