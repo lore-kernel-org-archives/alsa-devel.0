@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001372]: Intel HD audio module timeout and xine audio output abnormal
-Date: Mon, 5 Sep 2005 05:41:21 +0200
-Message-ID: <2b6340e44710f5f06b277b99026f6086@bugtrack.alsa-project.org>
+From: "Ekua Trautman" <trautmane@gvh.com>
+Subject: =?iso-8859-1?Q?Re:_Good_pro_Meddiac_at=EDons?=
+Date: Sun, 4 Sep 2005 23:09:22 -0500
+Message-ID: <20050905040931.14AAC19D@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001E_01C5B1A5.AF60BD00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F409818C
-	for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2005 05:41:21 +0200 (MEST)
+Received: from gvh.com (S01060004e21c45a4.wp.shawcable.net [24.79.83.128])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 14AAC19D
+	for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2005 06:09:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Benaiah Romanowski <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1372> 
-======================================================================
-Reported By:                KamMing
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1372
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13-rc6
-======================================================================
-Date Submitted:             08-26-2005 05:10 CEST
-Last Modified:              09-05-2005 05:41 CEST
-======================================================================
-Summary:                    Intel HD audio module timeout and xine audio output
-abnormal
-Description: 
-As loading snd-hd-intel.ko , the system shows following message
-ceaselessly:
+------=_NextPart_000_001E_01C5B1A5.AF60BD00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-" azx_get_response timeout "
+XaAmLeCeUlMeC=
+iVaViPr
+nabiviletrrialliagop
+xentrabrexamdiaisumraecia
+$1 =
+$3 $3
+21.75.=
+33
+http://www.accusesavin.com cat jumped on to the rear coupling-pin of the last =
+one, wrapped its paws now, dont worry. But youd better tell me, Ivan begged =
+soulfully, what
 
+------=_NextPart_000_001E_01C5B1A5.AF60BD00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-After replace function azx_get_response() by :
-{
-        azx_t *chip = codec->bus->private_data;
-        unsigned int wp, corbwp;
-        int timeout = 2;
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DCourier>
+<DIV style=3D"FLOAT: left;">Xa<BR>Am<BR>Le<BR>Ce<BR>Ul<BR>Me<BR><STRONG>C=
+i</STRONG><BR><STRONG>Va</STRONG><BR><STRONG>Vi</STRONG><BR>Pr</DIV>
+<DIV style=3D"FLOAT: left;">na<BR>bi<BR>vi<BR>le<BR>tr<BR>ri<BR><STRO=
+NG>al</STRONG><BR><STRONG>li</STRONG><BR><STRONG>ag</STRONG><BR>op</DIV>
+<DIV style=3D"FLOAT: left;">x<BR>en<BR>tra<BR>brex<BR>am<BR>dia<BR><S=
+TRONG>is</STRONG><BR><STRONG>um</STRONG><BR><STRONG>ra</STRONG><BR>ecia</DIV>
+<DIV style=3D"FLOAT: left;"><BR><BR><BR><BR><BR><BR>&nbsp;$1<BR>&nbsp;=
+$3<BR>&nbsp;$3<BR></DIV>
+<DIV style=3D"FLOAT: left;"><BR><BR><BR><BR><BR><BR>.21<BR>.75<BR>.=
+33<BR></DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV><A href=3D"http://www.accusesavin.com">http://www.accusesavin.com</A=
+></DIV></FONT></DIV></B></B></BODY></HTML>
 
-        corbwp = azx_readb(chip, CORBWP);
-        while ((wp = azx_readb(chip, RIRBWP)) != corbwp) {
-                if (! --timeout) {
-                        snd_printk(KERN_ERR "azx_get_response
-timeout\n");
-                        break;
-                }
-                msleep(1);
-        }
-        wp <<= 1; /* an RIRB entry is 8-bytes */
-        /* read the low value only */
-        return le32_to_cpu(chip->rirb.buf[wp]);
-} 
-
-timeout problem fixed. This code comes from alsa-1.0.8a which is modified
-by Intel and can be downloaded from Intel website.
-
-After fixed timeout problem, xine's audio output abnormal. As playing
-VCD/DVD , the audio output just repeat a piece of sound ceaslessly. And
-sometimes the xine hang with a few minutes. I encountered this problem on
-alsa-1.0.8a and alsa-1.0.10rc1(replaced function azx_get_response()). 
-======================================================================
-
-----------------------------------------------------------------------
- KamMing - 09-05-05 05:41 
-----------------------------------------------------------------------
-This problem has been solved.  Sound playback normally as enable IO-APIC
-supporting in kernel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-26-05 05:10 KamMing        New Issue                                    
-08-26-05 05:10 KamMing        Kernel Version            => 2.6.13-rc6      
-08-28-05 08:56 lazyfai        Issue Monitored: lazyfai                     
-08-30-05 04:19 KamMing        Issue Monitored: KamMing                     
-09-05-05 05:41 KamMing        Note Added: 0006039                          
-======================================================================
-
+------=_NextPart_000_001E_01C5B1A5.AF60BD00--
 
 
 
