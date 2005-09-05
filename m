@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Sun, 4 Sep 2005 22:11:43 +0200
-Message-ID: <75096aea0858336022ba1d68a4184c33@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: hda-intel/ALC260: mixer control issues
+Date: Mon, 5 Sep 2005 09:48:00 +0930 (CST)
+Message-ID: <200509050018.j850I0g7003729@auster.physics.adelaide.edu.au>
+References: <s5hbr3bvlge.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BE5F17C
-	for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2005 22:11:43 +0200 (MEST)
+In-Reply-To: <s5hbr3bvlge.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 02, 2005 12:00:01 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,90 +17,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
-======================================================================
-Reported By:                spiral
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1377
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Hoary
-Kernel Version:             2.6.13 final
-======================================================================
-Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-04-2005 22:11 CEST
-======================================================================
-Summary:                    tons of unknown symbols with 2.6.13 final
-Description: 
-Hello !
+> > I am currently trying to get ALSA working correctly on a laptop equipped
+> > with an ALC260 hda chip (Fujitsu S7020).  It seems to me that the converters
+> > themselves are working but the mixer controls are slightly amiss.  Playing
+> > something with aplay sends something to the internal speakers, but only
+> > if the control labelled "headphone" is turned up.  No signal is sent to
+> > the "headphone/line out" jack even if every single mixer control is
+> > set to its maximum setting.
+> Adjust "Front" mixer.
 
-I have a laptop with a hda-intel based sound card... I recently tried to
-update my kernel to 2.6.13 with the official kernel.org source, with
-almost the same configuration I have on my 2.6.12.5... This worked nicely
-except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
-(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
+It made no difference at all.  With every control at maximum there was no
+audio coming from the "line out" jack.
 
-In both cases, I can't load snd-hda-intel and I get a lot of unknown
-symbol messages in dmesg...
+> > There is also a "PCM" control which sometimes affects the PCM output level
+> > (but I haven't been able to work out the circumstances surrounding the
+> > different behaviour yet).  Curiously it's not mutable whereas every other
+> > control is.
+> This is a software volume control, and no mute switch is provided.
+> The others are hardware mixer controls.
 
-I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
-======================================================================
+Having explored the ALC260 datasheet over the weekend this is now clear.
+Thanks.
 
-----------------------------------------------------------------------
- tiwai - 09-02-05 19:51 
-----------------------------------------------------------------------
-Please show the kernel messages wrt unknown symbols.  Otherwise hard to
-guess.
+> > On the input side it seems that no signal gets to the ADC from the
+> > mic/line-in jack regardless of what is set as the capture source.  Data is
+> > captured though, suggesting a mixer routing issue again.  The signal which
+> > is captured is noisy, although I haven't yet determined exactly what it 
+> > is - it's clearly unrelated to what's presented at the input jack though.
+> Did you raise "Capture" volume and turn on "Capture" switch?
 
-----------------------------------------------------------------------
- 1g0R - 09-04-05 22:11 
-----------------------------------------------------------------------
-I have problem too, when i try to compile alsa-driver with intel-hda.
-make
-...
-..
-make -C /lib/modules/2.6.13-git4/source
-SUBDIRS=/usr/local/src/alsa/alsa-driver-1.0.10rc1
-O=/lib/modules/2.6.13-git4/build modules
-make[1]: Entering directory `/usr/src/linux-2.6.13'
-  CC [M]  /usr/local/src/alsa/alsa-driver-1.0.10rc1/acore/memalloc.o
-  CC [M]  /usr/local/src/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o
-In file included from
-/usr/local/src/alsa/alsa-driver-1.0.10rc1/include/adriver.h:741,
-                 from
-/usr/local/src/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.c:12:
-include/linux/pci.h:819: error: syntax error before numeric constant
-make[4]: *** [/usr/local/src/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o]
-Error 1
-make[3]: *** [/usr/local/src/alsa/alsa-driver-1.0.10rc1/acore] Error 2
-make[2]: *** [_module_/usr/local/src/alsa/alsa-driver-1.0.10rc1] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13'
-make: *** [compile] Error 2
-[root@skynet-x2 alsa-driver-1.0.10rc1]#
+Yes - again there was nothing.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 09:34 spiral         New Issue                                    
-08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
-08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
-09-02-05 19:51 tiwai          Note Added: 0006017                          
-09-04-05 22:11 1g0R           Note Added: 0006038                          
-======================================================================
+I had the opportunity to sit down over the weekend and work through the
+issues.  It turns out that this particular laptop has its sound hardware
+wired up in an odd way.  I was able to get the external plugs working but
+had to write my own custom ALC260 initialisation verb list to do so.
 
+To cut a long story short, the audio inputs/outputs are connected to the
+following ALC260 output pins.
 
+ * Internal speaker: ALC260 "headphone" pin
+ * "Stereo line in jack": ALC260 "mic 1" pin
+ * "Stereo line out jack": ALC260 "line 1" pin (ie: NOT the "line out" pin)
+ * CD audio: ALC260 "CD" pin
+
+The reason I got nothing out of the jack is clear: ALSA configures the
+ALC260 "line out" pin as output and the ALC260 "line 1" as input.  However,
+in the case of this laptop ALC260 "line 1" is actually the output, with line
+level input appearing at the ALC260 "mic 1" pin.  I also found I had to
+explicitly unmute selected input/output widgets since the mixer doesn't
+control these.
+
+Anyway, with this understanding I was able to get audio in and out of this
+laptop.  The question now is: where to from here.  I'd like to get the
+revised initialisation verb list into ALSA but it's not clear how this can
+be done.  As far as I can tell the ALC260 in this laptop identifies itself
+using a generic ID; unless there is some other unique ID we can find there
+won't be any way for ALSA to deduce which initialisation verb list is
+required.  Perhaps a new module parameter?  Let me know your thoughts.
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
