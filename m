@@ -1,7 +1,10 @@
-From: info@xjfudh.com
-Subject: 先日メールした件です
-Date: 5 Sep 2005 13:24:52 +0900
-Message-ID: <20050905042452.14924.qmail@mail.xjfudh.com>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: ALSA features.
+Date: Mon, 05 Sep 2005 14:00:40 +0800
+Message-ID: <431BDF08.3090907@netvigator.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,41 +18,66 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-http://www.nanpara5.net/?user13
 
-2度目のメールに為ってしまい大変申し訳有りません。
-さて、先日メールさせて頂いた☆★一万円(1000ポイント)分プレゼント★☆の件ですが、
-主に、中高年の男女のお客様（特に既婚女性）に大反響で、多勢ご登録頂き本当に驚いています。
-また、私達の掲げる『お客様と一体のサイト運営』にご理解ご賛同頂いたものと感謝致しますと共に、
-私達スタッフと近い世代の、中高年の皆様の出会いを更に全力で応援して行きます！。
+I am looking for ALSA applications (signal generator and spectrum 
+analyser) for measuring/calibrating the proposed au88x0 PCM volume 
+control (per substream) and the existing hardware 10-bands stereo EQ 
+controls on au8810/au8830 ALSA driver.
 
-http://www.nanpara5.net/?user13
+The graphic equalizer program periodically reads the EQ peaks from the 
+hardware registers and display them as 20 VU meters in real-time.
+There are 10 x 2 (left/right) volume control for the gain/atten of the 
+10 octave bands( 31Hz, 63Hz, 125Hz, 250Hz, 500Hz, 1000Hz, 2000Hz, 
+4000Hz, 8000Hz, 16000Hz)
 
-まだご利用に為られていないお客様には、
-☆★一万円(1000ポイント)分プレゼント★☆をご利用頂く事ができますので、
-是非一度、ご利用下さいます様お願い申し上げます。
-しかし前回、私達の説明不足のせいか、中には一万円(1000ポイント)分を、
-上手くご利用に為れなかったお客様も少なからずいらしたようです。
-皆さんにはきちんと連絡を差し上げて極力誠意ある対応をさせて頂いたつもりですが、
-連絡漏れの無いように、再度念を入れてお送りしています。
-更に、皆さんに解り易いようにページの一部を更新しました（一度ご覧に為って下さい）。
+There is no datasheet for au88x0.
 
-http://www.nanpara5.net/?user13
+Only front channels of au8810/au8830 pass through hardware mixer and the 
+hardware equalizer, the rear channels of au8810/au8830 pass through 
+hardware mixer only. The au8820 do not has equalizer.
 
-また、極々わずかのお客様の中には、私達の気持ちが伝わらず、
-巷に横行する迷惑メールの様に感じられた方もいらした様です。
-私達自身の技術不足の為、一部のサーバーを他サイトからレンタルしている事も、
-その様な誤解に一役買っているのかも知れません、
-しかし、私達は断じて『良心的な単独運営』を貫いて行くつもりです。
+The 16-bits audio data passed through the hardware mixer of au88x0 to 
+18-bits DAC of AC97 codec. Any excess gain of the audio by increasing 
+the hardware mixer volume cause distortion.
 
-http://www.nanpara5.net/?user13
+Based on this assumption, please correct me if I am wrong.
+We assume the change of a value of 8 in hardware mixer volume is equal 
+to (6dB) the gain of the 16-bits audio to 18-bits DAC.
 
-最後に為りますが、このメールの配信をを不快または不要と思われる方は、
-お手数ですが下記アドレス迄お送り下さいますようお願い申し上げます。
+How can I perform test to prove this assumption ?
 
-配信不要はこちら迄→ nanpara_office28@yahoo.co.jp
-In an unnecessary delivery, even here is → nanpara_office28@yahoo.co.jp
-送信不需要→ nanpara_office28@yahoo.co.jp
+The existing EQ controls allow us to increase/decrease the volume of 
+individual bands. By decreasing all bands to zero, no sound is heard 
+from the front channels and the corresponding VU meter also varies when 
+changing the EQ cotnrol
+
+How can I measure/calibrate the EQ volume controls in dB ?
+
+
+Any other methods beside using signal generator/spectrum analyser ?
+
+
+James Courtier-Dutton wrote:
+
+ > Hi,
+ >
+ > I am an ALSA developer and I was wondering if there are any feature 
+requests that people who use this list would have.
+ >
+ > I currently have a lot on my TODO list, but there is probably only 
+one feature on that list that might help you and that is dB level 
+readouts in alsamixer.
+ >
+ > Currently, alsamixer uses a 0-100% readout, and on some sound cards 
+100% is the 0dB level, and on others the 0dB level is around 80%.
+ >
+ > This makes setting the capture levels rather difficult to get right 
+in Ardour. Most people would want the alsamixer capture volume controls 
+to all be set to 0dB and then let Ardour do any volume control.
+ >
+ > Any other suggestions?
+ >
+ > James
 
 
 -------------------------------------------------------
