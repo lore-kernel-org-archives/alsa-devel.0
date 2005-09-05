@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001397]: mic volume very low
-Date: Mon, 5 Sep 2005 02:21:34 +0200
-Message-ID: <800bb764c96b75dd443a822f73991e3e@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: hda-intel/ALC260: crackly playback and DC offset on recording
+Date: Mon, 5 Sep 2005 09:59:58 +0930 (CST)
+Message-ID: <200509050029.j850Twn5004053@auster.physics.adelaide.edu.au>
+References: <s5hbr3bvlge.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2975A18F
-	for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2005 02:21:35 +0200 (MEST)
+In-Reply-To: <s5hbr3bvlge.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 02, 2005 12:00:01 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +17,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1397> 
-======================================================================
-Reported By:                pengu
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1397
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Kubuntu
-Kernel Version:             2.6.10-5-686
-======================================================================
-Date Submitted:             09-05-2005 02:21 CEST
-Last Modified:              09-05-2005 02:21 CEST
-======================================================================
-Summary:                    mic volume very low
-Description: 
-Hello,
+Further tests with the hda-intel driver with the ALC260 chip in my laptop
+has shown that when audio is played, seemingly random crackling occurs
+in the output.  This affects only playback - recorded audio is fine.  It
+affected aplay (native alsa), wavplay (uses /dev/dsp and thus alsa's OSS
+snd-pcm-oss module) and audacity 1.2.2 (also using /dev/dsp).
 
-This bug is similar to the bug # 0001232
+I found that the following change to hda_intel.c almost fixed the problem:
 
-I have a Shuttle SB83G5 (  FB83 mainboad - Intel 915G chipset - Intel
-Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family))
-The Audio is Realtek ALC658.
-The mic record volume is very low, not audible even with the boost
-activated.
-There is only a front mic, so I cannot try on an other plug.
+--- hda_intel.c 2005-09-03 23:02:18.000000000 +0930
++++ hda_intel.c-orig    2005-08-16 05:23:07.000000000 +0930
+@@ -1026,7 +1026,7 @@
+ 	azx_setup_periods(azx_dev);
+ 	azx_setup_controller(chip, azx_dev);
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		azx_dev->fifo_size = azx_sd_readw(azx_dev, SD_FIFOSIZE);
++		azx_dev->fifo_size = azx_sd_readw(azx_dev, SD_FIFOSIZE) + 1;
+ 	else
+ 		azx_dev->fifo_size = 0;
 
-======================================================================
+If this patch was applied then playing audio using aplay was clean - no hint
+of the crackling was evident.  However, playing through audacity (which used
+the ALSA OSS emulation) was still crackly.  I then tested using wavplay (which
+also uses the OSS devices) and it too was still crackly.  I recompiled
+audacity to use portaudio v19 (thus giving audacity native ALSA support) and
+was slightly surprised to hear that the crackling remained with audacity even
+when using the ALSA output options.  Throughout all this, the aplay output
+was clean so long as the above patch had been applied.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-05-05 02:21 pengu          New Issue                                    
-09-05-05 02:21 pengu          Distribution              => Kubuntu         
-09-05-05 02:21 pengu          Kernel Version            => 2.6.10-5-686    
-======================================================================
+I must admit to not knowing exactly what the fifo_size does; my attention
+was drawn to it because the +1 looked odd and it was an obvious point of
+difference between the record path (which was fine) and the playback path
+(which crackled).
 
+On the subject of recording, there seems to be a DC offset in the ADC which
+is dependent on the level of the "capture" mixer control - the higher the
+control the higher the DC offset.  The offset is present even when nothing
+is plugged in to the laptop.  With the control at maximum the DC offset
+is as much as 10% FSD; at mimimum it's around 1-2%.
 
+Any ideas on either of these?
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
