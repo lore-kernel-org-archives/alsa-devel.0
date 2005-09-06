@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: hda-intel/ALC260: crackly playback and DC offset on recording
-Date: Tue, 6 Sep 2005 09:37:20 +0930 (CST)
-Message-ID: <200509060007.j8607KRW006657@auster.physics.adelaide.edu.au>
-References: <s5h3boju7cv.wl%tiwai@suse.de>
+Subject: Re: hda-intel/ALC260: mixer control issues
+Date: Tue, 6 Sep 2005 09:54:01 +0930 (CST)
+Message-ID: <200509060024.j860O1aa007329@auster.physics.adelaide.edu.au>
+References: <s5h4q8zu7i8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3boju7cv.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 05, 2005 12:38:56 PM
+In-Reply-To: <s5h4q8zu7i8.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 05, 2005 12:35:43 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +21,59 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
-
-> > Further tests with the hda-intel driver with the ALC260 chip in my laptop
-> > has shown that when audio is played, seemingly random crackling occurs
-> > in the output.  This affects only playback - recorded audio is fine.  It
-> > affected aplay (native alsa), wavplay (uses /dev/dsp and thus alsa's OSS
-> > snd-pcm-oss module) and audacity 1.2.2 (also using /dev/dsp).
+Hi Takashi 
+  
+> > I had the opportunity to sit down over the weekend and work through the
+> > issues.  It turns out that this particular laptop has its sound hardware
+> > wired up in an odd way.  I was able to get the external plugs working but
+> > had to write my own custom ALC260 initialisation verb list to do so.
 > > 
-> > I found that the following change to hda_intel.c almost fixed the problem:
+> > To cut a long story short, the audio inputs/outputs are connected to the
+> > following ALC260 output pins.
 > > 
-> > --- hda_intel.c 2005-09-03 23:02:18.000000000 +0930
-> > +++ hda_intel.c-orig    2005-08-16 05:23:07.000000000 +0930
-> > @@ -1026,7 +1026,7 @@
-> >  	azx_setup_periods(azx_dev);
-> >  	azx_setup_controller(chip, azx_dev);
-> >  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > -		azx_dev->fifo_size = azx_sd_readw(azx_dev, SD_FIFOSIZE);
-> > +		azx_dev->fifo_size = azx_sd_readw(azx_dev, SD_FIFOSIZE) + 1;
-> >  	else
-> >  		azx_dev->fifo_size = 0;
+> >  * Internal speaker: ALC260 "headphone" pin
+> >  * "Stereo line in jack": ALC260 "mic 1" pin
+> >  * "Stereo line out jack": ALC260 "line 1" pin (ie: NOT the "line out" pin)
+> >  * CD audio: ALC260 "CD" pin
+> > 
+> > The reason I got nothing out of the jack is clear: ALSA configures the
+> > ALC260 "line out" pin as output and the ALC260 "line 1" as input.  However,
+> > in the case of this laptop ALC260 "line 1" is actually the output, with line
+> > level input appearing at the ALC260 "mic 1" pin.  I also found I had to
+> > explicitly unmute selected input/output widgets since the mixer doesn't
+> > control these.
+> > 
+> > Anyway, with this understanding I was able to get audio in and out of this
+> > laptop.  The question now is: where to from here.  I'd like to get the
+> > revised initialisation verb list into ALSA but it's not clear how this can
+> > be done.  As far as I can tell the ALC260 in this laptop identifies itself
+> > using a generic ID; unless there is some other unique ID we can find there
+> > won't be any way for ALSA to deduce which initialisation verb list is
+> > required.  Perhaps a new module parameter?  Let me know your thoughts.
 > 
-> This is already in 1.0.10rc1.  Or do you mean to revert this?
+> Hmm, so you mean it has no unique PCI _subsystem_ ID, too?
+> The model is detected with the PCI SSID, not the PCI ID.
 
-Oops, it looks like I did the diff around the wrong way by accident - sorry
-for the confusion.  What I mean is that the "+1" should be removed.  If the
-"+1" was added in 1.0.10rc1 then I guess that means that it should be
-reverted.  As mentioned below though, without the "+1" aplay output is clean
-but not everything is fixed, so this might not be the root cause of the
-problem.
+The PCI SSID is just the thing listed under "subsystem" in lspci, right?
+If so I guess it would be 10cf:1326.  How unique is this?
 
-> > If this patch was applied then playing audio using aplay was clean - no hint
-> > of the crackling was evident.  However, playing through audacity (which used
-> > the ALSA OSS emulation) was still crackly.  I then tested using wavplay (which
-> > also uses the OSS devices) and it too was still crackly.  I recompiled
-> > audacity to use portaudio v19 (thus giving audacity native ALSA support) and
-> > was slightly surprised to hear that the crackling remained with audacity even
-> > when using the ALSA output options.  Throughout all this, the aplay output
-> > was clean so long as the above patch had been applied.
-> Does position_fix=1 module option help?
+I guess the correct way of dealing with this is to define a new model in
+patches_realtek.c in the same way that the HP variant is currently done, and
+use the alternative initialisation verb list if this new model is detected? 
+I'll do a patch up along these lines in the next day or so unless you advise
+that there is a better way.
 
-I will try this and advise of the outcome.
+For completeness, here's the output of the relevant section of "lspci -v":
 
-> > On the subject of recording, there seems to be a DC offset in the ADC which
-> > is dependent on the level of the "capture" mixer control - the higher the
-> > control the higher the DC offset.  The offset is present even when nothing
-> > is plugged in to the laptop.  With the control at maximum the DC offset
-> > is as much as 10% FSD; at mimimum it's around 1-2%.
-> > 
-> > Any ideas on either of these?
-> 
-> I guess it's in the codec side, not the controller side.
-> There might be missing initialization for ALC260...
+  00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 04)
+    Subsystem: Fujitsu Limited.: Unknown device 1326
+    Flags: bus master, fast devsel, latency 0, IRQ 17
+    Memory at b0000000 (64-bit, non-prefetchable) [size=16k]
+    Capabilities: <available only to root>
 
-I thought of that, but there doesn't appear to be anything in the ALC260
-datasheet related to a DC offset.  There is talk about the option of setting
-the Vref on these pins (50% or 80% of digital supply) but doing either
-doesn't alter the DC offset in the sampled datastream compared to the "no
-Vref" case which is what I'm currently using.  Perhaps it's related to the
-chip's impedence detection logic - I'll have a look at that area tonight.
+The first two lines if "lspci -vn" is used are:
+  00:1b.0 Class 0403: 8086:2668 (rev 04)
+    Subsystem: 10cf:1326
 
 Regards
   jonathan
