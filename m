@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000322]: oops while removing au8810
-Date: Tue, 6 Sep 2005 14:32:54 +0200
-Message-ID: <553f25c3cecf1e84bc80f07c1927364f@bugtrack.alsa-project.org>
+Date: Tue, 6 Sep 2005 14:58:20 +0200
+Message-ID: <84dcb75a66ff7e41ebd137cc97fb9453@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76D1818F
-	for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2005 14:32:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EA51195
+	for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2005 14:58:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               conectiva linux 10 snapshot with custom kernel
 Kernel Version:             2.6.7-rc2
 ======================================================================
 Date Submitted:             06-02-2004 13:24 CEST
-Last Modified:              09-06-2005 14:32 CEST
+Last Modified:              09-06-2005 14:58 CEST
 ======================================================================
 Summary:                    oops while removing au8810
 Description: 
@@ -57,19 +57,60 @@ vortex: IRQ reg error
 ======================================================================
 
 ----------------------------------------------------------------------
- aris - 09-06-05 14:12 
+ Raymond - 09-06-05 14:34 
 ----------------------------------------------------------------------
-Hi,
-couldn't answer by email, so sorry for the delay. I did a test in 2.6.13
-stock kernel and the problem is fixed. the hardware still doesn't work but
-I guess it's a hardware problem. Thanks,
+It seem that the au8810 driver has a bug if au8810 has a quad codec.
 
-----------------------------------------------------------------------
- Raymond - 09-06-05 14:32 
-----------------------------------------------------------------------
 Are your card SQ1500 ? 
 
 lspci -vvn
+
+
+
+----------------------------------------------------------------------
+ Raymond - 09-06-05 14:58 
+----------------------------------------------------------------------
+au8830.h
+
+#define VORTEX_CODEC_EN 0x29190
+#define		EN_AUDIO0		0x00000300          <- front channels
+#define		EN_MODEM		0x00000c00
+#define		EN_AUDIO1		0x00003000          <- rear channels
+#define		EN_SPORT		0x00030000
+#define		EN_SPDIF		0x000c0000
+#define		EN_CODEC		(EN_AUDIO1 | EN_AUDIO0)
+
+au8810.h
+#define VORTEX_CODEC_CTRL	0x29184
+#define VORTEX_CODEC_EN		0x29190
+#define		EN_CODEC0	0x00000300
+#define 	EN_AC98		0x00000c00 /* Modem AC98 slots. */
+#define		EN_CODEC1	0x00003000
+#define		EN_CODEC	(EN_CODEC0 | EN_CODEC1)
+#define		EN_SPORT	0x00030000
+#define		EN_SPDIF	0x000c0000
+
+au88x0_core.c
+
+static void vortex_codec_init(vortex_t * vortex)
+{
+...
+	/* Enable codec channels 0 and 1. */
+	hwwrite(vortex->mmio, VORTEX_CODEC_EN,
+		hwread(vortex->mmio, VORTEX_CODEC_EN) | EN_CODEC);
+
+}
+
+
+static snd_pcm_hardware_t snd_vortex_playback_hw_adb = {
+...
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+...
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +129,8 @@ snapshot with custom kernel
 09-06-05 11:03 Raymond        Note Added: 0006043                          
 09-06-05 14:12 aris           Note Added: 0006044                          
 09-06-05 14:32 Raymond        Note Added: 0006045                          
+09-06-05 14:34 Raymond        Note Edited: 0006045                         
+09-06-05 14:58 Raymond        Note Added: 0006046                          
 ======================================================================
 
 
