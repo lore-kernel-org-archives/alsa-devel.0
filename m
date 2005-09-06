@@ -1,13 +1,13 @@
 From: Raymond <rayau@netvigator.com>
-Subject: au88x0 PCM Volume control
-Date: Tue, 06 Sep 2005 16:00:15 +0800
-Message-ID: <431D4C8F.9010909@netvigator.com>
-References: <4315C4BC.7040206@netvigator.com>
+Subject: Re: Mo' better modem support
+Date: Tue, 06 Sep 2005 16:37:34 +0800
+Message-ID: <431D554E.8050500@netvigator.com>
+References: <s5h64tfs8wm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4315C4BC.7040206@netvigator.com>
+In-Reply-To: <s5h64tfs8wm.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,154 +18,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Manuel Jander <manuel.jander@gmail.com>, openvortex-dev@nongnu.org
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
-The proposed PCM Volume controls of the playback device 0 of au88x0 
-driver allow any ALSA application using the PCM Volume control 
-(.iface=SNDRV_CTL_ELEM_IFACE_PCM) associated to the sudevice to change 
-the volume (-48dB to 6dB) when the audio passing through the hardware 
-mixer of au88x0.
+
+ASUS L8400B notebook equipped with au8810 chip and there is a Win9x 
+Aureal audio/modem driver for the notebook
+
+http://usa.asus.com/download/notebook/nb-l8400b.htm
+
+Is this kind of softmodem supported by ALSA ?
+
+http://www.tomshardware.com/mobile/20010202/l8400b-09.html
 
 
-Mono
-                             0dB
-DMA -> FIFO -> SRC -> MIXIN ---> MIXOUT -> Equalizer -> Front Left
-                         |   0dB
-                         +------> MIXOUT -> Equalizer -> Front Right
-                         |   6dB
-                         +------> MIXOUT --------------> Rear Left
-                         |   6dB
-                         +------> MIXOUT --------------> Rear Right
-
-Stereo
-
-                             0dB
-DMA -> FIFO -> SRC -> MIXIN ---> MIXOUT -> Equalizer -> Front Left
-             |           |   6dB
-             |           +------> MIXOUT --------------> Rear Left
-             |               0dB
-             +> SRC -> MIXIN ---> MIXOUT -> Equalizer -> Front Right
-                         |   6dB
-                         +------> MIXOUT --------------> Rear Right
-
-Surround40
-
-                             0dB
-DMA -> FIFO -> SRC -> MIXIN ---> MIXOUT -> Equalizer -> Front Left
-             |               0dB
-             +> SRC -> MIXIN ---> MIXOUT -> Equalizer -> Front Right
-             |               6dB
-             +> SRC -> MIXIN ---> MIXOUT --------------> Rear Left
-             |               6dB
-             +> SRC -> MIXIN ---> MIXOUT --------------> Rear Right
-
+Takashi Iwai wrote:
+> Hi,
 > 
-> Description of the patch (beta)
-> - add PCM Volume control by using the hardware mixer of au88x0
+> I've played a bit the ac97 modem yesterday, and found out the
+> following problems:
+> 
+> 1. Off-Hook switch needs manually turned on
+> 
+>    Shall we add a hook in pcm.modem definition for this control?
+> 
+> 2. All controls have index 1, thus the appearance on alsamixer looks
+>    strange
+> 
+> 3. There is no way to detect the modem driver from sysfs or so.
+> 
+>    Espeically, hda-intel driver supports both audio and modem by a
+>    single driver, and the modem support doesn't appear even on proc
+>    file explicitly.
+> 
+> Well, 2 is a minor problem, and we can live with that.
+> But others should be improved...
 > 
 > 
-> TEST AT YOUR OWN RISK !!!
+> Any ideas?
 > 
-> The audio will be distorted when total gain exceed the limit of 18-bits
-> DAC in AC97 codec.
+> Takashi
 > 
-> 
-> Any comment/suggestion or programs to test the feature are welcome.
-> 
-> 
->> Hi,
-> 
-> 
->> On Mon, 2005-08-29 at 10:28 +0800, Raymond wrote:
-
->> > Distortion occur when the combined gain of audio data, hardware
->> > mixer ,  equalizer and 3D effect > 6dB ( limit by the 18-bits DAC i
->> > n AC97 codec)
-> 
-> 
->> The maximum gain possible for a entire audio pipe should obvisouly not
->> exceeded.
-> 
-
-Why the hardware mixer in the current ALSA driver is set to zero gain in 
-vortex_adb_allocroute() when capturing audio from 18-bits ADC to 16-bits 
-audio ? ( In theory, it should be -6dB )
-
-
-                                               AC97
-16bits Audio                 0dB        18bits   Analog
-DMA <- FIFO <- SRC <- MIXOUT <- MIXIN <- ADC  <- MIXER <---- MIC
-                                        |           |
-DMA <- FIFO <- SRC <- MIXOUT <- MIXIN <+           +---------LINE IN
-                                                    |
-                                                    +---------VIDEO
-                                                    |
-                                                    +---------CD
-                                                    |
-                                                    +---------AUX
-                                                    |
-                                                    +---------PHONE
-                                                    |
-                                                    +---------MIX
-
-
-> 
->> > In the ALSA au88x0 driver, the hardware mixer provide default gain
->> > of  6dB ( 16-bits auido data to 18-bits DAC in AC97 codec ) for the
->> > left/right channels of au8820 and the rear channels of au8810/au8830
->> > (to  SDAC of quad codec),
->>  >
->> > For the front channels of au8810/au8830, zero gain in hardware mixer
->> > and  this 6dB gain is most likely controlled by the equalizer or 3D
->> > effect.
->> >
-> 
->> I would suggest using the correct signed or unsigned type instead of
->> doing explicit type conversions.
-> 
-
-
-static void
-vortex_mix_setinputvolumebyte(vortex_t * vortex, unsigned char mix,
-			      int mixin, unsigned char vol)
-{
-	int temp;
-
-	hwwrite(vortex->mmio,
-		VORTEX_MIX_INVOL_A + (((mix << 5) + mixin) << 2), vol);
-	if (1) {		/* this_10, initialized to 1. */
-		temp =
-		    hwread(vortex->mmio,
-			   VORTEX_MIX_INVOL_B + (((mix << 5) + mixin) << 2));
-		if ((temp != 0x80) || (vol == 0x80))
-			return;
-	}
-	hwwrite(vortex->mmio,
-		VORTEX_MIX_INVOL_B + (((mix << 5) + mixin) << 2), vol);
-}
-
-
-static int snd_vortex_adb_pcm_change_vol(vortex_t *vortex,int mixin,int
-mix,int volume)
-{
-	if ( volume >= 128 )
-		vortex_mix_setinputvolumebyte(vortex, mix, mixin, volume-128);
-   // GAIN
-	else
-		if ( volume < 64 )
-			vortex_mix_setinputvolumebyte(vortex, mix, mixin, 0x80);        // MUTE
-		else
-			vortex_mix_setinputvolumebyte(vortex, mix, mixin, volume+128);  // ATTEN
-	return 0;
-}
-
-
-
-
-
-
-
 
 
 
