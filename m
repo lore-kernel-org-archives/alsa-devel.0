@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Tue, 6 Sep 2005 20:17:59 +0200
-Message-ID: <44e3a78fd6bc0f364fb9d1772bf4bb66@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: Re: Re: Mo' better modem support
+Date: Tue, 06 Sep 2005 23:43:46 +0300
+Message-ID: <20050906204346.GA30777@sashak.softier1.local>
+References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com>
+ <20050906142917.GA30523@sashak.softier1.local>
+ <431D974B.2090004@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0CD73198
-	for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2005 20:17:59 +0200 (MEST)
+In-reply-to: <431D974B.2090004@netvigator.com>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +20,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On 21:19 Tue 06 Sep     , Raymond wrote:
+> 
+> http://www.3dsoundsurge.com/press/pr127.html
+> 
+>  Telephony Support:
+> 
+> A hardware accelerated soft modem approach reduces total
+> system cost as well as provides high reliability in the most demanding 
+> of applications. PC99 compliant telephony including D3cold wake is 
+> provided via the AC'97 interface.   Both integrated AMC'97 as well as 
+> separate MC'97 CODECs
+> are supported.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
-======================================================================
-Reported By:                spiral
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1377
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Hoary
-Kernel Version:             2.6.13 final
-======================================================================
-Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-06-2005 20:17 CEST
-======================================================================
-Summary:                    tons of unknown symbols with 2.6.13 final
-Description: 
-Hello !
+Yes, looks like pure AC97 softmodem. What is your 'lspci -nv'. Is there
+data sheet?
 
-I have a laptop with a hda-intel based sound card... I recently tried to
-update my kernel to 2.6.13 with the official kernel.org source, with
-almost the same configuration I have on my 2.6.12.5... This worked nicely
-except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
-(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
+Sasha.
 
-In both cases, I can't load snd-hda-intel and I get a lot of unknown
-symbol messages in dmesg...
-
-I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
-======================================================================
-
-----------------------------------------------------------------------
- spiral - 09-06-05 17:36 
-----------------------------------------------------------------------
-I just uploaded my dmesg output, as it didn't work better with the latest
-cvs checkout I tried...
-
-I hope you'll be able to help me...
-
-I just installed 2.6.12.6, with exactly the same cvs tree, and this works
-fine... Really a problem with 2.6.13 ???
-
-----------------------------------------------------------------------
- 1g0R - 09-06-05 20:17 
-----------------------------------------------------------------------
-Its a little bit "barbarian" solution, but i did the following things, and
-its worked for me:
-
-0. maybe you need to replace init.c, and adriver.h
-1. in linux kernel source (2.6.13) in include->linux->pci.h at line 819
-comment out with /*.......*/
-2. configure make make install alsa-driver
-3. remove comment from pci.h
-4. compile the other alsa*
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 09:34 spiral         New Issue                                    
-08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
-08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
-09-02-05 19:51 tiwai          Note Added: 0006017                          
-09-04-05 22:11 1g0R           Note Added: 0006038                          
-09-05-05 14:15 kSh            Note Added: 0006041                          
-09-05-05 14:15 kSh            Issue Monitored: kSh                         
-09-06-05 17:35 spiral         File Added: dmesgout.txt                     
-09-06-05 17:36 spiral         Note Added: 0006047                          
-09-06-05 20:17 1g0R           Note Added: 0006048                          
-======================================================================
-
-
+> 
+> Notebook Features:
+> 
+> The AU8810 readily supports notebook applications by
+> providing necessary features such as PCI CLKRUN# support, dual AC'97 
+> CODEC operation, hardware volume control, low static power consumption, 
+> and aggressive power management techniques.
+> 
+> 
+> 
+> 
+> 
+> 
+> -------------------------------------------------------
+> SF.Net email is Sponsored by the Better Software Conference & EXPO
+> September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+> Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+> Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
