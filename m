@@ -1,14 +1,13 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: Mo' better modem support
-Date: Tue, 06 Sep 2005 02:29:51 +0300
-Message-ID: <20050905232951.GG20428@sashak.softier1.local>
-References: <s5h64tfs8wm.wl%tiwai@suse.de>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: hda-intel/ALC260: crackly playback and DC offset on recording
+Date: Tue, 6 Sep 2005 09:37:20 +0930 (CST)
+Message-ID: <200509060007.j8607KRW006657@auster.physics.adelaide.edu.au>
+References: <s5h3boju7cv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5h64tfs8wm.wl%tiwai@suse.de>
-Content-disposition: inline
+In-Reply-To: <s5h3boju7cv.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 05, 2005 12:38:56 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,86 +18,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 19:48 Mon 05 Sep     , Takashi Iwai wrote:
+Hi Takashi
+
+> > Further tests with the hda-intel driver with the ALC260 chip in my laptop
+> > has shown that when audio is played, seemingly random crackling occurs
+> > in the output.  This affects only playback - recorded audio is fine.  It
+> > affected aplay (native alsa), wavplay (uses /dev/dsp and thus alsa's OSS
+> > snd-pcm-oss module) and audacity 1.2.2 (also using /dev/dsp).
+> > 
+> > I found that the following change to hda_intel.c almost fixed the problem:
+> > 
+> > --- hda_intel.c 2005-09-03 23:02:18.000000000 +0930
+> > +++ hda_intel.c-orig    2005-08-16 05:23:07.000000000 +0930
+> > @@ -1026,7 +1026,7 @@
+> >  	azx_setup_periods(azx_dev);
+> >  	azx_setup_controller(chip, azx_dev);
+> >  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> > -		azx_dev->fifo_size = azx_sd_readw(azx_dev, SD_FIFOSIZE);
+> > +		azx_dev->fifo_size = azx_sd_readw(azx_dev, SD_FIFOSIZE) + 1;
+> >  	else
+> >  		azx_dev->fifo_size = 0;
 > 
-> I've played a bit the ac97 modem yesterday,
+> This is already in 1.0.10rc1.  Or do you mean to revert this?
 
-Great!
+Oops, it looks like I did the diff around the wrong way by accident - sorry
+for the confusion.  What I mean is that the "+1" should be removed.  If the
+"+1" was added in 1.0.10rc1 then I guess that means that it should be
+reverted.  As mentioned below though, without the "+1" aplay output is clean
+but not everything is fixed, so this might not be the root cause of the
+problem.
 
-> and found out the
-> following problems:
+> > If this patch was applied then playing audio using aplay was clean - no hint
+> > of the crackling was evident.  However, playing through audacity (which used
+> > the ALSA OSS emulation) was still crackly.  I then tested using wavplay (which
+> > also uses the OSS devices) and it too was still crackly.  I recompiled
+> > audacity to use portaudio v19 (thus giving audacity native ALSA support) and
+> > was slightly surprised to hear that the crackling remained with audacity even
+> > when using the ALSA output options.  Throughout all this, the aplay output
+> > was clean so long as the above patch had been applied.
+> Does position_fix=1 module option help?
+
+I will try this and advise of the outcome.
+
+> > On the subject of recording, there seems to be a DC offset in the ADC which
+> > is dependent on the level of the "capture" mixer control - the higher the
+> > control the higher the DC offset.  The offset is present even when nothing
+> > is plugged in to the laptop.  With the control at maximum the DC offset
+> > is as much as 10% FSD; at mimimum it's around 1-2%.
+> > 
+> > Any ideas on either of these?
 > 
-> 1. Off-Hook switch needs manually turned on
+> I guess it's in the codec side, not the controller side.
+> There might be missing initialization for ALC260...
 
-Yes. I think that it is ok, this should be controlled separately from
-PCM. For instance for Caller ID polling we will need to run capturing
-with CID switch 'on' and Off-Hook switch 'off'. Other example is typical
-dialer (auto-dialer or so), this will turn 'Off-hook' switch 'on', start
-playback (to send DTMFs), stop playback and leave line with 'Off-hook'
-is 'on'.
+I thought of that, but there doesn't appear to be anything in the ALC260
+datasheet related to a DC offset.  There is talk about the option of setting
+the Vref on these pins (50% or 80% of digital supply) but doing either
+doesn't alter the DC offset in the sampled datastream compared to the "no
+Vref" case which is what I'm currently using.  Perhaps it's related to the
+chip's impedence detection logic - I'll have a look at that area tonight.
 
->    Shall we add a hook in pcm.modem definition for this control?
-
-If we really need to auto-"Hoof-Off" we may separate it to logically
-different pcm devices (like pcm.modem, pcm.phoneline or so) and then add
-hook to one of them.
-
-( But really, who will use it? Specialized phone oriented application
-(like dialer, voice machine or softmodem) will control DAA specific
-switches explicitly anyway. And for simple scripting amixer + aplay
-should be good enough. )
-
-> 2. All controls have index 1, thus the appearance on alsamixer looks
->    strange
-
-Will see it (no modems near me).
-
-> 3. There is no way to detect the modem driver from sysfs or so.
-
-There is no some "standard" way to define softmodem in Linuxi - remember
-this "winmodem is not modem", and this is correct. What we actually have
-in hardware (and in ALSA) is not modem, it is simplified sound codec +
-Data Access Arrangement (DAA) (aka Telephone Line Interface Circuit).
-And the "real" modem (which performs modulation/demodulation) is
-user-space application (like proprietary 'slmodem') that uses the
-standard ALSA api to communicate with this sound device.
-
-( don't mention here binary-only kernel modem drivers provided by some
-vendors. )
-
->    Espeically, hda-intel driver supports both audio and modem by a
->    single driver, and the modem support doesn't appear even on proc
->    file explicitly.
-
-Agree, 'proc' files will be helpful with MFG too. Actually I've planned
-to do it, but don't have HDA hardware now. Testers?
-
-(BTW one more reason why it will be helpful: existed HDA modem driver
-has just one (known) vendor ID, but I guess there will be more same chip
-based modems with different vendor IDs. If we will show this info
-somewhere in proc files it will simplify IDs addition)
-
-> Well, 2 is a minor problem, and we can live with that.
-> But others should be improved...
->
->
-> Any ideas?
-
-Some more things for your list:
-
-4. Unsupported Conexant modem codecs (AC97 and HDA).
-5. Lack of incoming call notifications.
-6. Lack of free softmodem software.
-
-'5' may be related to '3', but I think this is more generic problem:
-is there "standard" telephony interface (or just used by nobody
-'include/linux/telephony.h')?
-
-Sasha.
-
+Regards
+  jonathan
 
 
 -------------------------------------------------------
