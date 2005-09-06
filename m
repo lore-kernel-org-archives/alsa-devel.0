@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001400]: sys_siglist unavalible in uclibc
-Date: Tue, 6 Sep 2005 22:10:58 +0200
-Message-ID: <64f9bfafacce22e31feff3ff505b1764@bugtrack.alsa-project.org>
+Date: Tue, 6 Sep 2005 22:28:04 +0200
+Message-ID: <b73f2d6e4ba7ea7946088d5e6239bc73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 582061B2
-	for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2005 22:10:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 400601B2
+	for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2005 22:28:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             09-06-2005 21:56 CEST
-Last Modified:              09-06-2005 22:10 CEST
+Last Modified:              09-06-2005 22:28 CEST
 ======================================================================
 Summary:                    sys_siglist unavalible in uclibc
 Description: 
@@ -66,11 +66,17 @@ fixes the problem,
 ----------------------------------------------------------------------
 Does this work equally well with glibc?
 
+----------------------------------------------------------------------
+ mithro - 09-06-05 22:28 
+----------------------------------------------------------------------
+Yes
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-06-05 21:56 mithro         New Issue                                    
 09-06-05 22:10 rlrevell       Note Added: 0006049                          
+09-06-05 22:28 mithro         Note Added: 0006050                          
 ======================================================================
 
 
