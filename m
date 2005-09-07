@@ -1,14 +1,13 @@
-From: Erik <assie2@zonnet.nl>
-Subject: Re: problems with snd_au8830 module under mandriva 2005
-Date: Thu, 08 Sep 2005 00:15:09 +0200
-Message-ID: <1126131309.17399.8.camel@pc-erik.lan>
-References: <4317CC51.3040709@netvigator.com>
-	 <200509042134.23916.alien999999999@users.sourceforge.net>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Converting OSS ioctl's to ALSA API
+Date: Wed, 07 Sep 2005 23:29:39 +0100
+Message-ID: <431F69D3.1060705@superbug.co.uk>
+References: <33017.65.103.251.231.1125967798.squirrel@65.103.251.231>    <Pine.HPX.4.33n.0509060950330.11382-100000@studcom.urz.uni-halle.de> <52491.12.110.19.97.1126112946.squirrel@12.110.19.97>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200509042134.23916.alien999999999@users.sourceforge.net>
+In-Reply-To: <52491.12.110.19.97.1126112946.squirrel@12.110.19.97>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +17,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alien <alien999999999@users.sourceforge.net>
-Cc: Raymond <rayau@netvigator.com>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
+To: Bob Ingraham <bobi@netshel.net>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-i'm busy with home improving but when i have time i will try the patch
-again on 2.6.12 kernel. I have not checked if it is the same alsa
-version as 2.6.11 but i think it is.
+Bob Ingraham wrote:
 
-b.t.w. the volume bar problem is in XMMS (didn't try other programs
-because i haven't a lot of time) (just online for mail checking etc.
-that's it)
-but i think alien can tell you about the volume bar problems.
+>Thank-you so much for ioctl mapping!
+>
+>May I ask one other architectural question?
+>
+>This video-conferencing app expected to use two half-duplex devices for
+>simultaneous record-playback:
+>
+>/dev/dsp0 and /dev/dsp1 - these were expected to be configured as the
+>separate playback and record channels of a single soundcard.
+>
+>However, on all of our target platforms (all running
+>SuSE/Novell-Linux-Desktop,) there only appears to be a single, full-duplex
+>device to use (plugwh:0,0) for both record and playback.
+>
+>So the (three-part) question is:
+>
+>1. Do I:
+>
+>  (a) Try to re-write this app to use full-duplex? or,
+>
+>  (b) Can I re-configure ALSA to split the default device (plughw:0,0)
+>into two separate, half-duplex sub-devices (one for playback and one for
+>record?
+>
+>
+>2. Which approach makes more sense (i.e., more stable, reliable, etc.)?
+>
+>
+>3. If 1a is the way to go, is there a tutorial or sample-doc on how to
+>properly program full-duplex (simultaneous record & playback) operation
+>under ALSA?
+>
+>
+>Thanks,
+>Bob
+>  
+>
+ALSA provides an abstraction layer.
+If you open plughw:0,0 for only playback, and then again for only 
+capture it should work.
+So, although the device name looks the same, device names for playback 
+and capture are in fact in a different name space.
+alsa-lib does all the difficult work for you.
 
-pc information:
+Another alternative could be to use jackd. It is ideal for low latency 
+applications, and VoIP is certainly ideal for that.
 
-mandriva 2005 le
-kernel 2.6.11
-amd 64 bit 3500+
-diamond monster sound mx300 au8830 card
-
-
-Erik
-
-
-
-On Sun, 2005-09-04 at 21:34 +0200, Alien wrote:
-> Op vrijdag 2 september 2005 05:51, schreef Raymond:
-> > I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
-> > au8820 patch. They seem to have their own patches.
-> >
-> > The EQ part in diff11.diff seem to be not tested since EQ is not present
-> > in au8820.
-> >
-> > You should cc your reply to openvortex-dev@nongnu.org and
-> > alsa-devel@lists.sourceforge.net so that the others can keep track of
-> > your problem.
-> >
-> > There are 3 bug reports for AMD64 in ALSA BTS.
-> > 1047 - au8810
-> > 1138 - au8820
-> > 1025 - au8830
-> >
-> > Need feedback from testers with au8810/au8820/au8830 and 32bits/64bits
-> > machines to debug this patch.
-> >
-> > 1) EQ, SPDIF of au8810/au8830 are not present in au8820,
-> > 2) WT of au8820/au8830 are not present in au8810,
-> > 3) SoftModem of au8810 are not present in au8820.
-> > 4) 3D of au8830 is not present in au8810/au8820.
-> >
-> > Please correct me if I am wrong, I think au8810 do not have any 3D
-> > effect hardware.
-> 
-> i'm not entirely sure, but i think it has some 3D stuff, since i've always had 
-> controls to manage 3D depth, etc...
-> 
-> unless you are speaking of something else...
+James
 
 
 
