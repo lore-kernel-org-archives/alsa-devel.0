@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001402]: No SOUND in ASUS A6
-Date: Wed, 7 Sep 2005 23:47:03 +0200
-Message-ID: <b4c9ff935d3a6257fafaf380ae8ccd1e@bugtrack.alsa-project.org>
+From: Erik <assie2@zonnet.nl>
+Subject: Re: problems with snd_au8830 module under mandriva 2005
+Date: Thu, 08 Sep 2005 00:15:09 +0200
+Message-ID: <1126131309.17399.8.camel@pc-erik.lan>
+References: <4317CC51.3040709@netvigator.com>
+	 <200509042134.23916.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17F7318E
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 23:47:04 +0200 (MEST)
+In-Reply-To: <200509042134.23916.alien999999999@users.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alien <alien999999999@users.sourceforge.net>
+Cc: Raymond <rayau@netvigator.com>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+i'm busy with home improving but when i have time i will try the patch
+again on 2.6.12 kernel. I have not checked if it is the same alsa
+version as 2.6.11 but i think it is.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1402> 
-======================================================================
-Reported By:                pedrosalazar
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1402
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Red Hat Fedora Core 4
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             09-07-2005 23:47 CEST
-Last Modified:              09-07-2005 23:47 CEST
-======================================================================
-Summary:                    No SOUND in ASUS A6
-Description: 
-There is no sound in asus laptop A6 with alsa drivers.
+b.t.w. the volume bar problem is in XMMS (didn't try other programs
+because i haven't a lot of time) (just online for mail checking etc.
+that's it)
+but i think alien can tell you about the volume bar problems.
 
-laptop: ASUS A6 (A6Q00VA) Intel Pentium M Processor 740
+pc information:
 
-Initially verified with the alsa-driver bundle in FC4 (1.0.9rc2 if I'm not
-wrong) with kernel 2.6.12-1.1398_FC4, then I updated to alsa-driver 1.0.9b
-working with alsa-lib 1.0.9 and alsa-utils 1.0.9a.
+mandriva 2005 le
+kernel 2.6.11
+amd 64 bit 3500+
+diamond monster sound mx300 au8830 card
 
-After, I updated kernel to 2.6.12.5, and now I'm using the 2.6.13.
 
-All would be fine (alsamixer, aplay, ...) unless there is no sound.
+Erik
 
-I compiled alsa-driver with debug, and added the module option
-"model=asus", that prints the following message when module is inserted:
 
-Sep  7 21:59:39 undertaker kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
-Link [LNKA] -> GSI 11 (level, low) -> IRQ 11
-Sep  7 21:59:39 undertaker kernel: ALSA
-/home/psalazar/build/alsa-driver-1.0.9b/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:1409:
-hda_codec: Unknown model for ALC880
 
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-07-05 23:47 pedrosalazar   New Issue                                    
-09-07-05 23:47 pedrosalazar   File Added: 2.6.13.config                    
-09-07-05 23:47 pedrosalazar   Distribution              => Red Hat Fedora Core 4
-09-07-05 23:47 pedrosalazar   Kernel Version            => 2.6.13          
-======================================================================
-
+On Sun, 2005-09-04 at 21:34 +0200, Alien wrote:
+> Op vrijdag 2 september 2005 05:51, schreef Raymond:
+> > I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
+> > au8820 patch. They seem to have their own patches.
+> >
+> > The EQ part in diff11.diff seem to be not tested since EQ is not present
+> > in au8820.
+> >
+> > You should cc your reply to openvortex-dev@nongnu.org and
+> > alsa-devel@lists.sourceforge.net so that the others can keep track of
+> > your problem.
+> >
+> > There are 3 bug reports for AMD64 in ALSA BTS.
+> > 1047 - au8810
+> > 1138 - au8820
+> > 1025 - au8830
+> >
+> > Need feedback from testers with au8810/au8820/au8830 and 32bits/64bits
+> > machines to debug this patch.
+> >
+> > 1) EQ, SPDIF of au8810/au8830 are not present in au8820,
+> > 2) WT of au8820/au8830 are not present in au8810,
+> > 3) SoftModem of au8810 are not present in au8820.
+> > 4) 3D of au8830 is not present in au8810/au8820.
+> >
+> > Please correct me if I am wrong, I think au8810 do not have any 3D
+> > effect hardware.
+> 
+> i'm not entirely sure, but i think it has some 3D stuff, since i've always had 
+> controls to manage 3D depth, etc...
+> 
+> unless you are speaking of something else...
 
 
 
