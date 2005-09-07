@@ -1,13 +1,11 @@
-From: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
-Subject: Re: Re: Mo' better modem support
-Date: Wed, 7 Sep 2005 08:44:50 +0200
-Message-ID: <20050907064449.GA8391@titan.lahn.de>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com>
+From: boku <boku0712@gmail.com>
+Subject: what do card, device mean in ALSA?
+Date: Wed, 7 Sep 2005 15:15:37 +0800
+Message-ID: <715d9090050907001516b33e3b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/alternative;
+	boundary="----=_Part_30955_5860058.1126077337825"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <431E3771.8090303@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,42 +15,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>
-Cc: alsa-devel@lists.sourceforge.net, rbrancaleoni@skynet.be, Manuel Jander <manuel.jander@gmail.com>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+------=_Part_30955_5860058.1126077337825
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-On Wed, Sep 07, 2005 at 08:42:25AM +0800, Raymond wrote:
-> > Yes, looks like pure AC97 softmodem. What is your 'lspci -nv'. Is 
-> there  data sheet?
-> 
-> I don't have any l8400b or Aureal modem.
-> 
-> May be Philipp Matthias Hahn and Raffaele Brancaleoni can answer your 
-> question.
+Dear all,
+I'm new to ALSA and studying its documents. It's kind of confusing that wha=
+t=20
+the diffence among snd_card_*() and snd_device_*().=20
+If "card" represents the sound card, then "device" represents for what?=20
+There's also a struct snd_mychip. So there are-- Card, Device, and Chip?=20
+Sorry if I misunderstand and thank you for your great help.=20
 
-Yes, I still have it and use it:
+Best Regards,
+Boku
 
-$ lspci -s 0:6.0
-0000:00:06.0 Multimedia audio controller: Aureal Semiconductor AU8810 Vortex Digital Audio Processor (rev 03)
-walker:~# lspci -nv -s 0:6.0
-0000:00:06.0 0401: 12eb:0003 (rev 03)
-        Subsystem: 1043:1043
-        Flags: bus master, medium devsel, latency 32, IRQ 255
-        Memory at fedc0000 (32-bit, non-prefetchable) [size=256K]
-        I/O ports at fce0 [size=8]
-        I/O ports at fce8 [size=8]
-        Capabilities: [dc] Power Management version 2
+------=_Part_30955_5860058.1126077337825
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-If you need something else (data, testing, etc), just ask.
+Dear all,<br>
+&nbsp;&nbsp;&nbsp; I'm new to ALSA and studying its documents. It's
+kind of confusing that what the diffence among snd_card_*() and
+snd_device_*(). <br>
+If &quot;card&quot; represents the sound card, then &quot;device&quot; repr=
+esents for what? <br>
+There's also a struct snd_mychip. So there are-- Card, Device, and Chip? <b=
+r>
+Sorry if I misunderstand and thank you for your great help. <br>
+<br>
+Best Regards,<br>
+Boku<br>
 
-BYtE
-Philipp
--- 
-  / /  (_)__  __ ____  __ Philipp Hahn
- / /__/ / _ \/ // /\ \/ /
-/____/_/_//_/\_,_/ /_/\_\ pmhahn@titan.lahn.de
+------=_Part_30955_5860058.1126077337825--
 
 
 -------------------------------------------------------
