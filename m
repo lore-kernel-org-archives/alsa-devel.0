@@ -1,13 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: hda-intel/ALC260: mixer control issues
-Date: Wed, 7 Sep 2005 09:32:11 +0930 (CST)
-Message-ID: <200509070002.j8702BRw013005@auster.physics.adelaide.edu.au>
-References: <s5hd5nmv8m4.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000322]: oops while removing au8810
+Date: Wed, 7 Sep 2005 02:22:49 +0200
+Message-ID: <7aa362b717d96111f7f7295cc241e138@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd5nmv8m4.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 06, 2005 11:38:43 AM
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1540F150
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 02:22:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,155 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi 
 
-> > > > I had the opportunity to sit down over the weekend and work through the
-> > > > issues.  It turns out that this particular laptop has its sound hardware
-> > > > wired up in an odd way.  I was able to get the external plugs working but
-> > > > had to write my own custom ALC260 initialisation verb list to do so.
-> > > > 
-> > > > To cut a long story short, the audio inputs/outputs are connected to the
-> > > > following ALC260 output pins.
-> > > > 
-> > > >  * Internal speaker: ALC260 "headphone" pin
-> > > >  * "Stereo line in jack": ALC260 "mic 1" pin
-> > > >  * "Stereo line out jack": ALC260 "line 1" pin (ie: NOT the "line out" pin)
-> > > >  * CD audio: ALC260 "CD" pin
-> > > > 
-> > > > :
-> > > Hmm, so you mean it has no unique PCI _subsystem_ ID, too?
-> > > The model is detected with the PCI SSID, not the PCI ID.
-> > 
-> > The PCI SSID is just the thing listed under "subsystem" in lspci, right?
-> > If so I guess it would be 10cf:1326.  How unique is this?
-> 
-> No guarantee, but it should be fairly unique if the manufacturor cares
-> enough :)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322> 
+======================================================================
+Reported By:                aris
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   322
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               conectiva linux 10 snapshot with custom kernel
+Kernel Version:             2.6.7-rc2
+======================================================================
+Date Submitted:             06-02-2004 13:24 CEST
+Last Modified:              09-07-2005 02:22 CEST
+======================================================================
+Summary:                    oops while removing au8810
+Description: 
+after getting an error on activating IRQ (not sure if this board is
+working)
+and trying to remove module I get an oops. I tryed to dig in but couldn't
+find where exactly it is happening.
+the IRQ error message:
+PCI: Found IRQ 11 for device 0000:00:0b.0
+PCI: Sharing IRQ 11 with 0000:00:01.1
+Vortex: init.... <6>done.
+vortex: IRQ reg error
 
-No worries.  We'll assume it is and see what happens.
+======================================================================
 
-> > I'll do a patch up along these lines in the next day or so unless you advise
-> > that there is a better way.
-> Agreed.  You need just to put your ssid there.  Go ahead!
+----------------------------------------------------------------------
+ Raymond - 09-06-05 15:02 
+----------------------------------------------------------------------
+au8830.h
 
-Not a problem; will do.  While I'm at it I'll probably also define a custom
-mixer layout so it's clearer which controls are actually available on this
-laptop and what they really do.  For example, "IntSpeaker" instead of
-"Headphone", "Mic/LineIn" instead of "Mic", "LineOut" instead of "Line", and
-remove some controls (like "mono") which don't seem to be connected to any
-physical hardware.
+#define VORTEX_CODEC_EN 0x29190
+#define		EN_AUDIO0		0x00000300          <- front channels
+#define		EN_MODEM		0x00000c00
+#define		EN_AUDIO1		0x00003000          <- rear channels
+#define		EN_SPORT		0x00030000
+#define		EN_SPDIF		0x000c0000
+#define		EN_CODEC		(EN_AUDIO1 | EN_AUDIO0)
 
-Regards
-  jonathan
+au8820
+#define VORTEX_CODEC_CTRL 0x11984
+#define VORTEX_CODEC_EN 0x11990           
+#define		EN_CODEC	0x00000300
+
+
+au8810.h
+#define VORTEX_CODEC_CTRL	0x29184
+#define VORTEX_CODEC_EN		0x29190
+#define		EN_CODEC0	0x00000300
+#define 	EN_AC98		0x00000c00 /* Modem AC98 slots. */
+#define		EN_CODEC1	0x00003000
+#define		EN_CODEC	(EN_CODEC0 | EN_CODEC1)
+#define		EN_SPORT	0x00030000
+#define		EN_SPDIF	0x000c0000
+
+au88x0_core.c
+
+static void vortex_codec_init(vortex_t * vortex)
+{
+...
+	/* Enable codec channels 0 and 1. */
+	hwwrite(vortex->mmio, VORTEX_CODEC_EN,
+		hwread(vortex->mmio, VORTEX_CODEC_EN) | EN_CODEC);
+
+}
+
+
+static snd_pcm_hardware_t snd_vortex_playback_hw_adb = {
+...
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+...
+}
+
+
+
+----------------------------------------------------------------------
+ aris - 09-07-05 02:22 
+----------------------------------------------------------------------
+Hi Raymond,
+
+here's the output of lspci -vvn:
+
+0000:00:0b.0 0401: 12eb:0003 (rev 02)
+	Subsystem: 12eb:0003
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR+ FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 64 (500ns min, 20750ns max), Cache Line Size: 0x10 (64 bytes)
+	Interrupt: pin A routed to IRQ 193
+	Region 0: Memory at fdf00000 (32-bit, non-prefetchable) [size=256K]
+	Region 1: I/O ports at b800 [size=8]
+	Region 2: I/O ports at b400 [size=8]
+	Capabilities: [dc] Power Management version 2
+		Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2+,D3hot+,D3cold-)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+here's the output loading the stock 2.6.13 driver:
+ACPI: PCI Interrupt 0000:00:0b.0[A] -> GSI 16 (level, low) -> IRQ 193
+Vortex: init.... <6>done.
+gameport: AU88x0 Gameport is pci0000:00:0b.0/gameport0, speed 1387kHz
+vortex: IRQ reg error
+
+the sound works fine!
+I don't have a joystick here to test the gameport but tomorrow by morning
+I'll test it.
+thanks for the great work ALSA team!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-02-04 13:24 aris           New Issue                                    
+06-02-04 13:24 aris           Distribution              => conectiva linux 10
+snapshot with custom kernel
+06-02-04 13:24 aris           Kernel Version            => 2.6.7-rc2       
+06-03-04 17:51 mjander        Note Added: 0001289                          
+06-03-04 17:51 mjander        Note Added: 0001290                          
+06-03-04 17:52 mjander        File Added: aureal-quadfix.patch                  
+ 
+04-12-05 20:45 alien999999999 Issue Monitored: alien999999999                   
+
+08-30-05 12:22 jdthood        Note Added: 0005973                          
+09-06-05 11:03 Raymond        Note Added: 0006043                          
+09-06-05 14:12 aris           Note Added: 0006044                          
+09-06-05 14:32 Raymond        Note Added: 0006045                          
+09-06-05 14:34 Raymond        Note Edited: 0006045                         
+09-06-05 14:58 Raymond        Note Added: 0006046                          
+09-06-05 15:02 Raymond        Note Edited: 0006046                         
+09-07-05 02:22 aris           Note Added: 0006051                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
