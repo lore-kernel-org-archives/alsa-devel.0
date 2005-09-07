@@ -1,15 +1,14 @@
-From: Mark Zealey <mz234@cam.ac.uk>
-Subject: Re: intel8x0 no sound in 2.6.12
-Date: Wed, 7 Sep 2005 17:12:55 +0100
-Message-ID: <200509071712.55312.mz234@cam.ac.uk>
-References: <200509071557.02218.mz234@cam.ac.uk> <200509071706.03680.mz234@cam.ac.uk> <s5hbr347tf5.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001379]: 1.0.9 produces very low volume on all volumes set to 100%; 1.0.10rc1 fails to modprobe
+Date: Wed, 7 Sep 2005 19:01:22 +0200
+Message-ID: <0004c40fc28492cc08f6a65b23facd39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbr347tf5.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74BE11AE
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 19:01:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,70 +18,132 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yep I tried toggling those; no change... I'll upgrade to .13 but looking at 
-the ChangeLog I saw no changes to the intel8x0 driver; I guess it could be 
-some other part of the sound system.
 
-M
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1379> 
+======================================================================
+Reported By:                kSh
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1379
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               SUSE Linux Professional 9.3
+Kernel Version:             Linux 2.6.11.4-21.8-default
+======================================================================
+Date Submitted:             08-30-2005 18:47 CEST
+Last Modified:              09-07-2005 19:01 CEST
+======================================================================
+Summary:                    1.0.9 produces very low volume on all volumes set to
+100%; 1.0.10rc1 fails to modprobe
+Description: 
+Hello.
+I have a problem with my Asus M5A laptop. ALSA drivers 1.0.9 that come
+with SUSE produce very low volume even with all volumes set to 100%. I
+tried removing the driver and compiling my own, the same result. And yes,
+I read the 0001176 bug report that speaks of exactly the same issue. The
+problem is 1.0.9 runs flawlessly but very quiet and although the
+compilation and installation of 1.0.10rc1 went fine, while modprobing I
+get:
 
-On Wednesday 07 September 2005 5:07 pm, Takashi Iwai wrote:
-> At Wed, 7 Sep 2005 17:06:03 +0100,
->
-> Mark Zealey wrote:
-> > Yep did the aplay and it works fine but no audio comes out of the
-> > speakers or the headphone jack - the box remains silent. I did not use
-> > any options when loading the drivers. I have a second identical laptop
-> > bought at the same time which runs windows xp and has no problem with
-> > sound.
->
-> Then I have no clue what's wrong.  You tried to toggle "Headphone Jack
-> Sense" and "Line Jack Sense", right?
->
-> Any chance to try a newer version, e.g. 2.6.13 kernel?
-> 2.6.12 is too old to debug.
->
->
-> Takashi
->
-> > Mark
-> >
-> > On Wednesday 07 September 2005 4:44 pm, Takashi Iwai wrote:
-> > > At Wed, 7 Sep 2005 16:16:24 +0100,
-> > >
-> > > Mark Zealey wrote:
-> > > > Laptop is an IBM thinkpad R50e. Attached are the 2 files
-> > >
-> > > Hmm, I don't find anything wrong at a first glance.
-> > > Try to turn on/off "Line Jack Sense" and "Headphone Jack Sense" mixer
-> > > switches.
-> > >
-> > > Do you have any module option for snd-intel8x0?
-> > >
-> > > And what do you mean "sound doesn't work"?  For testing PCM, try
-> > >
-> > > 	% aplay -vv somefile.wav
-> > >
-> > > and see whether VU meter appears.  If it looks working but no sound
-> > > comes out, it's either in the driver, the mixer setting, or a hardware
-> > > problem.  If the aplay is blocked, it's a typical device race, not a
-> > > bug.
-> > >
-> > >
-> > > Takashi
-> >
-> > --
-> >
-> > Mark Zealey
-> > http://zealey.org/mark
+# /etc/init.d/alsasound start
+Starting sound driver: snd-hda-intel WARNING: Error inserting snd_pcm
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/acore/snd-pcm.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-codec.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-intel.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+done
 
--- 
+The dmesg is as follows:
 
-Mark Zealey
-http://zealey.org/mark
+# dmesg -c
+snd: module not supported by Novell, setting U taint flag.
+snd_timer: module not supported by Novell, setting U taint flag.
+snd_pcm: module not supported by Novell, setting U taint flag.
+snd_pcm: disagrees about version of symbol snd_dma_reserve_buf
+snd_pcm: Unknown symbol snd_dma_reserve_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_free_pages
+snd_pcm: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_get_reserved_buf
+snd_pcm: Unknown symbol snd_dma_get_reserved_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_alloc_pages
+snd_pcm: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_codec: module not supported by Novell, setting U taint flag.
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_list, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_format_width, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_intel: module not supported by Novell, setting U taint flag.
+snd_hda_intel: Unknown symbol snd_pcm_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_limit_hw_rates, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_preallocate_pages_for_all,
+st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_bus_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_build_pcms, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_codec_new, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_free_pages
+snd_hda_intel: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_queue_unsol_event, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_malloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_ioctl, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_calc_stream_format, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_set_ops, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_suspend, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_suspend_all, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_resume, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_integer, st_info ==
+0x1
+snd_hda_intel: Unknown symbol snd_hda_build_controls, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_alloc_pages
+snd_hda_intel: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_period_elapsed, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+
+It seems like the drivers were compiled for another kernel, am I right?
+But the strange thing is the same ./configure, make, make install
+procedure with 1.0.9 works just flawlessly.
+
+I'm sorry if the problem comes from my lack of Linux knowledge. I just
+hope we'll get a solution to this one. I'll provide any help you'll need.
+======================================================================
+
+----------------------------------------------------------------------
+ kSh - 09-07-05 19:01 
+----------------------------------------------------------------------
+Sorry for me being impatient but I observe activity in other bug reports
+and mine is virtually untouched since I created it. Is something wrong
+with it? Please tell me if the information I supported is inaccurate or
+the problem is caused by my lack of experience.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 18:47 kSh            New Issue                                    
+08-30-05 18:47 kSh            Distribution              => SUSE Linux
+Professional 9.3
+08-30-05 18:47 kSh            Kernel Version            => Linux
+2.6.11.4-21.8-default
+08-30-05 18:49 kSh            Issue Monitored: kSh                         
+08-30-05 19:48 Varanger       Issue Monitored: Varanger                    
+08-30-05 23:19 Varanger       Issue End Monitor: Varanger                    
+09-07-05 19:01 kSh            Note Added: 0006063                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
