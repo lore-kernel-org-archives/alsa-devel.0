@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Wed, 7 Sep 2005 17:28:39 +0200
-Message-ID: <a7887e08f9fa76d6ea2d1d3976ed3d0b@bugtrack.alsa-project.org>
+Date: Wed, 7 Sep 2005 17:35:51 +0200
+Message-ID: <d5a12e3eaddd8e24f6b16bea5976ae90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4ACBA1BD
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 17:28:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A49F51BD
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 17:35:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Kubuntu Hoary
 Kernel Version:             2.6.13 final
 ======================================================================
 Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-07-2005 17:28 CEST
+Last Modified:              09-07-2005 17:35 CEST
 ======================================================================
 Summary:                    tons of unknown symbols with 2.6.13 final
 Description: 
@@ -59,14 +59,20 @@ I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-07-05 17:27 
-----------------------------------------------------------------------
-Please attach the dmesg again, then.
-
-----------------------------------------------------------------------
  spiral - 09-07-05 17:28 
 ----------------------------------------------------------------------
 Exactly the same, without the first message about the unknown parameter.
+
+----------------------------------------------------------------------
+ tiwai - 09-07-05 17:35 
+----------------------------------------------------------------------
+Try to run "modprobe snd", and check whether it's successful.
+Then run "grep snd_info_register /proc/kallsyms" if snd module is loaded.
+
+If snd module exists and /proc/kallsyms exists but it has no
+snd_info_register entry, you have passed a wrong kernel configuration.
+
+If snd couldn't be loaded, something is odd in your module configuration.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +92,7 @@ Date Modified  Username       Field                    Change
 09-07-05 17:26 spiral         Note Edited: 0006059                         
 09-07-05 17:27 tiwai          Note Added: 0006060                          
 09-07-05 17:28 spiral         Note Added: 0006061                          
+09-07-05 17:35 tiwai          Note Added: 0006062                          
 ======================================================================
 
 
