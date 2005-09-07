@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000322]: oops while removing au8810
-Date: Wed, 7 Sep 2005 03:14:15 +0200
-Message-ID: <0c2bcb3bb1edbe60e20599cbc65c511b@bugtrack.alsa-project.org>
+From: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
+Subject: Re: Re: Mo' better modem support
+Date: Wed, 7 Sep 2005 08:44:50 +0200
+Message-ID: <20050907064449.GA8391@titan.lahn.de>
+References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F24A198
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 03:14:15 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <431E3771.8090303@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,112 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net, rbrancaleoni@skynet.be, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322> 
-======================================================================
-Reported By:                aris
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   322
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               conectiva linux 10 snapshot with custom kernel
-Kernel Version:             2.6.7-rc2
-======================================================================
-Date Submitted:             06-02-2004 13:24 CEST
-Last Modified:              09-07-2005 03:14 CEST
-======================================================================
-Summary:                    oops while removing au8810
-Description: 
-after getting an error on activating IRQ (not sure if this board is
-working)
-and trying to remove module I get an oops. I tryed to dig in but couldn't
-find where exactly it is happening.
-the IRQ error message:
-PCI: Found IRQ 11 for device 0000:00:0b.0
-PCI: Sharing IRQ 11 with 0000:00:01.1
-Vortex: init.... <6>done.
-vortex: IRQ reg error
+On Wed, Sep 07, 2005 at 08:42:25AM +0800, Raymond wrote:
+> > Yes, looks like pure AC97 softmodem. What is your 'lspci -nv'. Is 
+> there  data sheet?
+> 
+> I don't have any l8400b or Aureal modem.
+> 
+> May be Philipp Matthias Hahn and Raffaele Brancaleoni can answer your 
+> question.
 
-======================================================================
+Yes, I still have it and use it:
 
-----------------------------------------------------------------------
- aris - 09-07-05 02:22 
-----------------------------------------------------------------------
-Hi Raymond,
+$ lspci -s 0:6.0
+0000:00:06.0 Multimedia audio controller: Aureal Semiconductor AU8810 Vortex Digital Audio Processor (rev 03)
+walker:~# lspci -nv -s 0:6.0
+0000:00:06.0 0401: 12eb:0003 (rev 03)
+        Subsystem: 1043:1043
+        Flags: bus master, medium devsel, latency 32, IRQ 255
+        Memory at fedc0000 (32-bit, non-prefetchable) [size=256K]
+        I/O ports at fce0 [size=8]
+        I/O ports at fce8 [size=8]
+        Capabilities: [dc] Power Management version 2
 
-here's the output of lspci -vvn:
+If you need something else (data, testing, etc), just ask.
 
-0000:00:0b.0 0401: 12eb:0003 (rev 02)
-	Subsystem: 12eb:0003
-	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR+ FastB2B-
-	Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
-<MAbort- >SERR- <PERR-
-	Latency: 64 (500ns min, 20750ns max), Cache Line Size: 0x10 (64 bytes)
-	Interrupt: pin A routed to IRQ 193
-	Region 0: Memory at fdf00000 (32-bit, non-prefetchable) [size=256K]
-	Region 1: I/O ports at b800 [size=8]
-	Region 2: I/O ports at b400 [size=8]
-	Capabilities: [dc] Power Management version 2
-		Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2+,D3hot+,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-here's the output loading the stock 2.6.13 driver:
-ACPI: PCI Interrupt 0000:00:0b.0[A] -> GSI 16 (level, low) -> IRQ 193
-Vortex: init.... <6>done.
-gameport: AU88x0 Gameport is pci0000:00:0b.0/gameport0, speed 1387kHz
-vortex: IRQ reg error
-
-the sound works fine!
-I don't have a joystick here to test the gameport but tomorrow by morning
-I'll test it.
-thanks for the great work ALSA team!
-
-----------------------------------------------------------------------
- Raymond - 09-07-05 03:14 
-----------------------------------------------------------------------
-cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
-
-Do your card look like this one ? 
-
-http://www.watch.impress.co.jp/akiba/hotline/991106/newitem.html#19
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-02-04 13:24 aris           New Issue                                    
-06-02-04 13:24 aris           Distribution              => conectiva linux 10
-snapshot with custom kernel
-06-02-04 13:24 aris           Kernel Version            => 2.6.7-rc2       
-06-03-04 17:51 mjander        Note Added: 0001289                          
-06-03-04 17:51 mjander        Note Added: 0001290                          
-06-03-04 17:52 mjander        File Added: aureal-quadfix.patch                  
- 
-04-12-05 20:45 alien999999999 Issue Monitored: alien999999999                   
-
-08-30-05 12:22 jdthood        Note Added: 0005973                          
-09-06-05 11:03 Raymond        Note Added: 0006043                          
-09-06-05 14:12 aris           Note Added: 0006044                          
-09-06-05 14:32 Raymond        Note Added: 0006045                          
-09-06-05 14:34 Raymond        Note Edited: 0006045                         
-09-06-05 14:58 Raymond        Note Added: 0006046                          
-09-06-05 15:02 Raymond        Note Edited: 0006046                         
-09-07-05 02:22 aris           Note Added: 0006051                          
-09-07-05 03:14 Raymond        Note Added: 0006052                          
-======================================================================
-
-
+BYtE
+Philipp
+-- 
+  / /  (_)__  __ ____  __ Philipp Hahn
+ / /__/ / _ \/ // /\ \/ /
+/____/_/_//_/\_,_/ /_/\_\ pmhahn@titan.lahn.de
 
 
 -------------------------------------------------------
