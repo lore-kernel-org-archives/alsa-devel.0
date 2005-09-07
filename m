@@ -1,16 +1,11 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: Re: Mo' better modem support
-Date: Wed, 07 Sep 2005 19:33:04 +0300
-Message-ID: <20050907163304.GC11357@sashak.softier1.local>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com>
- <20050906142917.GA30523@sashak.softier1.local>
- <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de>
+From: "Nudd Still" <nuddmstill@us.iearn.org>
+Subject: Re: Giga Offr  Meeddications
+Date: Wed, 7 Sep 2005 09:56:39 -0500
+Message-ID: <E1ED1OU-0006lW-Aq@mail.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0002_01C5B392.70DC2580"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20050907064449.GA8391@titan.lahn.de>
-Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,31 +15,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
-Cc: Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net, rbrancaleoni@skynet.be, Manuel Jander <manuel.jander@gmail.com>
+To: Yrja Rego <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 08:44 Wed 07 Sep     , Philipp Matthias Hahn wrote:
-> 
-> Yes, I still have it and use it:
-> 
-> $ lspci -s 0:6.0
-> 0000:00:06.0 Multimedia audio controller: Aureal Semiconductor AU8810 Vortex Digital Audio Processor (rev 03)
-> walker:~# lspci -nv -s 0:6.0
-> 0000:00:06.0 0401: 12eb:0003 (rev 03)
->         Subsystem: 1043:1043
->         Flags: bus master, medium devsel, latency 32, IRQ 255
->         Memory at fedc0000 (32-bit, non-prefetchable) [size=256K]
->         I/O ports at fce0 [size=8]
->         I/O ports at fce8 [size=8]
->         Capabilities: [dc] Power Management version 2
-> 
-> If you need something else (data, testing, etc), just ask.
+This is a multi-part message in MIME format.
 
-Do you know is there data sheet available?
-The driver in pci/au88x0 looks like AC97 for all supported ships.
+------=_NextPart_000_0002_01C5B392.70DC2580
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Sasha.
+CiCeAmVaXaViPrLeUlMe
+allebilinaagopvitrri
+isbrexenumxraeciatraamdia
+$1 $3 $3
+21.75.33
+http://www.carritepe=
+cifed.com Chapter 26: The Burial master was not, and he marvelled at how =
+quickly they reached their goal, the
+
+------=_NextPart_000_0002_01C5B392.70DC2580
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DCourier>
+<DIV style=3D"FLOAT: left;"><B>Ci</B><BR>Ce<BR>Am<BR><B>Va</B><BR>Xa<BR><B=
+>Vi</B><BR>Pr<BR>Le<BR>Ul<BR>Me</DIV>
+<DIV style=3D"FLOAT: left;"><B>al</B><BR>le<BR>bi<BR><B>li</B><BR>na<B=
+R><B>ag</B><BR>op<BR>vi<BR>tr<BR>ri</DIV>
+<DIV style=3D"FLOAT: left;"><B>is</B><BR>brex<BR>en<BR><B>um</B><BR>x<BR><=
+B>ra</B><BR>ecia<BR>tra<BR>am<BR>dia</DIV>
+<DIV style=3D"FLOAT: left;">&nbsp;$1<BR><BR><BR>&nbsp;$3<BR><BR>&nbsp;$3<B=
+R><BR><BR><BR></DIV>
+<DIV style=3D"FLOAT: left;">.21<BR><BR><BR>.75<BR><BR>.33<BR><BR><BR><B=
+R></DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV><A href=3D"http://www.carritepecifed.com">http://www.carritepe=
+cifed.com</A></DIV></FONT></DIV></B></B></BODY></HTML>
+
+------=_NextPart_000_0002_01C5B392.70DC2580--
+
 
 
 -------------------------------------------------------
