@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Wed, 7 Sep 2005 17:27:57 +0200
-Message-ID: <b23dba1ca2125d9000babe9eeb48599a@bugtrack.alsa-project.org>
+Date: Wed, 7 Sep 2005 17:28:39 +0200
+Message-ID: <a7887e08f9fa76d6ea2d1d3976ed3d0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E05FC1BD
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 17:27:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4ACBA1BD
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 17:28:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Kubuntu Hoary
 Kernel Version:             2.6.13 final
 ======================================================================
 Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-07-2005 17:27 CEST
+Last Modified:              09-07-2005 17:28 CEST
 ======================================================================
 Summary:                    tons of unknown symbols with 2.6.13 final
 Description: 
@@ -59,17 +59,14 @@ I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
 ======================================================================
 
 ----------------------------------------------------------------------
- spiral - 09-07-05 17:26 
-----------------------------------------------------------------------
-Same problem without the device_mode... I still get the unknown symbol
-messages regarding hda-intel, but no more the unknown parameter... :-/
-
-
-
-----------------------------------------------------------------------
  tiwai - 09-07-05 17:27 
 ----------------------------------------------------------------------
 Please attach the dmesg again, then.
+
+----------------------------------------------------------------------
+ spiral - 09-07-05 17:28 
+----------------------------------------------------------------------
+Exactly the same, without the first message about the unknown parameter.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +85,7 @@ Date Modified  Username       Field                    Change
 09-07-05 17:25 spiral         Note Added: 0006059                          
 09-07-05 17:26 spiral         Note Edited: 0006059                         
 09-07-05 17:27 tiwai          Note Added: 0006060                          
+09-07-05 17:28 spiral         Note Added: 0006061                          
 ======================================================================
 
 
