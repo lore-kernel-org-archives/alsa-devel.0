@@ -1,17 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: Re: Mo' better modem support
-Date: Wed, 07 Sep 2005 20:16:00 +0300
-Message-ID: <20050907171600.GD11357@sashak.softier1.local>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com>
- <20050906142917.GA30523@sashak.softier1.local>
- <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de>
- <431EBB71.3070206@netvigator.com> <20050907131508.GA2721@titan.lahn.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
+Date: Wed, 7 Sep 2005 17:25:12 +0200
+Message-ID: <34babdd9ab65ceb331bb38ee2e698878@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20050907131508.GA2721@titan.lahn.de>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DD121BD
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 17:25:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,37 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
-Cc: Raymond <rayau@netvigator.com>, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 15:15 Wed 07 Sep     , Philipp Matthias Hahn wrote:
-> 
-> I just disassembled my Laptop and found 2 chips on the MDC. The labeling
-> is very hard to read, so I'm not 100% sure. 
 
-The modems are manufactured by different vendors, so labeling may be
-very different (and in many cases useless :)).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
+======================================================================
+Reported By:                spiral
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1377
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Kubuntu Hoary
+Kernel Version:             2.6.13 final
+======================================================================
+Date Submitted:             08-30-2005 09:34 CEST
+Last Modified:              09-07-2005 17:25 CEST
+======================================================================
+Summary:                    tons of unknown symbols with 2.6.13 final
+Description: 
+Hello !
 
-> Mine looks very similar to
-> http://www6.tomshardware.com/mobile/20010126/notebooks-06.html but the
-> labeling of the left chip ist different:
-> 
-> ST3014-[KX]S
+I have a laptop with a hda-intel based sound card... I recently tried to
+update my kernel to 2.6.13 with the official kernel.org source, with
+almost the same configuration I have on my 2.6.12.5... This worked nicely
+except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
+(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
 
-Probably "SI3014", if I remember correctly such DAA was with modems
-(supported).
+In both cases, I can't load snd-hda-intel and I get a lot of unknown
+symbol messages in dmesg...
 
-> [59S][59S]27BAAA23
-> 
-> The right one reads:
-> 
-> MOT6269353
-> [59S][59S]50BAAA10
+I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
+======================================================================
 
-And this is Motorola... something.. I think there is good chances.
+----------------------------------------------------------------------
+ tiwai - 09-07-05 15:48 
+----------------------------------------------------------------------
+DEVFS is disabled on 2.6.13.  That's why you got unresolved symbols.
+Simply remove device_mode=xxx module option from your module config.
 
-Sasha.
+The compile error of 1g0R is a different thing.  I guess the kernel tree
+is broken.
+
+----------------------------------------------------------------------
+ spiral - 09-07-05 17:25 
+----------------------------------------------------------------------
+Same problem without the device_mode... I still get a lot of unknown symbol
+regarding hda-intel.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 09:34 spiral         New Issue                                    
+08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
+08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
+09-02-05 19:51 tiwai          Note Added: 0006017                          
+09-04-05 22:11 1g0R           Note Added: 0006038                          
+09-05-05 14:15 kSh            Note Added: 0006041                          
+09-05-05 14:15 kSh            Issue Monitored: kSh                         
+09-06-05 17:35 spiral         File Added: dmesgout.txt                     
+09-06-05 17:36 spiral         Note Added: 0006047                          
+09-06-05 20:17 1g0R           Note Added: 0006048                          
+09-07-05 15:48 tiwai          Note Added: 0006056                          
+09-07-05 17:25 spiral         Note Added: 0006059                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
