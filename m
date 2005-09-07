@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001347]: unable to configure sound card
-Date: Wed, 7 Sep 2005 21:33:34 +0200
-Message-ID: <7481742cb8c609d254f67cb1780a20b9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001379]: 1.0.9 produces very low volume on all volumes set to 100%; 1.0.10rc1 fails to modprobe
+Date: Wed, 7 Sep 2005 21:51:25 +0200
+Message-ID: <8c8fca6cd36659685477766d3401afa0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B03D11A4
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 21:33:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 988DD1A3
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 21:51:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,213 +24,161 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1379> 
 ======================================================================
-Reported By:                CptS
+Reported By:                kSh
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1347
-Category:                   PCI - nm256
+Issue ID:                   1379
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Knoppix 4.0
-Kernel Version:             2.6.11
+Distribution:               SUSE Linux Professional 9.3
+Kernel Version:             Linux 2.6.11.4-21.8-default
 ======================================================================
-Date Submitted:             08-17-2005 11:05 CEST
-Last Modified:              09-07-2005 21:33 CEST
+Date Submitted:             08-30-2005 18:47 CEST
+Last Modified:              09-07-2005 21:51 CEST
 ======================================================================
-Summary:                    unable to configure sound card
+Summary:                    1.0.9 produces very low volume on all volumes set to
+100%; 1.0.10rc1 fails to modprobe
 Description: 
-I'm having problems configuring my sound card with alsa, here are the
-details:
-the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
-Presario 1920.
-I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+Hello.
+I have a problem with my Asus M5A laptop. ALSA drivers 1.0.9 that come
+with SUSE produce very low volume even with all volumes set to 100%. I
+tried removing the driver and compiling my own, the same result. And yes,
+I read the 0001176 bug report that speaks of exactly the same issue. The
+problem is 1.0.9 runs flawlessly but very quiet and although the
+compilation and installation of 1.0.10rc1 went fine, while modprobing I
+get:
 
-here's lspci -vv outputs on the cards:
-0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
-[MagicMedia 256AV Audio] (rev 20)
-        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
-Device on Durango
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B+
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin B routed to IRQ 10
-        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
-        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: <available only to root>
+# /etc/init.d/alsasound start
+Starting sound driver: snd-hda-intel WARNING: Error inserting snd_pcm
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/acore/snd-pcm.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-codec.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.11.4-21.8-default/kernel/sound/pci/hda/snd-hda-intel.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+done
 
-I wouldn't have addressed you unless I've already tried everything:
-I've tried the solution of the same problem regarding HP Omni 4150 with
-the same card.
+The dmesg is as follows:
 
-I used alsaconf and it tried to load snd-nm256, after loading it crashed,
-dmesg suggested loading it with force_ac97=1 switch but once i did it the
-system crashed (on 3 differet linux installations)
+# dmesg -c
+snd: module not supported by Novell, setting U taint flag.
+snd_timer: module not supported by Novell, setting U taint flag.
+snd_pcm: module not supported by Novell, setting U taint flag.
+snd_pcm: disagrees about version of symbol snd_dma_reserve_buf
+snd_pcm: Unknown symbol snd_dma_reserve_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_free_pages
+snd_pcm: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_get_reserved_buf
+snd_pcm: Unknown symbol snd_dma_get_reserved_buf, st_info == 0x1
+snd_pcm: disagrees about version of symbol snd_dma_alloc_pages
+snd_pcm: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_codec: module not supported by Novell, setting U taint flag.
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_list, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step, st_info == 0x1
+snd_hda_codec: Unknown symbol snd_pcm_format_width, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
+snd_hda_intel: module not supported by Novell, setting U taint flag.
+snd_hda_intel: Unknown symbol snd_pcm_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_limit_hw_rates, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_preallocate_pages_for_all,
+st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_bus_new, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_build_pcms, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_codec_new, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_free_pages
+snd_hda_intel: Unknown symbol snd_dma_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_queue_unsol_event, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_malloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_ioctl, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_lib_free_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_calc_stream_format, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_set_ops, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_suspend, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_suspend_all, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_hda_resume, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_integer, st_info ==
+0x1
+snd_hda_intel: Unknown symbol snd_hda_build_controls, st_info == 0x1
+snd_hda_intel: disagrees about version of symbol snd_dma_alloc_pages
+snd_hda_intel: Unknown symbol snd_dma_alloc_pages, st_info == 0x1
+snd_hda_intel: Unknown symbol snd_pcm_period_elapsed, st_info == 0x1
+load_module: err 0xfffffffe (dont worry)
 
-I did a legacy scan using alsaconf for all legacy drivers.
+It seems like the drivers were compiled for another kernel, am I right?
+But the strange thing is the same ./configure, make, make install
+procedure with 1.0.9 works just flawlessly.
 
-I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
-etc..)
-
-I've edited the modules.conf and manually defined the dma and irq
-
-I removed alsa completly and re-install it.
-
-I had debian with 2.4 kernel installed and i've upgraded to 2.6
-
-I changed the distro from debian to Knoppix (kinda same thing but...)
-
-anyway, you get the point..
-
-can you please assist??I'm having problems configuring my sound card with
-alsa, here are the details:
-the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
-Presario 1920.
-I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
-
-here's lspci -vv outputs on the cards:
-0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
-[MagicMedia 256AV Audio] (rev 20)
-        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
-Device on Durango
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B+
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin B routed to IRQ 10
-        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
-        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: <available only to root>
-
-I wouldn't have addressed you unless I've already tried everything:
-I've tried the solution of the same problem regarding HP Omni 4150 with
-the same card.
-
-I used alsaconf and it tried to load snd-nm256, after loading it crashed,
-dmesg suggested loading it with force_ac97=1 switch but once i did it the
-system crashed (on 3 differet linux installations)
-
-I did a legacy scan using alsaconf for all legacy drivers.
-
-I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
-etc..)
-
-I've edited the modules.conf and manually defined the dma and irq
-
-I removed alsa completly and re-install it.
-
-I had debian with 2.4 kernel installed and i've upgraded to 2.6
-
-I changed the distro from debian to Knoppix (kinda same thing but...)
-
-anyway, you get the point..
-
-can you please assist??I'm having problems configuring my sound card with
-alsa, here are the details:
-the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
-Presario 1920.
-I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
-
-here's lspci -vv outputs on the cards:
-0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
-[MagicMedia 256AV Audio] (rev 20)
-        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
-Device on Durango
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B+
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin B routed to IRQ 10
-        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
-        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: <available only to root>
-
-I wouldn't have addressed you unless I've already tried everything:
-I've tried the solution of the same problem regarding HP Omni 4150 with
-the same card.
-
-I used alsaconf and it tried to load snd-nm256, after loading it crashed,
-dmesg suggested loading it with force_ac97=1 switch but once i did it the
-system crashed (on 3 differet linux installations)
-
-I did a legacy scan using alsaconf for all legacy drivers.
-
-I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
-etc..)
-
-I've edited the modules.conf and manually defined the dma and irq
-
-I removed alsa completly and re-install it.
-
-I had debian with 2.4 kernel installed and i've upgraded to 2.6
-
-I changed the distro from debian to Knoppix (kinda same thing but...)
-
-anyway, you get the point..
-
-can you please assist??
+I'm sorry if the problem comes from my lack of Linux knowledge. I just
+hope we'll get a solution to this one. I'll provide any help you'll need.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-23-05 16:40 
+ tiwai - 09-07-05 19:57 
 ----------------------------------------------------------------------
-I guess this laptop has no nm256 ac97 but it's connected to cs4236 codec
-internally.  Check your BIOS setting and try snd-cs4236 driver.
+If you have done only "rcalsasound stop" or "restart", it's not enough when
+you update the drivers.  Run "modprobe -r snd-page-alloc" after
+"rcalsasound stop" so that all snd-* modules are unloaded.
 
 ----------------------------------------------------------------------
- dcooppan - 09-07-05 21:33 
+ kSh - 09-07-05 21:51 
 ----------------------------------------------------------------------
-I have the exact same problem: ALSA from FC4:2.6.11-1.1369_FC4 kernel
-Hardware is Compaq 1920 laptop with NeoMagic sound card
->From dmesg one sees:
->>>>>>>>>>>>>>>>>>>>>>>>
-PCI: Found IRQ 10 for device 0000:01:00.1
-PCI: Sharing IRQ 10 with 0000:00:07.2
-nm256: no ac97 is found!
-  force the driver to load by passing in the module parameter
-    force_ac97=1
-  or try sb16 or cs423x drivers instead.
-NeoMagic 256: probe of 0000:01:00.1 failed with error -6
-pnp: Device 00:01.01 activated.
->>>>>>>>>>>>>>>>>>>>>>>>
+Thank you. I managed to make the soundcard work :) Here's the one and only
+killer combination for all of you upgrading from 1.0.9 to 1.0.10rc1:
 
-Can some check out what error -6 means. I confirm that if you use option 
-force_ac97=1 then the system will HANG! Only option is power-off.
+/etc/init.d/alsasound stop
+for i in `lsmod | cut -d" " -f1 | grep snd`; do modprobe -r $i; done
+modprobe -r soundcore
+cd /your/1.0.9/dir/
+make uninstall
+cd /your/1.0.10rc1/dir/
+make clean
+./configure --with-suse=yes --with-sequencer=yes --with-debug=full
+--prefix=/usr --with-cards=hda-intel 
+make && make install
 
-I am very interested to get this working so please copy me at
-dcooppan@comcast.net
+Now edit your /etc/modprobe.d/sound file to contain:
+options snd-hda-intel model="asus" position_fix=1
+options hda-codec model="asus"
 
-BTW: I also tried 2.4 with OSS, nada, nothing, same problem, even tried
-loading
-snd_cs4236 driver and get:
->>>>>>>>>>>>>> 
-[root@dellcpx dcooppan]# modprobe snd-cs4236
-FATAL: Error inserting snd_cs4236
-(/lib/modules/2.6.11-1.1369_FC4/kernel/sound/isa/cs423x/snd-cs4236.ko): No
-such device
->>>>>>>>>>>>>>>>>>>
+Finally, do /etc/init.d/alsasound start
 
-thanks much
+For some strange reason, all other combinations failed. You have to
+explicitly tell ./configure to bare SUSE kernel and to compile only the
+hda-intel card. If anything in my instructions isn't sane, tell me.
+
+Again, thank you all for your time. This issue is now resolved and should
+be closed :)
+
+If you need any SUSE specific help or testing don't hesitate to contact
+me. I will help you gladly if I can.
+
+Best regards,
+Lukasz Langa
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-05 11:05 CptS           New Issue                                    
-08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
-08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
-08-17-05 11:24 CptS           Note Added: 0005835                          
-08-20-05 19:48 CptS           Issue Monitored: CptS                        
-08-20-05 19:50 CptS           Note Added: 0005883                          
-08-20-05 20:32 rlrevell       Note Added: 0005884                          
-08-20-05 20:37 rlrevell       Note Added: 0005885                          
-08-22-05 22:00 CptS           Note Added: 0005901                          
-08-23-05 16:40 tiwai          Note Added: 0005908                          
-09-07-05 21:33 dcooppan       Note Added: 0006066                          
+08-30-05 18:47 kSh            New Issue                                    
+08-30-05 18:47 kSh            Distribution              => SUSE Linux
+Professional 9.3
+08-30-05 18:47 kSh            Kernel Version            => Linux
+2.6.11.4-21.8-default
+08-30-05 18:49 kSh            Issue Monitored: kSh                         
+08-30-05 19:48 Varanger       Issue Monitored: Varanger                    
+08-30-05 23:19 Varanger       Issue End Monitor: Varanger                    
+09-07-05 19:01 kSh            Note Added: 0006063                          
+09-07-05 19:06 tiwai          Note Added: 0006064                          
+09-07-05 19:57 tiwai          Note Added: 0006065                          
+09-07-05 21:51 kSh            Note Added: 0006067                          
 ======================================================================
 
 
