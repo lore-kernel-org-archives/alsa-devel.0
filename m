@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Wed, 7 Sep 2005 15:48:17 +0200
-Message-ID: <6cb4e2a2f07cab5a697a17c48c39a23f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000101]: SiS7012 LineIn low loudness
+Date: Wed, 7 Sep 2005 16:00:13 +0200
+Message-ID: <7b8bf330fe7b5747d6e6fae3a971b817@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2F2E1B1
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 15:48:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 635D61B1
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 16:00:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=101> 
 ======================================================================
-Reported By:                spiral
-Assigned To:                tiwai
+Reported By:                goldenfish
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1377
-Category:                   PCI - hda-intel
+Issue ID:                   101
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Hoary
-Kernel Version:             2.6.13 final
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.4-rc1
 ======================================================================
-Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-07-2005 15:48 CEST
+Date Submitted:             02-29-2004 11:43 CET
+Last Modified:              09-07-2005 16:00 CEST
 ======================================================================
-Summary:                    tons of unknown symbols with 2.6.13 final
+Summary:                    SiS7012 LineIn low loudness
 Description: 
-Hello !
+i have SiS7012 integrated on motherboard. if i listen radio from linein
+from headphones, maximal loudnes is very low(60% maximal loudness of
+SBlive). loudness is in alsamixer is at maximum value(Line In, Master).
 
-I have a laptop with a hda-intel based sound card... I recently tried to
-update my kernel to 2.6.13 with the official kernel.org source, with
-almost the same configuration I have on my 2.6.12.5... This worked nicely
-except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
-(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
-
-In both cases, I can't load snd-hda-intel and I get a lot of unknown
-symbol messages in dmesg...
-
-I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 09-06-05 20:17 
+ Visionary - 03-31-05 15:48 
 ----------------------------------------------------------------------
-Its a little bit "barbarian" solution, but i did the following things, and
-its worked for me:
+I suffer from a similar problem:
 
-0. maybe you need to replace init.c, and adriver.h
-1. in linux kernel source (2.6.13) in include->linux->pci.h at line 819
-comment out with /*.......*/
-2. configure make make install alsa-driver
-3. remove comment from pci.h
-4. compile the other alsa*
+When trying to play any sound through SiS7012 PCI Audio Accelerator you
+cannot
+hear it through the built-in speakers (it's in a Medion SIM 2000 Laptop)
+and only very quietly through headphones.  All volumes in kmix, aumix and
+alsamixer etc. are at 100%.
 
 ----------------------------------------------------------------------
- tiwai - 09-07-05 15:48 
+ goldenfish - 09-07-05 16:00 
 ----------------------------------------------------------------------
-DEVFS is disabled on 2.6.13.  That's why you got unresolved symbols.
-Simply remove device_mode=xxx module option from your module config.
-
-The compile error of 1g0R is a different thing.  I guess the kernel tree
-is broken.
+Sorry, i don't have already this hardware for testing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 09:34 spiral         New Issue                                    
-08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
-08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
-09-02-05 19:51 tiwai          Note Added: 0006017                          
-09-04-05 22:11 1g0R           Note Added: 0006038                          
-09-05-05 14:15 kSh            Note Added: 0006041                          
-09-05-05 14:15 kSh            Issue Monitored: kSh                         
-09-06-05 17:35 spiral         File Added: dmesgout.txt                     
-09-06-05 17:36 spiral         Note Added: 0006047                          
-09-06-05 20:17 1g0R           Note Added: 0006048                          
-09-07-05 15:48 tiwai          Note Added: 0006056                          
+02-29-04 11:43 goldenfish     New Issue                                    
+02-29-04 11:43 goldenfish     File Added: sis7012.tar.bz2                    
+03-19-05 09:26 jdthood        Note Added: 0004017                          
+03-31-05 15:48 Visionary      Note Added: 0004281                          
+09-07-05 16:00 goldenfish     Note Added: 0006057                          
 ======================================================================
 
 
