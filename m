@@ -1,14 +1,15 @@
-From: "Bob Ingraham" <bobi@netshel.net>
-Subject: Re: Converting OSS ioctl's to ALSA API
-Date: Wed, 7 Sep 2005 10:09:06 -0700 (PDT)
-Message-ID: <52491.12.110.19.97.1126112946.squirrel@12.110.19.97>
-References: <33017.65.103.251.231.1125967798.squirrel@65.103.251.231>
-    <Pine.HPX.4.33n.0509060950330.11382-100000@studcom.urz.uni-halle.de>
+From: Mark Zealey <mz234@cam.ac.uk>
+Subject: Re: intel8x0 no sound in 2.6.12
+Date: Wed, 7 Sep 2005 18:14:39 +0100
+Message-ID: <200509071814.40157.mz234@cam.ac.uk>
+References: <200509071557.02218.mz234@cam.ac.uk> <200509071801.25643.mz234@cam.ac.uk> <s5h8xy87qsj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0509060950330.11382-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <s5h8xy87qsj.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +19,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thank-you so much for ioctl mapping!
+Nothing hardware based that I can find. been fiddling with the mixer settings 
+but nothing happening
 
-May I ask one other architectural question?
+M
 
-This video-conferencing app expected to use two half-duplex devices for
-simultaneous record-playback:
-
-/dev/dsp0 and /dev/dsp1 - these were expected to be configured as the
-separate playback and record channels of a single soundcard.
-
-However, on all of our target platforms (all running
-SuSE/Novell-Linux-Desktop,) there only appears to be a single, full-duple=
-x
-device to use (plugwh:0,0) for both record and playback.
-
-So the (three-part) question is:
-
-1. Do I:
-
-  (a) Try to re-write this app to use full-duplex? or,
-
-  (b) Can I re-configure ALSA to split the default device (plughw:0,0)
-into two separate, half-duplex sub-devices (one for playback and one for
-record?
-
-
-2. Which approach makes more sense (i.e., more stable, reliable, etc.)?
-
-
-3. If 1a is the way to go, is there a tutorial or sample-doc on how to
-properly program full-duplex (simultaneous record & playback) operation
-under ALSA?
-
-
-Thanks,
-Bob
-
-> Bob Ingraham wrote:
->> what would be the equivalent of the OSS SNDCTL_DSP_SYNC ioctl?
+On Wednesday 07 September 2005 6:04 pm, Takashi Iwai wrote:
+> At Wed, 7 Sep 2005 18:01:25 +0100,
 >
-> snd_pcm_drain()
+> Mark Zealey wrote:
+> > Same under 2.6.13
 >
->> SNDCTL_DSP_SETFRAGMENT
+> Then it's a mystery.
 >
-> snd_pcm_hw_params_set_period_size()
-> snd_pcm_hw_params_set_periods()
+> Usually the internal speaker volume is adjusted either Headphone or
+> Master Mono volume, and the amp is turned on/off via "External
+> Amplifier" switch.  But it shouldn't affect the line-out, anyway.
 >
->> SNDCLT_DSP_GETOSPACE, SNDCTL_DSP_GETISPACE
->
-> snd_pcm_avail_update()
+> Does the laptop have any hardware volume control?
 >
 >
-> HTH
-> Clemens
+> Takashi
 >
->
+> > On Wednesday 07 September 2005 5:07 pm, you wrote:
+> > > At Wed, 7 Sep 2005 17:06:03 +0100,
+> > >
+> > > Mark Zealey wrote:
+> > > > Yep did the aplay and it works fine but no audio comes out of the
+> > > > speakers or the headphone jack - the box remains silent. I did not
+> > > > use any options when loading the drivers. I have a second identical
+> > > > laptop bought at the same time which runs windows xp and has no
+> > > > problem with sound.
+> > >
+> > > Then I have no clue what's wrong.  You tried to toggle "Headphone Jack
+> > > Sense" and "Line Jack Sense", right?
+> > >
+> > > Any chance to try a newer version, e.g. 2.6.13 kernel?
+> > > 2.6.12 is too old to debug.
+> > >
+> > >
+> > > Takashi
+> > >
+> > > > Mark
+> > > >
+> > > > On Wednesday 07 September 2005 4:44 pm, Takashi Iwai wrote:
+> > > > > At Wed, 7 Sep 2005 16:16:24 +0100,
+> > > > >
+> > > > > Mark Zealey wrote:
+> > > > > > Laptop is an IBM thinkpad R50e. Attached are the 2 files
+> > > > >
+> > > > > Hmm, I don't find anything wrong at a first glance.
+> > > > > Try to turn on/off "Line Jack Sense" and "Headphone Jack Sense"
+> > > > > mixer switches.
+> > > > >
+> > > > > Do you have any module option for snd-intel8x0?
+> > > > >
+> > > > > And what do you mean "sound doesn't work"?  For testing PCM, try
+> > > > >
+> > > > > 	% aplay -vv somefile.wav
+> > > > >
+> > > > > and see whether VU meter appears.  If it looks working but no sound
+> > > > > comes out, it's either in the driver, the mixer setting, or a
+> > > > > hardware problem.  If the aplay is blocked, it's a typical device
+> > > > > race, not a bug.
+> > > > >
+> > > > >
+> > > > > Takashi
+> > > >
+> > > > --
+> > > >
+> > > > Mark Zealey
+> > > > http://zealey.org/mark
+> >
+> > --
+> >
+> > Mark Zealey
+> > http://zealey.org/mark
 
+-- 
+
+Mark Zealey
+http://zealey.org/mark
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
-es
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
-A
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
