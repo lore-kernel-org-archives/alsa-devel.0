@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Thu, 8 Sep 2005 01:10:19 +0200
-Message-ID: <a67ed24e82933b756f9a8e3040a01026@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001403]: Ensoniq PCI Audio 3000/ak4531 - no sound
+Date: Thu, 8 Sep 2005 01:14:43 +0200
+Message-ID: <d9c7613069b030c87dc26899889e72c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0A4017A
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 01:10:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC45D1AD
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 01:14:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1403> 
 ======================================================================
-Reported By:                midnight
+Reported By:                goldenfish
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1378
-Category:                   PCI - via82xx
+Issue ID:                   1403
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sid
-Kernel Version:             2.6.12.5
+Distribution:               Debian testing
+Kernel Version:             2.6.13 vanilla
 ======================================================================
-Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-08-2005 01:10 CEST
+Date Submitted:             09-08-2005 01:14 CEST
+Last Modified:              09-08-2005 01:14 CEST
 ======================================================================
-Summary:                    Surround Channel and Surround mixer doesn't work
-with a CM9761chip
+Summary:                    Ensoniq PCI Audio 3000/ak4531 - no sound
 Description: 
-The sound works fine on the center, LFE an front channels but I have no
-sound on the rear channel. also, I can't change the volume of the surround
-mixer in alsamixer (I can juste mute/unmute it).
+I have this card. Card has bad PCI identification. 
 
-I use the surround51 device to play my test sound and my test sound is a 6
-channels one.
+ Unknown device 0101:0400 
+ Subsystem: Unknown device 4942:4c4c
 
-I use the via82xx module
+If i loaded module, no structure about this card in /proc/asound.
 
-thanks
+I was solved this. I was created patch - in attachment.
+
+Module loaded, structure in /proc/asound created. alsamixer working.
+
+Basic problem:
+I don't hear any sound from card. PCM or from Line-In or from Mic no
+sound.
+
+Next problem:
+Module is not possible unload with command rmmod.
+
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-07-05 15:32 
-----------------------------------------------------------------------
-Try the CVS version.  This might be solved.
-
-----------------------------------------------------------------------
- midnight - 09-08-05 01:10 
-----------------------------------------------------------------------
-I have tryed the CVS version but with ths version I have no sound on any
-channels when I use the Surround51 device.
-it works if I use the fronts channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 11:33 midnight       New Issue                                    
-08-30-05 11:33 midnight       Distribution              => Debian Sid      
-08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
-09-07-05 11:20 midnight       Note Added: 0006053                          
-09-07-05 15:32 tiwai          Note Added: 0006054                          
-09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 01:14 goldenfish     New Issue                                    
+09-08-05 01:14 goldenfish     File Added: ens1370_report.tar.bz2                
+   
+09-08-05 01:14 goldenfish     Distribution              => Debian testing  
+09-08-05 01:14 goldenfish     Kernel Version            => 2.6.13 vanilla  
 ======================================================================
 
 
