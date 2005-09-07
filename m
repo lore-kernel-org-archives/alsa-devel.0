@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001400]: sys_siglist unavalible in uclibc
-Date: Wed, 7 Sep 2005 15:42:26 +0200
-Message-ID: <658fd4b50aba9d7888e4de9091bf6e9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
+Date: Wed, 7 Sep 2005 15:48:17 +0200
+Message-ID: <6cb4e2a2f07cab5a697a17c48c39a23f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB5C5184
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 15:42:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2F2E1B1
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 15:48:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1400> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
 ======================================================================
-Reported By:                mithro
+Reported By:                spiral
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1400
-Category:                   amixer
+Project:                    ALSA - driver
+Issue ID:                   1377
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Kubuntu Hoary
+Kernel Version:             2.6.13 final
 ======================================================================
-Date Submitted:             09-06-2005 21:56 CEST
-Last Modified:              09-07-2005 15:42 CEST
+Date Submitted:             08-30-2005 09:34 CEST
+Last Modified:              09-07-2005 15:48 CEST
 ======================================================================
-Summary:                    sys_siglist unavalible in uclibc
+Summary:                    tons of unknown symbols with 2.6.13 final
 Description: 
-amixer uses sys_siglist, this symbol is unavalible when compiling against
-the uclibc library. strsignal should be used instead. The patch below
-fixes the problem,
+Hello !
 
+I have a laptop with a hda-intel based sound card... I recently tried to
+update my kernel to 2.6.13 with the official kernel.org source, with
+almost the same configuration I have on my 2.6.12.5... This worked nicely
+except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
+(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
 
---- alsamixer.c.orig    2005-09-06 21:49:26.808435472 +0200
-+++ alsamixer.c 2005-09-06 21:49:41.019275096 +0200
-@@ -2188,7 +2188,7 @@
- mixer_signal_handler (int signal)
- {
-   if (signal != SIGSEGV)
--    mixer_abort (ERR_SIGNAL, sys_siglist[signal], 0);
-+    mixer_abort (ERR_SIGNAL, strsignal(signal), 0);
-   else
-     {
-       fprintf (stderr, "\nSegmentation fault.\n");
+In both cases, I can't load snd-hda-intel and I get a lot of unknown
+symbol messages in dmesg...
 
+I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
 ======================================================================
 
 ----------------------------------------------------------------------
- mithro - 09-06-05 22:28 
+ 1g0R - 09-06-05 20:17 
 ----------------------------------------------------------------------
-Yes
+Its a little bit "barbarian" solution, but i did the following things, and
+its worked for me:
+
+0. maybe you need to replace init.c, and adriver.h
+1. in linux kernel source (2.6.13) in include->linux->pci.h at line 819
+comment out with /*.......*/
+2. configure make make install alsa-driver
+3. remove comment from pci.h
+4. compile the other alsa*
 
 ----------------------------------------------------------------------
- tiwai - 09-07-05 15:42 
+ tiwai - 09-07-05 15:48 
 ----------------------------------------------------------------------
-Fixed on CVS.  Thanks.
+DEVFS is disabled on 2.6.13.  That's why you got unresolved symbols.
+Simply remove device_mode=xxx module option from your module config.
+
+The compile error of 1g0R is a different thing.  I guess the kernel tree
+is broken.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-06-05 21:56 mithro         New Issue                                    
-09-06-05 22:10 rlrevell       Note Added: 0006049                          
-09-06-05 22:28 mithro         Note Added: 0006050                          
-09-07-05 15:42 tiwai          Status                   new => resolved     
-09-07-05 15:42 tiwai          Resolution               open => fixed       
-09-07-05 15:42 tiwai          Assigned To               => tiwai           
-09-07-05 15:42 tiwai          Note Added: 0006055                          
+08-30-05 09:34 spiral         New Issue                                    
+08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
+08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
+09-02-05 19:51 tiwai          Note Added: 0006017                          
+09-04-05 22:11 1g0R           Note Added: 0006038                          
+09-05-05 14:15 kSh            Note Added: 0006041                          
+09-05-05 14:15 kSh            Issue Monitored: kSh                         
+09-06-05 17:35 spiral         File Added: dmesgout.txt                     
+09-06-05 17:36 spiral         Note Added: 0006047                          
+09-06-05 20:17 1g0R           Note Added: 0006048                          
+09-07-05 15:48 tiwai          Note Added: 0006056                          
 ======================================================================
 
 
