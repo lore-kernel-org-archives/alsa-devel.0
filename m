@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Wed, 7 Sep 2005 15:32:48 +0200
-Message-ID: <65e7379ba454f024d6ff404e65f7dc1b@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001400]: sys_siglist unavalible in uclibc
+Date: Wed, 7 Sep 2005 15:42:26 +0200
+Message-ID: <658fd4b50aba9d7888e4de9091bf6e9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 845061B1
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 15:32:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB5C5184
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 15:42:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1400> 
 ======================================================================
-Reported By:                midnight
-Assigned To:                
+Reported By:                mithro
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1378
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   1400
+Category:                   amixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sid
-Kernel Version:             2.6.12.5
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-07-2005 15:32 CEST
+Date Submitted:             09-06-2005 21:56 CEST
+Last Modified:              09-07-2005 15:42 CEST
 ======================================================================
-Summary:                    Surround Channel and Surround mixer doesn't work
-with a CM9761chip
+Summary:                    sys_siglist unavalible in uclibc
 Description: 
-The sound works fine on the center, LFE an front channels but I have no
-sound on the rear channel. also, I can't change the volume of the surround
-mixer in alsamixer (I can juste mute/unmute it).
+amixer uses sys_siglist, this symbol is unavalible when compiling against
+the uclibc library. strsignal should be used instead. The patch below
+fixes the problem,
 
-I use the surround51 device to play my test sound and my test sound is a 6
-channels one.
 
-I use the via82xx module
+--- alsamixer.c.orig    2005-09-06 21:49:26.808435472 +0200
++++ alsamixer.c 2005-09-06 21:49:41.019275096 +0200
+@@ -2188,7 +2188,7 @@
+ mixer_signal_handler (int signal)
+ {
+   if (signal != SIGSEGV)
+-    mixer_abort (ERR_SIGNAL, sys_siglist[signal], 0);
++    mixer_abort (ERR_SIGNAL, strsignal(signal), 0);
+   else
+     {
+       fprintf (stderr, "\nSegmentation fault.\n");
 
-thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- midnight - 09-07-05 11:20 
+ mithro - 09-06-05 22:28 
 ----------------------------------------------------------------------
-I haven't solved my problem yet.
-
-does anyone know where I can find the datasheet for the CM9761 chip ?
+Yes
 
 ----------------------------------------------------------------------
- tiwai - 09-07-05 15:32 
+ tiwai - 09-07-05 15:42 
 ----------------------------------------------------------------------
-Try the CVS version.  This might be solved.
+Fixed on CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 11:33 midnight       New Issue                                    
-08-30-05 11:33 midnight       Distribution              => Debian Sid      
-08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
-09-07-05 11:20 midnight       Note Added: 0006053                          
-09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-06-05 21:56 mithro         New Issue                                    
+09-06-05 22:10 rlrevell       Note Added: 0006049                          
+09-06-05 22:28 mithro         Note Added: 0006050                          
+09-07-05 15:42 tiwai          Status                   new => resolved     
+09-07-05 15:42 tiwai          Resolution               open => fixed       
+09-07-05 15:42 tiwai          Assigned To               => tiwai           
+09-07-05 15:42 tiwai          Note Added: 0006055                          
 ======================================================================
 
 
