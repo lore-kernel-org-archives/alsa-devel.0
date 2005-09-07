@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001379]: 1.0.9 produces very low volume on all volumes set to 100%; 1.0.10rc1 fails to modprobe
-Date: Wed, 7 Sep 2005 19:01:22 +0200
-Message-ID: <0004c40fc28492cc08f6a65b23facd39@bugtrack.alsa-project.org>
+Date: Wed, 7 Sep 2005 19:06:04 +0200
+Message-ID: <342d1f3965b7a1ef64be39e2f83dae1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74BE11AE
-	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 19:01:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 652961AE
+	for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2005 19:06:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SUSE Linux Professional 9.3
 Kernel Version:             Linux 2.6.11.4-21.8-default
 ======================================================================
 Date Submitted:             08-30-2005 18:47 CEST
-Last Modified:              09-07-2005 19:01 CEST
+Last Modified:              09-07-2005 19:06 CEST
 ======================================================================
 Summary:                    1.0.9 produces very low volume on all volumes set to
 100%; 1.0.10rc1 fails to modprobe
@@ -129,6 +129,11 @@ and mine is virtually untouched since I created it. Is something wrong
 with it? Please tell me if the information I supported is inaccurate or
 the problem is caused by my lack of experience.
 
+----------------------------------------------------------------------
+ tiwai - 09-07-05 19:06 
+----------------------------------------------------------------------
+Just no time and no idea.  It works on my system pretty well.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -141,6 +146,7 @@ Professional 9.3
 08-30-05 19:48 Varanger       Issue Monitored: Varanger                    
 08-30-05 23:19 Varanger       Issue End Monitor: Varanger                    
 09-07-05 19:01 kSh            Note Added: 0006063                          
+09-07-05 19:06 tiwai          Note Added: 0006064                          
 ======================================================================
 
 
