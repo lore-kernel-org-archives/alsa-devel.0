@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Converting OSS ioctl's to ALSA API
-Date: Wed, 07 Sep 2005 23:29:39 +0100
-Message-ID: <431F69D3.1060705@superbug.co.uk>
-References: <33017.65.103.251.231.1125967798.squirrel@65.103.251.231>    <Pine.HPX.4.33n.0509060950330.11382-100000@studcom.urz.uni-halle.de> <52491.12.110.19.97.1126112946.squirrel@12.110.19.97>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Thu, 8 Sep 2005 01:10:19 +0200
+Message-ID: <a67ed24e82933b756f9a8e3040a01026@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <52491.12.110.19.97.1126112946.squirrel@12.110.19.97>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0A4017A
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 01:10:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,60 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bob Ingraham <bobi@netshel.net>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Bob Ingraham wrote:
 
->Thank-you so much for ioctl mapping!
->
->May I ask one other architectural question?
->
->This video-conferencing app expected to use two half-duplex devices for
->simultaneous record-playback:
->
->/dev/dsp0 and /dev/dsp1 - these were expected to be configured as the
->separate playback and record channels of a single soundcard.
->
->However, on all of our target platforms (all running
->SuSE/Novell-Linux-Desktop,) there only appears to be a single, full-duplex
->device to use (plugwh:0,0) for both record and playback.
->
->So the (three-part) question is:
->
->1. Do I:
->
->  (a) Try to re-write this app to use full-duplex? or,
->
->  (b) Can I re-configure ALSA to split the default device (plughw:0,0)
->into two separate, half-duplex sub-devices (one for playback and one for
->record?
->
->
->2. Which approach makes more sense (i.e., more stable, reliable, etc.)?
->
->
->3. If 1a is the way to go, is there a tutorial or sample-doc on how to
->properly program full-duplex (simultaneous record & playback) operation
->under ALSA?
->
->
->Thanks,
->Bob
->  
->
-ALSA provides an abstraction layer.
-If you open plughw:0,0 for only playback, and then again for only 
-capture it should work.
-So, although the device name looks the same, device names for playback 
-and capture are in fact in a different name space.
-alsa-lib does all the difficult work for you.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+======================================================================
+Reported By:                midnight
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1378
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-08-2005 01:10 CEST
+======================================================================
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
+Description: 
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-Another alternative could be to use jackd. It is ideal for low latency 
-applications, and VoIP is certainly ideal for that.
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
 
-James
+I use the via82xx module
+
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-07-05 15:32 
+----------------------------------------------------------------------
+Try the CVS version.  This might be solved.
+
+----------------------------------------------------------------------
+ midnight - 09-08-05 01:10 
+----------------------------------------------------------------------
+I have tryed the CVS version but with ths version I have no sound on any
+channels when I use the Surround51 device.
+it works if I use the fronts channels.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+======================================================================
+
 
 
 
