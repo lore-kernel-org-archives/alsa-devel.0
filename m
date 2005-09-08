@@ -1,17 +1,14 @@
-From: Peter Zubaj <pzubaj@gaya.sk>
-Subject: Re: Re: Brand-new notebook useless with Linux...
-Date: Thu, 08 Sep 2005 22:41:54 +0200
-Message-ID: <1126212114.5010.6.camel__24220.5921830193$1126211992$gmane$org@localhost.localdomain>
-References: <200509081522_MC3-1-A986-1B52@compuserve.com>
-	 <1126207905.12697.20.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Thu, 8 Sep 2005 23:20:53 +0200
+Message-ID: <9050439a5d8fc4a7f459e4a37865d09f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from arkady.gaya.sk (arkady.gaya.sk [62.168.75.2])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE1BA197
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 22:37:00 +0200 (MEST)
-In-Reply-To: <1126207905.12697.20.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F1E31C2
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 23:20:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,73 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Chuck Ebbert <76306.1226@compuserve.com>, alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Conexant codec with ID 0x30 - this is AMC97 codec (audio + modem in one
-codec) - maybe there is fight between sound and modem driver. On intel
-this codec works ok - audio part. Modem part is not working and
-snd-intel8x0m have to be in blacklist (otherways audio is not working)
-- maybe same problem with ati.
 
-Try to add snd-atiixp-modem to /etc/hotplug/blacklist
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+======================================================================
+Reported By:                midnight
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1378
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-08-2005 23:20 CEST
+======================================================================
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
+Description: 
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-Peter Zubaj
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
 
-On Thu, 2005-09-08 at 15:31 -0400, Lee Revell wrote:
-> On Thu, 2005-09-08 at 15:19 -0400, Chuck Ebbert wrote:
-> > In-Reply-To: <1125805091.14032.69.camel@mindpipe>
-> > 
-> > On Sat, 03 Sep 2005 at 23:38:10 -0400, Lee Revell wrote:
-> > 
-> > > On Sat, 2005-09-03 at 18:58 -0400, Chuck Ebbert wrote:
-> > > > I just bought a new notebook.
-> > > 
-> > > I'd return it if I were you.
-> > 
-> >  What fun is that?  I have learned that HP/Compaq is hostile to Linux,
-> > for one thing, which was interesting (my system is a Compaq Presario
-> > V2312US.)
-> > 
-> >  Can you help me find out why my codec is unknown?  I gave up trying to
-> > figure out how to get the codec ID and hacked the source to print it:
-> > 
-> > 
-> > atiixp: codec 0 not available for modem
-> > atiixp: no codec available
-> > ALSA device list:
-> >   #0 ATI IXP rev 2 with 0x43585430 at 0xd0003400, irq 177
-> > 
-> > 
-> > So it's a Conexant codec with ID 0x30 on an atiixp.  OSS has some support
-> > for this codec, apparently.
-> 
-> Wait, that sounds like the modem, not the AC97 audio codec.
-> 
-> You might be able to get the modem to work with the (proprietary)
-> slmodem software modem, or something.  I wouldn't count on it though.
-> 
-> Does your sound work?
-> 
-> Lee
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net email is Sponsored by the Better Software Conference & EXPO
-> September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-> Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-> Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-> 
-> Informacia od NOD32
-> Tato sprava bola skontrolovana antivirovym systemom NOD32.
-> [ Projekt gaya | www.gaya.sk ]
+I use the via82xx module
+
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-08-05 20:44 
+----------------------------------------------------------------------
+BTW, without "-D surround51", the tones may become quite loud.  Lower the
+amp volumes before testing this.
+
+----------------------------------------------------------------------
+ midnight - 09-08-05 23:20 
+----------------------------------------------------------------------
+I use Sep. 07 CVS version.
+
+I have unmute and put all mixers at 100% (Master, PCM, CENTER, LFE)
+Surround is unmuted and at 0%
+
+with "speaker-test -c6 -Dsurround51" I have no sound whatever the Channel
+Mode (2ch 4ch 6ch) and whatever the Surround mode (Independ, Shared)
+
+with "speaker-test -c6", I have Sound only at the Front Right and Front
+Left speakers whatever the Channel Mode (2ch 4ch 6ch) and whatever the
+Surround mode (Independ, Shared)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+======================================================================
+
 
 
 
