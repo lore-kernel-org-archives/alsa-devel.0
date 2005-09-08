@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Thu, 8 Sep 2005 18:58:26 +0200
-Message-ID: <e74fa3058ce2e5d28d6431f80a2e74c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001402]: No SOUND in ASUS A6
+Date: Thu, 8 Sep 2005 19:02:38 +0200
+Message-ID: <d20e8f756c14ef352842a6bc0434d192@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00C611C3
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 18:58:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 683E61C4
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 19:02:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1402> 
 ======================================================================
-Reported By:                midnight
-Assigned To:                
+Reported By:                pedrosalazar
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1378
-Category:                   PCI - via82xx
+Issue ID:                   1402
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sid
-Kernel Version:             2.6.12.5
+Status:                     assigned
+Distribution:               Red Hat Fedora Core 4
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-08-2005 18:58 CEST
+Date Submitted:             09-07-2005 23:47 CEST
+Last Modified:              09-08-2005 19:02 CEST
 ======================================================================
-Summary:                    Surround Channel and Surround mixer doesn't work
-with a CM9761chip
+Summary:                    No SOUND in ASUS A6
 Description: 
-The sound works fine on the center, LFE an front channels but I have no
-sound on the rear channel. also, I can't change the volume of the surround
-mixer in alsamixer (I can juste mute/unmute it).
+There is no sound in asus laptop A6 with alsa drivers.
 
-I use the surround51 device to play my test sound and my test sound is a 6
-channels one.
+laptop: ASUS A6 (A6Q00VA) Intel Pentium M Processor 740
 
-I use the via82xx module
+Initially verified with the alsa-driver bundle in FC4 (1.0.9rc2 if I'm not
+wrong) with kernel 2.6.12-1.1398_FC4, then I updated to alsa-driver 1.0.9b
+working with alsa-lib 1.0.9 and alsa-utils 1.0.9a.
 
-thanks
+After, I updated kernel to 2.6.12.5, and now I'm using the 2.6.13.
+
+All would be fine (alsamixer, aplay, ...) unless there is no sound.
+
+I compiled alsa-driver with debug, and added the module option
+"model=asus", that prints the following message when module is inserted:
+
+Sep  7 21:59:39 undertaker kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
+Link [LNKA] -> GSI 11 (level, low) -> IRQ 11
+Sep  7 21:59:39 undertaker kernel: ALSA
+/home/psalazar/build/alsa-driver-1.0.9b/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:1409:
+hda_codec: Unknown model for ALC880
+
 ======================================================================
 
 ----------------------------------------------------------------------
- midnight - 09-08-05 01:10 
+ tiwai - 09-08-05 19:02 
 ----------------------------------------------------------------------
-I have tryed the CVS version but with ths version I have no sound on any
-channels when I use the Surround51 device.
-it works if I use the fronts channels.
+options for snd-card-0 doesn't work with the module-init-tools.
+Only snd-hda-intel would work.
 
-----------------------------------------------------------------------
- tiwai - 09-08-05 18:58 
-----------------------------------------------------------------------
-The CVS version of Sep. 07, too?
-I meant not only driver but alsa-lib...
+The "unknwon codec..." appears even if you compile with debug option and
+pass "model=asus" ?  Then the model parameter isn't passed correctly.
+Make sure that you compiled with debug option, and pass it directly, e.g.
+invoking like:
+    # modprobe snd-hda-intel model=asus
+
+Then you'll see the kernel message that the given model is selected.
+
+Alternatively, you can add the entry of your own device to
+alsa-kernel/pci/hda/patch_realtek.c.  Check the output of "lspci -nv" and
+read the PCI *subsystem* ID (not the PCI ID).
+Then, add them to alc880_cfg_tbl[] definition there.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 11:33 midnight       New Issue                                    
-08-30-05 11:33 midnight       Distribution              => Debian Sid      
-08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
-09-07-05 11:20 midnight       Note Added: 0006053                          
-09-07-05 15:32 tiwai          Note Added: 0006054                          
-09-08-05 01:10 midnight       Note Added: 0006069                          
-09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-07-05 23:47 pedrosalazar   New Issue                                    
+09-07-05 23:47 pedrosalazar   File Added: 2.6.13.config                    
+09-07-05 23:47 pedrosalazar   Distribution              => Red Hat Fedora Core 4
+09-07-05 23:47 pedrosalazar   Kernel Version            => 2.6.13          
+09-08-05 19:02 tiwai          Note Added: 0006078                          
 ======================================================================
 
 
