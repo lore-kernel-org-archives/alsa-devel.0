@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001403]: Ensoniq PCI Audio 3000/ak4531 - no sound
-Date: Thu, 8 Sep 2005 01:14:43 +0200
-Message-ID: <d9c7613069b030c87dc26899889e72c4@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: hda-intel/ALC260: mixer control issues
+Date: Thu, 8 Sep 2005 10:27:11 +0930 (CST)
+Message-ID: <200509080057.j880vBqL029782@auster.physics.adelaide.edu.au>
+References: <s5hbr358dy8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC45D1AD
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 01:14:43 +0200 (MEST)
+In-Reply-To: <s5hbr358dy8.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 07, 2005 10:44:15 AM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +17,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1403> 
-======================================================================
-Reported By:                goldenfish
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1403
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.13 vanilla
-======================================================================
-Date Submitted:             09-08-2005 01:14 CEST
-Last Modified:              09-08-2005 01:14 CEST
-======================================================================
-Summary:                    Ensoniq PCI Audio 3000/ak4531 - no sound
-Description: 
-I have this card. Card has bad PCI identification. 
+> > > > I'll do a patch up along these lines in the next day or so unless you advise
+> > > > that there is a better way.
+> > > Agreed.  You need just to put your ssid there.  Go ahead!
+> > 
+> > Not a problem; will do.  While I'm at it I'll probably also define a custom
+> > mixer layout so it's clearer which controls are actually available on this
+> > laptop and what they really do.  For example, "IntSpeaker" instead of
+> > "Headphone", "Mic/LineIn" instead of "Mic", "LineOut" instead of "Line", and
+> > remove some controls (like "mono") which don't seem to be connected to any
+> > physical hardware.
+> 
+> It's fine as long as you use ALSA native apps, but remember that some
+> apps require certain known controls.  Also, OSS emulation wouldn't
+> work properly.
 
- Unknown device 0101:0400 
- Subsystem: Unknown device 4942:4c4c
+Note that the above names were abbreviated for brevity: "IntSpeaker" is
+really "IntSpeaker Playback Volume", etc.  I should have made that clear.
 
-If i loaded module, no structure about this card in /proc/asound.
+Are these "known special names" documented anywhere?
 
-I was solved this. I was created patch - in attachment.
+OSS emulation appears to be working fine with the names I'm currently using
+(although admittedly I haven't tested an OSS mixer).
 
-Module loaded, structure in /proc/asound created. alsamixer working.
+> BTW, "Line" and "Line Out" are different.  "Line Playback Volume" 
+> is the volume of thruback signal from line-in jack to a certain
+> output.
 
-Basic problem:
-I don't hear any sound from card. PCM or from Line-In or from Mic no
-sound.
+Yes, understood.  Sorry, the above paragraph was written from memory and I
+probably confused a few things when typing.  The "Mic/LineIn Playback
+Volume" corresponds to "Line" - I just figured that having the controls
+labelled in a way which related to how the physical jacks were labelled was
+a good thing.  Given the troubles you flagged due to the unusual names
+I might use "Line" for "Mic/LineIn" and "Headphone" for "LineOut though.
 
-Next problem:
-Module is not possible unload with command rmmod.
+> I guess "LineOut" corresponds to "Headphone", in your case.
 
-======================================================================
+"LineOut" is the overall volume of the signal sent to the "Line Out" jack on
+the laptop.  Having said that the jack does have sufficient power to drive a
+pair of headphones even without the internal amp enabled.  The "headphone"
+pin on the ALC260 chip goes to the internal speaker; hense the "IntSpeaker
+Playback Volume" designation.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-08-05 01:14 goldenfish     New Issue                                    
-09-08-05 01:14 goldenfish     File Added: ens1370_report.tar.bz2                
-   
-09-08-05 01:14 goldenfish     Distribution              => Debian testing  
-09-08-05 01:14 goldenfish     Kernel Version            => 2.6.13 vanilla  
-======================================================================
+It'd be nice if we could have a mixer control which allowed the user to
+switch the LineOut socket between a true LineOut and a "Headphone" output
+(that is, a pin with the internal headphone amp turned on).  I don't think
+there's infrastructure to allow this, however.  That might have to become
+a module parameter (lineout_is_headphone, enable_hp_amp or something).
 
-
+Regards
+  jonathan
 
 
 -------------------------------------------------------
