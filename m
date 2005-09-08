@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [ALSA - driver 0001203]: mtpav driver locks X on
-	64 bit native system
-Date: Thu, 08 Sep 2005 12:36:33 -0400
-Message-ID: <1126197394.12697.2.camel@mindpipe>
-References: <4a2952cca628b67c731e72971c492bf2@bugtrack.alsa-project.org>
-	 <1126161408.9937.7.camel@daw.littlewolf>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001404]: (Apparently) no microphone support
+Date: Thu, 8 Sep 2005 18:40:26 +0200
+Message-ID: <1dbfbb1f479e7cef4e660557290f0474@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7223E1BD
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 18:36:37 +0200 (MEST)
-In-Reply-To: <1126161408.9937.7.camel@daw.littlewolf>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D79AD178
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 18:40:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,23 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Allan Klinbail <allan_k@dodo.com.au>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-09-08 at 16:36 +1000, Allan Klinbail wrote:
-> Is any work being done on this... 
-> 
-> To my horror and disgust for work purposes I needed to install winblows
-> on the amd64 and the MOTU proprietary 32 bit driver works...
-> 
-> This simply confirms I have all my printer port settings correct in
-> BIOS...  
 
-Um, no, because the ALSA developers almost certainly don't have the
-hardware.  YOU need to work on it.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
+======================================================================
+Reported By:                Twey
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1404
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.13-homegrown
+======================================================================
+Date Submitted:             09-08-2005 18:40 CEST
+Last Modified:              09-08-2005 18:40 CEST
+======================================================================
+Summary:                    (Apparently) no microphone support
+Description: 
+My SB Live! 24-Bit has no microphone-related channels.  Using any mixer
+(tried: alsamixer, kmix, gnome-volume-control), it seems not to support
+microphones.
+Audacity shows very small (pixel-size) distortions in the recording graph
+at times.  I presume this means that the input is being received, but is
+too miniscule to make a difference.  I can't do anything about this; there
+are no appropriate sliders or "mic boost" in any mixer application.
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-08-05 18:40 Twey           New Issue                                    
+09-08-05 18:40 Twey           Distribution              => Fedora Core 4   
+09-08-05 18:40 Twey           Kernel Version            => 2.6.13-homegrown
+======================================================================
+
 
 
 
