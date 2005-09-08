@@ -1,15 +1,14 @@
-From: "Alien" <alien999999999@users.sourceforge.net>
-Subject: Re: problems with snd_au8830 module under mandriva 2005
-Date: Thu, 8 Sep 2005 09:07:18 +0200 (CEST)
-Message-ID: <44272.62.59.249.250.1126163238.squirrel@62.59.249.250>
-References: <4317CC51.3040709@netvigator.com>
-    <200509042134.23916.alien999999999@users.sourceforge.net>
-    <1126131309.17399.8.camel@pc-erik.lan>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
+Date: Thu, 8 Sep 2005 09:27:10 +0200
+Message-ID: <965e3054cd6806a4ba05fd976dc0ee66@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1126131309.17399.8.camel@pc-erik.lan>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E91321A8
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 09:27:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,87 +18,126 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik <assie2@zonnet.nl>
-Cc: Raymond <rayau@netvigator.com>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> i'm busy with home improving but when i have time i will try the patch
-> again on 2.6.12 kernel. I have not checked if it is the same alsa
-> version as 2.6.11 but i think it is.
->
-> b.t.w. the volume bar problem is in XMMS (didn't try other programs
-> because i haven't a lot of time) (just online for mail checking etc.
-> that's it)
-> but i think alien can tell you about the volume bar problems.
 
-which volume bar problems are you talking about?
-1. the ones where if you get 49% it's loud and on 51% quite silently?
-2. or irregular sound volume when you are about halfway (without changing
-volume yourself).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1380> 
+======================================================================
+Reported By:                Varanger
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1380
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
+Kernel Version:             Linux 2.6.11-1-686-smp
+======================================================================
+Date Submitted:             08-30-2005 20:07 CEST
+Last Modified:              09-08-2005 09:27 CEST
+======================================================================
+Summary:                    Scratchy Intel HDA
+Description: 
+Hello.
 
-actually after experimenting I think it might be something hardware
-related (ie with the volume control of my speaker system, not the
-au8810)...
+I am getting very scratchy audio in my Intel HDA card besides the sound is
+very low.
 
-> pc information:
->
-> mandriva 2005 le
-> kernel 2.6.11
-> amd 64 bit 3500+
-> diamond monster sound mx300 au8830 card
->
->
-> Erik
->
->
->
-> On Sun, 2005-09-04 at 21:34 +0200, Alien wrote:
->> Op vrijdag 2 september 2005 05:51, schreef Raymond:
->> > I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
->> > au8820 patch. They seem to have their own patches.
->> >
->> > The EQ part in diff11.diff seem to be not tested since EQ is not
->> present
->> > in au8820.
->> >
->> > You should cc your reply to openvortex-dev@nongnu.org and
->> > alsa-devel@lists.sourceforge.net so that the others can keep track o=
-f
->> > your problem.
->> >
->> > There are 3 bug reports for AMD64 in ALSA BTS.
->> > 1047 - au8810
->> > 1138 - au8820
->> > 1025 - au8830
->> >
->> > Need feedback from testers with au8810/au8820/au8830 and 32bits/64bi=
-ts
->> > machines to debug this patch.
->> >
->> > 1) EQ, SPDIF of au8810/au8830 are not present in au8820,
->> > 2) WT of au8820/au8830 are not present in au8810,
->> > 3) SoftModem of au8810 are not present in au8820.
->> > 4) 3D of au8830 is not present in au8810/au8820.
->> >
->> > Please correct me if I am wrong, I think au8810 do not have any 3D
->> > effect hardware.
->>
->> i'm not entirely sure, but i think it has some 3D stuff, since i've
->> always had
->> controls to manage 3D depth, etc...
->>
->> unless you are speaking of something else...
->
->
->
+lspci output is:  
+
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 03)
+
+Reading every article I could have found on the net regarding this
+card, I discovered that i needed snd-azx (ALSA 1.0.8 ) or
+snd-hda-intel modules (ALSA 1.0.9rc* or later).
+
+I have downloaded every sources from 1.0.8 up to 1.0.10rc1 (including
+1.0.9 release candidates) from http://www.alsa-project.org, then built and
+installed them.
+
+In all those versions, I have followed this steps:
+alsa-driver : ./configure --with-oss=yes --with-cards=hda-intel && make &&
+make install
+library / oss-lib / utils : ./configure && make && make install
+
+I've looked every on the net and found that I could use position_fix=1
+or position_fix=2 to help me  but no good either.
+
+I've tried in Ubuntu, Kubuntu, Debian, even Mandriva 2005 LE and
+Fedora Core 4 (using the modules from the kernel) and it's the same
+problem in all of them.
+
+The card came with the mainboard Intel 915G (D915GEV or 915GEV)  
+
+more info about my soundcard:
+
+Running: "lspci -v" 
+
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 03)
+        Subsystem: Intel Corp.: Unknown device e200
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at ff43c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] #10 [0091]
+
+/proc/sound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Jul  7 2005 for kernel 2.6.10-5-686-smp (SMP).
+
+/proc/asound/devices
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+Thanks for the help,
+Varanger
+======================================================================
+
+----------------------------------------------------------------------
+ cventers - 09-08-05 09:27 
+----------------------------------------------------------------------
+I'm using the latest alsa-driver release, and I also experience scratchy
+sound on the Intel HDA driver:
+
+0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+
+I've tried the position_fix fixes, but I can't seem to improve my sound
+quality.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 20:07 Varanger       New Issue                                    
+08-30-05 20:07 Varanger       Distribution              => Ubuntu 5.04 "Hoary
+Hedgehog"
+08-30-05 20:07 Varanger       Kernel Version            => Linux
+2.6.11-1-686-smp
+09-08-05 09:27 cventers       Note Added: 0006070                          
+======================================================================
 
 
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
-es
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
-A
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
