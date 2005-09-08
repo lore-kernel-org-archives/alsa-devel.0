@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Thu, 8 Sep 2005 19:58:02 +0200
-Message-ID: <488051bab21c320b993259f1b9ae1a02@bugtrack.alsa-project.org>
+Date: Thu, 8 Sep 2005 20:42:54 +0200
+Message-ID: <1a0004a05d97406389a3bf13a11a6432@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A73631C2
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 19:58:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 966441C2
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 20:42:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sid
 Kernel Version:             2.6.12.5
 ======================================================================
 Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-08-2005 19:58 CEST
+Last Modified:              09-08-2005 20:42 CEST
 ======================================================================
 Summary:                    Surround Channel and Surround mixer doesn't work
 with a CM9761chip
@@ -58,17 +58,25 @@ thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-08-05 19:12 
-----------------------------------------------------------------------
-Hmm, which driver type is it?  You can see the entry in /proc/asound/cards.
-
-----------------------------------------------------------------------
  midnight - 09-08-05 19:58 
 ----------------------------------------------------------------------
 /proc/asound/cards :
 
 0 [V8237          ]: VIA8237 - VIA 8237
                      VIA 8237 with CMI9761 at 0xe800, irq 19
+
+----------------------------------------------------------------------
+ tiwai - 09-08-05 20:42 
+----------------------------------------------------------------------
+Try speaker-test program at first for testing surrounds.  E.g.
+
+    % speaker-test -c6 -Dsurround51
+
+If this doensn't work, report what doesn't work precisely.
+Then, run alsamixer and change "Channel Mode" to "6ch" via up/down key. 
+Try speaker-test without "-D surround51" option.
+
+BTW, your ac97 chip has no volume control at all.  No bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +91,7 @@ Date Modified  Username       Field                    Change
 09-08-05 19:00 midnight       Note Added: 0006077                          
 09-08-05 19:12 tiwai          Note Added: 0006080                          
 09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
 ======================================================================
 
 
