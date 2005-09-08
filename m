@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001404]: (Apparently) no microphone support
-Date: Thu, 8 Sep 2005 19:11:17 +0200
-Message-ID: <a5289f0f67eb0ddc3b36ae6bbec41b48@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Thu, 8 Sep 2005 19:58:02 +0200
+Message-ID: <488051bab21c320b993259f1b9ae1a02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D8611C4
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 19:11:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A73631C2
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 19:58:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
 ======================================================================
-Reported By:                Twey
-Assigned To:                jcdutton
+Reported By:                midnight
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1404
-Category:                   PCI - ca0106
+Issue ID:                   1378
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13-homegrown
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
 ======================================================================
-Date Submitted:             09-08-2005 18:40 CEST
-Last Modified:              09-08-2005 19:11 CEST
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-08-2005 19:58 CEST
 ======================================================================
-Summary:                    (Apparently) no microphone support
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
 Description: 
-My SB Live! 24-Bit has no microphone-related channels.  Using any mixer
-(tried: alsamixer, kmix, gnome-volume-control), it seems not to support
-microphones.
-Audacity shows very small (pixel-size) distortions in the recording graph
-at times.  I presume this means that the input is being received, but is
-too miniscule to make a difference.  I can't do anything about this; there
-are no appropriate sliders or "mic boost" in any mixer application.
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
+
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
+
+I use the via82xx module
+
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- Twey - 09-08-05 18:55 
+ tiwai - 09-08-05 19:12 
 ----------------------------------------------------------------------
-Gleck, more compilation.  OK.
+Hmm, which driver type is it?  You can see the entry in /proc/asound/cards.
 
 ----------------------------------------------------------------------
- Twey - 09-08-05 19:11 
+ midnight - 09-08-05 19:58 
 ----------------------------------------------------------------------
-Runs fine up until:
+/proc/asound/cards :
 
-make[1]: Entering directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-  CC [M]  /root/alsa/alsa-driver-1.0.10rc1/acore/hwdep.o
-In file included from
-/root/alsa/alsa-driver-1.0.10rc1/include/adriver.h:737,
-                 from
-/root/alsa/alsa-driver-1.0.10rc1/include/sound/driver.h:42,
-                 from /root/alsa/alsa-driver-1.0.10rc1/acore/hwdep.c:22:
-include/linux/pci.h:819: error: syntax error before numeric constant
-make[4]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore/hwdep.o] Error 1
-make[3]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore] Error 2
-make[2]: *** [_module_/root/alsa/alsa-driver-1.0.10rc1] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-make: *** [compile] Error 2
+0 [V8237          ]: VIA8237 - VIA 8237
+                     VIA 8237 with CMI9761 at 0xe800, irq 19
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-05 18:40 Twey           New Issue                                    
-09-08-05 18:40 Twey           Distribution              => Fedora Core 4   
-09-08-05 18:40 Twey           Kernel Version            => 2.6.13-homegrown
-09-08-05 18:43 Twey           Issue Monitored: Twey                        
-09-08-05 18:46 rlrevell       Note Added: 0006074                          
-09-08-05 18:55 Twey           Note Added: 0006075                          
-09-08-05 19:11 Twey           Note Added: 0006079                          
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
 ======================================================================
 
 
