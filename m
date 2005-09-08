@@ -1,21 +1,15 @@
-From: Allan Klinbail <allan_k@dodo.com.au>
-Subject: Re: [ALSA - driver 0001203]: mtpav driver locks X on
-	64 bit native system
-Date: Thu, 08 Sep 2005 16:36:48 +1000
-Message-ID: <1126161408.9937.7.camel@daw.littlewolf>
-References: <4a2952cca628b67c731e72971c492bf2@bugtrack.alsa-project.org>
+From: "Alien" <alien999999999@users.sourceforge.net>
+Subject: Re: problems with snd_au8830 module under mandriva 2005
+Date: Thu, 8 Sep 2005 09:07:18 +0200 (CEST)
+Message-ID: <44272.62.59.249.250.1126163238.squirrel@62.59.249.250>
+References: <4317CC51.3040709@netvigator.com>
+    <200509042134.23916.alien999999999@users.sourceforge.net>
+    <1126131309.17399.8.camel@pc-erik.lan>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from relay02.mail-hub.dodo.com.au (relay02.mail-hub.dodo.com.au [202.136.32.45])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B06D1BD
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 08:35:24 +0200 (MEST)
-Received: from [220.240.117.145] (helo=[10.0.0.1])
-	by relay02.mail-hub.dodo.com.au with esmtp (Exim 4.34)
-	id 1EDG0D-0007jn-11
-	for alsa-devel@alsa-project.org; Thu, 08 Sep 2005 16:35:18 +1000
-In-Reply-To: <4a2952cca628b67c731e72971c492bf2@bugtrack.alsa-project.org>
+In-Reply-To: <1126131309.17399.8.camel@pc-erik.lan>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,97 +19,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Erik <assie2@zonnet.nl>
+Cc: Raymond <rayau@netvigator.com>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Is any work being done on this... 
+> i'm busy with home improving but when i have time i will try the patch
+> again on 2.6.12 kernel. I have not checked if it is the same alsa
+> version as 2.6.11 but i think it is.
+>
+> b.t.w. the volume bar problem is in XMMS (didn't try other programs
+> because i haven't a lot of time) (just online for mail checking etc.
+> that's it)
+> but i think alien can tell you about the volume bar problems.
 
-To my horror and disgust for work purposes I needed to install winblows
-on the amd64 and the MOTU proprietary 32 bit driver works...
+which volume bar problems are you talking about?
+1. the ones where if you get 49% it's loud and on 51% quite silently?
+2. or irregular sound volume when you are about halfway (without changing
+volume yourself).
 
-This simply confirms I have all my printer port settings correct in
-BIOS...  
+actually after experimenting I think it might be something hardware
+related (ie with the volume control of my speaker system, not the
+au8810)...
 
-On Mon, 2005-06-27 at 19:39 +0200, bugtrack@alsa-project.org wrote:
-> A NOTE has been added to this issue.
-> ======================================================================
-> <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1203> 
-> ======================================================================
-> Reported By:                sonofzev
-> Assigned To:                
-> ======================================================================
-> Project:                    ALSA - driver
-> Issue ID:                   1203
-> Category:                   GENERIC - mtpav
-> Reproducibility:            always
-> Severity:                   crash
-> Priority:                   normal
-> Status:                     new
-> Distribution:               Gentoo 2004.3 - 64-bit native
-> Kernel Version:             2.6.9 or 2.6.11 or 2.6.12
-> ======================================================================
-> Date Submitted:             06-19-2005 08:51 CEST
-> Last Modified:              06-27-2005 19:39 CEST
-> ======================================================================
-> Summary:                    mtpav driver locks X on 64 bit native system
-> Description: 
-> Locks system completely when loading X if mtpav module is already loaded. 
-> 
-> If loading the module after loading X, the system completely lock when
-> firing up any sequencer app. 
-> 
-> This does not happen on my 32-bit Pentium 4 
-> 
-> ======================================================================
-> 
-> ----------------------------------------------------------------------
->  tiwai - 06-27-05 16:57 
-> ----------------------------------------------------------------------
-> Yes.  The driver doesn't probe but just trusts the module option (or uses
-> the default value 7 blindly).
-> 
-> ----------------------------------------------------------------------
->  sonofzev - 06-27-05 19:39 
-> ----------------------------------------------------------------------
-> confirmed that I am using IRQ7 for my printer port.
-> 
-> Issue History
-> Date Modified  Username       Field                    Change              
-> ======================================================================
-> 06-19-05 08:51 sonofzev       New Issue                                    
-> 06-19-05 08:51 sonofzev       Distribution              => Gentoo 2004.3 -
-> 64-bit native
-> 06-19-05 08:51 sonofzev       Kernel Version            => 2.6.9 or 2.6.11 or
-> 2.6.12
-> 06-19-05 16:05 sonofzev       Note Added: 0005089                          
-> 06-19-05 16:24 sonofzev       Note Deleted: 0005089                        
-> 06-20-05 13:47 sonofzev       Note Added: 0005097                          
-> 06-21-05 11:25 tiwai          Note Added: 0005104                          
-> 06-26-05 10:54 sonofzev       Note Added: 0005261                          
-> 06-27-05 16:57 tiwai          Note Added: 0005281                          
-> 06-27-05 19:39 sonofzev       Note Added: 0005286                          
-> ======================================================================
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-> from IBM. Find simple to follow Roadmaps, straightforward articles,
-> informative Webcasts and more! Get everything you need to get up to
-> speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
--- 
-Allan Klinbail <allan_k@dodo.com.au>
+> pc information:
+>
+> mandriva 2005 le
+> kernel 2.6.11
+> amd 64 bit 3500+
+> diamond monster sound mx300 au8830 card
+>
+>
+> Erik
+>
+>
+>
+> On Sun, 2005-09-04 at 21:34 +0200, Alien wrote:
+>> Op vrijdag 2 september 2005 05:51, schreef Raymond:
+>> > I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
+>> > au8820 patch. They seem to have their own patches.
+>> >
+>> > The EQ part in diff11.diff seem to be not tested since EQ is not
+>> present
+>> > in au8820.
+>> >
+>> > You should cc your reply to openvortex-dev@nongnu.org and
+>> > alsa-devel@lists.sourceforge.net so that the others can keep track o=
+f
+>> > your problem.
+>> >
+>> > There are 3 bug reports for AMD64 in ALSA BTS.
+>> > 1047 - au8810
+>> > 1138 - au8820
+>> > 1025 - au8830
+>> >
+>> > Need feedback from testers with au8810/au8820/au8830 and 32bits/64bi=
+ts
+>> > machines to debug this patch.
+>> >
+>> > 1) EQ, SPDIF of au8810/au8830 are not present in au8820,
+>> > 2) WT of au8820/au8830 are not present in au8810,
+>> > 3) SoftModem of au8810 are not present in au8820.
+>> > 4) 3D of au8830 is not present in au8810/au8820.
+>> >
+>> > Please correct me if I am wrong, I think au8810 do not have any 3D
+>> > effect hardware.
+>>
+>> i'm not entirely sure, but i think it has some 3D stuff, since i've
+>> always had
+>> controls to manage 3D depth, etc...
+>>
+>> unless you are speaking of something else...
+>
+>
+>
+
 
 
 
 -------------------------------------------------------
 SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practic=
+es
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & Q=
+A
 Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
