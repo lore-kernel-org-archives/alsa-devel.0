@@ -1,15 +1,13 @@
-From: Daniel James <daniel@64studio.com>
-Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
-Date: Thu, 8 Sep 2005 16:53:37 +0100
-Message-ID: <200509081653.37754.daniel@64studio.com>
-References: <200508111525.07881.daniel@64studio.com> <200508111643.27160.daniel@64studio.com> <1123777147.6980.37.camel@mindpipe>
+From: "Boenn G (Elec)" <gboenn@glam.ac.uk>
+Subject: vxpocket
+Date: Thu, 8 Sep 2005 17:00:34 +0100
+Message-ID: <0BA7EE4D4646E0409D458D347C508B78286AA5@MAILSERV1.uni.glam.ac.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1123777147.6980.37.camel@mindpipe>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,24 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lee,
+Hi guys,
 
-I apologise for the long delay in testing your patch. As our 
-distribution is still quite new, we have still been sorting out our 
-build environment and so on. Free is currently building a 2.6.13 
-kernel package and we will test against that as soon as possible.
+i am having trouble with getting a vxpocket v2 card to work with the
+planet.ccrma distro 2.6.11_0.3.rdt.rhfc3.ccrma
 
-I also have a second Opteron test machine under construction that has 
-an envy24 card (Delta 1010), so we'll be able to see if the lock-up 
-is reproduced there too.
+added this to /etc/pcmcia/config:
 
-Cheers!
+  device "snd-vxpocket"
+     class "audio" module "snd-vxpocket"
 
-Daniel
+  card "Digigram VX-POCKET"
+    manfid 0x01f1, 0x0100
+    bind "snd-vxpocket"
+
+and in /etc/modprobe.conf:
+
+alias snd-card-2 snd-vxpocket
+alias sound-slot-2 snd-vxpocket
+options snd-card-2 index=3D2
+post-install snd-vxpocket /usr/bin/vxloader
+
+, but sadly the vxloader never finds the card, can't see it with lspci.
+
+the line=20
+
+post-install snd-vxpocket /usr/bin/vxloader
+
+creates a "bad line, ignored" error at startup. executing it later in
+the shell gives "no VX-compatible cards found".
+
+i can see with lsmod that the snd_vx-modules are there.
+
+Any ideas what is going wrong?
+
+Georg
 
 
 -------------------------------------------------------
