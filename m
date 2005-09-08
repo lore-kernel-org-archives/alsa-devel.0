@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Thu, 8 Sep 2005 19:00:39 +0200
-Message-ID: <0d9bd519ddf393a372c55c8e8f322cdd@bugtrack.alsa-project.org>
+Date: Thu, 8 Sep 2005 18:58:26 +0200
+Message-ID: <e74fa3058ce2e5d28d6431f80a2e74c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7EDA1C3
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 19:00:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00C611C3
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 18:58:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sid
 Kernel Version:             2.6.12.5
 ======================================================================
 Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-08-2005 19:00 CEST
+Last Modified:              09-08-2005 18:58 CEST
 ======================================================================
 Summary:                    Surround Channel and Surround mixer doesn't work
 with a CM9761chip
@@ -58,16 +58,17 @@ thanks
 ======================================================================
 
 ----------------------------------------------------------------------
+ midnight - 09-08-05 01:10 
+----------------------------------------------------------------------
+I have tryed the CVS version but with ths version I have no sound on any
+channels when I use the Surround51 device.
+it works if I use the fronts channels.
+
+----------------------------------------------------------------------
  tiwai - 09-08-05 18:58 
 ----------------------------------------------------------------------
 The CVS version of Sep. 07, too?
 I meant not only driver but alsa-lib...
-
-----------------------------------------------------------------------
- midnight - 09-08-05 19:00 
-----------------------------------------------------------------------
-yes, I have tried the version of Sep. 07 (alsa-driver, alsa-lib ans
-alsa-utils)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,7 +80,6 @@ Date Modified  Username       Field                    Change
 09-07-05 15:32 tiwai          Note Added: 0006054                          
 09-08-05 01:10 midnight       Note Added: 0006069                          
 09-08-05 18:58 tiwai          Note Added: 0006076                          
-09-08-05 19:00 midnight       Note Added: 0006077                          
 ======================================================================
 
 
