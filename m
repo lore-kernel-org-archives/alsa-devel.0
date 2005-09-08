@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Thu, 8 Sep 2005 09:27:10 +0200
-Message-ID: <965e3054cd6806a4ba05fd976dc0ee66@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001403]: Ensoniq PCI Audio 3000/ak4531 - no sound
+Date: Thu, 8 Sep 2005 10:08:41 +0200
+Message-ID: <5b602d6b51af2358a83df283c676d156@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E91321A8
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 09:27:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94FA31AD
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 10:08:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,115 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1380> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1403> 
 ======================================================================
-Reported By:                Varanger
-Assigned To:                tiwai
+Reported By:                goldenfish
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1380
-Category:                   PCI - hda-intel
+Issue ID:                   1403
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
-Kernel Version:             Linux 2.6.11-1-686-smp
+Status:                     resolved
+Distribution:               Debian testing
+Kernel Version:             2.6.13 vanilla
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              09-08-2005 09:27 CEST
+Date Submitted:             09-08-2005 01:14 CEST
+Last Modified:              09-08-2005 10:08 CEST
 ======================================================================
-Summary:                    Scratchy Intel HDA
+Summary:                    Ensoniq PCI Audio 3000/ak4531 - no sound
 Description: 
-Hello.
+I have this card. Card has bad PCI identification. 
 
-I am getting very scratchy audio in my Intel HDA card besides the sound is
-very low.
+ Unknown device 0101:0400 
+ Subsystem: Unknown device 4942:4c4c
 
-lspci output is:  
+If i loaded module, no structure about this card in /proc/asound.
 
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
+I was solved this. I was created patch - in attachment.
 
-Reading every article I could have found on the net regarding this
-card, I discovered that i needed snd-azx (ALSA 1.0.8 ) or
-snd-hda-intel modules (ALSA 1.0.9rc* or later).
+Module loaded, structure in /proc/asound created. alsamixer working.
 
-I have downloaded every sources from 1.0.8 up to 1.0.10rc1 (including
-1.0.9 release candidates) from http://www.alsa-project.org, then built and
-installed them.
+Basic problem:
+I don't hear any sound from card. PCM or from Line-In or from Mic no
+sound.
 
-In all those versions, I have followed this steps:
-alsa-driver : ./configure --with-oss=yes --with-cards=hda-intel && make &&
-make install
-library / oss-lib / utils : ./configure && make && make install
+Next problem:
+Module is not possible unload with command rmmod.
 
-I've looked every on the net and found that I could use position_fix=1
-or position_fix=2 to help me  but no good either.
-
-I've tried in Ubuntu, Kubuntu, Debian, even Mandriva 2005 LE and
-Fedora Core 4 (using the modules from the kernel) and it's the same
-problem in all of them.
-
-The card came with the mainboard Intel 915G (D915GEV or 915GEV)  
-
-more info about my soundcard:
-
-Running: "lspci -v" 
-
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e200
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at ff43c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] #10 [0091]
-
-/proc/sound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jul  7 2005 for kernel 2.6.10-5-686-smp (SMP).
-
-/proc/asound/devices
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Thanks for the help,
-Varanger
 ======================================================================
 
 ----------------------------------------------------------------------
- cventers - 09-08-05 09:27 
+ perex - 09-08-05 10:08 
 ----------------------------------------------------------------------
-I'm using the latest alsa-driver release, and I also experience scratchy
-sound on the Intel HDA driver:
-
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-
-I've tried the position_fix fixes, but I can't seem to improve my sound
-quality.
+I think that it's not an issue for us. The PCI configuration space is
+totaly broken (even the I/O region is not visible, thus the driver cannot
+communicate with the card at all). I know that these first PCI cards have
+trouble sometimes with the EEPROM / PCI accesses. It appears like a dead
+hardware or you might try to move this card to an old machine with the
+first PCI bus revision.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 20:07 Varanger       New Issue                                    
-08-30-05 20:07 Varanger       Distribution              => Ubuntu 5.04 "Hoary
-Hedgehog"
-08-30-05 20:07 Varanger       Kernel Version            => Linux
-2.6.11-1-686-smp
-09-08-05 09:27 cventers       Note Added: 0006070                          
+09-08-05 01:14 goldenfish     New Issue                                    
+09-08-05 01:14 goldenfish     File Added: ens1370_report.tar.bz2                
+   
+09-08-05 01:14 goldenfish     Distribution              => Debian testing  
+09-08-05 01:14 goldenfish     Kernel Version            => 2.6.13 vanilla  
+09-08-05 10:08 perex          Status                   new => resolved     
+09-08-05 10:08 perex          Resolution               open => not an issue
+09-08-05 10:08 perex          Assigned To               => perex           
+09-08-05 10:08 perex          Note Added: 0006071                          
 ======================================================================
 
 
