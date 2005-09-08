@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001404]: (Apparently) no microphone support
-Date: Thu, 8 Sep 2005 18:55:46 +0200
-Message-ID: <8340f4cc8b8f2785e6d35fe84cea4853@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Thu, 8 Sep 2005 19:00:39 +0200
+Message-ID: <0d9bd519ddf393a372c55c8e8f322cdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81284129
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 18:55:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7EDA1C3
+	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 19:00:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
 ======================================================================
-Reported By:                Twey
-Assigned To:                jcdutton
+Reported By:                midnight
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1404
-Category:                   PCI - ca0106
+Issue ID:                   1378
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13-homegrown
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
 ======================================================================
-Date Submitted:             09-08-2005 18:40 CEST
-Last Modified:              09-08-2005 18:55 CEST
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-08-2005 19:00 CEST
 ======================================================================
-Summary:                    (Apparently) no microphone support
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
 Description: 
-My SB Live! 24-Bit has no microphone-related channels.  Using any mixer
-(tried: alsamixer, kmix, gnome-volume-control), it seems not to support
-microphones.
-Audacity shows very small (pixel-size) distortions in the recording graph
-at times.  I presume this means that the input is being received, but is
-too miniscule to make a difference.  I can't do anything about this; there
-are no appropriate sliders or "mic boost" in any mixer application.
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
+
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
+
+I use the via82xx module
+
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-08-05 18:46 
+ tiwai - 09-08-05 18:58 
 ----------------------------------------------------------------------
-Try ALSA 1.0.10-rc1.
+The CVS version of Sep. 07, too?
+I meant not only driver but alsa-lib...
 
 ----------------------------------------------------------------------
- Twey - 09-08-05 18:55 
+ midnight - 09-08-05 19:00 
 ----------------------------------------------------------------------
-Gleck, more compilation.  OK.
+yes, I have tried the version of Sep. 07 (alsa-driver, alsa-lib ans
+alsa-utils)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-05 18:40 Twey           New Issue                                    
-09-08-05 18:40 Twey           Distribution              => Fedora Core 4   
-09-08-05 18:40 Twey           Kernel Version            => 2.6.13-homegrown
-09-08-05 18:43 Twey           Issue Monitored: Twey                        
-09-08-05 18:46 rlrevell       Note Added: 0006074                          
-09-08-05 18:55 Twey           Note Added: 0006075                          
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
 ======================================================================
 
 
