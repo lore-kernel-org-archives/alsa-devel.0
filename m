@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Thu, 8 Sep 2005 23:20:53 +0200
-Message-ID: <9050439a5d8fc4a7f459e4a37865d09f@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: [PATCH] emu10k1: Front channels via fxbus 8 and 9
+Date: Fri, 9 Sep 2005 00:01:56 +0200
+Message-ID: <20050908220155.GA28152@skinner.hem.za.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="uAKRQypu60I7Lcqm"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F1E31C2
-	for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2005 23:20:54 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +15,210 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
-======================================================================
-Reported By:                midnight
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1378
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sid
-Kernel Version:             2.6.12.5
-======================================================================
-Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-08-2005 23:20 CEST
-======================================================================
-Summary:                    Surround Channel and Surround mixer doesn't work
-with a CM9761chip
-Description: 
-The sound works fine on the center, LFE an front channels but I have no
-sound on the rear channel. also, I can't change the volume of the surround
-mixer in alsamixer (I can juste mute/unmute it).
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I use the surround51 device to play my test sound and my test sound is a 6
-channels one.
+Hello,
 
-I use the via82xx module
+I'm resending my patches that add front channels that can be used independently
+of the "default" pcm device. I think the patches are really useful. When
+you use the current SB Live driver it will automatically mute "Wave Surround",
+"Wave Center" and "Wave LFE" when playing 5.1, since otherwise the front signal
+would be played on all channels. With these patches this isn't necessary
+since the "front" device is routed to the front outputs only.
 
-thanks
-======================================================================
+One potential problem is that you won't get any front output during
+5.1 playback if you use an old EMU10K1.conf with a patched driver.
 
-----------------------------------------------------------------------
- tiwai - 09-08-05 20:44 
-----------------------------------------------------------------------
-BTW, without "-D surround51", the tones may become quite loud.  Lower the
-amp volumes before testing this.
+Regards,
+Mikael Magnusson
 
-----------------------------------------------------------------------
- midnight - 09-08-05 23:20 
-----------------------------------------------------------------------
-I use Sep. 07 CVS version.
+front_fx_v3.patch:
 
-I have unmute and put all mixers at 100% (Master, PCM, CENTER, LFE)
-Surround is unmuted and at 0%
+Adds left and right front channel outputs using fxbus 8 and 9 and "Front"
+playback and capture volume controls.
 
-with "speaker-test -c6 -Dsurround51" I have no sound whatever the Channel
-Mode (2ch 4ch 6ch) and whatever the Surround mode (Independ, Shared)
+Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
 
-with "speaker-test -c6", I have Sound only at the Front Right and Front
-Left speakers whatever the Channel Mode (2ch 4ch 6ch) and whatever the
-Surround mode (Independ, Shared)
+front_config_v3.patch:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 11:33 midnight       New Issue                                    
-08-30-05 11:33 midnight       Distribution              => Debian Sid      
-08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
-09-07-05 11:20 midnight       Note Added: 0006053                          
-09-07-05 15:32 tiwai          Note Added: 0006054                          
-09-08-05 01:10 midnight       Note Added: 0006069                          
-09-08-05 18:58 tiwai          Note Added: 0006076                          
-09-08-05 19:00 midnight       Note Added: 0006077                          
-09-08-05 19:12 tiwai          Note Added: 0006080                          
-09-08-05 19:58 midnight       Note Added: 0006081                          
-09-08-05 20:42 tiwai          Note Added: 0006082                          
-09-08-05 20:44 tiwai          Note Added: 0006083                          
-09-08-05 23:20 midnight       Note Added: 0006084                          
-======================================================================
+Routes front channels via fxbus 8 and 9 instead of fxbus 0 and 1. This
+makes the front and default devices independent of each other, and
+"Wave Surround", "Wave Center" and "Wave LFE" don't have to be muted
+during 5.1 playback. 
+
+Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
 
 
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="front_fx_v3.patch"
+
+Index: alsa-kernel/pci/emu10k1/emufx.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
+retrieving revision 1.76
+diff -u -r1.76 emufx.c
+--- alsa-kernel/pci/emu10k1/emufx.c	5 Sep 2005 09:35:22 -0000	1.76
++++ alsa-kernel/pci/emu10k1/emufx.c	8 Sep 2005 15:59:45 -0000
+@@ -964,8 +964,8 @@
+ 	return err;
+ }
+ 
+-#define SND_EMU10K1_GPR_CONTROLS	41
+-#define SND_EMU10K1_INPUTS		10
++#define SND_EMU10K1_GPR_CONTROLS	44
++#define SND_EMU10K1_INPUTS		12
+ #define SND_EMU10K1_PLAYBACK_CHANNELS	8
+ #define SND_EMU10K1_CAPTURE_CHANNELS	4
+ 
+@@ -1527,7 +1527,7 @@
+ 
+ 	strcpy(icode->name, "SB Live! FX8010 code for ALSA v1.2 by Jaroslav Kysela");
+ 	ptr = 0; i = 0;
+-	/* we have 10 inputs */
++	/* we have 12 inputs */
+ 	playback = SND_EMU10K1_INPUTS;
+ 	/* we have 6 playback channels and tone control doubles */
+ 	capture = playback + (SND_EMU10K1_PLAYBACK_CHANNELS * 2);
+@@ -1551,6 +1551,8 @@
+ 	OP(icode, &ptr, iMACINT0, GPR(7), C_00000000, FXBUS(FXBUS_PCM_LFE), C_00000004);
+ 	OP(icode, &ptr, iMACINT0, GPR(8), C_00000000, C_00000000, C_00000000);	/* S/PDIF left */
+ 	OP(icode, &ptr, iMACINT0, GPR(9), C_00000000, C_00000000, C_00000000);	/* S/PDIF right */
++	OP(icode, &ptr, iMACINT0, GPR(10), C_00000000, FXBUS(FXBUS_PCM_LEFT_FRONT), C_00000004);
++	OP(icode, &ptr, iMACINT0, GPR(11), C_00000000, FXBUS(FXBUS_PCM_RIGHT_FRONT), C_00000004);
+ 
+ 	/* Raw S/PDIF PCM */
+ 	ipcm->substream = 0;
+@@ -1697,6 +1699,21 @@
+ 	VOLUME_ADD(icode, &ptr, playback + 5, 7, gpr);
+ 	snd_emu10k1_init_mono_control(controls + i++, "LFE Digital Playback Volume", gpr++, 100);
+ 
++	/* Front Playback Volume */
++	for (z = 0; z < 2; z++)
++		VOLUME_ADD(icode, &ptr, playback + z, 10 + z, gpr + z);
++	snd_emu10k1_init_stereo_control(controls + i++, "Front Playback Volume", gpr, 100);
++	gpr += 2;
++
++	/* Front Capture Volume + Switch */
++	for (z = 0; z < 2; z++) {
++		SWITCH(icode, &ptr, tmp + 0, 10 + z, gpr + 2);
++		VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
++	}
++	snd_emu10k1_init_stereo_control(controls + i++, "Front Capture Volume", gpr, 0);
++	snd_emu10k1_init_mono_onoff_control(controls + i++, "Front Capture Switch", gpr + 2, 0);
++	gpr += 3;
++
+ 	/*
+ 	 *  Process inputs
+ 	 */
+
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="front_config_v3.patch"
+
+Index: alsa-lib/src/conf/cards/EMU10K1.conf
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/EMU10K1.conf,v
+retrieving revision 1.16
+diff -u -r1.16 EMU10K1.conf
+--- alsa-lib/src/conf/cards/EMU10K1.conf	3 Aug 2005 12:50:32 -0000	1.16
++++ alsa-lib/src/conf/cards/EMU10K1.conf	8 Sep 2005 16:11:50 -0000
+@@ -9,9 +9,51 @@
+ 	@args.CARD {
+ 		type string
+ 	}
+-	type hw
+-	card $CARD
+-	device 0
++	type hooks
++	slave.pcm {
++		type hw
++		card $CARD
++		device 0
++	}
++	hooks.0 {
++		type ctl_elems
++		hook_args [
++			{
++				interface PCM
++				device 0
++				name "EMU10K1 PCM Send Volume"
++				index { @func private_pcm_subdevice }
++				lock true
++				optional true
++				value [ 255 255 0 0 255 0 0 0 0 255 0 0 ]
++			}
++			{
++				# for compatibility with older drivers
++				name "EMU10K1 PCM Send Volume"
++				index { @func private_pcm_subdevice }
++				lock true
++				optional true
++				value [ 255 255 0 0 255 0 0 0 0 255 0 0 ]
++			}
++			{
++				interface PCM
++				device 0
++				name "EMU10K1 PCM Send Routing"
++				index { @func private_pcm_subdevice }
++				lock true
++				optional true
++				value [ 8 9 0 0 8 9 0 0 8 9 0 0 ]
++			}
++			{
++				# for compatibility with older drivers
++				name "EMU10K1 PCM Send Routing"
++				index { @func private_pcm_subdevice }
++				lock true
++				optional true
++				value [ 8 9 0 0 8 9 0 0 8 9 0 0 ]
++			}
++		]
++	}
+ }	
+ 
+ <confdir:pcm/rear.conf>
+@@ -31,13 +73,6 @@
+ 		type ctl_elems
+ 		hook_args [
+ 			{
+-				name "Wave Surround Playback Volume"
+-				preserve true
+-				# don't lock a global control
+-				# lock true
+-				value [ 0 0 ]
+-			}
+-			{
+ 				interface PCM
+ 				device 0
+ 				name "EMU10K1 PCM Send Volume"
+@@ -75,18 +110,6 @@
+ 		type ctl_elems
+ 		hook_args [
+ 			{
+-				name "Wave Center Playback Volume"
+-				preserve true
+- 				# lock true
+-				value 0
+-			}
+-			{
+-				name "Wave LFE Playback Volume"
+-				preserve true
+-				# lock true
+-				value 0
+-			}
+-			{
+ 				name "Headphone Center Playback Switch"
+ 				index 1
+ 				preserve true
+
+--uAKRQypu60I7Lcqm--
 
 
 -------------------------------------------------------
