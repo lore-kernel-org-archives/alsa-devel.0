@@ -1,12 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Converting OSS ioctl's to ALSA API
-Date: Thu, 8 Sep 2005 14:54:26 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0509081450540.19696-100000@studcom.urz.uni-halle.de>
-References: <431F69D3.1060705@superbug.co.uk>
+From: Daniel James <daniel@64studio.com>
+Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
+Date: Thu, 8 Sep 2005 16:53:37 +0100
+Message-ID: <200509081653.37754.daniel@64studio.com>
+References: <200508111525.07881.daniel@64studio.com> <200508111643.27160.daniel@64studio.com> <1123777147.6980.37.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <431F69D3.1060705@superbug.co.uk>
+In-Reply-To: <1123777147.6980.37.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,24 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Bob Ingraham <bobi@netshel.net>, alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> If you open plughw:0,0 for only playback, and then again for only
-> capture it should work.
+Hi Lee,
 
-It should be noted that this is the _only_ way you can use such a
-device, as snd_pcm_open() opens only one direction at a time.
+I apologise for the long delay in testing your patch. As our 
+distribution is still quite new, we have still been sorting out our 
+build environment and so on. Free is currently building a 2.6.13 
+kernel package and we will test against that as soon as possible.
 
-Your application just shouldn't care if the playback and capture
-devices happen to have the same name.
+I also have a second Opteron test machine under construction that has 
+an envy24 card (Delta 1010), so we'll be able to see if the lock-up 
+is reproduced there too.
 
+Cheers!
 
-HTH
-Clemens
-
+Daniel
 
 
 -------------------------------------------------------
