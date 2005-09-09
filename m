@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: Mo' better modem support
-Date: Sat, 10 Sep 2005 00:17:40 +0800
-Message-ID: <4321B5A4.5090803@netvigator.com>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Fri, 9 Sep 2005 19:50:30 +0200
+Message-ID: <e99dadd610ea07017333e27bc0a53e7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050907064449.GA8391@titan.lahn.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8406F195
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 19:50:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +18,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pmhahn@titan.lahn.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Philipp Matthias Hahn wrote:
-> Hello!
-> 
-> 
-> Yes, I still have it and use it:
-> 
-> $ lspci -s 0:6.0
-> 0000:00:06.0 Multimedia audio controller: Aureal Semiconductor AU8810 Vortex Digital Audio Processor (rev 03)
-> walker:~# lspci -nv -s 0:6.0
-> 0000:00:06.0 0401: 12eb:0003 (rev 03)
->         Subsystem: 1043:1043
->         Flags: bus master, medium devsel, latency 32, IRQ 255
->         Memory at fedc0000 (32-bit, non-prefetchable) [size=256K]
->         I/O ports at fce0 [size=8]
->         I/O ports at fce8 [size=8]
->         Capabilities: [dc] Power Management version 2
-> 
-> If you need something else (data, testing, etc), just ask.
-> 
-> BYtE
-> Philipp
 
-Would you post result of
-cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+======================================================================
+Reported By:                midnight
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1378
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-09-2005 19:50 CEST
+======================================================================
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
+Description: 
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-Are you able to use the modem in Win9x/NT4/W2K/DOS ?
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
 
-What is the feature available ?
-1) Data/Fax only
-2) Data/Fax/TAM       (Telephone answering machine)
-3) Data/Fax/TAM/Speakerphone	
+I use the via82xx module
+
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-09-05 16:32 
+----------------------------------------------------------------------
+Try to run the following as root:
+    # echo 64 1cb8 > /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+----------------------------------------------------------------------
+ midnight - 09-09-05 19:50 
+----------------------------------------------------------------------
+I have uninstalled the CVS version (because I have no sound on center and
+LFE) and installed the 1.09 version.
+
+with "speaker-test -c6 -Dsurround51" I have sound on the front Right and
+left, the front speakers and LFE don't work very well. 
+if I mute /unmute each channels individualy in alsamixer while speaker
+test is running it works fine but the sound is always on the center
+speaker (for center and LFE). 
+also, the sound in the center speaker crackle. I have no sound on the
+rears speakers.
+
+after running "echo 64 1cb8 > /proc/asound/card0/codec97#0/ac97#0-0+regs"
 
 
+with "speaker-test -c6 -Dsurround51" , the rear right and left speakers
+and the rears right and left speakers works fine but it 's the same for
+the center and LFE speakers.
 
+I will try another version because the center and LFE speakers has already
+worked fine with another version.
 
+with speaker-test -c6, I have sound only on the front speakers.
 
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
+09-09-05 14:54 midnight       Note Added: 0006099                          
+09-09-05 16:32 tiwai          Note Added: 0006100                          
+09-09-05 19:50 midnight       Note Added: 0006104                          
+======================================================================
 
 
 
