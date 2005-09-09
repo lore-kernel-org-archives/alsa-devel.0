@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001405]: Driver not working (no sound) with ATI IXP150 AC'97
-Date: Fri, 9 Sep 2005 12:29:37 +0200
-Message-ID: <0767efdfbe73e2283f2e16bd77ddda24@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
+Date: Fri, 9 Sep 2005 12:31:24 +0200
+Message-ID: <f8dbdf41c8e9a33e6df0c2a2f917737e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 856B7158
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 12:29:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6922158
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 12:31:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1405> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
 ======================================================================
-Reported By:                ganhawk
-Assigned To:                tiwai
+Reported By:                philneves
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1405
-Category:                   PCI - atiixp
+Issue ID:                   1337
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4smp
+Status:                     new
+Distribution:               Slackware 10, and Redhat 7.3
+Kernel Version:             2.4 series.
 ======================================================================
-Date Submitted:             09-09-2005 03:21 CEST
-Last Modified:              09-09-2005 12:29 CEST
+Date Submitted:             08-15-2005 03:20 CEST
+Last Modified:              09-09-2005 12:31 CEST
 ======================================================================
-Summary:                    Driver not working (no sound) with ATI IXP150 AC'97
+Summary:                    AWE 32/64 driver crashes when using the skype
+program.
 Description: 
-OS is Fedora Core 4 but using ALSA driver 1.0.9rc4a. It throws "codec reset
-timeout" error when the module is inserted and the sound card does not
-work.
+This is a serious bug with the sb16/sbawe driver. It seems to crash when
+running the skype program. Problem can be reproduced on a regular basis.
+Although frequency of occurence is random. Once the driver crashes it
+disables all sound on my system and I must restart the computer to get the
+sound back. Reloading the driver doesn't work. Problem occurs on all
+versions of alsa and all versions of the 2.4 kernel. 
 
-The error is from alsa-kernel/pci/atiixp.c:518
 
-This is on a Tosiba A75 S1253 laptop with ATI IXP150 AC'97
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ganhawk - 09-09-05 04:37 
+ rlrevell - 09-09-05 04:12 
 ----------------------------------------------------------------------
-Update: Restarting the computer seems to work sometimes
+This does sound like a driver bug.  Please provide the output of "dmesg"
+(or the end of the syslog) after the crash.
 
 ----------------------------------------------------------------------
- tiwai - 09-09-05 12:29 
+ tiwai - 09-09-05 12:31 
 ----------------------------------------------------------------------
-The error messages are harmless.  The driver tried to detect the secondary
-codec but it's not an audio codec.
+Yes, a kernel Oops would be a great help for debugging.
 
-Please elaborate what do you mean "does not work".
+ALso, try aoss wrapper instead of kernel OSS emulation.  If this crashes,
+too, the problem is in sbawe driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 03:21 ganhawk        New Issue                                    
-09-09-05 03:21 ganhawk        Distribution              => Fedora Core 4   
-09-09-05 03:21 ganhawk        Kernel Version            => 2.6.11-1.1369_FC4smp
-09-09-05 03:23 ganhawk        Issue Monitored: ganhawk                     
-09-09-05 03:58 ganhawk        Note Added: 0006088                          
-09-09-05 04:37 ganhawk        Note Added: 0006090                          
-09-09-05 12:29 tiwai          Note Added: 0006093                          
+08-15-05 03:20 philneves      New Issue                                    
+08-15-05 03:20 philneves      Distribution              => Slackware 10, and
+Redhat 7.3
+08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
+08-24-05 07:09 philneves      Note Added: 0005924                          
+09-09-05 02:34 philneves      Note Edited: 0005924                         
+09-09-05 02:42 philneves      Note Added: 0006086                          
+09-09-05 04:12 rlrevell       Note Added: 0006089                          
+09-09-05 12:31 tiwai          Note Added: 0006094                          
 ======================================================================
 
 
