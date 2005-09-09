@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001402]: No SOUND in ASUS A6
-Date: Fri, 9 Sep 2005 02:42:09 +0200
-Message-ID: <1359c50a58de6c83a1bec1109101dfea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
+Date: Fri, 9 Sep 2005 02:42:16 +0200
+Message-ID: <e59b51faf7052e2ee60753be1ed02cc0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8F6CE0
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 02:42:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDA7DE0
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 02:42:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,122 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1402> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
 ======================================================================
-Reported By:                pedrosalazar
-Assigned To:                tiwai
+Reported By:                philneves
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1402
-Category:                   PCI - hda-intel
+Issue ID:                   1337
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Red Hat Fedora Core 4
-Kernel Version:             2.6.13
+Status:                     new
+Distribution:               Slackware 10, and Redhat 7.3
+Kernel Version:             2.4 series.
 ======================================================================
-Date Submitted:             09-07-2005 23:47 CEST
+Date Submitted:             08-15-2005 03:20 CEST
 Last Modified:              09-09-2005 02:42 CEST
 ======================================================================
-Summary:                    No SOUND in ASUS A6
+Summary:                    AWE 32/64 driver crashes when using the skype
+program.
 Description: 
-There is no sound in asus laptop A6 with alsa drivers.
+This is a serious bug with the sb16/sbawe driver. It seems to crash when
+running the skype program. Problem can be reproduced on a regular basis.
+Although frequency of occurence is random. Once the driver crashes it
+disables all sound on my system and I must restart the computer to get the
+sound back. Reloading the driver doesn't work. Problem occurs on all
+versions of alsa and all versions of the 2.4 kernel. 
 
-laptop: ASUS A6 (A6Q00VA) Intel Pentium M Processor 740
 
-Initially verified with the alsa-driver bundle in FC4 (1.0.9rc2 if I'm not
-wrong) with kernel 2.6.12-1.1398_FC4, then I updated to alsa-driver 1.0.9b
-working with alsa-lib 1.0.9 and alsa-utils 1.0.9a.
 
-After, I updated kernel to 2.6.12.5, and now I'm using the 2.6.13.
 
-All would be fine (alsamixer, aplay, ...) unless there is no sound.
-
-I compiled alsa-driver with debug, and added the module option
-"model=asus", that prints the following message when module is inserted:
-
-Sep  7 21:59:39 undertaker kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
-Link [LNKA] -> GSI 11 (level, low) -> IRQ 11
-Sep  7 21:59:39 undertaker kernel: ALSA
-/home/psalazar/build/alsa-driver-1.0.9b/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:1409:
-hda_codec: Unknown model for ALC880
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-08-05 19:02 
+ philneves - 09-09-05 02:34 
 ----------------------------------------------------------------------
-options for snd-card-0 doesn't work with the module-init-tools.
-Only snd-hda-intel would work.
+Problem occures in all versions of linux. Even 2.6. It took me a couple of
+hours running skype but it finally crashed.
 
-The "unknwon codec..." appears even if you compile with debug option and
-pass "model=asus" ?  Then the model parameter isn't passed correctly.
-Make sure that you compiled with debug option, and pass it directly, e.g.
-invoking like:
-    # modprobe snd-hda-intel model=asus
+Once the initial crash happens the program crashes the driver more
+frequently. Only a restart to the computer will get the sound back. No
+other program requiring sound can access the sound system after the crash.
+ 
 
-Then you'll see the kernel message that the given model is selected.
+I've not been able to find any kernel logs that will highlight the problem
+in 2.6.   
 
-Alternatively, you can add the entry of your own device to
-alsa-kernel/pci/hda/patch_realtek.c.  Check the output of "lspci -nv" and
-read the PCI *subsystem* ID (not the PCI ID).
-Then, add them to alc880_cfg_tbl[] definition there.
+I've tried removing the lock files from the .Skype directory but it
+doesn't seem to have any effect. I've also tried unloading the sound
+driver and reloading it. No effect. The sound system won't start until I
+restart the computer.
+
+
 
 ----------------------------------------------------------------------
- pedrosalazar - 09-09-05 02:42 
+ philneves - 09-09-05 02:42 
 ----------------------------------------------------------------------
-I followed your alternative suggestion, just for testing: I put my device
-under a specific model (I used the W810 for instance) and it worked ok. I
-can hear the sound and control it through alsamixer!! It's a great step
-even the headphones aren't working but it isn't my model anyway!!
+Additional information about my system so that I can make the debugging
+easier. I have a 
 
-Anyway, there are some issues that I would like to clarify with you about
-the alsa-driver version:
+Celeron 400mhz. (please no comments on how bad my computer sucks I already
+know. )
+300MB of ram. 
+20GB hard disk space (only half full)
+P2-99 Motherboard (this MB has 2 ISA slots)
+SBAwe 64 (ISA)
+Nvidia Geforce 2 video card. 
+10/100 Ethernet card. 
 
-- The snd-hda-intel module didn't detected any asus module because there
-is no asus model defined in the sources I'm using (1.0.9b from alsa site -
-in this point I was already a specific alsa-driver version and not the
-kernel ones). 
+Currently I'm using the alsa drivers that are located in Linux Kernel
+2.6.11 
 
-- As I'm using kernel 2.6.13, I saw in the patch_realtek.c that there are
-some asus definitions (e.g. ASUS, ASUS_DIG, ASUS_W1V) as you said. I look
-for the alsa-version and noticed that is also the 1.0.9b!?!
-
-How can it be?!? 
-The same version but different code: the 2.6.13 kernel and the 1.0.9b from
-alsa site!? Can you explain me this issue here?
-
-I was suspecting something like that after you said that I wasn't passing
-the "model=asus" correctly - but in fact I was, yet when I verified with
-"model=test"that worked well.
-
-So, now I will reinstall the alsa-driver from kernel 2.6.13, and I will
-pass the model=asus to see if it works. I'll update here the result.
-
-Even so, I put below my device (lspci -nv) for the subsystem information
-from the ASUS A6 laptop for your information:
-
-00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 1043:1173
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at febf8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+I'm thinking this is a problem with the OSS emulation in ALSA. I've had
+trouble with it before. Its never been 100% for me. Not even the earlier
+versions.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-07-05 23:47 pedrosalazar   New Issue                                    
-09-07-05 23:47 pedrosalazar   File Added: 2.6.13.config                    
-09-07-05 23:47 pedrosalazar   Distribution              => Red Hat Fedora Core 4
-09-07-05 23:47 pedrosalazar   Kernel Version            => 2.6.13          
-09-08-05 19:02 tiwai          Note Added: 0006078                          
-09-09-05 02:42 pedrosalazar   Note Added: 0006085                          
+08-15-05 03:20 philneves      New Issue                                    
+08-15-05 03:20 philneves      Distribution              => Slackware 10, and
+Redhat 7.3
+08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
+08-24-05 07:09 philneves      Note Added: 0005924                          
+09-09-05 02:34 philneves      Note Edited: 0005924                         
+09-09-05 02:42 philneves      Note Added: 0006086                          
 ======================================================================
 
 
