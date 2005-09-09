@@ -1,13 +1,14 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: Compilation problems in adriver.h
-Date: Fri, 9 Sep 2005 14:10:07 +0200
-Message-ID: <20050909121007.GA18991@skinner.hem.za.org>
-References: <20050908200729.GA27433@skinner.hem.za.org> <s5h64tasfj8.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Fri, 9 Sep 2005 14:21:09 +0200
+Message-ID: <2ab5d809bbe7766de6dda7f9cf5ae487@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h64tasfj8.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4DE019D
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 14:21:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,45 +18,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 09, 2005 at 12:26:35PM +0200, Takashi Iwai wrote:
-> At Thu, 8 Sep 2005 22:07:29 +0200,
-> Mikael Magnusson wrote:
-> > 
-> > Hi,
-> > 
-> > I'm using a customized kernel based on kernel-source-2.6.11 from Debian,
-> > and I needed to modify adriver.h to be able to compile the alsa modules
-> > from current CVS. I moved the definition of __nocast, since the declaration
-> > of snd_compat_kstrdup causes a compilation error if __nocast is undefined.
-> > 
-> > I also commented out the definition of CONFIG_ISA_DMA_API, because
-> > it led to a loop in snd.ko:
-> > 
-> >   WARNING: Loop detected: /lib/modules/2.6.11-vserver-k7/alsa/acore/snd.ko
-> >   which needs snd.ko again!
-> > 
-> > It looks like a problem with snd_dma_pointer, snd_dma_disable and
-> > snd_dma_program:
-> > 
-> >   /lib/modules/2.6.11-vserver-k7/alsa/acore/snd.ko needs
-> >   "snd_dma_pointer": /lib/modules/2.6.11-vserver-k7/alsa/acore/snd.ko
-> >   /lib/modules/2.6.11-vserver-k7/alsa/acore/snd.ko needs
-> >   "snd_dma_disable": /lib/modules/2.6.11-vserver-k7/alsa/acore/snd.ko
-> >   /lib/modules/2.6.11-vserver-k7/alsa/acore/snd.ko needs
-> >   "snd_dma_program": /lib/modules/2.6.11-vserver-k7/alsa/acore/snd.ko
-> > 
-> > I'm using a customized kernel based on kernel-source-2.6.11 (version
-> > 2.6.11-5) from Debian.
-> 
-> Try the patch below.
-> 
 
-I have tried the patch and it solves the problems. 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+======================================================================
+Reported By:                midnight
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1378
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-09-2005 14:21 CEST
+======================================================================
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
+Description: 
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-/Mikael Magnusson
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
+
+I use the via82xx module
+
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-09-05 12:47 
+----------------------------------------------------------------------
+Hmm, how about "speaker-test -c6 -Dhw:0"  ?
+
+To be sure, please attach (upload) the contents of
+/proc/asound/card0/codec97#0/* files after you set "Channel Mode" to 6ch. 
+Also, attach /etc/asound.state, too, after running "alsactl store".
+
+----------------------------------------------------------------------
+ midnight - 09-09-05 14:21 
+----------------------------------------------------------------------
+I have upload my /proc/asound/card0/codec97#0/* files after I set "Channel
+Mode" to 6ch.
+And my /etc/asound.state, after running "alsactl store".
+
+speaker-test -c6 -Dhw:0 doen't works I have an error :
+
+-----
+ speaker-test -c6 -Dhw:0
+
+speaker-test 0.0.8
+
+Playback device is hw:0
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Channels count (6) not available for playbacks: Argument invalide
+Setting of hwparams failed: Argument invalide
+-----
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+======================================================================
+
 
 
 
