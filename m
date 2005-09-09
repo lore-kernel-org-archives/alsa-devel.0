@@ -1,12 +1,14 @@
-From: Laurent Riffard <laurent.riffard@free.fr>
-Subject: [PATCH] add a symlink to module in /sys/pci/drivers/*
-Date: Fri, 09 Sep 2005 23:02:58 +0200
-Message-ID: <4321F882.1050103@free.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Fri, 9 Sep 2005 23:41:42 +0200
+Message-ID: <150b240172de6e4c66d8a22f388ffcff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig9AD10EAD50881DE62A1D8921"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D4CD173
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 23:41:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,484 +18,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig9AD10EAD50881DE62A1D8921
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 
-Following a thread on LKML
-(http://marc.theaimsgroup.com/?l=linux-kernel&m=112569665717371),
-here is a patch which adds a symlink to the kernel module in the
-/sys/pci/drivers/* directories for all the drivers located in
-linux/sound/pci/.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+======================================================================
+Reported By:                midnight
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1378
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-09-2005 23:41 CEST
+======================================================================
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
+Description: 
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-Signed-off-by: Laurent Riffard <laurent.riffard@free.fr>
---
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
 
-Index: linux-2.6-stable/sound/pci/als4000.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/als4000.c	2005-09-09 21:19:42.534079750 +0200
-+++ linux-2.6-stable/sound/pci/als4000.c	2005-09-09 22:04:28.828006000 +0200
-@@ -769,6 +769,7 @@
- }
+I use the via82xx module
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ALS4000",
- 	.id_table = snd_als4000_ids,
- 	.probe = snd_card_als4000_probe,
-Index: linux-2.6-stable/sound/pci/atiixp.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/atiixp.c	2005-09-09 21:19:42.538080000 +0200
-+++ linux-2.6-stable/sound/pci/atiixp.c	2005-09-09 22:04:28.832006250 +0200
-@@ -1635,6 +1635,7 @@
- }
+thanks
+======================================================================
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ATI IXP AC97 controller",
- 	.id_table = snd_atiixp_ids,
- 	.probe = snd_atiixp_probe,
-Index: linux-2.6-stable/sound/pci/atiixp_modem.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/atiixp_modem.c	2005-09-09 21:19:42.558081250 +0200
-+++ linux-2.6-stable/sound/pci/atiixp_modem.c	2005-09-09 22:04:28.840006750 +0200
-@@ -1317,6 +1317,7 @@
- }
+----------------------------------------------------------------------
+ tiwai - 09-09-05 20:14 
+----------------------------------------------------------------------
+Forget 1.0.9b.  There were known bugs regarding surrounds there.
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ATI IXP MC97 controller",
- 	.id_table = snd_atiixp_ids,
- 	.probe = snd_atiixp_probe,
-Index: linux-2.6-stable/sound/pci/azt3328.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/azt3328.c	2005-09-09 21:19:42.598083750 +0200
-+++ linux-2.6-stable/sound/pci/azt3328.c	2005-09-09 22:04:28.844007000 +0200
-@@ -1510,6 +1510,7 @@
- }
+For testing, you should use "hw:0,1" instead of "surround51".  The latter
+may reset the register value.
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "AZF3328",
- 	.id_table = snd_azf3328_ids,
- 	.probe = snd_azf3328_probe,
-Index: linux-2.6-stable/sound/pci/bt87x.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/bt87x.c	2005-09-09 21:19:42.614084750 +0200
-+++ linux-2.6-stable/sound/pci/bt87x.c	2005-09-09 22:04:28.852007500 +0200
-@@ -910,6 +910,7 @@
- };
+Try to flip other bits of the register 0x64 on/off.
+The relevant bits are: Bit 12 (0x1000) should be CLFE on/off, bit 11
+(0x0800) Mic/Center share, 7 (0x0080) Mic/LFE share.
+The bit 3 (0x0008) is the surround control, bit 10 the line/surround
+share.
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Bt87x",
- 	.id_table = snd_bt87x_ids,
- 	.probe = snd_bt87x_probe,
-Index: linux-2.6-stable/sound/pci/cmipci.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/cmipci.c	2005-09-09 21:19:42.734092250 +0200
-+++ linux-2.6-stable/sound/pci/cmipci.c	2005-09-09 22:04:28.868008500 +0200
-@@ -3062,6 +3062,7 @@
+Also, don't forget to unmute 'Surround', 'Center' and 'LFE' mixer volumes.
 
+----------------------------------------------------------------------
+ midnight - 09-09-05 23:41 
+----------------------------------------------------------------------
+the thing that make my front speakers crackling was the bit 7 of the 0x64
+register (Mic/LFE share).
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "C-Media PCI",
- 	.id_table = snd_cmipci_ids,
- 	.probe = snd_cmipci_probe,
-Index: linux-2.6-stable/sound/pci/cs4281.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/cs4281.c	2005-09-09 21:19:43.310128250 +0200
-+++ linux-2.6-stable/sound/pci/cs4281.c	2005-09-09 22:04:28.872008750 +0200
-@@ -2118,6 +2118,7 @@
- #endif /* CONFIG_PM */
+with the 0x1c38 value, all the channels works. 
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "CS4281",
- 	.id_table = snd_cs4281_ids,
- 	.probe = snd_cs4281_probe,
-Index: linux-2.6-stable/sound/pci/es1938.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/es1938.c	2005-09-09 21:19:45.182245250 +0200
-+++ linux-2.6-stable/sound/pci/es1938.c	2005-09-09 22:04:28.880009250 +0200
-@@ -1752,6 +1752,7 @@
- }
+for testion I had to use "surround51" because with "hw:0,1" I have sound
+only on the front speakers.
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ESS ES1938 (Solo-1)",
- 	.id_table = snd_es1938_ids,
- 	.probe = snd_es1938_probe,
-Index: linux-2.6-stable/sound/pci/es1968.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/es1968.c	2005-09-09 21:19:45.318253750 +0200
-+++ linux-2.6-stable/sound/pci/es1968.c	2005-09-09 22:04:28.888009750 +0200
-@@ -2781,6 +2781,7 @@
- }
+fortunetly, "surround51" don't change the register value.
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ES1968 (ESS Maestro)",
- 	.id_table = snd_es1968_ids,
- 	.probe = snd_es1968_probe,
-Index: linux-2.6-stable/sound/pci/fm801.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/fm801.c	2005-09-09 21:19:45.434261000 +0200
-+++ linux-2.6-stable/sound/pci/fm801.c	2005-09-09 22:04:28.892010000 +0200
-@@ -1461,6 +1461,7 @@
- }
+I will probably not be able to answer before next week because I will not
+have internet acces.
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "FM801",
- 	.id_table = snd_fm801_ids,
- 	.probe = snd_card_fm801_probe,
-Index: linux-2.6-stable/sound/pci/intel8x0.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/intel8x0.c	2005-09-09 21:19:46.294314750 +0200
-+++ linux-2.6-stable/sound/pci/intel8x0.c	2005-09-09 22:04:28.896010250 +0200
-@@ -2862,6 +2862,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Intel ICH",
- 	.id_table = snd_intel8x0_ids,
- 	.probe = snd_intel8x0_probe,
-Index: linux-2.6-stable/sound/pci/intel8x0m.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/intel8x0m.c	2005-09-09 21:19:46.322316500 +0200
-+++ linux-2.6-stable/sound/pci/intel8x0m.c	2005-09-09 22:04:28.900010500 +0200
-@@ -1370,6 +1370,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Intel ICH Modem",
- 	.id_table = snd_intel8x0m_ids,
- 	.probe = snd_intel8x0m_probe,
-Index: linux-2.6-stable/sound/pci/maestro3.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/maestro3.c	2005-09-09 21:19:46.426323000 +0200
-+++ linux-2.6-stable/sound/pci/maestro3.c	2005-09-09 22:04:28.908011000 +0200
-@@ -2889,6 +2889,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Maestro3",
- 	.id_table = snd_m3_ids,
- 	.probe = snd_m3_probe,
-Index: linux-2.6-stable/sound/pci/rme32.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/rme32.c	2005-09-09 21:19:46.678338750 +0200
-+++ linux-2.6-stable/sound/pci/rme32.c	2005-09-09 22:04:28.912011250 +0200
-@@ -2023,6 +2023,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner =	THIS_MODULE,
- 	.name =		"RME Digi32",
- 	.id_table =	snd_rme32_ids,
- 	.probe =	snd_rme32_probe,
-Index: linux-2.6-stable/sound/pci/rme96.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/rme96.c	2005-09-09 21:19:46.734342250 +0200
-+++ linux-2.6-stable/sound/pci/rme96.c	2005-09-09 22:04:28.924012000 +0200
-@@ -2429,6 +2429,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "RME Digi96",
- 	.id_table = snd_rme96_ids,
- 	.probe = snd_rme96_probe,
-Index: linux-2.6-stable/sound/pci/sonicvibes.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/sonicvibes.c	2005-09-09 21:19:46.982357750 +0200
-+++ linux-2.6-stable/sound/pci/sonicvibes.c	2005-09-09 22:04:28.928012250 +0200
-@@ -1514,6 +1514,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "S3 SonicVibes",
- 	.id_table = snd_sonic_ids,
- 	.probe = snd_sonic_probe,
-Index: linux-2.6-stable/sound/pci/via82xx.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/via82xx.c	2005-09-09 21:19:47.462387750 +0200
-+++ linux-2.6-stable/sound/pci/via82xx.c	2005-09-09 22:04:28.940013000 +0200
-@@ -2344,6 +2344,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "VIA 82xx Audio",
- 	.id_table = snd_via82xx_ids,
- 	.probe = snd_via82xx_probe,
-Index: linux-2.6-stable/sound/pci/via82xx_modem.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/via82xx_modem.c	2005-09-09 21:19:47.718403750 +0200
-+++ linux-2.6-stable/sound/pci/via82xx_modem.c	2005-09-09 22:04:28.956014000 +0200
-@@ -1205,6 +1205,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "VIA 82xx Modem",
- 	.id_table = snd_via82xx_modem_ids,
- 	.probe = snd_via82xx_probe,
-Index: linux-2.6-stable/sound/pci/ali5451/ali5451.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/ali5451/ali5451.c	2005-09-09 21:19:42.486076750 +0200
-+++ linux-2.6-stable/sound/pci/ali5451/ali5451.c	2005-09-09 22:04:28.980015500 +0200
-@@ -2416,6 +2416,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ALI 5451",
- 	.id_table = snd_ali_ids,
- 	.probe = snd_ali_probe,
-Index: linux-2.6-stable/sound/pci/au88x0/au88x0.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/au88x0/au88x0.c	2005-09-09 21:19:42.582082750 +0200
-+++ linux-2.6-stable/sound/pci/au88x0/au88x0.c	2005-09-09 22:04:29.000016750 +0200
-@@ -366,6 +366,7 @@
-
- // pci_driver definition
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = CARD_NAME_SHORT,
- 	.id_table = snd_vortex_ids,
- 	.probe = snd_vortex_probe,
-Index: linux-2.6-stable/sound/pci/ca0106/ca0106_main.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/ca0106/ca0106_main.c	2005-09-09 21:19:42.682089000 +0200
-+++ linux-2.6-stable/sound/pci/ca0106/ca0106_main.c	2005-09-09 22:04:29.012017500 +0200
-@@ -1381,6 +1381,7 @@
-
- // pci_driver definition
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "CA0106",
- 	.id_table = snd_ca0106_ids,
- 	.probe = snd_ca0106_probe,
-Index: linux-2.6-stable/sound/pci/cs46xx/cs46xx.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/cs46xx/cs46xx.c	2005-09-09 21:19:43.558143750 +0200
-+++ linux-2.6-stable/sound/pci/cs46xx/cs46xx.c	2005-09-09 22:04:29.020018000 +0200
-@@ -162,6 +162,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Sound Fusion CS46xx",
- 	.id_table = snd_cs46xx_ids,
- 	.probe = snd_card_cs46xx_probe,
-Index: linux-2.6-stable/sound/pci/emu10k1/emu10k1.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/emu10k1/emu10k1.c	2005-09-09 21:19:43.702152750 +0200
-+++ linux-2.6-stable/sound/pci/emu10k1/emu10k1.c	2005-09-09 22:04:29.032018750 +0200
-@@ -222,6 +222,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "EMU10K1_Audigy",
- 	.id_table = snd_emu10k1_ids,
- 	.probe = snd_card_emu10k1_probe,
-Index: linux-2.6-stable/sound/pci/emu10k1/emu10k1x.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/emu10k1/emu10k1x.c	2005-09-09 21:19:44.094177250 +0200
-+++ linux-2.6-stable/sound/pci/emu10k1/emu10k1x.c	2005-09-09 22:04:29.036019000 +0200
-@@ -1614,6 +1614,7 @@
-
- // pci_driver definition
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "EMU10K1X",
- 	.id_table = snd_emu10k1x_ids,
- 	.probe = snd_emu10k1x_probe,
-Index: linux-2.6-stable/sound/pci/hda/hda_intel.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/hda/hda_intel.c	2005-09-09 21:19:46.018297500 +0200
-+++ linux-2.6-stable/sound/pci/hda/hda_intel.c	2005-09-09 22:04:29.048019750 +0200
-@@ -1471,6 +1471,7 @@
-
- /* pci_driver definition */
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "HDA Intel",
- 	.id_table = azx_ids,
- 	.probe = azx_probe,
-Index: linux-2.6-stable/sound/pci/ice1712/ice1712.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/ice1712/ice1712.c	2005-09-09 21:19:46.194308500 +0200
-+++ linux-2.6-stable/sound/pci/ice1712/ice1712.c	2005-09-09 22:04:30.164089500 +0200
-@@ -2740,6 +2740,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ICE1712",
- 	.id_table = snd_ice1712_ids,
- 	.probe = snd_ice1712_probe,
-Index: linux-2.6-stable/sound/pci/ice1712/ice1724.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/ice1712/ice1724.c	2005-09-09 21:19:46.242311500 +0200
-+++ linux-2.6-stable/sound/pci/ice1712/ice1724.c	2005-09-09 22:04:30.240094250 +0200
-@@ -2320,6 +2320,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "ICE1724",
- 	.id_table = snd_vt1724_ids,
- 	.probe = snd_vt1724_probe,
-Index: linux-2.6-stable/sound/pci/korg1212/korg1212.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/korg1212/korg1212.c	2005-09-09 21:19:46.386320500 +0200
-+++ linux-2.6-stable/sound/pci/korg1212/korg1212.c	2005-09-09 22:04:30.268096000 +0200
-@@ -2533,6 +2533,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "korg1212",
- 	.id_table = snd_korg1212_ids,
- 	.probe = snd_korg1212_probe,
-Index: linux-2.6-stable/sound/pci/mixart/mixart.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/mixart/mixart.c	2005-09-09 21:19:46.598333750 +0200
-+++ linux-2.6-stable/sound/pci/mixart/mixart.c	2005-09-09 22:04:30.280096750 +0200
-@@ -1423,6 +1423,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Digigram miXart",
- 	.id_table = snd_mixart_ids,
- 	.probe = snd_mixart_probe,
-Index: linux-2.6-stable/sound/pci/nm256/nm256.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/nm256/nm256.c	2005-09-09 21:19:46.650337000 +0200
-+++ linux-2.6-stable/sound/pci/nm256/nm256.c	2005-09-09 22:04:30.296097750 +0200
-@@ -1635,6 +1635,7 @@
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
+09-09-05 14:54 midnight       Note Added: 0006099                          
+09-09-05 16:32 tiwai          Note Added: 0006100                          
+09-09-05 19:50 midnight       Note Added: 0006104                          
+09-09-05 20:14 tiwai          Note Added: 0006105                          
+09-09-05 23:41 midnight       Note Added: 0006106                          
+======================================================================
 
 
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "NeoMagic 256",
- 	.id_table = snd_nm256_ids,
- 	.probe = snd_nm256_probe,
-Index: linux-2.6-stable/sound/pci/rme9652/hdsp.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/rme9652/hdsp.c	2005-09-09 21:19:46.822347750 +0200
-+++ linux-2.6-stable/sound/pci/rme9652/hdsp.c	2005-09-09 22:04:30.320099250 +0200
-@@ -5222,6 +5222,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name =     "RME Hammerfall DSP",
- 	.id_table = snd_hdsp_ids,
- 	.probe =    snd_hdsp_probe,
-Index: linux-2.6-stable/sound/pci/rme9652/hdspm.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/rme9652/hdspm.c	2005-09-09 21:19:46.830348250 +0200
-+++ linux-2.6-stable/sound/pci/rme9652/hdspm.c	2005-09-09 22:04:30.336100250 +0200
-@@ -3650,6 +3650,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "RME Hammerfall DSP MADI",
- 	.id_table = snd_hdspm_ids,
- 	.probe = snd_hdspm_probe,
-Index: linux-2.6-stable/sound/pci/rme9652/rme9652.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/rme9652/rme9652.c	2005-09-09 21:19:46.942355250 +0200
-+++ linux-2.6-stable/sound/pci/rme9652/rme9652.c	2005-09-09 22:04:30.348101000 +0200
-@@ -2660,6 +2660,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner	  = THIS_MODULE,
- 	.name	  = "RME Digi9652 (Hammerfall)",
- 	.id_table = snd_rme9652_ids,
- 	.probe	  = snd_rme9652_probe,
-Index: linux-2.6-stable/sound/pci/trident/trident.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/trident/trident.c	2005-09-09 21:19:47.014359750 +0200
-+++ linux-2.6-stable/sound/pci/trident/trident.c	2005-09-09 22:04:30.356101500 +0200
-@@ -176,6 +176,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Trident4DWaveAudio",
- 	.id_table = snd_trident_ids,
- 	.probe = snd_trident_probe,
-Index: linux-2.6-stable/sound/pci/vx222/vx222.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/vx222/vx222.c	2005-09-09 21:19:47.734404750 +0200
-+++ linux-2.6-stable/sound/pci/vx222/vx222.c	2005-09-09 22:04:30.368102250 +0200
-@@ -251,6 +251,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Digigram VX222",
- 	.id_table = snd_vx222_ids,
- 	.probe = snd_vx222_probe,
-Index: linux-2.6-stable/sound/pci/ymfpci/ymfpci.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/ymfpci/ymfpci.c	2005-09-09 21:19:47.758406250 +0200
-+++ linux-2.6-stable/sound/pci/ymfpci/ymfpci.c	2005-09-09 22:04:30.372102500 +0200
-@@ -351,6 +351,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = "Yamaha DS-XG PCI",
- 	.id_table = snd_ymfpci_ids,
- 	.probe = snd_card_ymfpci_probe,
-Index: linux-2.6-stable/sound/pci/ens1370.c
-===================================================================
---- linux-2.6-stable.orig/sound/pci/ens1370.c	2005-09-09 21:19:45.178245000 +0200
-+++ linux-2.6-stable/sound/pci/ens1370.c	2005-09-09 22:04:30.380103000 +0200
-@@ -2393,6 +2393,7 @@
- }
-
- static struct pci_driver driver = {
-+	.owner = THIS_MODULE,
- 	.name = DRIVER_NAME,
- 	.id_table = snd_audiopci_ids,
- 	.probe = snd_audiopci_probe,
-
-
---------------enig9AD10EAD50881DE62A1D8921
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFDIfiLUqUFrirTu6IRAoZxAJ0awMXvTw2UE1NeC3/AJfpQhvJxvwCfUw8v
-i3iy3mWIe/+HdvpwKX1g/ZQ=
-=iEnL
------END PGP SIGNATURE-----
-
---------------enig9AD10EAD50881DE62A1D8921--
 
 
 -------------------------------------------------------
