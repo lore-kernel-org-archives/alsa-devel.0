@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Fri, 9 Sep 2005 14:21:09 +0200
-Message-ID: <2ab5d809bbe7766de6dda7f9cf5ae487@bugtrack.alsa-project.org>
+Date: Fri, 9 Sep 2005 14:29:35 +0200
+Message-ID: <dabe3376111a5aca4f95beb56174f588@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4DE019D
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 14:21:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B65CC19D
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 14:29:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sid
 Kernel Version:             2.6.12.5
 ======================================================================
 Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-09-2005 14:21 CEST
+Last Modified:              09-09-2005 14:29 CEST
 ======================================================================
 Summary:                    Surround Channel and Surround mixer doesn't work
 with a CM9761chip
@@ -56,15 +56,6 @@ I use the via82xx module
 
 thanks
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-09-05 12:47 
-----------------------------------------------------------------------
-Hmm, how about "speaker-test -c6 -Dhw:0"  ?
-
-To be sure, please attach (upload) the contents of
-/proc/asound/card0/codec97#0/* files after you set "Channel Mode" to 6ch. 
-Also, attach /etc/asound.state, too, after running "alsactl store".
 
 ----------------------------------------------------------------------
  midnight - 09-09-05 14:21 
@@ -87,6 +78,11 @@ Channels count (6) not available for playbacks: Argument invalide
 Setting of hwparams failed: Argument invalide
 -----
 
+----------------------------------------------------------------------
+ tiwai - 09-09-05 14:29 
+----------------------------------------------------------------------
+Ah, sorry, it should be "hw:0,1" on via82xx.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -107,6 +103,7 @@ Date Modified  Username       Field                    Change
 09-09-05 14:16 midnight       File Added: ac97#0-0                         
 09-09-05 14:16 midnight       File Added: asound.state                     
 09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
 ======================================================================
 
 
