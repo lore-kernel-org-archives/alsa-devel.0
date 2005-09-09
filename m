@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: hda-intel/ALC260: mixer control issues
-Date: Fri, 9 Sep 2005 09:13:21 +0930 (CST)
-Message-ID: <200509082343.j88NhLOw022109@auster.physics.adelaide.edu.au>
-References: <s5hzmqn6hwd.wl%tiwai@suse.de>
+Subject: Re: Re: hda-intel/ALC260: crackly playback and DC offset on recording
+Date: Fri, 9 Sep 2005 09:38:09 +0930 (CST)
+Message-ID: <200509090008.j89089cm025068@auster.physics.adelaide.edu.au>
+References: <s5hbr36v8d5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzmqn6hwd.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 08, 2005 11:14:10 AM
+In-Reply-To: <s5hbr36v8d5.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 06, 2005 11:44:06 AM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,45 +23,36 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Takashi
 
-> > > It's fine as long as you use ALSA native apps, but remember that some
-> > > apps require certain known controls.  Also, OSS emulation wouldn't
-> > > work properly.
-> > 
-> > Note that the above names were abbreviated for brevity: "IntSpeaker" is
-> > really "IntSpeaker Playback Volume", etc.  I should have made that clear.
-> > 
-> > Are these "known special names" documented anywhere?
+> > Oops, it looks like I did the diff around the wrong way by accident - sorry
+> > for the confusion.  What I mean is that the "+1" should be removed.  If the
+> > "+1" was added in 1.0.10rc1 then I guess that means that it should be
+> > reverted.  As mentioned below though, without the "+1" aplay output is clean
+> > but not everything is fixed, so this might not be the root cause of the
+> > problem.
 > 
-> No, it depends on apps.  Many apps want to use either "Master" or
-> "PCM" control.
-
-No worries.  I'm not touching the "PCM".
-
-> > It'd be nice if we could have a mixer control which allowed the user to
-> > switch the LineOut socket between a true LineOut and a "Headphone" output
-> > (that is, a pin with the internal headphone amp turned on).  I don't think
-> > there's infrastructure to allow this, however.  That might have to become
-> > a module parameter (lineout_is_headphone, enable_hp_amp or something).
+> It was necessary on my test system, but this might be the problem.
 > 
-> Basically the control names correspond their roles, not (always) the
-> pin assignment.  For example, on ac97, the ture line-out is handled as
-> master (processed according to a quirk table or a module option).
+> Anyway, I added the check of DMA position in the latest CVS code
+> yesterday.  Please give a shot with the latest CVS version.
 
-Sure, no worries.  I guess the problem I have with "Master" in this case is
-that "LineOut" on this laptop doesn't actually control every output (which
-is what "master" tends to imply, at least to me) - the internal speaker is
-separate.  Anyway, I'll try to come up with something which is consistent and
-submit a patch early next week for your consideration.
+I did this overnight.  The CVS snapshot was taken on 7 Sept 2005 at around
+1600 local time (UT+0930).  I tried it both with and without the
+position_fixed module parameter.
+
+Without the position_fixed module parameter, playback via aplay was crackly.
+This is new - aplay playback under 1.0.10rc1 without the position_fixed
+parameter was fine.  Playback via wavplay (OSS interface) was however *much*
+worse than it used to be.  Whereas under 1.0.10rc1 it would simply be
+crackly, under the CVS snapshot large chunks of audio were being skipped.  I
+didn't have a change to quantify it, but it seemed to me that perhaps every
+second block of data was being skipped.
+
+Next I retried with the position_fixed=1 parameter.  Both aplay (native alsa)
+and wavplay (oss emulation) produced clean signal in this case, so the
+position_fixed=1 has not changed in the CVS snapshot compared to 1.0.10rc1.
 
 Regards
   jonathan
--- 
-* Jonathan Woithe    jwoithe@physics.adelaide.edu.au                        *
-*                    http://www.physics.adelaide.edu.au/~jwoithe            *
-***-----------------------------------------------------------------------***
-** "Time is an illusion; lunchtime doubly so"                              **
-*  "...you wouldn't recognize a subtle plan if it painted itself purple and *
-*   danced naked on a harpsichord singing 'subtle plans are here again'"    *
 
 
 -------------------------------------------------------
