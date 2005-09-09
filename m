@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001408]: Ask for driver support
-Date: Fri, 9 Sep 2005 12:27:52 +0200
-Message-ID: <1ee7404f52acb43b7e6e4a4175418fe9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001405]: Driver not working (no sound) with ATI IXP150 AC'97
+Date: Fri, 9 Sep 2005 12:29:37 +0200
+Message-ID: <0767efdfbe73e2283f2e16bd77ddda24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9191155
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 12:27:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 856B7158
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 12:29:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1408> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1405> 
 ======================================================================
-Reported By:                war0060
-Assigned To:                
+Reported By:                ganhawk
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1408
-Category:                   1_OTHERS
+Issue ID:                   1405
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4smp
 ======================================================================
-Date Submitted:             09-09-2005 12:12 CEST
-Last Modified:              09-09-2005 12:27 CEST
+Date Submitted:             09-09-2005 03:21 CEST
+Last Modified:              09-09-2005 12:29 CEST
 ======================================================================
-Summary:                    Ask for driver support
+Summary:                    Driver not working (no sound) with ATI IXP150 AC'97
 Description: 
-The startup message told me that ALSA can't find the right driver for my
-card. The  sound card is built-in on ASUS P5GL-MX motherboard.
+OS is Fedora Core 4 but using ALSA driver 1.0.9rc4a. It throws "codec reset
+timeout" error when the module is inserted and the sound card does not
+work.
 
-the message of "lspci":
---------------------------------------------------------------------------------
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 05)
---------------------------------------------------------------------------------
-I've tried "intel8x0" driver but doesn't work. Or I should use another
-driver?
+The error is from alsa-kernel/pci/atiixp.c:518
+
+This is on a Tosiba A75 S1253 laptop with ATI IXP150 AC'97
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-09-05 12:27 
+ ganhawk - 09-09-05 04:37 
 ----------------------------------------------------------------------
-It's snd-hda-intel driver.
+Update: Restarting the computer seems to work sometimes
+
+----------------------------------------------------------------------
+ tiwai - 09-09-05 12:29 
+----------------------------------------------------------------------
+The error messages are harmless.  The driver tried to detect the secondary
+codec but it's not an audio codec.
+
+Please elaborate what do you mean "does not work".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 12:12 war0060        New Issue                                    
-09-09-05 12:27 tiwai          Note Added: 0006092                          
+09-09-05 03:21 ganhawk        New Issue                                    
+09-09-05 03:21 ganhawk        Distribution              => Fedora Core 4   
+09-09-05 03:21 ganhawk        Kernel Version            => 2.6.11-1.1369_FC4smp
+09-09-05 03:23 ganhawk        Issue Monitored: ganhawk                     
+09-09-05 03:58 ganhawk        Note Added: 0006088                          
+09-09-05 04:37 ganhawk        Note Added: 0006090                          
+09-09-05 12:29 tiwai          Note Added: 0006093                          
 ======================================================================
 
 
