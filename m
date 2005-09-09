@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Fri, 9 Sep 2005 17:30:21 +0200
-Message-ID: <e4718711918ea71b8a3f749921f16483@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Mo' better modem support
+Date: Fri, 09 Sep 2005 23:36:31 +0800
+Message-ID: <4321ABFF.9090904@netvigator.com>
+References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de> <431EBB71.3070206@netvigator.com> <20050907161011.GA11357@sashak.softier1.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6879197
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 17:30:21 +0200 (MEST)
+In-Reply-To: <20050907161011.GA11357@sashak.softier1.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Sasha Khapyorsky <sashak@smlink.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Sasha Khapyorsky wrote:
+> On 18:05 Wed 07 Sep     , Raymond wrote:
+> 
+>>It seem to me that it's not AC97 modem.
+>>
+>>Do ALSA support softmodem with Silicon DAA  ?
+> 
+> 
+> Yes, Si30xx codecs with Silicon DAA.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
-======================================================================
-Reported By:                spiral
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1377
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Hoary
-Kernel Version:             2.6.13 final
-======================================================================
-Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-09-2005 17:30 CEST
-======================================================================
-Summary:                    tons of unknown symbols with 2.6.13 final
-Description: 
-Hello !
+Do ALSA support Motorola SM56 MOT6269353 with Silicon DAA Si3014 ?
 
-I have a laptop with a hda-intel based sound card... I recently tried to
-update my kernel to 2.6.13 with the official kernel.org source, with
-almost the same configuration I have on my 2.6.12.5... This worked nicely
-except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
-(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
-
-In both cases, I can't load snd-hda-intel and I get a lot of unknown
-symbol messages in dmesg...
-
-I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-07-05 17:35 
-----------------------------------------------------------------------
-Try to run "modprobe snd", and check whether it's successful.
-Then run "grep snd_info_register /proc/kallsyms" if snd module is loaded.
-
-If snd module exists and /proc/kallsyms exists but it has no
-snd_info_register entry, you have passed a wrong kernel configuration.
-
-If snd couldn't be loaded, something is odd in your module configuration.
-
-----------------------------------------------------------------------
- Twey - 09-09-05 17:30 
-----------------------------------------------------------------------
-I also get this 1g0R's errors.  ca0106, 2.6.13.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 09:34 spiral         New Issue                                    
-08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
-08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
-09-02-05 19:51 tiwai          Note Added: 0006017                          
-09-04-05 22:11 1g0R           Note Added: 0006038                          
-09-05-05 14:15 kSh            Note Added: 0006041                          
-09-05-05 14:15 kSh            Issue Monitored: kSh                         
-09-06-05 17:35 spiral         File Added: dmesgout.txt                     
-09-06-05 17:36 spiral         Note Added: 0006047                          
-09-06-05 20:17 1g0R           Note Added: 0006048                          
-09-07-05 15:48 tiwai          Note Added: 0006056                          
-09-07-05 17:25 spiral         Note Added: 0006059                          
-09-07-05 17:26 spiral         Note Edited: 0006059                         
-09-07-05 17:27 tiwai          Note Added: 0006060                          
-09-07-05 17:28 spiral         Note Added: 0006061                          
-09-07-05 17:35 tiwai          Note Added: 0006062                          
-09-09-05 17:30 Twey           Note Added: 0006102                          
-======================================================================
-
-
+It seem that au8810 is connected to MOT6269353 on MDC of ASUS L8400B 
+notebook.
 
 
 -------------------------------------------------------
