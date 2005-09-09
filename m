@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Fri, 9 Sep 2005 17:48:25 +0200
-Message-ID: <00f5a7fae16a8c12a5f327fc54d740da@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Mo' better modem support
+Date: Sat, 10 Sep 2005 00:17:40 +0800
+Message-ID: <4321B5A4.5090803@netvigator.com>
+References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61D6B197
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 17:48:25 +0200 (MEST)
+In-Reply-To: <20050907064449.GA8391@titan.lahn.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: pmhahn@titan.lahn.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Philipp Matthias Hahn wrote:
+> Hello!
+> 
+> 
+> Yes, I still have it and use it:
+> 
+> $ lspci -s 0:6.0
+> 0000:00:06.0 Multimedia audio controller: Aureal Semiconductor AU8810 Vortex Digital Audio Processor (rev 03)
+> walker:~# lspci -nv -s 0:6.0
+> 0000:00:06.0 0401: 12eb:0003 (rev 03)
+>         Subsystem: 1043:1043
+>         Flags: bus master, medium devsel, latency 32, IRQ 255
+>         Memory at fedc0000 (32-bit, non-prefetchable) [size=256K]
+>         I/O ports at fce0 [size=8]
+>         I/O ports at fce8 [size=8]
+>         Capabilities: [dc] Power Management version 2
+> 
+> If you need something else (data, testing, etc), just ask.
+> 
+> BYtE
+> Philipp
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
-======================================================================
-Reported By:                spiral
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1377
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Hoary
-Kernel Version:             2.6.13 final
-======================================================================
-Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-09-2005 17:48 CEST
-======================================================================
-Summary:                    tons of unknown symbols with 2.6.13 final
-Description: 
-Hello !
+Would you post result of
+cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
 
-I have a laptop with a hda-intel based sound card... I recently tried to
-update my kernel to 2.6.13 with the official kernel.org source, with
-almost the same configuration I have on my 2.6.12.5... This worked nicely
-except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
-(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
+Are you able to use the modem in Win9x/NT4/W2K/DOS ?
 
-In both cases, I can't load snd-hda-intel and I get a lot of unknown
-symbol messages in dmesg...
-
-I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
-======================================================================
-
-----------------------------------------------------------------------
- Twey - 09-09-05 17:30 
-----------------------------------------------------------------------
-I also get 1g0R's errors.  ca0106, 2.6.13.
+What is the feature available ?
+1) Data/Fax only
+2) Data/Fax/TAM       (Telephone answering machine)
+3) Data/Fax/TAM/Speakerphone	
 
 
 
-----------------------------------------------------------------------
- tiwai - 09-09-05 17:48 
-----------------------------------------------------------------------
-1g0R's case is irrelevant to the original report.  Don't mix up any more.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 09:34 spiral         New Issue                                    
-08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
-08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
-09-02-05 19:51 tiwai          Note Added: 0006017                          
-09-04-05 22:11 1g0R           Note Added: 0006038                          
-09-05-05 14:15 kSh            Note Added: 0006041                          
-09-05-05 14:15 kSh            Issue Monitored: kSh                         
-09-06-05 17:35 spiral         File Added: dmesgout.txt                     
-09-06-05 17:36 spiral         Note Added: 0006047                          
-09-06-05 20:17 1g0R           Note Added: 0006048                          
-09-07-05 15:48 tiwai          Note Added: 0006056                          
-09-07-05 17:25 spiral         Note Added: 0006059                          
-09-07-05 17:26 spiral         Note Edited: 0006059                         
-09-07-05 17:27 tiwai          Note Added: 0006060                          
-09-07-05 17:28 spiral         Note Added: 0006061                          
-09-07-05 17:35 tiwai          Note Added: 0006062                          
-09-09-05 17:30 Twey           Note Added: 0006102                          
-09-09-05 17:30 Twey           Note Edited: 0006102                         
-09-09-05 17:31 Twey           Issue Monitored: Twey                        
-09-09-05 17:48 tiwai          Note Added: 0006103                          
-======================================================================
+
+
 
 
 
