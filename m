@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001406]: Need help
-Date: Fri, 9 Sep 2005 05:01:36 +0200
-Message-ID: <aa8671ceda9742ad85a679c1cfd5a3cb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
+Date: Fri, 9 Sep 2005 05:11:23 +0200
+Message-ID: <e0ffd0b2a93c7976f69cfd2c0a999c6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82B341BD
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 05:01:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 954311BD
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 05:11:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,41 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1406> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
 ======================================================================
-Reported By:                jlway
+Reported By:                drow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1406
-Category:                   1_OTHERS
+Issue ID:                   1407
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Sarge i386
-Kernel Version:             2.4.27
+Distribution:               Debian
+Kernel Version:             2.6.13-rc6
 ======================================================================
-Date Submitted:             09-09-2005 05:01 CEST
-Last Modified:              09-09-2005 05:01 CEST
+Date Submitted:             09-09-2005 05:11 CEST
+Last Modified:              09-09-2005 05:11 CEST
 ======================================================================
-Summary:                    Need help
+Summary:                    Can't use rear speaker channels
 Description: 
-Where may I get help to complete installation?
-I have compiled and installed but unable to get sound.
-Perhaps your driver does not support my on-board sound: Analog
-Devices SoundMax Integrated Digital Audio
-Windows XP driver 5.12.1.3630 by Sensaura Ltd.
-Is there a chat room where I can get help?
-Thanks, John Way
+I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
+ice1724.  I've spent most of tonight trying to get surround sound to
+work... but the best I can get is four channels (specifically, front
+left/right, center, LFE).  Nothing happens when samples are sent to the
+rear channels.  And the front channels are mirrored onto the rear
+speakers, under control of the Headphone volume control.
+
+Which is really annoying, because it means that muting the master volume
+doesn't mute the back speakers.
+
+I realize this isn't much information.  I don't know what else to check
+but I'll be glad to debug it if someone can give me a pointer.
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 05:01 jlway          New Issue                                    
-09-09-05 05:01 jlway          Distribution              => Sarge i386      
-09-09-05 05:01 jlway          Kernel Version            => 2.4.27          
+09-09-05 05:11 drow           New Issue                                    
+09-09-05 05:11 drow           Distribution              => Debian          
+09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
 ======================================================================
 
 
