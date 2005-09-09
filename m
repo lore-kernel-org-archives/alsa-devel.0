@@ -1,16 +1,14 @@
-From: Chuck Ebbert <76306.1226@compuserve.com>
-Subject: Re: Brand-new notebook useless with Linux...
-Date: Fri, 9 Sep 2005 14:09:17 -0400
-Message-ID: <200509091411_MC3-1-A9B0-1C0C__19288.110259413$1126289622$gmane$org@compuserve.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Fri, 9 Sep 2005 20:14:22 +0200
+Message-ID: <6dda5e1bfb31ace5a847b955e8d15c72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	 charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from liaag1ac.mx.compuserve.com (liaag1ac.mx.compuserve.com [149.174.40.29])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9686195
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 20:11:54 +0200 (MEST)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DAC53189
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 20:14:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,111 +18,115 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In-Reply-To: <1126207905.12697.20.camel@mindpipe>
 
-On Thu, 08 Sep 2005 at 15:31:44 -0400, Lee Revell wrote:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
+======================================================================
+Reported By:                midnight
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1378
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
+======================================================================
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-09-2005 20:14 CEST
+======================================================================
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
+Description: 
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-> Wait, that sounds like the modem, not the AC97 audio codec.
->
-> You might be able to get the modem to work with the (proprietary)
-> slmodem software modem, or something.  I wouldn't count on it though.
-> 
-> Does your sound work?
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
+
+I use the via82xx module
+
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ midnight - 09-09-05 19:50 
+----------------------------------------------------------------------
+I have uninstalled the CVS version (because I have no sound on center and
+LFE) and installed the 1.09 version.
+
+with "speaker-test -c6 -Dsurround51" I have sound on the front Right and
+left, the front speakers and LFE don't work very well. 
+if I mute /unmute each channels individualy in alsamixer while speaker
+test is running it works fine but the sound is always on the center
+speaker (for center and LFE). 
+also, the sound in the center speaker crackle. I have no sound on the
+rears speakers.
+
+after running "echo 64 1cb8 > /proc/asound/card0/codec97#0/ac97#0-0+regs"
 
 
- Well I'll be...
+with "speaker-test -c6 -Dsurround51" , the rear right and left speakers
+and the rears right and left speakers works fine but it 's the same for
+the center and LFE speakers.
 
- I'd assumed from the (confusing) messages that the sound card was
-not working, but it seems fine.  Shouldn't the error messages from
-atiixp-modem be prefixed with that name instead of "atiixp"?
+I will try another version because the center and LFE speakers has already
+worked fine with another version.
 
-Untested patch follows.
+with speaker-test -c6, I have sound only on the front speakers.
 
-Signed-off-by: Chuck Ebbert <76306.1226@compuserve.com>
+----------------------------------------------------------------------
+ tiwai - 09-09-05 20:14 
+----------------------------------------------------------------------
+Forget 1.0.9b.  There were known bugs regarding surrounds there.
 
- sound/pci/atiixp_modem.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
+For testing, you should use "hw:0,1" instead of "surround51".  The latter
+may reset the register value.
 
---- 2.6.13a.orig/sound/pci/atiixp_modem.c
-+++ 2.6.13a/sound/pci/atiixp_modem.c
-@@ -405,7 +405,7 @@ static int snd_atiixp_acquire_codec(atii
- 
- 	while (atiixp_read(chip, PHYS_OUT_ADDR) & ATI_REG_PHYS_OUT_ADDR_EN) {
- 		if (! timeout--) {
--			snd_printk(KERN_WARNING "atiixp: codec acquire timeout\n");
-+			snd_printk(KERN_WARNING "atiixp-modem: codec acquire timeout\n");
- 			return -EBUSY;
- 		}
- 		udelay(1);
-@@ -436,7 +436,7 @@ static unsigned short snd_atiixp_codec_r
- 	} while (--timeout);
- 	/* time out may happen during reset */
- 	if (reg < 0x7c)
--		snd_printk(KERN_WARNING "atiixp: codec read timeout (reg %x)\n", reg);
-+		snd_printk(KERN_WARNING "atiixp-modem: codec read timeout (reg %x)\n", reg);
- 	return 0xffff;
- }
- 
-@@ -498,7 +498,7 @@ static int snd_atiixp_aclink_reset(atiix
- 		do_delay();
- 		atiixp_update(chip, CMD, ATI_REG_CMD_AC_RESET, ATI_REG_CMD_AC_RESET);
- 		if (--timeout) {
--			snd_printk(KERN_ERR "atiixp: codec reset timeout\n");
-+			snd_printk(KERN_ERR "atiixp-modem: codec reset timeout\n");
- 			break;
- 		}
- 	}
-@@ -552,7 +552,7 @@ static int snd_atiixp_codec_detect(atiix
- 	atiixp_write(chip, IER, 0); /* disable irqs */
- 
- 	if ((chip->codec_not_ready_bits & ALL_CODEC_NOT_READY) == ALL_CODEC_NOT_READY) {
--		snd_printk(KERN_ERR "atiixp: no codec detected!\n");
-+		snd_printk(KERN_ERR "atiixp-modem: no codec detected!\n");
- 		return -ENXIO;
- 	}
- 	return 0;
-@@ -635,7 +635,7 @@ static void snd_atiixp_xrun_dma(atiixp_t
- {
- 	if (! dma->substream || ! dma->running)
- 		return;
--	snd_printdd("atiixp: XRUN detected (DMA %d)\n", dma->ops->type);
-+	snd_printdd("atiixp-modem: XRUN detected (DMA %d)\n", dma->ops->type);
- 	snd_pcm_stop(dma->substream, SNDRV_PCM_STATE_XRUN);
- }
- 
-@@ -1081,14 +1081,14 @@ static int __devinit snd_atiixp_mixer_ne
- 		ac97.scaps = AC97_SCAP_SKIP_AUDIO;
- 		if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i])) < 0) {
- 			chip->ac97[i] = NULL; /* to be sure */
--			snd_printdd("atiixp: codec %d not available for modem\n", i);
-+			snd_printdd("atiixp-modem: codec %d not available for modem\n", i);
- 			continue;
- 		}
- 		codec_count++;
- 	}
- 
- 	if (! codec_count) {
--		snd_printk(KERN_ERR "atiixp: no codec available\n");
-+		snd_printk(KERN_ERR "atiixp-modem: no codec available\n");
- 		return -ENODEV;
- 	}
- 
-@@ -1159,7 +1159,7 @@ static void __devinit snd_atiixp_proc_in
- {
- 	snd_info_entry_t *entry;
- 
--	if (! snd_card_proc_new(chip->card, "atiixp", &entry))
-+	if (! snd_card_proc_new(chip->card, "atiixp-modem", &entry))
- 		snd_info_set_text_ops(entry, chip, 1024, snd_atiixp_proc_read);
- }
- 
-__
-Chuck
-Subliminal URL: www.sluggy.com/daily.php?date=050905
+Try to flip other bits of the register 0x64 on/off.
+The relevant bits are: Bit 12 (0x1000) should be CLFE on/off, bit 11
+(0x0800) Mic/Center share, 7 (0x0080) Mic/LFE share.
+The bit 3 (0x0008) is the surround control, bit 10 the line/surround
+share.
+
+Also, don't forget to unmute 'Surround', 'Center' and 'LFE' mixer volumes.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
+09-09-05 14:54 midnight       Note Added: 0006099                          
+09-09-05 16:32 tiwai          Note Added: 0006100                          
+09-09-05 19:50 midnight       Note Added: 0006104                          
+09-09-05 20:14 tiwai          Note Added: 0006105                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
