@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
-Date: Fri, 9 Sep 2005 04:12:57 +0200
-Message-ID: <66cf5cdeafdadb098dfc3bfa6eea2f4c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001405]: Driver not working (no sound) with ATI IXP150 AC'97
+Date: Fri, 9 Sep 2005 04:37:55 +0200
+Message-ID: <7b71e37d0d7eeaee38e6c5e8e99f2e64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CEF3190
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 04:12:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 652AF19C
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 04:37:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1405> 
 ======================================================================
-Reported By:                philneves
-Assigned To:                
+Reported By:                ganhawk
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1337
-Category:                   ISA - sb16/sbawe
+Issue ID:                   1405
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10, and Redhat 7.3
-Kernel Version:             2.4 series.
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC4smp
 ======================================================================
-Date Submitted:             08-15-2005 03:20 CEST
-Last Modified:              09-09-2005 04:12 CEST
+Date Submitted:             09-09-2005 03:21 CEST
+Last Modified:              09-09-2005 04:37 CEST
 ======================================================================
-Summary:                    AWE 32/64 driver crashes when using the skype
-program.
+Summary:                    Driver not working (no sound) with ATI IXP150 AC'97
 Description: 
-This is a serious bug with the sb16/sbawe driver. It seems to crash when
-running the skype program. Problem can be reproduced on a regular basis.
-Although frequency of occurence is random. Once the driver crashes it
-disables all sound on my system and I must restart the computer to get the
-sound back. Reloading the driver doesn't work. Problem occurs on all
-versions of alsa and all versions of the 2.4 kernel. 
+OS is Fedora Core 4 but using ALSA driver 1.0.9rc4a. It throws "codec reset
+timeout" error when the module is inserted and the sound card does not
+work.
 
+The error is from alsa-kernel/pci/atiixp.c:518
 
-
-
-
+This is on a Tosiba A75 S1253 laptop with ATI IXP150 AC'97
 ======================================================================
 
 ----------------------------------------------------------------------
- philneves - 09-09-05 02:42 
+ ganhawk - 09-09-05 03:58 
 ----------------------------------------------------------------------
-Additional information about my system so that I can make the debugging
-easier. I have a 
+Hi,
 
-Celeron 400mhz. (please no comments on how bad my computer sucks I already
-know. )
-300MB of ram. 
-20GB hard disk space (only half full)
-P2-99 Motherboard (this MB has 2 ISA slots)
-SBAwe 64 (ISA)
-Nvidia Geforce 2 video card. 
-10/100 Ethernet card. 
+Forgot to enter the additional information:
 
-Currently I'm using the alsa drivers that are located in Linux Kernel
-2.6.11 
+I tried disabling the ACPI but the result is the same.
 
-I'm thinking this is a problem with the OSS emulation in ALSA. I've had
-trouble with it before. Its never been 100% for me. Not even the earlier
-versions.
+lspci says:
+00:14.5 Multimedia audio controller: ATI Technologies Inc IXP150 AC'97
+Audio Controller
+        Subsystem: Toshiba America Info Systems: Unknown device ff01
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66Mhz+ UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (500ns min), Cache Line Size 08
+        Interrupt: pin B routed to IRQ 177
+        Region 0: Memory at e8004400 (32-bit, non-prefetchable)
+[size=256]
+
+Also when compiled with debug=detect, the driver produces the following:
+
+ALSA alsa-kernel/pci/atiixp.c:518: atiixp: codec reset timeout
+ALSA alsa-kernel/pci/atiixp.c:1383: atiixp: codec 1 not available for
+audio
+
+Please help me solve this issue or give me information regarding what to
+change in the source.
 
 ----------------------------------------------------------------------
- rlrevell - 09-09-05 04:12 
+ ganhawk - 09-09-05 04:37 
 ----------------------------------------------------------------------
-This does sound like a driver bug.  Please provide the output of "dmesg"
-(or the end of the syslog) after the crash.
+Update: Restarting the computer seems to work sometimes
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-15-05 03:20 philneves      New Issue                                    
-08-15-05 03:20 philneves      Distribution              => Slackware 10, and
-Redhat 7.3
-08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
-08-24-05 07:09 philneves      Note Added: 0005924                          
-09-09-05 02:34 philneves      Note Edited: 0005924                         
-09-09-05 02:42 philneves      Note Added: 0006086                          
-09-09-05 04:12 rlrevell       Note Added: 0006089                          
+09-09-05 03:21 ganhawk        New Issue                                    
+09-09-05 03:21 ganhawk        Distribution              => Fedora Core 4   
+09-09-05 03:21 ganhawk        Kernel Version            => 2.6.11-1.1369_FC4smp
+09-09-05 03:23 ganhawk        Issue Monitored: ganhawk                     
+09-09-05 03:58 ganhawk        Note Added: 0006088                          
+09-09-05 04:37 ganhawk        Note Added: 0006090                          
 ======================================================================
 
 
