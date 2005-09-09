@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Fri, 9 Sep 2005 05:11:23 +0200
-Message-ID: <e0ffd0b2a93c7976f69cfd2c0a999c6f@bugtrack.alsa-project.org>
+Date: Fri, 9 Sep 2005 05:13:03 +0200
+Message-ID: <b5427c093e929d481940667a6c901e12@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 954311BD
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 05:11:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18B26176
+	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 05:13:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.13-rc6
 ======================================================================
 Date Submitted:             09-09-2005 05:11 CEST
-Last Modified:              09-09-2005 05:11 CEST
+Last Modified:              09-09-2005 05:13 CEST
 ======================================================================
 Summary:                    Can't use rear speaker channels
 Description: 
@@ -59,12 +59,19 @@ but I'll be glad to debug it if someone can give me a pointer.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ drow - 09-09-05 05:13 
+----------------------------------------------------------------------
+Oh, I tried the updated ICE1724.conf from 1.0.10rc1, and the further
+updated one from CVS.  It helped a little, but not much.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-09-05 05:11 drow           New Issue                                    
 09-09-05 05:11 drow           Distribution              => Debian          
 09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
+09-09-05 05:13 drow           Note Added: 0006091                          
 ======================================================================
 
 
