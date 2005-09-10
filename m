@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
-Date: Sat, 10 Sep 2005 13:04:41 +0200
-Message-ID: <0b97c3d47ca6520f6afb0d55885ec87d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001223]: Unable to select card for playback
+Date: Sat, 10 Sep 2005 13:06:45 +0200
+Message-ID: <2a7770a556f99c1b1226e7ae07b7ffba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10153197
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:04:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA07E1C4
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:06:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,85 +24,121 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1223> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                nframpton
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1053
+Issue ID:                   1223
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 4 test 2
-Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+Distribution:               Leaf Bering v1.2
+Kernel Version:             2.4.31
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-14-2005 19:27 CEST
-Last Modified:              09-10-2005 13:04 CEST
+Date Submitted:             07-01-2005 02:59 CEST
+Last Modified:              09-10-2005 13:06 CEST
 ======================================================================
-Summary:                    cannot change line-in volume on MSI K8N Platinum
-that has SBLive! 24 bit
+Summary:                    Unable to select card for playback
 Description: 
-I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack in the pci version of the sb live 24
-bit (see image).
+I have an Intel D875PBZ motherboard and several SB Live 24-bit (model
+SB0410) cards.  If only one card is installed the ca0106 driver works
+fine.  If multiple cards are installed I am unable to select a specific
+card for playback.
 
-The result is that I cannot use line-in for my soundcard becuase the
-volume is 0 and I cannot change it.
+# aplay -D hw:0,0 /tmp/new.wav
+Playing WAVE '/tmp/new.wav' : Signed 16 bit Little Endian, Rate 16000 Hz,
+Mono
+aplay: set_params:862: Channels count non available
 
-The "Capture feedback into playback" in the mixer change the mic's volume.
+I am using the default configuration supplied with alsa-lib 1.0.9.
+
+# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Jun 30 2005 for kernel 2.4.31-NANO.
+
+# cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0410] at 0xb800 irq 3
+1 [CA0106_1       ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0410] at 0xbc00 irq 10
+
+# cat /proc/asound/devices
+ 19: [0- 3]: digital audio playback
+ 27: [0- 3]: digital audio capture
+ 18: [0- 2]: digital audio playback
+ 26: [0- 2]: digital audio capture
+ 17: [0- 1]: digital audio playback
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+ 51: [1- 3]: digital audio playback
+ 59: [1- 3]: digital audio capture
+ 50: [1- 2]: digital audio playback
+ 58: [1- 2]: digital audio capture
+ 49: [1- 1]: digital audio playback
+ 57: [1- 1]: digital audio capture
+ 48: [1- 0]: digital audio playback
+ 56: [1- 0]: digital audio capture
+ 32: [1- 0]: ctl
+
+# cat /proc/interrupts
+           CPU0
+  0:      31884          XT-PIC  timer
+  1:          3          XT-PIC  keyboard
+  2:          0          XT-PIC  cascade
+  3:          0          XT-PIC  snd_ca0106
+  4:        635          XT-PIC  serial
+ 10:        726          XT-PIC  snd_ca0106, eth0
+ 14:       7402          XT-PIC  ide0
+NMI:          0
+ERR:          0
+
+# cat /proc/asound/modules
+0 snd-ca0106
+1 snd-ca0106
+
+# cat /proc/asound/pcm
+00-00: ca0106 : CA0106 : playback 1 : capture 1
+00-01: ca0106 : CA0106 : playback 1 : capture 1
+00-02: ca0106 : CA0106 : playback 1 : capture 1
+00-03: ca0106 : CA0106 : playback 1 : capture 1
+01-00: ca0106 : CA0106 : playback 1 : capture 1
+01-01: ca0106 : CA0106 : playback 1 : capture 1
+01-02: ca0106 : CA0106 : playback 1 : capture 1
+01-03: ca0106 : CA0106 : playback 1 : capture 1
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 08-13-05 01:16 
+ nframpton - 07-04-05 10:28 
 ----------------------------------------------------------------------
-Sorry I want to say that I cannot hear nothing from line-in.
-
-Close this bug, I will open a new one.
+That worked fine, thanks.  Is this documented somewhere?
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 13:04 
+ jcdutton - 09-10-05 13:06 
 ----------------------------------------------------------------------
-Closed. Bug report was reporting two different bugs. We have fixed one of
-them, and the reporter is opening a different bug report for the other, as
-yet unresolved issue.
+Fixed. Configuation problem, and not a driver bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-05 19:27 Cimmo          New Issue                                    
-04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
-04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
-04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
-FC4-x86_64 that contains 2.6.12rc2
-04-14-05 21:42 jcdutton       Note Added: 0004495                          
-04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
-05-11-05 15:05 Cimmo          Note Added: 0004636                          
-05-14-05 13:14 pelias         Note Added: 0004657                          
-05-14-05 15:48 jcdutton       Note Added: 0004659                          
-05-20-05 00:14 dwh            Note Added: 0004697                          
-05-28-05 12:16 jcdutton       Note Added: 0004764                          
-05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
-05-30-05 12:57 Cimmo          Note Added: 0004805                          
-05-30-05 12:58 Cimmo          File Added: alsamixer.jpg                    
-05-30-05 14:33 jcdutton       Note Added: 0004814                          
-05-30-05 14:56 Cimmo          Note Added: 0004816                          
-05-30-05 14:57 Cimmo          Note Edited: 0004816                         
-06-01-05 19:44 Cimmo          Note Added: 0004867                          
-06-01-05 19:50 Cimmo          Note Edited: 0004867                         
-07-01-05 14:03 Cimmo          Note Added: 0005332                          
-07-01-05 14:48 jcdutton       Note Added: 0005334                          
-07-01-05 20:00 Cimmo          Note Added: 0005336                          
-07-14-05 12:32 Cimmo          Note Added: 0005471                          
-08-12-05 23:08 jcdutton       Note Added: 0005789                          
-08-13-05 01:16 Cimmo          Note Added: 0005797                          
-09-10-05 13:04 jcdutton       Status                   feedback => closed  
-09-10-05 13:04 jcdutton       Note Added: 0006115                          
+07-01-05 02:59 nframpton      New Issue                                    
+07-01-05 02:59 nframpton      Distribution              => Leaf Bering v1.2
+07-01-05 02:59 nframpton      Kernel Version            => 2.4.31          
+07-01-05 12:32 jcdutton       Note Added: 0005331                          
+07-01-05 12:32 jcdutton       Status                   assigned => feedback
+07-04-05 10:28 nframpton      Note Added: 0005383                          
+09-10-05 13:06 jcdutton       Status                   feedback => closed  
+09-10-05 13:06 jcdutton       Note Added: 0006116                          
 ======================================================================
 
 
