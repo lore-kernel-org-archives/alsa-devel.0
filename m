@@ -1,10 +1,14 @@
-From: "deng" <deng@tom.com>
-Subject: =?GB2312?B?16jA+7y8yvU=?=
-Date: Sat, 10 Sep 2005 12:24:22 +0800
-Message-ID: <E1EDwvA-0007i3-RD@mail.sourceforge.net>
-Reply-To: deng@tom.com
-Content-Type: text/plain;charset="GB2312"
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001410]: Request: please enable 44.1khz playback on Audigy 2 NX
+Date: Sat, 10 Sep 2005 06:41:36 +0200
+Message-ID: <000705ded6bfdb13e44fdc9ce9e50335@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1FBC183
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 06:41:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,18 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-在寒冷的冬天，尤其是在没有暖气装置的我国长江以南地区，作为床上取暖器具，我们最为熟悉的是电热毯，但
-电热毯不安全易漏电，且不能清洗等缺点，而其他的一些床上取暖器要么就是结构复杂，要么是不实用。针对此，
-本实用新型专利，它克服了现有取暖装置的不足，提供一种结构简单、价格底、小巧方便、节能环保、安全可靠，
-而且不会影响现有床体款式结构的最简单，最直接的床上取暖器。而且，利用本实用新型专利可以演生出多个产
-品，如：1）与小型吸尘器（外型）结合可生产出时尚的取暖器；2）与现有空调扇结合可生产出一年四季能用的
-"风扇"，当不用取暖时可将弹簧胶管及散热板收藏在扇内；3）与干肤器结合可生产出集取暖、干肤、干发等功
-能。本专利市场前景巨大,实为各小家电生产厂家及有志于取暖器材生产投资者的理想项目！如果您想进一步了
-解该技术的详细情况请上"中国知识产权网"网站( www.cnipr.com ),进入"技术推广"在项目申请号栏中输入
-200420083468.3即可浏览全文。
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1410> 
+======================================================================
+Reported By:                wshtb
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1410
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             09-10-2005 06:41 CEST
+Last Modified:              09-10-2005 06:41 CEST
+======================================================================
+Summary:                    Request: please enable 44.1khz playback on Audigy 2
+NX
+Description: 
+It saw somewhere in the changelog that 44.1khz playback on Audigy 2 NX is
+buggy so it is disabled in the latest source. However it seems that
+44.1khz playback in digital-output-only mode is working perfectly.
+
+I have used a Audigy 2 NX to send 44.1khz signal to external DAC for
+several month in my home theater setup (with kernel 2.6.12.x). The driver
+has been rock solid (thank you guys!). Although I do need to set the
+output frequency to 44.1khz using a Windows laptop, that is necessary only
+after the sound card lost its power, i.e. unplugging the power adapter. 
+
+In kernel 2.6.13 or the latest alsa-driver, 44.1khz playback is disabled.
+I'd like to know if it is possible to re-enable it? It is a nice feature
+that the hardware is capable and the driver is available. Maybe something
+similar to Windows can be done: user must select digital-only mode before
+44.1khz output becomes an option; once in digital-only mode, all analog
+channels are muted. 
+
+What do you think? Maybe the output frequency can be fixed by user intead
+of by the music source being played. Is it hard to implement?
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-10-05 06:41 wshtb          New Issue                                    
+09-10-05 06:41 wshtb          Distribution              => Fedora Core 4   
+09-10-05 06:41 wshtb          Kernel Version            => 2.6.13          
+======================================================================
+
+
 
 
 -------------------------------------------------------
