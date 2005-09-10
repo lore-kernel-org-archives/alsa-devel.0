@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Sun, 11 Sep 2005 00:09:43 +0200
-Message-ID: <6d5328c52f7a3150224f5dbb6f880c62@bugtrack.alsa-project.org>
+Date: Sun, 11 Sep 2005 00:15:13 +0200
+Message-ID: <95d2c4d8ed74cb5257c91c14b4af0871@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25190183
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 00:09:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F0DF183
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 00:15:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Kubuntu Hoary
 Kernel Version:             2.6.13 final
 ======================================================================
 Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-11-2005 00:09 CEST
+Last Modified:              09-11-2005 00:15 CEST
 ======================================================================
 Summary:                    tons of unknown symbols with 2.6.13 final
 Description: 
@@ -59,25 +59,6 @@ I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
 ======================================================================
 
 ----------------------------------------------------------------------
- spiral - 09-10-05 23:59 
-----------------------------------------------------------------------
-tiwai :
-
-I tried modprobe snd, & got an error message about device_mode, but I've
-checked, I don't have any file in /etc (recursively) which still contains
-"device_mode", so I don't know why modprobe still tries to pass this
-option. When I do insmod snd.ko, this works fine, but I still get the same
-unknown symbol messages when I try to modprobe snd-hda-intel (but the
-message you asked me to look for in /proc/kallsysm is there, no problem).
-I tried to insmod snd-hda-intel.ko also, but still got the unknown
-symbols...
-
-What's more, I just tried again today, with kernel 2.6.13.1 this time, and
-with an updated cvs tree, & I've still got the same problem.
-
-I hope you'll be able to help me.
-
-----------------------------------------------------------------------
  rlrevell - 09-11-05 00:09 
 ----------------------------------------------------------------------
 Did you download all of ALSA from CVS with "cvs co ."?   It sounds like
@@ -86,6 +67,20 @@ installing ALSA?
 
 Also "an error about device_mode" is useless.  Please provide the exact
 error message.
+
+----------------------------------------------------------------------
+ spiral - 09-11-05 00:15 
+----------------------------------------------------------------------
+For the unknown parameter message, I didn't write it again because it's the
+same I've reported since the beginning, I put it there again : "snd:
+Unknown parameter `device_mode'".
+
+For alsa cvs, I did what is recommended on
+http://alsa.opensrc.org/index.php?page=AlsaCVS, so I got alsa-driver,
+alsa-kernel and so on...
+
+I get the same problem after rebooting, and with 2.6.12.*, I don't even
+have to reboot to get alsa working.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +107,7 @@ Date Modified  Username       Field                    Change
 09-09-05 17:48 tiwai          Note Added: 0006103                          
 09-10-05 23:59 spiral         Note Added: 0006125                          
 09-11-05 00:09 rlrevell       Note Added: 0006126                          
+09-11-05 00:15 spiral         Note Added: 0006127                          
 ======================================================================
 
 
