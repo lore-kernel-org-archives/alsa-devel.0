@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Sun, 11 Sep 2005 00:25:09 +0200
-Message-ID: <be46fdf05e2d07041927794f2eabdaed@bugtrack.alsa-project.org>
+Date: Sun, 11 Sep 2005 00:33:57 +0200
+Message-ID: <77bc19a24ec988f3a43dc4e63555b237@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2ED02183
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 00:25:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25938183
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 00:33:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Kubuntu Hoary
 Kernel Version:             2.6.13 final
 ======================================================================
 Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-11-2005 00:25 CEST
+Last Modified:              09-11-2005 00:33 CEST
 ======================================================================
 Summary:                    tons of unknown symbols with 2.6.13 final
 Description: 
@@ -59,20 +59,6 @@ I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
 ======================================================================
 
 ----------------------------------------------------------------------
- spiral - 09-11-05 00:15 
-----------------------------------------------------------------------
-For the unknown parameter message, I didn't write it again because it's the
-same I've reported since the beginning, I put it there again : "snd:
-Unknown parameter `device_mode'".
-
-For alsa cvs, I did what is recommended on
-http://alsa.opensrc.org/index.php?page=AlsaCVS, so I got alsa-driver,
-alsa-kernel and so on...
-
-I get the same problem after rebooting, and with 2.6.12.*, I don't even
-have to reboot to get alsa working.
-
-----------------------------------------------------------------------
  rlrevell - 09-11-05 00:25 
 ----------------------------------------------------------------------
 Do you have multiple kernel sources installed?  Are you using a kernel.org
@@ -88,6 +74,23 @@ make
 sudo make modules_install
 
 Then reboot.
+
+----------------------------------------------------------------------
+ spiral - 09-11-05 00:33 
+----------------------------------------------------------------------
+I have multiple kernel sources : 2.6.12.6 (working version) and 2.6.13.1
+(with alsa problems).
+
+I have the symlink /usr/src/linux which points to 2.6.13.1.
+
+Both versions are official kernels from kernel.org.
+
+I shall try your suggestion of installation tomorrow... Now I should go to
+bed :-)
+
+I'll tell you if this works :-)
+
+'bye
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -116,6 +119,7 @@ Date Modified  Username       Field                    Change
 09-11-05 00:09 rlrevell       Note Added: 0006126                          
 09-11-05 00:15 spiral         Note Added: 0006127                          
 09-11-05 00:25 rlrevell       Note Added: 0006128                          
+09-11-05 00:33 spiral         Note Added: 0006129                          
 ======================================================================
 
 
