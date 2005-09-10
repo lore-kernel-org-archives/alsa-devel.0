@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Sat, 10 Sep 2005 13:12:37 +0200
-Message-ID: <e543e5f6de0c4aa0835991c34e985ea1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Sat, 10 Sep 2005 13:16:48 +0200
+Message-ID: <f22b838f45bdc3a1d507dd4ff88a70b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DC7B16C
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:12:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6808B1C4
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:16:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
-Reported By:                sjberryman
+Reported By:                rav0r
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   724
-Category:                   1_OTHERS
+Issue ID:                   992
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core1, Core2 and Suse 9.2
-Kernel Version:             2.6.9 2.4.28 2.6.8
-Resolution:                 reopened
-Fixed in Version:           
+Status:                     feedback
+Distribution:               
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              09-10-2005 13:12 CEST
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              09-10-2005 13:16 CEST
 ======================================================================
-Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Summary:                    no supported card
 Description: 
-No apparent support for Creative Sounblaster 24 bit.
-
-Fedora does not find any sound device.
-
-Susi finds a device but can't activate it.
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 06-13-05 10:25 
+ rav0r - 04-11-05 13:30 
 ----------------------------------------------------------------------
-Use the alsasound startup script.
-It is a standard /etc/init.d script that runs at start up and shutdown.
-At shutdown is stores the mixer settings, and start up is restores them.
+so, it sais nothing.. Please explain those commnads, so have an idea of
+what I am doing..
+
+
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 13:12 
+ jcdutton - 09-10-05 13:16 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.9b
+This card should be supported.
+try the troubleshooter on: http://alsa.opensrc.org/TroubleShooting
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-04 09:21 sjberryman     New Issue                                    
-12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
-and Suse 9.2
-12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
-12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
-12-13-04 10:07 pzad           Note Added: 0002821                          
-12-16-04 18:28 tiwai          Status                   new => resolved     
-12-16-04 18:28 tiwai          Resolution               open => not an issue
-12-16-04 18:28 tiwai          Assigned To               => tiwai           
-12-16-04 18:28 tiwai          Assigned To              tiwai =>            
-01-19-05 09:08 sjberryman     Status                   resolved => feedback
-01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
-01-19-05 09:08 sjberryman     Note Added: 0003263                          
-01-19-05 14:27 tiwai          Note Added: 0003266                          
-01-22-05 22:15 nadavkav       Note Added: 0003379                          
-01-22-05 23:20 fmoraes        Note Added: 0003381                          
-01-25-05 22:39 Kane32         Note Added: 0003411                          
-01-26-05 13:18 nadavkav       Note Added: 0003416                          
-02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
-02-08-05 23:32 sHINOBI        Note Added: 0003534                          
-02-09-05 07:25 pzad           Note Added: 0003535                          
-02-09-05 08:57 sHINOBI        Note Added: 0003536                          
-02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
-02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
-05-28-05 16:06 sjberryman     Note Added: 0004774                          
-05-28-05 20:02 jcdutton       Status                   feedback => assigned
-05-28-05 20:02 jcdutton       Assigned To               => jcdutton        
-05-28-05 20:07 jcdutton       Note Added: 0004775                          
-05-28-05 20:07 jcdutton       Status                   assigned => feedback
-06-10-05 13:28 sjberryman     Note Added: 0004983                          
-06-10-05 18:58 jcdutton       Note Added: 0004985                          
-06-11-05 13:34 sjberryman     Note Added: 0004988                          
-06-11-05 15:11 jcdutton       Note Added: 0004991                          
-06-11-05 15:13 jcdutton       Note Added: 0004992                          
-06-12-05 10:43 nadavkav       Note Deleted: 0003379                        
-06-12-05 10:43 nadavkav       Note Deleted: 0003416                        
-06-12-05 15:43 zubir          Note Added: 0004998                          
-06-13-05 09:33 sjberryman     Note Added: 0005002                          
-06-13-05 10:25 jcdutton       Note Added: 0005003                          
-09-10-05 13:12 jcdutton       Status                   feedback => closed  
-09-10-05 13:12 jcdutton       Note Added: 0006118                          
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:57 mikma          Note Added: 0003910                          
+03-15-05 23:13 rav0r          Note Added: 0003925                          
+03-16-05 11:05 mikma          Note Added: 0003935                          
+03-17-05 00:51 rav0r          Note Added: 0003974                          
+03-20-05 19:14 rav0r          Note Added: 0004096                          
+03-20-05 20:28 mikma          Note Added: 0004099                          
+03-21-05 03:32 rav0r          File Added: config.log                       
+03-21-05 03:33 rav0r          Note Added: 0004112                          
+03-21-05 03:33 rav0r          Note Added: 0004113                          
+03-21-05 15:44 mikma          Note Added: 0004118                          
+03-21-05 17:13 rav0r          Note Added: 0004120                          
+04-06-05 18:15 rav0r          Note Added: 0004347                          
+04-06-05 18:16 rav0r          Note Added: 0004348                          
+04-06-05 18:40 jcdutton       Note Added: 0004349                          
+04-06-05 18:40 jcdutton       Status                   assigned => feedback
+04-07-05 12:54 rav0r          Note Added: 0004355                          
+04-07-05 12:55 rav0r          Note Added: 0004356                          
+04-11-05 13:30 rav0r          Note Edited: 0004356                         
+06-06-05 10:03 perex          Assigned To              perex => jcdutton   
+06-06-05 10:03 perex          Category                 0_compilation problem_!!!
+=> PCI - emu10k1
+09-10-05 13:16 jcdutton       Note Added: 0006119                          
 ======================================================================
 
 
