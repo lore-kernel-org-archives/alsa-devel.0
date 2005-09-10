@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Sat, 10 Sep 2005 10:31:50 +0200
-Message-ID: <c352bae8e11c5bc8ce014857e9436f4e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
+Date: Sat, 10 Sep 2005 10:36:35 +0200
+Message-ID: <a995b0173f0dbfb768e4cf428d43ff2d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19A301C8
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 10:31:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91D6F1CD
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 10:36:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                ammiellodebar
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1331
+Issue ID:                   1320
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
 Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398-x86_64
+Distribution:               Arch Linux
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              09-10-2005 10:31 CEST
+Date Submitted:             08-08-2005 06:03 CEST
+Last Modified:              09-10-2005 10:36 CEST
 ======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Summary:                    CA0106 with Soundblaster 24-bit live does not allow
+recording
 Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
+When I use the line in on the card, it will not capture unless i crank up
+the mixer to near peak, and then its garbled and distorted sound, my
+capture is up all the way and i know its not a dumb mistake of mine
 
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
 
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-31-05 18:59 
+ ammiellodebar - 08-21-05 23:56 
 ----------------------------------------------------------------------
-It's clearly a driver bug so all you can do at this point is wait for a
-response from the driver developer.
+i see jcdutton has fixed this! now..... if only the development version
+would compile right without errors!!!!
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 10:31 
+ jcdutton - 09-10-05 10:36 
 ----------------------------------------------------------------------
-You might have an older version of the kernel driver.
-Please post the output of: http://alsa.opensrc.org/TroubleShooting
-Do Questions 1,2,3 and 4 and post the output here.
-
-If you find that you do not have the latest alsa-driver, please try to
-upgrade to it.
-
-Please note that Line-in has never ever worked for your motherboard based
-sound card in Linux, due to lack of enough information to implement it.
-So, it is not really a bug, but instead a feature that we don't know how
-to implement yet.
+The development version compiles find without errors. You must be doing
+something wrong.
+One point to note when compiling alsa-driver, is that it has to be
+compiled with the same version of GCC as the rest of the kernel. You might
+have compiled the kernel and upgraded GCC since.
+So, if you have not compiled the kernel yourself and installed that
+version, alsa-driver is unlikely to compile.
+So, I think a better test would be to compile and install your own kernel,
+leaving all kernel sound options as MODULES. The reboot into the new
+kernel and then compile alsa-driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
-08-13-05 18:30 Cimmo          Note Added: 0005807                          
-08-31-05 15:14 Cimmo          Note Added: 0005989                          
-08-31-05 18:59 rlrevell       Note Added: 0005991                          
-09-10-05 10:31 jcdutton       Note Added: 0006107                          
+08-08-05 06:03 ammiellodebar  New Issue                                    
+08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
+08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
+08-12-05 23:11 jcdutton       Note Added: 0005791                          
+08-12-05 23:11 jcdutton       Status                   assigned => feedback
+08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
+08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
+08-21-05 23:56 ammiellodebar  Note Edited: 0005717                         
+09-10-05 10:36 jcdutton       Note Added: 0006108                          
 ======================================================================
 
 
