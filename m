@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Sat, 10 Sep 2005 13:00:43 +0200
-Message-ID: <1e8eacc10bc97a6474d6bf0e78ae41fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
+Date: Sat, 10 Sep 2005 13:04:41 +0200
+Message-ID: <0b97c3d47ca6520f6afb0d55885ec87d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB707197
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:00:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10153197
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:04:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
 ======================================================================
-Reported By:                hus
+Reported By:                Cimmo
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1297
-Category:                   PCI - emu10k1
+Issue ID:                   1053
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 4 (mostly)
-Kernel Version:             2.6.12
+Distribution:               Fedora Core 4 test 2
+Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              09-10-2005 13:00 CEST
+Date Submitted:             04-14-2005 19:27 CEST
+Last Modified:              09-10-2005 13:04 CEST
 ======================================================================
-Summary:                    driver can't initialise card
+Summary:                    cannot change line-in volume on MSI K8N Platinum
+that has SBLive! 24 bit
 Description: 
-My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
-box).
-The snd-emu10k1 module refuses to work for this card; the kernel logs:
+I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack in the pci version of the sb live 24
+bit (see image).
 
-ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
-ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
-subsystem_vendor_id=0x80611102, subsystem_id=0x8061
-ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
-[Unknown], 
-vendor=0x1102, device=0x2, subsystem=0x80611102
-ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
-ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
+The result is that I cannot use line-in for my soundcard becuase the
+volume is 0 and I cannot change it.
 
-removing mixer.
-EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
-
-lspci shows
-02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-07)
-        Subsystem: Creative Labs SBLive! Player 5.1
-        Flags: bus master, medium devsel, latency 64, IRQ 17
-        I/O ports at 30c0 [size=32]
-        Capabilities: [dc] Power Management version 1
-(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
-
-
-The only deviation from the ordinary I can think of is that my system is
-dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
-PCI-to-PCI bridge. That's one thing our systems might have in common, as
-your message shows the card on bus 03. Perhaps this is some strange kind
-of routing problem?
+The "Capture feedback into playback" in the mixer change the mic's volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- hus - 08-14-05 00:32 
+ Cimmo - 08-13-05 01:16 
 ----------------------------------------------------------------------
-Should AC3 passthru work out of the box, or do I have do do something? I
-couldn't find anything except the "extout" parameter, which I set to 7fff,
-but that doesn't help. E.g. xine just uses analog stereo instead.
+Sorry I want to say that I cannot hear nothing from line-in.
+
+Close this bug, I will open a new one.
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 13:00 
+ jcdutton - 09-10-05 13:04 
 ----------------------------------------------------------------------
-Bug fix now in CVS. 10-Sept-2005
+Closed. Bug report was reporting two different bugs. We have fixed one of
+them, and the reporter is opening a different bug report for the other, as
+yet unresolved issue.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-01-05 14:27 hus            New Issue                                    
-08-01-05 14:27 hus            Distribution              => Fedora Core 4
-(mostly)
-08-01-05 14:27 hus            Kernel Version            => 2.6.12          
-08-01-05 14:28 hus            Issue Monitored: hus                         
-08-01-05 15:24 jcdutton       Status                   new => assigned     
-08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
-08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
-08-13-05 00:39 jcdutton       Note Added: 0005795                          
-08-13-05 00:40 jcdutton       Status                   assigned => feedback
-08-13-05 21:18 hus            Note Added: 0005809                          
-08-13-05 21:38 rlrevell       Note Added: 0005810                          
-08-14-05 00:32 hus            Note Added: 0005813                          
-09-10-05 13:00 jcdutton       Status                   feedback => closed  
-09-10-05 13:00 jcdutton       Note Added: 0006114                          
+04-14-05 19:27 Cimmo          New Issue                                    
+04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
+04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
+04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
+FC4-x86_64 that contains 2.6.12rc2
+04-14-05 21:42 jcdutton       Note Added: 0004495                          
+04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
+05-11-05 15:05 Cimmo          Note Added: 0004636                          
+05-14-05 13:14 pelias         Note Added: 0004657                          
+05-14-05 15:48 jcdutton       Note Added: 0004659                          
+05-20-05 00:14 dwh            Note Added: 0004697                          
+05-28-05 12:16 jcdutton       Note Added: 0004764                          
+05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
+05-30-05 12:57 Cimmo          Note Added: 0004805                          
+05-30-05 12:58 Cimmo          File Added: alsamixer.jpg                    
+05-30-05 14:33 jcdutton       Note Added: 0004814                          
+05-30-05 14:56 Cimmo          Note Added: 0004816                          
+05-30-05 14:57 Cimmo          Note Edited: 0004816                         
+06-01-05 19:44 Cimmo          Note Added: 0004867                          
+06-01-05 19:50 Cimmo          Note Edited: 0004867                         
+07-01-05 14:03 Cimmo          Note Added: 0005332                          
+07-01-05 14:48 jcdutton       Note Added: 0005334                          
+07-01-05 20:00 Cimmo          Note Added: 0005336                          
+07-14-05 12:32 Cimmo          Note Added: 0005471                          
+08-12-05 23:08 jcdutton       Note Added: 0005789                          
+08-13-05 01:16 Cimmo          Note Added: 0005797                          
+09-10-05 13:04 jcdutton       Status                   feedback => closed  
+09-10-05 13:04 jcdutton       Note Added: 0006115                          
 ======================================================================
 
 
