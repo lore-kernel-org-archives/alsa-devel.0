@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001405]: Driver not working (no sound) with ATI IXP150 AC'97
-Date: Sun, 11 Sep 2005 01:24:14 +0200
-Message-ID: <dd63d25673bdabd00f65e3872045800f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
+Date: Sun, 11 Sep 2005 01:36:31 +0200
+Message-ID: <067a67bd5da703e0681191a3cd41f309@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 233AB16F
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 01:24:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB5D0185
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 01:36:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1405> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
 ======================================================================
-Reported By:                ganhawk
-Assigned To:                tiwai
+Reported By:                philneves
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1405
-Category:                   PCI - atiixp
+Issue ID:                   1337
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369_FC4smp
+Status:                     new
+Distribution:               Slackware 10, and Redhat 7.3
+Kernel Version:             2.4 series.
 ======================================================================
-Date Submitted:             09-09-2005 03:21 CEST
-Last Modified:              09-11-2005 01:24 CEST
+Date Submitted:             08-15-2005 03:20 CEST
+Last Modified:              09-11-2005 01:36 CEST
 ======================================================================
-Summary:                    Driver not working (no sound) with ATI IXP150 AC'97
+Summary:                    AWE 32/64 driver crashes when using the skype
+program.
 Description: 
-OS is Fedora Core 4 but using ALSA driver 1.0.9rc4a. It throws "codec reset
-timeout" error when the module is inserted and the sound card does not
-work.
+This is a serious bug with the sb16/sbawe driver. It seems to crash when
+running the skype program. Problem can be reproduced on a regular basis.
+Although frequency of occurence is random. Once the driver crashes it
+disables all sound on my system and I must restart the computer to get the
+sound back. Reloading the driver doesn't work. Problem occurs on all
+versions of alsa and all versions of the 2.4 kernel. 
 
-The error is from alsa-kernel/pci/atiixp.c:518
 
-This is on a Tosiba A75 S1253 laptop with ATI IXP150 AC'97
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-09-05 12:29 
+ tiwai - 09-09-05 12:31 
 ----------------------------------------------------------------------
-The error messages are harmless.  The driver tried to detect the secondary
-codec but it's not an audio codec.
+Yes, a kernel Oops would be a great help for debugging.
 
-Please elaborate what do you mean "does not work".
+ALso, try aoss wrapper instead of kernel OSS emulation.  If this crashes,
+too, the problem is in sbawe driver.
 
 ----------------------------------------------------------------------
- ganhawk - 09-11-05 01:24 
+ philneves - 09-11-05 01:36 
 ----------------------------------------------------------------------
-Hi,
+I didn't get anything in terms of a kernel Oops in the dmesg or syslog.
+Nothing pertaining to the sound device at all. 
 
-Thanks much for your response. There is no sound when I start the computer
-sometimes. Restarting the computer fixes the problem. I am not sure if
-this is a driver issue now, since those messages are harmless. I will dig
-around and let you know. 
+One of the lines I did find was a  
 
-thanks again
+supurious interupt IRQ 7. That looks very suspisious to me.  
+
+I'm going to try configuring the sound card to another interrupt and see
+if it still does it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 03:21 ganhawk        New Issue                                    
-09-09-05 03:21 ganhawk        Distribution              => Fedora Core 4   
-09-09-05 03:21 ganhawk        Kernel Version            => 2.6.11-1.1369_FC4smp
-09-09-05 03:23 ganhawk        Issue Monitored: ganhawk                     
-09-09-05 03:58 ganhawk        Note Added: 0006088                          
-09-09-05 04:37 ganhawk        Note Added: 0006090                          
-09-09-05 12:29 tiwai          Note Added: 0006093                          
-09-11-05 01:24 ganhawk        Note Added: 0006130                          
+08-15-05 03:20 philneves      New Issue                                    
+08-15-05 03:20 philneves      Distribution              => Slackware 10, and
+Redhat 7.3
+08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
+08-24-05 07:09 philneves      Note Added: 0005924                          
+09-09-05 02:34 philneves      Note Edited: 0005924                         
+09-09-05 02:42 philneves      Note Added: 0006086                          
+09-09-05 04:12 rlrevell       Note Added: 0006089                          
+09-09-05 12:31 tiwai          Note Added: 0006094                          
+09-11-05 01:36 philneves      Note Added: 0006131                          
 ======================================================================
 
 
