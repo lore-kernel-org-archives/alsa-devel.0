@@ -1,13 +1,13 @@
-From: jcdutton <jcdutton@users.sourceforge.net>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1 emu10k1_main.c,1.68,1.69
-Date: Sat, 10 Sep 2005 18:20:45 +0100
-Message-ID: <432315ED.2040600@users.sourceforge.net>
-References: <E1EE1am-0008Ff-8x@sc8-pr-cvs1.sourceforge.net> <s5h7jdpq9eo.wl%tiwai@suse.de>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Mixer volume dB settings.
+Date: Sat, 10 Sep 2005 18:33:50 +0100
+Message-ID: <432318FE.3060106@superbug.demon.co.uk>
+References: <42ECC061.9070104@superbug.demon.co.uk> <Pine.LNX.4.61.0507311641140.8921@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7jdpq9eo.wl%tiwai@suse.de>
+In-Reply-To: <Pine.LNX.4.61.0507311641140.8921@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +17,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sat, 10 Sep 2005 02:24:12 -0700,
-> James Courtier-Dutton wrote:
+Jaroslav Kysela wrote:
+> On Sun, 31 Jul 2005, James Courtier-Dutton wrote:
 > 
->>Update of /cvsroot/alsa/alsa-kernel/pci/emu10k1
->>In directory sc8-pr-cvs1.sourceforge.net:/tmp/cvs-serv31621/alsa-driver/alsa-kernel/pci/emu10k1
+> 
+>>Hi,
 >>
->>Modified Files:
->>	emu10k1_main.c 
->>Log Message:
->>Summary: snd-emu10k1: ALSA bug#1297: Fix a error recognising the SB Live Platinum.
+>>I am thinking of a method to provide dB volume setting with alsamixer. 
+>>My suggestion is to add another variable to the mixer control structure. 
+>>This variable will be an integer identifying the conversion function. If 
+>>set to 0, no conversion function has been defined. If set to 1 or above, 
+>>use a lookup table in alsa-lib to select the conversion function. The 
+>>user land api would then be: snd_mixer_convert_hardware_to_db( 
+>>hardware_value, conversion_function, &db_value); 
+>>snd_mixer_convert_db_to_hardware( db_value, conversion_function, 
+>>hardware_value )
 >>
->>The card does not have an AC97 chip.
->>.subsystem = 0x80611102
+>>The reason for this, is that it seems to me that only the hardware 
+>>driver will have full knowledge of what the conversion function should 
+>>be, and setting a simple integer for conversion_function_type would seem 
+>>the simplest solution.
+>>
+>>The global conversion functions could then be defined in an alsa-lib 
+>>config file.
+>>
+>>This would also allow the application to increase/decrease the hardware 
+>>value, but display to the user the dB value.
+>>
+>>Any comments?
 > 
 > 
-> Hmm, it seems that there is another model with the same subsystem ID,
-> which has really an ac97 chip.
+> I already defined the interface in alsa-lib/include/mixer.h. Look for dB 
+> functions there.
 > 
+> Also, the skeleton of the new mixer with abstraction layer is quite 
+> finished. I need only implement a first real code for one driver as 
+> example and we can start adding the abstraction code for all cards.
 > 
-> Takashi
-> 
+> 						Jaroslav
 > 
 
-I only know about bug#1297.
-Is there another person who has this exact same card ID but different 
-ac97 chip presence?
+Can you point me in the direction of the new mixer abstraction layer.
+It is unclear to me which alsa-lib files are associated with the 
+abstraction layer.
+
+I am thinking that the alsa-driver module for the sound card will have 
+to attach an index value identifying the vol % -> dB conversion routine 
+to use with the mixer element. Then alsa-lib could then simply do a 
+lookup for the index and then process the associated conversion routine.
+
+The reason for this is that I think that the same sound card controller 
+chip might have different other sound chips associated with it, but the 
+mixer elem name might be the same for both. I suppose we could then give 
+a different name in the driver, and then rename it at the abstraction layer.
+
+Any pointers you can give would be helpful.
 
 James
 
