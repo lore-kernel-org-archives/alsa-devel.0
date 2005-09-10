@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
-Date: Sun, 11 Sep 2005 01:36:31 +0200
-Message-ID: <067a67bd5da703e0681191a3cd41f309@bugtrack.alsa-project.org>
+Date: Sun, 11 Sep 2005 01:49:32 +0200
+Message-ID: <5576bb3832fa6d0e910dd0abd9d6fc1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB5D0185
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 01:36:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31959190
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 01:49:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10, and Redhat 7.3
 Kernel Version:             2.4 series.
 ======================================================================
 Date Submitted:             08-15-2005 03:20 CEST
-Last Modified:              09-11-2005 01:36 CEST
+Last Modified:              09-11-2005 01:49 CEST
 ======================================================================
 Summary:                    AWE 32/64 driver crashes when using the skype
 program.
@@ -59,14 +59,6 @@ versions of alsa and all versions of the 2.4 kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-09-05 12:31 
-----------------------------------------------------------------------
-Yes, a kernel Oops would be a great help for debugging.
-
-ALso, try aoss wrapper instead of kernel OSS emulation.  If this crashes,
-too, the problem is in sbawe driver.
-
-----------------------------------------------------------------------
  philneves - 09-11-05 01:36 
 ----------------------------------------------------------------------
 I didn't get anything in terms of a kernel Oops in the dmesg or syslog.
@@ -78,6 +70,13 @@ supurious interupt IRQ 7. That looks very suspisious to me.
 
 I'm going to try configuring the sound card to another interrupt and see
 if it still does it.
+
+----------------------------------------------------------------------
+ philneves - 09-11-05 01:49 
+----------------------------------------------------------------------
+I should also point out it crashed even faster when I used aoss. 
+
+I didn't even get a chance to talk to the other person.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,6 +91,7 @@ Redhat 7.3
 09-09-05 04:12 rlrevell       Note Added: 0006089                          
 09-09-05 12:31 tiwai          Note Added: 0006094                          
 09-11-05 01:36 philneves      Note Added: 0006131                          
+09-11-05 01:49 philneves      Note Added: 0006132                          
 ======================================================================
 
 
