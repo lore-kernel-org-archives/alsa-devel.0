@@ -1,13 +1,10 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: problems with snd_au8830 module under mandriva 2005
-Date: Sat, 10 Sep 2005 08:40:20 +0800
-Message-ID: <43222B74.1020602@netvigator.com>
-References: <4317CC51.3040709@netvigator.com>     <200509042134.23916.alien999999999@users.sourceforge.net>    <1126131309.17399.8.camel@pc-erik.lan> <44272.62.59.249.250.1126163238.squirrel@62.59.249.250>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+From: "deng" <deng@tom.com>
+Subject: =?GB2312?B?16jA+7y8yvU=?=
+Date: Sat, 10 Sep 2005 12:24:22 +0800
+Message-ID: <E1EDwvA-0007i3-RD@mail.sourceforge.net>
+Reply-To: deng@tom.com
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <44272.62.59.249.250.1126163238.squirrel@62.59.249.250>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +15,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Erik <assie2@zonnet.nl>, Alien <alien999999999@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-When watching movie using xine (downmixing 5.1 to Surround40) with my
-au8830 on 32bits machines, the 4 channels are correct at first movie
-only. The Human voice (center) come out from rear speakers aftewards.
-
-1) speaker-test -c 4 -D hw:0,0
-2) using xine to play 5.1 channel-test audio samples with FFTScope enabled.
-
-the above tests indicate that the front and rear channels are swapped
-after the first play.
-
-Please let me know if you also have this problem on your MX300.
-
-The hardware equalizer of au8830 sound much better than the software
-equalizer of XMMS.
-
-There are follow up about how to fix 32/64bits issues related to the 
-equalizer and features not presented in au8820.
-
-http://sourceforge.net/mailarchive/message.php?msg_id=11997399
-
-alien seem have no interest to test the hardware equalizer
-because of the hang oops.
-
-
-Alien wrote:
->>i'm busy with home improving but when i have time i will try the patch
->>again on 2.6.12 kernel. I have not checked if it is the same alsa
->>version as 2.6.11 but i think it is.
->>
->>b.t.w. the volume bar problem is in XMMS (didn't try other programs
->>because i haven't a lot of time) (just online for mail checking etc.
->>that's it)
->>but i think alien can tell you about the volume bar problems.
-> 
-> 
-> which volume bar problems are you talking about?
-> 1. the ones where if you get 49% it's loud and on 51% quite silently?
-
-This problem on STAC9704 have been fixed.
-
-> 2. or irregular sound volume when you are about halfway (without changing
-> volume yourself).
-> 
-> actually after experimenting I think it might be something hardware
-> related (ie with the volume control of my speaker system, not the
-> au8810)...
-> 
-> 
->>pc information:
->>
->>mandriva 2005 le
->>kernel 2.6.11
->>amd 64 bit 3500+
->>diamond monster sound mx300 au8830 card
->>
->>
->>Erik
->>
->>
-
-
-
-
+在寒冷的冬天，尤其是在没有暖气装置的我国长江以南地区，作为床上取暖器具，我们最为熟悉的是电热毯，但
+电热毯不安全易漏电，且不能清洗等缺点，而其他的一些床上取暖器要么就是结构复杂，要么是不实用。针对此，
+本实用新型专利，它克服了现有取暖装置的不足，提供一种结构简单、价格底、小巧方便、节能环保、安全可靠，
+而且不会影响现有床体款式结构的最简单，最直接的床上取暖器。而且，利用本实用新型专利可以演生出多个产
+品，如：1）与小型吸尘器（外型）结合可生产出时尚的取暖器；2）与现有空调扇结合可生产出一年四季能用的
+"风扇"，当不用取暖时可将弹簧胶管及散热板收藏在扇内；3）与干肤器结合可生产出集取暖、干肤、干发等功
+能。本专利市场前景巨大,实为各小家电生产厂家及有志于取暖器材生产投资者的理想项目！如果您想进一步了
+解该技术的详细情况请上"中国知识产权网"网站( www.cnipr.com ),进入"技术推广"在项目申请号栏中输入
+200420083468.3即可浏览全文。
 
 
 -------------------------------------------------------
