@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001223]: Unable to select card for playback
-Date: Sat, 10 Sep 2005 13:06:45 +0200
-Message-ID: <2a7770a556f99c1b1226e7ae07b7ffba@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001188]: quake3 crashes, capture not working
+Date: Sat, 10 Sep 2005 13:09:46 +0200
+Message-ID: <c8ae6752d33c08bd30bf07df416663d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA07E1C4
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:06:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 327F2167
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 13:09:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,123 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1223> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1188> 
 ======================================================================
-Reported By:                nframpton
+Reported By:                gnarlie
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1223
+Issue ID:                   1188
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Leaf Bering v1.2
-Kernel Version:             2.4.31
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.8.1 with the voluntary preempt patch
 ======================================================================
-Date Submitted:             07-01-2005 02:59 CEST
-Last Modified:              09-10-2005 13:06 CEST
+Date Submitted:             06-13-2005 19:41 CEST
+Last Modified:              09-10-2005 13:09 CEST
 ======================================================================
-Summary:                    Unable to select card for playback
+Summary:                    quake3 crashes, capture not working
 Description: 
-I have an Intel D875PBZ motherboard and several SB Live 24-bit (model
-SB0410) cards.  If only one card is installed the ca0106 driver works
-fine.  If multiple cards are installed I am unable to select a specific
-card for playback.
-
-# aplay -D hw:0,0 /tmp/new.wav
-Playing WAVE '/tmp/new.wav' : Signed 16 bit Little Endian, Rate 16000 Hz,
-Mono
-aplay: set_params:862: Channels count non available
-
-I am using the default configuration supplied with alsa-lib 1.0.9.
-
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jun 30 2005 for kernel 2.4.31-NANO.
-
-# cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xb800 irq 3
-1 [CA0106_1       ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xbc00 irq 10
-
-# cat /proc/asound/devices
- 19: [0- 3]: digital audio playback
- 27: [0- 3]: digital audio capture
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
- 51: [1- 3]: digital audio playback
- 59: [1- 3]: digital audio capture
- 50: [1- 2]: digital audio playback
- 58: [1- 2]: digital audio capture
- 49: [1- 1]: digital audio playback
- 57: [1- 1]: digital audio capture
- 48: [1- 0]: digital audio playback
- 56: [1- 0]: digital audio capture
- 32: [1- 0]: ctl
-
-# cat /proc/interrupts
-           CPU0
-  0:      31884          XT-PIC  timer
-  1:          3          XT-PIC  keyboard
-  2:          0          XT-PIC  cascade
-  3:          0          XT-PIC  snd_ca0106
-  4:        635          XT-PIC  serial
- 10:        726          XT-PIC  snd_ca0106, eth0
- 14:       7402          XT-PIC  ide0
-NMI:          0
-ERR:          0
-
-# cat /proc/asound/modules
-0 snd-ca0106
-1 snd-ca0106
-
-# cat /proc/asound/pcm
-00-00: ca0106 : CA0106 : playback 1 : capture 1
-00-01: ca0106 : CA0106 : playback 1 : capture 1
-00-02: ca0106 : CA0106 : playback 1 : capture 1
-00-03: ca0106 : CA0106 : playback 1 : capture 1
-01-00: ca0106 : CA0106 : playback 1 : capture 1
-01-01: ca0106 : CA0106 : playback 1 : capture 1
-01-02: ca0106 : CA0106 : playback 1 : capture 1
-01-03: ca0106 : CA0106 : playback 1 : capture 1
-
-
+The card is a sb live 24bit pci.
+quake3 crashes me after a map has loaded, oddly one map works but crashes
+everytime when I finish the map. The sounds in the menus work. Tried my
+mic
+with the mic-in and all possible mixer settings, no dice.
 ======================================================================
 
 ----------------------------------------------------------------------
- nframpton - 07-04-05 10:28 
+ jcdutton - 09-10-05 13:09 
 ----------------------------------------------------------------------
-That worked fine, thanks.  Is this documented somewhere?
-
-----------------------------------------------------------------------
- jcdutton - 09-10-05 13:06 
-----------------------------------------------------------------------
-Fixed. Configuation problem, and not a driver bug.
+The ca0106 based sound card is currently unsuitable for any linux based
+games.
+The card cannot do 44100 Hz sound, and all games like Doom3 and Quake3 use
+44100 Hz sound. I would suggest using a different sound card for now, or
+wait until the alsa-lib resamplers have improved in order to support
+this.
+The improvements needed to the alsa-lib resamplers are rather complicated,
+so don't expect it to happen any time soon.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 02:59 nframpton      New Issue                                    
-07-01-05 02:59 nframpton      Distribution              => Leaf Bering v1.2
-07-01-05 02:59 nframpton      Kernel Version            => 2.4.31          
-07-01-05 12:32 jcdutton       Note Added: 0005331                          
-07-01-05 12:32 jcdutton       Status                   assigned => feedback
-07-04-05 10:28 nframpton      Note Added: 0005383                          
-09-10-05 13:06 jcdutton       Status                   feedback => closed  
-09-10-05 13:06 jcdutton       Note Added: 0006116                          
+06-13-05 19:41 gnarlie        New Issue                                    
+06-13-05 19:41 gnarlie        Distribution              => gentoo          
+06-13-05 19:41 gnarlie        Kernel Version            => 2.6.8.1 with the
+voluntary preempt patch
+09-10-05 13:09 jcdutton       Note Added: 0006117                          
 ======================================================================
 
 
