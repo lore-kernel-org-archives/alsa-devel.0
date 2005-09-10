@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001404]: (Apparently) no microphone support
-Date: Sat, 10 Sep 2005 10:41:20 +0200
-Message-ID: <858db5399f294453e6455a07b38858e1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001329]: input part of kmix don't show any settings
+Date: Sat, 10 Sep 2005 10:43:52 +0200
+Message-ID: <6665a284058bcbe6bc8c980196aa0391@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BD501CD
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 10:41:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5373B1CD
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 10:43:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1329> 
 ======================================================================
-Reported By:                Twey
+Reported By:                submax82
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1404
+Issue ID:                   1329
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13-homegrown
+Status:                     feedback
+Distribution:               debian
+Kernel Version:             2.6.12.4
 ======================================================================
-Date Submitted:             09-08-2005 18:40 CEST
-Last Modified:              09-10-2005 10:41 CEST
+Date Submitted:             08-12-2005 14:59 CEST
+Last Modified:              09-10-2005 10:43 CEST
 ======================================================================
-Summary:                    (Apparently) no microphone support
+Summary:                    input part of kmix don't show any settings
 Description: 
-My SB Live! 24-Bit has no microphone-related channels.  Using any mixer
-(tried: alsamixer, kmix, gnome-volume-control), it seems not to support
-microphones.
-Audacity shows very small (pixel-size) distortions in the recording graph
-at times.  I presume this means that the input is being received, but is
-too miniscule to make a difference.  I can't do anything about this; there
-are no appropriate sliders or "mic boost" in any mixer application.
+The input section of kmix, on kde, do not show any settings: cd, line-in,
+mic ecc... Those are not present! This is big lack!
 ======================================================================
 
 ----------------------------------------------------------------------
- Twey - 09-08-05 19:11 
+ submax82 - 08-17-05 16:58 
 ----------------------------------------------------------------------
-Runs fine up until:
-
-make[1]: Entering directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-  CC [M]  /root/alsa/alsa-driver-1.0.10rc1/acore/hwdep.o
-In file included from
-/root/alsa/alsa-driver-1.0.10rc1/include/adriver.h:737,
-                 from
-/root/alsa/alsa-driver-1.0.10rc1/include/sound/driver.h:42,
-                 from /root/alsa/alsa-driver-1.0.10rc1/acore/hwdep.c:22:
-include/linux/pci.h:819: error: syntax error before numeric constant
-make[4]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore/hwdep.o] Error 1
-make[3]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore] Error 2
-make[2]: *** [_module_/root/alsa/alsa-driver-1.0.10rc1] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-make: *** [compile] Error 2
+i has the solution to my problem?
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 10:41 
+ jcdutton - 09-10-05 10:43 
 ----------------------------------------------------------------------
-alsa-driver must be compiled with the same version of GCC as the kernel.
-Please compile and install your own kernel and then try alsa-driver again.
+I think you need a more up to date version of alsa-driver.
+Version 1.0.9b or above should work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-05 18:40 Twey           New Issue                                    
-09-08-05 18:40 Twey           Distribution              => Fedora Core 4   
-09-08-05 18:40 Twey           Kernel Version            => 2.6.13-homegrown
-09-08-05 18:43 Twey           Issue Monitored: Twey                        
-09-08-05 18:46 rlrevell       Note Added: 0006074                          
-09-08-05 18:55 Twey           Note Added: 0006075                          
-09-08-05 19:11 Twey           Note Added: 0006079                          
-09-10-05 10:41 jcdutton       Note Added: 0006110                          
+08-12-05 14:59 submax82       New Issue                                    
+08-12-05 14:59 submax82       Distribution              => debian          
+08-12-05 14:59 submax82       Kernel Version            => 2.6.12.4        
+08-13-05 01:51 jcdutton       Note Added: 0005799                          
+08-13-05 01:51 jcdutton       Status                   assigned => feedback
+08-13-05 14:29 submax82       Note Added: 0005805                          
+08-13-05 14:49 submax82       Note Edited: 0005805                         
+08-17-05 16:58 submax82       Note Added: 0005838                          
+09-10-05 10:43 jcdutton       Note Added: 0006111                          
 ======================================================================
 
 
