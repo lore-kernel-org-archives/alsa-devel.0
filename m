@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Fri, 9 Sep 2005 23:41:42 +0200
-Message-ID: <150b240172de6e4c66d8a22f388ffcff@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Alsa mix in HW
+Date: Sat, 10 Sep 2005 08:22:17 +0800
+Message-ID: <43222739.7030402@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D4CD173
-	for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2005 23:41:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,104 +15,150 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dino Puller <dino@e4a.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
-======================================================================
-Reported By:                midnight
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1378
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sid
-Kernel Version:             2.6.12.5
-======================================================================
-Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-09-2005 23:41 CEST
-======================================================================
-Summary:                    Surround Channel and Surround mixer doesn't work
-with a CM9761chip
-Description: 
-The sound works fine on the center, LFE an front channels but I have no
-sound on the rear channel. also, I can't change the volume of the surround
-mixer in alsamixer (I can juste mute/unmute it).
+Dino wrote:
 
-I use the surround51 device to play my test sound and my test sound is a 6
-channels one.
+> Raymond wrote:
+>
+> > Dino wrote:
+> >
+> > > Raymond wrote:
+> > >
+> > > > How can I link the demo.cpp (a simple openal/opengl program) 
+with the
+> > > > openal-alsa ? (It can be executed when link with openal)
+> > >
+> > > No problem here for compile/linking, i've attached a simple tested
+> > > Makefile, i used dynamic library with the name: libopenal.so.0 . If
+> > > you have problem tell me.
+> > >
+> > > CC = g++
+> > >
+> > > TARGET = lesson3
+> > >
+> > > COMPILEFLAGS = -g
+> > > LIBS = -lopenal -lglut
+> > > INC = -I../../include
+> > >
+> > > $(TARGET): demo.o
+> > > $(CC) -o $(TARGET) demo.o $(COMPILEFLAGS) $(LIBS) $(INC)
+> > >
+> > > demo.o: demo.cpp
+> > > $(CC) -c demo.cpp -Wno-deprecated
+> > >
+> > > clean:
+> > > rm -f $(TARGET) demo.o
+> >
+> > It seem to me that your Makefile is wrong.
+> >
+> > $(COMPILEFLAGS) and $(INC) should be in $(CC) -c demo.cpp
+> >
+> >
+> > # demo]# make
+> > Makefile:10: *** missing separator. Stop.
+>
+> Yes, but now it compile for you?
+>
 
-I use the via82xx module
+NO. :(
 
-thanks
-======================================================================
+I don't know how to fix your Makefile
 
-----------------------------------------------------------------------
- tiwai - 09-09-05 20:14 
-----------------------------------------------------------------------
-Forget 1.0.9b.  There were known bugs regarding surrounds there.
+Just change my Makefile
 
-For testing, you should use "hw:0,1" instead of "surround51".  The latter
-may reset the register value.
+-I/openal-alsa/include
+-L/openal-alsa/src
 
-Try to flip other bits of the register 0x64 on/off.
-The relevant bits are: Bit 12 (0x1000) should be CLFE on/off, bit 11
-(0x0800) Mic/Center share, 7 (0x0080) Mic/LFE share.
-The bit 3 (0x0008) is the surround control, bit 10 the line/surround
-share.
+cp libopenal.a /usr/local/lib
+cp libopenal.so.0.1.3 /usr/local/lib
+ln libopenal.so.0.1.3 /usr/local/lib/libopenal.so.0
 
-Also, don't forget to unmute 'Surround', 'Center' and 'LFE' mixer volumes.
+demo]#  ./demo
+demo: mask_inline.h:160: snd_mask_leave: Assertion `val <= 64' failed.
+Aborted
 
-----------------------------------------------------------------------
- midnight - 09-09-05 23:41 
-----------------------------------------------------------------------
-the thing that make my front speakers crackling was the bit 7 of the 0x64
-register (Mic/LFE share).
 
-with the 0x1c38 value, all the channels works. 
+I have no idea the bug is caused by linking wrong library, it is rather 
+diffcult to find out the problem when using strace ?
 
-for testion I had to use "surround51" because with "hw:0,1" I have sound
-only on the front speakers.
+demo]# strace ./demo
 
-fortunetly, "surround51" don't change the register value.
+...
 
-I will probably not be able to answer before next week because I will not
-have internet acces.
+open("/dev/js0", O_RDONLY)              = 4
+ioctl(4, JSIOCGAXES, 0x8c0d1c4)         = 0
+ioctl(4, JSIOCGBUTTONS, 0x8c0d1c8)      = 0
+fcntl64(4, F_SETFL, O_RDONLY|O_NONBLOCK) = 0
+stat64("/usr/share/alsa/alsa.conf", {st_mode=S_IFREG|0644, st_size=7467, 
+...}) = 0
+open("/usr/share/alsa/alsa.conf", O_RDONLY) = 5
+fstat64(5, {st_mode=S_IFREG|0644, st_size=7467, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 
+0) = 0xbf58d000
+read(5, "#\n#  ALSA library configuration "..., 4096) = 4096
+read(5, "if cards.pcm.iec958\npcm.modem ca"..., 4096) = 3371
+read(5, "", 4096)                       = 0
+read(5, "", 4096)                       = 0
+close(5)                                = 0
+munmap(0xbf58d000, 4096)                = 0
+futex(0x852f70, FUTEX_WAKE, 2147483647) = 0
+access("/etc/asound.conf", R_OK)        = -1 ENOENT (No such file or 
+directory)
+access("/xxxx/.asoundrc", R_OK)         = -1 ENOENT (No such file or 
+directory)
+open("/dev/snd/controlC0", O_RDONLY)    = 5
+close(5)                                = 0
+open("/dev/snd/controlC0", O_RDWR)      = 5
+ioctl(5, USBDEVFS_CONTROL, 0xbffa48a4)  = 0
+stat64("/usr/share/alsa/alsa.conf", {st_mode=S_IFREG|0644, st_size=7467, 
+...}) = 0
+open("/dev/snd/controlC0", O_RDONLY)    = 6
+close(6)                                = 0
+open("/dev/snd/controlC0", O_RDWR)      = 6
+ioctl(6, USBDEVFS_CONTROL, 0xbffa46d8)  = 0
+ioctl(6, 0x40045532, 0xbffa4700)        = 0
+open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = 7
+close(6)                                = 0
+ioctl(7, AGPIOC_ACQUIRE or APM_IOC_STANDBY, 0xbffa45cc) = 0
+fcntl64(7, F_GETFL)                     = 0x802 (flags O_RDWR|O_NONBLOCK)
+ioctl(7, AGPIOC_INFO, 0xbffa45c8)       = 0
+ioctl(7, AGPIOC_RELEASE or APM_IOC_SUSPEND, 0xbffa45c4) = 0
+mmap2(NULL, 4096, PROT_READ, MAP_SHARED, 7, 0x80000) = 0xbf58d000
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 7, 0x81000) = 0xbf58c000
+ioctl(7, 0xc25c4110, 0xbffa47b0)        = 0
+ioctl(7, 0xc25c4110, 0xbffa47b0)        = 0
+write(2, "demo: mask_inline.h:160: snd_mas"..., 71demo: 
+mask_inline.h:160: snd_mask_leave: Assertion `val <= 64' failed.
+) = 71
+rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) = 0
+tgkill(4738, 4738, SIGABRT)             = 0
+--- SIGABRT (Aborted) @ 0 (0) ---
++++ killed by SIGABRT +++
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 11:33 midnight       New Issue                                    
-08-30-05 11:33 midnight       Distribution              => Debian Sid      
-08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
-09-07-05 11:20 midnight       Note Added: 0006053                          
-09-07-05 15:32 tiwai          Note Added: 0006054                          
-09-08-05 01:10 midnight       Note Added: 0006069                          
-09-08-05 18:58 tiwai          Note Added: 0006076                          
-09-08-05 19:00 midnight       Note Added: 0006077                          
-09-08-05 19:12 tiwai          Note Added: 0006080                          
-09-08-05 19:58 midnight       Note Added: 0006081                          
-09-08-05 20:42 tiwai          Note Added: 0006082                          
-09-08-05 20:44 tiwai          Note Added: 0006083                          
-09-08-05 23:20 midnight       Note Added: 0006084                          
-09-09-05 12:47 tiwai          Note Added: 0006096                          
-09-09-05 14:16 midnight       File Added: ac97#0-0                         
-09-09-05 14:16 midnight       File Added: asound.state                     
-09-09-05 14:21 midnight       Note Added: 0006097                          
-09-09-05 14:29 tiwai          Note Added: 0006098                          
-09-09-05 14:54 midnight       Note Added: 0006099                          
-09-09-05 16:32 tiwai          Note Added: 0006100                          
-09-09-05 19:50 midnight       Note Added: 0006104                          
-09-09-05 20:14 tiwai          Note Added: 0006105                          
-09-09-05 23:41 midnight       Note Added: 0006106                          
-======================================================================
+
+> >
+> >
+> > Have you run the demo when linked with openal-alsa ?
+>
+> Of course, can you send me your wav?
+>
+
+According to the specification, you can use any MONO (8bits/16bits) wav.
+
+The sample rate of audio of those moving objects need to be half of 
+44100Hz/48000Hz, this allow the soundcard playback the audio at
+higher/lower rate to perform pitch shifting
+
+
+
+
+
+
+
 
 
 
