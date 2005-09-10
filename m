@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001404]: (Apparently) no microphone support
-Date: Sat, 10 Sep 2005 10:41:37 +0200
-Message-ID: <dde230e4fd1c8e4556575accdf3c9a81@bugtrack.alsa-project.org>
+Date: Sat, 10 Sep 2005 10:41:20 +0200
+Message-ID: <858db5399f294453e6455a07b38858e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C5CF1CD
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 10:41:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BD501CD
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 10:41:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
 ======================================================================
@@ -35,7 +35,7 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
 Distribution:               Fedora Core 4
 Kernel Version:             2.6.13-homegrown
 ======================================================================
@@ -90,7 +90,6 @@ Date Modified  Username       Field                    Change
 09-08-05 18:55 Twey           Note Added: 0006075                          
 09-08-05 19:11 Twey           Note Added: 0006079                          
 09-10-05 10:41 jcdutton       Note Added: 0006110                          
-09-10-05 10:41 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
