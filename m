@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001411]: plug:jack interface not working for apps that both read and write
-Date: Sat, 10 Sep 2005 17:57:25 +0200
-Message-ID: <2e046f6924c726d537addcab00dfa0a7@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001324]: ALSA apps that use both playback and capture segfaults with plug:jack
+Date: Sat, 10 Sep 2005 17:59:22 +0200
+Message-ID: <04c330543575762971f316a28bc4adcb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DAC5B15D
-	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 17:57:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E5D215D
+	for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2005 17:59:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,36 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1411> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1324> 
 ======================================================================
 Reported By:                b0ef
 Assigned To:                
 ======================================================================
 Project:                    ALSA - plugins
-Issue ID:                   1411
+Issue ID:                   1324
 Category:                   PCM - jack
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-10-2005 17:57 CEST
-Last Modified:              09-10-2005 17:57 CEST
+Date Submitted:             08-09-2005 21:36 CEST
+Last Modified:              09-10-2005 17:59 CEST
 ======================================================================
-Summary:                    plug:jack interface not working for apps that both
-read and write
+Summary:                    ALSA apps that use both playback and capture
+segfaults with plug:jack
 Description: 
-This is a general problem with any app that both read and write to the
-plug:jack device. It (plug:jack) however works for apps that only do one
-or the other. 
+I have applied realtime-preempt-2.6.13-rc4-RT-V0.7.51-38
+
+ALSA apps that use both playback and capture segfaults with plug:jack
+
+I have tested with several applications, primarily asterisk. 
+
+I have not found any app that uses both playback and capture that works
+with plug:jack. Normal playback and capture separate with plug:jack works
+great. 
 ======================================================================
+
+----------------------------------------------------------------------
+ b0ef - 08-28-05 18:58 
+----------------------------------------------------------------------
+I also tested this with kphone which is also a voip application. 
+
+I gave it the plug:jack audio device in it's alsa configuration. 
+
+It brought down jack and immediately exited.
+
+Please, if any apps are known to work with both playback and capture,
+please scream out.
+
+
+
+----------------------------------------------------------------------
+ b0ef - 09-10-05 17:59 
+----------------------------------------------------------------------
+I would like to request that this bug be closed because I have added a new
+bug (0001411) report to mantis that is more general and would allow for
+updating information which is hardcoded in this bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-10-05 17:57 b0ef           New Issue                                    
+08-09-05 21:36 b0ef           New Issue                                    
+08-09-05 21:40 b0ef           Note Added: 0005736                          
+08-09-05 21:42 b0ef           Note Added: 0005737                          
+08-09-05 21:45 b0ef           Note Added: 0005738                          
+08-09-05 21:49 b0ef           Note Added: 0005739                          
+08-09-05 22:05 b0ef           Issue Monitored: b0ef                        
+08-10-05 16:01 b0ef           Note Added: 0005749                          
+08-10-05 16:07 b0ef           Note Added: 0005750                          
+08-20-05 17:32 b0ef           Note Deleted: 0005736                        
+08-20-05 17:32 b0ef           Note Deleted: 0005737                        
+08-20-05 17:32 b0ef           Note Deleted: 0005739                        
+08-20-05 17:36 b0ef           Note Deleted: 0005750                        
+08-20-05 17:36 b0ef           Note Edited: 0005738                         
+08-28-05 18:58 b0ef           Note Edited: 0005749                         
+09-04-05 02:42 b0ef           Note Edited: 0005738                         
+09-04-05 02:42 b0ef           Note Edited: 0005738                         
+09-04-05 02:43 b0ef           Note Edited: 0005738                         
+09-04-05 02:55 b0ef           Note Edited: 0005738                         
+09-09-05 18:43 mtaht          Issue Monitored: mtaht                       
+09-10-05 17:59 b0ef           Note Added: 0006122                          
 ======================================================================
 
 
