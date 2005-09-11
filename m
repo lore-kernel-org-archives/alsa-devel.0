@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001406]: Need help
-Date: Sun, 11 Sep 2005 20:51:58 +0200
-Message-ID: <1d17d7c4191ed9352d6bb83b23e89a1d@bugtrack.alsa-project.org>
+From: Daniel Ritz <daniel.ritz@gmx.ch>
+Subject: [PATCH] snd_opl3sa2: add missing pnp_unregister_driver() calls
+Date: Sun, 11 Sep 2005 21:32:05 +0200
+Message-ID: <200509112132.05779.daniel.ritz@gmx.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5ADE186
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 20:51:58 +0200 (MEST)
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BFD07186
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 21:32:08 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +20,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+[PATCH] snd_opl3sa2: add missing pnp_unregister_driver() calls
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1406> 
-======================================================================
-Reported By:                jlway
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1406
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Sarge i386
-Kernel Version:             2.4.27
-======================================================================
-Date Submitted:             09-09-2005 05:01 CEST
-Last Modified:              09-11-2005 20:51 CEST
-======================================================================
-Summary:                    Need help
-Description: 
-Where may I get help to complete installation?
-I have compiled and installed but unable to get sound.
-Perhaps your driver does not support my on-board sound: Analog
-Devices SoundMax Integrated Digital Audio
-Windows XP driver 5.12.1.3630 by Sensaura Ltd.
-Is there a chat room where I can get help?
-Thanks, John Way
-======================================================================
+Signed-off-by: Daniel Ritz <daniel.ritz@gmx.ch>
 
-----------------------------------------------------------------------
- jlway - 09-11-05 17:05 
-----------------------------------------------------------------------
-Not familiar with this site, sorry if insufficient info supplied.
-My system: Intel mbd D 865 PERL.  3.0 GHz,  1Gb ram, 185 Gb HD.
-Sound chip on motherboard is possibly ICS CJ360365, 0333 952618BF, 56-pin
-IC.  Some of those numbers may be production IC batch numbers?
-OS is Debian Linux 3.1Roa, 2.4.27-2-686 kernel.
-D/l ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.9rc4a.tar.bz2
-.configure modified to set sound option.  Compiled, installed, no error.
-I don't find any AD SoundMax driver reference- is there an alternate?
-
-No sound.  I don't know what to do next. -Tnx, JLW
-
-----------------------------------------------------------------------
- rlrevell - 09-11-05 20:51 
-----------------------------------------------------------------------
-Did you use alsamixer to unmute all channels and raise the volumes?
-
-Also you can't just install the alsa-driver package, you also need
-alsa-kernel and alsa-lib.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-09-05 05:01 jlway          New Issue                                    
-09-09-05 05:01 jlway          Distribution              => Sarge i386      
-09-09-05 05:01 jlway          Kernel Version            => 2.4.27          
-09-11-05 15:14 csabo2         Note Added: 0006140                          
-09-11-05 17:05 jlway          Note Added: 0006141                          
-09-11-05 20:51 rlrevell       Note Added: 0006143                          
-======================================================================
-
-
+diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
+--- a/sound/isa/opl3sa2.c
++++ b/sound/isa/opl3sa2.c
+@@ -904,6 +904,7 @@ static int __init alsa_card_opl3sa2_init
+ #endif
+ #ifdef CONFIG_PNP
+ 		pnp_unregister_card_driver(&opl3sa2_pnpc_driver);
++		pnp_unregister_driver(&opl3sa2_pnp_driver);
+ #endif
+ 		return -ENODEV;
+ 	}
+@@ -917,6 +918,7 @@ static void __exit alsa_card_opl3sa2_exi
+ #ifdef CONFIG_PNP
+ 	/* PnP cards first */
+ 	pnp_unregister_card_driver(&opl3sa2_pnpc_driver);
++	pnp_unregister_driver(&opl3sa2_pnp_driver);
+ #endif
+ 	for (idx = 0; idx < SNDRV_CARDS; idx++)
+ 		snd_card_free(snd_opl3sa2_legacy[idx]);
 
 
 -------------------------------------------------------
