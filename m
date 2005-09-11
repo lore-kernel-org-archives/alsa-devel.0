@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001413]: Module update removed support for SB live! 24bit
-Date: Sun, 11 Sep 2005 15:13:59 +0200
-Message-ID: <567c53febb28ff5fd75d259d815df63a@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: [alsa-lib patch] src/pcm/pcm_hooks.c : fix segfault then hooks list is
+ empty
+Date: Sun, 11 Sep 2005 19:36:45 +0300
+Message-ID: <20050911163645.GA28989@sashak.softier1.local>
+References: <s5h64tfs8wm.wl%tiwai@suse.de>
+ <20050905232951.GG20428@sashak.softier1.local> <s5h8xyauxxr.wl%tiwai@suse.de>
+ <20050907160343.GA3375@sashak.softier1.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE867192
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 15:13:59 +0200 (MEST)
+In-reply-to: <20050907160343.GA3375@sashak.softier1.local>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +21,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1413> 
-======================================================================
-Reported By:                csabo2
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1413
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             09-11-2005 15:13 CEST
-Last Modified:              09-11-2005 15:13 CEST
-======================================================================
-Summary:                    Module update removed support for SB live! 24bit
-Description: 
-I noticed after installing the new fedora core, which came with alsa 1.0.9
-I no longer had support for my card.  When I tried to configure it, it
-said the module audigyls was not included.  So I asked around and found
-out you replaced it with the module im filing this under.  I have been
-unable to get sound working on it, and no one in the support channels has
-been successful thus far.  Seeing as ALSA comes with the kernel now, I
-cannot remove it to install the needed version (1.0.7) If theres anyway I
-can help please let me know.  I'll even MAIL you my card.
-======================================================================
+This fix prevents segfaulting then hooks list is empty.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-11-05 15:13 csabo2         New Issue                                    
-09-11-05 15:13 csabo2         Kernel Version            => 2.6.x           
-======================================================================
+Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
 
-
+Index: alsa-lib/src/pcm/pcm_hooks.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_hooks.c,v
+retrieving revision 1.38
+diff -u -p -r1.38 pcm_hooks.c
+--- alsa-lib/src/pcm/pcm_hooks.c	23 May 2005 09:03:18 -0000	1.38
++++ alsa-lib/src/pcm/pcm_hooks.c	11 Sep 2005 14:17:29 -0000
+@@ -469,7 +469,7 @@ int _snd_pcm_hooks_open(snd_pcm_t **pcmp
+ 		return err;
+ 	}
+ 	if (!hooks)
+-		return 0;
++		goto _done;
+ 	snd_config_for_each(i, next, hooks) {
+ 		snd_config_t *n = snd_config_iterator_entry(i);
+ 		const char *str;
+@@ -488,6 +488,7 @@ int _snd_pcm_hooks_open(snd_pcm_t **pcmp
+ 			return err;
+ 		}
+ 	}
++ _done:
+ 	*pcmp = rpcm;
+ 	return 0;
+ }
 
 
 -------------------------------------------------------
