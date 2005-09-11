@@ -1,17 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [alsa-lib patch] src/pcm/pcm_hooks.c : fix segfault then hooks list is
- empty
-Date: Sun, 11 Sep 2005 19:36:45 +0300
-Message-ID: <20050911163645.GA28989@sashak.softier1.local>
-References: <s5h64tfs8wm.wl%tiwai@suse.de>
- <20050905232951.GG20428@sashak.softier1.local> <s5h8xyauxxr.wl%tiwai@suse.de>
- <20050907160343.GA3375@sashak.softier1.local>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001406]: Need help
+Date: Sun, 11 Sep 2005 17:05:17 +0200
+Message-ID: <ac9f34cb965c7cfe8bcddfc434a02d5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20050907160343.GA3375@sashak.softier1.local>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01F87168
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 17:05:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,39 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, perex@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-This fix prevents segfaulting then hooks list is empty.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1406> 
+======================================================================
+Reported By:                jlway
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1406
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Sarge i386
+Kernel Version:             2.4.27
+======================================================================
+Date Submitted:             09-09-2005 05:01 CEST
+Last Modified:              09-11-2005 17:05 CEST
+======================================================================
+Summary:                    Need help
+Description: 
+Where may I get help to complete installation?
+I have compiled and installed but unable to get sound.
+Perhaps your driver does not support my on-board sound: Analog
+Devices SoundMax Integrated Digital Audio
+Windows XP driver 5.12.1.3630 by Sensaura Ltd.
+Is there a chat room where I can get help?
+Thanks, John Way
+======================================================================
 
-Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
+----------------------------------------------------------------------
+ csabo2 - 09-11-05 15:14 
+----------------------------------------------------------------------
+IRC: irc.freenode.org / Channel #alsa
 
-Index: alsa-lib/src/pcm/pcm_hooks.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_hooks.c,v
-retrieving revision 1.38
-diff -u -p -r1.38 pcm_hooks.c
---- alsa-lib/src/pcm/pcm_hooks.c	23 May 2005 09:03:18 -0000	1.38
-+++ alsa-lib/src/pcm/pcm_hooks.c	11 Sep 2005 14:17:29 -0000
-@@ -469,7 +469,7 @@ int _snd_pcm_hooks_open(snd_pcm_t **pcmp
- 		return err;
- 	}
- 	if (!hooks)
--		return 0;
-+		goto _done;
- 	snd_config_for_each(i, next, hooks) {
- 		snd_config_t *n = snd_config_iterator_entry(i);
- 		const char *str;
-@@ -488,6 +488,7 @@ int _snd_pcm_hooks_open(snd_pcm_t **pcmp
- 			return err;
- 		}
- 	}
-+ _done:
- 	*pcmp = rpcm;
- 	return 0;
- }
+----------------------------------------------------------------------
+ jlway - 09-11-05 17:05 
+----------------------------------------------------------------------
+Not familiar with this site, sorry if insufficient info supplied.
+My system: Intel mbd D 865 PERL.  3.0 GHz,  1Gb ram, 185 Gb HD.
+Sound chip on motherboard is possibly ICS CJ360365, 0333 952618BF, 56-pin
+IC.  Some of those numbers may be production IC batch numbers?
+OS is Debian Linux 3.1Roa, 2.4.27-2-686 kernel.
+D/l ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.9rc4a.tar.bz2
+.configure modified to set sound option.  Compiled, installed, no error.
+I don't find any AD SoundMax driver reference- is there an alternate?
+
+No sound.  I don't know what to do next. -Tnx, JLW
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-09-05 05:01 jlway          New Issue                                    
+09-09-05 05:01 jlway          Distribution              => Sarge i386      
+09-09-05 05:01 jlway          Kernel Version            => 2.4.27          
+09-11-05 15:14 csabo2         Note Added: 0006140                          
+09-11-05 17:05 jlway          Note Added: 0006141                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
