@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001413]: Module update removed support for SB live! 24bit
-Date: Sun, 11 Sep 2005 20:48:32 +0200
-Message-ID: <f3c4644ad50c36d32514558cdce94b66@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001406]: Need help
+Date: Sun, 11 Sep 2005 20:51:58 +0200
+Message-ID: <1d17d7c4191ed9352d6bb83b23e89a1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D20F186
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 20:48:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5ADE186
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 20:51:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1413> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1406> 
 ======================================================================
-Reported By:                csabo2
-Assigned To:                jcdutton
+Reported By:                jlway
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1413
-Category:                   PCI - ca0106
+Issue ID:                   1406
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.x
+Status:                     new
+Distribution:               Sarge i386
+Kernel Version:             2.4.27
 ======================================================================
-Date Submitted:             09-11-2005 15:13 CEST
-Last Modified:              09-11-2005 20:48 CEST
+Date Submitted:             09-09-2005 05:01 CEST
+Last Modified:              09-11-2005 20:51 CEST
 ======================================================================
-Summary:                    Module update removed support for SB live! 24bit
+Summary:                    Need help
 Description: 
-I noticed after installing the new fedora core, which came with alsa 1.0.9
-I no longer had support for my card.  When I tried to configure it, it
-said the module audigyls was not included.  So I asked around and found
-out you replaced it with the module im filing this under.  I have been
-unable to get sound working on it, and no one in the support channels has
-been successful thus far.  Seeing as ALSA comes with the kernel now, I
-cannot remove it to install the needed version (1.0.7) If theres anyway I
-can help please let me know.  I'll even MAIL you my card.
+Where may I get help to complete installation?
+I have compiled and installed but unable to get sound.
+Perhaps your driver does not support my on-board sound: Analog
+Devices SoundMax Integrated Digital Audio
+Windows XP driver 5.12.1.3630 by Sensaura Ltd.
+Is there a chat room where I can get help?
+Thanks, John Way
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-11-05 20:48 
+ jlway - 09-11-05 17:05 
 ----------------------------------------------------------------------
-FC4 comes with a buggy ALSA version that doesn't support your card
-properly.  Install ALSA 1.0.10-rc1 from source.  Also file an FC4 bug
-report.
+Not familiar with this site, sorry if insufficient info supplied.
+My system: Intel mbd D 865 PERL.  3.0 GHz,  1Gb ram, 185 Gb HD.
+Sound chip on motherboard is possibly ICS CJ360365, 0333 952618BF, 56-pin
+IC.  Some of those numbers may be production IC batch numbers?
+OS is Debian Linux 3.1Roa, 2.4.27-2-686 kernel.
+D/l ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.9rc4a.tar.bz2
+.configure modified to set sound option.  Compiled, installed, no error.
+I don't find any AD SoundMax driver reference- is there an alternate?
+
+No sound.  I don't know what to do next. -Tnx, JLW
+
+----------------------------------------------------------------------
+ rlrevell - 09-11-05 20:51 
+----------------------------------------------------------------------
+Did you use alsamixer to unmute all channels and raise the volumes?
+
+Also you can't just install the alsa-driver package, you also need
+alsa-kernel and alsa-lib.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-11-05 15:13 csabo2         New Issue                                    
-09-11-05 15:13 csabo2         Kernel Version            => 2.6.x           
-09-11-05 20:48 rlrevell       Note Added: 0006142                          
+09-09-05 05:01 jlway          New Issue                                    
+09-09-05 05:01 jlway          Distribution              => Sarge i386      
+09-09-05 05:01 jlway          Kernel Version            => 2.4.27          
+09-11-05 15:14 csabo2         Note Added: 0006140                          
+09-11-05 17:05 jlway          Note Added: 0006141                          
+09-11-05 20:51 rlrevell       Note Added: 0006143                          
 ======================================================================
 
 
