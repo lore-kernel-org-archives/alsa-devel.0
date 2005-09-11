@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
-Date: Sun, 11 Sep 2005 19:12:16 +0200
-Message-ID: <2a6100820e61ec1b8999bddfb296ffe0@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: [alsa-driver patch] inclide/adriver.h: fix warning about
+ CONFIG_ISA_DMA_API redefinition
+Date: Sun, 11 Sep 2005 22:36:11 +0300
+Message-ID: <20050911193611.GA31765@sashak.softier1.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD819168
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 19:12:16 +0200 (MEST)
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello Takashi,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1414> 
-======================================================================
-Reported By:                a_r_schulz
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1414
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Mandrivia
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             09-11-2005 19:12 CEST
-Last Modified:              09-11-2005 19:12 CEST
-======================================================================
-Summary:                    Hercules Digifire - ADC control only mutes left
-channel
-Description: 
-I would like to use my card for recording with audacity in LINUX, but it's
-a little hard to get the levels right, since the ADC slider in both
-alsamixer and kmix affect only the left input channel, leaving the right
-channel at full volume. Had this problem with all 2.6 kernel versions so
-far, but did not really care up to now...
-======================================================================
+With recent CVS I've got warnings like this:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-11-05 19:12 a_r_schulz     New Issue                                    
-09-11-05 19:12 a_r_schulz     Distribution              => Mandrivia       
-09-11-05 19:12 a_r_schulz     Kernel Version            => 2.6.13          
-======================================================================
+In file included from /home/sasha/src/alsa/alsa-driver/include/sound/driver.h:42,
+                 from /home/sasha/src/alsa/alsa-driver/alsa-kernel/core/pcm.c:22,
+                 from /home/sasha/src/alsa/alsa-driver/acore/pcm.c:1:
+/home/sasha/src/alsa/alsa-driver/include/adriver.h:193:1: warning: "CONFIG_ISA_DMA_API" redefined
+In file included from include/linux/config.h:4,
+                 from /home/sasha/src/alsa/alsa-driver/include/sound/driver.h:29,
+                 from /home/sasha/src/alsa/alsa-driver/alsa-kernel/core/pcm.c:22,
+                 from /home/sasha/src/alsa/alsa-driver/acore/pcm.c:1:
+include/linux/autoconf.h:242:1: warning: this is the location of the previous definition
+
+, etc.
+
+The patch below fixes it.
+
+Sasha.
 
 
+
+
+Fix warnings about CONFIG_ISA_DMA_API redefinition.
+
+Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
+
+Index: alsa-driver/include/adriver.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/include/adriver.h,v
+retrieving revision 1.138
+diff -u -p -r1.138 adriver.h
+--- alsa-driver/include/adriver.h	9 Sep 2005 16:39:11 -0000	1.138
++++ alsa-driver/include/adriver.h	11 Sep 2005 17:00:36 -0000
+@@ -190,9 +190,11 @@ static inline struct proc_dir_entry *PDE
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 13)
+ #ifdef CONFIG_SND_ISA
++#ifndef CONFIG_ISA_DMA_API
+ #define CONFIG_ISA_DMA_API
+ #endif
+ #endif
++#endif
+ 
+ #include <linux/types.h>
+ #ifndef __bitwise
 
 
 -------------------------------------------------------
