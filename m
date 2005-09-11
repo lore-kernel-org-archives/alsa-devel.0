@@ -1,11 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Mixer improvements
-Date: Sun, 11 Sep 2005 12:51:17 +0100
-Message-ID: <43241A35.8080903@superbug.co.uk>
+From: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
+Subject: Re: Mo' better modem support
+Date: Sun, 11 Sep 2005 14:45:30 +0200
+Message-ID: <20050911124530.GA16795@titan.lahn.de>
+References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de> <4321B5A4.5090803@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <4321B5A4.5090803@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,81 +17,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello!
 
-See below for current sndrv_ctl_elem_info structure.
+On Sat, Sep 10, 2005 at 12:17:40AM +0800, Raymond wrote:
+> Would you post result of
+> cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
 
-I would like to add to this structure the following elements:
-1) Unsigned integer index to percent <-> dB function.
-I would implement in alsa-lib an array of functions, each doing a 
-conversion of a different type. This index would select which conversion 
-routine to use for this particular mixer element. A value of 0 in this 
-index would indicate that no conversion function is currently 
-implemented for this mixer control and would therefore be backward 
-compatible as by default, unused integers in a structure are given a 
-value of 0.
-2) Integer for Analog or Digital path. This will indicate which side of 
-the ADC and DAC converter the mixer control is. This is particularly 
-useful when trying to set mic capture levels, capture limiting and 
-sampling accuracy. 0 = Digital, 1 = Analog
-For example, One would probably want to set the digital(After ADC) mixer 
-controls all to 0dB level, so one gets exact samples from the ADC all 
-the way to the application, but one would want to adjust the mixer 
-controls before the ADC in order to avoid clipping.
-3) Link information.
-Like USB and HDA sound cards, they have a linked list showing which 
-mixer element is connected to which other mixer element. I would like to 
-implement this for PCI sound cards. Maybe if we used exactly the same 
-method as the USB one, we could
+0:00 = 6940
+0:02 = 0303
+0:04 = 8000
+0:06 = 801f
+0:08 = ffff
+0:0a = 9f1f
+0:0c = 801f
+0:0e = 881f
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 0707
+0:1a = 9818
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0808
+0:24 = 0000
+0:26 = 000f
+0:28 = ffff
+0:2a = ffff
+0:2c = ffff
+0:2e = ffff
+0:30 = ffff
+0:32 = ffff
+0:34 = ffff
+0:36 = ffff
+0:38 = ffff
+0:3a = ffff
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 0000
+0:7a = 0000
+0:7c = 8384
+0:7e = 7605
 
-Points 1 and 2 I would like to implement immeadiately, with points 3 a 
-nice to have.
+> Are you able to use the modem in Win9x/NT4/W2K/DOS ?
 
-4) Alternatively, we could implement this in alsa-lib, and just add 
-something to the card info structure that would uniquely identify a 
-sound card. e.g. General device name and a unique subdevice ID. So that 
-all the various Audigy 2 cards would use a different config file in 
-alsa-lib. We could make the device name a dir, and the subdevice ID the 
-actual config file.
+Yes, I once used the modem with Windows98. But it's a long time ago,
+since I now use Linux all the time.
 
-Can someone please tell me which is the prefered method 1-3 or 4?
+> What is the feature available ?
+> 1) Data/Fax only
+> 2) Data/Fax/TAM       (Telephone answering machine)
+> 3) Data/Fax/TAM/Speakerphon
 
-Extract from asound.h:
-struct sndrv_ctl_elem_info {
-         struct sndrv_ctl_elem_id id;    /* W: element ID */
-         enum sndrv_ctl_elem_type type;  /* R: value type - 
-SNDRV_CTL_ELEM_TYPE_* */
-         unsigned int access;            /* R: value access (bitmask) - 
-SNDRV_CTL_ELEM_ACCESS_* */
-         unsigned int count;             /* count of values */
-         pid_t owner;                    /* owner's PID of this control */
-         union {
-                 struct {
-                         long min;               /* R: minimum value */
-                         long max;               /* R: maximum value */
-                         long step;              /* R: step (0 variable) */
-                 } integer;
-                 struct {
-                         long long min;          /* R: minimum value */
-                         long long max;          /* R: maximum value */
-                         long long step;         /* R: step (0 variable) */
-                 } integer64;
-                 struct {
-                         unsigned int items;     /* R: number of items */
-                         unsigned int item;      /* W: item number */
-                         char name[64];          /* R: value name */
-                 } enumerated;
-                 unsigned char reserved[128];
-         } value;
-         union {
-                 unsigned short d[4];            /* dimensions */
-                 unsigned short *d_ptr;          /* indirect */
-         } dimen;
-         unsigned char reserved[64-4*sizeof(unsigned short)];
-};
+Don't know. Never used Windows much. But if you have an easy-to-install
+and easy-to-use test application for Windows, I'm willing to test it.
+
+BYtE
+Philipp
+-- 
+  / /  (_)__  __ ____  __ Philipp Hahn
+ / /__/ / _ \/ // /\ \/ /
+/____/_/_//_/\_,_/ /_/\_\ pmhahn@titan.lahn.de
 
 
 -------------------------------------------------------
