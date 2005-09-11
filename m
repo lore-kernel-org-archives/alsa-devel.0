@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001345]: microphone input does broken after upgrading from kernel 2.6.10 to 2.6.12
-Date: Sun, 11 Sep 2005 10:38:09 +0200
-Message-ID: <2ff9297d4af566eb454cb7cc39abe563@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Mixer improvements
+Date: Sun, 11 Sep 2005 12:51:17 +0100
+Message-ID: <43241A35.8080903@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CDFA183
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 10:38:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +15,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1345> 
-======================================================================
-Reported By:                kayosiii
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1345
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Mepis
-Kernel Version:             2.6.12 custom compiled
-======================================================================
-Date Submitted:             08-17-2005 08:13 CEST
-Last Modified:              09-11-2005 10:38 CEST
-======================================================================
-Summary:                    microphone input does broken after upgrading from
-kernel 2.6.10 to 2.6.12
-Description: 
-Basically When a boot using kernel 2.6.10 I can record using a microphone.
-With 2.6.12 I get no input... I am running the latest alsa-base in debian
-unstable. And have tried just about every setting in kmixer
-======================================================================
+See below for current sndrv_ctl_elem_info structure.
 
-----------------------------------------------------------------------
- kayosiii - 09-11-05 07:07 
-----------------------------------------------------------------------
-ok upgraded to 2.6.13 - sound has returned (for the front port at least)..
-I can hear myself through the speakers but I cannot get a recording
-happening...
+I would like to add to this structure the following elements:
+1) Unsigned integer index to percent <-> dB function.
+I would implement in alsa-lib an array of functions, each doing a 
+conversion of a different type. This index would select which conversion 
+routine to use for this particular mixer element. A value of 0 in this 
+index would indicate that no conversion function is currently 
+implemented for this mixer control and would therefore be backward 
+compatible as by default, unused integers in a structure are given a 
+value of 0.
+2) Integer for Analog or Digital path. This will indicate which side of 
+the ADC and DAC converter the mixer control is. This is particularly 
+useful when trying to set mic capture levels, capture limiting and 
+sampling accuracy. 0 = Digital, 1 = Analog
+For example, One would probably want to set the digital(After ADC) mixer 
+controls all to 0dB level, so one gets exact samples from the ADC all 
+the way to the application, but one would want to adjust the mixer 
+controls before the ADC in order to avoid clipping.
+3) Link information.
+Like USB and HDA sound cards, they have a linked list showing which 
+mixer element is connected to which other mixer element. I would like to 
+implement this for PCI sound cards. Maybe if we used exactly the same 
+method as the USB one, we could
 
-I have tried Creox,Ardour,krec,Audacity,reZound none of them register any
-input
+Points 1 and 2 I would like to implement immeadiately, with points 3 a 
+nice to have.
 
-----------------------------------------------------------------------
- kayosiii - 09-11-05 10:38 
-----------------------------------------------------------------------
-found asound.state - it is in /var/lib/alsa/ on debian based systems
-Though this time it ties up with the 2.6.13 issues
+4) Alternatively, we could implement this in alsa-lib, and just add 
+something to the card info structure that would uniquely identify a 
+sound card. e.g. General device name and a unique subdevice ID. So that 
+all the various Audigy 2 cards would use a different config file in 
+alsa-lib. We could make the device name a dir, and the subdevice ID the 
+actual config file.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-17-05 08:13 kayosiii       New Issue                                    
-08-17-05 08:13 kayosiii       Distribution              => Mepis           
-08-17-05 08:13 kayosiii       Kernel Version            => 2.6.12 custom
-compiled
-08-22-05 12:20 perex          Assigned To              perex =>            
-08-22-05 12:20 perex          Status                   assigned => new     
-08-22-05 12:20 perex          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-08-23-05 16:50 tiwai          Note Added: 0005910                          
-08-25-05 03:59 kayosiii       Note Added: 0005936                          
-09-11-05 07:07 kayosiii       Note Added: 0006138                          
-09-11-05 10:35 kayosiii       File Added: asound.state                     
-09-11-05 10:38 kayosiii       Note Added: 0006139                          
-======================================================================
+Can someone please tell me which is the prefered method 1-3 or 4?
 
-
+Extract from asound.h:
+struct sndrv_ctl_elem_info {
+         struct sndrv_ctl_elem_id id;    /* W: element ID */
+         enum sndrv_ctl_elem_type type;  /* R: value type - 
+SNDRV_CTL_ELEM_TYPE_* */
+         unsigned int access;            /* R: value access (bitmask) - 
+SNDRV_CTL_ELEM_ACCESS_* */
+         unsigned int count;             /* count of values */
+         pid_t owner;                    /* owner's PID of this control */
+         union {
+                 struct {
+                         long min;               /* R: minimum value */
+                         long max;               /* R: maximum value */
+                         long step;              /* R: step (0 variable) */
+                 } integer;
+                 struct {
+                         long long min;          /* R: minimum value */
+                         long long max;          /* R: maximum value */
+                         long long step;         /* R: step (0 variable) */
+                 } integer64;
+                 struct {
+                         unsigned int items;     /* R: number of items */
+                         unsigned int item;      /* W: item number */
+                         char name[64];          /* R: value name */
+                 } enumerated;
+                 unsigned char reserved[128];
+         } value;
+         union {
+                 unsigned short d[4];            /* dimensions */
+                 unsigned short *d_ptr;          /* indirect */
+         } dimen;
+         unsigned char reserved[64-4*sizeof(unsigned short)];
+};
 
 
 -------------------------------------------------------
