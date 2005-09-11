@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
-Date: Sun, 11 Sep 2005 03:24:04 +0200
-Message-ID: <94ae6bf726bb1d1996aa43eb515476d7@bugtrack.alsa-project.org>
+Date: Sun, 11 Sep 2005 03:32:06 +0200
+Message-ID: <f68e58063f4502359599f64c105965a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3A0B195
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 03:24:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3090F195
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 03:32:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10, and Redhat 7.3
 Kernel Version:             2.4 series.
 ======================================================================
 Date Submitted:             08-15-2005 03:20 CEST
-Last Modified:              09-11-2005 03:24 CEST
+Last Modified:              09-11-2005 03:32 CEST
 ======================================================================
 Summary:                    AWE 32/64 driver crashes when using the skype
 program.
@@ -59,47 +59,6 @@ versions of alsa and all versions of the 2.4 kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- philneves - 09-11-05 03:08 
-----------------------------------------------------------------------
-Sep 10 18:32:48 Raputine kernel: isapnp: Scanning for PnP cards...
-Sep 10 18:32:48 Raputine kernel: pnp: SB audio device quirk - increasing
-port range
-Sep 10 18:32:48 Raputine kernel: pnp: AWE32 quirk - adding two ports
-Sep 10 18:32:48 Raputine kernel: isapnp: Card 'Creative SB AWE64  PnP'
-Sep 10 18:32:48 Raputine kernel: isapnp: 1 Plug & Play card detected
-total
-
-
-Here is some information I found in my messages Hope this adds to the
-mystery. I'm trying to piece together as much information as I can find on
-my system to help you guys.  Also --- The error message about IRQ 7 turned
-out to be a dead end. My sound card is set to run on IRQ 10. 
-
-Here is the proc/asound/cards information
-
-0 [S16            ]: SB AWE - Sound Blaster 16
-                     Sound Blaster 16 at 0x220, irq 10, dma 1&5
-
-
-
-Here is the proc/asound/devices information 
-
- 4: [0- 0]: hardware dependent
-  8: [0- 0]: raw midi
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
-  1:       : sequencer
- 33:       : timer
-
-
-here is the proc/asound/timer information 
-
-G0: system timer : 1000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-
-----------------------------------------------------------------------
  philneves - 09-11-05 03:24 
 ----------------------------------------------------------------------
 I did another search of my dmesg file and was able to find the following
@@ -111,6 +70,13 @@ pnp: SB audio device quirk - increasing port range
 pnp: AWE32 quirk - adding two ports
 isapnp: Card 'Creative SB AWE64  PnP'
 isapnp: 1 Plug & Play card detected total
+
+----------------------------------------------------------------------
+ philneves - 09-11-05 03:32 
+----------------------------------------------------------------------
+Ok thats it. Thats all the info I can find Or identify that might be
+useful. Please let me know if there is any additional information that you
+need.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -128,6 +94,7 @@ Redhat 7.3
 09-11-05 01:49 philneves      Note Added: 0006132                          
 09-11-05 03:08 philneves      Note Added: 0006134                          
 09-11-05 03:24 philneves      Note Added: 0006135                          
+09-11-05 03:32 philneves      Note Added: 0006136                          
 ======================================================================
 
 
