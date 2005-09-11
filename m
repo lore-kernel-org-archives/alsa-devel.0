@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
-Date: Sun, 11 Sep 2005 03:08:52 +0200
-Message-ID: <7008bded5dd12586b856e39241b21764@bugtrack.alsa-project.org>
+Date: Sun, 11 Sep 2005 03:24:04 +0200
+Message-ID: <94ae6bf726bb1d1996aa43eb515476d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C31F195
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 03:08:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3A0B195
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 03:24:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10, and Redhat 7.3
 Kernel Version:             2.4 series.
 ======================================================================
 Date Submitted:             08-15-2005 03:20 CEST
-Last Modified:              09-11-2005 03:08 CEST
+Last Modified:              09-11-2005 03:24 CEST
 ======================================================================
 Summary:                    AWE 32/64 driver crashes when using the skype
 program.
@@ -57,13 +57,6 @@ versions of alsa and all versions of the 2.4 kernel.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- philneves - 09-11-05 01:49 
-----------------------------------------------------------------------
-I should also point out it crashed even faster when I used aoss. 
-
-I didn't even get a chance to talk to the other person.
 
 ----------------------------------------------------------------------
  philneves - 09-11-05 03:08 
@@ -106,6 +99,19 @@ G0: system timer : 1000.000us (10000000 ticks)
 P0-0-0: PCM playback 0-0-0 : SLAVE
 P0-0-1: PCM capture 0-0-1 : SLAVE
 
+----------------------------------------------------------------------
+ philneves - 09-11-05 03:24 
+----------------------------------------------------------------------
+I did another search of my dmesg file and was able to find the following
+information 
+
+
+isapnp: Scanning for PnP cards...
+pnp: SB audio device quirk - increasing port range
+pnp: AWE32 quirk - adding two ports
+isapnp: Card 'Creative SB AWE64  PnP'
+isapnp: 1 Plug & Play card detected total
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -121,6 +127,7 @@ Redhat 7.3
 09-11-05 01:36 philneves      Note Added: 0006131                          
 09-11-05 01:49 philneves      Note Added: 0006132                          
 09-11-05 03:08 philneves      Note Added: 0006134                          
+09-11-05 03:24 philneves      Note Added: 0006135                          
 ======================================================================
 
 
