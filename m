@@ -1,13 +1,14 @@
-From: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
-Subject: Re: Mo' better modem support
-Date: Sun, 11 Sep 2005 14:45:30 +0200
-Message-ID: <20050911124530.GA16795@titan.lahn.de>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de> <4321B5A4.5090803@netvigator.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001406]: Need help
+Date: Sun, 11 Sep 2005 15:14:59 +0200
+Message-ID: <c03db87df6ceb4d87c59cf5361f94929@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <4321B5A4.5090803@netvigator.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB8CF192
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 15:14:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,100 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
 
-On Sat, Sep 10, 2005 at 12:17:40AM +0800, Raymond wrote:
-> Would you post result of
-> cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1406> 
+======================================================================
+Reported By:                jlway
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1406
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Sarge i386
+Kernel Version:             2.4.27
+======================================================================
+Date Submitted:             09-09-2005 05:01 CEST
+Last Modified:              09-11-2005 15:14 CEST
+======================================================================
+Summary:                    Need help
+Description: 
+Where may I get help to complete installation?
+I have compiled and installed but unable to get sound.
+Perhaps your driver does not support my on-board sound: Analog
+Devices SoundMax Integrated Digital Audio
+Windows XP driver 5.12.1.3630 by Sensaura Ltd.
+Is there a chat room where I can get help?
+Thanks, John Way
+======================================================================
 
-0:00 = 6940
-0:02 = 0303
-0:04 = 8000
-0:06 = 801f
-0:08 = ffff
-0:0a = 9f1f
-0:0c = 801f
-0:0e = 881f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 0707
-0:1a = 9818
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0808
-0:24 = 0000
-0:26 = 000f
-0:28 = ffff
-0:2a = ffff
-0:2c = ffff
-0:2e = ffff
-0:30 = ffff
-0:32 = ffff
-0:34 = ffff
-0:36 = ffff
-0:38 = ffff
-0:3a = ffff
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 8384
-0:7e = 7605
+----------------------------------------------------------------------
+ csabo2 - 09-11-05 15:14 
+----------------------------------------------------------------------
+IRC: irc.freenode.org / Channel #alsa
 
-> Are you able to use the modem in Win9x/NT4/W2K/DOS ?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-09-05 05:01 jlway          New Issue                                    
+09-09-05 05:01 jlway          Distribution              => Sarge i386      
+09-09-05 05:01 jlway          Kernel Version            => 2.4.27          
+09-11-05 15:14 csabo2         Note Added: 0006140                          
+======================================================================
 
-Yes, I once used the modem with Windows98. But it's a long time ago,
-since I now use Linux all the time.
 
-> What is the feature available ?
-> 1) Data/Fax only
-> 2) Data/Fax/TAM       (Telephone answering machine)
-> 3) Data/Fax/TAM/Speakerphon
-
-Don't know. Never used Windows much. But if you have an easy-to-install
-and easy-to-use test application for Windows, I'm willing to test it.
-
-BYtE
-Philipp
--- 
-  / /  (_)__  __ ____  __ Philipp Hahn
- / /__/ / _ \/ // /\ \/ /
-/____/_/_//_/\_,_/ /_/\_\ pmhahn@titan.lahn.de
 
 
 -------------------------------------------------------
