@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001360]: 16bit mono -> 24bit stereo conversion (plughw) produces noise in right channel
-Date: Sun, 11 Sep 2005 03:01:37 +0200
-Message-ID: <d896a92f00f42ce43fd0419b6dfa0841@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
+Date: Sun, 11 Sep 2005 03:08:52 +0200
+Message-ID: <7008bded5dd12586b856e39241b21764@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED86C195
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 03:01:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C31F195
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2005 03:08:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1360> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
 ======================================================================
-Reported By:                grabner
+Reported By:                philneves
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1360
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1337
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     new
+Distribution:               Slackware 10, and Redhat 7.3
+Kernel Version:             2.4 series.
 ======================================================================
-Date Submitted:             08-22-2005 22:42 CEST
-Last Modified:              09-11-2005 03:01 CEST
+Date Submitted:             08-15-2005 03:20 CEST
+Last Modified:              09-11-2005 03:08 CEST
 ======================================================================
-Summary:                    16bit mono -> 24bit stereo conversion (plughw)
-produces noise in right channel
+Summary:                    AWE 32/64 driver crashes when using the skype
+program.
 Description: 
-The sample conversion from 16bit mono format to 24bit stereo format (using
-plughw:n) produces the correct signal in the left channel, but only noise
-in the right channel.
+This is a serious bug with the sb16/sbawe driver. It seems to crash when
+running the skype program. Problem can be reproduced on a regular basis.
+Although frequency of occurence is random. Once the driver crashes it
+disables all sound on my system and I must restart the computer to get the
+sound back. Reloading the driver doesn't work. Problem occurs on all
+versions of alsa and all versions of the 2.4 kernel. 
+
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-02-05 19:14 
+ philneves - 09-11-05 01:49 
 ----------------------------------------------------------------------
-I guess this is fixed now on CVS.  Please try the CVS version later (sync
-on sourceforge should be done in 24 hours).
+I should also point out it crashed even faster when I used aoss. 
+
+I didn't even get a chance to talk to the other person.
 
 ----------------------------------------------------------------------
- grabner - 09-11-05 03:01 
+ philneves - 09-11-05 03:08 
 ----------------------------------------------------------------------
-Unfortunately the problem still exists. I did "cvs update" and recompile
-the library several times, but nothing changed.
+Sep 10 18:32:48 Raputine kernel: isapnp: Scanning for PnP cards...
+Sep 10 18:32:48 Raputine kernel: pnp: SB audio device quirk - increasing
+port range
+Sep 10 18:32:48 Raputine kernel: pnp: AWE32 quirk - adding two ports
+Sep 10 18:32:48 Raputine kernel: isapnp: Card 'Creative SB AWE64  PnP'
+Sep 10 18:32:48 Raputine kernel: isapnp: 1 Plug & Play card detected
+total
+
+
+Here is some information I found in my messages Hope this adds to the
+mystery. I'm trying to piece together as much information as I can find on
+my system to help you guys.  Also --- The error message about IRQ 7 turned
+out to be a dead end. My sound card is set to run on IRQ 10. 
+
+Here is the proc/asound/cards information
+
+0 [S16            ]: SB AWE - Sound Blaster 16
+                     Sound Blaster 16 at 0x220, irq 10, dma 1&5
+
+
+
+Here is the proc/asound/devices information 
+
+ 4: [0- 0]: hardware dependent
+  8: [0- 0]: raw midi
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+  1:       : sequencer
+ 33:       : timer
+
+
+here is the proc/asound/timer information 
+
+G0: system timer : 1000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-22-05 22:42 grabner        New Issue                                    
-08-23-05 16:25 tiwai          Note Added: 0005906                          
-08-24-05 00:15 grabner        Note Added: 0005919                          
-09-02-05 19:14 tiwai          Note Added: 0006013                          
-09-11-05 03:01 grabner        Note Added: 0006133                          
+08-15-05 03:20 philneves      New Issue                                    
+08-15-05 03:20 philneves      Distribution              => Slackware 10, and
+Redhat 7.3
+08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
+08-24-05 07:09 philneves      Note Added: 0005924                          
+09-09-05 02:34 philneves      Note Edited: 0005924                         
+09-09-05 02:42 philneves      Note Added: 0006086                          
+09-09-05 04:12 rlrevell       Note Added: 0006089                          
+09-09-05 12:31 tiwai          Note Added: 0006094                          
+09-11-05 01:36 philneves      Note Added: 0006131                          
+09-11-05 01:49 philneves      Note Added: 0006132                          
+09-11-05 03:08 philneves      Note Added: 0006134                          
 ======================================================================
 
 
