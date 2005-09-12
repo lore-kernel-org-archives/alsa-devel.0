@@ -1,13 +1,16 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [conf patch] modem's pcm "two device" config [was: Re: Mo' better modem support]
-Date: Mon, 12 Sep 2005 03:27:46 +0300
-Message-ID: <20050912002746.GA31233@tecr>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <20050905232951.GG20428@sashak.softier1.local> <s5h8xyauxxr.wl%tiwai@suse.de> <20050907160343.GA3375@sashak.softier1.local>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: Brand-new notebook useless with Linux...
+Date: Sun, 11 Sep 2005 21:42:44 -0400
+Message-ID: <1126489364.5619.7.camel@mindpipe>
+References: <200509091411_MC3-1-A9B0-1C0C@compuserve.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20050907160343.GA3375@sashak.softier1.local>
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E9F881B6
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 03:42:46 +0200 (MEST)
+In-Reply-To: <200509091411_MC3-1-A9B0-1C0C@compuserve.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,126 +20,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Chuck Ebbert <76306.1226@compuserve.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 19:03 Wed 07 Sep     , Sasha Khapyorsky wrote:
-> > > 
-> > > If we really need to auto-"Hoof-Off" we may separate it to logically
-> > > different pcm devices (like pcm.modem, pcm.phoneline or so) and then add
-> > > hook to one of them.
-> > 
-> > Sounds reasonable.
+On Fri, 2005-09-09 at 14:09 -0400, Chuck Ebbert wrote:
+> In-Reply-To: <1126207905.12697.20.camel@mindpipe>
 > 
-> I will prepare patch this weekend or so (want to test it first).
+> On Thu, 08 Sep 2005 at 15:31:44 -0400, Lee Revell wrote:
+> 
+> > Wait, that sounds like the modem, not the AC97 audio codec.
+> >
+> > You might be able to get the modem to work with the (proprietary)
+> > slmodem software modem, or something.  I wouldn't count on it though.
+> > 
+> > Does your sound work?
+> 
+> 
+>  Well I'll be...
+> 
+>  I'd assumed from the (confusing) messages that the sound card was
+> not working, but it seems fine.  Shouldn't the error messages from
+> atiixp-modem be prefixed with that name instead of "atiixp"?
+> 
+> Untested patch follows.
+> 
+> Signed-off-by: Chuck Ebbert <76306.1226@compuserve.com>
 
-There is the patch (actually beginning). This defines two PCMs:
-"phoneline" is renamed old-style modem and "modem" is pcm with
-auto-"Hook-Off".
+This should be applied IMO.  Can we get it in CVS?
 
-Sasha.
+Lee
 
-
-This defines two modem related pcm devices: "phoneline" is driver's pcm
-reference, with "modem" the line will be "Hook-Off"ed automatically.
-
-Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
-
-Index: alsa-lib/src/conf/alsa.conf
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/alsa.conf,v
-retrieving revision 1.19
-diff -u -p -r1.19 alsa.conf
---- alsa-lib/src/conf/alsa.conf	27 Jan 2005 15:45:05 -0000	1.19
-+++ alsa-lib/src/conf/alsa.conf	11 Sep 2005 23:52:34 -0000
-@@ -251,6 +251,7 @@ pcm.surround71 cards.pcm.surround71
- pcm.iec958 cards.pcm.iec958
- pcm.spdif cards.pcm.iec958
- pcm.modem cards.pcm.modem
-+pcm.phoneline cards.pcm.phoneline
- 
- pcm.default cards.pcm.default
- pcm.dmix cards.pcm.dmix
-Index: alsa-lib/src/conf/pcm/modem.conf
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/pcm/modem.conf,v
-retrieving revision 1.1
-diff -u -p -r1.1 modem.conf
---- alsa-lib/src/conf/pcm/modem.conf	12 Jul 2004 16:21:30 -0000	1.1
-+++ alsa-lib/src/conf/pcm/modem.conf	11 Sep 2005 23:52:34 -0000
-@@ -1,8 +1,8 @@
- #
--# Modem output
-+# "raw" modem - phoneline
- #
- 
--pcm.!modem {
-+pcm.!phoneline {
- 	@args [ CARD DEV ]
- 	@args.CARD {
- 		type string
-@@ -45,3 +45,60 @@ pcm.!modem {
- 		]
- 	}
- }
-+
-+#
-+#  "autohooked" modem
-+#
-+
-+pcm.!modem {
-+	@args [ CARD DEV ]
-+	@args.CARD {
-+		type string
-+		default {
-+			@func getenv
-+			vars [
-+				ALSA_MODEM_CARD
-+				ALSA_PCM_CARD
-+				ALSA_CARD
-+			]
-+			default {
-+				@func refer
-+				name defaults.pcm.modem.card
-+			}
-+		}
-+	}
-+	@args.DEV {
-+		type integer
-+		default {
-+			@func igetenv
-+			vars [
-+				ALSA_MODEM_DEVICE
-+			]
-+			default {
-+				@func refer
-+				name defaults.pcm.modem.device
-+			}
-+		}
-+	}
-+	type hooks
-+	slave {
-+		pcm {
-+			@func concat
-+			strings [
-+				"cards.pcm.phoneline:CARD=" $CARD ",DEV=" $DEV
-+			]
-+		}
-+	}
-+	hooks.0 {
-+		type ctl_elems
-+		hook_args [
-+		{
-+			name "Off-hook Switch"
-+			preserve true
-+			value "on"
-+			lock false
-+			optional true
-+		}
-+		]
-+	}
-+}
 
 
 -------------------------------------------------------
