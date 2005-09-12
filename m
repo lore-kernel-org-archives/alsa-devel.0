@@ -1,16 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: Brand-new notebook useless with Linux...
-Date: Sun, 11 Sep 2005 21:42:44 -0400
-Message-ID: <1126489364.5619.7.camel@mindpipe>
-References: <200509091411_MC3-1-A9B0-1C0C@compuserve.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] add a symlink to module in /sys/pci/drivers/*
+Date: Mon, 12 Sep 2005 09:31:56 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509120929320.27286-100000@studcom.urz.uni-halle.de>
+References: <s5hacilqb2t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E9F881B6
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 03:42:46 +0200 (MEST)
-In-Reply-To: <200509091411_MC3-1-A9B0-1C0C@compuserve.com>
+In-Reply-To: <s5hacilqb2t.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,36 +16,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chuck Ebbert <76306.1226@compuserve.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Laurent Riffard <laurent.riffard@free.fr>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-09-09 at 14:09 -0400, Chuck Ebbert wrote:
-> In-Reply-To: <1126207905.12697.20.camel@mindpipe>
-> 
-> On Thu, 08 Sep 2005 at 15:31:44 -0400, Lee Revell wrote:
-> 
-> > Wait, that sounds like the modem, not the AC97 audio codec.
+Takashi Iwai wrote:
+> Laurent Riffard wrote:
 > >
-> > You might be able to get the modem to work with the (proprietary)
-> > slmodem software modem, or something.  I wouldn't count on it though.
-> > 
-> > Does your sound work?
-> 
-> 
->  Well I'll be...
-> 
->  I'd assumed from the (confusing) messages that the sound card was
-> not working, but it seems fine.  Shouldn't the error messages from
-> atiixp-modem be prefixed with that name instead of "atiixp"?
-> 
-> Untested patch follows.
-> 
-> Signed-off-by: Chuck Ebbert <76306.1226@compuserve.com>
+> > Following a thread on LKML
+> > (http://marc.theaimsgroup.com/?l=linux-kernel&m=112569665717371),
+> > here is a patch which adds a symlink to the kernel module in the
+> > /sys/pci/drivers/* directories for all the drivers located in
+> > linux/sound/pci/.
+>
+> It's a known problem but we didn't fix it because of compatibility
+> with 2.2/2.4 kernels.  We'll solve this problem later.
 
-This should be applied IMO.  Can we get it in CVS?
+Solved now.
 
-Lee
+
+Regards,
+Clemens
 
 
 
