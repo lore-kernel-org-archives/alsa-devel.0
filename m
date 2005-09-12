@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: Front channels via fxbus 8 and 9
-Date: Mon, 12 Sep 2005 10:09:59 -0400
-Message-ID: <1126534200.5619.22.camel@mindpipe>
-References: <20050908220155.GA28152@skinner.hem.za.org>
-	 <s5hy862h8my.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001415]: No sound after adjustment of volume
+Date: Mon, 12 Sep 2005 16:24:30 +0200
+Message-ID: <8234726eaeea6a0d5d851b39b9028f4c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hy862h8my.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 611A41CC
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 16:24:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,34 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mikael Magnusson <mikaelmagnusson@glocalnet.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-09-12 at 12:40 +0200, Takashi Iwai wrote:
-> At Fri, 9 Sep 2005 00:01:56 +0200,
-> Mikael Magnusson wrote:
-> > 
-> > Hello,
-> > 
-> > I'm resending my patches that add front channels that can be used independently
-> > of the "default" pcm device. I think the patches are really useful. When
-> > you use the current SB Live driver it will automatically mute "Wave Surround",
-> > "Wave Center" and "Wave LFE" when playing 5.1, since otherwise the front signal
-> > would be played on all channels. With these patches this isn't necessary
-> > since the "front" device is routed to the front outputs only.
-> > 
-> > One potential problem is that you won't get any front output during
-> > 5.1 playback if you use an old EMU10K1.conf with a patched driver.
-> 
-> I think it's OK to merge.
-> Any objections?
 
-I agree, merge it.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1415> 
+======================================================================
+Reported By:                war0060
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1415
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.12-r10
+======================================================================
+Date Submitted:             09-12-2005 11:49 CEST
+Last Modified:              09-12-2005 16:24 CEST
+======================================================================
+Summary:                    No sound after adjustment of volume
+Description: 
+I'm using the snd-hda-intel driver, everything seems ok, but when I
+adjusted the volume, there will be no sound anymore. After reboot, it
+works again, the main problem is the volume cannot be adjusted.
+======================================================================
 
-Does this also solve the "master only controls front output" bug?
+----------------------------------------------------------------------
+ tiwai - 09-12-05 16:24 
+----------------------------------------------------------------------
+First, try more recent version.
+Some bugs regarding volume control have been fixed.
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-12-05 11:49 war0060        New Issue                                    
+09-12-05 11:49 war0060        Distribution              => Gentoo          
+09-12-05 11:49 war0060        Kernel Version            => 2.6.12-r10      
+09-12-05 16:24 tiwai          Note Added: 0006145                          
+======================================================================
+
 
 
 
