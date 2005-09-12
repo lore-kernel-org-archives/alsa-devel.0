@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001410]: Request: please enable 44.1khz playback on Audigy 2 NX
-Date: Mon, 12 Sep 2005 17:38:19 +0200
-Message-ID: <6495038d06177261f16bf0821ed54038@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
+Date: Mon, 12 Sep 2005 18:05:07 +0200
+Message-ID: <0c83823d1cf51c90a83ee3f3d5b5aca7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1537C1CE
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 17:38:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D618B1CE
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 18:05:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1410> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
 ======================================================================
-Reported By:                wshtb
-Assigned To:                Clemens Ladisch
+Reported By:                drow
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1410
-Category:                   USB - usb-audio
+Issue ID:                   1407
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.13-rc6
 ======================================================================
-Date Submitted:             09-10-2005 06:41 CEST
-Last Modified:              09-12-2005 17:38 CEST
+Date Submitted:             09-09-2005 05:11 CEST
+Last Modified:              09-12-2005 18:05 CEST
 ======================================================================
-Summary:                    Request: please enable 44.1khz playback on Audigy 2
-NX
+Summary:                    Can't use rear speaker channels
 Description: 
-It saw somewhere in the changelog that 44.1khz playback on Audigy 2 NX is
-buggy so it is disabled in the latest source. However it seems that
-44.1khz playback in digital-output-only mode is working perfectly.
+I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
+ice1724.  I've spent most of tonight trying to get surround sound to
+work... but the best I can get is four channels (specifically, front
+left/right, center, LFE).  Nothing happens when samples are sent to the
+rear channels.  And the front channels are mirrored onto the rear
+speakers, under control of the Headphone volume control.
 
-I have used a Audigy 2 NX to send 44.1khz signal to external DAC for
-several month in my home theater setup (with kernel 2.6.12.x). The driver
-has been rock solid (thank you guys!). Although I do need to set the
-output frequency to 44.1khz using a Windows laptop, that is necessary only
-after the sound card lost its power, i.e. unplugging the power adapter. 
+Which is really annoying, because it means that muting the master volume
+doesn't mute the back speakers.
 
-In kernel 2.6.13 or the latest alsa-driver, 44.1khz playback is disabled.
-I'd like to know if it is possible to re-enable it? It is a nice feature
-that the hardware is capable and the driver is available. Maybe something
-similar to Windows can be done: user must select digital-only mode before
-44.1khz output becomes an option; once in digital-only mode, all analog
-channels are muted. 
+I realize this isn't much information.  I don't know what else to check
+but I'll be glad to debug it if someone can give me a pointer.
 
-What do you think? Maybe the output frequency can be fixed by user intead
-of by the music source being played. Is it hard to implement?
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-12-05 17:38 
+ drow - 09-09-05 05:13 
 ----------------------------------------------------------------------
-The problem is that I haven't been able to reproduce the command(s) that
-the device needs to go into digital-only mode.  I'll have to do more
-reverse engineering ...
+Oh, I tried the updated ICE1724.conf from 1.0.10rc1, and the further
+updated one from CVS.  It helped a little, but not much.
+
+----------------------------------------------------------------------
+ drow - 09-12-05 18:05 
+----------------------------------------------------------------------
+I don't know if this is related, but if I use ttable to remap channels, I
+get strange results.  I can map the center channel of a sample to the
+center speaker, or to the front speakers.  But I can't map the front
+channels to the center speaker!
+
+    # ttable.1.0 1 # FR comes out FL speaker
+    # ttable.1.1 1 # FR comes out FR speaker
+    # ttable.1.* 1 -> nothing
+
+    # ttable.0.0 1 # FL comes out FL speaker
+    # ttable.0.* 1 -> nothing
+
+    # ttable.2.0 1 # RL comes out FL
+    # ttable.2.1 1 # RL comes out FR
+    # ttable.2.2 1 # RL comes out C
+    # ttable.2.* 1 -> nothing
+
+    # ttable.3.3 1 # RR (?) comes out center speaker muffled - LFE?
+
+    # ttable.4.4 1 # Nothing, 0-3 work
+    # ttable.5.5 1 # Nothing
+
+    # ttable.5.0 1 # Mixed comes out FL
+    # ttable.5.1 1 # Mixed comes out FR
+    # ttable.5.2 1 # Mixed comes out C
+    # ttable.5.3 1 # Mixed comes out LFE
+    # ttable.5.4 1 # Nothing
+    # ttable.5.5 1 # Nothing
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-10-05 06:41 wshtb          New Issue                                    
-09-10-05 06:41 wshtb          Distribution              => Fedora Core 4   
-09-10-05 06:41 wshtb          Kernel Version            => 2.6.13          
-09-11-05 18:32 wshtb          Issue Monitored: wshtb                       
-09-12-05 17:38 Clemens LadischNote Added: 0006147                          
+09-09-05 05:11 drow           New Issue                                    
+09-09-05 05:11 drow           Distribution              => Debian          
+09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
+09-09-05 05:13 drow           Note Added: 0006091                          
+09-12-05 18:05 drow           Note Added: 0006148                          
 ======================================================================
 
 
