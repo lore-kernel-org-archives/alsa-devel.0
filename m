@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Mon, 12 Sep 2005 19:02:54 +0200
-Message-ID: <28dd656cf64c5a40db4984c7a4fa0d59@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Re : CVS: alsa-kernel/pci/au88x0 au88x0.c,1.18,1.19
+Date: Tue, 13 Sep 2005 01:26:58 +0800
+Message-ID: <4325BA62.1010208@netvigator.com>
+References: <43226AE6.3060502@netvigator.com> <4af2d03a05091000577d5ed477@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6574B13B
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 19:02:54 +0200 (MEST)
+In-Reply-To: <4af2d03a05091000577d5ed477@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,133 +17,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: jirislaby@gmail.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Jiri Slaby wrote:
+> On 9/10/05, Raymond <rayau@netvigator.com> wrote:
+> 
+>>Refer to the recent change in CVS
+>>
+>>http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/au88x0/au88x0.c?r1=1.18&r2=1.19
+>>
+>>The au88x0 chips have known conflict with the following PCI devices
+>>
+>>1) PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_8365_1
+>>2) PCI_VENDOR_ID_VIA, PCI_EVICE_ID_VIA_82C598_1
+>>3) PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_FE_GATE_7007
+> 
+> Maybe, this is the problem of the driver, I only want to get rid of
+> pci_find_device from the tree, because it's old and deprecated.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1380> 
-======================================================================
-Reported By:                Varanger
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1380
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
-Kernel Version:             Linux 2.6.11-1-686-smp
-======================================================================
-Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              09-12-2005 19:02 CEST
-======================================================================
-Summary:                    Scratchy Intel HDA
-Description: 
-Hello.
+The description of the "Loss of Sound" in Windows driver
 
-I am getting very scratchy audio in my Intel HDA card besides the sound is
-very low.
+http://www.dayc.vispa.com/guides/vortex.htm
 
-lspci output is:  
 
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
+>>The function of snd_vortex_workaround() is to detect the presence of
+>>these devices and  perform vortex_fix_latency() and
+>>vortex_fix_agp_bridge() automatically.
+>>
+>>http://sourceforge.net/mailarchive/forum.php?thread_id=8137444&forum_id=33141
+>>
+>>What is the difference between pci_find_device() and pci_get_device() ?
+> 
+> pci_find returns structure of device, that couldn't exist, when
+> returned, so pci_get_device uses ref. counts to avoid this.
 
-Reading every article I could have found on the net regarding this
-card, I discovered that i needed snd-azx (ALSA 1.0.8 ) or
-snd-hda-intel modules (ALSA 1.0.9rc* or later).
 
-I have downloaded every sources from 1.0.8 up to 1.0.10rc1 (including
-1.0.9 release candidates) from http://www.alsa-project.org, then built and
-installed them.
+Is the result fatal if pci_dev_put() some how can not decrease the ref.
+count ?
 
-In all those versions, I have followed this steps:
-alsa-driver : ./configure --with-oss=yes --with-cards=hda-intel && make &&
-make install
-library / oss-lib / utils : ./configure && make && make install
 
-I've looked every on the net and found that I could use position_fix=1
-or position_fix=2 to help me  but no good either.
+> 
+>>What is the purpose of adding pci_dev_put(via); at the end of
+>>snd_vortex_workaround() ?
+> 
+> pci_dev_put decrements ref. count, when is no longer needed.
+> 
 
-I've tried in Ubuntu, Kubuntu, Debian, even Mandriva 2005 LE and
-Fedora Core 4 (using the modules from the kernel) and it's the same
-problem in all of them.
+Does this means every vortex_fix_agp_bridge(via) will be followed by 
+pci_dev_put(via) ?
 
-The card came with the mainboard Intel 915G (D915GEV or 915GEV)  
 
-more info about my soundcard:
 
-Running: "lspci -v" 
 
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e200
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at ff43c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] #10 [0091]
 
-/proc/sound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jul  7 2005 for kernel 2.6.10-5-686-smp (SMP).
 
-/proc/asound/devices
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Thanks for the help,
-Varanger
-======================================================================
-
-----------------------------------------------------------------------
- cventers - 09-08-05 09:27 
-----------------------------------------------------------------------
-I'm using the latest alsa-driver release, and I also experience scratchy
-sound on the Intel HDA driver:
-
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-
-I've tried the position_fix fixes, but I can't seem to improve my sound
-quality.
-
-----------------------------------------------------------------------
- mico - 09-12-05 19:02 
-----------------------------------------------------------------------
-The same problem, with 1.0.9, 1.0.10_rc1 on Acer TravelMate 8103WLmi
-(Gentoo/2005)
-
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-
-Interesting thing, that when using OSS plugin, sound works fine (sound
-level is also OK).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 20:07 Varanger       New Issue                                    
-08-30-05 20:07 Varanger       Distribution              => Ubuntu 5.04 "Hoary
-Hedgehog"
-08-30-05 20:07 Varanger       Kernel Version            => Linux
-2.6.11-1-686-smp
-09-08-05 09:27 cventers       Note Added: 0006070                          
-09-12-05 19:02 mico           Note Added: 0006149                          
-======================================================================
 
 
 
