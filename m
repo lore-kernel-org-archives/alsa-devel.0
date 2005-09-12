@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Mon, 12 Sep 2005 18:05:07 +0200
-Message-ID: <0c83823d1cf51c90a83ee3f3d5b5aca7@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Mo' better modem support
+Date: Tue, 13 Sep 2005 00:36:51 +0800
+Message-ID: <4325AEA3.1090602@netvigator.com>
+References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de> <4321B5A4.5090803@netvigator.com> <20050911124530.GA16795@titan.lahn.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D618B1CE
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 18:05:07 +0200 (MEST)
+In-Reply-To: <20050911124530.GA16795@titan.lahn.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,94 +17,133 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
+Cc: alsa-devel@lists.sourceforge.net, Sasha Khapyorsky <sashak@smlink.com>
 List-Id: alsa-devel@alsa-project.org
 
+Philipp Matthias Hahn wrote:
+> Hello!
+> 
+> On Sat, Sep 10, 2005 at 12:17:40AM +0800, Raymond wrote:
+> 
+>>Would you post result of
+>>cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
+> 
+> 
+> 0:00 = 6940
+> 0:02 = 0303
+> 0:04 = 8000
+> 0:06 = 801f
+> 0:08 = ffff
+> 0:0a = 9f1f
+> 0:0c = 801f
+> 0:0e = 881f
+> 0:10 = 9f1f
+> 0:12 = 9f1f
+> 0:14 = 9f1f
+> 0:16 = 9f1f
+> 0:18 = 0707
+> 0:1a = 9818
+> 0:1c = 0000
+> 0:1e = 0000
+> 0:20 = 0000
+> 0:22 = 0808
+> 0:24 = 0000
+> 0:26 = 000f
+> 0:28 = ffff
+> 0:2a = ffff
+> 0:2c = ffff
+> 0:2e = ffff
+> 0:30 = ffff
+> 0:32 = ffff
+> 0:34 = ffff
+> 0:36 = ffff
+> 0:38 = ffff
+> 0:3a = ffff
+> 0:3c = 0000
+> 0:3e = 0000
+> 0:40 = 0000
+> 0:42 = 0000
+> 0:44 = 0000
+> 0:46 = 0000
+> 0:48 = 0000
+> 0:4a = 0000
+> 0:4c = 0000
+> 0:4e = 0000
+> 0:50 = 0000
+> 0:52 = 0000
+> 0:54 = 0000
+> 0:56 = 0000
+> 0:58 = 0000
+> 0:5a = 0000
+> 0:5c = 0000
+> 0:5e = 0000
+> 0:60 = 0000
+> 0:62 = 0000
+> 0:64 = 0000
+> 0:66 = 0000
+> 0:68 = 0000
+> 0:6a = 0000
+> 0:6c = 0000
+> 0:6e = 0000
+> 0:70 = 0000
+> 0:72 = 0000
+> 0:74 = 0000
+> 0:76 = 0000
+> 0:78 = 0000
+> 0:7a = 0000
+> 0:7c = 8384
+> 0:7e = 7605
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
-======================================================================
-Reported By:                drow
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1407
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.13-rc6
-======================================================================
-Date Submitted:             09-09-2005 05:11 CEST
-Last Modified:              09-12-2005 18:05 CEST
-======================================================================
-Summary:                    Can't use rear speaker channels
-Description: 
-I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
-ice1724.  I've spent most of tonight trying to get surround sound to
-work... but the best I can get is four channels (specifically, front
-left/right, center, LFE).  Nothing happens when samples are sent to the
-rear channels.  And the front channels are mirrored onto the rear
-speakers, under control of the Headphone volume control.
+http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-kernel/pci/ac97/ac97_id.h?rev=1.11
 
-Which is really annoying, because it means that muting the master volume
-doesn't mute the back speakers.
+#define AC97_ID_STAC9705	0x83847605
 
-I realize this isn't much information.  I don't know what else to check
-but I'll be glad to debug it if someone can give me a pointer.
+http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-kernel/pci/ac97/ac97_codec.c?rev=1.197
 
-======================================================================
+{ 0x83847604, 0xffffffff, "STAC9701,3,4,5",	NULL,		NULL },
+{ 0x83847605, 0xffffffff, "STAC9704",		NULL,		NULL },
 
-----------------------------------------------------------------------
- drow - 09-09-05 05:13 
-----------------------------------------------------------------------
-Oh, I tried the updated ICE1724.conf from 1.0.10rc1, and the further
-updated one from CVS.  It helped a little, but not much.
+Is it STAC9705 ?
 
-----------------------------------------------------------------------
- drow - 09-12-05 18:05 
-----------------------------------------------------------------------
-I don't know if this is related, but if I use ttable to remap channels, I
-get strange results.  I can map the center channel of a sample to the
-center speaker, or to the front speakers.  But I can't map the front
-channels to the center speaker!
+18-bit full-duplex audio codec with intergrated modem analog front end.
 
-    # ttable.1.0 1 # FR comes out FL speaker
-    # ttable.1.1 1 # FR comes out FR speaker
-    # ttable.1.* 1 -> nothing
+http://www6.tomshardware.com/mobile/20010126/notebooks-06.html
 
-    # ttable.0.0 1 # FL comes out FL speaker
-    # ttable.0.* 1 -> nothing
+What is the usage of MOT6269353 if it already connected to STAC9705 ?
 
-    # ttable.2.0 1 # RL comes out FL
-    # ttable.2.1 1 # RL comes out FR
-    # ttable.2.2 1 # RL comes out C
-    # ttable.2.* 1 -> nothing
+> 
+>>Are you able to use the modem in Win9x/NT4/W2K/DOS ?
+> 
+> 
+> Yes, I once used the modem with Windows98. But it's a long time ago,
+> since I now use Linux all the time.
+> 
 
-    # ttable.3.3 1 # RR (?) comes out center speaker muffled - LFE?
+Just make sure your modem are still working
 
-    # ttable.4.4 1 # Nothing, 0-3 work
-    # ttable.5.5 1 # Nothing
+The cable at the top of the MiniPCI card is connected to the RJ11 Combo 
+jack. Combo because the MDC modem card is sharing this port with the 
+LAN. You cannot use LAN and Modem simultaneously.
 
-    # ttable.5.0 1 # Mixed comes out FL
-    # ttable.5.1 1 # Mixed comes out FR
-    # ttable.5.2 1 # Mixed comes out C
-    # ttable.5.3 1 # Mixed comes out LFE
-    # ttable.5.4 1 # Nothing
-    # ttable.5.5 1 # Nothing
+How to select which one use the RJ11 Combo jack ? (BIOS setup)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-09-05 05:11 drow           New Issue                                    
-09-09-05 05:11 drow           Distribution              => Debian          
-09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
-09-09-05 05:13 drow           Note Added: 0006091                          
-09-12-05 18:05 drow           Note Added: 0006148                          
-======================================================================
+> 
+>>What is the feature available ?
+>>1) Data/Fax only
+>>2) Data/Fax/TAM       (Telephone answering machine)
+>>3) Data/Fax/TAM/Speakerphon
+> 
+> 
+> Don't know. Never used Windows much. But if you have an easy-to-install
+> and easy-to-use test application for Windows, I'm willing to test it.
+> 
+
+It seem to support voice, any user manual mention that it can be
+used for data/fax/tam/speakerphone ?
+
+
 
 
 
