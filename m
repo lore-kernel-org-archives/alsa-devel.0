@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Mon, 12 Sep 2005 16:30:38 +0200
-Message-ID: <9e87d81f0bab48ba01dc824d4ef54007@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: [conf patch] modem config for HDA-Intel
+Date: Mon, 12 Sep 2005 20:05:28 +0300
+Message-ID: <20050912170528.GD4584@sashak.softier1.local>
+References: <s5h64tfs8wm.wl%tiwai@suse.de>
+ <20050905232951.GG20428@sashak.softier1.local> <s5h8xyauxxr.wl%tiwai@suse.de>
+ <20050907160343.GA3375@sashak.softier1.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D44401CC
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2005 16:30:38 +0200 (MEST)
+In-reply-to: <20050907160343.GA3375@sashak.softier1.local>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,103 +20,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
-======================================================================
-Reported By:                spiral
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1377
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Hoary
-Kernel Version:             2.6.13 final
-======================================================================
-Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              09-12-2005 16:30 CEST
-======================================================================
-Summary:                    tons of unknown symbols with 2.6.13 final
-Description: 
-Hello !
+This is modem related configuration for HDA-Intel (device 6).
 
-I have a laptop with a hda-intel based sound card... I recently tried to
-update my kernel to 2.6.13 with the official kernel.org source, with
-almost the same configuration I have on my 2.6.12.5... This worked nicely
-except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
-(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
+Not tested.
 
-In both cases, I can't load snd-hda-intel and I get a lot of unknown
-symbol messages in dmesg...
-
-I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
-======================================================================
-
-----------------------------------------------------------------------
- spiral - 09-11-05 00:33 
-----------------------------------------------------------------------
-I have multiple kernel sources : 2.6.12.6 (working version) and 2.6.13.1
-(with alsa problems).
-
-I have the symlink /usr/src/linux which points to 2.6.13.1.
-
-Both versions are official kernels from kernel.org.
-
-I shall try your suggestion of installation tomorrow... Now I should go to
-bed :-)
-
-I'll tell you if this works :-)
-
-'bye
-
-----------------------------------------------------------------------
- tiwai - 09-12-05 16:30 
-----------------------------------------------------------------------
-This is possiblly because configure script failed to detect some
-conditions.  For example, some compile flags was changed, etc.
-
-Please attach config.log for checking.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 09:34 spiral         New Issue                                    
-08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
-08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
-09-02-05 19:51 tiwai          Note Added: 0006017                          
-09-04-05 22:11 1g0R           Note Added: 0006038                          
-09-05-05 14:15 kSh            Note Added: 0006041                          
-09-05-05 14:15 kSh            Issue Monitored: kSh                         
-09-06-05 17:35 spiral         File Added: dmesgout.txt                     
-09-06-05 17:36 spiral         Note Added: 0006047                          
-09-06-05 20:17 1g0R           Note Added: 0006048                          
-09-07-05 15:48 tiwai          Note Added: 0006056                          
-09-07-05 17:25 spiral         Note Added: 0006059                          
-09-07-05 17:26 spiral         Note Edited: 0006059                         
-09-07-05 17:27 tiwai          Note Added: 0006060                          
-09-07-05 17:28 spiral         Note Added: 0006061                          
-09-07-05 17:35 tiwai          Note Added: 0006062                          
-09-09-05 17:30 Twey           Note Added: 0006102                          
-09-09-05 17:30 Twey           Note Edited: 0006102                         
-09-09-05 17:31 Twey           Issue Monitored: Twey                        
-09-09-05 17:48 tiwai          Note Added: 0006103                          
-09-10-05 23:59 spiral         Note Added: 0006125                          
-09-11-05 00:09 rlrevell       Note Added: 0006126                          
-09-11-05 00:15 spiral         Note Added: 0006127                          
-09-11-05 00:25 rlrevell       Note Added: 0006128                          
-09-11-05 00:33 spiral         Note Added: 0006129                          
-09-12-05 16:30 tiwai          Note Added: 0006146                          
-======================================================================
+Sasha.
 
 
+"modem" pcm device for HDA-Intel card.
+
+Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
+
+Index: alsa-lib/src/conf/cards/HDA-Intel.conf
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/HDA-Intel.conf,v
+retrieving revision 1.4
+diff -u -p -r1.4 HDA-Intel.conf
+--- alsa-lib/src/conf/cards/HDA-Intel.conf	24 Feb 2005 10:19:23 -0000	1.4
++++ alsa-lib/src/conf/cards/HDA-Intel.conf	12 Sep 2005 14:13:13 -0000
+@@ -126,3 +126,15 @@ HDA-Intel.pcm.iec958.0 {
+ 		}
+ 	}
+ }
++
++<confdir:pcm/modem.conf>
++
++HDA-Intel.pcm.modem.0 {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type hw
++	card $CARD
++	device 6
++}
 
 
 -------------------------------------------------------
