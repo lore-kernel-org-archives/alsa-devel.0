@@ -1,13 +1,13 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [patch] "empty" generic mfg-only codec
-Date: Tue, 13 Sep 2005 03:18:47 +0300
-Message-ID: <20050913001847.GA30146@tecr>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <20050905232951.GG20428@sashak.softier1.local> <s5h8xyauxxr.wl%tiwai@suse.de> <20050907160343.GA3375@sashak.softier1.local>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: hda-intel/ALC260: mixer control issues
+Date: Tue, 13 Sep 2005 09:46:51 +0930 (CST)
+Message-ID: <200509130016.j8D0GpJ0005299@auster.physics.adelaide.edu.au>
+References: <s5h4q8qinxw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20050907160343.GA3375@sashak.softier1.local>
+In-Reply-To: <s5h4q8qinxw.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 12, 2005 12:24:11 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +18,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+Hi Takashi
 
-This patch allows generic creation for mfg-only codecs, so some basic
-codec info (like vendor_id) will be shown from proc file.
+> > As far as I can tell these are the only pins connected and in use.  Thus
+> > the others are effectively turned off.
+> > 
+> > The number of mixer controls have been reduced to include only the pins
+> > which actually do something.  The control names reflect the above usage
+> > rather than the ALC260 pins they control.  These control names appear to do
+> > the right thing for the ALSA and OSS apps I've tested (audacity, aplay,
+> > wavplay plus some OSS things I've written).
+> 
+> Well, I feel some mixer names are unconventional, namely, "LineOut
+> Playback Volume", "Mic/LineIn Playback Volume", "BeepGen Playback
+> Volume", "IntSpeaker Playback Volume".  They can't work with OSS
+> emulation (unless you adjust manually a proc file) -- although you
+> claim that it works.
 
-Not tested.
+OSS emulation definitely seems to work fine for me - wavplay and audacity
+certainly do the right thing.  Admittedly I haven't attempted to use a full
+OSS *mixer* application since I don't have one handy, so perhaps there might
+be some gremlins in there.
 
-Sasha.
+> - "LineOut" isn't "Headphone"?  In most cases, the icon shown around
+> such an output jack indicates a headphone indeed.
 
+On this laptop at leat the associated jack can be either a Line-Out or a
+headphone output.  The difference is whether the on-chip headphone amplifier
+is enabled or not.  Enabling this amplifier increases the noise level, so
+having the amplifier permanently enabled is not a generic solution since it
+degrades performance for those of us who will be using the jack as a
+line-out connection.  As the patch stands I do not enable the headphone amp
+and so technically that jack really is behaving as a true "line-out" jack.
+That is why I used "LineOut" as the mixer name.
 
-This creates "empty" hda generic for unknown MFG-only codecs.
+I guess we could call this control "headphone", but my thought was that
+given the dual nature of the jack this could get confusing.
 
-Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
+For me I have no real use for the headphone amp but perhaps I'm in the
+minority.  What I might do is enable the amp by default but add a mixer
+switch which, if unset, turns off the headphone amp and turns the jack into
+a true lineout jack.  Then the control could be called "headphone" with the
+understanding that the "headphone" control was a true line-level output if
+this kernel parameter is supplied.  What do you think?
 
-Index: alsa-kernel/pci/hda/hda_generic.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_generic.c,v
-retrieving revision 1.8
-diff -u -p -r1.8 hda_generic.c
---- alsa-kernel/pci/hda/hda_generic.c	9 Sep 2005 13:21:47 -0000	1.8
-+++ alsa-kernel/pci/hda/hda_generic.c	12 Sep 2005 22:49:23 -0000
-@@ -881,10 +881,8 @@ int snd_hda_parse_generic_codec(struct h
- 	struct hda_gspec *spec;
- 	int err;
- 
--	if(!codec->afg) {
--		snd_printdd("hda_generic: no generic modem yet\n");
--		return -ENODEV;
--	}
-+	if(!codec->afg)
-+		return 0;
- 
- 	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
- 	if (spec == NULL) {
+> - "Mic/LineIn" can be either "Mic" or "Line".  I think the former is
+> better.  If you stick with both, "Mic/Line".
+
+I like "Mic/Line" rather than just "Mic" - "mic" is misleading since the
+jack is very definitely labelled as "Mic/Line" and does a good job of
+accepting line-level input.
+
+> - "IntSpeaker" is "Internal Speaker".
+
+Ok, I wasn't aware that there was a formal name for this.  I only used
+"IntSpeaker" simply because it fitted into the space allocated for the name
+in alsamixer. :)
+> 
+> - "BeepGen" is either "PC Speaker" or "Beep".
+
+I'd go with "beep" simply because "PC Speaker" could confuse users who might
+think it was referring to the internal speaker output rather than the beep
+input.  Again, I wasn't aware that "Beep" existed as part of the convention.
+
+> > The new mixer/initialisation is only activated if the subsystem vendor
+> > and device IDs match those in the S7020, since there's no guarantee that
+> > other Fujitsu models will share this device layout.  I figure things can
+> > always be relaxed later if it turns out this applies to other models.
+> 
+> Let's add a new model string so that people can test this model on
+> other devices, too.
+
+No worries.
+
+> > The only outstanding mixer-related issue is control of the headphone amp
+> > associated with the LineOut jack.  In essence the ALC260 Line 1 pin has a
+> > headphone amp which can be enabled to drive headphones harder than can be
+> > done without it.  However, the noise level increases if this is done, so if
+> > the output is being fed to other equipment it's better to leave the amp off. 
+> > It would be nice to be able to turn this amp on and off dynamically but the
+> > mixer API doesn't appear to have the ability to do this (although I'm still
+> > looking). The alternative is to define a new module option which turns the
+> > amp on if the user requests it.  I'm still working on this and will submit a
+> > patch addressing this if I can come up with something sensible.
+> 
+> The mixer API can.  Simply add a control like "Headhpone Amplifer
+> Switch", or so.  (I guess you mean to turn on/off HP pin control bit?)
+
+Yes, it's the HP pin control bit that's the issue here.  I wasn't aware that
+the mixer API could control that as well, which could be my fault for
+jumping in to this without trying very hard to find documentation. :-)
+
+Ok, I'll distil all this and rework the patch tonight.
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
