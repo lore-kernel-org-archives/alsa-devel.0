@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Tue, 13 Sep 2005 18:26:12 +0200
-Message-ID: <0b462e6f96bf625f6875062401723597@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Tue, 13 Sep 2005 18:27:57 +0200
+Message-ID: <0b795f153262aadea60eab3bb226045d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D04291BA
-	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2005 18:26:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6E761BC
+	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2005 18:27:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,128 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1380> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
 ======================================================================
-Reported By:                Varanger
-Assigned To:                tiwai
+Reported By:                midnight
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1380
-Category:                   PCI - hda-intel
+Issue ID:                   1378
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
-Kernel Version:             Linux 2.6.11-1-686-smp
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
 ======================================================================
-Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              09-13-2005 18:26 CEST
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-13-2005 18:27 CEST
 ======================================================================
-Summary:                    Scratchy Intel HDA
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
 Description: 
-Hello.
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-I am getting very scratchy audio in my Intel HDA card besides the sound is
-very low.
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
 
-lspci output is:  
+I use the via82xx module
 
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
-
-Reading every article I could have found on the net regarding this
-card, I discovered that i needed snd-azx (ALSA 1.0.8 ) or
-snd-hda-intel modules (ALSA 1.0.9rc* or later).
-
-I have downloaded every sources from 1.0.8 up to 1.0.10rc1 (including
-1.0.9 release candidates) from http://www.alsa-project.org, then built and
-installed them.
-
-In all those versions, I have followed this steps:
-alsa-driver : ./configure --with-oss=yes --with-cards=hda-intel && make &&
-make install
-library / oss-lib / utils : ./configure && make && make install
-
-I've looked every on the net and found that I could use position_fix=1
-or position_fix=2 to help me  but no good either.
-
-I've tried in Ubuntu, Kubuntu, Debian, even Mandriva 2005 LE and
-Fedora Core 4 (using the modules from the kernel) and it's the same
-problem in all of them.
-
-The card came with the mainboard Intel 915G (D915GEV or 915GEV)  
-
-more info about my soundcard:
-
-Running: "lspci -v" 
-
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e200
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at ff43c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] #10 [0091]
-
-/proc/sound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jul  7 2005 for kernel 2.6.10-5-686-smp (SMP).
-
-/proc/asound/devices
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Thanks for the help,
-Varanger
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- mico - 09-12-05 19:04 
+ midnight - 09-09-05 23:41 
 ----------------------------------------------------------------------
-The same problem, with 1.0.9, 1.0.10_rc1 on Acer TravelMate 8103WLmi
-(Gentoo/2005, kernel 2.6.12.2)
+the thing that make my front speakers crackling was the bit 7 of the 0x64
+register (Mic/LFE share).
 
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
+with the 0x1c38 value, all the channels works. 
 
-Interesting thing, that when using OSS plugin, sound works fine (sound
-level is also OK).
+for testion I had to use "surround51" because with "hw:0,1" I have sound
+only on the front speakers.
 
+fortunetly, "surround51" don't change the register value.
 
+I will probably not be able to answer before next week because I will not
+have internet acces.
 
 ----------------------------------------------------------------------
- tiwai - 09-13-05 18:26 
+ tiwai - 09-13-05 18:27 
 ----------------------------------------------------------------------
-First, try to use dxs_support=2.  Remove all hacks in /etc/modprobe.conf or
-else about install blah with this module, just to make sure.
-
-The fact that OSS emulation tends to work implies that the problem depends
-on the period/buffer sizes.  Save /proc/asound/card0/pcm0p/sub0/hw_params
-if the noise happens, and compares the working state.
+Fixed on CVS version.  Please give a shot.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 20:07 Varanger       New Issue                                    
-08-30-05 20:07 Varanger       Distribution              => Ubuntu 5.04 "Hoary
-Hedgehog"
-08-30-05 20:07 Varanger       Kernel Version            => Linux
-2.6.11-1-686-smp
-09-08-05 09:27 cventers       Note Added: 0006070                          
-09-12-05 19:02 mico           Note Added: 0006149                          
-09-12-05 19:04 mico           Note Edited: 0006149                         
-09-13-05 18:26 tiwai          Note Added: 0006154                          
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
+09-09-05 14:54 midnight       Note Added: 0006099                          
+09-09-05 16:32 tiwai          Note Added: 0006100                          
+09-09-05 19:50 midnight       Note Added: 0006104                          
+09-09-05 20:14 tiwai          Note Added: 0006105                          
+09-09-05 23:41 midnight       Note Added: 0006106                          
+09-13-05 18:27 tiwai          Note Added: 0006155                          
 ======================================================================
 
 
