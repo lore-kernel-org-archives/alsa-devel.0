@@ -1,20 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: [conf patch] modem's pcm "two device" config [was:
- Re: Mo' better modem support]
-Date: Tue, 13 Sep 2005 18:36:47 +0300
-Message-ID: <20050913153647.GB31269@sashak.softier1.local>
-References: <20050905232951.GG20428@sashak.softier1.local>
- <s5h8xyauxxr.wl%tiwai@suse.de> <20050907160343.GA3375@sashak.softier1.local>
- <20050912002746.GA31233@tecr> <s5hzmqih8q2.wl%tiwai@suse.de>
- <s5hzmqifa6e.wl%tiwai@suse.de> <20050912221018.GA19713@tecr>
- <s5hmzmhfh0o.wl%tiwai@suse.de> <20050913143520.GA31269@sashak.softier1.local>
- <s5h64t5f89o.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
+Date: Tue, 13 Sep 2005 15:53:56 +0200
+Message-ID: <d69da71759ff0e705b2b9b41caa9c8e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5h64t5f89o.wl%tiwai@suse.de>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 710791D8
+	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2005 15:53:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +18,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 14:43 Tue 13 Sep     , Takashi Iwai wrote:
-> 
-> Do you mean that the modem with hooks works even without your changes
-> of ac97_* in the driver?
 
-Yes and with new changes as well.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
+======================================================================
+Reported By:                spiral
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1377
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Kubuntu Hoary
+Kernel Version:             2.6.13 final
+======================================================================
+Date Submitted:             08-30-2005 09:34 CEST
+Last Modified:              09-13-2005 15:53 CEST
+======================================================================
+Summary:                    tons of unknown symbols with 2.6.13 final
+Description: 
+Hello !
 
-> It would be ridiculous.  Possibly, the
-> modem codec was found in ac97.num=0?
+I have a laptop with a hda-intel based sound card... I recently tried to
+update my kernel to 2.6.13 with the official kernel.org source, with
+almost the same configuration I have on my 2.6.12.5... This worked nicely
+except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
+(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
 
-No, ac97.num = 1 (it is "standard" ICH3 with dual audio+modem ac97):
+In both cases, I can't load snd-hda-intel and I get a lot of unknown
+symbol messages in dmesg...
 
- # ls /proc/asound/Modem/codec97#0/
- mc97#1-1  mc97#1-1+regs
+I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
+======================================================================
 
-(opposite ac97_read/write would not work, primary/secondary codec access
-is addressed by ac97.num)
+----------------------------------------------------------------------
+ tiwai - 09-12-05 16:30 
+----------------------------------------------------------------------
+This is possiblly because configure script failed to detect some
+conditions.  For example, some compile flags was changed, etc.
 
-> What I mentioned above is that pcm hook finds the correct control
-> handle regardless of the card index.  But each control element is
-> not.  A non-zero index of each hooked control element must be
-> defined explicitly in hook configuration.  Ditto for device and
-> subdevice.
+Please attach config.log for checking.
 
-I understand your arguments, and this part seems ok.
+----------------------------------------------------------------------
+ spiral - 09-13-05 15:53 
+----------------------------------------------------------------------
+I just installed ubuntu breezy because I had a lot of problems with my good
+old hoary, and I took the same 2.6.13.1 kernel, alsa 1.0.10rc1, and it
+works fine on this system now...
 
-What I think happens here is that non-zero index is lost somewhere:
+Thanks for your help
 
- # amixer -c 1 controls 
- numid=1,iface=MIXER,name='Off-hook Switch'
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 09:34 spiral         New Issue                                    
+08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
+08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
+09-02-05 19:51 tiwai          Note Added: 0006017                          
+09-04-05 22:11 1g0R           Note Added: 0006038                          
+09-05-05 14:15 kSh            Note Added: 0006041                          
+09-05-05 14:15 kSh            Issue Monitored: kSh                         
+09-06-05 17:35 spiral         File Added: dmesgout.txt                     
+09-06-05 17:36 spiral         Note Added: 0006047                          
+09-06-05 20:17 1g0R           Note Added: 0006048                          
+09-07-05 15:48 tiwai          Note Added: 0006056                          
+09-07-05 17:25 spiral         Note Added: 0006059                          
+09-07-05 17:26 spiral         Note Edited: 0006059                         
+09-07-05 17:27 tiwai          Note Added: 0006060                          
+09-07-05 17:28 spiral         Note Added: 0006061                          
+09-07-05 17:35 tiwai          Note Added: 0006062                          
+09-09-05 17:30 Twey           Note Added: 0006102                          
+09-09-05 17:30 Twey           Note Edited: 0006102                         
+09-09-05 17:31 Twey           Issue Monitored: Twey                        
+09-09-05 17:48 tiwai          Note Added: 0006103                          
+09-10-05 23:59 spiral         Note Added: 0006125                          
+09-11-05 00:09 rlrevell       Note Added: 0006126                          
+09-11-05 00:15 spiral         Note Added: 0006127                          
+09-11-05 00:25 rlrevell       Note Added: 0006128                          
+09-11-05 00:33 spiral         Note Added: 0006129                          
+09-12-05 16:30 tiwai          Note Added: 0006146                          
+09-13-05 15:53 spiral         Note Added: 0006153                          
+======================================================================
 
-No 'index' is shown there. I'll dig a little.
 
-Sasha.
 
 
 -------------------------------------------------------
