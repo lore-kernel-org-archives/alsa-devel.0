@@ -1,14 +1,14 @@
-From: "Sakari Pekar" <sakariqpdpeka@novachem.com>
-Subject: Re: Works Good Pharirmacy
-Date: Tue, 13 Sep 2005 13:18:56 -0500
-Message-ID: <20050913181858.2E58716F@alsa.jcu.cz>
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Simple suggestion for a make target
+Date: Tue, 13 Sep 2005 12:24:22 -0700 (PDT)
+Message-ID: <20050913192422.73152.qmail@web60825.mail.yahoo.com>
+References: <20050913175247.9B2BD895B2@sc8-sf-spam1.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0000_01C5B865.B18DE000"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from novachem.com (eu85-84-27-240.clientes.euskaltel.es [85.84.27.240])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2E58716F
-	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2005 20:18:58 +0200 (MEST)
+In-Reply-To: <20050913175247.9B2BD895B2@sc8-sf-spam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alvilda Rymer <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Since it appears that frequently the kernel source has older versions of =
+alsa
+when released, wouldn't it be wise to have a target in the alsa-driver-xx=
+.yy.z
+directory that finds the kernel sources, and updates them.  Then one coul=
+d
+re-compile the kernel and all would be well with the world.
 
-------=_NextPart_000_0000_01C5B865.B18DE000
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+For those who don't wish to do this, the "./configure;make;make install"
+sequence would work as well.
 
-http://www.phonefor.com
-AmCeXaL=
-eCiUlVaPrViMe
-bilenav=
-ialtrliopa=
-gri
-enbrxtrisamumecradi
-exa&nbsp=
-;1. 3.ia 3.a
-21=
-7533
- And leave me immediately. On awakening, Margarita did not weep, as she often =
-did, because she
+I suspect that the kernel configuration would pass thru, so one wouldn't =
+need
+to configure before "transferring" sources, but not being an expert, I do=
+n't
+know.
 
-------=_NextPart_000_0000_01C5B865.B18DE000
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Maybe this would encourage distrubutions that diddle with the kernel sour=
+ce to
+have an up-to-date alsa.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><A href=3D"http://www.phonefor.com">http://www.phonefor.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"FLOAT: left;"><FONT face=3DCourier>Am<BR>Ce<BR>Xa<BR>L=
-e<BR><STRONG>Ci</STRONG><BR>Ul<BR><STRONG>Va</STRONG><BR>Pr<BR><STRO=
-NG>Vi</STRONG><BR>Me</FONT></DIV>
-<DIV style=3D"FLOAT: left;"><FONT face=3DCourier>bi<BR>le<BR>na<BR>v=
-i<BR><STRONG>al</STRONG><BR>tr<BR><STRONG>li</STRONG><BR>op<BR><STRONG>a=
-g</STRONG><BR>ri</FONT></DIV>
-<DIV style=3D"FLOAT: left;"><FONT face=3DCourier>en<BR>br<BR>x<BR>tr<B=
-R><STRONG>is</STRONG><BR>am<BR><STRONG>um</STRONG><BR>ec<BR><STRONG>ra</S=
-TRONG><BR>di</FONT></DIV>
-<DIV style=3D"FLOAT: left;"><FONT face=3DCourier><BR>ex<BR><BR>a<BR>&nbsp=
-;1.<BR><BR>&nbsp;3.<BR>ia<BR>&nbsp;3.<BR>a</FONT></DIV>
-<DIV style=3D"FLOAT: left;"><FONT face=3DCourier><BR><BR><BR><BR>21=
-<BR><BR>75<BR><BR>33<BR></FONT></DIV>
-</BODY></HTML>
+Just an idea.
 
-------=_NextPart_000_0000_01C5B865.B18DE000--
 
+--=20
+Tom Watson
+tsw@johana.com
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
 
 -------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server.=20
+Download it for free - -and be entered to win a 42" plasma tv or your ver=
+y
+own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
