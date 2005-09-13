@@ -1,13 +1,20 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Simple suggestion for a make target
-Date: Tue, 13 Sep 2005 15:37:34 -0400
-Message-ID: <1126640254.13893.37.camel@mindpipe>
-References: <20050913192422.73152.qmail@web60825.mail.yahoo.com>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: Re: Re: au88x0 modem
+Date: Wed, 14 Sep 2005 00:44:13 +0300
+Message-ID: <20050913214413.GA9475@sashak.softier1.local>
+References: <20050906142917.GA30523@sashak.softier1.local>
+ <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de>
+ <4321B5A4.5090803@netvigator.com> <20050911124530.GA16795@titan.lahn.de>
+ <4325AEA3.1090602@netvigator.com> <20050913000909.GB19713@tecr>
+ <20050913085552.GA2655@titan.lahn.de>
+ <20050913173529.GD31269@sashak.softier1.local>
+ <20050913174930.GA5816@titan.lahn.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050913192422.73152.qmail@web60825.mail.yahoo.com>
+In-reply-to: <20050913174930.GA5816@titan.lahn.de>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,33 +24,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
+Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org, Raymond <rayau@netvigator.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-09-13 at 12:24 -0700, Tom Watson wrote:
-> Since it appears that frequently the kernel source has older versions of alsa
-> when released, wouldn't it be wise to have a target in the alsa-driver-xx.yy.z
-> directory that finds the kernel sources, and updates them.  Then one could
-> re-compile the kernel and all would be well with the world.
+On 19:49 Tue 13 Sep     , Philipp Matthias Hahn wrote:
 > 
-> For those who don't wish to do this, the "./configure;make;make install"
-> sequence would work as well.
-> 
-> I suspect that the kernel configuration would pass thru, so one wouldn't need
-> to configure before "transferring" sources, but not being an expert, I don't
-> know.
-> 
-> Maybe this would encourage distrubutions that diddle with the kernel source to
-> have an up-to-date alsa.
+> ACPI: PCI Interrupt 0000:00:06.0[A] -> Link [LNKC] -> GSI 10 (level, low) -> IRQ 10
+> Vortex: init.... <6>done.
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> vortex: ac97 address never arrived
+> AC'97 1 does not respond - RESET
 
-What would be the point?  It's already simpler than that.
-Just ./configure && make && make install in alsa-driver directory to
-install a newer ALSA.  It just overwrites the old ALSA modules that came
-with the kernel with the newer ones.  You don't even need to reboot.
+Understood. Could you send full 'lspci -vv' please.
 
-Lee
-
+Sasha.
 
 
 -------------------------------------------------------
