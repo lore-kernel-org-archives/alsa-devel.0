@@ -1,13 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [patch] no templated index for si3036 modem controls
-Date: Tue, 13 Sep 2005 04:06:24 +0300
-Message-ID: <20050913010624.GB1682@tecr>
-References: <s5h64tfs8wm.wl%tiwai@suse.de> <20050905232951.GG20428@sashak.softier1.local> <s5h8xyauxxr.wl%tiwai@suse.de> <20050907160343.GA3375@sashak.softier1.local> <20050912002746.GA31233@tecr> <s5hzmqih8q2.wl%tiwai@suse.de> <s5hzmqifa6e.wl%tiwai@suse.de> <20050913004559.GA1682@tecr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001345]: microphone input does broken after upgrading from kernel 2.6.10 to 2.6.12
+Date: Tue, 13 Sep 2005 06:26:15 +0200
+Message-ID: <381c3bae7917e6b22d47535bc56d7ac8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20050913004559.GA1682@tecr>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5236A1B0
+	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2005 06:26:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03:45 Tue 13 Sep     , Sasha Khapyorsky wrote:
-> 
-> No index is templated for mdoem controls.
 
-And same for si3036 specific controls.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1345> 
+======================================================================
+Reported By:                kayosiii
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1345
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Mepis
+Kernel Version:             2.6.12 custom compiled
+======================================================================
+Date Submitted:             08-17-2005 08:13 CEST
+Last Modified:              09-13-2005 06:26 CEST
+======================================================================
+Summary:                    microphone input does broken after upgrading from
+kernel 2.6.10 to 2.6.12
+Description: 
+Basically When a boot using kernel 2.6.10 I can record using a microphone.
+With 2.6.12 I get no input... I am running the latest alsa-base in debian
+unstable. And have tried just about every setting in kmixer
+======================================================================
 
-Sasha.
+----------------------------------------------------------------------
+ rlrevell - 09-11-05 21:40 
+----------------------------------------------------------------------
+Your asound.state shows that you have 2 soundcards - an Audigy and an
+onboard VIA device.  The Audigy mixer settings look OK but the mic is
+muted on the VIA card.  Which one are you trying to get working?
+
+----------------------------------------------------------------------
+ kayosiii - 09-13-05 06:26 
+----------------------------------------------------------------------
+Thats interesting because there is not an audigy or has ever been an audigy
+in the system.... I do have another sound card - an emagic AudiowerksII
+but that does not even have an alsa driver and I can't imagine it being
+mis-detected...
+
+Anyways somehow the endless fiddling turned out fruitfull and after a
+reboot everything is working again.
+
+So Thankyou for your time
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-05 08:13 kayosiii       New Issue                                    
+08-17-05 08:13 kayosiii       Distribution              => Mepis           
+08-17-05 08:13 kayosiii       Kernel Version            => 2.6.12 custom
+compiled
+08-22-05 12:20 perex          Assigned To              perex =>            
+08-22-05 12:20 perex          Status                   assigned => new     
+08-22-05 12:20 perex          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+08-23-05 16:50 tiwai          Note Added: 0005910                          
+08-25-05 03:59 kayosiii       Note Added: 0005936                          
+09-11-05 07:07 kayosiii       Note Added: 0006138                          
+09-11-05 10:35 kayosiii       File Added: asound.state                     
+09-11-05 10:38 kayosiii       Note Added: 0006139                          
+09-11-05 21:40 rlrevell       Note Added: 0006144                          
+09-13-05 06:26 kayosiii       Note Added: 0006151                          
+======================================================================
 
 
-No index is templated for si3036 modem controls.
-
-Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
-
-Index: alsa-kernel/pci/ac97/ac97_patch.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
-retrieving revision 1.96
-diff -u -p -r1.96 ac97_patch.c
---- alsa-kernel/pci/ac97/ac97_patch.c	2 Sep 2005 13:03:07 -0000	1.96
-+++ alsa-kernel/pci/ac97/ac97_patch.c	13 Sep 2005 00:22:45 -0000
-@@ -2752,7 +2752,11 @@ AC97_DOUBLE("Modem Speaker Volume", 0x5c
- 
- static int patch_si3036_specific(ac97_t * ac97)
- {
--	return patch_build_controls(ac97, snd_ac97_controls_si3036, ARRAY_SIZE(snd_ac97_controls_si3036));
-+	int idx, err;
-+	for (idx = 0; idx < ARRAY_SIZE(snd_ac97_controls_si3036); idx++)
-+		if ((err = snd_ctl_add(ac97->bus->card, snd_ctl_new1(&snd_ac97_controls_si3036[idx], ac97))) < 0)
-+			return err;
-+	return 0;
- }
- 
- static struct snd_ac97_build_ops patch_si3036_ops = {
 
 
 -------------------------------------------------------
