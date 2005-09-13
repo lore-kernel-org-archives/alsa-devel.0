@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Tue, 13 Sep 2005 00:16:30 +0200
-Message-ID: <eac50555dcf8f89bd79ea9fd9095e736@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: au88x0 modem [was: Re: Mo' better modem support]
+Date: Tue, 13 Sep 2005 03:09:09 +0300
+Message-ID: <20050913000909.GB19713@tecr>
+References: <s5h64tfs8wm.wl%tiwai@suse.de> <431D554E.8050500@netvigator.com> <20050906142917.GA30523@sashak.softier1.local> <431E3771.8090303@netvigator.com> <20050907064449.GA8391@titan.lahn.de> <4321B5A4.5090803@netvigator.com> <20050911124530.GA16795@titan.lahn.de> <4325AEA3.1090602@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E51991C8
-	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2005 00:16:30 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <4325AEA3.1090602@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +17,161 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>, pmhahn@titan.lahn.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On 00:36 Tue 13 Sep     , Raymond wrote:
+> >>cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
+> >0:7c = 8384
+> >0:7e = 7605
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
-======================================================================
-Reported By:                hus
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1297
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 (mostly)
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              09-13-2005 00:16 CEST
-======================================================================
-Summary:                    driver can't initialise card
-Description: 
-My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
-box).
-The snd-emu10k1 module refuses to work for this card; the kernel logs:
+> Is it STAC9705 ?
+> 
+> 18-bit full-duplex audio codec with intergrated modem analog front end.
+> 
+> http://www6.tomshardware.com/mobile/20010126/notebooks-06.html
+> 
+> What is the usage of MOT6269353 if it already connected to STAC9705 ?
 
-ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
-ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
-subsystem_vendor_id=0x80611102, subsystem_id=0x8061
-ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
-[Unknown], 
-vendor=0x1102, device=0x2, subsystem=0x80611102
-ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
-ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
+It is likely secondary modem-only codec (Motorola/SiLabs).
 
-removing mixer.
-EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
+Philipp,
 
-lspci shows
-02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-07)
-        Subsystem: Creative Labs SBLive! Player 5.1
-        Flags: bus master, medium devsel, latency 64, IRQ 17
-        I/O ports at 30c0 [size=32]
-        Capabilities: [dc] Power Management version 1
-(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
+Could you try the patch below? And then look again at '/proc/asond/au8810'?
+
+This is against CVS, untested and may be dangerous because I know nothing
+about au8810 (somebody knows, please comment).
+
+Sasha.
 
 
-The only deviation from the ordinary I can think of is that my system is
-dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
-PCI-to-PCI bridge. That's one thing our systems might have in common, as
-your message shows the card on bus 03. Perhaps this is some strange kind
-of routing problem?
-======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 09-10-05 13:00 
-----------------------------------------------------------------------
-Bug fix now in CVS. 10-Sept-2005
-
-----------------------------------------------------------------------
- jcdutton - 09-13-05 00:16 
-----------------------------------------------------------------------
-Can you please remove your sound card from the PC and tell me what is says
-on the card for the model number. It should be something like "SB0350".
-We seem to have two different cards with exactly the same PCI IDs and I
-would like to see what the differences are.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-01-05 14:27 hus            New Issue                                    
-08-01-05 14:27 hus            Distribution              => Fedora Core 4
-(mostly)
-08-01-05 14:27 hus            Kernel Version            => 2.6.12          
-08-01-05 14:28 hus            Issue Monitored: hus                         
-08-01-05 15:24 jcdutton       Status                   new => assigned     
-08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
-08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
-08-13-05 00:39 jcdutton       Note Added: 0005795                          
-08-13-05 00:40 jcdutton       Status                   assigned => feedback
-08-13-05 21:18 hus            Note Added: 0005809                          
-08-13-05 21:38 rlrevell       Note Added: 0005810                          
-08-14-05 00:32 hus            Note Added: 0005813                          
-09-10-05 13:00 jcdutton       Status                   feedback => closed  
-09-10-05 13:00 jcdutton       Note Added: 0006114                          
-09-13-05 00:16 jcdutton       Status                   closed => feedback  
-09-13-05 00:16 jcdutton       Resolution               open => reopened    
-09-13-05 00:16 jcdutton       Note Added: 0006150                          
-======================================================================
-
-
+Index: alsa-kernel/pci/au88x0/au8810.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8810.h,v
+retrieving revision 1.3
+diff -u -p -r1.3 au8810.h
+--- alsa-kernel/pci/au88x0/au8810.h	13 Apr 2004 15:26:27 -0000	1.3
++++ alsa-kernel/pci/au88x0/au8810.h	12 Sep 2005 23:35:26 -0000
+@@ -171,9 +171,9 @@
+ #define VORTEX_CODEC_CTRL	0x29184
+ #define VORTEX_CODEC_EN		0x29190
+ #define		EN_CODEC0	0x00000300
+-#define 	EN_AC98		0x00000c00 /* Modem AC98 slots. */
++#define 	EN_MODEM	0x00000c00 /* Modem AC98 slots. */
+ #define		EN_CODEC1	0x00003000
+-#define		EN_CODEC	(EN_CODEC0 | EN_CODEC1)
++#define		EN_CODEC	(EN_CODEC0 | EN_MODEM | EN_CODEC1)
+ #define		EN_SPORT	0x00030000
+ #define		EN_SPDIF	0x000c0000
+ 
+Index: alsa-kernel/pci/au88x0/au8820.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8820.h,v
+retrieving revision 1.3
+diff -u -p -r1.3 au8820.h
+--- alsa-kernel/pci/au88x0/au8820.h	13 Apr 2004 15:26:27 -0000	1.3
++++ alsa-kernel/pci/au88x0/au8820.h	12 Sep 2005 23:35:26 -0000
+@@ -158,7 +158,10 @@
+ /* CODEC */
+ #define VORTEX_CODEC_CTRL 0x11984
+ #define VORTEX_CODEC_EN 0x11990
+-#define		EN_CODEC	0x00000300
++#define		EN_CODEC0	0x00000300
++#define		EN_MODEM	0x00000c00
++#define		EN_CODEC1	0x00003000
++#define		EN_CODEC	(EN_CODEC0|EN_MODEM|EN_CODEC1)
+ #define		EN_SPORT	0x00030000
+ #define		EN_SPDIF	0x000c0000
+ #define VORTEX_CODEC_CHN 0x11880
+Index: alsa-kernel/pci/au88x0/au8830.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8830.h,v
+retrieving revision 1.3
+diff -u -p -r1.3 au8830.h
+--- alsa-kernel/pci/au88x0/au8830.h	13 Apr 2004 15:26:27 -0000	1.3
++++ alsa-kernel/pci/au88x0/au8830.h	12 Sep 2005 23:35:27 -0000
+@@ -203,12 +203,12 @@
+ #define VORTEX_CODEC_SPORTCTRL 0x2918c
+ 
+ #define VORTEX_CODEC_EN 0x29190
+-#define		EN_AUDIO0		0x00000300
++#define		EN_CODEC0		0x00000300
+ #define		EN_MODEM		0x00000c00
+-#define		EN_AUDIO1		0x00003000
++#define		EN_CODEC1		0x00003000
+ #define		EN_SPORT		0x00030000
+ #define		EN_SPDIF		0x000c0000
+-#define		EN_CODEC		(EN_AUDIO1 | EN_AUDIO0)
++#define		EN_CODEC		(EN_CODEC0|EN_MODEM|EN_CODEC1)
+ 
+ #define VORTEX_SPDIF_SMPRATE	0x29194
+ 
+Index: alsa-kernel/pci/au88x0/au88x0.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0.h,v
+retrieving revision 1.11
+diff -u -p -r1.11 au88x0.h
+--- alsa-kernel/pci/au88x0/au88x0.h	22 Mar 2005 08:50:55 -0000	1.11
++++ alsa-kernel/pci/au88x0/au88x0.h	12 Sep 2005 23:35:27 -0000
+@@ -135,7 +135,8 @@ struct snd_vortex {
+ 	snd_pcm_t *pcm[VORTEX_PCM_LAST];
+ 
+ 	snd_rawmidi_t *rmidi;	/* Legacy Midi interface. */
+-	ac97_t *codec;
++	unsigned int num_of_codecs;
++	ac97_t *codecs[2];
+ 
+ 	/* Stream structs. */
+ 	stream_t dma_adb[NR_ADB];
+Index: alsa-kernel/pci/au88x0/au88x0_core.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_core.c,v
+retrieving revision 1.11
+diff -u -p -r1.11 au88x0_core.c
+--- alsa-kernel/pci/au88x0/au88x0_core.c	23 Feb 2005 11:00:31 -0000	1.11
++++ alsa-kernel/pci/au88x0/au88x0_core.c	12 Sep 2005 23:35:33 -0000
+@@ -2511,6 +2511,11 @@ static void vortex_codec_init(vortex_t *
+ 	/* Enable codec channels 0 and 1. */
+ 	hwwrite(vortex->mmio, VORTEX_CODEC_EN,
+ 		hwread(vortex->mmio, VORTEX_CODEC_EN) | EN_CODEC);
++	vortex->num_of_codecs = 1;
++	/* nothing know about that */
++	msleep(2);
++	if (hwread(vortex->mmio, VORTEX_CODEC_EN)&(EN_CODEC1|EN_MODEM))
++		vortex->num_of_codecs = 2;
+ }
+ 
+ static void
+Index: alsa-kernel/pci/au88x0/au88x0_mixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_mixer.c,v
+retrieving revision 1.5
+diff -u -p -r1.5 au88x0_mixer.c
+--- alsa-kernel/pci/au88x0/au88x0_mixer.c	23 Mar 2005 17:04:16 -0000	1.5
++++ alsa-kernel/pci/au88x0/au88x0_mixer.c	12 Sep 2005 23:35:33 -0000
+@@ -15,7 +15,7 @@ static int __devinit snd_vortex_mixer(vo
+ {
+ 	ac97_bus_t *pbus;
+ 	ac97_template_t ac97;
+-	int err;
++	int i, err;
+ 	static ac97_bus_ops_t ops = {
+ 		.write = vortex_codec_write,
+ 		.read = vortex_codec_read,
+@@ -27,7 +27,10 @@ static int __devinit snd_vortex_mixer(vo
+ 	// Intialize AC97 codec stuff.
+ 	ac97.private_data = vortex;
+ 	ac97.scaps = AC97_SCAP_NO_SPDIF;
+-	err = snd_ac97_mixer(pbus, &ac97, &vortex->codec);
+-	vortex->isquad = ((vortex->codec == NULL) ?  0 : (vortex->codec->ext_id&0x80));
++	for (i = 0 ; i < vortex->num_of_codecs ; i++) {
++		ac97.num = i;
++		err = snd_ac97_mixer(pbus, &ac97, &vortex->codecs[i]);
++	}
++	vortex->isquad = ((vortex->codecs[0] == NULL) ?  0 : (vortex->codecs[0]->ext_id&0x80));
+ 	return err;
+ }
 
 
 -------------------------------------------------------
