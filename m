@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000718]: unknown symbol on modprobe
-Date: Thu, 15 Sep 2005 01:29:02 +0200
-Message-ID: <63b51a3be33621e04254ff8a65c16856@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000776]: desynchronization, xruns when running mplayer
+Date: Thu, 15 Sep 2005 01:39:09 +0200
+Message-ID: <6f1e5e935651647eaae9fbf889ed72da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A112102
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 01:29:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8B54163
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 01:39:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=718> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=776> 
 ======================================================================
-Reported By:                slonkak
-Assigned To:                pzad
+Reported By:                SergeS
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   718
-Category:                   PCI - emu10k1
+Issue ID:                   776
+Category:                   PCI - nm256
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedore Core 2
-Kernel Version:             Linux titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8
-09:04:50 EDT 2004 i686 athlon i386 GNU/Linux
+Distribution:               
+Kernel Version:             2.4.28
 ======================================================================
-Date Submitted:             12-10-2004 03:18 CET
-Last Modified:              09-15-2005 01:29 CEST
+Date Submitted:             01-02-2005 13:14 CET
+Last Modified:              09-15-2005 01:39 CEST
 ======================================================================
-Summary:                    unknown symbol on modprobe
+Summary:                    desynchronization, xruns when running mplayer
 Description: 
-I have a Sound Blaster Audigy Platinum eX.
+some times sound repeates bit
+from MPlayer log
+alsa-space: xrun of at least xx.xxxx msecs. resseting stream
 
-My steps:
-> Download and unpackage alsa-{driver,lib,utils} in /var/tmp
-> modprobe soundcore (I had previously unloaded all sound modules)
-> in /var/tmp/alsa-driver-xxxx, ./configure --with-cards=emu10k1
---with-sequencer=yes;make;make install
-> ./snddevices
-> chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi 
-> configure, make, and make install utils and lib
-> added these to modprobe.conf
-        # ALSA portion
-        alias char-major-116 snd
-        alias snd-card-0 snd-emu10k1
-	# module options should go here
+if i run MPlayer with oss emulation - all is ok, when i try oss - all is
+ok 
 
-        # OSS/Free portion
-        alias char-major-14 soundcore
-        alias sound-slot-0 snd-card-0
-	
-	# card #1
-	alias sound-service-0-0 snd-mixer-oss
-	alias sound-service-0-1 snd-seq-oss
-	alias sound-service-0-3 snd-pcm-oss
-	alias sound-service-0-8 snd-seq-oss
-	alias sound-service-0-12 snd-pcm-oss
-> modprobe snd-emu10k1;modprobe snd-pcm-oss;modprobe
-snd-mixer-oss;modprobe snd-seq-oss
+all software witch uses alsa do same error
 
-I get fatal errors on the modprobes (see additional info)
+hardwate: Dell Latitude CSx, NeoMagick NM256ZX
+if need more information - send me email to sergesb@mail.ru
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000583 xruns when playing audio or video files
 ======================================================================
 
 ----------------------------------------------------------------------
- slonkak - 09-15-05 00:26 
+ jdthood - 09-14-05 16:15 
 ----------------------------------------------------------------------
-No, that did not fix the problem.  I got frustrated and just started using
-the onboard sound instead.  That worked out of the box.  Go ahead and
-close this ticket.  If I play anymore with this, it'll be on my own
-time...
+Like #583 I suspect that this report can be closed since the bug is in
+mplayer.
 
 ----------------------------------------------------------------------
- rlrevell - 09-15-05 01:29 
+ rlrevell - 09-15-05 01:39 
 ----------------------------------------------------------------------
-Isn't the platinum eX a USB device?  If so then emu10k1 is the wrong
-driver.
+I get the exact same results - I just use OSS emulation with mplayer.  Even
+so I still have to run it like:
+
+nice -n -10 gmplayer movie.avi
+
+to avoid massive audio and video dropouts when another app hogs the CPU.
+
+Anyway it looks like the bug might be fixed in MPlayer dev-CVS--4.0.2.  I
+can no longer reproduce the xruns.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-04 03:18 slonkak        New Issue                                    
-12-10-04 03:18 slonkak        Distribution              => Fedore Core 2   
-12-10-04 03:18 slonkak        Kernel Version            => Linux
-titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8 09:04:50 EDT 2004 i686 athlon i386
-GNU/Linux
-12-16-04 18:42 tiwai          Note Added: 0002838                          
-12-17-04 01:35 slonkak        Note Added: 0002844                          
-09-14-05 16:08 jdthood        Note Added: 0006174                          
-09-15-05 00:26 slonkak        Note Added: 0006188                          
-09-15-05 01:29 rlrevell       Note Added: 0006189                          
+01-02-05 13:14 SergeS         New Issue                                    
+01-02-05 13:14 SergeS         Kernel Version            => 2.4.28          
+01-02-05 13:24 SergeS         Note Added: 0003045                          
+01-02-05 13:25 SergeS         Issue Monitored: SergeS                      
+09-14-05 16:14 jdthood        Summary                  dissynchronization =>
+desynchronization, xruns when running mplayer
+09-14-05 16:14 jdthood        Relationship added       duplicate of 0000583
+09-14-05 16:15 jdthood        Note Added: 0006178                          
+09-15-05 01:39 rlrevell       Note Added: 0006190                          
 ======================================================================
 
 
