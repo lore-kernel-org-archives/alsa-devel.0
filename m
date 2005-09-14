@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000718]: unknown symbol on modprobe
-Date: Wed, 14 Sep 2005 16:08:08 +0200
-Message-ID: <541dc8f48de3b419ccbe5813d2f58d6e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000744]: no sound
+Date: Wed, 14 Sep 2005 16:11:46 +0200
+Message-ID: <2ef4280c2d875c06551c34eba9ae86c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B1A51A3
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:08:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B95E51A3
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:11:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=718> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=744> 
 ======================================================================
-Reported By:                slonkak
-Assigned To:                pzad
+Reported By:                kluczus
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   718
-Category:                   PCI - emu10k1
+Issue ID:                   744
+Category:                   PCI - es1968
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedore Core 2
-Kernel Version:             Linux titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8
-09:04:50 EDT 2004 i686 athlon i386 GNU/Linux
+Status:                     closed
+Distribution:               PLD
+Kernel Version:             2.6.8
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-10-2004 03:18 CET
-Last Modified:              09-14-2005 16:08 CEST
+Date Submitted:             12-23-2004 23:34 CET
+Last Modified:              09-14-2005 16:11 CEST
 ======================================================================
-Summary:                    unknown symbol on modprobe
+Summary:                    no sound
 Description: 
-I have a Sound Blaster Audigy Platinum eX.
+on the notebook armada e500 i have a sound card ESS 1978, device was
+detected but i have no sound (module es1968), alsamixer is telling me that
+"snd_ctl_open failed for default: no such file or directory",
+in modprobe.conf i have "alias char-major-116 snd
+alias snd-card-0 snd-es1968
+alias char-major-14 soundcore
+alias sound-slot-0 snd-card-0
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+options snd major=116 cards_limit=1 device_mode=0660
+options snd-es1968 index=0
+"
+on the OSS with module maestro it was worknig but i want to use alsa :)
+the same problem with alsa on this equipment i have also on Fedora3
 
-My steps:
-> Download and unpackage alsa-{driver,lib,utils} in /var/tmp
-> modprobe soundcore (I had previously unloaded all sound modules)
-> in /var/tmp/alsa-driver-xxxx, ./configure --with-cards=emu10k1
---with-sequencer=yes;make;make install
-> ./snddevices
-> chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi 
-> configure, make, and make install utils and lib
-> added these to modprobe.conf
-        # ALSA portion
-        alias char-major-116 snd
-        alias snd-card-0 snd-emu10k1
-	# module options should go here
-
-        # OSS/Free portion
-        alias char-major-14 soundcore
-        alias sound-slot-0 snd-card-0
-	
-	# card #1
-	alias sound-service-0-0 snd-mixer-oss
-	alias sound-service-0-1 snd-seq-oss
-	alias sound-service-0-3 snd-pcm-oss
-	alias sound-service-0-8 snd-seq-oss
-	alias sound-service-0-12 snd-pcm-oss
-> modprobe snd-emu10k1;modprobe snd-pcm-oss;modprobe
-snd-mixer-oss;modprobe snd-seq-oss
-
-I get fatal errors on the modprobes (see additional info)
+sorry for my english, i hope that you uderstand me :)
 ======================================================================
 
 ----------------------------------------------------------------------
- slonkak - 12-17-04 01:35 
+ tiwai - 12-27-04 19:35 
 ----------------------------------------------------------------------
-I will try these.  I would like to keep this ticket open for a while.  My
-linux box is at school and I'm home for break.  I won't be able to try
-your suggestion until the middle of January...
+Make sure that the driver is really loaded and initialized.
+Check /proc/asound/cards whether you have the valid entry.
+
+If yes, it's likely the problem of device files.  Check whether you have
+valid /dev/snd/* device files (and proper permissions).
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 16:08 
+ jdthood - 09-14-05 16:11 
 ----------------------------------------------------------------------
-Submitter: So, did you fix the problem?
+Presumably a local problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-04 03:18 slonkak        New Issue                                    
-12-10-04 03:18 slonkak        Distribution              => Fedore Core 2   
-12-10-04 03:18 slonkak        Kernel Version            => Linux
-titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8 09:04:50 EDT 2004 i686 athlon i386
-GNU/Linux
-12-16-04 18:42 tiwai          Note Added: 0002838                          
-12-17-04 01:35 slonkak        Note Added: 0002844                          
-09-14-05 16:08 jdthood        Note Added: 0006174                          
+12-23-04 23:34 kluczus        New Issue                                    
+12-23-04 23:34 kluczus        Distribution              => PLD             
+12-23-04 23:34 kluczus        Kernel Version            => 2.6.8           
+12-26-04 15:06 kluczus        Issue Monitored: kluczus                     
+12-27-04 19:35 tiwai          Note Added: 0002974                          
+09-14-05 16:11 jdthood        Status                   assigned => closed  
+09-14-05 16:11 jdthood        Note Added: 0006176                          
 ======================================================================
 
 
