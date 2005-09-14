@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000521]: Jack + Alsa not working in full duplex, works with OSS, griffin imic
-Date: Wed, 14 Sep 2005 15:49:52 +0200
-Message-ID: <7a3c0103ed9c569e8abc002090889cb1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
+Date: Wed, 14 Sep 2005 15:52:46 +0200
+Message-ID: <86157b975c54843eef2ae5c9235a8b13@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DAD98191
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:49:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91CB6191
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:52:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=521> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=583> 
 ======================================================================
-Reported By:                LokiDavison
-Assigned To:                Clemens Ladisch
+Reported By:                KAtiOS
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   521
-Category:                   USB - usb-audio
+Issue ID:                   583
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.4.22-28mm.2mdk
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9_rc4
 ======================================================================
-Date Submitted:             09-21-2004 21:06 CEST
-Last Modified:              09-14-2005 15:49 CEST
+Date Submitted:             10-15-2004 16:27 CEST
+Last Modified:              09-14-2005 15:52 CEST
 ======================================================================
-Summary:                    Jack + Alsa not working in full duplex, works with
-OSS, griffin imic
+Summary:                    xruns when playing audio or video files
 Description: 
-Jack works with the OSS audio driver in full duplex but only works simplex
-with alsa driver. The alsa driver works full duplex when used with alsa
-apps. 100% reproducable. This is using a griffin imic with the
-snd-usb-audio module tested on 2.6 and 2.4 kernels. All jack versions
-including 0.99. I'm often on LAD irc if you want more info.
+I get xruns when playing files.
+I tested with lots of 2.6 kernels, up to 2.6.9_rc4 with the same results.
+It seems that mplayer with sdl output works fine, but xruns with alsa.
+Using acpi=off or pci=noacpi helps in mplayer but not in vdr (with
+softdevice plugin - using alsa).
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ryanpg - 10-08-04 18:40 
+ KAtiOS - 10-16-04 11:39 
 ----------------------------------------------------------------------
-I also find this bug when using my EMI 2|6 soundcard.
+Ok, tested with xine, it seems to be working, except with HDTV files but I
+supposed it's normal given the load.
+So, even if almost every alsa apps causes xruns on some hardware only, as
+long as it's their use of alsa which is bad, that's not a problem.
+How alsa can be so hard to implement correctly so that experienced
+programmers can't make their software usable on every platform?
 
-Jack works with the OSS audio driver in full duplex but only works simplex
-with alsa driver.
-
-2.6 and 2.4 kernels. All jack versions including 0.99.
+[Question : if I can test another sound card on the same computer, could I
+conclude something with the result with mplayer/vdr-softdevice before
+definitely closing this bug?]
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:49 
+ jdthood - 09-14-05 15:52 
 ----------------------------------------------------------------------
-> Jack works with the OSS audio driver in full duplex but only works
-simplex with alsa driver.
-
-Has this problem been fixed?
+Is there a consensus that this report can be closed,
+because the problem is really in mplayer?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 21:06 LokiDavison    New Issue                                    
-09-21-04 21:06 LokiDavison    Distribution              => Mandrake        
-09-21-04 21:06 LokiDavison    Kernel Version            => 2.4.22-28mm.2mdk
-10-08-04 18:32 ryanpg         Issue Monitored: ryanpg                      
-10-08-04 18:40 ryanpg         Note Added: 0002055                          
-09-14-05 15:49 jdthood        Note Added: 0006160                          
+10-15-04 16:27 KAtiOS         New Issue                                    
+10-15-04 16:27 KAtiOS         Distribution              => Gentoo Linux    
+10-15-04 16:27 KAtiOS         Kernel Version            => 2.6.9_rc4       
+10-15-04 18:43 lee            Note Added: 0002168                          
+10-15-04 18:51 KAtiOS         Note Added: 0002169                          
+10-15-04 19:02 lee            Note Added: 0002170                          
+10-15-04 19:12 KAtiOS         Note Added: 0002171                          
+10-15-04 19:24 KAtiOS         Note Added: 0002172                          
+10-15-04 19:29 lee            Note Added: 0002173                          
+10-15-04 20:28 KAtiOS         Note Added: 0002174                          
+10-15-04 22:17 lee            Note Added: 0002175                          
+10-15-04 23:49 KAtiOS         Note Added: 0002176                          
+10-16-04 01:11 lee            Note Added: 0002180                          
+10-16-04 01:18 lee            Note Added: 0002181                          
+10-16-04 06:05 lee            Note Added: 0002183                          
+10-16-04 10:08 KAtiOS         Note Added: 0002185                          
+10-16-04 11:39 KAtiOS         Note Added: 0002186                          
+09-14-05 15:52 jdthood        Note Added: 0006161                          
 ======================================================================
 
 
