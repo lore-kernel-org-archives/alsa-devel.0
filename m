@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000639]: Poor Audio Output
-Date: Wed, 14 Sep 2005 15:58:23 +0200
-Message-ID: <048215dc2afed0fc9966ac3219f1ce31@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000603]: dshare & VIA Technologies VT82xxxxx UHCI USB 1.1 Controller pops
+Date: Wed, 14 Sep 2005 15:57:18 +0200
+Message-ID: <f5bab672d4ff18339ed0444e9195b8b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D006191
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:58:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 864E2191
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:57:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=639> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=603> 
 ======================================================================
-Reported By:                gnif
-Assigned To:                tiwai
+Reported By:                Stuart
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   639
-Category:                   PCI - es1968
+Issue ID:                   603
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             Debian Kernel Image 2.6.7-1-686
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.6.8-1-686 #1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-10-2004 05:02 CET
-Last Modified:              09-14-2005 15:58 CEST
+Date Submitted:             10-25-2004 23:13 CEST
+Last Modified:              09-14-2005 15:57 CEST
 ======================================================================
-Summary:                    Poor Audio Output
+Summary:                    dshare & VIA Technologies VT82xxxxx UHCI USB 1.1
+Controller pops
 Description: 
-Card: ESS ES1978 (Maestro 2E)
-Chip: SigmaTel STAC9721/23
+I changed my motherboard and now sound via dshare pops. My new (very old)
+SL-67EV1 motherboard has a VIA VT82xxxxx UHCI USB 1.1 Controller.
+Listening with alsaplayer to music on my USB Audiotrak Maya EX7 with
+"plug" works fine but listening to music via dshare pops.
+/proc/asound/version contains
+Advanced Linux Sound Architecture Driver Version 1.0.7rc2.
+Compiled on Oct 17 2004 for kernel 2.6.8-1-686.
 
-During playback from any PCM source there is very poor audio output, I had
-assumed that this was just intefearence from the HDD and other devices in
-the laptop until I came across this: 
-
-http://h20000.www2.hp.com/bizsupport/TechSupport/Document.jsp?locale=en_US&taskId=110&prodSeriesId=96235&prodTypeId=321957&objectID=PSD_PH020226_CW02
-
-This makes me beleave that it is a problem with the driver as Compaq had
-the same issue, I have tested this under windows and I have had no
-crackling in the audio, so I am certain that it is the driver.
-
-PS: I have used alsaconf to configure the sound, this worked out of the
-box.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:58 
+ Stuart - 11-02-04 15:06 
 ----------------------------------------------------------------------
-Submitter: Is this problem fixed in more recent ALSA versions?
+Jaroslav Kysela found the bug in pcm_dmix.c and has corrected it in the
+CVS.
+On the alsa-user@lists.sourceforge.net list on 29 Oct 2004 he said
+
+"Ok, this problem is that period_time was to set to default value and has
+
+highter priority than period_size. The patch bellow should fix the 
+problem:
+
+Index: pcm_dmix.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dmix.c,v
+retrieving revision 1.56
+diff -u -r1.56 pcm_dmix.c
+--- pcm_dmix.c	15 Sep 2004 18:44:24 -0000	1.56
++++ pcm_dmix.c	29 Oct 2004 10:54:00 -0000
+@@ -1206,7 +1206,7 @@
+
+----------------------------------------------------------------------
+ jdthood - 09-14-05 15:57 
+----------------------------------------------------------------------
+>  Jaroslav Kysela found the bug in pcm_dmix.c and has corrected it in the
+CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-10-04 05:02 gnif           New Issue                                    
-11-10-04 05:02 gnif           Kernel Version            => Debian Kernel Image
-2.6.7-1-686
-09-14-05 15:58 jdthood        Note Added: 0006167                          
+10-25-04 23:13 Stuart         New Issue                                    
+10-25-04 23:13 Stuart         File Added: .asoundrc                        
+10-25-04 23:13 Stuart         Distribution              => Debian          
+10-25-04 23:13 Stuart         Kernel Version            => 2.6.8-1-686 #1  
+10-25-04 23:17 Stuart         Note Added: 0002263                          
+11-02-04 15:01 Stuart         Note Added: 0002296                          
+11-02-04 15:06 Stuart         Note Added: 0002297                          
+09-14-05 15:57 jdthood        Status                   assigned => resolved
+09-14-05 15:57 jdthood        Resolution               open => fixed       
+09-14-05 15:57 jdthood        Note Added: 0006165                          
 ======================================================================
 
 
