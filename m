@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000795]: Broken Pipe
-Date: Wed, 14 Sep 2005 16:20:39 +0200
-Message-ID: <48be21799edb5364053286efeab3cc53@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000809]: asfxload + aconnect called before dsp used causes dsp to be locked
+Date: Wed, 14 Sep 2005 16:19:55 +0200
+Message-ID: <a0390318a6e30883612e32b742720049@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B166C151
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:20:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D486D11B
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:19:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=795> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=809> 
 ======================================================================
-Reported By:                ajir
+Reported By:                vinyvat
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   795
-Category:                   PCI - intel8x0
+Issue ID:                   809
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian testing
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             01-08-2005 23:21 CET
-Last Modified:              09-14-2005 16:20 CEST
+Date Submitted:             01-12-2005 09:34 CET
+Last Modified:              09-14-2005 16:19 CEST
 ======================================================================
-Summary:                    Broken Pipe
+Summary:                    asfxload + aconnect called before dsp used causes
+dsp to be locked
 Description: 
-Hi!
+PS: This bug is present in the alsa version in stock kernel 2.6.8.1 up to
+1.0.8-rc2.
 
-I got a problem, with softvolume plugin and 1.0.8rc2 drivers( without
-softvol plugin too).
-When I changed ALSA from 1.0.5 to 1.0.8rc2 after system boot all modules
-load perfectly but! any program like amp(in text mode) or xmms(X mode)
-report broken pipe (no dsp device). When I enable softvol it remains the
-same. But if softvol is on and manualy set to off(deleting of .asoundrc
-without rebooting) Sustem is OK, I got all programs playing and I CAN
-FINALY set volume!!! (but starting and stoping .asoundrd by hand is
-annoying!). Without softvol set by asoundrc only aplay can give a sound
-from wave file
+For convienience I like to have my wavetable loaded and midi connections
+setup during bootup so I can use my midi keyboard by just turning on the
+computer.
+
+This worked OK with stock kernel 2.6.3 ( and whatever alsa version came
+with it ).
+
+Recently upgraded to stock 2.6.8.1 which had the modprobe
+snd-emu10k1-synth freeze bug, but was able to work around this by
+launching my wavetable loading script post the modprobe. Play back from my
+keyboard worked great.
+
+This is when I began to notice apps that accessed the dsp reporting that
+they were locked out ( and did not produce any sound ). First would be
+arts when kde started up, and then any dvd playing app ( ogle, mplayer,
+xine, all of them setup to use alsa ).
+
+Strangely though, alsaplayer still worked despite the fact that the other
+apps didn't - could it be using some other way of plugin to the emu10k1
+mixer ? 
+
+Have tried upgrading to alsa-driver-1.0.7 ( which didn't play any
+wavetable sounds at all - strange ), then to alsa-driver-1.0.8-rc2 ( which
+does play wavetable sounds ) but none of these fixes this problem.
+
+If I change the order of things - have artsd start up, start a dvd
+playback, and then call asfxload + aconnect, then everything is mixed and
+sounds great.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-11-05 16:46 
+ vinyvat - 01-13-05 18:58 
 ----------------------------------------------------------------------
-Don't use any of entries ~/.asoundrc but just pass "default" as the PCM to
-use.
+The computer itself has 1 Gigabyte of memory and I thought the emu10k1
+cards loaded SF2 into the system memory - one of the very nice features of
+the card.
+
+After the asfxload the system still has plenty of memory.
+
+Keep in mind that if I launch an app that keeps a persistent connection to
+/dev/dsp ( like ogle playing a DVD ), and then go through the asfxload +
+aconnect sequence, then everything works great - which is why this is such
+an interesting bug.
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 16:20 
+ jdthood - 09-14-05 16:19 
 ----------------------------------------------------------------------
-Submitter: Did you manage to solve this problem?
+Looks like there is no ALSA bug.  Close?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-05 23:21 ajir           New Issue                                    
-01-08-05 23:22 ajir           Note Added: 0003130                          
-01-11-05 16:46 tiwai          Note Added: 0003155                          
-09-14-05 16:20 jdthood        Note Added: 0006181                          
+01-12-05 09:34 vinyvat        New Issue                                    
+01-12-05 09:34 vinyvat        Distribution              => Debian testing  
+01-12-05 09:34 vinyvat        Kernel Version            => 2.6.8.1         
+01-12-05 15:16 tiwai          Note Added: 0003171                          
+01-12-05 18:50 vinyvat        Note Added: 0003175                          
+01-13-05 06:42 vinyvat        Note Added: 0003182                          
+01-13-05 12:41 tiwai          Note Added: 0003183                          
+01-13-05 18:58 vinyvat        Note Added: 0003198                          
+09-14-05 16:19 jdthood        Note Added: 0006180                          
 ======================================================================
 
 
