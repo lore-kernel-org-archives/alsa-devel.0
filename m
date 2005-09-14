@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000694]: USB Audio Card Giving Errors
-Date: Wed, 14 Sep 2005 16:06:49 +0200
-Message-ID: <69aaa6bea7b76e683bef2b6a273bbe73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000718]: unknown symbol on modprobe
+Date: Wed, 14 Sep 2005 16:08:08 +0200
+Message-ID: <541dc8f48de3b419ccbe5813d2f58d6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 048321A3
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:06:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B1A51A3
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:08:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=694> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=718> 
 ======================================================================
-Reported By:                dave-lew99
-Assigned To:                Clemens Ladisch
+Reported By:                slonkak
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   694
-Category:                   USB - usb-audio
+Issue ID:                   718
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedore Core 2
+Kernel Version:             Linux titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8
+09:04:50 EDT 2004 i686 athlon i386 GNU/Linux
 ======================================================================
-Date Submitted:             12-01-2004 00:08 CET
-Last Modified:              09-14-2005 16:06 CEST
+Date Submitted:             12-10-2004 03:18 CET
+Last Modified:              09-14-2005 16:08 CEST
 ======================================================================
-Summary:                    USB Audio Card Giving Errors
+Summary:                    unknown symbol on modprobe
 Description: 
-When booting system with Creative MP3+ USB audio card, errors such as
-snd_usb_audio: Unknown symbol usb_kill_urb 
-snd_usb_lib: unsupported module, tainting kernel are given, these also
-show up in dmesg. 
+I have a Sound Blaster Audigy Platinum eX.
 
-The onboard sound on my laptop works fine (Intel AC '97). The USB card is
-detected by Yast in the hardware section but refuses to show up as an
-audio card in either alsaconf or the sound section of Yast
+My steps:
+> Download and unpackage alsa-{driver,lib,utils} in /var/tmp
+> modprobe soundcore (I had previously unloaded all sound modules)
+> in /var/tmp/alsa-driver-xxxx, ./configure --with-cards=emu10k1
+--with-sequencer=yes;make;make install
+> ./snddevices
+> chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi 
+> configure, make, and make install utils and lib
+> added these to modprobe.conf
+        # ALSA portion
+        alias char-major-116 snd
+        alias snd-card-0 snd-emu10k1
+	# module options should go here
+
+        # OSS/Free portion
+        alias char-major-14 soundcore
+        alias sound-slot-0 snd-card-0
+	
+	# card #1
+	alias sound-service-0-0 snd-mixer-oss
+	alias sound-service-0-1 snd-seq-oss
+	alias sound-service-0-3 snd-pcm-oss
+	alias sound-service-0-8 snd-seq-oss
+	alias sound-service-0-12 snd-pcm-oss
+> modprobe snd-emu10k1;modprobe snd-pcm-oss;modprobe
+snd-mixer-oss;modprobe snd-seq-oss
+
+I get fatal errors on the modprobes (see additional info)
 ======================================================================
 
 ----------------------------------------------------------------------
- dave-lew99 - 12-01-04 12:43 
+ slonkak - 12-17-04 01:35 
 ----------------------------------------------------------------------
-Well im using whatever the defualt kernel for suse 9.1 is (i dont know how
-to find out what this is) and alsa drivers and lib's (everything
-basically) version 1.0.7. 
-
-I updated alsa to this version in an attempt get this working. Everything
-else was what came with the distro
+I will try these.  I would like to keep this ticket open for a while.  My
+linux box is at school and I'm home for break.  I won't be able to try
+your suggestion until the middle of January...
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 16:06 
+ jdthood - 09-14-05 16:08 
 ----------------------------------------------------------------------
-Apparently a local problem
+Submitter: So, did you fix the problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-01-04 00:08 dave-lew99     New Issue                                    
-12-01-04 00:13 rlrevell       Note Added: 0002663                          
-12-01-04 12:43 dave-lew99     Note Added: 0002664                          
-09-14-05 16:06 jdthood        Status                   assigned => closed  
-09-14-05 16:06 jdthood        Note Added: 0006173                          
+12-10-04 03:18 slonkak        New Issue                                    
+12-10-04 03:18 slonkak        Distribution              => Fedore Core 2   
+12-10-04 03:18 slonkak        Kernel Version            => Linux
+titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8 09:04:50 EDT 2004 i686 athlon i386
+GNU/Linux
+12-16-04 18:42 tiwai          Note Added: 0002838                          
+12-17-04 01:35 slonkak        Note Added: 0002844                          
+09-14-05 16:08 jdthood        Note Added: 0006174                          
 ======================================================================
 
 
