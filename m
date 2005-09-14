@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000504]: after the alsa modules are loaded, active speaker beginns to make noise
-Date: Wed, 14 Sep 2005 16:21:18 +0200
-Message-ID: <912eb7df959232ce47953a2b531af5f1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000795]: Broken Pipe
+Date: Wed, 14 Sep 2005 16:20:39 +0200
+Message-ID: <48be21799edb5364053286efeab3cc53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 029E7151
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:21:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B166C151
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:20:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=504> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=795> 
 ======================================================================
-Reported By:                placew
+Reported By:                ajir
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   504
-Category:                   1_OTHERS
+Issue ID:                   795
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo.2004
-Kernel Version:             2.6.7-gentoo-r6
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-16-2004 12:36 CEST
-Last Modified:              09-14-2005 16:21 CEST
+Date Submitted:             01-08-2005 23:21 CET
+Last Modified:              09-14-2005 16:20 CEST
 ======================================================================
-Summary:                    after the alsa modules are loaded, active speaker
-beginns to make noise
+Summary:                    Broken Pipe
 Description: 
-i've got my alsa modules compiled in a kernel, v.2.6.7-gentoo-r6. At boot,
-once, there are the alsa modules loaded, active speaker starts hissing.
-When mp3 (or other sound) is playing, the noise is getting low, almoust
-unhearable. Active speaker stops hissing once the modules are unloaded
-during the reboot.  My soundcard is ensoniq PCI128, using module ens1371.
-Thanks for cooperation.
+Hi!
+
+I got a problem, with softvolume plugin and 1.0.8rc2 drivers( without
+softvol plugin too).
+When I changed ALSA from 1.0.5 to 1.0.8rc2 after system boot all modules
+load perfectly but! any program like amp(in text mode) or xmms(X mode)
+report broken pipe (no dsp device). When I enable softvol it remains the
+same. But if softvol is on and manualy set to off(deleting of .asoundrc
+without rebooting) Sustem is OK, I got all programs playing and I CAN
+FINALY set volume!!! (but starting and stoping .asoundrd by hand is
+annoying!). Without softvol set by asoundrc only aplay can give a sound
+from wave file
 ======================================================================
 
 ----------------------------------------------------------------------
- wvd - 01-12-05 21:48 
+ tiwai - 01-11-05 16:46 
 ----------------------------------------------------------------------
-Same here, modules compiled with a 2.6.10 GNU/Linux, exactly the same
-behaviour as discribed by reporter 'placew'.
-Using the same ensoniq 1371
-Alsa version 1.05a
-Hissing fades when screen activity (RIVA TNT2)
-Muting ALL does not have any effect on the hissing.
+Don't use any of entries ~/.asoundrc but just pass "default" as the PCM to
+use.
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 16:21 
+ jdthood - 09-14-05 16:20 
 ----------------------------------------------------------------------
-Is the behavior improved in more recent ALSA versions?
+Submitter: Did you manage to solve this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-16-04 12:36 placew         New Issue                                    
-09-16-04 12:36 placew         Distribution              => Gentoo.2004     
-09-16-04 12:36 placew         Kernel Version            => 2.6.7-gentoo-r6 
-09-17-04 10:42 placew         Issue Monitored: placew                      
-09-17-04 10:42 placew         Issue End Monitor: placew                    
-09-28-04 16:07 djtm           Note Added: 0001948                          
-12-02-04 21:01 Sebastian      Issue Monitored: Sebastian                    
-12-02-04 21:12 Sebastian      Note Added: 0002698                          
-01-12-05 21:48 wvd            Note Added: 0003179                          
-01-12-05 21:50 wvd            Issue Monitored: wvd                         
-09-14-05 16:21 jdthood        Note Added: 0006182                          
+01-08-05 23:21 ajir           New Issue                                    
+01-08-05 23:22 ajir           Note Added: 0003130                          
+01-11-05 16:46 tiwai          Note Added: 0003155                          
+09-14-05 16:20 jdthood        Note Added: 0006181                          
 ======================================================================
 
 
