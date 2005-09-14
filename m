@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000521]: Jack + Alsa not working in full duplex, works with OSS, griffin imic
-Date: Wed, 14 Sep 2005 16:16:48 +0200
-Message-ID: <98c7c21f4950a5862c93a4ba931f6b32@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000776]: desynchronization, xruns when running mplayer
+Date: Wed, 14 Sep 2005 16:14:10 +0200
+Message-ID: <f582a6ce604b5037f3359e982a00957d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CE7F1A6
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:16:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C0EE1A3
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:14:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000758.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=521> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=776> 
 ======================================================================
-Reported By:                LokiDavison
-Assigned To:                Clemens Ladisch
+Reported By:                SergeS
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   521
-Category:                   USB - usb-audio
+Issue ID:                   776
+Category:                   PCI - nm256
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.4.22-28mm.2mdk
+Distribution:               
+Kernel Version:             2.4.28
 ======================================================================
-Date Submitted:             09-21-2004 21:06 CEST
-Last Modified:              09-14-2005 15:49 CEST
+Date Submitted:             01-02-2005 13:14 CET
+Last Modified:              09-14-2005 16:14 CEST
 ======================================================================
-Summary:                    Jack + Alsa not working in full duplex, works with
-OSS, griffin imic
+Summary:                    desynchronization, xruns when running mplayer
 Description: 
-Jack works with the OSS audio driver in full duplex but only works simplex
-with alsa driver. The alsa driver works full duplex when used with alsa
-apps. 100% reproducable. This is using a griffin imic with the
-snd-usb-audio module tested on 2.6 and 2.4 kernels. All jack versions
-including 0.99. I'm often on LAD irc if you want more info.
+some times sound repeates bit
+from MPlayer log
+alsa-space: xrun of at least xx.xxxx msecs. resseting stream
+
+if i run MPlayer with oss emulation - all is ok, when i try oss - all is
+ok 
+
+all software witch uses alsa do same error
+
+hardwate: Dell Latitude CSx, NeoMagick NM256ZX
+if need more information - send me email to sergesb@mail.ru
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000758 Full duplex is not working in OSS emula...
-======================================================================
 
 ----------------------------------------------------------------------
- ryanpg - 10-08-04 18:40 
+ SergeS - 01-02-05 13:24 
 ----------------------------------------------------------------------
-I also find this bug when using my EMI 2|6 soundcard.
-
-Jack works with the OSS audio driver in full duplex but only works simplex
-with alsa driver.
-
-2.6 and 2.4 kernels. All jack versions including 0.99.
-
-----------------------------------------------------------------------
- jdthood - 09-14-05 15:49 
-----------------------------------------------------------------------
-> Jack works with the OSS audio driver in full duplex but only works
-simplex with alsa driver.
-
-Has this problem been fixed?
+And when i try to unload it i got Segmentation Fault
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 21:06 LokiDavison    New Issue                                    
-09-21-04 21:06 LokiDavison    Distribution              => Mandrake        
-09-21-04 21:06 LokiDavison    Kernel Version            => 2.4.22-28mm.2mdk
-10-08-04 18:32 ryanpg         Issue Monitored: ryanpg                      
-10-08-04 18:40 ryanpg         Note Added: 0002055                          
-09-14-05 15:49 jdthood        Note Added: 0006160                          
-09-14-05 16:16 jdthood        Relationship added       related to 0000758  
+01-02-05 13:14 SergeS         New Issue                                    
+01-02-05 13:14 SergeS         Kernel Version            => 2.4.28          
+01-02-05 13:24 SergeS         Note Added: 0003045                          
+01-02-05 13:25 SergeS         Issue Monitored: SergeS                      
+09-14-05 16:14 jdthood        Summary                  dissynchronization =>
+desynchronization, xruns when running mplayer
 ======================================================================
 
 
