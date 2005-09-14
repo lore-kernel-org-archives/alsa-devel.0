@@ -1,11 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Platform bus question
-Date: Wed, 14 Sep 2005 23:11:29 +0100
-Message-ID: <1126735889.3428.8.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000718]: unknown symbol on modprobe
+Date: Thu, 15 Sep 2005 00:26:06 +0200
+Message-ID: <4d0c7a3c8a5c9e3b9ba003ea985be9ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 714EA172
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 00:26:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,85 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am writing a driver for the sound card on the Sega Dreamcast (you can
-view it at http://newgolddream.dyndns.info/repos/aica) and I am using
-this:
 
-	snd_card_set_dev(dreamcastcard, &platform_bus);	
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=718> 
+======================================================================
+Reported By:                slonkak
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   718
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedore Core 2
+Kernel Version:             Linux titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8
+09:04:50 EDT 2004 i686 athlon i386 GNU/Linux
+======================================================================
+Date Submitted:             12-10-2004 03:18 CET
+Last Modified:              09-15-2005 00:26 CEST
+======================================================================
+Summary:                    unknown symbol on modprobe
+Description: 
+I have a Sound Blaster Audigy Platinum eX.
 
-	/* Register the card with ALSA subsystem */
-	if ((err = snd_card_register(dreamcastcard)) < 0) {
-		snd_aicapcm_free();	
-		snd_card_free(dreamcastcard);
-		return err;
-	}
+My steps:
+> Download and unpackage alsa-{driver,lib,utils} in /var/tmp
+> modprobe soundcore (I had previously unloaded all sound modules)
+> in /var/tmp/alsa-driver-xxxx, ./configure --with-cards=emu10k1
+--with-sequencer=yes;make;make install
+> ./snddevices
+> chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi 
+> configure, make, and make install utils and lib
+> added these to modprobe.conf
+        # ALSA portion
+        alias char-major-116 snd
+        alias snd-card-0 snd-emu10k1
+	# module options should go here
 
+        # OSS/Free portion
+        alias char-major-14 soundcore
+        alias sound-slot-0 snd-card-0
+	
+	# card #1
+	alias sound-service-0-0 snd-mixer-oss
+	alias sound-service-0-1 snd-seq-oss
+	alias sound-service-0-3 snd-pcm-oss
+	alias sound-service-0-8 snd-seq-oss
+	alias sound-service-0-12 snd-pcm-oss
+> modprobe snd-emu10k1;modprobe snd-pcm-oss;modprobe
+snd-mixer-oss;modprobe snd-seq-oss
 
-In the hope that the card will be registered with the generic platform
-bus.
+I get fatal errors on the modprobes (see additional info)
+======================================================================
 
-The code does not generate any errors, but doesn't appear to work
-either!
+----------------------------------------------------------------------
+ jdthood - 09-14-05 16:08 
+----------------------------------------------------------------------
+Submitter: So, did you fix the problem?
 
-eg
+----------------------------------------------------------------------
+ slonkak - 09-15-05 00:26 
+----------------------------------------------------------------------
+No, that did not fix the problem.  I got frustrated and just started using
+the onboard sound instead.  That worked out of the box.  Go ahead and
+close this ticket.  If I play anymore with this, it'll be on my own
+time...
 
-sh-3.00# cd /sys
-sh-3.00# ls
-block     bus       class     devices   firmware  kernel    module
-sh-3.00# cd bus
-sh-3.00# ls
-pci       platform  serio     shbus
-sh-3.00# cd platform
-sh-3.00# ls
-devices  drivers
-sh-3.00# cd devices
-sh-3.00# ls -l
-sh-3.00#
-
-(ie nothing appearing in /sys/bus/platform/devices)
-
-and
-
-sh-3.00# cd /sys
-sh-3.00# ls
-block     bus       class     devices   firmware  kernel    module
-sh-3.00# cd devices
-sh-3.00# ls
-pci0000:00  platform    shbus       system
-sh-3.00# cd platform
-sh-3.00# ls -l
-sh-3.00#
-
-
-Yet it also reports this...
-sh-3.00# cd /sys
-sh-3.00# ls
-block     bus       class     devices   firmware  kernel    module
-sh-3.00# cd class
-sh-3.00# ls
-graphics  mem       net       sound     vc
-input     misc      pci_bus   tty
-sh-3.00# cd sound
-sh-3.00# ls
-controlC0  pcmC0D0p   timer
-sh-3.00# ls -l
-drwxr-xr-x    2 root     root            0 Sep 14 17:07 controlC0
-drwxr-xr-x    2 root     root            0 Sep 14 17:07 pcmC0D0p
-drwxr-xr-x    2 root     root            0 Sep 14 17:07 timer
-sh-3.00# cd pcmC0D0p/
-sh-3.00# ls
-dev     device
-sh-3.00# ls -l
--r--r--r--    1 root     root         4096 Sep 14 17:11 dev
-lrwxrwxrwx    1 root     root            0 Sep 14 17:11 device
--> ../../../devices/platform
-
-
-Do I need to write specific platform bus code for this device or should
-ALSA handle it for me?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-10-04 03:18 slonkak        New Issue                                    
+12-10-04 03:18 slonkak        Distribution              => Fedore Core 2   
+12-10-04 03:18 slonkak        Kernel Version            => Linux
+titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8 09:04:50 EDT 2004 i686 athlon i386
+GNU/Linux
+12-16-04 18:42 tiwai          Note Added: 0002838                          
+12-17-04 01:35 slonkak        Note Added: 0002844                          
+09-14-05 16:08 jdthood        Note Added: 0006174                          
+09-15-05 00:26 slonkak        Note Added: 0006188                          
+======================================================================
 
 
 
