@@ -1,15 +1,14 @@
-From: Daniel James <daniel@64studio.com>
-Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
-Date: Wed, 14 Sep 2005 12:18:49 +0100
-Message-ID: <200509141218.49448.daniel@64studio.com>
-References: <200508111525.07881.daniel@64studio.com> <200508111643.27160.daniel@64studio.com> <1123777147.6980.37.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001416]: Spinlock conflict causes kernel panic with Vortex2 and Wine
+Date: Wed, 14 Sep 2005 13:33:50 +0200
+Message-ID: <61ae4bb4e7b661222433d8cb54a11b2d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1123777147.6980.37.camel@mindpipe>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2261714B
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 13:33:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,113 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lee,
 
-We have now applied your patch to 2.6.13 and tried the test again. I 
-get the same result, and there is still nothing relevant output 
-to /var/log/messages
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1416> 
+======================================================================
+Reported By:                mortrek
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1416
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1447
+======================================================================
+Date Submitted:             09-14-2005 06:05 CEST
+Last Modified:              09-14-2005 13:33 CEST
+======================================================================
+Summary:                    Spinlock conflict causes kernel panic with Vortex2
+and Wine
+Description: 
+When attempting to run Wine (binary or self-compiled) the system freezes.
+Dmesg gives the following:
+[<c0103a61>] syscall_call+0x7/0xb
+[<c0193cde>] sys_ioctl+0x5d/0x6b
+[<c0193b27>] vfs_ioctl+0x50/0x1aa
+[<c01939f9>] do_ioctl+0x19/0x55
+[<f89bbe49>] snd_pcm_oss_ioctl+0x0/0x477 [snd_pcm_oss]
+[<f89bc19b>] snd_pcm_oss_ioctl+0x352/0x477 [snd_pcm_oss]
+[<f89bac1d>] snd_pcm_oss_get_channels+0xa/0x1e [snd_pcm_oss]
+[<f89b9d90>] snd_pcm_oss_get_active_substream+0x43/0x4c [snd_pcm_oss]
+[<f89b99bc>] snd_pcm_oss_change_params+0x365/0x6f6 [snd_pcm_oss]
+[<f89a6c31>] snd_pcm_kernel_capture_ioctl+0x18/0x1e [snd_pcm]
+[<f89a6a25>] snd_pcm_capture_ioctl1+0x2c/0x1cc [snd_pcm]
+[<f89a1665>] snd_pcm_hw_params_user+0x50/0x6d [snd_pcm]
+[<f89a9963>] _snd_pcm_hw_param_first+0x109/0x12a [snd_pcm]
+[<f89a9cdc>] _snd_pcm_hw_param_min+0x152/0x15e [snd_pcm]
+[<f89a1543>] snd_pcm_hw_params+0x331/0x403 [snd_pcm]
+[<f8a09889>] snd_vortex_pcm_hw_free+0x132/0x1f1 [snd_au8830]
+[<c0120d38>] panic+0x45/0x1e2
+<010>
+Kernel panic - not syncing: sound/pci/au88x0/au88x0_pcm.c:257:
+spin_lock(sound/pci/au88x0/au88x0_core.c:f6437b98) already locked by
+sound/pci/au88x0/au88x0_pcm.c/209. (Tainted: P     )
 
-However, I am beginning to think that this may be a hardware fault or 
-a problem specific to this motherboard or hardware combination. After 
-a freeze-up triggered with strace seq24, I reboot and sometimes see 
-this message from the BIOS (ie, before GRUB is loaded):
+======================================================================
 
-PCI IRQ ROUTING TABLE ERROR [02:00:00]
+----------------------------------------------------------------------
+ Raymond - 09-14-05 13:33 
+----------------------------------------------------------------------
+Would you post the output of dmesg if this bug can be reproduced.
 
-I don't know if this is the cause of the freeze-up, or just a 
-consequence of it. A cold reboot makes the BIOS message go away.
+Need to know the reason why snd_pcm_hw_params() fail in capture stream.
 
-To make sure this is a one-off problem, I'm going to build another 
-Opteron machine and test ALSA with that.
+[<f89bac1d>] snd_pcm_oss_get_channels+0xa/0x1e [snd_pcm_oss]
+[<f89b9d90>] snd_pcm_oss_get_active_substream+0x43/0x4c [snd_pcm_oss]
+[<f89b99bc>] snd_pcm_oss_change_params+0x365/0x6f6 [snd_pcm_oss]
+[<f89a6c31>] snd_pcm_kernel_capture_ioctl+0x18/0x1e [snd_pcm]
+[<f89a6a25>] snd_pcm_capture_ioctl1+0x2c/0x1cc [snd_pcm]
+[<f89a1665>] snd_pcm_hw_params_user+0x50/0x6d [snd_pcm]
+[<f89a9963>] _snd_pcm_hw_param_first+0x109/0x12a [snd_pcm]
+[<f89a9cdc>] _snd_pcm_hw_param_min+0x152/0x15e [snd_pcm]
+[<f89a1543>] snd_pcm_hw_params+0x331/0x403 [snd_pcm]
 
-Cheers!
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/au88x0/au88x0_pcm.c?r1=1.9&r2=1.10
 
-Daniel
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-14-05 06:05 mortrek        New Issue                                    
+09-14-05 06:05 mortrek        Distribution              => Fedora Core 4   
+09-14-05 06:05 mortrek        Kernel Version            => 2.6.12-1.1447   
+09-14-05 13:33 Raymond        Note Added: 0006157                          
+======================================================================
 
-
-> On Thu, 2005-08-11 at 16:43 +0100, Daniel James wrote:
-> > Hi Lee,
-> >
-> > > I guess you have tried to trigger the crash from a console as
-> > > well as X
-> >
-> > I've done that now. If I boot the system, switch to a console
-> > with ctrl-alt-f1 and run nothing but:
-> >
-> > strace seq24
-> >
-> > it starts to go wrong after:
-> >
-> > open ("/dev/snd/seq", O_RDWR)
-> >
-> > There are a bunch of lines beginning with ioctl, then the killer
-> > blow is dealt by:
-> >
-> > ioctl (3, CDROM_DEBUG or SNDRV_SEQ_IOCTL_SUBSCRIBE_PORT
-> >
-> > (This is retyped from hand-written notes of course). The machine
-> > is then locked up solid - it's very reproducible too, same output
-> > every time.
-> >
-> > > and there's no Oops output?
-> >
-> > Nothing at all appears in the console or in /var/log/messages.
-> > Should I try increasing the log level or something like that?
->
-> Try this (not even compile tested) patch.  Right now it looks like
-> the interrupt handler could loop forever if something weird
-> happened.  Now it will at least printk, and try to clear the
-> interrupt pending register.  This is shamelessly copied from the
-> emu10k1 IRQ handler.
->
-> Index: alsa-kernel/pci/ice1712/ice1712.c
-> ===================================================================
-> RCS file: /cvsroot/alsa/alsa-kernel/pci/ice1712/ice1712.c,v
-> retrieving revision 1.68
-> diff -u -r1.68 ice1712.c
-> --- alsa-kernel/pci/ice1712/ice1712.c	3 Aug 2005 12:40:11
-> -0000	1.68 +++ alsa-kernel/pci/ice1712/ice1712.c	11 Aug 2005
-> 16:16:42 -0000 @@ -410,13 +410,14 @@
->  static irqreturn_t snd_ice1712_interrupt(int irq, void *dev_id,
-> struct pt_regs *regs) {
->  	ice1712_t *ice = dev_id;
-> -	unsigned char status;
-> +	unsigned char status, orig_status;
->  	int handled = 0;
->
->  	while (1) {
->  		status = inb(ICEREG(ice, IRQSTAT));
->  		if (status == 0)
->  			break;
-> +		orig_status = status;
->  		handled = 1;
->  		if (status & ICE1712_IRQ_MPU1) {
->  			if (ice->rmidi[0])
-> @@ -472,6 +473,20 @@
->  				snd_pcm_period_elapsed(ice->playback_con_substream);
->  			outb(ICE1712_IRQ_CONPBK, ICEREG(ice, IRQSTAT));
->  		}
-> +		if (status) {
-> +			unsigned char bits;
-> +			snd_printk(KERN_ERR "ice1712: unhandled interrupt: 0x%08x\n",
-> status); +			bits = ICE1712_IRQ_MPU1 |
-> +			       ICE1712_IRQ_TIMER |
-> +			       ICE1712_IRQ_MPU2 |
-> +			       ICE1712_IRQ_PROPCM |
-> +			       ICE1712_IRQ_FM |
-> +			       ICE1712_IRQ_PBKDS |
-> +			       ICE1712_IRQ_CONCAP |
-> +			       ICE1712_IRQ_CONPBK;
-> +			outb(bits, ICEREG(ice, IRQSTAT));
-> +		}
-> +		outb(orig_status, ICEREG(ice, IRQSTAT));
->  	}
->  	return IRQ_RETVAL(handled);
->  }
 
 
 
