@@ -1,13 +1,14 @@
-From: Dirk Opfer <Dirk@Opfer-Online.de>
-Subject: Re: [Patch] Fix compiler warnings in PXA2XX-AC97
-Date: Wed, 14 Sep 2005 21:44:12 +0200
-Message-ID: <0ML21M-1EFdAa1c5E-00078C@mrelayeu.kundenserver.de>
-References: <0MKwtQ-1E1mHi2L9x-00028d@mrelayeu.kundenserver.de> <s5hu0i01m65.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
+Date: Wed, 14 Sep 2005 21:58:34 +0200
+Message-ID: <010e6deed7cf65449b045fb8fd6c36fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080308020804050305050305"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu0i01m65.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98B73158
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 21:58:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,64 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080308020804050305050305
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 
-Takashi Iwai schrieb:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=583> 
+======================================================================
+Reported By:                KAtiOS
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   583
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9_rc4
+======================================================================
+Date Submitted:             10-15-2004 16:27 CEST
+Last Modified:              09-14-2005 21:58 CEST
+======================================================================
+Summary:                    xruns when playing audio or video files
+Description: 
+I get xruns when playing files.
+I tested with lots of 2.6 kernels, up to 2.6.9_rc4 with the same results.
+It seems that mplayer with sdl output works fine, but xruns with alsa.
+Using acpi=off or pci=noacpi helps in mplayer but not in vdr (with
+softdevice plugin - using alsa).
 
->At Sun, 07 Aug 2005 16:37:53 +0200,
->Dirk Opfer wrote:
->  
->
->>This patch fixes compiler warnings in the file pxa2xx-ac97.c.
->>
->>Changes:
->>
->>    -  change pxa2xx_ac97_do_suspend and pxa2xx_ac97_do_resume to use
->>the expected arguments
->>    
->>
->
->Thanks, applied to CVS.
->
->
->Takashi
->  
->
-It seems with my last patch we forgot one line. Sorry for that
-The attached Patch fixes this.
 
-Cheers
-Dirk
 
---------------080308020804050305050305
-Content-Type: text/plain;
- name="pxa-ac97-suspend-r0.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="pxa-ac97-suspend-r0.patch"
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000776 desynchronization, xruns when running m...
+======================================================================
 
-Index: linux-2.6.13/sound/arm/pxa2xx-ac97.c
-===================================================================
---- linux-2.6.13.orig/sound/arm/pxa2xx-ac97.c	2005-09-04 18:54:54.618428976 +0200
-+++ linux-2.6.13/sound/arm/pxa2xx-ac97.c	2005-09-04 22:49:17.840494256 +0200
-@@ -245,7 +245,7 @@
- 
- #ifdef CONFIG_PM
- 
--static int pxa2xx_ac97_do_suspend(snd_card_t *card, unsigned int state)
-+static int pxa2xx_ac97_do_suspend(snd_card_t *card, pm_message_t state)
- {
- 	if (card->power_state != SNDRV_CTL_POWER_D3cold) {
- 		pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
+----------------------------------------------------------------------
+ KAtiOS - 09-14-05 17:44 
+----------------------------------------------------------------------
+Well, I gave up on this months ago, but looking at my messages, I would say
+that the problem, which occured *only* for me in this particular config
+(chip) in both mplayer and vdr, nothing excluded a bug in alsa, but
+whatever...
 
---------------080308020804050305050305--
+----------------------------------------------------------------------
+ rlrevell - 09-14-05 21:58 
+----------------------------------------------------------------------
+Hmm, this could have been the ACPI idle latency bug.  That would explain
+why generating load reduces the xruns.  This was fixed around 2.6.11.
+
+Try kernel 2.6.13.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-15-04 16:27 KAtiOS         New Issue                                    
+10-15-04 16:27 KAtiOS         Distribution              => Gentoo Linux    
+10-15-04 16:27 KAtiOS         Kernel Version            => 2.6.9_rc4       
+10-15-04 18:43 lee            Note Added: 0002168                          
+10-15-04 18:51 KAtiOS         Note Added: 0002169                          
+10-15-04 19:02 lee            Note Added: 0002170                          
+10-15-04 19:12 KAtiOS         Note Added: 0002171                          
+10-15-04 19:24 KAtiOS         Note Added: 0002172                          
+10-15-04 19:29 lee            Note Added: 0002173                          
+10-15-04 20:28 KAtiOS         Note Added: 0002174                          
+10-15-04 22:17 lee            Note Added: 0002175                          
+10-15-04 23:49 KAtiOS         Note Added: 0002176                          
+10-16-04 01:11 lee            Note Added: 0002180                          
+10-16-04 01:18 lee            Note Added: 0002181                          
+10-16-04 06:05 lee            Note Added: 0002183                          
+10-16-04 10:08 KAtiOS         Note Added: 0002185                          
+10-16-04 11:39 KAtiOS         Note Added: 0002186                          
+09-14-05 15:52 jdthood        Note Added: 0006161                          
+09-14-05 16:14 jdthood        Relationship added       has duplicate 0000776
+09-14-05 17:44 KAtiOS         Note Added: 0006185                          
+09-14-05 21:58 rlrevell       Note Added: 0006186                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
