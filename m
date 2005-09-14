@@ -1,21 +1,13 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: [Openvortex-dev] Re: Re: au88x0 modem
-Date: Thu, 15 Sep 2005 00:03:03 +0300
-Message-ID: <20050914210303.GE14657@sashak.softier1.local>
-References: <4321B5A4.5090803@netvigator.com>
- <20050911124530.GA16795@titan.lahn.de> <4325AEA3.1090602@netvigator.com>
- <20050913000909.GB19713@tecr> <20050913085552.GA2655@titan.lahn.de>
- <20050913173529.GD31269@sashak.softier1.local>
- <20050913174930.GA5816@titan.lahn.de>
- <20050913214413.GA9475@sashak.softier1.local>
- <20050914070210.GA9168@titan.lahn.de>
- <42322.62.59.249.250.1126691266.squirrel@62.59.249.250>
+From: Dirk Opfer <Dirk@Opfer-Online.de>
+Subject: Re: [Patch] Fix compiler warnings in PXA2XX-AC97
+Date: Wed, 14 Sep 2005 21:44:12 +0200
+Message-ID: <0ML21M-1EFdAa1c5E-00078C@mrelayeu.kundenserver.de>
+References: <0MKwtQ-1E1mHi2L9x-00028d@mrelayeu.kundenserver.de> <s5hu0i01m65.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/mixed;
+ boundary="------------080308020804050305050305"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <42322.62.59.249.250.1126691266.squirrel@62.59.249.250>
-Content-disposition: inline
+In-Reply-To: <s5hu0i01m65.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,58 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Maarten Vanraes <maarten.vanraes@telenet.be>, Philipp Matthias Hahn <pmhahn@titan.lahn.de>
-Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org, Raymond <rayau@netvigator.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 11:47 Wed 14 Sep     , Maarten Vanraes wrote:
-> >
-> > 0000:00:06.0 Multimedia audio controller: Aureal Semiconductor AU8810
-> > Vortex Digital Audio Processor (rev 03)
-> > 	Subsystem: ASUSTeK Computer Inc.: Unknown device 1043
-> > 	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
-> > Stepping- SERR- FastB2B-
-> > 	Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
-> > <MAbort- >SERR- <PERR-
-> > 	Interrupt: pin A routed to IRQ 10
-> > 	Region 0: Memory at fedc0000 (32-bit, non-prefetchable) [size=256K]
-> > 	Region 1: I/O ports at fce0 [size=8]
-> > 	Region 2: I/O ports at fce8 [size=8]
-> > 	Capabilities: [dc] Power Management version 2
-> > 		Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=55mA
-> > PME(D0-,D1-,D2+,D3hot+,D3cold+)
-> > 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> >
-> 
-> if it helps: mine is:
-> 
-> 00:0c.0 Multimedia audio controller: Aureal Semiconductor AU8810 Vortex
-> Digital Audio Processor (rev 02)
->         Subsystem: Aureal Semiconductor AU8810 Vortex Digital Audio Processor
->         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-> ParErr- Stepping- SERR+ FastB2B-
->         Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-> <TAbort- <MAbort- >SERR- <PERR-
->         Latency: 64 (500ns min, 20750ns max), cache line size 40
->         Interrupt: pin A routed to IRQ 169
->         Region 0: Memory at 00000000fdc00000 (32-bit, non-prefetchable)
-> [size=256K]
->         Region 1: I/O ports at dc00 [size=8]
->         Region 2: I/O ports at cc00 [size=8]
->         Capabilities: [dc] Power Management version 2
->                 Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-> PME(D0-,D1-,D2+,D3hot+,D3cold-)
->                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 
+This is a multi-part message in MIME format.
+--------------080308020804050305050305
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Takashi Iwai schrieb:
+
+>At Sun, 07 Aug 2005 16:37:53 +0200,
+>Dirk Opfer wrote:
+>  
 >
+>>This patch fixes compiler warnings in the file pxa2xx-ac97.c.
+>>
+>>Changes:
+>>
+>>    -  change pxa2xx_ac97_do_suspend and pxa2xx_ac97_do_resume to use
+>>the expected arguments
+>>    
+>>
+>
+>Thanks, applied to CVS.
+>
+>
+>Takashi
+>  
+>
+It seems with my last patch we forgot one line. Sorry for that
+The attached Patch fixes this.
 
-Thank you guys.
+Cheers
+Dirk
 
-Could you send us full lspci output - there is approach that modem uses
-separate from audio PCI entry. In such way it is done with most AC97
-audio/modem controllers and possibly with some au8810 too.
+--------------080308020804050305050305
+Content-Type: text/plain;
+ name="pxa-ac97-suspend-r0.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="pxa-ac97-suspend-r0.patch"
 
-Sasha.
+Index: linux-2.6.13/sound/arm/pxa2xx-ac97.c
+===================================================================
+--- linux-2.6.13.orig/sound/arm/pxa2xx-ac97.c	2005-09-04 18:54:54.618428976 +0200
++++ linux-2.6.13/sound/arm/pxa2xx-ac97.c	2005-09-04 22:49:17.840494256 +0200
+@@ -245,7 +245,7 @@
+ 
+ #ifdef CONFIG_PM
+ 
+-static int pxa2xx_ac97_do_suspend(snd_card_t *card, unsigned int state)
++static int pxa2xx_ac97_do_suspend(snd_card_t *card, pm_message_t state)
+ {
+ 	if (card->power_state != SNDRV_CTL_POWER_D3cold) {
+ 		pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
+
+--------------080308020804050305050305--
 
 
 -------------------------------------------------------
