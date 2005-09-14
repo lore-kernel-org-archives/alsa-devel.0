@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001051]: Master <--> PCM
-Date: Wed, 14 Sep 2005 04:09:37 +0200
-Message-ID: <df65994016d8ca66a037e477d930f85d@bugtrack.alsa-project.org>
+From: Erik <assie2@zonnet.nl>
+Subject: Re: problems with snd_au8830 module under mandriva 2005
+Date: Wed, 14 Sep 2005 05:32:27 +0200
+Message-ID: <1126668747.6835.11.camel@pc-erik.lan>
+References: <4317CC51.3040709@netvigator.com>
+	 <200509042134.23916.alien999999999@users.sourceforge.net>
+	 <1126131309.17399.8.camel@pc-erik.lan>
+	 <44272.62.59.249.250.1126163238.squirrel@62.59.249.250>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 481BB1B5
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 04:09:37 +0200 (MEST)
+In-Reply-To: <44272.62.59.249.250.1126163238.squirrel@62.59.249.250>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +20,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alien <alien999999999@users.sourceforge.net>
+Cc: Raymond <rayau@netvigator.com>, Igor Kovalenko <garrison@mail.ru>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+yup i have the first problem   
+ 1. the ones where if you get 49% it's loud and on 51% quite silently? 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
-======================================================================
-Reported By:                kayandus
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1051
-Category:                   PCI - via82xx
-Reproducibility:            N/A
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.10-5-k7
-======================================================================
-Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              09-14-2005 04:09 CEST
-======================================================================
-Summary:                    Master <--> PCM
-Description: 
-Hello,
+but then from 51 to 100% is again soft to loud .
 
-I bought a Targa Traveller 811 laptop a couple of months ago with an
-onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
-works fine with the via82xx driver, but there's only one minor problem.
-Let me explain my problem.
+next week i can find time to recompile the whole kernel
 
-There are 3 major volume controls for me,
-Master: Controls the volume of the internal laptop speaker, so when there
-is a plug/earphones in my LINE IN, it changes nothing. (!!)
-Headphones: Controls volume of the LINE IN, so does nothing when there is
-nothing my LINE IN.
-PCM: Controls both interal speaker and LINE IN, so volume goes up and down
-whether im using the internal speaker or not.
+erik
 
-Probably the problem is clear already to u, most programs control only
-Master, so when I have my laptop attached to my stereo, those programs
-don't change my volume =(
-I hope u guys can fix this, I suggest by making an option to change Master
-with PCM.
 
-Thanks in advance, Harm te Hennepe
-======================================================================
-
-----------------------------------------------------------------------
- kayandus - 04-21-05 20:59 
-----------------------------------------------------------------------
-probably that would solve the problems when i have my laptop attached to
-the stereo, but not when i use the built-in speakers :( (right?)
-
-----------------------------------------------------------------------
- Nafallo - 09-14-05 04:09 
-----------------------------------------------------------------------
-Rather than to bind Master and PCM, we should bind Master and Headphones
-no? And it's not LINE IN, it's the headphonejack :-).
-
-ac97_quirk=hp_only didn't make a difference here (same laptop).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-13-05 21:16 kayandus       New Issue                                    
-04-13-05 21:16 kayandus       Distribution              => Ubuntu          
-04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
-04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
-04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
-04-19-05 18:26 tiwai          Note Added: 0004535                          
-04-21-05 20:59 kayandus       Note Added: 0004552                          
-09-14-05 04:09 Nafallo        Note Added: 0006156                          
-======================================================================
-
+On Thu, 2005-09-08 at 09:07 +0200, Alien wrote:
+> > i'm busy with home improving but when i have time i will try the patch
+> > again on 2.6.12 kernel. I have not checked if it is the same alsa
+> > version as 2.6.11 but i think it is.
+> >
+> > b.t.w. the volume bar problem is in XMMS (didn't try other programs
+> > because i haven't a lot of time) (just online for mail checking etc.
+> > that's it)
+> > but i think alien can tell you about the volume bar problems.
+> 
+> which volume bar problems are you talking about?
+> 1. the ones where if you get 49% it's loud and on 51% quite silently?
+> 2. or irregular sound volume when you are about halfway (without changing
+> volume yourself).
+> 
+> actually after experimenting I think it might be something hardware
+> related (ie with the volume control of my speaker system, not the
+> au8810)...
+> 
+> > pc information:
+> >
+> > mandriva 2005 le
+> > kernel 2.6.11
+> > amd 64 bit 3500+
+> > diamond monster sound mx300 au8830 card
+> >
+> >
+> > Erik
+> >
+> >
+> >
+> > On Sun, 2005-09-04 at 21:34 +0200, Alien wrote:
+> >> Op vrijdag 2 september 2005 05:51, schreef Raymond:
+> >> > I am not sure Alien's au8810 patch is as same as Igor Kovalenko 's
+> >> > au8820 patch. They seem to have their own patches.
+> >> >
+> >> > The EQ part in diff11.diff seem to be not tested since EQ is not
+> >> present
+> >> > in au8820.
+> >> >
+> >> > You should cc your reply to openvortex-dev@nongnu.org and
+> >> > alsa-devel@lists.sourceforge.net so that the others can keep track of
+> >> > your problem.
+> >> >
+> >> > There are 3 bug reports for AMD64 in ALSA BTS.
+> >> > 1047 - au8810
+> >> > 1138 - au8820
+> >> > 1025 - au8830
+> >> >
+> >> > Need feedback from testers with au8810/au8820/au8830 and 32bits/64bits
+> >> > machines to debug this patch.
+> >> >
+> >> > 1) EQ, SPDIF of au8810/au8830 are not present in au8820,
+> >> > 2) WT of au8820/au8830 are not present in au8810,
+> >> > 3) SoftModem of au8810 are not present in au8820.
+> >> > 4) 3D of au8830 is not present in au8810/au8820.
+> >> >
+> >> > Please correct me if I am wrong, I think au8810 do not have any 3D
+> >> > effect hardware.
+> >>
+> >> i'm not entirely sure, but i think it has some 3D stuff, since i've
+> >> always had
+> >> controls to manage 3D depth, etc...
+> >>
+> >> unless you are speaking of something else...
+> >
+> >
+> >
+> 
+> 
 
 
 
