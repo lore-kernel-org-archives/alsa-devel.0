@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000632]: The recordings doesnt work properly
-Date: Wed, 14 Sep 2005 15:59:33 +0200
-Message-ID: <612eb62f73060746b35bfeb43f7a0fb0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000604]: sound loop problem
+Date: Wed, 14 Sep 2005 16:01:49 +0200
+Message-ID: <82b22f540a704f96f4264e17282f2487@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E55E3199
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:59:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64954F8
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:01:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=632> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=604> 
 ======================================================================
-Reported By:                littlewing
-Assigned To:                pzad
+Reported By:                chomwitt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   632
-Category:                   PCI - emu10k1
+Issue ID:                   604
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian SID
-Kernel Version:             2.6.9
+Distribution:               slackware10
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             11-05-2004 23:28 CET
-Last Modified:              09-14-2005 15:59 CEST
+Date Submitted:             10-26-2004 01:29 CEST
+Last Modified:              09-14-2005 16:01 CEST
 ======================================================================
-Summary:                    The recordings doesnt work properly
+Summary:                    sound loop problem
 Description: 
-Hi,
-when I am trying to recording music which are on a external player (cf
-Mini disc), every recording are ugly. I can record music, but, after, when
-I m play the front recorded tracks, there are a lot of "jumps", "sratchs"
-or the music speeds or slown down randomly.
-
-These problems were decreased when I was upgraded the kernel on the
-version 2.6.9, but are still presents.
-
-I test the same recording on windows, and worked perfectly:-(
+i get a sound loop which gets correctet only 
+while moving the mouse!
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-10-04 23:30 
+ chomwitt - 11-23-04 22:36 
 ----------------------------------------------------------------------
-What app do you use for reording ??? Try to use 
-arecord -f dat -t wav some.wav
-are problems in some.wav still there ????
+how do i change the pci routing options ?
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:59 
+ jdthood - 09-14-05 16:01 
 ----------------------------------------------------------------------
-Submitter: Is this problem fixed in more recent ALSA versions?
+Submitter: Did you manage to solve this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-05-04 23:28 littlewing     New Issue                                    
-11-05-04 23:28 littlewing     Distribution              => Debian SID      
-11-05-04 23:28 littlewing     Kernel Version            => 2.6.9           
-11-05-04 23:31 littlewing     Note Added: 0002307                          
-11-10-04 23:30 pzad           Note Added: 0002381                          
-09-14-05 15:59 jdthood        Note Added: 0006168                          
+10-26-04 01:29 chomwitt       New Issue                                    
+10-26-04 01:29 chomwitt       Distribution              => slackware10     
+10-26-04 01:29 chomwitt       Kernel Version            => 2.6.7           
+10-27-04 21:07 chomwitt       Note Added: 0002280                          
+10-28-04 02:14 chomwitt       Note Added: 0002281                          
+10-28-04 02:17 chomwitt       Note Added: 0002282                          
+10-28-04 02:22 chomwitt       Note Added: 0002283                          
+11-10-04 12:56 tiwai          Note Added: 0002371                          
+11-23-04 22:36 chomwitt       Note Added: 0002536                          
+09-14-05 16:01 jdthood        Note Added: 0006169                          
 ======================================================================
 
 
