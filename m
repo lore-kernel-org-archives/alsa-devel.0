@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Wed, 14 Sep 2005 16:10:45 +0200
-Message-ID: <9ddee69e5f893473355546c4ed4cffd3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000757]: Noisy recording for oss emulation
+Date: Wed, 14 Sep 2005 16:12:09 +0200
+Message-ID: <7cd2ce61a45b04b61af153ffc671bf50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 215FF1A3
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:10:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73EB71A3
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 16:12:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=732> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=757> 
 ======================================================================
-Reported By:                Eric Valette
-Assigned To:                pzad
+Reported By:                tomasz_janowski
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   732
-Category:                   PCI - emu10k1
+Issue ID:                   757
+Category:                   CORE OSS - pcm
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             2.6.10-rc3
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              09-14-2005 16:10 CEST
+Date Submitted:             12-29-2004 07:49 CET
+Last Modified:              09-14-2005 16:12 CEST
 ======================================================================
-Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
-emit a very high frequency sound damaging ears
+Summary:                    Noisy recording for oss emulation
 Description: 
-Since 2.6.10-rc1 or rc2, I can no more use alsa on my PC or I may damage my
-ears! This is why I put a high priority as I think it may really damage
-people ears...
-
-NB : WIndows XP is working as usual, I did not change anything in my
-settings except updating the kernel from 2.6.9...
-
-Reading the bitkeeper changelog for emuk10k1, it may well be related to
-other change in other part of the code (PCI layer...)
-
-Do you have a bitkeeper tree diff so that I can test with latest kernel
-version of the code?
+I noticed that when I use arecord for recording on the VT82C686 AC97 Audio
+sound card the sound is very good, but using the rec (OSS) program I
+always have some additional sounds - static - during recording. I have on
+the same computer the Ensoniq ES1371 card and almost identical setup for
+it but I haven't similar problems with OSS emulation.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-20-04 16:43 
+ tomasz_janowski - 12-29-04 07:51 
 ----------------------------------------------------------------------
-Lee, have you time (will) to play with DSP code and driver ???
-For example to implement Master (PCM) control, spdif volume control, and
-fix bass, treble problem (clipping) ?
+I have added the sample file with recording output from rec.
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 16:10 
+ jdthood - 09-14-05 16:12 
 ----------------------------------------------------------------------
-It looks like this bug report can be closed.
+Submitter: Is this problem fixed in more recent ALSA versions?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-19-04 15:10 Eric Valette   New Issue                                    
-12-19-04 15:10 Eric Valette   Distribution              => Debian          
-12-19-04 15:10 Eric Valette   Kernel Version            => 2.6.10-rc3      
-12-19-04 22:41 Eric Valette   Note Added: 0002851                          
-12-19-04 22:46 Eric Valette   Note Added: 0002852                          
-12-19-04 22:46 rlrevell       Note Added: 0002853                          
-12-19-04 22:51 Eric Valette   Note Added: 0002854                          
-12-19-04 23:00 rlrevell       Note Added: 0002855                          
-12-19-04 23:05 Eric Valette   Note Added: 0002856                          
-12-19-04 23:09 rlrevell       Note Added: 0002857                          
-12-19-04 23:10 rlrevell       Note Added: 0002858                          
-12-19-04 23:11 Eric Valette   Note Added: 0002859                          
-12-19-04 23:16 Eric Valette   Note Added: 0002860                          
-12-20-04 00:04 Eric Valette   Note Added: 0002861                          
-12-20-04 00:10 rlrevell       Note Added: 0002862                          
-12-20-04 00:15 Eric Valette   Note Added: 0002863                          
-12-20-04 08:17 pzad           Note Added: 0002867                          
-12-20-04 08:34 rlrevell       Note Added: 0002869                          
-12-20-04 09:36 Eric Valette   Note Added: 0002870                          
-12-20-04 16:43 pzad           Note Added: 0002886                          
-09-14-05 16:10 jdthood        Status                   assigned => resolved
-09-14-05 16:10 jdthood        Resolution               open => fixed       
-09-14-05 16:10 jdthood        Note Added: 0006175                          
+12-29-04 07:49 tomasz_janowskiNew Issue                                    
+12-29-04 07:49 tomasz_janowskiDistribution              => Fedora Core 2   
+12-29-04 07:49 tomasz_janowskiKernel Version            => 2.6.8.1         
+12-29-04 07:50 tomasz_janowskiFile Added: xx.wav                           
+12-29-04 07:51 tomasz_janowskiNote Added: 0002992                          
+09-14-05 16:12 jdthood        Note Added: 0006177                          
 ======================================================================
 
 
