@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000718]: unknown symbol on modprobe
-Date: Thu, 15 Sep 2005 00:26:06 +0200
-Message-ID: <4d0c7a3c8a5c9e3b9ba003ea985be9ce@bugtrack.alsa-project.org>
+Date: Thu, 15 Sep 2005 01:29:02 +0200
+Message-ID: <63b51a3be33621e04254ff8a65c16856@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 714EA172
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 00:26:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A112102
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 01:29:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             Linux titan.mtaloy.edu 2.6.5-1.358 #1 Sat May 8
 09:04:50 EDT 2004 i686 athlon i386 GNU/Linux
 ======================================================================
 Date Submitted:             12-10-2004 03:18 CET
-Last Modified:              09-15-2005 00:26 CEST
+Last Modified:              09-15-2005 01:29 CEST
 ======================================================================
 Summary:                    unknown symbol on modprobe
 Description: 
@@ -78,17 +78,18 @@ I get fatal errors on the modprobes (see additional info)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 16:08 
-----------------------------------------------------------------------
-Submitter: So, did you fix the problem?
-
-----------------------------------------------------------------------
  slonkak - 09-15-05 00:26 
 ----------------------------------------------------------------------
 No, that did not fix the problem.  I got frustrated and just started using
 the onboard sound instead.  That worked out of the box.  Go ahead and
 close this ticket.  If I play anymore with this, it'll be on my own
 time...
+
+----------------------------------------------------------------------
+ rlrevell - 09-15-05 01:29 
+----------------------------------------------------------------------
+Isn't the platinum eX a USB device?  If so then emu10k1 is the wrong
+driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -102,6 +103,7 @@ GNU/Linux
 12-17-04 01:35 slonkak        Note Added: 0002844                          
 09-14-05 16:08 jdthood        Note Added: 0006174                          
 09-15-05 00:26 slonkak        Note Added: 0006188                          
+09-15-05 01:29 rlrevell       Note Added: 0006189                          
 ======================================================================
 
 
