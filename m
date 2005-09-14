@@ -1,13 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] AZT3328 driver update
-Date: Tue, 13 Sep 2005 19:40:00 -0400
-Message-ID: <1126654801.13893.79.camel@mindpipe>
-References: <20050913225958.GA28548@rhlx01.fht-esslingen.de>
+From: "Nathanael D. Noblet" <nathanael@gnat.ca>
+Subject: CMI8768...
+Date: Tue, 13 Sep 2005 18:28:37 -0700
+Message-ID: <1126661317.7453.9.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050913225958.GA28548@rhlx01.fht-esslingen.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +15,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: andi@lisas.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-09-14 at 00:59 +0200, Andreas Mohr wrote:
-> Hello all,
-> 
-> call me crazy, call me weird, but I decided to finally spend another evening
-> on my oldish undocumented PCI168 card since it's sooo much fun!
+Hello,
+    I have a AMD64/NForce3 board currently running a development version
+of Ubuntu (debian based linux). I have both the i386 and x86_64 flavors
+installed to separate partitions. I can't for the life of me get it
+working. I started reading the BIOS manual regarding the motherboard and
+noticed that the audio was a CMI8768 whereas it was being reported via
+lspci as a CMI8738. I see via google there are some patches for this
+card in the development version of alsa, but compiling and installing
+everything there doesn't seem to change anything. I'm looking for
+pointers on what to do to get this working. I'm decently proficient with
+administration / cli / programming / compiling, but am soo used to a RPM
+based system that I could easily be doing something wrong in trying to
+update alsa. Anyone familiar with that chipset that could help me would
+make me really happy, I've spent a few too many days trying to get this
+working.
 
-You forgot the Signed-Off-By line, reqired by kernel policy.
-
-Lee
+If you need more information, just let me know.
+Thanks,
+-- 
+Nathanael D. Noblet
 
 
 
