@@ -1,13 +1,15 @@
-From: Daniel Svensson <nano@nittionio.nu>
-Subject: Re: Problems with Hercules DJ Console and the usb-audio driver
-Date: Wed, 14 Sep 2005 15:23:46 +0200
-Message-ID: <20050914132346.GA18354@nittionio.nu>
-References: <20050913140934.GA24953@nittionio.nu> <Pine.HPX.4.33n.0509131756100.3875-100000@studcom.urz.uni-halle.de>
+From: Daniel James <daniel@64studio.com>
+Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
+Date: Wed, 14 Sep 2005 14:34:16 +0100
+Message-ID: <200509141434.16323.daniel@64studio.com>
+References: <200508111525.07881.daniel@64studio.com> <200509141218.49448.daniel@64studio.com> <s5h64t3et1i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h64t3et1i.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0509131756100.3875-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,60 +19,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 13, 2005 at 05:58:07PM +0200, Clemens Ladisch wrote:
-> What is the output of "amixer contents"?
-See the first mail in this thread.
+Hi Takashi,
 
-> 28 = ENOSPC.  Please disable bandwidth checking in the kernel
-> configuration.  (This is a bug of your distribution unless you
-> compiled the kernel yourself.)
+> Any change with ACPI boot options like
+> pci=noacpi or acpi=off?
 
-I use kernel 2.6.12-1-686, supplied by Debian. I'll forward your mail to
-the maintainer. Disabling CONFIG_USB_BANDWIDTH did the trick. I have
-sound working now (all channels tested).
+Unfortunately it's no better, although I think that the kernel may be 
+re-enabling ACPI by itself. Here is the output of /proc/interrupts:
 
-So a resume of changes to minimal support for this device. 
+           CPU0       
+  0:      89261    IO-APIC-edge  timer
+  1:       2003    IO-APIC-edge  i8042
+  2:          0          XT-PIC  cascade
+  8:          0    IO-APIC-edge  rtc
+ 12:         97    IO-APIC-edge  i8042
+ 14:       2477    IO-APIC-edge  ide0
+ 15:         19    IO-APIC-edge  ide1
+137:        674   IO-APIC-level  mga@pci:0000:02:00.0
+145:        247   IO-APIC-level  eth0
+153:          0   IO-APIC-level  ICE1712
+NMI:         77 
+LOC:      89235 
+ERR:          0
+MIS:          0
 
-1. Classify the MIDI interface as standard MIDI interface.
-2. Ignore mixer errors.
-http://sourceforge.net/mailarchive/message.php?msg_id=12931847
+It could be because this is a dual-processor board with only one CPU 
+in it. In /var/log/messages there is this:
 
-3. Disable CONFIG_USB_BANDWIDTH
+Sep 14 14:16:05 64studio kernel: pnp: PnP ACPI: disabled
+Sep 14 14:16:05 64studio kernel: PCI: Probing PCI hardware
+Sep 14 14:16:05 64studio kernel: PCI: Probing PCI hardware (bus 00)
+Sep 14 14:16:05 64studio kernel: PCI: Using IRQ router default 
+[1022/746b] at 0000:00:07.3
+Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:00:07.2
+[D] -> IRQ 161
+Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:02:00.0
+[A] -> IRQ 137
+Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:01:06.0
+[A] -> IRQ 153
+Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:01:08.0
+[A] -> IRQ 145
 
-However, as Takashi Iwai said, ignoring mixer elements is not very nice
-(Delay Control brings errors if not ignored), and the MIDI patch needs 
-some love too. 
+> you can try the patch below, too.
 
-And the names of the mixer elements are not correct
+Thanks! We'll give that a go.
 
-Here's a summary of the alsamixer elements vs real names
-
-1 (multi)
- 1.1 - Front Left
- 1.2 - Front Right
-
-2 (multi)
- 2.1 - Rear Right
- 2.2 - Front Center
-
-3 (single) - Rear Left
-
-4 (single) - Woofer
-
-Is it perhaps possible to have Rear Left/Right on the same element?
-Currently they're all named 'PCM', Front, Rear, Center, Woofer would be
-good names. 
-
-This probably sums up what has to be done to get support for this device
-into ALSA. Does Capture need to be working before support enters ALSA or
-that can wait? 
-
--- 
-Daniel Svensson <nano@nittionio.nu>
+Daniel
 
 
 -------------------------------------------------------
