@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000051]: system crashes running aplay as unprivileged user on a US428. No sound except very occasional <.5 sec bursts
-Date: Wed, 14 Sep 2005 15:47:20 +0200
-Message-ID: <bafe463cbb9eafa485053f4608de0c93@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
+Date: Wed, 14 Sep 2005 15:45:06 +0200
+Message-ID: <64b5ce1222e4bdcb1e44b100d4249ecf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45481190
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:47:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC5D8186
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:45:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=51> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
 ======================================================================
-Reported By:                marqrdt
-Assigned To:                karsten
+Reported By:                kayandus
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   51
-Category:                   USB - usb-usx2y
-Reproducibility:            sometimes
-Severity:                   crash
+Issue ID:                   1051
+Category:                   PCI - via82xx
+Reproducibility:            N/A
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:              2.4.22-1.2115.nptl (stock Fedora kernel)
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.10-5-k7
 ======================================================================
-Date Submitted:             02-11-2004 15:39 CET
-Last Modified:              09-14-2005 15:47 CEST
+Date Submitted:             04-13-2005 21:16 CEST
+Last Modified:              09-14-2005 15:45 CEST
 ======================================================================
-Summary:                    system crashes running aplay as unprivileged user on
-a US428. No sound except very occasional <.5 sec bursts
+Summary:                    'Headphones', 'PCM', 'Master' control names
+misassigned
 Description: 
-running the following command will cause a system crash +50% of the time:
-aplay -v -D plug:hw:USX2Y music/wav/chant-reverb.wav
+Hello,
 
-It runs file using the ALSA driver for the internal ALI5451 card.
+I bought a Targa Traveller 811 laptop a couple of months ago with an
+onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
+works fine with the via82xx driver, but there's only one minor problem.
+Let me explain my problem.
 
-Also, no sound comes out of the US428 except for very occasional <.5
-bursts (never more than once per sound file). Headphones hooked to phone
-jack, ext. speaker hooked to line-out.
-No audio capture.
+There are 3 major volume controls for me:
+
+Master: Controls the volume of the internal laptop speaker, so when there
+is a plug/earphones in my LINE IN, it changes nothing. (!!)
+Headphones: Controls volume of the LINE IN, so does nothing when there is
+nothing my LINE IN.
+PCM: Controls both internal speaker and LINE IN, so volume goes up and
+down whether im using the internal speaker or not.
+
+Probably the problem is clear already to you. Most programs control only
+Master, so when I have my laptop attached to my stereo, those programs
+don't change my volume =(
+I hope you guys can fix this, I suggest by making an option to exchange
+Master with PCM.
+
+Thanks in advance, Harm te Hennepe
 ======================================================================
 
 ----------------------------------------------------------------------
- karsten - 10-01-04 01:28 
+ tiwai - 04-19-05 18:26 
 ----------------------------------------------------------------------
-please recheck snd-usb-usx2y version 0.8.0, which I posted to the
-alsa-devel list.
+Try ac97_quirk=hp_only module option (with the latest ALSA).
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:47 
+ kayandus - 04-21-05 20:59 
 ----------------------------------------------------------------------
-Submitter: Is this problem fixed in more recent ALSA versions?
+probably that would solve the problems when i have my laptop attached to
+the stereo, but not when i use the built-in speakers :( (right?)
+
+----------------------------------------------------------------------
+ Nafallo - 09-14-05 04:11 
+----------------------------------------------------------------------
+Rather than to bind Master and PCM, we should bind Master and Headphones
+no? And it's not LINE IN, it's the headphonejack :-).
+
+ac97_quirk=hp_only didn't make a difference here (Targa Visionary 811).
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-04 15:39 marqrdt        New Issue                                    
-02-11-04 17:27 marqrdt        Issue Monitored: marqrdt                     
-02-11-04 20:09 karsten        Note Added: 0000221                          
-03-18-04 14:13 piem           Note Added: 0000641                          
-10-01-04 01:28 karsten        Note Added: 0001991                          
-09-14-05 15:47 jdthood        Note Added: 0006158                          
+04-13-05 21:16 kayandus       New Issue                                    
+04-13-05 21:16 kayandus       Distribution              => Ubuntu          
+04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
+04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
+04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
+04-19-05 18:26 tiwai          Note Added: 0004535                          
+04-21-05 20:59 kayandus       Note Added: 0004552                          
+09-14-05 04:09 Nafallo        Note Added: 0006156                          
+09-14-05 04:10 Nafallo        Note Edited: 0006156                         
+09-14-05 04:10 Nafallo        Issue Monitored: Nafallo                     
+09-14-05 04:11 Nafallo        Note Edited: 0006156                         
+09-14-05 15:45 jdthood        Summary                  Master <--> PCM =>
+'Headphones', 'PCM', 'Master' control names misassigned
+09-14-05 15:45 jdthood        Description Updated                          
 ======================================================================
 
 
