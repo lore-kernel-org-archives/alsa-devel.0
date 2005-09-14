@@ -1,15 +1,14 @@
-From: Daniel James <daniel@64studio.com>
-Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
-Date: Wed, 14 Sep 2005 14:34:16 +0100
-Message-ID: <200509141434.16323.daniel@64studio.com>
-References: <200508111525.07881.daniel@64studio.com> <200509141218.49448.daniel@64studio.com> <s5h64t3et1i.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000051]: system crashes running aplay as unprivileged user on a US428. No sound except very occasional <.5 sec bursts
+Date: Wed, 14 Sep 2005 15:47:20 +0200
+Message-ID: <bafe463cbb9eafa485053f4608de0c93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h64t3et1i.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45481190
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:47:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,56 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-> Any change with ACPI boot options like
-> pci=noacpi or acpi=off?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=51> 
+======================================================================
+Reported By:                marqrdt
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   51
+Category:                   USB - usb-usx2y
+Reproducibility:            sometimes
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:              2.4.22-1.2115.nptl (stock Fedora kernel)
+======================================================================
+Date Submitted:             02-11-2004 15:39 CET
+Last Modified:              09-14-2005 15:47 CEST
+======================================================================
+Summary:                    system crashes running aplay as unprivileged user on
+a US428. No sound except very occasional <.5 sec bursts
+Description: 
+running the following command will cause a system crash +50% of the time:
+aplay -v -D plug:hw:USX2Y music/wav/chant-reverb.wav
 
-Unfortunately it's no better, although I think that the kernel may be 
-re-enabling ACPI by itself. Here is the output of /proc/interrupts:
+It runs file using the ALSA driver for the internal ALI5451 card.
 
-           CPU0       
-  0:      89261    IO-APIC-edge  timer
-  1:       2003    IO-APIC-edge  i8042
-  2:          0          XT-PIC  cascade
-  8:          0    IO-APIC-edge  rtc
- 12:         97    IO-APIC-edge  i8042
- 14:       2477    IO-APIC-edge  ide0
- 15:         19    IO-APIC-edge  ide1
-137:        674   IO-APIC-level  mga@pci:0000:02:00.0
-145:        247   IO-APIC-level  eth0
-153:          0   IO-APIC-level  ICE1712
-NMI:         77 
-LOC:      89235 
-ERR:          0
-MIS:          0
+Also, no sound comes out of the US428 except for very occasional <.5
+bursts (never more than once per sound file). Headphones hooked to phone
+jack, ext. speaker hooked to line-out.
+No audio capture.
+======================================================================
 
-It could be because this is a dual-processor board with only one CPU 
-in it. In /var/log/messages there is this:
+----------------------------------------------------------------------
+ karsten - 10-01-04 01:28 
+----------------------------------------------------------------------
+please recheck snd-usb-usx2y version 0.8.0, which I posted to the
+alsa-devel list.
 
-Sep 14 14:16:05 64studio kernel: pnp: PnP ACPI: disabled
-Sep 14 14:16:05 64studio kernel: PCI: Probing PCI hardware
-Sep 14 14:16:05 64studio kernel: PCI: Probing PCI hardware (bus 00)
-Sep 14 14:16:05 64studio kernel: PCI: Using IRQ router default 
-[1022/746b] at 0000:00:07.3
-Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:00:07.2
-[D] -> IRQ 161
-Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:02:00.0
-[A] -> IRQ 137
-Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:01:06.0
-[A] -> IRQ 153
-Sep 14 14:16:05 64studio kernel: PCI->APIC IRQ transform: 0000:01:08.0
-[A] -> IRQ 145
+----------------------------------------------------------------------
+ jdthood - 09-14-05 15:47 
+----------------------------------------------------------------------
+Submitter: Is this problem fixed in more recent ALSA versions?
 
-> you can try the patch below, too.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-11-04 15:39 marqrdt        New Issue                                    
+02-11-04 17:27 marqrdt        Issue Monitored: marqrdt                     
+02-11-04 20:09 karsten        Note Added: 0000221                          
+03-18-04 14:13 piem           Note Added: 0000641                          
+10-01-04 01:28 karsten        Note Added: 0001991                          
+09-14-05 15:47 jdthood        Note Added: 0006158                          
+======================================================================
 
-Thanks! We'll give that a go.
 
-Daniel
 
 
 -------------------------------------------------------
