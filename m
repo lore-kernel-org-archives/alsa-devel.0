@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
-Date: Wed, 14 Sep 2005 15:45:06 +0200
-Message-ID: <64b5ce1222e4bdcb1e44b100d4249ecf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000549]: Jackd crash randomly
+Date: Wed, 14 Sep 2005 15:49:03 +0200
+Message-ID: <921cb8aa71d85a67507781abf2919558@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC5D8186
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:45:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A908191
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:49:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=549> 
 ======================================================================
-Reported By:                kayandus
-Assigned To:                
+Reported By:                roswel
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1051
-Category:                   PCI - via82xx
-Reproducibility:            N/A
-Severity:                   tweak
+Issue ID:                   549
+Category:                   USB - usb-usx2y
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.10-5-k7
+Status:                     assigned
+Distribution:               Debian sid/experimental
+Kernel Version:             2.6.9-rc2-bk14
 ======================================================================
-Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              09-14-2005 15:45 CEST
+Date Submitted:             09-29-2004 07:52 CEST
+Last Modified:              09-14-2005 15:49 CEST
 ======================================================================
-Summary:                    'Headphones', 'PCM', 'Master' control names
-misassigned
+Summary:                    Jackd crash randomly
 Description: 
-Hello,
+Hi,
+I still have some troubles with jackd. I rebuilt a kernel without
+USB_CONFIG_BANDWITH and now jackd start without problem. But sometimes, it
+hang with the following jackd error  : 
+04:25:29.436 Audio connection graph change.
+delay of 1022980.000 usecs exceeds estimated spare time of 17909.000;
+restart ...
+04:28:42.753 XRUN callback. (1)
 
-I bought a Targa Traveller 811 laptop a couple of months ago with an
-onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
-works fine with the via82xx driver, but there's only one minor problem.
-Let me explain my problem.
+I never have this error with my integrated chip using intel_i8x0 driver.
+But wost, after a random time, jackd crash with the following error : 
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+could not start playback (Broken pipe)
+jackd watchdog: timeout - killing jackd
 
-There are 3 major volume controls for me:
+And in my kernel logs, i've got : 
+Sequence Error!(ep=10;nuc=1,frame=643)
+Sequence Error!(ep=8;nuc=0,frame=643)
+Sequence Error!(ep=8;nuc=1,frame=644)
 
-Master: Controls the volume of the internal laptop speaker, so when there
-is a plug/earphones in my LINE IN, it changes nothing. (!!)
-Headphones: Controls volume of the LINE IN, so does nothing when there is
-nothing my LINE IN.
-PCM: Controls both internal speaker and LINE IN, so volume goes up and
-down whether im using the internal speaker or not.
+Jackd crashs also if i'm not doing anything. I tried to let it run
+sometimes without using it, and it crashs.
 
-Probably the problem is clear already to you. Most programs control only
-Master, so when I have my laptop attached to my stereo, those programs
-don't change my volume =(
-I hope you guys can fix this, I suggest by making an option to exchange
-Master with PCM.
-
-Thanks in advance, Harm te Hennepe
+Thanx for your attention.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 18:26 
+ roswel - 10-05-04 08:32 
 ----------------------------------------------------------------------
-Try ac97_quirk=hp_only module option (with the latest ALSA).
+Hummm i would just add, that the driver crash also if i don't use my
+soundcard. After a random time, if my soundcard is plugged, i got the
+following message in my kernel logs :
+ALSA
+/home/roswel/Devel/alsa/alsa-driver/alsa-kernel/usb/usx2y/usbusx2yaudio.c:263:
+Sequence Error!(ep=10;wait=628,frame=629).
+Most propably some urb of usb-frame 628 is still missing.
+Cause could be too long delays in usb-hcd interrupt handling.
+This driver definitely wants 1 interrupt per ms.
+To make it work for a system that can't deliver interrupts reliably at
+that rate,
+You'd have to make it work for NRPACKS > 1. To start, grep for NRPACKS in
+this code ;-)
 
 ----------------------------------------------------------------------
- kayandus - 04-21-05 20:59 
+ jdthood - 09-14-05 15:49 
 ----------------------------------------------------------------------
-probably that would solve the problems when i have my laptop attached to
-the stereo, but not when i use the built-in speakers :( (right?)
-
-----------------------------------------------------------------------
- Nafallo - 09-14-05 04:11 
-----------------------------------------------------------------------
-Rather than to bind Master and PCM, we should bind Master and Headphones
-no? And it's not LINE IN, it's the headphonejack :-).
-
-ac97_quirk=hp_only didn't make a difference here (Targa Visionary 811).
-
-
+Submitter: Is the behavior any better in more recent ALSA versions?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:16 kayandus       New Issue                                    
-04-13-05 21:16 kayandus       Distribution              => Ubuntu          
-04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
-04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
-04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
-04-19-05 18:26 tiwai          Note Added: 0004535                          
-04-21-05 20:59 kayandus       Note Added: 0004552                          
-09-14-05 04:09 Nafallo        Note Added: 0006156                          
-09-14-05 04:10 Nafallo        Note Edited: 0006156                         
-09-14-05 04:10 Nafallo        Issue Monitored: Nafallo                     
-09-14-05 04:11 Nafallo        Note Edited: 0006156                         
-09-14-05 15:45 jdthood        Summary                  Master <--> PCM =>
-'Headphones', 'PCM', 'Master' control names misassigned
-09-14-05 15:45 jdthood        Description Updated                          
+09-29-04 07:52 roswel         New Issue                                    
+09-29-04 07:52 roswel         Distribution              => Debian
+sid/experimental
+09-29-04 07:52 roswel         Kernel Version            => 2.6.9-rc2-bk14  
+09-29-04 07:52 roswel         Issue Monitored: roswel                      
+10-01-04 01:24 karsten        Note Added: 0001989                          
+10-01-04 10:07 roswel         Note Added: 0001996                          
+10-01-04 15:27 karsten        File Added: snd-usb-usx2y.patch.0.8.0             
+      
+10-01-04 15:29 karsten        Note Added: 0001998                          
+10-01-04 19:06 roswel         Note Added: 0002004                          
+10-05-04 08:32 roswel         Note Added: 0002015                          
+09-14-05 15:49 jdthood        Note Added: 0006159                          
 ======================================================================
 
 
