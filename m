@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Wed, 14 Sep 2005 17:44:39 +0200
-Message-ID: <e1d48280dd9104f57693c24e642a2352@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001419]: Input/output jacks mixed up
+Date: Wed, 14 Sep 2005 18:09:10 +0200
+Message-ID: <b64b03a2ed96309324bac312bd2585c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F082158
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 17:44:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3434B19C
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 18:09:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,79 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=583> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1419> 
 ======================================================================
-Reported By:                KAtiOS
+Reported By:                tom123
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   583
-Category:                   PCI - atiixp
+Issue ID:                   1419
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9_rc4
+Distribution:               SuSE 9.2 Pro
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              09-14-2005 17:44 CEST
+Date Submitted:             09-14-2005 18:09 CEST
+Last Modified:              09-14-2005 18:09 CEST
 ======================================================================
-Summary:                    xruns when playing audio or video files
+Summary:                    Input/output jacks mixed up
 Description: 
-I get xruns when playing files.
-I tested with lots of 2.6 kernels, up to 2.6.9_rc4 with the same results.
-It seems that mplayer with sdl output works fine, but xruns with alsa.
-Using acpi=off or pci=noacpi helps in mplayer but not in vdr (with
-softdevice plugin - using alsa).
+I'm using alsa 1.0.10rc1 for a Shuttle ST20G5 barebone. The mainboard has
+an ULi M1573 southbridge with integrated ALC880 sound. When I play a
+normal 2.0 stereo file, sound is applied at rear jacks "line in" and
+"front". On the front side the "MIC" jack brings out the sound, not the
+"Headphone" jack.
 
+On the rear side are 5 jacks (with explanation from the manual) :
+
+Side-SURR port
+Side-SURR is a stereo line-level output port that accepts a 1/8-inch TRS
+stereo plug.
+
+Line-In port
+Line-In is a stereo line-level input port that accepts a 1/8-inch TRS
+stereo plug. It can be used as a source for digital sound recording, a
+source to be mixed with the output, or both.
+
+Bass/Center port
+Bass/Center-Out is a stereo output port through which the combined signal
+of all internal and external audio sources on the board is output. It can
+be connected to 1/8-inch TRS stereo headphones or to bass/center amplified
+speakers.
+
+Surround-Back port
+Surround-Back is a stereo linelevel output port that accepts a 1/8-inch
+TRS stereo plug.
+
+Front-Out port
+Front-Out is a stereo output port through which the combined signal of all
+internal and external audio sources on the board is output. It can be
+connected to 1/8-inch TRS stereo headphones or to amplified speakers.
+
+So I had expected sound from Front-Out and Bass/Center port at the rear
+side. On the front side sound is expected coming from the headphone jack.
 
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000776 desynchronization, xruns when running m...
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 09-14-05 15:52 
-----------------------------------------------------------------------
-Is there a consensus that this report can be closed,
-because the problem is really in mplayer?
-
-----------------------------------------------------------------------
- KAtiOS - 09-14-05 17:44 
-----------------------------------------------------------------------
-Well, I gave up on this months ago, but looking at my messages, I would say
-that the problem, which occured *only* for me in this particular config
-(chip) in both mplayer and vdr, nothing excluded a bug in alsa, but
-whatever...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-15-04 16:27 KAtiOS         New Issue                                    
-10-15-04 16:27 KAtiOS         Distribution              => Gentoo Linux    
-10-15-04 16:27 KAtiOS         Kernel Version            => 2.6.9_rc4       
-10-15-04 18:43 lee            Note Added: 0002168                          
-10-15-04 18:51 KAtiOS         Note Added: 0002169                          
-10-15-04 19:02 lee            Note Added: 0002170                          
-10-15-04 19:12 KAtiOS         Note Added: 0002171                          
-10-15-04 19:24 KAtiOS         Note Added: 0002172                          
-10-15-04 19:29 lee            Note Added: 0002173                          
-10-15-04 20:28 KAtiOS         Note Added: 0002174                          
-10-15-04 22:17 lee            Note Added: 0002175                          
-10-15-04 23:49 KAtiOS         Note Added: 0002176                          
-10-16-04 01:11 lee            Note Added: 0002180                          
-10-16-04 01:18 lee            Note Added: 0002181                          
-10-16-04 06:05 lee            Note Added: 0002183                          
-10-16-04 10:08 KAtiOS         Note Added: 0002185                          
-10-16-04 11:39 KAtiOS         Note Added: 0002186                          
-09-14-05 15:52 jdthood        Note Added: 0006161                          
-09-14-05 16:14 jdthood        Relationship added       has duplicate 0000776
-09-14-05 17:44 KAtiOS         Note Added: 0006185                          
+09-14-05 18:09 tom123         New Issue                                    
+09-14-05 18:09 tom123         Distribution              => SuSE 9.2 Pro    
+09-14-05 18:09 tom123         Kernel Version            => 2.6.8           
 ======================================================================
 
 
