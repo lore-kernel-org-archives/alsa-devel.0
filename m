@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000466]: tumbler_init_client error after waking
-Date: Wed, 14 Sep 2005 15:56:03 +0200
-Message-ID: <7052ce65385882e553c2692a19f11c70@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000639]: Poor Audio Output
+Date: Wed, 14 Sep 2005 15:58:23 +0200
+Message-ID: <048215dc2afed0fc9966ac3219f1ce31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8B38191
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:56:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D006191
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:58:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=466> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=639> 
 ======================================================================
-Reported By:                schwab
+Reported By:                gnif
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   466
-Category:                   PPC - powermac
+Issue ID:                   639
+Category:                   PCI - es1968
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             
+Kernel Version:             Debian Kernel Image 2.6.7-1-686
 ======================================================================
-Date Submitted:             08-26-2004 22:36 CEST
-Last Modified:              09-14-2005 15:56 CEST
+Date Submitted:             11-10-2004 05:02 CET
+Last Modified:              09-14-2005 15:58 CEST
 ======================================================================
-Summary:                    tumbler_init_client error after waking
+Summary:                    Poor Audio Output
 Description: 
-After waking up the driver is unable to restore the sound settings.  I have
-to explicitly load the settings to make sound working again.
+Card: ESS ES1978 (Maestro 2E)
+Chip: SigmaTel STAC9721/23
+
+During playback from any PCM source there is very poor audio output, I had
+assumed that this was just intefearence from the HDD and other devices in
+the laptop until I came across this: 
+
+http://h20000.www2.hp.com/bizsupport/TechSupport/Document.jsp?locale=en_US&taskId=110&prodSeriesId=96235&prodTypeId=321957&objectID=PSD_PH020226_CW02
+
+This makes me beleave that it is a problem with the driver as Compaq had
+the same issue, I have tested this under windows and I have had no
+crackling in the audio, so I am certain that it is the driver.
+
+PS: I have used alsaconf to configure the sound, this worked out of the
+box.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-27-04 19:37 
-----------------------------------------------------------------------
-Can you try mm tree?  Many ppc fixes are there.
-
-----------------------------------------------------------------------
- schwab - 10-21-04 23:24 
-----------------------------------------------------------------------
-With 2.6.9 I still get the same messages on wakeup, but at least the sound
-works afterwards.
-
-----------------------------------------------------------------------
- jdthood - 09-14-05 15:56 
+ jdthood - 09-14-05 15:58 
 ----------------------------------------------------------------------
 Submitter: Is this problem fixed in more recent ALSA versions?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-26-04 22:36 schwab         New Issue                                    
-08-27-04 19:37 tiwai          Note Added: 0001647                          
-10-21-04 23:24 schwab         Note Added: 0002225                          
-09-14-05 15:56 jdthood        Note Added: 0006164                          
-09-14-05 15:56 jdthood        Summary                  tumbler_init_client error
-=> tumbler_init_client error after waking
+11-10-04 05:02 gnif           New Issue                                    
+11-10-04 05:02 gnif           Kernel Version            => Debian Kernel Image
+2.6.7-1-686
+09-14-05 15:58 jdthood        Note Added: 0006167                          
 ======================================================================
 
 
