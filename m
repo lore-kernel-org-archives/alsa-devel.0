@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000588]: Mic Noise
-Date: Wed, 14 Sep 2005 15:53:20 +0200
-Message-ID: <d598ba8165d17fc92d6f97520e12ea16@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000466]: tumbler_init_client error after waking
+Date: Wed, 14 Sep 2005 15:56:03 +0200
+Message-ID: <7052ce65385882e553c2692a19f11c70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6904D191
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:53:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8B38191
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 15:56:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=588> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=466> 
 ======================================================================
-Reported By:                helpme
+Reported By:                schwab
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   588
-Category:                   PCI - atiixp
+Issue ID:                   466
+Category:                   PPC - powermac
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               SuSE
-Kernel Version:             2.6.4-52-smp
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-20-2004 21:22 CEST
-Last Modified:              09-14-2005 15:53 CEST
+Date Submitted:             08-26-2004 22:36 CEST
+Last Modified:              09-14-2005 15:56 CEST
 ======================================================================
-Summary:                    Mic Noise
+Summary:                    tumbler_init_client error after waking
 Description: 
-When recording with the mic, i get a lot of static in the recording; this
-is not a problem with the mic, or when using Windows.  How do I fix this?
+After waking up the driver is unable to restore the sound settings.  I have
+to explicitly load the settings to make sound working again.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:53 
+ tiwai - 08-27-04 19:37 
 ----------------------------------------------------------------------
-Submitter: Is the behavior improved in more recent ALSA versions?
+Can you try mm tree?  Many ppc fixes are there.
+
+----------------------------------------------------------------------
+ schwab - 10-21-04 23:24 
+----------------------------------------------------------------------
+With 2.6.9 I still get the same messages on wakeup, but at least the sound
+works afterwards.
+
+----------------------------------------------------------------------
+ jdthood - 09-14-05 15:56 
+----------------------------------------------------------------------
+Submitter: Is this problem fixed in more recent ALSA versions?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-20-04 21:22 helpme         New Issue                                    
-10-20-04 21:22 helpme         Distribution              => SuSE            
-10-20-04 21:22 helpme         Kernel Version            => 2.6.4-52-smp    
-09-14-05 15:53 jdthood        Note Added: 0006162                          
+08-26-04 22:36 schwab         New Issue                                    
+08-27-04 19:37 tiwai          Note Added: 0001647                          
+10-21-04 23:24 schwab         Note Added: 0002225                          
+09-14-05 15:56 jdthood        Note Added: 0006164                          
+09-14-05 15:56 jdthood        Summary                  tumbler_init_client error
+=> tumbler_init_client error after waking
 ======================================================================
 
 
