@@ -1,11 +1,14 @@
-From: "Nathanael D. Noblet" <nathanael@gnat.ca>
-Subject: CMI8768...
-Date: Tue, 13 Sep 2005 18:28:37 -0700
-Message-ID: <1126661317.7453.9.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001051]: Master <--> PCM
+Date: Wed, 14 Sep 2005 04:09:37 +0200
+Message-ID: <df65994016d8ca66a037e477d930f85d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 481BB1B5
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2005 04:09:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,29 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-    I have a AMD64/NForce3 board currently running a development version
-of Ubuntu (debian based linux). I have both the i386 and x86_64 flavors
-installed to separate partitions. I can't for the life of me get it
-working. I started reading the BIOS manual regarding the motherboard and
-noticed that the audio was a CMI8768 whereas it was being reported via
-lspci as a CMI8738. I see via google there are some patches for this
-card in the development version of alsa, but compiling and installing
-everything there doesn't seem to change anything. I'm looking for
-pointers on what to do to get this working. I'm decently proficient with
-administration / cli / programming / compiling, but am soo used to a RPM
-based system that I could easily be doing something wrong in trying to
-update alsa. Anyone familiar with that chipset that could help me would
-make me really happy, I've spent a few too many days trying to get this
-working.
 
-If you need more information, just let me know.
-Thanks,
--- 
-Nathanael D. Noblet
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+======================================================================
+Reported By:                kayandus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1051
+Category:                   PCI - via82xx
+Reproducibility:            N/A
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.10-5-k7
+======================================================================
+Date Submitted:             04-13-2005 21:16 CEST
+Last Modified:              09-14-2005 04:09 CEST
+======================================================================
+Summary:                    Master <--> PCM
+Description: 
+Hello,
+
+I bought a Targa Traveller 811 laptop a couple of months ago with an
+onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
+works fine with the via82xx driver, but there's only one minor problem.
+Let me explain my problem.
+
+There are 3 major volume controls for me,
+Master: Controls the volume of the internal laptop speaker, so when there
+is a plug/earphones in my LINE IN, it changes nothing. (!!)
+Headphones: Controls volume of the LINE IN, so does nothing when there is
+nothing my LINE IN.
+PCM: Controls both interal speaker and LINE IN, so volume goes up and down
+whether im using the internal speaker or not.
+
+Probably the problem is clear already to u, most programs control only
+Master, so when I have my laptop attached to my stereo, those programs
+don't change my volume =(
+I hope u guys can fix this, I suggest by making an option to change Master
+with PCM.
+
+Thanks in advance, Harm te Hennepe
+======================================================================
+
+----------------------------------------------------------------------
+ kayandus - 04-21-05 20:59 
+----------------------------------------------------------------------
+probably that would solve the problems when i have my laptop attached to
+the stereo, but not when i use the built-in speakers :( (right?)
+
+----------------------------------------------------------------------
+ Nafallo - 09-14-05 04:09 
+----------------------------------------------------------------------
+Rather than to bind Master and PCM, we should bind Master and Headphones
+no? And it's not LINE IN, it's the headphonejack :-).
+
+ac97_quirk=hp_only didn't make a difference here (same laptop).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-13-05 21:16 kayandus       New Issue                                    
+04-13-05 21:16 kayandus       Distribution              => Ubuntu          
+04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
+04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
+04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
+04-19-05 18:26 tiwai          Note Added: 0004535                          
+04-21-05 20:59 kayandus       Note Added: 0004552                          
+09-14-05 04:09 Nafallo        Note Added: 0006156                          
+======================================================================
+
 
 
 
