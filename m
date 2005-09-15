@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000183]: Mic boost boosts mic playback and not recording
-Date: Fri, 16 Sep 2005 00:01:10 +0200
-Message-ID: <bb3e96b0956e69a2afb145a1ffd1f00f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
+Date: Fri, 16 Sep 2005 00:07:30 +0200
+Message-ID: <f72100908a5acf21b3aa3b1cf0cb9a32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93F0E173
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 00:01:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D32F175
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 00:07:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
 ======================================================================
-Reported By:                Schugy
+Reported By:                kayandus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   183
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1051
+Category:                   PCI - via82xx
+Reproducibility:            N/A
+Severity:                   tweak
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               SuSE 8.2
-Kernel Version:             2.4.25
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.10-5-k7
 ======================================================================
-Date Submitted:             04-04-2004 13:51 CEST
-Last Modified:              09-16-2005 00:01 CEST
+Date Submitted:             04-13-2005 21:16 CEST
+Last Modified:              09-16-2005 00:07 CEST
 ======================================================================
-Summary:                    Mic boost boosts mic playback and not recording
+Summary:                    'Headphones', 'PCM', 'Master' control names
+misassigned
 Description: 
-I've tried to record my voice with broadcast2000. The recording level is at
--30db (maybe 2db louder than without mic boost) while mic playback seems
-to be boosted up by 500% to an audiable level.
+Hello,
 
+I bought a Targa Traveller 811 laptop a couple of months ago with an
+onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
+works fine with the via82xx driver, but there's only one minor problem.
+Let me explain my problem.
 
+There are 3 major volume controls for me:
+
+Master: Controls the volume of the internal laptop speaker, so when there
+is a plug/earphones in my LINE IN, it changes nothing. (!!)
+Headphones: Controls volume of the LINE IN, so does nothing when there is
+nothing my LINE IN.
+PCM: Controls both internal speaker and LINE IN, so volume goes up and
+down whether im using the internal speaker or not.
+
+Probably the problem is clear already to you. Most programs control only
+Master, so when I have my laptop attached to my stereo, those programs
+don't change my volume =(
+I hope you guys can fix this, I suggest by making an option to exchange
+Master with PCM.
+
+Thanks in advance, Harm te Hennepe
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001192 Microphone doesn't work in record and/o...
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-27-05 15:57 
+ rlrevell - 09-15-05 23:52 
 ----------------------------------------------------------------------
-Try the patch in #1192.
+Make sure you are really passing the option to the module by doing:
+
+rmmod snd-via82xx
+modprobe snd-via82xx ac97_quirk=hp_only
 
 ----------------------------------------------------------------------
- Schugy - 09-16-05 00:01 
+ rlrevell - 09-16-05 00:07 
 ----------------------------------------------------------------------
-Mic boost now works perfectly with ALSA that is included in linux 2.6.13.
-Great job.
-Thank you very much ;)
+It should work but I've seen it fail due to modutils bugs.  Just try that
+to be 100% sure.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-04-04 13:51 Schugy         New Issue                                    
-04-04-04 13:51 Schugy         Distribution              => SuSE 8.2        
-04-04-04 13:51 Schugy         Kernel Version            => 2.4.25          
-04-27-04 17:33 mlejeune       Note Added: 0000962                          
-04-27-04 17:35 mlejeune       Issue Monitored: mlejeune                    
-04-30-04 11:43 tiwai          Note Added: 0000982                          
-05-23-04 19:45 Schugy         Note Added: 0001180                          
-05-24-04 14:50 tiwai          Note Added: 0001183                          
-07-24-04 19:47 thorstenhirsch Note Added: 0001471                          
-04-07-05 00:12 jdthood        Status                   new => acknowledged 
-04-07-05 00:12 jdthood        Resolution               open => not fixable 
-04-07-05 06:25 charles_levert Note Added: 0004354                          
-06-27-05 15:57 tiwai          Relationship added       related to 0001192  
-06-27-05 15:57 tiwai          Note Added: 0005272                          
-09-16-05 00:01 Schugy         Note Added: 0006231                          
+04-13-05 21:16 kayandus       New Issue                                    
+04-13-05 21:16 kayandus       Distribution              => Ubuntu          
+04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
+04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
+04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
+04-19-05 18:26 tiwai          Note Added: 0004535                          
+04-21-05 20:59 kayandus       Note Added: 0004552                          
+09-14-05 04:09 Nafallo        Note Added: 0006156                          
+09-14-05 04:10 Nafallo        Note Edited: 0006156                         
+09-14-05 04:10 Nafallo        Issue Monitored: Nafallo                     
+09-14-05 04:11 Nafallo        Note Edited: 0006156                         
+09-14-05 15:45 jdthood        Summary                  Master <--> PCM =>
+'Headphones', 'PCM', 'Master' control names misassigned
+09-14-05 15:45 jdthood        Description Updated                          
+09-15-05 16:04 tiwai          Note Added: 0006211                          
+09-15-05 22:38 Nafallo        Note Added: 0006225                          
+09-15-05 22:41 Nafallo        Note Edited: 0006225                         
+09-15-05 23:35 Nafallo        Note Added: 0006228                          
+09-15-05 23:52 rlrevell       Note Added: 0006229                          
+09-15-05 23:54 Nafallo        Note Added: 0006230                          
+09-15-05 23:59 Nafallo        Note Deleted: 0006230                        
+09-16-05 00:07 rlrevell       Note Added: 0006232                          
 ======================================================================
 
 
