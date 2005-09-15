@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
-Date: Thu, 15 Sep 2005 15:08:40 +0200
-Message-ID: <82a4de3bc1f7835a5371c659a74b2600@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000821]: Audigy 2 NX USB
+Date: Thu, 15 Sep 2005 15:07:19 +0200
+Message-ID: <0d073500a5b45d838ce31e21e6b69686@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3DE6163
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:08:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73BCA11F
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:07:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=821> 
 ======================================================================
-Reported By:                fermier
-Assigned To:                
+Reported By:                clusty
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   736
-Category:                   PCI - azx
+Issue ID:                   821
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Mandrake 10.1 Offficial
-Kernel Version:             2.3.8.1-12mdk
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-20-2004 07:40 CET
-Last Modified:              09-15-2005 15:08 CEST
+Date Submitted:             01-16-2005 16:47 CET
+Last Modified:              09-15-2005 15:07 CEST
 ======================================================================
-Summary:                    modprobe snd-azx still gives segmentation fault
+Summary:                    Audigy 2 NX USB
 Description: 
-After having read the other errors reported for the CMI9880 sound chip and
-that the CVS version has been fixed, I downloaded the latest CVS version
-of the alsa-driver.  ./configure and make seem to complete without errors.
- After a make install a modprobe snd-azx still gives a segmentation fault
-just like the normal tarred ball install and the previous CVS gave.  After
-a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
-becomes a zombie process the same is true for modprobe -r snd or modprobe
--r snd-azx
+Whenever I play a song with XMMS using ALSA output plugin it works for 2-3
+seconds and then it mutes. If I restart the player it does the same.
 ======================================================================
 
 ----------------------------------------------------------------------
- fermier - 01-22-05 06:23 
+ kempokaraterulz - 01-19-05 17:52 
 ----------------------------------------------------------------------
-Yes, I can confirm that modprobe snd-dummy also gives a segmentation fault.
- When I installed the driver for the network card that comes as part of
-the motherboard this did not give this kind of error though.  What compile
-option could be wrong?
+With a sound blaster live 24bit usb the sound works for anywhere between
+several minutes and like an hour or so ... before muting itself ...
+hitting stop then start again or pausing and unpausing the player restores
+sound. nothing in dmesg or any logs either . i just compiled this kernel
+with usb debugging so i will report back if i can find anything good in
+there.
 
-This is really a pity, because sound is the only thing left that I need to
-get to work on this PC.
-
 ----------------------------------------------------------------------
- jdthood - 09-15-05 15:08 
+ jdthood - 09-15-05 15:07 
 ----------------------------------------------------------------------
-This was a kernel bug.
+Submitter: Is there any improvement in more recent ALSA versions?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-04 07:40 fermier        New Issue                                    
-12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
-Offficial
-12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
-12-20-04 08:31 rlrevell       Note Added: 0002868                          
-12-20-04 13:04 fermier        Note Added: 0002871                          
-12-20-04 13:05 fermier        Note Added: 0002872                          
-12-20-04 14:27 tiwai          Note Added: 0002873                          
-12-20-04 15:35 fermier        Note Added: 0002877                          
-12-20-04 15:38 tiwai          Note Added: 0002878                          
-12-20-04 16:01 fermier        Note Added: 0002879                          
-12-20-04 16:05 tiwai          Note Added: 0002881                          
-12-20-04 16:06 tiwai          Note Added: 0002882                          
-12-20-04 16:23 fermier        Note Added: 0002884                          
-12-20-04 16:34 tiwai          Note Added: 0002885                          
-12-20-04 17:32 fermier        Note Added: 0002889                          
-12-20-04 17:40 tiwai          Note Added: 0002891                          
-12-20-04 18:10 fermier        Note Added: 0002893                          
-01-20-05 19:18 tiwai          Note Added: 0003334                          
-01-21-05 13:10 fermier        Note Added: 0003346                          
-01-21-05 21:05 tiwai          Note Added: 0003356                          
-01-22-05 06:23 fermier        Note Added: 0003372                          
-09-15-05 15:08 jdthood        Status                   new => closed       
-09-15-05 15:08 jdthood        Note Added: 0006202                          
+01-16-05 16:47 clusty         New Issue                                    
+01-16-05 16:49 clusty         Issue Monitored: clusty                      
+01-19-05 17:52 kempokaraterulzNote Added: 0003308                          
+09-15-05 15:07 jdthood        Note Added: 0006201                          
 ======================================================================
 
 
