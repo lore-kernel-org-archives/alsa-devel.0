@@ -1,7 +1,7 @@
 From: Nicolas Pitre <nico@cam.org>
-Subject: [PATCH] remove redundent assignment to the ac97 device structure
-Date: Wed, 14 Sep 2005 22:06:35 -0400 (EDT)
-Message-ID: <Pine.LNX.4.63.0509142157071.31877@localhost.localdomain>
+Subject: [PATCH] clean suspend/resume calls for ac97_bus_type
+Date: Wed, 14 Sep 2005 22:22:16 -0400 (EDT)
+Message-ID: <Pine.LNX.4.63.0509142207110.31877@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -20,38 +20,48 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Don't use dev.platform_data to store a reference to the containing 
-ac97_t structure.  Such assignment is redundent since we can deduce the 
-ac97_t structure location from the contained device structure.  This 
-sets platform_data free for other purposes.
+A single call to the driver suspend/resume method for each device is 
+enough. The level and SUSPEND_*/RESUME_* arguments are deprecated and 
+said to be removed eventually anyway (no other subsystem are using them 
+anymore except platform devices).
 
 Signed-off-by: Nicolas Pitre <nico@cam.org>
 
-Index: linux-2.6/sound/pci/ac97/ac97_codec.c
+Index: linux-2.6/sound/pci/ac97/ac97_bus.c
 ===================================================================
---- linux-2.6.orig/sound/pci/ac97/ac97_codec.c
-+++ linux-2.6/sound/pci/ac97/ac97_codec.c
-@@ -1828,7 +1828,6 @@
- 
- 	ac97->dev.bus = &ac97_bus_type;
- 	ac97->dev.parent = ac97->bus->card->dev;
--	ac97->dev.platform_data = ac97;
- 	ac97->dev.release = ac97_device_release;
- 	snprintf(ac97->dev.bus_id, BUS_ID_SIZE, "card%d-%d", ac97->bus->card->number, ac97->num);
- 	if ((err = device_register(&ac97->dev)) < 0) {
-Index: linux-2.6/include/sound/ac97_codec.h
-===================================================================
---- linux-2.6.orig/include/sound/ac97_codec.h
-+++ linux-2.6/include/sound/ac97_codec.h
-@@ -527,6 +527,8 @@
- 	struct device dev;
- };
- 
-+#define to_ac97_t(d) container_of(d, struct _snd_ac97, dev)
-+
- /* conditions */
- static inline int ac97_is_audio(ac97_t * ac97)
+--- linux-2.6.orig/sound/pci/ac97/ac97_bus.c
++++ linux-2.6/sound/pci/ac97/ac97_bus.c
+@@ -30,13 +30,8 @@
  {
+ 	int ret = 0;
+ 
+-	if (dev->driver && dev->driver->suspend) {
+-		ret = dev->driver->suspend(dev, state, SUSPEND_DISABLE);
+-		if (ret == 0)
+-			ret = dev->driver->suspend(dev, state, SUSPEND_SAVE_STATE);
+-		if (ret == 0)
+-			ret = dev->driver->suspend(dev, state, SUSPEND_POWER_DOWN);
+-	}
++	if (dev->driver && dev->driver->suspend)
++		ret = dev->driver->suspend(dev, state, SUSPEND_POWER_DOWN);
+ 	return ret;
+ }
+ 
+@@ -44,13 +39,8 @@
+ {
+ 	int ret = 0;
+ 
+-	if (dev->driver && dev->driver->resume) {
++	if (dev->driver && dev->driver->resume)
+ 		ret = dev->driver->resume(dev, RESUME_POWER_ON);
+-		if (ret == 0)
+-			ret = dev->driver->resume(dev, RESUME_RESTORE_STATE);
+-		if (ret == 0)
+-			ret = dev->driver->resume(dev, RESUME_ENABLE);
+-	}
+ 	return ret;
+ }
+ 
 
 
 -------------------------------------------------------
