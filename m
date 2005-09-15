@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
-Date: Thu, 15 Sep 2005 15:13:36 +0200
-Message-ID: <0c39c47530d151f5da26d83c3bbf2ae2@bugtrack.alsa-project.org>
+Date: Thu, 15 Sep 2005 15:14:10 +0200
+Message-ID: <afcc34471a202d349e4c0dddf3bd1861@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BD1D175
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:13:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68D33175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:14:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000583.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
 ======================================================================
@@ -41,7 +41,7 @@ sources
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             09-08-2004 21:16 CEST
-Last Modified:              09-15-2005 15:13 CEST
+Last Modified:              09-15-2005 15:14 CEST
 ======================================================================
 Summary:                     Choppy sound when playing on Acer TravelMate 2000
 Description: 
@@ -68,90 +68,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0000583 xruns when playing audio or video files
 ======================================================================
-
-----------------------------------------------------------------------
- rounin - 01-18-05 07:56 
-----------------------------------------------------------------------
-The same issue occurs in Fedora Core 3, on the hp/compaq nx9110 laptop.
-Turning off acpi was suggested in another thread, but it seems like a bad
-choice on a laptop.
-
-----------------------------------------------------------------------
- rounin - 01-18-05 08:09 
-----------------------------------------------------------------------
-Booting with pci=noacpi seems to be working though.
-
-----------------------------------------------------------------------
- tiwai - 01-18-05 11:32 
-----------------------------------------------------------------------
-Try 1.0.8.  Some hardwares have a bug in reading DMA pointer register.  The
-latest ALSA version has a workaround.
-
-----------------------------------------------------------------------
- rlrevell - 01-18-05 21:25 
-----------------------------------------------------------------------
-I think this is an mplayer bug.  I get the same behavior - it's unusable
-with ALSA output because they reset the stream on every xrun, and xruns
-are inevitable because they don't use a separate RT thread for audio.
-
-Try oss emulation, mplayer -ao oss.  This works for me.
-
-----------------------------------------------------------------------
- feixm - 01-18-05 22:47 
-----------------------------------------------------------------------
-I don't think that MPlayer is to be blamed, as I've tested this behaviour
-with XMMS and others. I'll test with latest 1.0.8 release and post an
-update.
-
-----------------------------------------------------------------------
- feixm - 01-19-05 15:17 
-----------------------------------------------------------------------
-Today I recompiled my Alsa-driver installation with latest 1.0.8. Now
-mplayer can play movies with no problems for few minutes and then sound
-stops for about a second with almost 100 of lines like:
-
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,019 msecs. resetting stream
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,016 msecs. resetting stream
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,016 msecs. resetting stream
-
-Last two lines are always something like:
-
-alsa-space: xrun of at least 1,753 msecs. resetting stream
-alsa-space: xrun of at least 1,169 msecs. resetting stream
-
-Then it continues to play normally, just after next few minutes exactly
-the same thing happens again.
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 15:20 
-----------------------------------------------------------------------
-Don't forget to install alsa-lib 1.0.8, too (although I guess this won't
-fix the problem...)
-
-----------------------------------------------------------------------
- feixm - 01-21-05 14:19 
-----------------------------------------------------------------------
-Installing alsa-lib 1.0.8 didn't help, the problem persist. I tried to
-compile alsa-lib and alsa-driver packages with --with-debug=full, but
-there is no output in syslog when the problem occurs. I even tried
-suggested pci=noacpi boot option with no success. Is there anything more I
-can post here to help further investigation?
-
-----------------------------------------------------------------------
- tiwai - 01-21-05 17:30 
-----------------------------------------------------------------------
-No further idea yet.
-
-----------------------------------------------------------------------
- rlrevell - 01-21-05 19:13 
-----------------------------------------------------------------------
-Did you ever try OSS emulation?  I still think it's an mplayer bug.
 
 ----------------------------------------------------------------------
  feixm - 01-22-05 13:30 
@@ -185,6 +101,13 @@ plays "fine", with the mentioned behaviour.
 Maybe this helps, maybe it's a description of a XMMS or ARTSd bug and it
 has nothing to do with this problem. Who knows. I definitelly don't :).
 
+----------------------------------------------------------------------
+ jdthood - 09-15-05 15:14 
+----------------------------------------------------------------------
+> alsa-play: xrun of at least 0,019 msecs. resetting stream
+
+See bug #583.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -205,6 +128,7 @@ everything compiled from original sources
 01-21-05 19:13 rlrevell       Note Added: 0003351                          
 01-22-05 13:30 feixm          Note Added: 0003376                          
 09-15-05 15:13 jdthood        Relationship added       duplicate of 0000583
+09-15-05 15:14 jdthood        Note Added: 0006205                          
 ======================================================================
 
 
