@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Thu, 15 Sep 2005 21:02:47 +0200
-Message-ID: <28e1736141b12e94804f2057698f9bbf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001425]: Driver only records left channel when requested to record in stereo from Line-In
+Date: Thu, 15 Sep 2005 21:49:25 +0200
+Message-ID: <cd2f3e1518838b7b056fc86db8d3d35d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD45B185
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 21:02:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F500173
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 21:49:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,129 +22,114 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1425> 
 ======================================================================
-Reported By:                Xero
-Assigned To:                perex
+Reported By:                David Klusacek
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1425
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     new
+Distribution:               my own build
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              09-15-2005 21:02 CEST
+Date Submitted:             09-15-2005 21:49 CEST
+Last Modified:              09-15-2005 21:49 CEST
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    Driver only records left channel when requested to
+record in stereo from Line-In
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
 
-This starts showing up when I start pressing play again:
+DESCRIBTION
 
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+When recording analog source, only one channel is really being captured,
+while the other returns some garbage (usually low volume), regardless of
+the recording program being used. 
+
+The cables I'm using are OK, since although the right channel cannot be
+recorded it still gives rise to feedback driven oscilations when the
+volume of Line-In is  
+elevated enough (and microphone (which is connected to Line-In thru
+low-noise amplifier) captures what the speaker emits).
+
+The interesting thing is that the left channel behaves the opposite way.
+It can 
+be recorded, but it cannot be listened to just by changing the volume by
+the alsamixer. 
+
+I'm using kernel version 2.6.5, alsa driver version 1.0.9b, alsa library
+version 1.0.9, alsa utils version 1.0.9a, all compiled by gcc-2.95.3 with
+glibc-2.2.5.
 
 
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
 
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
+STEPS TO REPRODUCE
 
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
+(a) Set up the mixer (this is taken from my system init scripts. It looks
+strange but it was the only way to get the volume right the old days I had
+VA-503+ mainboad (FIC).)
 
-Attached is my asoundrc.
+amix()
+{
+  amixer -qc "$@"
+  usleep 100000
+}
+
+mmm() { #strange workaround for ill behaving card or chipset
+  amix  $1 set Master 70% mute
+  amix  $1 set Master 60% unmute
+  amix  $1 set Capture 70% unmute
+  amix  $1 set Mic 100% captur mute
+  amix  $1 set PCM 70% mute
+  amix  $1 set PCM 90% unmute
+  amix  $1 set PCM 95% unmute
+  amix  $1 set Master 100% unmute
+  amix  $1 set Capture 80% mute
+  amix  $1 set Mic 50% captur mute
+  amix  $1 set Capture 50% unmute
+  amix  $1 set Line 0% captur mute
+}
+
+(b) connect left channel of Line-In to signal source.
+
+arecord -f dat left.wav
+
+(c) connect right channel of Line-In to signal source.
+
+arecord -f dat right.wav
+
+(d) when playing left.wav and right.wav you will find out, that right.wav
+contains nearly silence in its right channel and some crosstalk in the
+left channel, while the left.wav contains the recorded signal in its left
+channel.
+
+
+NOTE
+
+This problem appears to exist on at least three different soundcards
+(snd-ens1371, snd-via82xx and snd-intel8x0 (intel records left and omits
+right channel)), I think that it may have something to do with the pcm
+core or 
+snd-ac97-codec. 
+
+Note also, that drivers for ens1371 and via82xx worked well in the older
+(0.5.10b) versions of ALSA.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- Xero - 08-18-05 18:31 
-----------------------------------------------------------------------
-I have never used suspend to disk on this computer, so I wouldn't know. I
-will have to try out CVS when I get the chance.
-
-----------------------------------------------------------------------
- skandalfo - 09-15-05 21:02 
-----------------------------------------------------------------------
-I fear the fix present in alsa-lib-1.0.10_rc1 (I'm using the Gentoo ebuild)
-doesn't fix the problem...
-
-xine bombs out when switching 2.0 to 5.1 audio with somewhat like the
-following:
-
-...
-audio discontinuity #21, type is 2, disc_off 25854
-waiting for in_discontinuity update #21
-video discontinuity #21, type is 2, disc_off 25854
-ao_close
-audio_out: no streams left, closing driver
-audio_alsa_out: snd_pcm_open() of surround51 failed: Device or resource
-busy
-audio_alsa_out: >>> check if another program already uses PCM <<<
-audio_out: open failed!
-ao_flush (loop running: 1)
-...
-
-And then an error dialog pops up.
-
-Removing the dmix thing from NFORCE.conf fixes it again... :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
-06-27-05 16:22 tiwai          Note Added: 0005275                          
-06-27-05 22:05 Xero           Note Added: 0005288                          
-06-27-05 22:41 Xero           Note Added: 0005289                          
-08-01-05 23:43 skandalfo      Note Added: 0005597                          
-08-01-05 23:50 Xero           Note Added: 0005598                          
-08-15-05 14:59 perex          Status                   new => assigned     
-08-15-05 14:59 perex          Assigned To               => perex           
-08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
-direct PCM plugins (dmix+)
-08-18-05 12:00 perex          Note Added: 0005842                          
-08-18-05 13:06 perex          Note Added: 0005845                          
-08-18-05 13:10 perex          Status                   assigned => feedback
-08-18-05 18:31 Xero           Note Added: 0005850                          
-09-15-05 21:02 skandalfo      Note Added: 0006222                          
+09-15-05 21:49 David Klusacek New Issue                                    
+09-15-05 21:49 David Klusacek Distribution              => my own build    
+09-15-05 21:49 David Klusacek Kernel Version            => 2.6.5           
 ======================================================================
 
 
