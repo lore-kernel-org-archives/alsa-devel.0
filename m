@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
-Date: Thu, 15 Sep 2005 17:04:50 +0200
-Message-ID: <788fb74ace6e8da18356ab4a2c6ababa@bugtrack.alsa-project.org>
+Date: Thu, 15 Sep 2005 17:12:05 +0200
+Message-ID: <745b75dbdfa0effd5b70bb6445c2b21e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22D08158
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 17:04:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BFCF184
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 17:12:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13
 ======================================================================
 Date Submitted:             09-14-2005 22:12 CEST
-Last Modified:              09-15-2005 17:04 CEST
+Last Modified:              09-15-2005 17:12 CEST
 ======================================================================
 Summary:                    AC97 device name changed in ac97_codec.c
 Description: 
@@ -57,17 +57,20 @@ Andy ideas about this?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-15-05 16:07 
-----------------------------------------------------------------------
-Basically we should have a driver-model device instance for each codec,
-too. Then the device name can appear in each codec sysfs entry.
-
-----------------------------------------------------------------------
  liam - 09-15-05 17:04 
 ----------------------------------------------------------------------
 The name should also include the codec name as each ad-hoc driver is codec
 specific. Currently, the wm97xx touch screen driver registers with a
 "WM97" string to match any WM97** codec.
+
+----------------------------------------------------------------------
+ liam - 09-15-05 17:12 
+----------------------------------------------------------------------
+Does anybody object to :-
+
+card1-0:WM9713
+
+This way the card number, ac97 bus id and codec id are preserved.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -77,6 +80,7 @@ Date Modified  Username       Field                    Change
 09-15-05 14:18 Clemens LadischNote Added: 0006195                          
 09-15-05 16:07 tiwai          Note Added: 0006212                          
 09-15-05 17:04 liam           Note Added: 0006216                          
+09-15-05 17:12 liam           Note Added: 0006217                          
 ======================================================================
 
 
