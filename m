@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Problems with Hercules DJ Console and the
-	usb-audio driver
-Date: Thu, 15 Sep 2005 14:10:41 -0400
-Message-ID: <1126807842.3185.3.camel@mindpipe>
-References: <Pine.HPX.4.33n.0509151401160.21623-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Thu, 15 Sep 2005 20:29:18 +0200
+Message-ID: <f63458e79b54a462f325c23a4290246e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0509151401160.21623-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEDF7175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 20:29:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Horms <horms@debian.org>, Daniel Svensson <nano@nittionio.nu>, debian-kernel@lists.debian.org, Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-09-15 at 14:13 +0200, Clemens Ladisch wrote:
-> Horms wrote:
-> > On Wed, Sep 14, 2005 at 03:29:13PM +0200, Daniel Svensson wrote:
-> > > CONFIG_USB_BANDWIDTH is enabled by default in the debian kernel. Could
-> > > this be changed? According to the alsa developer who helped me debug the
-> > > problem with my usb soundcard CONFIG_USB_BANDWIDTH should be disabled.
-> > > The original email is forwarded here:
-> >
-> > That sounds fair enough to me, as long there are no objections
-> > from the rest of the kernel-team.
-> >
-> > Clemens, could you provide a little more information on
-> > the problems that CONFIG_USB_BANDWIDTH causes?
-> 
-> The code that implements it computes wrong values for the bandwidth
-> utilization.  This doesn't seem to matter much for full speed stereo
-> devices, but we have several bug reports for multichannel and/or high
-> speed devices where usb_submit_urb() incorrectly returns -ENOSPC
-> errors.
-> 
-> The comment above the usb_check_bandwidth() function in hcd.c lists
-> several of the known bugs.
-> 
-> Perhaps CONFIG_USB_BANDWIDTH should have been marked BROKEN instead of
-> just EXPERIMENTAL.
 
-Has this been reported upstream?  Possibly the USB maintainers don't
-know that this is causing real problems for users.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+======================================================================
+Reported By:                pcmcginty
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   748
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              09-15-2005 20:29 CEST
+======================================================================
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
+Description: 
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ jdthood - 09-15-05 15:18 
+----------------------------------------------------------------------
+Any improvement in later ALSA releases?
+
+----------------------------------------------------------------------
+ spr - 09-15-05 20:29 
+----------------------------------------------------------------------
+I recently switch to debian testing, running a 2.6.12.5 vanilla kernel, and
+the sound works fine, no problems.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
+01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
+01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+01-12-05 15:04 tiwai          Note Added: 0003166                          
+01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
+01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
+   
+01-12-05 16:13 JonathanL      Note Added: 0003174                          
+01-12-05 20:45 tiwai          Note Added: 0003178                          
+01-12-05 23:23 JonathanL      File Added: sub0                             
+01-12-05 23:23 JonathanL      Note Added: 0003180                          
+01-13-05 12:53 tiwai          Note Added: 0003184                          
+01-22-05 02:02 bengan         Note Added: 0003371                          
+01-22-05 02:03 bengan         Note Edited: 0003371                         
+01-22-05 02:12 bengan         Note Edited: 0003371                         
+01-23-05 01:38 JonathanL      Note Added: 0003384                          
+01-27-05 18:20 spr            Issue Monitored: spr                         
+01-27-05 18:22 spr            Note Added: 0003421                          
+09-15-05 15:18 jdthood        Note Added: 0006207                          
+09-15-05 20:29 spr            Note Added: 0006221                          
+======================================================================
+
 
 
 
