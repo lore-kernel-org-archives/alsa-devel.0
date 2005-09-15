@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001426]: only mono sound available on via82xx
-Date: Thu, 15 Sep 2005 22:12:04 +0200
-Message-ID: <5cf9efc0541af3289c6a3dcc6023b27d@bugtrack.alsa-project.org>
+From: Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: Problems with multiple simultaneous ac97 quirks
+Date: Thu, 15 Sep 2005 21:28:58 +0100
+Message-ID: <20050915202858.GA5169@srcf.ucam.org>
+References: <20050915180415.GA24705@srcf.ucam.org> <s5h4q8mm7qi.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="Kj7319i9nmIyA2yE"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CCF5175
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:12:04 +0200 (MEST)
+Received: from vavatch.codon.org.uk (cavan.codon.org.uk [217.147.92.49])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40C87175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:28:59 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5h4q8mm7qi.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +20,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1426> 
-======================================================================
-Reported By:                netset99
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1426
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             09-15-2005 22:12 CEST
-Last Modified:              09-15-2005 22:12 CEST
-======================================================================
-Summary:                    only mono sound available on via82xx
-Description: 
-Only get mono sound with alsa. This is shown by the fact that I cannot
-change the master stereo volume e.g. in alsamixer, only mute or unmute
-it.
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Tried with kernels 2.6.12, 2.6.13, both compiled into the kernel or as
-modules. Also happens with the drivers from the alsa homepage
-(1.0.10_rc1). Tried live CD's from Gentoo (2.6.12 kernel) and from Knoppix
-(2.6.11). dxs_support 1-5 and ac97_quirk parameters didn't solve the
-problem. Neither did changing volume / muting and unmuting a combination
-of controls in alsamixer.
+On Thu, Sep 15, 2005 at 09:49:41PM +0200, Takashi Iwai wrote:
 
-However: A Ubuntu Live CD (Kernel 2.6.10) gives me normal stereo sound.
-======================================================================
+> I think the new quirk is the only solution in this case.
+> And there won't be so many combinations in the real world, I'd
+> expect.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-15-05 22:12 netset99       New Issue                                    
-09-15-05 22:12 netset99       Distribution              => gentoo          
-09-15-05 22:12 netset99       Kernel Version            => 2.6.13          
-======================================================================
+Ok. Something like the following patch? It introduces 
+AC97_TUNE_HP_MUTE_LED (yes, it's a poor name...) which is identical to 
+AC97_TUNE_MUTE_LED except it calls bind_hp_volsw_put instead of 
+snd_ac97_put_volsw and removes the headphone mixer controls.
 
+-- 
+Matthew Garrett | mjg59@srcf.ucam.org
 
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ac97.diff"
+
+--- sound/pci/ac97/ac97_codec.c.orig	2005-09-13 15:45:35.000000000 +0100
++++ linux/sound/pci/ac97/ac97_codec.c	2005-09-13 15:46:05.000000000 +0100
+@@ -2551,9 +2551,10 @@ int snd_ac97_tune_hardware(ac97_t *ac97,
+ 				continue;
+ 			snd_printdd("ac97 quirk for %s (%04x:%04x)\n", quirk->name, ac97->subsystem_vendor, ac97->subsystem_device);
+ 			result = apply_quirk(ac97, quirk->type);
+-			if (result < 0)
++			if (result < 0) {
+ 				snd_printk(KERN_ERR "applying quirk type %d for %s failed (%d)\n", quirk->type, quirk->name, result);
+-			return result;
++				return result;
++			}
+ 		}
+ 	}
+ 	return 0;
+
+--Kj7319i9nmIyA2yE--
 
 
 -------------------------------------------------------
