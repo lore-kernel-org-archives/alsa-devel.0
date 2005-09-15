@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Problems with Hercules DJ Console and the usb-audio
- driver
-Date: Thu, 15 Sep 2005 14:13:50 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0509151401160.21623-100000@studcom.urz.uni-halle.de>
-References: <20050915030027.GN2012@verge.net.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
+Date: Thu, 15 Sep 2005 14:18:19 +0200
+Message-ID: <940c8e97ec8ec99fcee5c4011e4ad215@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050915030027.GN2012@verge.net.au>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0076E165
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 14:18:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,38 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Horms <horms@debian.org>
-Cc: Daniel Svensson <nano@nittionio.nu>, debian-kernel@lists.debian.org, Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Horms wrote:
-> On Wed, Sep 14, 2005 at 03:29:13PM +0200, Daniel Svensson wrote:
-> > CONFIG_USB_BANDWIDTH is enabled by default in the debian kernel. Could
-> > this be changed? According to the alsa developer who helped me debug the
-> > problem with my usb soundcard CONFIG_USB_BANDWIDTH should be disabled.
-> > The original email is forwarded here:
->
-> That sounds fair enough to me, as long there are no objections
-> from the rest of the kernel-team.
->
-> Clemens, could you provide a little more information on
-> the problems that CONFIG_USB_BANDWIDTH causes?
 
-The code that implements it computes wrong values for the bandwidth
-utilization.  This doesn't seem to matter much for full speed stereo
-devices, but we have several bug reports for multichannel and/or high
-speed devices where usb_submit_urb() incorrectly returns -ENOSPC
-errors.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
+======================================================================
+Reported By:                do13
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1421
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             09-14-2005 22:12 CEST
+Last Modified:              09-15-2005 14:18 CEST
+======================================================================
+Summary:                    AC97 device name changed in ac97_codec.c
+Description: 
+Bug #0001334 changed the device name on the AC97-bus into card#-# this
+prevents external drivers to access the AC97 codec.
+The basic idea of the AC97-bus was to bind external drivers to an codec to
+use their extended features (touchscreen, AD- converter etc). With this
+naming change we can't bind drivers to the codec, because the device name
+isn't the name of the driver.
 
-The comment above the usb_check_bandwidth() function in hcd.c lists
-several of the known bugs.
-
-Perhaps CONFIG_USB_BANDWIDTH should have been marked BROKEN instead of
-just EXPERIMENTAL.
+Andy ideas about this?
 
 
-Regards,
-Clemens
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 09-15-05 14:18 
+----------------------------------------------------------------------
+The name must be unique.  This wouldn't be the case for the driver name.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-14-05 22:12 do13           New Issue                                    
+09-14-05 22:12 do13           Kernel Version            => 2.6.13          
+09-15-05 14:18 Clemens LadischNote Added: 0006195                          
+======================================================================
+
 
 
 
