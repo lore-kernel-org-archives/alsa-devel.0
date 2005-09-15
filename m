@@ -1,11 +1,14 @@
-From: Nicolas Pitre <nico@cam.org>
-Subject: [PATCH] clean suspend/resume calls for ac97_bus_type
-Date: Wed, 14 Sep 2005 22:22:16 -0400 (EDT)
-Message-ID: <Pine.LNX.4.63.0509142207110.31877@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001415]: No sound after adjustment of volume
+Date: Thu, 15 Sep 2005 04:30:59 +0200
+Message-ID: <5b446e18975edfa6b6b0b950ddbf77fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F5C815A
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 04:30:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,53 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A single call to the driver suspend/resume method for each device is 
-enough. The level and SUSPEND_*/RESUME_* arguments are deprecated and 
-said to be removed eventually anyway (no other subsystem are using them 
-anymore except platform devices).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1415> 
+======================================================================
+Reported By:                war0060
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1415
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.12-r10
+======================================================================
+Date Submitted:             09-12-2005 11:49 CEST
+Last Modified:              09-15-2005 04:30 CEST
+======================================================================
+Summary:                    No sound after adjustment of volume
+Description: 
+I'm using the snd-hda-intel driver, everything seems ok, but when I
+adjusted the volume, there will be no sound anymore. After reboot, it
+works again, the main problem is the volume cannot be adjusted.
+======================================================================
 
-Signed-off-by: Nicolas Pitre <nico@cam.org>
+----------------------------------------------------------------------
+ tiwai - 09-12-05 16:24 
+----------------------------------------------------------------------
+First, try more recent version.
+Some bugs regarding volume control have been fixed.
 
-Index: linux-2.6/sound/pci/ac97/ac97_bus.c
-===================================================================
---- linux-2.6.orig/sound/pci/ac97/ac97_bus.c
-+++ linux-2.6/sound/pci/ac97/ac97_bus.c
-@@ -30,13 +30,8 @@
- {
- 	int ret = 0;
- 
--	if (dev->driver && dev->driver->suspend) {
--		ret = dev->driver->suspend(dev, state, SUSPEND_DISABLE);
--		if (ret == 0)
--			ret = dev->driver->suspend(dev, state, SUSPEND_SAVE_STATE);
--		if (ret == 0)
--			ret = dev->driver->suspend(dev, state, SUSPEND_POWER_DOWN);
--	}
-+	if (dev->driver && dev->driver->suspend)
-+		ret = dev->driver->suspend(dev, state, SUSPEND_POWER_DOWN);
- 	return ret;
- }
- 
-@@ -44,13 +39,8 @@
- {
- 	int ret = 0;
- 
--	if (dev->driver && dev->driver->resume) {
-+	if (dev->driver && dev->driver->resume)
- 		ret = dev->driver->resume(dev, RESUME_POWER_ON);
--		if (ret == 0)
--			ret = dev->driver->resume(dev, RESUME_RESTORE_STATE);
--		if (ret == 0)
--			ret = dev->driver->resume(dev, RESUME_ENABLE);
--	}
- 	return ret;
- }
- 
+----------------------------------------------------------------------
+ war0060 - 09-15-05 04:30 
+----------------------------------------------------------------------
+I'm using 1.0.9b, should be the most recent one...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-12-05 11:49 war0060        New Issue                                    
+09-12-05 11:49 war0060        Distribution              => Gentoo          
+09-12-05 11:49 war0060        Kernel Version            => 2.6.12-r10      
+09-12-05 16:24 tiwai          Note Added: 0006145                          
+09-15-05 04:30 war0060        Note Added: 0006191                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
