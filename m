@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
-Date: Fri, 16 Sep 2005 00:16:11 +0200
-Message-ID: <68a6bcfaf4614fa29ae548701a0f0d74@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
+Date: Fri, 16 Sep 2005 00:37:21 +0200
+Message-ID: <7093b2bd660a9877c35eed289724a1f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3BCF106
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 00:16:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9006175
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 00:37:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
 ======================================================================
-Reported By:                kayandus
+Reported By:                Alister
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1051
-Category:                   PCI - via82xx
-Reproducibility:            N/A
-Severity:                   tweak
+Issue ID:                   832
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.10-5-k7
+Distribution:               Suse linux
+Kernel Version:             2.6.5-7.111.19-default
 ======================================================================
-Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              09-16-2005 00:16 CEST
+Date Submitted:             01-17-2005 22:07 CET
+Last Modified:              09-16-2005 00:37 CEST
 ======================================================================
-Summary:                    'Headphones', 'PCM', 'Master' control names
-misassigned
+Summary:                    sound randomly distorts, clicks, pops and low level
 Description: 
-Hello,
+reported here:
+http://forums.suselinuxsupport.de/index.php?showtopic=7828
 
-I bought a Targa Traveller 811 laptop a couple of months ago with an
-onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
-works fine with the via82xx driver, but there's only one minor problem.
-Let me explain my problem.
-
-There are 3 major volume controls for me:
-
-Master: Controls the volume of the internal laptop speaker, so when there
-is a plug/earphones in my LINE IN, it changes nothing. (!!)
-Headphones: Controls volume of the LINE IN, so does nothing when there is
-nothing my LINE IN.
-PCM: Controls both internal speaker and LINE IN, so volume goes up and
-down whether im using the internal speaker or not.
-
-Probably the problem is clear already to you. Most programs control only
-Master, so when I have my laptop attached to my stereo, those programs
-don't change my volume =(
-I hope you guys can fix this, I suggest by making an option to exchange
-Master with PCM.
-
-Thanks in advance, Harm te Hennepe
+but in summary:
+HW works perfectly under windows partition.
+Despite several (hopeful) upgrades, sound persists in randomly becoming
+low- level and/or VERY distorted (clipped?). Occurs anytime from few
+seconds to many minutes after being cleared. Occassionally corrects itself
+(temporary) just as randomly. But spends most of the time being badly
+distorted, low level and no left channel.
+Can always clear (temporarily) by using volume control in YaST to set max
+volumes and play high level sound through card.
+Left channel always affected worse than right.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-16-05 00:07 
+ jdthood - 09-15-05 16:16 
 ----------------------------------------------------------------------
-It should work but I've seen it fail due to modutils bugs.  Just try that
-to be 100% sure.
+Is this problem fixed in more recent ALSA versions?
 
 ----------------------------------------------------------------------
- Nafallo - 09-16-05 00:16 
+ Alister - 09-16-05 00:37 
 ----------------------------------------------------------------------
-I got a tip on IRC. I added "options snd-via82xx ac97_quirk=hp_only" to the
-end /etc/modprobe.d/alsa-base. It works now. I guess you want to make this
-the default for my card? Here is the lspci -vns 00:11.5 info:
-
-0000:00:11.5 0401: 1106:3059 (rev 50)
-        Subsystem: 161f:2032
-        Flags: medium devsel, IRQ 22
-        I/O ports at 1000 [size=256]
+seems to have gone away, sorry not to have reported earlier, but lost ref
+to bug. My mind is 50/50 whether it was a hardware fault or removed by
+local re-compile of alsa thus avoiding other people's RPMs (a KDE upgrade
+from Suse broke sound fairly comprehensively, thus local re-compile
+needed.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:16 kayandus       New Issue                                    
-04-13-05 21:16 kayandus       Distribution              => Ubuntu          
-04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
-04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
-04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
-04-19-05 18:26 tiwai          Note Added: 0004535                          
-04-21-05 20:59 kayandus       Note Added: 0004552                          
-09-14-05 04:09 Nafallo        Note Added: 0006156                          
-09-14-05 04:10 Nafallo        Note Edited: 0006156                         
-09-14-05 04:10 Nafallo        Issue Monitored: Nafallo                     
-09-14-05 04:11 Nafallo        Note Edited: 0006156                         
-09-14-05 15:45 jdthood        Summary                  Master <--> PCM =>
-'Headphones', 'PCM', 'Master' control names misassigned
-09-14-05 15:45 jdthood        Description Updated                          
-09-15-05 16:04 tiwai          Note Added: 0006211                          
-09-15-05 22:38 Nafallo        Note Added: 0006225                          
-09-15-05 22:41 Nafallo        Note Edited: 0006225                         
-09-15-05 23:35 Nafallo        Note Added: 0006228                          
-09-15-05 23:52 rlrevell       Note Added: 0006229                          
-09-15-05 23:54 Nafallo        Note Added: 0006230                          
-09-15-05 23:59 Nafallo        Note Deleted: 0006230                        
-09-16-05 00:07 rlrevell       Note Added: 0006232                          
-09-16-05 00:16 Nafallo        Note Added: 0006233                          
+01-17-05 22:07 Alister        New Issue                                    
+01-17-05 22:07 Alister        Distribution              => Suse linux      
+01-17-05 22:07 Alister        Kernel Version            =>
+2.6.5-7.111.19-default
+01-28-05 11:06 Alister        Note Added: 0003425                          
+09-15-05 16:16 jdthood        Note Added: 0006214                          
+09-16-05 00:37 Alister        Note Added: 0006234                          
 ======================================================================
 
 
