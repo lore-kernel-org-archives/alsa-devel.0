@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
-Date: Thu, 15 Sep 2005 16:16:04 +0200
-Message-ID: <62bda5a2acac5aac53e9647c22fb13f2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000856]: Surround sound only in the two front channels; no CD play
+Date: Thu, 15 Sep 2005 16:16:45 +0200
+Message-ID: <183e65cbb7e52898a22c6e0d66aacca0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26D59178
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 16:16:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87A9D178
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 16:16:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=856> 
 ======================================================================
-Reported By:                Alister
+Reported By:                mab
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   832
-Category:                   PCI - ens1371
+Issue ID:                   856
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Suse linux
-Kernel Version:             2.6.5-7.111.19-default
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.741_FC3smp
 ======================================================================
-Date Submitted:             01-17-2005 22:07 CET
+Date Submitted:             01-28-2005 15:03 CET
 Last Modified:              09-15-2005 16:16 CEST
 ======================================================================
-Summary:                    sound randomly distorts, clicks, pops and low level
+Summary:                    Surround sound only in the two front channels; no CD
+play
 Description: 
-reported here:
-http://forums.suselinuxsupport.de/index.php?showtopic=7828
 
-but in summary:
-HW works perfectly under windows partition.
-Despite several (hopeful) upgrades, sound persists in randomly becoming
-low- level and/or VERY distorted (clipped?). Occurs anytime from few
-seconds to many minutes after being cleared. Occassionally corrects itself
-(temporary) just as randomly. But spends most of the time being badly
-distorted, low level and no left channel.
-Can always clear (temporarily) by using volume control in YaST to set max
-volumes and play high level sound through card.
-Left channel always affected worse than right.
+In 5.1 mode only front speakers works
+
+I can't reproduce CDs with any desktop applications
+
+alsamixer is unmutted, ch=6, only slilders in PCM and PC SPEAKERS (see
+screenshot) 
+
+aplay alsa.wav (two channels wave file), works in  6 speakers
+xmms alsa.wav the same
+
+xmms chokes (could' open audio) when a surround 5.1 wave file
+(chain-id.wav)
+
+% aplay chain-id.wav                  <<<<< only front speakers works
+with the following message:
+Playing WAVE '/root/Desktop/Surround-SDL-testfiles/chan-id.wav' : Signed
+16 bit Little Endian, Rate 44100 Hz, Channels 6
+
+in speaker-test only front spekeakers works
+
+In Windows XP  everything works fine. 
+
 ======================================================================
-
-----------------------------------------------------------------------
- Alister - 01-28-05 11:06 
-----------------------------------------------------------------------
-I am very willing to help test any proposed solutions, please contact me if
-required.
 
 ----------------------------------------------------------------------
  jdthood - 09-15-05 16:16 
 ----------------------------------------------------------------------
-Is this problem fixed in more recent ALSA versions?
+Submitter: Do you still have this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 22:07 Alister        New Issue                                    
-01-17-05 22:07 Alister        Distribution              => Suse linux      
-01-17-05 22:07 Alister        Kernel Version            =>
-2.6.5-7.111.19-default
-01-28-05 11:06 Alister        Note Added: 0003425                          
-09-15-05 16:16 jdthood        Note Added: 0006214                          
+01-28-05 15:03 mab            New Issue                                    
+01-28-05 15:03 mab            File Added: alsamixer.png                    
+01-28-05 15:03 mab            Distribution              => Fedora Core 3   
+01-28-05 15:03 mab            Kernel Version            => 2.6.10-1.741_FC3smp
+02-06-05 21:22 mab            Issue Monitored: mab                         
+04-17-05 23:38 maranik        Issue Monitored: maranik                     
+09-15-05 16:16 jdthood        Note Added: 0006215                          
 ======================================================================
 
 
