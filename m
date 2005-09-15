@@ -1,79 +1,68 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
-Date: Thu, 15 Sep 2005 14:18:19 +0200
-Message-ID: <940c8e97ec8ec99fcee5c4011e4ad215@bugtrack.alsa-project.org>
+From: jayakumar alsa <jayakumar.alsa@gmail.com>
+Subject: Re: [Alsa-devel] [RFC 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
+Date: Thu, 15 Sep 2005 20:32:28 +0800
+Message-ID: <47f5dce3050915053266745a8f@mail.gmail.com>
+References: <200509150904.j8F94NKP000991@localhost.localdomain>
+	 <s5hk6hi8wnr.wl%tiwai@suse.de>
+Reply-To: jayakumar.alsa@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0076E165
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 14:18:19 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S964952AbVIOMce@vger.kernel.org>
+In-Reply-To: <s5hk6hi8wnr.wl%tiwai@suse.de>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 9/15/05, Takashi Iwai <tiwai@suse.de> wrote:
+> Just small glitches I found below:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
-======================================================================
-Reported By:                do13
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1421
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             09-14-2005 22:12 CEST
-Last Modified:              09-15-2005 14:18 CEST
-======================================================================
-Summary:                    AC97 device name changed in ac97_codec.c
-Description: 
-Bug #0001334 changed the device name on the AC97-bus into card#-# this
-prevents external drivers to access the AC97 codec.
-The basic idea of the AC97-bus was to bind external drivers to an codec to
-use their extended features (touchscreen, AD- converter etc). With this
-naming change we can't bind drivers to the codec, because the device name
-isn't the name of the driver.
+Much appreciated. Thanks for reviewing. :-)
 
-Andy ideas about this?
+> You can put this header filer into sound/pci/cs5535, so that it won't
+> be exported.  Then you don't need __KERNEL__ check, too.
 
+Will do.
 
-======================================================================
+> > +     u16 eot:1;
+> > +} cs5535audio_dma_desc_t;
+> 
+> The bitfield isn't portable to use to comminucate with the hardware.
+> Better to use u16 and normal bit operations.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 09-15-05 14:18 
-----------------------------------------------------------------------
-The name must be unique.  This wouldn't be the case for the driver name.
+I think 5535 is x86-32 specific, but you are right, I shouldn't use
+bit fields. I'll convert over to masks.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-14-05 22:12 do13           New Issue                                    
-09-14-05 22:12 do13           Kernel Version            => 2.6.13          
-09-15-05 14:18 Clemens LadischNote Added: 0006195                          
-======================================================================
+> The loop with do_delay() should be replaced with more portable ones
+> like msleep().
 
+Will do.
 
+> 
+> > +{
+> > +     unsigned long regdata=0;
+> 
+> Unnecessary initialization :)
 
+Good catch.
 
--------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. 
-Download it for free - -and be entered to win a 42" plasma tv or your very
-own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+> > +     cs5535au = kcalloc(1, sizeof(*cs5535au), GFP_KERNEL);
+> 
+> Let's use the new kzalloc().
+
+Will do.
+
+> > +     spin_lock(&cs5535au->reg_lock);
+> > +     dma->ops->disable_dma(cs5535au);
+> > +     dma->ops->setup_prd(cs5535au, jmpprd_addr);
+> > +     spin_unlock(&cs5535au->reg_lock);
+> 
+> You need spin_lock_irq() here, instead.
+> 
+
+Got it. Will do.
+
+Thanks,
+jk
