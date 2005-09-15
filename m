@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001415]: No sound after adjustment of volume
-Date: Thu, 15 Sep 2005 04:30:59 +0200
-Message-ID: <5b446e18975edfa6b6b0b950ddbf77fb@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Problems with Hercules DJ Console and the
+	usb-audio driver
+Date: Wed, 14 Sep 2005 22:48:15 -0400
+Message-ID: <1126752495.13893.120.camel@mindpipe>
+References: <20050913140934.GA24953@nittionio.nu>
+	 <Pine.HPX.4.33n.0509131756100.3875-100000@studcom.urz.uni-halle.de>
+	 <20050914132346.GA18354@nittionio.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F5C815A
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 04:30:59 +0200 (MEST)
+In-Reply-To: <20050914132346.GA18354@nittionio.nu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +20,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Daniel Svensson <nano@nittionio.nu>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2005-09-14 at 15:23 +0200, Daniel Svensson wrote:
+> On Tue, Sep 13, 2005 at 05:58:07PM +0200, Clemens Ladisch wrote:
+> > What is the output of "amixer contents"?
+> See the first mail in this thread.
+> 
+> > 28 = ENOSPC.  Please disable bandwidth checking in the kernel
+> > configuration.  (This is a bug of your distribution unless you
+> > compiled the kernel yourself.)
+> 
+> I use kernel 2.6.12-1-686, supplied by Debian. I'll forward your mail to
+> the maintainer. Disabling CONFIG_USB_BANDWIDTH did the trick.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1415> 
-======================================================================
-Reported By:                war0060
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1415
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.12-r10
-======================================================================
-Date Submitted:             09-12-2005 11:49 CEST
-Last Modified:              09-15-2005 04:30 CEST
-======================================================================
-Summary:                    No sound after adjustment of volume
-Description: 
-I'm using the snd-hda-intel driver, everything seems ok, but when I
-adjusted the volume, there will be no sound anymore. After reboot, it
-works again, the main problem is the volume cannot be adjusted.
-======================================================================
+Make sure you report this to the Debian maintainers.  Enabling
+CONFIG_USB_BANDWIDTH by default is a bug.
 
-----------------------------------------------------------------------
- tiwai - 09-12-05 16:24 
-----------------------------------------------------------------------
-First, try more recent version.
-Some bugs regarding volume control have been fixed.
-
-----------------------------------------------------------------------
- war0060 - 09-15-05 04:30 
-----------------------------------------------------------------------
-I'm using 1.0.9b, should be the most recent one...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-12-05 11:49 war0060        New Issue                                    
-09-12-05 11:49 war0060        Distribution              => Gentoo          
-09-12-05 11:49 war0060        Kernel Version            => 2.6.12-r10      
-09-12-05 16:24 tiwai          Note Added: 0006145                          
-09-15-05 04:30 war0060        Note Added: 0006191                          
-======================================================================
-
+Lee
 
 
 
