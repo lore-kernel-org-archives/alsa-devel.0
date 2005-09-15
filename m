@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
-Date: Thu, 15 Sep 2005 23:52:54 +0200
-Message-ID: <b027b4aa4d4b3d49c401ee88c0e283ac@bugtrack.alsa-project.org>
+Date: Thu, 15 Sep 2005 23:54:48 +0200
+Message-ID: <7743f9faeeeef0b98dd3359cb1b7b732@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52951185
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 23:52:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D742185
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 23:54:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.10-5-k7
 ======================================================================
 Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              09-15-2005 23:52 CEST
+Last Modified:              09-15-2005 23:54 CEST
 ======================================================================
 Summary:                    'Headphones', 'PCM', 'Master' control names
 misassigned
@@ -72,17 +72,18 @@ Thanks in advance, Harm te Hennepe
 ======================================================================
 
 ----------------------------------------------------------------------
- Nafallo - 09-15-05 23:35 
-----------------------------------------------------------------------
-I packaged alsa-base 1.0.10rc1, no change.
-
-----------------------------------------------------------------------
  rlrevell - 09-15-05 23:52 
 ----------------------------------------------------------------------
 Make sure you are really passing the option to the module by doing:
 
 rmmod snd-via82xx
 modprobe snd-via82xx ac97_quirk=hp_only
+
+----------------------------------------------------------------------
+ Nafallo - 09-15-05 23:54 
+----------------------------------------------------------------------
+You're saying "snd_via82xx ac97_quirk=hp_only" in /etc/modules won't
+suffice?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -106,6 +107,7 @@ Date Modified  Username       Field                    Change
 09-15-05 22:41 Nafallo        Note Edited: 0006225                         
 09-15-05 23:35 Nafallo        Note Added: 0006228                          
 09-15-05 23:52 rlrevell       Note Added: 0006229                          
+09-15-05 23:54 Nafallo        Note Added: 0006230                          
 ======================================================================
 
 
