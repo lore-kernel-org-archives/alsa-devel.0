@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000821]: Audigy 2 NX USB
-Date: Thu, 15 Sep 2005 15:07:19 +0200
-Message-ID: <0d073500a5b45d838ce31e21e6b69686@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000841]: can't probe snd-intel8x0
+Date: Thu, 15 Sep 2005 15:10:18 +0200
+Message-ID: <89f4862207366b505e4af9f8bddd7045@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73BCA11F
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:07:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 528EF175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:10:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=821> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=841> 
 ======================================================================
-Reported By:                clusty
-Assigned To:                Clemens Ladisch
+Reported By:                richshow
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   821
-Category:                   USB - usb-audio
+Issue ID:                   841
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             01-16-2005 16:47 CET
-Last Modified:              09-15-2005 15:07 CEST
+Date Submitted:             01-22-2005 13:14 CET
+Last Modified:              09-15-2005 15:10 CEST
 ======================================================================
-Summary:                    Audigy 2 NX USB
+Summary:                    can't probe snd-intel8x0
 Description: 
-Whenever I play a song with XMMS using ALSA output plugin it works for 2-3
-seconds and then it mutes. If I restart the player it does the same.
+I'm build and install the driver in the method exhibited in this
+website,all message express it's successed until I modprobe snd-intel8x0.
+
+my hardware is sis7012.
 ======================================================================
 
 ----------------------------------------------------------------------
- kempokaraterulz - 01-19-05 17:52 
+ richshow - 01-22-05 13:16 
 ----------------------------------------------------------------------
-With a sound blaster live 24bit usb the sound works for anywhere between
-several minutes and like an hour or so ... before muting itself ...
-hitting stop then start again or pausing and unpausing the player restores
-sound. nothing in dmesg or any logs either . i just compiled this kernel
-with usb debugging so i will report back if i can find anything good in
-there.
+step in this method showed the following wedsite:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=SiS&card=SiS+740.&chip=SI7012&module=intel8x0
 
 ----------------------------------------------------------------------
- jdthood - 09-15-05 15:07 
+ jdthood - 09-15-05 15:10 
 ----------------------------------------------------------------------
-Submitter: Is there any improvement in more recent ALSA versions?
+Submitter: Have you made any progress in resolving this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-05 16:47 clusty         New Issue                                    
-01-16-05 16:49 clusty         Issue Monitored: clusty                      
-01-19-05 17:52 kempokaraterulzNote Added: 0003308                          
-09-15-05 15:07 jdthood        Note Added: 0006201                          
+01-22-05 13:14 richshow       New Issue                                    
+01-22-05 13:14 richshow       File Added: snd-intel8x0.o                    
+01-22-05 13:16 richshow       Note Added: 0003375                          
+09-15-05 15:10 jdthood        Note Added: 0006203                          
 ======================================================================
 
 
