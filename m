@@ -1,12 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [patch] au88x0: codec access procs for multiple AC97 codecs
-Date: Thu, 15 Sep 2005 23:56:17 +0300
-Message-ID: <20050915205617.GD27700@sashak.softier1.local>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
+Date: Thu, 15 Sep 2005 21:02:47 +0200
+Message-ID: <28e1736141b12e94804f2057698f9bbf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD45B185
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 21:02:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,133 +18,136 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org, Philipp Matthias Hahn <pmhahn@titan.lahn.de>, Raymond <rayau@netvigator.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-This modification of au88x0's AC97 codec access procedures enables to
-access multiple codecs.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+======================================================================
+Reported By:                Xero
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1184
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+======================================================================
+Date Submitted:             06-11-2005 21:14 CEST
+Last Modified:              09-15-2005 21:02 CEST
+======================================================================
+Summary:                    xmms/beep "couldn't open audio" on song change
+Description: 
+When playing a song in beep sometimes it'll pop up a "couldn't open audio"
+box as if the device is in use. This is using dmix, however, so that
+seemed a bit weird. I normally have to close and reopen beep to resolve
+this. I believe xmms does the same thing because I've read about people
+having the exact same issue with xmms.
 
-Tested with au8810 (secondary codec was initialized for this case),
-looks safe for others as well (au88x0 guys, please comment)
+This starts showing up when I start pressing play again:
+
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
 
 
-Sasha.
+However one thing which I've never seen mentioned in the previous reports,
+is that when trying to use another app through dmix it doesn't work
+either. Here's what mplayer says, when trying to play a video:
+
+alsa-init: 1 soundcard found, using: default
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+alsa-init: playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+
+so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
+closed beep, all other applications started working properly again, and
+when I start it back up again, it works fine again too, until it does this
+again. It seems to do it sporadically so it's somewhat hard to test for.
+
+Attached is my asoundrc.
+======================================================================
+
+----------------------------------------------------------------------
+ Xero - 08-18-05 18:31 
+----------------------------------------------------------------------
+I have never used suspend to disk on this computer, so I wouldn't know. I
+will have to try out CVS when I get the chance.
+
+----------------------------------------------------------------------
+ skandalfo - 09-15-05 21:02 
+----------------------------------------------------------------------
+I fear the fix present in alsa-lib-1.0.10_rc1 (I'm using the Gentoo ebuild)
+doesn't fix the problem...
+
+xine bombs out when switching 2.0 to 5.1 audio with somewhat like the
+following:
+
+...
+audio discontinuity #21, type is 2, disc_off 25854
+waiting for in_discontinuity update #21
+video discontinuity #21, type is 2, disc_off 25854
+ao_close
+audio_out: no streams left, closing driver
+audio_alsa_out: snd_pcm_open() of surround51 failed: Device or resource
+busy
+audio_alsa_out: >>> check if another program already uses PCM <<<
+audio_out: open failed!
+ao_flush (loop running: 1)
+...
+
+And then an error dialog pops up.
+
+Removing the dmix thing from NFORCE.conf fixes it again... :(
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-11-05 21:14 Xero           New Issue                                    
+06-11-05 21:14 Xero           File Added: asoundrc                         
+06-11-05 21:14 Xero           Note Added: 0004994                          
+06-15-05 15:03 tiwai          Note Added: 0005030                          
+06-15-05 22:31 Xero           Note Added: 0005046                          
+06-15-05 23:55 Xero           Note Added: 0005049                          
+06-22-05 18:22 tiwai          Note Added: 0005142                          
+06-22-05 19:01 Xero           Note Added: 0005144                          
+06-23-05 02:47 Xero           Note Added: 0005162                          
+06-26-05 22:08 Xero           Note Added: 0005267                          
+06-27-05 16:22 tiwai          Note Added: 0005275                          
+06-27-05 22:05 Xero           Note Added: 0005288                          
+06-27-05 22:41 Xero           Note Added: 0005289                          
+08-01-05 23:43 skandalfo      Note Added: 0005597                          
+08-01-05 23:50 Xero           Note Added: 0005598                          
+08-15-05 14:59 perex          Status                   new => assigned     
+08-15-05 14:59 perex          Assigned To               => perex           
+08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
+direct PCM plugins (dmix+)
+08-18-05 12:00 perex          Note Added: 0005842                          
+08-18-05 13:06 perex          Note Added: 0005845                          
+08-18-05 13:10 perex          Status                   assigned => feedback
+08-18-05 18:31 Xero           Note Added: 0005850                          
+09-15-05 21:02 skandalfo      Note Added: 0006222                          
+======================================================================
 
 
-
-This patch extends au88x0 AC97 codec access procedures to handle multiple
-codecs properly.
-
-Signed-off-by: Sasha Khapyorsky
-
-Index: alsa-kernel/pci/au88x0/au8810.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8810.h,v
-retrieving revision 1.3
-diff -u -p -r1.3 au8810.h
---- alsa-kernel/pci/au88x0/au8810.h	13 Apr 2004 15:26:27 -0000	1.3
-+++ alsa-kernel/pci/au88x0/au8810.h	15 Sep 2005 12:23:52 -0000
-@@ -178,11 +178,6 @@
- #define		EN_SPDIF	0x000c0000
- 
- #define VORTEX_CODEC_CHN 	0x29080
--#define VORTEX_CODEC_WRITE	0x00800000
--#define VORTEX_CODEC_ADDSHIFT 	16
--#define VORTEX_CODEC_ADDMASK	0x7f0000	/* 0x000f0000 */
--#define VORTEX_CODEC_DATSHIFT	0
--#define VORTEX_CODEC_DATMASK	0xffff
- #define VORTEX_CODEC_IO		0x29188
- 
- /* SPDIF */
-Index: alsa-kernel/pci/au88x0/au8820.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8820.h,v
-retrieving revision 1.3
-diff -u -p -r1.3 au8820.h
---- alsa-kernel/pci/au88x0/au8820.h	13 Apr 2004 15:26:27 -0000	1.3
-+++ alsa-kernel/pci/au88x0/au8820.h	15 Sep 2005 12:23:52 -0000
-@@ -162,11 +162,6 @@
- #define		EN_SPORT	0x00030000
- #define		EN_SPDIF	0x000c0000
- #define VORTEX_CODEC_CHN 0x11880
--#define VORTEX_CODEC_WRITE 0x00800000
--#define VORTEX_CODEC_ADDSHIFT 16
--#define VORTEX_CODEC_ADDMASK 0x7f0000	/* 0x000f0000 */
--#define VORTEX_CODEC_DATSHIFT 0
--#define VORTEX_CODEC_DATMASK 0xffff
- #define VORTEX_CODEC_IO 0x11988
- 
- #define VORTEX_SPDIF_FLAGS		0x1005c	/* FIXME */
-Index: alsa-kernel/pci/au88x0/au8830.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8830.h,v
-retrieving revision 1.3
-diff -u -p -r1.3 au8830.h
---- alsa-kernel/pci/au88x0/au8830.h	13 Apr 2004 15:26:27 -0000	1.3
-+++ alsa-kernel/pci/au88x0/au8830.h	15 Sep 2005 12:23:52 -0000
-@@ -194,11 +194,6 @@
- 
- #define VORTEX_CODEC_CTRL 0x29184
- #define VORTEX_CODEC_IO 0x29188
--#define 	VORTEX_CODEC_WRITE 0x00800000
--#define 	VORTEX_CODEC_ADDSHIFT 16
--#define 	VORTEX_CODEC_ADDMASK 0x7f0000	/* 0x000f0000 */
--#define 	VORTEX_CODEC_DATSHIFT 0
--#define 	VORTEX_CODEC_DATMASK 0xffff
- 
- #define VORTEX_CODEC_SPORTCTRL 0x2918c
- 
-Index: alsa-kernel/pci/au88x0/au88x0.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0.h,v
-retrieving revision 1.11
-diff -u -p -r1.11 au88x0.h
---- alsa-kernel/pci/au88x0/au88x0.h	22 Mar 2005 08:50:55 -0000	1.11
-+++ alsa-kernel/pci/au88x0/au88x0.h	15 Sep 2005 12:23:52 -0000
-@@ -79,6 +79,14 @@
- #define VORTEX_RESOURCE_A3D	0x00000004
- #define VORTEX_RESOURCE_LAST	0x00000005
- 
-+/* codec io: VORTEX_CODEC_IO bits */
-+#define VORTEX_CODEC_ID_SHIFT	24
-+#define VORTEX_CODEC_WRITE	0x00800000
-+#define VORTEX_CODEC_ADDSHIFT 	16
-+#define VORTEX_CODEC_ADDMASK	0x7f0000
-+#define VORTEX_CODEC_DATSHIFT	0
-+#define VORTEX_CODEC_DATMASK	0xffff
-+
- /* Check for SDAC bit in "Extended audio ID" AC97 register */
- //#define VORTEX_IS_QUAD(x) (((x)->codec == NULL) ?  0 : ((x)->codec->ext_id&0x80))
- #define VORTEX_IS_QUAD(x) ((x)->isquad)
-Index: alsa-kernel/pci/au88x0/au88x0_core.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_core.c,v
-retrieving revision 1.11
-diff -u -p -r1.11 au88x0_core.c
---- alsa-kernel/pci/au88x0/au88x0_core.c	23 Feb 2005 11:00:31 -0000	1.11
-+++ alsa-kernel/pci/au88x0/au88x0_core.c	15 Sep 2005 12:23:53 -0000
-@@ -2532,7 +2532,8 @@ vortex_codec_write(ac97_t * codec, unsig
- 	hwwrite(card->mmio, VORTEX_CODEC_IO,
- 		((addr << VORTEX_CODEC_ADDSHIFT) & VORTEX_CODEC_ADDMASK) |
- 		((data << VORTEX_CODEC_DATSHIFT) & VORTEX_CODEC_DATMASK) |
--		VORTEX_CODEC_WRITE);
-+		VORTEX_CODEC_WRITE |
-+		(codec->num << VORTEX_CODEC_ID_SHIFT) );
- 
- 	/* Flush Caches. */
- 	hwread(card->mmio, VORTEX_CODEC_IO);
-@@ -2554,7 +2555,8 @@ static unsigned short vortex_codec_read(
- 		}
- 	}
- 	/* set up read address */
--	read_addr = ((addr << VORTEX_CODEC_ADDSHIFT) & VORTEX_CODEC_ADDMASK);
-+	read_addr = ((addr << VORTEX_CODEC_ADDSHIFT) & VORTEX_CODEC_ADDMASK) |
-+		(codec->num << VORTEX_CODEC_ID_SHIFT) ;
- 	hwwrite(card->mmio, VORTEX_CODEC_IO, read_addr);
- 
- 	/* wait for address */
 
 
 -------------------------------------------------------
