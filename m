@@ -1,16 +1,14 @@
-From: Matthew Garrett <mjg59@srcf.ucam.org>
-Subject: Re: Problems with multiple simultaneous ac97 quirks
-Date: Thu, 15 Sep 2005 21:28:58 +0100
-Message-ID: <20050915202858.GA5169@srcf.ucam.org>
-References: <20050915180415.GA24705@srcf.ucam.org> <s5h4q8mm7qi.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001422]: Timidity stops playing longer list of midi files
+Date: Thu, 15 Sep 2005 22:32:03 +0200
+Message-ID: <4fa73508a9fa0f813d6018682ac67ca3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Kj7319i9nmIyA2yE"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vavatch.codon.org.uk (cavan.codon.org.uk [217.147.92.49])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40C87175
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:28:59 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <s5h4q8mm7qi.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 926E1175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:32:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,50 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Kj7319i9nmIyA2yE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1422> 
+======================================================================
+Reported By:                johnclubvec
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1422
+Category:                   0_general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-15-2005 13:54 CEST
+Last Modified:              09-15-2005 22:32 CEST
+======================================================================
+Summary:                    Timidity stops playing longer list of midi files
+Description: 
+I use Timidity 2.13.2 for virmidi. When using alsa 1.0.9, Timidity (gtk
+interface) when playing a longer list of midi files, always stops
+functioning after playing around 10 or so. I could not track down the
+source of this error but it occurs every time. Timidity simply stops.
 
-On Thu, Sep 15, 2005 at 09:49:41PM +0200, Takashi Iwai wrote:
+When I reverted back the driver and lib and utils to my previous alsa
+1.0.4, this problem completely disappeared.
+======================================================================
 
-> I think the new quirk is the only solution in this case.
-> And there won't be so many combinations in the real world, I'd
-> expect.
+----------------------------------------------------------------------
+ rlrevell - 09-15-05 20:07 
+----------------------------------------------------------------------
+Are 1.0.4 and 1.0.9 supposed to be binary compatible?
 
-Ok. Something like the following patch? It introduces 
-AC97_TUNE_HP_MUTE_LED (yes, it's a poor name...) which is identical to 
-AC97_TUNE_MUTE_LED except it calls bind_hp_volsw_put instead of 
-snd_ac97_put_volsw and removes the headphone mixer controls.
+Does the problem go away if you recompile Timidity against alsa-lib 1.0.9?
 
--- 
-Matthew Garrett | mjg59@srcf.ucam.org
+----------------------------------------------------------------------
+ johnclubvec - 09-15-05 22:32 
+----------------------------------------------------------------------
+Q. from rlrevell: Does the problem go away if you recompile Timidity
+against alsa-lib 1.0.9?
 
---Kj7319i9nmIyA2yE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="ac97.diff"
+A. Yes, it goes away -- unfortunately. I will now recompile all my
+audio-producing programs against 1.0.9 just to be on the safe side.
 
---- sound/pci/ac97/ac97_codec.c.orig	2005-09-13 15:45:35.000000000 +0100
-+++ linux/sound/pci/ac97/ac97_codec.c	2005-09-13 15:46:05.000000000 +0100
-@@ -2551,9 +2551,10 @@ int snd_ac97_tune_hardware(ac97_t *ac97,
- 				continue;
- 			snd_printdd("ac97 quirk for %s (%04x:%04x)\n", quirk->name, ac97->subsystem_vendor, ac97->subsystem_device);
- 			result = apply_quirk(ac97, quirk->type);
--			if (result < 0)
-+			if (result < 0) {
- 				snd_printk(KERN_ERR "applying quirk type %d for %s failed (%d)\n", quirk->type, quirk->name, result);
--			return result;
-+				return result;
-+			}
- 		}
- 	}
- 	return 0;
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-15-05 13:54 johnclubvec    New Issue                                    
+09-15-05 20:07 rlrevell       Note Added: 0006220                          
+09-15-05 22:32 johnclubvec    Note Added: 0006224                          
+======================================================================
 
---Kj7319i9nmIyA2yE--
+
 
 
 -------------------------------------------------------
