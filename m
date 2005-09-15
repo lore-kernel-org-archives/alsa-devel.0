@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
-Date: Fri, 16 Sep 2005 00:07:30 +0200
-Message-ID: <f72100908a5acf21b3aa3b1cf0cb9a32@bugtrack.alsa-project.org>
+Date: Fri, 16 Sep 2005 00:16:11 +0200
+Message-ID: <68a6bcfaf4614fa29ae548701a0f0d74@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D32F175
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 00:07:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3BCF106
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 00:16:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.10-5-k7
 ======================================================================
 Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              09-16-2005 00:07 CEST
+Last Modified:              09-16-2005 00:16 CEST
 ======================================================================
 Summary:                    'Headphones', 'PCM', 'Master' control names
 misassigned
@@ -72,18 +72,22 @@ Thanks in advance, Harm te Hennepe
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-15-05 23:52 
-----------------------------------------------------------------------
-Make sure you are really passing the option to the module by doing:
-
-rmmod snd-via82xx
-modprobe snd-via82xx ac97_quirk=hp_only
-
-----------------------------------------------------------------------
  rlrevell - 09-16-05 00:07 
 ----------------------------------------------------------------------
 It should work but I've seen it fail due to modutils bugs.  Just try that
 to be 100% sure.
+
+----------------------------------------------------------------------
+ Nafallo - 09-16-05 00:16 
+----------------------------------------------------------------------
+I got a tip on IRC. I added "options snd-via82xx ac97_quirk=hp_only" to the
+end /etc/modprobe.d/alsa-base. It works now. I guess you want to make this
+the default for my card? Here is the lspci -vns 00:11.5 info:
+
+0000:00:11.5 0401: 1106:3059 (rev 50)
+        Subsystem: 161f:2032
+        Flags: medium devsel, IRQ 22
+        I/O ports at 1000 [size=256]
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +114,7 @@ Date Modified  Username       Field                    Change
 09-15-05 23:54 Nafallo        Note Added: 0006230                          
 09-15-05 23:59 Nafallo        Note Deleted: 0006230                        
 09-16-05 00:07 rlrevell       Note Added: 0006232                          
+09-16-05 00:16 Nafallo        Note Added: 0006233                          
 ======================================================================
 
 
