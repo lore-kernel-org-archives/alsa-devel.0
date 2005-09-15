@@ -1,87 +1,99 @@
-From: Horms <horms@debian.org>
-Subject: Re: [Alsa-devel] Problems with Hercules DJ Console and the usb-audio driver
-Date: Thu, 15 Sep 2005 12:00:27 +0900
-Message-ID: <20050915030027.GN2012@verge.net.au>
-References: <20050914132913.GB18354@nittionio.nu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
+Date: Thu, 15 Sep 2005 06:37:31 +0200
+Message-ID: <01178d5356de8a12bf0dbf0b1a8179d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <bounce-debian-kernel=glddk-debian-kernel=m.gmane.org@lists.debian.org>
-Content-Disposition: inline
-In-Reply-To: <20050914132913.GB18354@nittionio.nu>
-Resent-Message-ID: <abjBsB.A.j4D.ZPOKDB@murphy>
-List-Post: <mailto:debian-kernel@lists.debian.org>
-List-Help: <mailto:debian-kernel-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-kernel-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-kernel-request@lists.debian.org?subject=unsubscribe>
-To: Daniel Svensson <nano@nittionio.nu>
-Cc: debian-kernel@lists.debian.org, Clemens Ladisch <clemens@ladisch.de>, Alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00608164
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 06:37:31 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 14, 2005 at 03:29:13PM +0200, Daniel Svensson wrote:
-> Hi 
-> 
-> CONFIG_USB_BANDWIDTH is enabled by default in the debian kernel. Could
-> this be changed? According to the alsa developer who helped me debug the
-> problem with my usb soundcard CONFIG_USB_BANDWIDTH should be disabled.
-> The original email is forwarded here:
 
-That sounds fair enough to me, as long there are no objections
-from the rest of the kernel-team.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+======================================================================
+Reported By:                ammiellodebar
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1320
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Arch Linux
+Kernel Version:             
+======================================================================
+Date Submitted:             08-08-2005 06:03 CEST
+Last Modified:              09-15-2005 06:37 CEST
+======================================================================
+Summary:                    CA0106 with Soundblaster 24-bit live does not allow
+recording
+Description: 
+When I use the line in on the card, it will not capture unless i crank up
+the mixer to near peak, and then its garbled and distorted sound, my
+capture is up all the way and i know its not a dumb mistake of mine
 
-Clemens, could you provide a little more information on 
-the problems that CONFIG_USB_BANDWIDTH causes?
 
-Thanks
+======================================================================
 
--- 
-Horms
+----------------------------------------------------------------------
+ ammiellodebar - 09-10-05 18:15 
+----------------------------------------------------------------------
+I got it to compile i had to go into alsa-kernel/pci/ac97/ac97_bus.c and
+delete the first include and insert #include <sound/driver.h> or
+something..
 
-> ----- Forwarded message from Clemens Ladisch <clemens@ladisch.de> -----
-> 
-> From: Clemens Ladisch <clemens@ladisch.de>
-> To: Daniel Svensson <nano@nittionio.nu>
-> Subject: Re: [Alsa-devel] Problems with Hercules DJ Console and the usb-audio
->  driver
-> 
-> Daniel Svensson wrote:
-> > Here is the output of "amixer scontents":
-> > ...
-> > Which doesn't match alsamixer controls very well (in count and names).
-> 
-> What is the output of "amixer contents"?
-> 
-> > Ok, so some progress. The device accepts S16, 6 channels, 48kHz.
-> > Still no output, fails with kernel message:
-> >
-> > ALSA /hom.../usbaudio.c:807: cannot submit datapipe for urb 5, err = -28
-> 
-> 28 = ENOSPC.  Please disable bandwidth checking in the kernel
-> configuration.  (This is a bug of your distribution unless you
-> compiled the kernel yourself.)
-> 
-> 
-> HTH
-> Clemens
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net email is Sponsored by the Better Software Conference & EXPO
-> September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-> Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-> Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-> 
-> ----- End forwarded message -----
-> 
-> -- 
-> Daniel Svensson <nano@nittionio.nu>
-> 
-> 
-> -- 
-> To UNSUBSCRIBE, email to debian-kernel-REQUEST@lists.debian.org
-> with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+solved here..
+
+----------------------------------------------------------------------
+ qqtortqq - 09-15-05 06:37 
+----------------------------------------------------------------------
+I have updated alsa-driver alsa-lib and alsa-oss all to 1.0.10rc1 and I
+don't see recording as being fixed.  On OSS and also ALSA recording
+programs, I get a zero sound, but no errors.  Passthrough is working
+properly though.  
+
+In alsamixer, any sliders that I can set to capture refuse to allow me to
+adjust volume.  I DO see Mic/Line In capture now, but can't make the
+slider move above 0.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-05 06:03 ammiellodebar  New Issue                                    
+08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
+08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
+08-12-05 23:11 jcdutton       Note Added: 0005791                          
+08-12-05 23:11 jcdutton       Status                   assigned => feedback
+08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
+08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
+08-21-05 23:56 ammiellodebar  Note Edited: 0005717                         
+09-10-05 10:36 jcdutton       Note Added: 0006108                          
+09-10-05 18:15 ammiellodebar  Note Added: 0006124                          
+09-15-05 06:37 qqtortqq       Note Added: 0006192                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. 
+Download it for free - -and be entered to win a 42" plasma tv or your very
+own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
