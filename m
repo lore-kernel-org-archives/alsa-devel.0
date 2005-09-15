@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000853]: Clicks or pops are produced in Griffin USB iMic PCM output
-Date: Thu, 15 Sep 2005 15:19:04 +0200
-Message-ID: <e2b9e4f13645cfe6ed3176fd74de988f@bugtrack.alsa-project.org>
+Date: Thu, 15 Sep 2005 15:48:23 +0200
+Message-ID: <ff6adf9fb80985381283d24afd83cc69@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 270A9175
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:19:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90E56178
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:48:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.10-gentoo-r2, with low latency patch
 ======================================================================
 Date Submitted:             01-28-2005 08:28 CET
-Last Modified:              09-15-2005 15:19 CEST
+Last Modified:              09-15-2005 15:48 CEST
 ======================================================================
 Summary:                    Clicks or pops are produced in Griffin USB iMic PCM
 output
@@ -64,6 +64,14 @@ couple minutes, especially if I'm playing MIDI through FluidSynth.
 ----------------------------------------------------------------------
 Submitter: Does this problem still exist?
 
+----------------------------------------------------------------------
+ vtowel - 09-15-05 15:48 
+----------------------------------------------------------------------
+Actually I found out that this also happened in Windows. I asked Griffin to
+replace my iMic, which doesn't exhibit this problem quite as often (though
+it still does occasionally - it's probably just crappy hardware). You can
+close this.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -72,6 +80,7 @@ Date Modified  Username       Field                    Change
 01-28-05 08:28 vtowel         Kernel Version            => 2.6.10-gentoo-r2,
 with low latency patch
 09-15-05 15:19 jdthood        Note Added: 0006208                          
+09-15-05 15:48 vtowel         Note Added: 0006209                          
 ======================================================================
 
 
