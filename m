@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Thu, 15 Sep 2005 20:29:18 +0200
-Message-ID: <f63458e79b54a462f325c23a4290246e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001424]: crash on snd-powermac initilize
+Date: Thu, 15 Sep 2005 20:38:05 +0200
+Message-ID: <ad7be7697ce3b3a30218951738500b15@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEDF7175
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 20:29:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39286175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 20:38:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1424> 
 ======================================================================
-Reported By:                pcmcginty
-Assigned To:                
+Reported By:                amir
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
+Issue ID:                   1424
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               GeeXboX
+Kernel Version:             2.6.13.1
 ======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              09-15-2005 20:29 CEST
+Date Submitted:             09-15-2005 20:38 CEST
+Last Modified:              09-15-2005 20:38 CEST
 ======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
+Summary:                    crash on snd-powermac initilize
 Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
+I have users reporting a reproducable, on init, crash of our powerpc
+distro,
+but this happens to only some of the ppc users.
+
+the distro is geexbox, www.geexbox.org
+
+this crash happens also when snd-powermac is compiled as module,
+and crashes when module is loaded.
+
+I can't reproduce the bug myself, but I have users who do the tests,
+and those users report that debian and ubuntu works great for them.
+
+this bug also happened with linux 2.6.12
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 09-15-05 15:18 
-----------------------------------------------------------------------
-Any improvement in later ALSA releases?
-
-----------------------------------------------------------------------
- spr - 09-15-05 20:29 
-----------------------------------------------------------------------
-I recently switch to debian testing, running a 2.6.12.5 vanilla kernel, and
-the sound works fine, no problems.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
-12-27-04 15:12 tiwai          Note Added: 0002961                          
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
-12-27-04 19:28 pcmcginty      Note Added: 0002973                          
-01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
-01-12-05 14:13 JonathanL      Note Added: 0003163                          
-01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
-    
-01-12-05 15:02 tiwai          Note Added: 0003164                          
-01-12-05 15:03 tiwai          Note Added: 0003165                          
-01-12-05 15:04 tiwai          Note Added: 0003166                          
-01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
-01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
-   
-01-12-05 16:13 JonathanL      Note Added: 0003174                          
-01-12-05 20:45 tiwai          Note Added: 0003178                          
-01-12-05 23:23 JonathanL      File Added: sub0                             
-01-12-05 23:23 JonathanL      Note Added: 0003180                          
-01-13-05 12:53 tiwai          Note Added: 0003184                          
-01-22-05 02:02 bengan         Note Added: 0003371                          
-01-22-05 02:03 bengan         Note Edited: 0003371                         
-01-22-05 02:12 bengan         Note Edited: 0003371                         
-01-23-05 01:38 JonathanL      Note Added: 0003384                          
-01-27-05 18:20 spr            Issue Monitored: spr                         
-01-27-05 18:22 spr            Note Added: 0003421                          
-09-15-05 15:18 jdthood        Note Added: 0006207                          
-09-15-05 20:29 spr            Note Added: 0006221                          
+09-15-05 20:38 amir           New Issue                                    
+09-15-05 20:38 amir           File Added: .config                          
+09-15-05 20:38 amir           Distribution              => GeeXboX         
+09-15-05 20:38 amir           Kernel Version            => 2.6.13.1        
 ======================================================================
 
 
