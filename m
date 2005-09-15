@@ -1,19 +1,11 @@
 From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: Re: au88x0 modem
-Date: Thu, 15 Sep 2005 23:43:45 +0300
-Message-ID: <20050915204345.GC27700@sashak.softier1.local>
-References: <4325AEA3.1090602@netvigator.com> <20050913000909.GB19713@tecr>
- <20050913085552.GA2655@titan.lahn.de>
- <20050913173529.GD31269@sashak.softier1.local>
- <20050913174930.GA5816@titan.lahn.de> <4327DA14.3040205@netvigator.com>
- <20050914205608.GD14657@sashak.softier1.local>
- <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de>
- <20050915143533.GB23218@sashak.softier1.local>
+Subject: [patch] au88x0: codec access procs for multiple AC97 codecs
+Date: Thu, 15 Sep 2005 23:56:17 +0300
+Message-ID: <20050915205617.GD27700@sashak.softier1.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20050915143533.GB23218@sashak.softier1.local>
 Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -24,82 +16,133 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
-Cc: openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Raymond <rayau@netvigator.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org, Philipp Matthias Hahn <pmhahn@titan.lahn.de>, Raymond <rayau@netvigator.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 17:35 Thu 15 Sep     , Sasha Khapyorsky wrote:
-> 
-> I will send cleaned codec access patch separately and will look what is
-> next.
 
-Pilipp, no real patches yet, let's investigate few things:
+This modification of au88x0's AC97 codec access procedures enables to
+access multiple codecs.
 
-1. Actual "secondary codec" bit in CODEC_EN register - just silly print
-(apply with -p1):
+Tested with au8810 (secondary codec was initialized for this case),
+looks safe for others as well (au88x0 guys, please comment)
 
 
---- au88x0_prev/au88x0_core.c	2005-09-14 20:51:03.000000000 +0300
-+++ au88x0/au88x0_core.c	2005-09-15 22:59:05.000000000 +0300
-@@ -2516,6 +2516,8 @@ static void vortex_codec_init(vortex_t *
- 	msleep(2);
- 	if (hwread(vortex->mmio, VORTEX_CODEC_EN)&(EN_CODEC1|EN_MODEM))
- 		vortex->num_of_codecs = 2;
-+	printk("vortex_codec_init: VORTEX_CODEC_EN = %08x\n",
-+		hwread(vortex->mmio, VORTEX_CODEC_EN));
- }
- 
- static void
-
-
-
-2. GPIO
-
-Probably we are lucky and au88x0 implements it in AC97 way, try to write
-mc97 registers via /proc (for this you need build drivers in debug mode,
-'--with-debug=detect' is ok):
-
-('alsa-kernelDocumentation/Procfile.txt' is reference too)
-
- # echo 42 ffff > /proc/asound/card0/codec97#0/mc97#1-1+regs
-
-, look if value of 0x42 register was changes (0x42 is line level control
-- works in all known cases (up to know :) ), basically value should '0'
-  - unmuted, 0dB), then:
-
- # echo 42 0 > /proc/asound/card0/codec97#0/mc97#1-1+regs
-
-, and if ok, try to touch 0x54 - gpio status rtegister:
-
- # echo 54 1 > /proc/asound/card0/codec97#0/mc97#1-1+regs
-
-, if value is changed (we are lucky then), you may connect line and
-isten 'Hook-Off' clicks (when 0x54 is switched between 0 and 1) with
-parallel phone.
-
-
-3. DMA
-
-After some looking in au88x0 driver I think that it is possible that
-modem could use one ADB channels (predefined or programmable) for pcm
-data transfers (just like regular audio), similar scheme may be found
-with some other devices like ali5451.
-
-If so we could try to find channel numbers (should be two - for playback
-and capture). It is very possible that channels should be configured
-somehow first.
-
-Philipp, How looks your 'aplay -l' output?
-
-
-ANYBODY knows something about modem DMA/PCM with au88x0, please advise.
-
-
-BTW, I found fine au88x0 datasheet there:
-http://galadriel.mat.utfsm.cl/~mjander/aureal/techdoc/techpaper.html
-
-Thanks,
 Sasha.
+
+
+
+This patch extends au88x0 AC97 codec access procedures to handle multiple
+codecs properly.
+
+Signed-off-by: Sasha Khapyorsky
+
+Index: alsa-kernel/pci/au88x0/au8810.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8810.h,v
+retrieving revision 1.3
+diff -u -p -r1.3 au8810.h
+--- alsa-kernel/pci/au88x0/au8810.h	13 Apr 2004 15:26:27 -0000	1.3
++++ alsa-kernel/pci/au88x0/au8810.h	15 Sep 2005 12:23:52 -0000
+@@ -178,11 +178,6 @@
+ #define		EN_SPDIF	0x000c0000
+ 
+ #define VORTEX_CODEC_CHN 	0x29080
+-#define VORTEX_CODEC_WRITE	0x00800000
+-#define VORTEX_CODEC_ADDSHIFT 	16
+-#define VORTEX_CODEC_ADDMASK	0x7f0000	/* 0x000f0000 */
+-#define VORTEX_CODEC_DATSHIFT	0
+-#define VORTEX_CODEC_DATMASK	0xffff
+ #define VORTEX_CODEC_IO		0x29188
+ 
+ /* SPDIF */
+Index: alsa-kernel/pci/au88x0/au8820.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8820.h,v
+retrieving revision 1.3
+diff -u -p -r1.3 au8820.h
+--- alsa-kernel/pci/au88x0/au8820.h	13 Apr 2004 15:26:27 -0000	1.3
++++ alsa-kernel/pci/au88x0/au8820.h	15 Sep 2005 12:23:52 -0000
+@@ -162,11 +162,6 @@
+ #define		EN_SPORT	0x00030000
+ #define		EN_SPDIF	0x000c0000
+ #define VORTEX_CODEC_CHN 0x11880
+-#define VORTEX_CODEC_WRITE 0x00800000
+-#define VORTEX_CODEC_ADDSHIFT 16
+-#define VORTEX_CODEC_ADDMASK 0x7f0000	/* 0x000f0000 */
+-#define VORTEX_CODEC_DATSHIFT 0
+-#define VORTEX_CODEC_DATMASK 0xffff
+ #define VORTEX_CODEC_IO 0x11988
+ 
+ #define VORTEX_SPDIF_FLAGS		0x1005c	/* FIXME */
+Index: alsa-kernel/pci/au88x0/au8830.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au8830.h,v
+retrieving revision 1.3
+diff -u -p -r1.3 au8830.h
+--- alsa-kernel/pci/au88x0/au8830.h	13 Apr 2004 15:26:27 -0000	1.3
++++ alsa-kernel/pci/au88x0/au8830.h	15 Sep 2005 12:23:52 -0000
+@@ -194,11 +194,6 @@
+ 
+ #define VORTEX_CODEC_CTRL 0x29184
+ #define VORTEX_CODEC_IO 0x29188
+-#define 	VORTEX_CODEC_WRITE 0x00800000
+-#define 	VORTEX_CODEC_ADDSHIFT 16
+-#define 	VORTEX_CODEC_ADDMASK 0x7f0000	/* 0x000f0000 */
+-#define 	VORTEX_CODEC_DATSHIFT 0
+-#define 	VORTEX_CODEC_DATMASK 0xffff
+ 
+ #define VORTEX_CODEC_SPORTCTRL 0x2918c
+ 
+Index: alsa-kernel/pci/au88x0/au88x0.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0.h,v
+retrieving revision 1.11
+diff -u -p -r1.11 au88x0.h
+--- alsa-kernel/pci/au88x0/au88x0.h	22 Mar 2005 08:50:55 -0000	1.11
++++ alsa-kernel/pci/au88x0/au88x0.h	15 Sep 2005 12:23:52 -0000
+@@ -79,6 +79,14 @@
+ #define VORTEX_RESOURCE_A3D	0x00000004
+ #define VORTEX_RESOURCE_LAST	0x00000005
+ 
++/* codec io: VORTEX_CODEC_IO bits */
++#define VORTEX_CODEC_ID_SHIFT	24
++#define VORTEX_CODEC_WRITE	0x00800000
++#define VORTEX_CODEC_ADDSHIFT 	16
++#define VORTEX_CODEC_ADDMASK	0x7f0000
++#define VORTEX_CODEC_DATSHIFT	0
++#define VORTEX_CODEC_DATMASK	0xffff
++
+ /* Check for SDAC bit in "Extended audio ID" AC97 register */
+ //#define VORTEX_IS_QUAD(x) (((x)->codec == NULL) ?  0 : ((x)->codec->ext_id&0x80))
+ #define VORTEX_IS_QUAD(x) ((x)->isquad)
+Index: alsa-kernel/pci/au88x0/au88x0_core.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_core.c,v
+retrieving revision 1.11
+diff -u -p -r1.11 au88x0_core.c
+--- alsa-kernel/pci/au88x0/au88x0_core.c	23 Feb 2005 11:00:31 -0000	1.11
++++ alsa-kernel/pci/au88x0/au88x0_core.c	15 Sep 2005 12:23:53 -0000
+@@ -2532,7 +2532,8 @@ vortex_codec_write(ac97_t * codec, unsig
+ 	hwwrite(card->mmio, VORTEX_CODEC_IO,
+ 		((addr << VORTEX_CODEC_ADDSHIFT) & VORTEX_CODEC_ADDMASK) |
+ 		((data << VORTEX_CODEC_DATSHIFT) & VORTEX_CODEC_DATMASK) |
+-		VORTEX_CODEC_WRITE);
++		VORTEX_CODEC_WRITE |
++		(codec->num << VORTEX_CODEC_ID_SHIFT) );
+ 
+ 	/* Flush Caches. */
+ 	hwread(card->mmio, VORTEX_CODEC_IO);
+@@ -2554,7 +2555,8 @@ static unsigned short vortex_codec_read(
+ 		}
+ 	}
+ 	/* set up read address */
+-	read_addr = ((addr << VORTEX_CODEC_ADDSHIFT) & VORTEX_CODEC_ADDMASK);
++	read_addr = ((addr << VORTEX_CODEC_ADDSHIFT) & VORTEX_CODEC_ADDMASK) |
++		(codec->num << VORTEX_CODEC_ID_SHIFT) ;
+ 	hwwrite(card->mmio, VORTEX_CODEC_IO, read_addr);
+ 
+ 	/* wait for address */
 
 
 -------------------------------------------------------
