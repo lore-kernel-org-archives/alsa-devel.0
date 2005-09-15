@@ -1,13 +1,11 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Re: hda-intel/ALC260: crackly playback and DC offset on recording
-Date: Thu, 15 Sep 2005 10:21:22 +0930 (CST)
-Message-ID: <200509150051.j8F0pMoP010292@auster.physics.adelaide.edu.au>
-References: <s5hoe6xfhcj.wl%tiwai@suse.de>
+From: Nicolas Pitre <nico@cam.org>
+Subject: [PATCH] remove bogus match method for ac97_bus
+Date: Wed, 14 Sep 2005 21:54:30 -0400 (EDT)
+Message-ID: <Pine.LNX.4.63.0509142146070.31877@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hoe6xfhcj.wl%tiwai@suse.de> from "Takashi Iwai" at Sep 13, 2005 11:27:08 AM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,41 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > > Also, try another value of position_fix.  Currently,
-> > > 
-> > > 0 = auto        check the value and correct with fifo size if needed
-> > >                 if the value is over a fifo size, turns to posbuf mode
-> > > 1 = none        use a register value as it is
-> > > 2 = posbuf      use a position-buffer
-> > > 3 = fifo        always correct with the fifo size (corresponds to 0 in
-> > >                 the earlier version)
-> > 
-> > I also did this.  Values of 1, 2 and 3 all appeared to result in clean audio
-> > output from both aplay (native ALSA API) and wavplay (OSS emulation).  Only
-> > the default setting caused the skips when OSS emulation was in use.
-> > 
-> > I enabled ALSA's debugging options including verbose printk.  However, no
-> > hda-intel DMA messages (as contained in this revised patch) were written to
-> > the log at all which was odd.  I did see other printd()/printdd() messages
-> > associated with hda-intel (prepare calls etc) so the debug code was
-> > definitely compiled in.
-> 
-> snd_printd() appears only when compiled with CONFIG_SND_DEBUG=yes.
-> snd_printdd() when CONFIG_SND_DEBUG_DETECT=yes.
-> They correspond to --with-debug=full and --with-debug=detect in the
-> case of alsa-driver's configure script option.
 
-Yep, noted.  When I was testing the above both CONFIG_SND_DEBUG and
-CONFIG_SND_DEBUG_DETECT were set to "yes" in config.h.
+The bus_id is initialized with a generic identifier string which is not 
+really useful for proper driver matching.  Let the driver decide what it 
+needs via its probe method instead.
 
-I'll doublecheck this again tonight since I think it a bit odd that
-1, 2 and 3 all seemed to work while 0 didn't.
+Signed-off-by: Nicolas Pitre <nico@cam.org>
 
-Regards
-  jonathan
+Index: linux-2.6/sound/pci/ac97/ac97_bus.c
+===================================================================
+--- linux-2.6.orig/sound/pci/ac97/ac97_bus.c
++++ linux-2.6/sound/pci/ac97/ac97_bus.c
+@@ -17,12 +17,13 @@
+ #include <linux/string.h>
+ 
+ /*
+- * Codec families have names seperated by commas, so we search for an
+- * individual codec name within the family string. 
++ * Let drivers decide whether they want to support given codec from their
++ * probe method.  Drivers have direct access to the ac97_t structure and may
++ * decide based on the id field amongst other things.
+  */
+ static int ac97_bus_match(struct device *dev, struct device_driver *drv)
+ {
+-	return (strstr(dev->bus_id, drv->name) != NULL);
++	return 1;
+ }
+ 
+ static int ac97_bus_suspend(struct device *dev, pm_message_t state)
 
 
 -------------------------------------------------------
