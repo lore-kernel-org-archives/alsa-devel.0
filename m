@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000670]: soundmax integrated digital not working in slack 10
-Date: Thu, 15 Sep 2005 15:17:05 +0200
-Message-ID: <a01ba3b64c2da58d84b5fa45423d04c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Thu, 15 Sep 2005 15:18:37 +0200
+Message-ID: <ff042d153250232e713c7825431b16c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 699BC175
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:17:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 101C4175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:18:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=670> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
 ======================================================================
-Reported By:                michaelhoy
-Assigned To:                tiwai
+Reported By:                pcmcginty
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   670
-Category:                   PCI - atiixp
+Issue ID:                   748
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               slackware
-Kernel Version:             2.4.26
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             11-24-2004 00:55 CET
-Last Modified:              09-15-2005 15:17 CEST
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              09-15-2005 15:18 CEST
 ======================================================================
-Summary:                    soundmax integrated digital not working in slack 10
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
 Description: 
-basically the sound card won't work with alsa. below is an email to lee a
-developer he recommended i submit this as a bug fix. please read the
-'additional information section' if this is not the correct way of
-submitting a bug fix i apologize as this is my first.
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- alt-os - 01-24-05 05:49 
+ spr - 01-27-05 18:22 
 ----------------------------------------------------------------------
-I had similar problems.
-I actually resolved much of them by removing the snd-atiixp-modem module
-(I read somewhere that it breacked the snd-atiixp module) and building
-snd-atiixp statically into the 2.6.10 kernel. Now (unmuted the device) I
-can hear sounds. But that have a strange behaviour...
-
-If I play quickly some sounds (for examples, opening and closing quickly a
-Gnome-panel drawer applet), I just heard the first one. Then, afther a few
-seconds, I can hear it again, if click again. But again, just the first.
-
-Instead, mixed sounds work perfectly (if I play two wavs, I year them
-both) and video's audio is fine.
-
-Sorry for the strange manner to report that bug, but I actually still
-don't know how to describe that strange behaviour, and I could not find
-any errors in log files :/
-
-PS: I am using a Slackware-10.0 with recompiled 2.6.10 kernel.
-
-
+I've got the ALi chipset (have a sharp mm20 laptop) and I've had the
+problems as well since 2.6.9 and newer (including cvs). It worked fine in
+2.6.8.1
 
 ----------------------------------------------------------------------
- jdthood - 09-15-05 15:17 
+ jdthood - 09-15-05 15:18 
 ----------------------------------------------------------------------
-Submitter: Do you still have the problem you reported here?
+Any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 00:55 michaelhoy     New Issue                                    
-11-24-04 00:55 michaelhoy     Distribution              => slackware       
-11-24-04 00:55 michaelhoy     Kernel Version            => 2.4.26          
-11-24-04 12:18 tiwai          Note Added: 0002547                          
-11-24-04 17:48 michaelhoy     Note Added: 0002573                          
-11-24-04 17:54 tiwai          Note Added: 0002574                          
-01-24-05 05:48 alt-os         Note Added: 0003390                          
-01-24-05 05:49 alt-os         Note Edited: 0003390                         
-03-13-05 19:10 alt-os         Issue Monitored: alt-os                      
-09-15-05 15:17 jdthood        Note Added: 0006206                          
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
+01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
+01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+01-12-05 15:04 tiwai          Note Added: 0003166                          
+01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
+01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
+   
+01-12-05 16:13 JonathanL      Note Added: 0003174                          
+01-12-05 20:45 tiwai          Note Added: 0003178                          
+01-12-05 23:23 JonathanL      File Added: sub0                             
+01-12-05 23:23 JonathanL      Note Added: 0003180                          
+01-13-05 12:53 tiwai          Note Added: 0003184                          
+01-22-05 02:02 bengan         Note Added: 0003371                          
+01-22-05 02:03 bengan         Note Edited: 0003371                         
+01-22-05 02:12 bengan         Note Edited: 0003371                         
+01-23-05 01:38 JonathanL      Note Added: 0003384                          
+01-27-05 18:20 spr            Issue Monitored: spr                         
+01-27-05 18:22 spr            Note Added: 0003421                          
+09-15-05 15:18 jdthood        Note Added: 0006207                          
 ======================================================================
 
 
