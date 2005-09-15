@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
-Date: Thu, 15 Sep 2005 22:38:24 +0200
-Message-ID: <d8d513f9baf2b6ccabcbe4df3d90ef4e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001427]: Some of the hardware volume controls have incorrect ranges
+Date: Thu, 15 Sep 2005 22:45:35 +0200
+Message-ID: <e09906ecbb29fc3753a001b60b83bac4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD7A1185
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:38:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4031185
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:45:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1427> 
 ======================================================================
-Reported By:                kayandus
+Reported By:                xolsonalsa
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1051
-Category:                   PCI - via82xx
-Reproducibility:            N/A
-Severity:                   tweak
+Issue ID:                   1427
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.10-5-k7
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              09-15-2005 22:38 CEST
+Date Submitted:             09-15-2005 22:45 CEST
+Last Modified:              09-15-2005 22:45 CEST
 ======================================================================
-Summary:                    'Headphones', 'PCM', 'Master' control names
-misassigned
+Summary:                    Some of the hardware volume controls have incorrect
+ranges
 Description: 
-Hello,
+line, CD, mic, and aux controls work but have incorrect volume ranges for
+the hardware codec.
+alsa-driver-1.0.10rc1
+snd-intel8x0 driver
+my hardware Asus P4SE m/b, SiS 7012 onboard card, C-Media CMI9738 codec
+my kernel is redhat linux 9, 2.4.20-31.9
+excerpts below are from the output of amixer command, my comments after
+the ***
+-----------------------------
+Simple mixer control 'Master',0
+Limits: Playback 0 - 31 *** (this one is correct)
 
-I bought a Targa Traveller 811 laptop a couple of months ago with an
-onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
-works fine with the via82xx driver, but there's only one minor problem.
-Let me explain my problem.
+Simple mixer control 'PCM',0 *** (this one is correct, no range, no
+hardware volume control, mute/unmute only)
 
-There are 3 major volume controls for me:
+Simple mixer control 'Line',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
 
-Master: Controls the volume of the internal laptop speaker, so when there
-is a plug/earphones in my LINE IN, it changes nothing. (!!)
-Headphones: Controls volume of the LINE IN, so does nothing when there is
-nothing my LINE IN.
-PCM: Controls both internal speaker and LINE IN, so volume goes up and
-down whether im using the internal speaker or not.
+Simple mixer control 'CD',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
 
-Probably the problem is clear already to you. Most programs control only
-Master, so when I have my laptop attached to my stereo, those programs
-don't change my volume =(
-I hope you guys can fix this, I suggest by making an option to exchange
-Master with PCM.
+Simple mixer control 'Mic',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
 
-Thanks in advance, Harm te Hennepe
+Simple mixer control 'PC Speaker',0
+Limits: Playback 0 - 15 *** (probably correct, haven't tested)
+
+Simple mixer control 'Aux',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-15-05 16:04 
-----------------------------------------------------------------------
-ac97_quirk=hp_only binds Master and Headphone volume controls.
-You *must* see the difference with this option.  With this option, there
-will be no longer "Headphone" control.
-
-----------------------------------------------------------------------
- Nafallo - 09-15-05 22:38 
-----------------------------------------------------------------------
-Well, I _don't_. I've added snd_via82xx ac97_quirk=hp_only to the end of my
-/etc/modules.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:16 kayandus       New Issue                                    
-04-13-05 21:16 kayandus       Distribution              => Ubuntu          
-04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
-04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
-04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
-04-19-05 18:26 tiwai          Note Added: 0004535                          
-04-21-05 20:59 kayandus       Note Added: 0004552                          
-09-14-05 04:09 Nafallo        Note Added: 0006156                          
-09-14-05 04:10 Nafallo        Note Edited: 0006156                         
-09-14-05 04:10 Nafallo        Issue Monitored: Nafallo                     
-09-14-05 04:11 Nafallo        Note Edited: 0006156                         
-09-14-05 15:45 jdthood        Summary                  Master <--> PCM =>
-'Headphones', 'PCM', 'Master' control names misassigned
-09-14-05 15:45 jdthood        Description Updated                          
-09-15-05 16:04 tiwai          Note Added: 0006211                          
-09-15-05 22:38 Nafallo        Note Added: 0006225                          
+09-15-05 22:45 xolsonalsa     New Issue                                    
 ======================================================================
 
 
