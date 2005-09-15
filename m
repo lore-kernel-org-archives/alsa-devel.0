@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
-Date: Thu, 15 Sep 2005 16:04:52 +0200
-Message-ID: <9b7e7c0ede8801ec9467dd2bb5a8ee00@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
+Date: Thu, 15 Sep 2005 16:07:28 +0200
+Message-ID: <85ab9c9c9e339cd47aefdee8e3dafbf4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31D11178
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 16:04:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E9DB178
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 16:07:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
 ======================================================================
-Reported By:                kayandus
+Reported By:                do13
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1051
-Category:                   PCI - via82xx
-Reproducibility:            N/A
-Severity:                   tweak
+Issue ID:                   1421
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.10-5-k7
+Distribution:               
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              09-15-2005 16:04 CEST
+Date Submitted:             09-14-2005 22:12 CEST
+Last Modified:              09-15-2005 16:07 CEST
 ======================================================================
-Summary:                    'Headphones', 'PCM', 'Master' control names
-misassigned
+Summary:                    AC97 device name changed in ac97_codec.c
 Description: 
-Hello,
+Bug #0001334 changed the device name on the AC97-bus into card#-# this
+prevents external drivers to access the AC97 codec.
+The basic idea of the AC97-bus was to bind external drivers to an codec to
+use their extended features (touchscreen, AD- converter etc). With this
+naming change we can't bind drivers to the codec, because the device name
+isn't the name of the driver.
 
-I bought a Targa Traveller 811 laptop a couple of months ago with an
-onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
-works fine with the via82xx driver, but there's only one minor problem.
-Let me explain my problem.
+Andy ideas about this?
 
-There are 3 major volume controls for me:
 
-Master: Controls the volume of the internal laptop speaker, so when there
-is a plug/earphones in my LINE IN, it changes nothing. (!!)
-Headphones: Controls volume of the LINE IN, so does nothing when there is
-nothing my LINE IN.
-PCM: Controls both internal speaker and LINE IN, so volume goes up and
-down whether im using the internal speaker or not.
-
-Probably the problem is clear already to you. Most programs control only
-Master, so when I have my laptop attached to my stereo, those programs
-don't change my volume =(
-I hope you guys can fix this, I suggest by making an option to exchange
-Master with PCM.
-
-Thanks in advance, Harm te Hennepe
 ======================================================================
 
 ----------------------------------------------------------------------
- Nafallo - 09-14-05 04:11 
+ Clemens Ladisch - 09-15-05 14:18 
 ----------------------------------------------------------------------
-Rather than to bind Master and PCM, we should bind Master and Headphones
-no? And it's not LINE IN, it's the headphonejack :-).
-
-ac97_quirk=hp_only didn't make a difference here (Targa Visionary 811).
-
-
+The name must be unique.  This wouldn't be the case for the driver name.
 
 ----------------------------------------------------------------------
- tiwai - 09-15-05 16:04 
+ tiwai - 09-15-05 16:07 
 ----------------------------------------------------------------------
-ac97_quirk=hp_only binds Master and Headphone volume controls.
-You *must* see the difference with this option.  With this option, there
-will be no longer "Headphone" control.
+Basically we should have a driver-model device instance for each codec,
+too. Then the device name can appear in each codec sysfs entry.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:16 kayandus       New Issue                                    
-04-13-05 21:16 kayandus       Distribution              => Ubuntu          
-04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
-04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
-04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
-04-19-05 18:26 tiwai          Note Added: 0004535                          
-04-21-05 20:59 kayandus       Note Added: 0004552                          
-09-14-05 04:09 Nafallo        Note Added: 0006156                          
-09-14-05 04:10 Nafallo        Note Edited: 0006156                         
-09-14-05 04:10 Nafallo        Issue Monitored: Nafallo                     
-09-14-05 04:11 Nafallo        Note Edited: 0006156                         
-09-14-05 15:45 jdthood        Summary                  Master <--> PCM =>
-'Headphones', 'PCM', 'Master' control names misassigned
-09-14-05 15:45 jdthood        Description Updated                          
-09-15-05 16:04 tiwai          Note Added: 0006211                          
+09-14-05 22:12 do13           New Issue                                    
+09-14-05 22:12 do13           Kernel Version            => 2.6.13          
+09-15-05 14:18 Clemens LadischNote Added: 0006195                          
+09-15-05 16:07 tiwai          Note Added: 0006212                          
 ======================================================================
 
 
