@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
-Date: Thu, 15 Sep 2005 17:12:05 +0200
-Message-ID: <745b75dbdfa0effd5b70bb6445c2b21e@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0 modem
+Date: Thu, 15 Sep 2005 23:34:03 +0800
+Message-ID: <4329946B.9030407@netvigator.com>
+References: <20050911124530.GA16795@titan.lahn.de> <4325AEA3.1090602@netvigator.com> <20050913000909.GB19713@tecr> <20050913085552.GA2655@titan.lahn.de> <20050913173529.GD31269@sashak.softier1.local> <20050913174930.GA5816@titan.lahn.de> <4327DA14.3040205@netvigator.com> <20050914205608.GD14657@sashak.softier1.local> <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de> <20050915143533.GB23218@sashak.softier1.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BFCF184
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 17:12:05 +0200 (MEST)
+In-Reply-To: <20050915143533.GB23218@sashak.softier1.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +17,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
-======================================================================
-Reported By:                do13
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1421
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             09-14-2005 22:12 CEST
-Last Modified:              09-15-2005 17:12 CEST
-======================================================================
-Summary:                    AC97 device name changed in ac97_codec.c
-Description: 
-Bug #0001334 changed the device name on the AC97-bus into card#-# this
-prevents external drivers to access the AC97 codec.
-The basic idea of the AC97-bus was to bind external drivers to an codec to
-use their extended features (touchscreen, AD- converter etc). With this
-naming change we can't bind drivers to the codec, because the device name
-isn't the name of the driver.
-
-Andy ideas about this?
+Sasha Khapyorsky wrote:
+>
+> 
+> Great, the secondary modem codec is there. The valid codec id bits are
+> 24:25 (AC97 interface supports up to four codecs):
+> 
+> #define VORTEX_CODEC_ID_SHIFT 24
+> 
+> I will send cleaned codec access patch separately and will look what is
+> next.
 
 
-======================================================================
+It would be more easy to debug/maintain the driver if using different
+read/write routines for audio and modem codec.
 
-----------------------------------------------------------------------
- liam - 09-15-05 17:04 
-----------------------------------------------------------------------
-The name should also include the codec name as each ad-hoc driver is codec
-specific. Currently, the wm97xx touch screen driver registers with a
-"WM97" string to match any WM97** codec.
+Audio codec is always primary in sound card and audio/modem combo
 
-----------------------------------------------------------------------
- liam - 09-15-05 17:12 
-----------------------------------------------------------------------
-Does anybody object to :-
+The existing vortex_codec_read() and vortex_codec_write() can remain
+unchanged.
 
-card1-0:WM9713
+Just add new routine vortex_modem_codec_read() vortex_modem_code_write()
+to handle secondary/primary modem codec for audio/modem combo and PCI
+modem card.
 
-This way the card number, ac97 bus id and codec id are preserved.
+http://www.nix.ru/autocatalog/modems/AurVcomPCIV90RTL_5817.html
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-14-05 22:12 do13           New Issue                                    
-09-14-05 22:12 do13           Kernel Version            => 2.6.13          
-09-15-05 14:18 Clemens LadischNote Added: 0006195                          
-09-15-05 16:07 tiwai          Note Added: 0006212                          
-09-15-05 17:04 liam           Note Added: 0006216                          
-09-15-05 17:12 liam           Note Added: 0006217                          
-======================================================================
+Make sure your patch is 32bits/64bits compatible
+
+AMD64 user may use the  PCI audio/modem combo card and PCI modem card.
+
+ > mainly I'm not about cleanups now. The goal is to hack modem. It looks
+ > for me that right sequence is:
+ >
+ > 1. Find and initialize modem codec (secondary).
+ > 2. Find and hack appropriate DMA channels, initialize modem PCM.
+ > 3. Find valid way to access GPIO (for DAA controls like Hook-Off)
+ > 4. Chipset detailed cleanups.
+ >
+ > Currently we are in (1).
+
+I guess (1) and (3) already completed at least for Si3036 in L8400B
+
+
+
+
 
 
 
