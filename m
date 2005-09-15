@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001427]: Some of the hardware volume controls have incorrect ranges
-Date: Thu, 15 Sep 2005 22:45:35 +0200
-Message-ID: <e09906ecbb29fc3753a001b60b83bac4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001426]: only mono sound available on via82xx
+Date: Thu, 15 Sep 2005 22:47:24 +0200
+Message-ID: <0ed2f2911bd69270ca87f21b9f25592f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4031185
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:45:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50EE8185
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 22:47:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1427> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1426> 
 ======================================================================
-Reported By:                xolsonalsa
+Reported By:                netset99
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1427
-Category:                   PCI - intel8x0
+Issue ID:                   1426
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               gentoo
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             09-15-2005 22:45 CEST
-Last Modified:              09-15-2005 22:45 CEST
+Date Submitted:             09-15-2005 22:12 CEST
+Last Modified:              09-15-2005 22:47 CEST
 ======================================================================
-Summary:                    Some of the hardware volume controls have incorrect
-ranges
+Summary:                    only mono sound available on via82xx
 Description: 
-line, CD, mic, and aux controls work but have incorrect volume ranges for
-the hardware codec.
-alsa-driver-1.0.10rc1
-snd-intel8x0 driver
-my hardware Asus P4SE m/b, SiS 7012 onboard card, C-Media CMI9738 codec
-my kernel is redhat linux 9, 2.4.20-31.9
-excerpts below are from the output of amixer command, my comments after
-the ***
------------------------------
-Simple mixer control 'Master',0
-Limits: Playback 0 - 31 *** (this one is correct)
+Only get mono sound with alsa. This is shown by the fact that I cannot
+change the master stereo volume e.g. in alsamixer, only mute or unmute
+it.
 
-Simple mixer control 'PCM',0 *** (this one is correct, no range, no
-hardware volume control, mute/unmute only)
+Tried with kernels 2.6.12, 2.6.13, both compiled into the kernel or as
+modules. Also happens with the drivers from the alsa homepage
+(1.0.10_rc1). Tried live CD's from Gentoo (2.6.12 kernel) and from Knoppix
+(2.6.11). dxs_support 1-5 and ac97_quirk parameters didn't solve the
+problem. Neither did changing volume / muting and unmuting a combination
+of controls in alsamixer.
 
-Simple mixer control 'Line',0
-Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
-
-Simple mixer control 'CD',0
-Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
-
-Simple mixer control 'Mic',0
-Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
-
-Simple mixer control 'PC Speaker',0
-Limits: Playback 0 - 15 *** (probably correct, haven't tested)
-
-Simple mixer control 'Aux',0
-Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
+However: A Ubuntu Live CD (Kernel 2.6.10) gives me normal stereo sound.
 ======================================================================
+
+----------------------------------------------------------------------
+ netset99 - 09-15-05 22:47 
+----------------------------------------------------------------------
+I just wanted to add that in fact I can hear sound and it is stereo, I just
+cannot change the master stereo volume, just the PCM one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-05 22:45 xolsonalsa     New Issue                                    
+09-15-05 22:12 netset99       New Issue                                    
+09-15-05 22:12 netset99       Distribution              => gentoo          
+09-15-05 22:12 netset99       Kernel Version            => 2.6.13          
+09-15-05 22:47 netset99       Note Added: 0006226                          
 ======================================================================
 
 
