@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000632]: The recordings doesnt work properly
-Date: Thu, 15 Sep 2005 15:02:26 +0200
-Message-ID: <9f7ba8dee0b250404e8216c3b3b127d5@bugtrack.alsa-project.org>
+Date: Thu, 15 Sep 2005 15:02:49 +0200
+Message-ID: <c6519099fb06cb7520ccad5b82ad0004@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05BBB175
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:02:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA810175
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 15:02:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=632> 
 ======================================================================
@@ -35,11 +35,11 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
+Status:                     resolved
 Distribution:               Debian SID
 Kernel Version:             2.6.9
-Resolution:                 open
-Fixed in Version:           
+Resolution:                 fixed
+Fixed in Version:           1.0.9
 ======================================================================
 Date Submitted:             11-05-2004 23:28 CET
 Last Modified:              09-15-2005 15:02 CEST
@@ -80,6 +80,9 @@ Date Modified  Username       Field                    Change
 09-15-05 14:46 littlewing     Note Added: 0006196                          
 09-15-05 15:02 jdthood        Status                   assigned => closed  
 09-15-05 15:02 jdthood        Note Added: 0006197                          
+09-15-05 15:02 jdthood        Fixed in Version          => 1.0.9           
+09-15-05 15:02 jdthood        Status                   closed => resolved  
+09-15-05 15:02 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
