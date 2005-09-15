@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
-Date: Thu, 15 Sep 2005 16:07:28 +0200
-Message-ID: <85ab9c9c9e339cd47aefdee8e3dafbf4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000853]: Clicks or pops are produced in Griffin USB iMic PCM output
+Date: Thu, 15 Sep 2005 16:14:08 +0200
+Message-ID: <2af3a5b3fc98fbbb3c87dfd62677a959@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E9DB178
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 16:07:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D95A1178
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 16:14:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=853> 
 ======================================================================
-Reported By:                do13
-Assigned To:                
+Reported By:                vtowel
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1421
-Category:                   1_OTHERS
+Issue ID:                   853
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.13
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.10-gentoo-r2, with low latency patch
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-14-2005 22:12 CEST
-Last Modified:              09-15-2005 16:07 CEST
+Date Submitted:             01-28-2005 08:28 CET
+Last Modified:              09-15-2005 16:14 CEST
 ======================================================================
-Summary:                    AC97 device name changed in ac97_codec.c
+Summary:                    Clicks or pops are produced in Griffin USB iMic PCM
+output
 Description: 
-Bug #0001334 changed the device name on the AC97-bus into card#-# this
-prevents external drivers to access the AC97 codec.
-The basic idea of the AC97-bus was to bind external drivers to an codec to
-use their extended features (touchscreen, AD- converter etc). With this
-naming change we can't bind drivers to the codec, because the device name
-isn't the name of the driver.
-
-Andy ideas about this?
-
-
+I've been spending the longest time trying to figure out why FluidSynth has
+been producing these inconsistent clicks while I play MIDI through it. I
+finally determined that this behaviour is not specific to FluidSynth, but
+to my USB iMic sound card, since the problem does not occur when I
+configure FluidSynth to use my internal sound card. I am also able to hear
+these clicks through the iMic by just playing an MP3 through them,
+although it's not as frequent. It seems that the frequency of the clicks
+is dependent on my CPU load; the more I stress my system, the easier it is
+to hear these clicks/pops. But it's difficult to determine whether there's
+a direct relationship there or not, because this behaviour is so
+inconsistent. But I can always cause the clicks to happen within at most a
+couple minutes, especially if I'm playing MIDI through FluidSynth.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-15-05 14:18 
+ vtowel - 09-15-05 15:48 
 ----------------------------------------------------------------------
-The name must be unique.  This wouldn't be the case for the driver name.
+Actually I found out that this also happened in Windows. I asked Griffin to
+replace my iMic, which doesn't exhibit this problem quite as often (though
+it still does occasionally - it's probably just crappy hardware). You can
+close this.
 
 ----------------------------------------------------------------------
- tiwai - 09-15-05 16:07 
+ jdthood - 09-15-05 16:14 
 ----------------------------------------------------------------------
-Basically we should have a driver-model device instance for each codec,
-too. Then the device name can appear in each codec sysfs entry.
+Thanks for the info.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-14-05 22:12 do13           New Issue                                    
-09-14-05 22:12 do13           Kernel Version            => 2.6.13          
-09-15-05 14:18 Clemens LadischNote Added: 0006195                          
-09-15-05 16:07 tiwai          Note Added: 0006212                          
+01-28-05 08:28 vtowel         New Issue                                    
+01-28-05 08:28 vtowel         Distribution              => Gentoo          
+01-28-05 08:28 vtowel         Kernel Version            => 2.6.10-gentoo-r2,
+with low latency patch
+09-15-05 15:19 jdthood        Note Added: 0006208                          
+09-15-05 15:48 vtowel         Note Added: 0006209                          
+09-15-05 16:14 jdthood        Status                   assigned => resolved
+09-15-05 16:14 jdthood        Resolution               open => not an issue
+09-15-05 16:14 jdthood        Note Added: 0006213                          
 ======================================================================
 
 
