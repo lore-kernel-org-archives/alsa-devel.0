@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
-Date: Fri, 16 Sep 2005 00:37:21 +0200
-Message-ID: <7093b2bd660a9877c35eed289724a1f4@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Platform bus question
+Date: Thu, 15 Sep 2005 23:42:56 +0100
+Message-ID: <1126824176.3328.8.camel@localhost.localdomain>
+References: <1126735889.3428.8.camel@localhost.localdomain>
+	 <s5hll1y8y5r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9006175
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 00:37:21 +0200 (MEST)
+In-Reply-To: <s5hll1y8y5r.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +18,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
-======================================================================
-Reported By:                Alister
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   832
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Suse linux
-Kernel Version:             2.6.5-7.111.19-default
-======================================================================
-Date Submitted:             01-17-2005 22:07 CET
-Last Modified:              09-16-2005 00:37 CEST
-======================================================================
-Summary:                    sound randomly distorts, clicks, pops and low level
-Description: 
-reported here:
-http://forums.suselinuxsupport.de/index.php?showtopic=7828
-
-but in summary:
-HW works perfectly under windows partition.
-Despite several (hopeful) upgrades, sound persists in randomly becoming
-low- level and/or VERY distorted (clipped?). Occurs anytime from few
-seconds to many minutes after being cleared. Occassionally corrects itself
-(temporary) just as randomly. But spends most of the time being badly
-distorted, low level and no left channel.
-Can always clear (temporarily) by using volume control in YaST to set max
-volumes and play high level sound through card.
-Left channel always affected worse than right.
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 09-15-05 16:16 
-----------------------------------------------------------------------
-Is this problem fixed in more recent ALSA versions?
-
-----------------------------------------------------------------------
- Alister - 09-16-05 00:37 
-----------------------------------------------------------------------
-seems to have gone away, sorry not to have reported earlier, but lost ref
-to bug. My mind is 50/50 whether it was a hardware fault or removed by
-local re-compile of alsa thus avoiding other people's RPMs (a KDE upgrade
-from Suse broke sound fairly comprehensively, thus local re-compile
-needed.)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-17-05 22:07 Alister        New Issue                                    
-01-17-05 22:07 Alister        Distribution              => Suse linux      
-01-17-05 22:07 Alister        Kernel Version            =>
-2.6.5-7.111.19-default
-01-28-05 11:06 Alister        Note Added: 0003425                          
-09-15-05 16:16 jdthood        Note Added: 0006214                          
-09-16-05 00:37 Alister        Note Added: 0006234                          
-======================================================================
-
+On Thu, 2005-09-15 at 11:42 +0200, Takashi Iwai wrote:
+> At Wed, 14 Sep 2005 23:11:29 +0100,
+> Adrian McMenamin wrote:
+> > 
+> > I am writing a driver for the sound card on the Sega Dreamcast (you can
+> > view it at http://newgolddream.dyndns.info/repos/aica) and I am using
+> > this:
+> > 
+> > 	snd_card_set_dev(dreamcastcard, &platform_bus);	
+> > 
+> > 	/* Register the card with ALSA subsystem */
+> > 	if ((err = snd_card_register(dreamcastcard)) < 0) {
+> > 		snd_aicapcm_free();	
+> > 		snd_card_free(dreamcastcard);
+> > 		return err;
+> > 	}
+> > 
+> > 
+> > In the hope that the card will be registered with the generic platform
+> > bus.
+> > 
+> > The code does not generate any errors, but doesn't appear to work
+> > either!
+> 
+> Use a new function snd_card_set_generic_dev() for such a purpose
+> if the device isn't assigned to a proper bus.
+> 
+Meaning the snd_card_set_dev macro + snd_card_register function combo
+won't work?
 
 
 
