@@ -1,20 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: Re: au88x0 modem
-Date: Thu, 15 Sep 2005 17:35:33 +0300
-Message-ID: <20050915143533.GB23218@sashak.softier1.local>
-References: <20050911124530.GA16795@titan.lahn.de>
- <4325AEA3.1090602@netvigator.com> <20050913000909.GB19713@tecr>
- <20050913085552.GA2655@titan.lahn.de>
- <20050913173529.GD31269@sashak.softier1.local>
- <20050913174930.GA5816@titan.lahn.de> <4327DA14.3040205@netvigator.com>
- <20050914205608.GD14657@sashak.softier1.local>
- <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000632]: The recordings doesnt work properly
+Date: Thu, 15 Sep 2005 14:46:58 +0200
+Message-ID: <33663d8e54f7ceebaa6554e5ffc7c491@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20050915092155.GA7328@titan.lahn.de>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79085173
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2005 14:46:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,38 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philipp Matthias Hahn <pmhahn@titan.lahn.de>, Raymond <rayau@netvigator.com>, openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11:21 Thu 15 Sep     , Philipp Matthias Hahn wrote:
-> Hello!
-> 
-> On Thu, Sep 15, 2005 at 11:11:58AM +0200, Philipp Matthias Hahn wrote:
-> > On Wed, Sep 14, 2005 at 11:56:08PM +0300, Sasha Khapyorsky wrote:
-> > > Philipp, you could play with VORTEX_CODEC_ID_SHIFT value (au88x0,h) in
-> > > range 24-31.
-> > ...
-> > > diff -rpu au88x0_orig/au88x0.h au88x0/au88x0.h
-> > ...
-> > > +#define VORTEX_CODEC_ID_SHIFT	30 /* unknown: may be 24-31 (or irrelevat) */
-> > 
-> > Sorry, no luck with any value in the range 24-31.
-> 
-> Sorry, I wronly patched the driver.
-> 24-31/25 works. tar-file with copies of /proc/asound/au8810 attached.
 
-Great, the secondary modem codec is there. The valid codec id bits are
-24:25 (AC97 interface supports up to four codecs):
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=632> 
+======================================================================
+Reported By:                littlewing
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   632
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian SID
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-05-2004 23:28 CET
+Last Modified:              09-15-2005 14:46 CEST
+======================================================================
+Summary:                    The recordings doesnt work properly
+Description: 
+Hi,
+when I am trying to recording music which are on a external player (cf
+Mini disc), every recording are ugly. I can record music, but, after, when
+I m play the front recorded tracks, there are a lot of "jumps", "sratchs"
+or the music speeds or slown down randomly.
 
-#define VORTEX_CODEC_ID_SHIFT 24
+These problems were decreased when I was upgraded the kernel on the
+version 2.6.9, but are still presents.
 
-I will send cleaned codec access patch separately and will look what is
-next.
+I test the same recording on windows, and worked perfectly:-(
+======================================================================
 
-BTW, thanks for info alternative drivers (I had question about windows
-.inf file syntax, but now with your results it is irrelevant anymore :)).
+----------------------------------------------------------------------
+ jdthood - 09-14-05 15:59 
+----------------------------------------------------------------------
+Submitter: Is this problem fixed in more recent ALSA versions?
 
-Sasha.
+----------------------------------------------------------------------
+ littlewing - 09-15-05 14:46 
+----------------------------------------------------------------------
+Yes
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-05-04 23:28 littlewing     New Issue                                    
+11-05-04 23:28 littlewing     Distribution              => Debian SID      
+11-05-04 23:28 littlewing     Kernel Version            => 2.6.9           
+11-05-04 23:31 littlewing     Note Added: 0002307                          
+11-10-04 23:30 pzad           Note Added: 0002381                          
+09-14-05 15:59 jdthood        Note Added: 0006168                          
+09-15-05 14:46 littlewing     Note Added: 0006196                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
