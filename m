@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Fri, 16 Sep 2005 16:29:42 +0200
-Message-ID: <427416d0af4d3d1208184a9e0ff52f10@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
+Date: Fri, 16 Sep 2005 16:31:05 +0200
+Message-ID: <8d24c53e8b16b007651f1a6f4111dc51@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B544187
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 16:29:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1E68187
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 16:31:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
 ======================================================================
-Reported By:                pcmcginty
-Assigned To:                
+Reported By:                Alister
+Assigned To:                jdthood
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
+Issue ID:                   832
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
+Status:                     resolved
+Distribution:               Suse linux
+Kernel Version:             2.6.5-7.111.19-default
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              09-16-2005 16:29 CEST
+Date Submitted:             01-17-2005 22:07 CET
+Last Modified:              09-16-2005 16:31 CEST
 ======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
+Summary:                    sound randomly distorts, clicks, pops and low level
 Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
+reported here:
+http://forums.suselinuxsupport.de/index.php?showtopic=7828
+
+but in summary:
+HW works perfectly under windows partition.
+Despite several (hopeful) upgrades, sound persists in randomly becoming
+low- level and/or VERY distorted (clipped?). Occurs anytime from few
+seconds to many minutes after being cleared. Occassionally corrects itself
+(temporary) just as randomly. But spends most of the time being badly
+distorted, low level and no left channel.
+Can always clear (temporarily) by using volume control in YaST to set max
+volumes and play high level sound through card.
+Left channel always affected worse than right.
 ======================================================================
 
 ----------------------------------------------------------------------
- spr - 09-15-05 20:29 
+ Alister - 09-16-05 00:37 
 ----------------------------------------------------------------------
-I recently switch to debian testing, running a 2.6.12.5 vanilla kernel, and
-the sound works fine, no problems.
+seems to have gone away, sorry not to have reported earlier, but lost ref
+to bug. My mind is 50/50 whether it was a hardware fault or removed by
+local re-compile of alsa thus avoiding other people's RPMs (a KDE upgrade
+from Suse broke sound fairly comprehensively, thus local re-compile
+needed.)
 
 ----------------------------------------------------------------------
- jdthood - 09-16-05 16:29 
+ jdthood - 09-16-05 16:31 
 ----------------------------------------------------------------------
-> the sound works fine, no problems.
+> seems to have gone away
 
-pcmcginty: Have you had equally good luck?
+Good to hear
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
-12-27-04 15:12 tiwai          Note Added: 0002961                          
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
-12-27-04 19:28 pcmcginty      Note Added: 0002973                          
-01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
-01-12-05 14:13 JonathanL      Note Added: 0003163                          
-01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
-    
-01-12-05 15:02 tiwai          Note Added: 0003164                          
-01-12-05 15:03 tiwai          Note Added: 0003165                          
-01-12-05 15:04 tiwai          Note Added: 0003166                          
-01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
-01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
-   
-01-12-05 16:13 JonathanL      Note Added: 0003174                          
-01-12-05 20:45 tiwai          Note Added: 0003178                          
-01-12-05 23:23 JonathanL      File Added: sub0                             
-01-12-05 23:23 JonathanL      Note Added: 0003180                          
-01-13-05 12:53 tiwai          Note Added: 0003184                          
-01-22-05 02:02 bengan         Note Added: 0003371                          
-01-22-05 02:03 bengan         Note Edited: 0003371                         
-01-22-05 02:12 bengan         Note Edited: 0003371                         
-01-23-05 01:38 JonathanL      Note Added: 0003384                          
-01-27-05 18:20 spr            Issue Monitored: spr                         
-01-27-05 18:22 spr            Note Added: 0003421                          
-09-15-05 15:18 jdthood        Note Added: 0006207                          
-09-15-05 20:29 spr            Note Added: 0006221                          
-09-16-05 16:29 jdthood        Note Added: 0006245                          
+01-17-05 22:07 Alister        New Issue                                    
+01-17-05 22:07 Alister        Distribution              => Suse linux      
+01-17-05 22:07 Alister        Kernel Version            =>
+2.6.5-7.111.19-default
+01-28-05 11:06 Alister        Note Added: 0003425                          
+09-15-05 16:16 jdthood        Note Added: 0006214                          
+09-16-05 00:37 Alister        Note Added: 0006234                          
+09-16-05 16:31 jdthood        Status                   new => resolved     
+09-16-05 16:31 jdthood        Resolution               open => fixed       
+09-16-05 16:31 jdthood        Assigned To               => jdthood         
+09-16-05 16:31 jdthood        Note Added: 0006246                          
 ======================================================================
 
 
