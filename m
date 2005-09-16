@@ -1,11 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: P16V cleanups
-Date: Thu, 15 Sep 2005 22:47:57 -0400
-Message-ID: <1126838878.4986.29.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
+Date: Fri, 16 Sep 2005 04:49:09 +0200
+Message-ID: <ad279d3809edf9a2ee20dd18125db069@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BE16173
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 04:49:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,177 +18,181 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James,
 
-This patch renames the unknown PCM (PCM2) to "Side" as I'm almost
-certain this is what it is.  It also gives the P16V PCM a better name,
-"HD Audio (P16V)" rather than "p16v".
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1380> 
+======================================================================
+Reported By:                Varanger
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1380
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
+Kernel Version:             Linux 2.6.11-1-686-smp
+======================================================================
+Date Submitted:             08-30-2005 20:07 CEST
+Last Modified:              09-16-2005 04:49 CEST
+======================================================================
+Summary:                    Scratchy Intel HDA
+Description: 
+Hello.
 
-This makes the naming consistent with the user-friendly names I gave the
-other devices, among other things this makes the device selection menu
-in XMMS much more intuitive.
+I am getting very scratchy audio in my Intel HDA card besides the sound is
+very low.
 
-This patch is 100% cosmetic with no changes to the logic.  It does
-rename two mixer controls so will cause alsactl warnings.
+lspci output is:  
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 03)
 
-Index: alsa/alsa-kernel/pci/emu10k1/p16v.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/p16v.c,v
-retrieving revision 1.10
-diff -u -r1.10 p16v.c
---- alsa/alsa-kernel/pci/emu10k1/p16v.c	9 Sep 2005 13:21:46 -0000	1.10
-+++ alsa/alsa-kernel/pci/emu10k1/p16v.c	16 Sep 2005 02:45:12 -0000
-@@ -102,15 +102,15 @@
- #include <sound/emu10k1.h>
- #include "p16v.h"
- 
--#define SET_CHANNEL 0  /* Testing channel outputs 0=Front, 1=Center/LFE, 2=Unknown, 3=Rear */
-+#define SET_CHANNEL 0  /* Testing channel outputs 0=Front, 1=Center/LFE, 2=Side, 3=Rear */
- #define PCM_FRONT_CHANNEL 0
- #define PCM_REAR_CHANNEL 1
- #define PCM_CENTER_LFE_CHANNEL 2
--#define PCM_UNKNOWN_CHANNEL 3
-+#define PCM_SIDE_CHANNEL 3
- #define CONTROL_FRONT_CHANNEL 0
- #define CONTROL_REAR_CHANNEL 3
- #define CONTROL_CENTER_LFE_CHANNEL 1
--#define CONTROL_UNKNOWN_CHANNEL 2
-+#define CONTROL_SIDE_CHANNEL 2
- 
- /* Card IDs:
-  * Class 0401: 1102:0004 (rev 04) Subsystem: 1102:2002 -> Audigy2 ZS 7.1 Model:SB0350
-@@ -619,7 +619,7 @@
- 
- 	pcm->info_flags = 0;
- 	pcm->dev_subclass = SNDRV_PCM_SUBCLASS_GENERIC_MIX;
--	strcpy(pcm->name, "p16v");
-+	strcpy(pcm->name, "HD Audio (P16V)");
- 	emu->pcm = pcm;
- 
- 	for(substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; 
-@@ -691,7 +691,7 @@
- 	int reg = PLAYBACK_VOLUME_MIXER7;
-         return snd_p16v_volume_get(kcontrol, ucontrol, reg, high_low);
- }
--static int snd_p16v_volume_get_spdif_unknown(snd_kcontrol_t * kcontrol,
-+static int snd_p16v_volume_get_spdif_side(snd_kcontrol_t * kcontrol,
-                                        snd_ctl_elem_value_t * ucontrol)
- {
- 	int high_low = 0;
-@@ -729,7 +729,7 @@
-         return snd_p16v_volume_get(kcontrol, ucontrol, reg, high_low);
- }
- 
--static int snd_p16v_volume_get_analog_unknown(snd_kcontrol_t * kcontrol,
-+static int snd_p16v_volume_get_analog_side(snd_kcontrol_t * kcontrol,
-                                        snd_ctl_elem_value_t * ucontrol)
- {
- 	int high_low = 0;
-@@ -771,7 +771,7 @@
-         return snd_p16v_volume_put(kcontrol, ucontrol, reg, high_low);
- }
- 
--static int snd_p16v_volume_put_spdif_unknown(snd_kcontrol_t * kcontrol,
-+static int snd_p16v_volume_put_spdif_side(snd_kcontrol_t * kcontrol,
-                                        snd_ctl_elem_value_t * ucontrol)
- {
- 	int high_low = 0;
-@@ -811,7 +811,7 @@
-         return snd_p16v_volume_put(kcontrol, ucontrol, reg, high_low);
- }
- 
--static int snd_p16v_volume_put_analog_unknown(snd_kcontrol_t * kcontrol,
-+static int snd_p16v_volume_put_analog_side(snd_kcontrol_t * kcontrol,
-                                        snd_ctl_elem_value_t * ucontrol)
- {
- 	int high_low = 0;
-@@ -837,13 +837,13 @@
-         .put =          snd_p16v_volume_put_analog_center_lfe
- };
- 
--static snd_kcontrol_new_t snd_p16v_volume_control_analog_unknown =
-+static snd_kcontrol_new_t snd_p16v_volume_control_analog_side =
- {
-         .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
--        .name =         "HD Analog Unknown Playback Volume",
-+        .name =         "HD Analog Side Playback Volume",
-         .info =         snd_p16v_volume_info,
--        .get =          snd_p16v_volume_get_analog_unknown,
--        .put =          snd_p16v_volume_put_analog_unknown
-+        .get =          snd_p16v_volume_get_analog_side,
-+        .put =          snd_p16v_volume_put_analog_side
- };
- 
- static snd_kcontrol_new_t snd_p16v_volume_control_analog_rear =
-@@ -873,13 +873,13 @@
-         .put =          snd_p16v_volume_put_spdif_center_lfe
- };
- 
--static snd_kcontrol_new_t snd_p16v_volume_control_spdif_unknown =
-+static snd_kcontrol_new_t snd_p16v_volume_control_spdif_side =
- {
-         .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
--        .name =         "HD SPDIF Unknown Playback Volume",
-+        .name =         "HD SPDIF Side Playback Volume",
-         .info =         snd_p16v_volume_info,
--        .get =          snd_p16v_volume_get_spdif_unknown,
--        .put =          snd_p16v_volume_put_spdif_unknown
-+        .get =          snd_p16v_volume_get_spdif_side,
-+        .put =          snd_p16v_volume_put_spdif_side
- };
- 
- static snd_kcontrol_new_t snd_p16v_volume_control_spdif_rear =
-@@ -1008,7 +1008,7 @@
-                 return -ENOMEM;
-         if ((err = snd_ctl_add(card, kctl)))
-                 return err;
--        if ((kctl = snd_ctl_new1(&snd_p16v_volume_control_analog_unknown, emu)) == NULL)
-+        if ((kctl = snd_ctl_new1(&snd_p16v_volume_control_analog_side, emu)) == NULL)
-                 return -ENOMEM;
-         if ((err = snd_ctl_add(card, kctl)))
-                 return err;
-@@ -1024,7 +1024,7 @@
-                 return -ENOMEM;
-         if ((err = snd_ctl_add(card, kctl)))
-                 return err;
--        if ((kctl = snd_ctl_new1(&snd_p16v_volume_control_spdif_unknown, emu)) == NULL)
-+        if ((kctl = snd_ctl_new1(&snd_p16v_volume_control_spdif_side, emu)) == NULL)
-                 return -ENOMEM;
-         if ((err = snd_ctl_add(card, kctl)))
-                 return err;
-Index: alsa/alsa-kernel/pci/emu10k1/p16v.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/p16v.h,v
-retrieving revision 1.1
-diff -u -r1.1 p16v.h
---- alsa/alsa-kernel/pci/emu10k1/p16v.h	13 Mar 2005 12:17:10 -0000	1.1
-+++ alsa/alsa-kernel/pci/emu10k1/p16v.h	16 Sep 2005 02:45:12 -0000
-@@ -260,7 +260,7 @@
- 						 * 0xXXXXXXX2 = PCM0 Right.
- 						 * 0xXXXXXXX4 = PCM1 Left. (Center/LFE)
- 						 * 0xXXXXXXX8 = PCM1 Right.
--						 * 0xXXXXXX1X = PCM2 Left. (Unknown)
-+						 * 0xXXXXXX1X = PCM2 Left. (Side)
- 						 * 0xXXXXXX2X = PCM2 Right.
- 						 * 0xXXXXXX4X = PCM3 Left. (Rear)
- 						 * 0xXXXXXX8X = PCM3 Right.
-@@ -278,7 +278,7 @@
- 						/* 0 -> Not playback sound, irq still running */
- 						/* 0xXXXXXX10 = PCM0 Left/Right On. (Front)
- 						 * 0xXXXXXX20 = PCM1 Left/Right On. (Center/LFE)
--						 * 0xXXXXXX40 = PCM2 Left/Right On. (Unknown)
-+						 * 0xXXXXXX40 = PCM2 Left/Right On. (Side)
- 						 * 0xXXXXXX80 = PCM3 Left/Right On. (Rear)
- 						 */
- #define PLAYBACK_SPDIF_SELECT     0x70          /* Default: 12030F00 */
+Reading every article I could have found on the net regarding this
+card, I discovered that i needed snd-azx (ALSA 1.0.8 ) or
+snd-hda-intel modules (ALSA 1.0.9rc* or later).
 
+I have downloaded every sources from 1.0.8 up to 1.0.10rc1 (including
+1.0.9 release candidates) from http://www.alsa-project.org, then built and
+installed them.
 
+In all those versions, I have followed this steps:
+alsa-driver : ./configure --with-oss=yes --with-cards=hda-intel && make &&
+make install
+library / oss-lib / utils : ./configure && make && make install
+
+I've looked every on the net and found that I could use position_fix=1
+or position_fix=2 to help me  but no good either.
+
+I've tried in Ubuntu, Kubuntu, Debian, even Mandriva 2005 LE and
+Fedora Core 4 (using the modules from the kernel) and it's the same
+problem in all of them.
+
+The card came with the mainboard Intel 915G (D915GEV or 915GEV)  
+
+more info about my soundcard:
+
+Running: "lspci -v" 
+
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 03)
+        Subsystem: Intel Corp.: Unknown device e200
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at ff43c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] #10 [0091]
+
+/proc/sound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Jul  7 2005 for kernel 2.6.10-5-686-smp (SMP).
+
+/proc/asound/devices
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+Thanks for the help,
+Varanger
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 09-16-05 04:03 
+----------------------------------------------------------------------
+I think tiwai was mistaken about the dxs_support parameter.  This only
+applies to the via82xx driver, not intel-hda.  So you only need to test
+position_fix=x where x is 0, 1, 2, and 3.
+
+First, try ALSA CVS or ALSA 1.0.10-rc1.  There have been many bugs fixed
+since 1.0.9-rc2.
+
+Then, if it still doesn't work, to verify that it's not a modutils bug,
+explicitly do:
+
+rmmod snd-intel-hda
+modprobe snd-intel-hda position_fix=0
+
+Then test the sound and repeat with position_fix=1, 2, and 3.
+
+Also, to narrow down the problem, do all testing with XMMS, and switch
+back and forth between the ALSA and OSS driver.  Make sure that XMMS is
+using the device "default".
+
+If your test results were using Rhythmbox+ALSA and XMMS+OSS to play the
+same MP3, then it looks like Rhythmbox might be using "hw:x,x" which is
+wrong, as it's reporting the sample rate as 48000 not 44100.
+
+----------------------------------------------------------------------
+ chrome - 09-16-05 04:49 
+----------------------------------------------------------------------
+XMMS with OSS emulation:
+
+[root@vaio etc]# cat /proc/asound/card0/pcm0p/sub0/hw_params
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 44100 (44100/1)
+period_size: 1024
+buffer_size: 16384
+tick_time: 1000
+OSS format: S16_LE
+OSS channels: 2
+OSS rate: 44100
+OSS period bytes: 4096
+OSS periods: 16
+OSS period frames: 1024
+
+XMMS with Alsa:
+
+[root@vaio etc]# cat /proc/asound/card0/pcm0p/sub0/hw_params
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 1024
+buffer_size: 16384
+tick_time: 1000
+
+Same deal, so its not a problem with Rhythmbox.
+
+I didn't see any instructions on how I can compile just the drivers for my
+running kernel, and install them. How do I do that? Is there a bit of
+documentation you can point me to? sorry. I'm not very familiar with Alsa
+and how to build it etc; it just came with my distro ;)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-05 20:07 Varanger       New Issue                                    
+08-30-05 20:07 Varanger       Distribution              => Ubuntu 5.04 "Hoary
+Hedgehog"
+08-30-05 20:07 Varanger       Kernel Version            => Linux
+2.6.11-1-686-smp
+09-08-05 09:27 cventers       Note Added: 0006070                          
+09-12-05 19:02 mico           Note Added: 0006149                          
+09-12-05 19:04 mico           Note Edited: 0006149                         
+09-13-05 18:26 tiwai          Note Added: 0006154                          
+09-15-05 19:19 Varanger       Note Added: 0006218                          
+09-16-05 03:35 chrome         Note Added: 0006236                          
+09-16-05 04:03 rlrevell       Note Added: 0006237                          
+09-16-05 04:49 chrome         Note Added: 0006238                          
+======================================================================
 
 
 
