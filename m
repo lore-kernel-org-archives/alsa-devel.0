@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Fri, 16 Sep 2005 05:06:40 +0200
-Message-ID: <96de7b6c5ed09c736628cc17246949d7@bugtrack.alsa-project.org>
+Date: Fri, 16 Sep 2005 05:14:01 +0200
+Message-ID: <18f6de7cd67942949264964c07f6d296@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FA5C173
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 05:06:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32C3D173
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 05:14:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
 Kernel Version:             Linux 2.6.11-1-686-smp
 ======================================================================
 Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              09-16-2005 05:06 CEST
+Last Modified:              09-16-2005 05:14 CEST
 ======================================================================
 Summary:                    Scratchy Intel HDA
 Description: 
@@ -111,50 +111,37 @@ Varanger
 ======================================================================
 
 ----------------------------------------------------------------------
- chrome - 09-16-05 04:49 
-----------------------------------------------------------------------
-XMMS with OSS emulation:
-
-[root@vaio etc]# cat /proc/asound/card0/pcm0p/sub0/hw_params
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (44100/1)
-period_size: 1024
-buffer_size: 16384
-tick_time: 1000
-OSS format: S16_LE
-OSS channels: 2
-OSS rate: 44100
-OSS period bytes: 4096
-OSS periods: 16
-OSS period frames: 1024
-
-XMMS with Alsa:
-
-[root@vaio etc]# cat /proc/asound/card0/pcm0p/sub0/hw_params
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 48000 (48000/1)
-period_size: 1024
-buffer_size: 16384
-tick_time: 1000
-
-Same deal, so its not a problem with Rhythmbox.
-
-I didn't see any instructions on how I can compile just the drivers for my
-running kernel, and install them. How do I do that? Is there a bit of
-documentation you can point me to? sorry. I'm not very familiar with Alsa
-and how to build it etc; it just came with my distro ;)
-
-----------------------------------------------------------------------
  rlrevell - 09-16-05 05:06 
 ----------------------------------------------------------------------
 What is "Audio Device" set to in the XMMS ALSA configuration?  It should be
 "default".  Also try toggling "MMAP mode" (on the Advanced Settings tab).
+
+----------------------------------------------------------------------
+ chrome - 09-16-05 05:14 
+----------------------------------------------------------------------
+It is set to default. Toggling MMAP mode has no effect.
+
+I grabbed the latest CVS and compiled it with 'cvscompile' then did a make
+install. After a reboot, I confirmed the new version of Alsa:
+
+[root@vaio ~]# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1.
+Compiled on Sep 16 2005 for kernel 2.6.12-1.1447_FC4.
+
+I get the same results as above with the default settings.
+
+I then tried it with the following:
+
+[root@vaio ~]# rmmod snd_hda_intel
+[root@vaio ~]# modprobe snd_hda_intel position_fix=0
+[root@vaio ~]# rmmod snd_hda_intel
+[root@vaio ~]# modprobe snd_hda_intel position_fix=1
+[root@vaio ~]# rmmod snd_hda_intel
+[root@vaio ~]# modprobe snd_hda_intel position_fix=2
+[root@vaio ~]# rmmod snd_hda_intel
+[root@vaio ~]# modprobe snd_hda_intel position_fix=3
+
+None of these helped with the current CVS drivers... any other ideas?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -173,6 +160,7 @@ Hedgehog"
 09-16-05 04:03 rlrevell       Note Added: 0006237                          
 09-16-05 04:49 chrome         Note Added: 0006238                          
 09-16-05 05:06 rlrevell       Note Added: 0006239                          
+09-16-05 05:14 chrome         Note Added: 0006240                          
 ======================================================================
 
 
