@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Fri, 16 Sep 2005 04:49:09 +0200
-Message-ID: <ad279d3809edf9a2ee20dd18125db069@bugtrack.alsa-project.org>
+Date: Fri, 16 Sep 2005 05:06:40 +0200
+Message-ID: <96de7b6c5ed09c736628cc17246949d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BE16173
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 04:49:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FA5C173
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 05:06:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
 Kernel Version:             Linux 2.6.11-1-686-smp
 ======================================================================
 Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              09-16-2005 04:49 CEST
+Last Modified:              09-16-2005 05:06 CEST
 ======================================================================
 Summary:                    Scratchy Intel HDA
 Description: 
@@ -111,32 +111,6 @@ Varanger
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-16-05 04:03 
-----------------------------------------------------------------------
-I think tiwai was mistaken about the dxs_support parameter.  This only
-applies to the via82xx driver, not intel-hda.  So you only need to test
-position_fix=x where x is 0, 1, 2, and 3.
-
-First, try ALSA CVS or ALSA 1.0.10-rc1.  There have been many bugs fixed
-since 1.0.9-rc2.
-
-Then, if it still doesn't work, to verify that it's not a modutils bug,
-explicitly do:
-
-rmmod snd-intel-hda
-modprobe snd-intel-hda position_fix=0
-
-Then test the sound and repeat with position_fix=1, 2, and 3.
-
-Also, to narrow down the problem, do all testing with XMMS, and switch
-back and forth between the ALSA and OSS driver.  Make sure that XMMS is
-using the device "default".
-
-If your test results were using Rhythmbox+ALSA and XMMS+OSS to play the
-same MP3, then it looks like Rhythmbox might be using "hw:x,x" which is
-wrong, as it's reporting the sample rate as 48000 not 44100.
-
-----------------------------------------------------------------------
  chrome - 09-16-05 04:49 
 ----------------------------------------------------------------------
 XMMS with OSS emulation:
@@ -176,6 +150,12 @@ running kernel, and install them. How do I do that? Is there a bit of
 documentation you can point me to? sorry. I'm not very familiar with Alsa
 and how to build it etc; it just came with my distro ;)
 
+----------------------------------------------------------------------
+ rlrevell - 09-16-05 05:06 
+----------------------------------------------------------------------
+What is "Audio Device" set to in the XMMS ALSA configuration?  It should be
+"default".  Also try toggling "MMAP mode" (on the Advanced Settings tab).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -192,6 +172,7 @@ Hedgehog"
 09-16-05 03:35 chrome         Note Added: 0006236                          
 09-16-05 04:03 rlrevell       Note Added: 0006237                          
 09-16-05 04:49 chrome         Note Added: 0006238                          
+09-16-05 05:06 rlrevell       Note Added: 0006239                          
 ======================================================================
 
 
