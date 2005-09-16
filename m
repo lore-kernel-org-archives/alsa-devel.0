@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001428]: My Audigy 1 Player [SB0090] card don't detect correct by alsa utils
-Date: Fri, 16 Sep 2005 18:56:22 +0200
-Message-ID: <b52c8d55e4c3707418ac23b09e4c8a9c@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: Re: Re: au88x0 modem
+Date: Fri, 16 Sep 2005 21:05:00 +0300
+Message-ID: <20050916180500.GC17864@tecr>
+References: <20050913000909.GB19713@tecr> <20050913085552.GA2655@titan.lahn.de> <20050913173529.GD31269@sashak.softier1.local> <20050913174930.GA5816@titan.lahn.de> <4327DA14.3040205@netvigator.com> <20050914205608.GD14657@sashak.softier1.local> <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de> <20050915143533.GB23218@sashak.softier1.local> <4329946B.9030407@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88FC2187
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 18:56:22 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <4329946B.9030407@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On 23:34 Thu 15 Sep     , Raymond wrote:
+> Sasha Khapyorsky wrote:
+> >
+> >
+> >Great, the secondary modem codec is there. The valid codec id bits are
+> >24:25 (AC97 interface supports up to four codecs):
+> >
+> >#define VORTEX_CODEC_ID_SHIFT 24
+> >
+> >I will send cleaned codec access patch separately and will look what is
+> >next.
+> 
+> 
+> It would be more easy to debug/maintain the driver if using different
+> read/write routines for audio and modem codec.
+> 
+> Audio codec is always primary in sound card and audio/modem combo
+> 
+> The existing vortex_codec_read() and vortex_codec_write() can remain
+> unchanged.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1428> 
-======================================================================
-Reported By:                rusxakep
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1428
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             09-16-2005 18:56 CEST
-Last Modified:              09-16-2005 18:56 CEST
-======================================================================
-Summary:                    My Audigy 1 Player [SB0090] card don't detect
-correct by alsa utils
-Description: 
-On my soundcard (lspci -vvvn) .subsystem is 0x00511102
-======================================================================
+Don't think so. It is about chip support (ac97 controller) and not about
+cards, current codec_read/write are not correct since ignore ac97.num
+value. And it is not about modem, but about secondary codec(s).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-16-05 18:56 rusxakep       New Issue                                    
-09-16-05 18:56 rusxakep       Distribution              => Gentoo          
-09-16-05 18:56 rusxakep       Kernel Version            => 2.6.12          
-======================================================================
+Request secondary codec initialization or not is different story, this
+may be card specific.
 
-
+Sasha.
 
 
 -------------------------------------------------------
