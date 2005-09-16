@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: au88x0 modem
-Date: Fri, 16 Sep 2005 20:04:01 +0800
-Message-ID: <432AB4B1.1050808@netvigator.com>
-References: <20050913173529.GD31269@sashak.softier1.local> <20050913174930.GA5816@titan.lahn.de> <4327DA14.3040205@netvigator.com> <20050914205608.GD14657@sashak.softier1.local> <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de> <20050915143533.GB23218@sashak.softier1.local> <20050915204345.GC27700@sashak.softier1.local> <20050916084653.GB524@titan.lahn.de> <432A8887.4020808@netvigator.com> <20050916103604.GA3168@titan.lahn.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001427]: Some of the hardware volume controls have incorrect ranges
+Date: Fri, 16 Sep 2005 14:03:58 +0200
+Message-ID: <d3eed458d9eef0d17ad295a3c524b3fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050916103604.GA3168@titan.lahn.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F3AE187
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 14:03:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,62 +18,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pmhahn@titan.lahn.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Philipp Matthias Hahn wrote:
-> Hello!
-> 
-> On Fri, Sep 16, 2005 at 04:55:35PM +0800, Raymond wrote:
-> 
->>>>2. GPIO
->>>>
->>>>Probably we are lucky and au88x0 implements it in AC97 way, try to write
->>>>mc97 registers via /proc (for this you need build drivers in debug mode,
->>>>'--with-debug=detect' is ok):
->>>># echo 42 ffff > /proc/asound/card0/codec97#0/mc97#1-1+regs
->>>># echo 42 0 > /proc/asound/card0/codec97#0/mc97#1-1+regs
->>>># echo 54 1 > /proc/asound/card0/codec97#0/mc97#1-1+regs
->>>
->>>Sorry, I did echo those values and read mc97#1-1+regs, but no values
->>>changed.
->>
->>This may mean the patched  vortex_codec_read() works but 
->>vortex_codec_write() is still not working as expected.
->>
->>Do system log show any timeout error of the codec ?
-> 
-> 
-> No messages.
-> 
-> BYtE
-> Philipp
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1427> 
+======================================================================
+Reported By:                xolsonalsa
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1427
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-15-2005 22:45 CEST
+Last Modified:              09-16-2005 14:03 CEST
+======================================================================
+Summary:                    Some of the hardware volume controls have incorrect
+ranges
+Description: 
+line, CD, mic, and aux controls work but have incorrect volume ranges for
+the hardware codec.
+alsa-driver-1.0.10rc1
+snd-intel8x0 driver
+my hardware Asus P4SE m/b, SiS 7012 onboard card, C-Media CMI9738 codec
+my kernel is redhat linux 9, 2.4.20-31.9
+excerpts below are from the output of amixer command, my comments after
+the ***
+-----------------------------
+Simple mixer control 'Master',0
+Limits: Playback 0 - 31 *** (this one is correct)
 
-Add printk to dump the ac97 read/write to system log
+Simple mixer control 'PCM',0 *** (this one is correct, no range, no
+hardware volume control, mute/unmute only)
 
+Simple mixer control 'Line',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
 
-  		VORTEX_CODEC_WRITE);
+Simple mixer control 'CD',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
 
-  	/* Flush Caches. */
-  	hwread(card->mmio, VORTEX_CODEC_IO);
-+	printk(KERN_INFO "vortex_codec_write %d %.2x : 
-%.4x\n",codec->num,addr,data);
-  }
+Simple mixer control 'Mic',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
 
-  static unsigned short vortex_codec_read(ac97_t * codec, unsigned short 
-addr)
-@@ -2567,7 +2556,7 @@
-  		}
-  	} while ((data & VORTEX_CODEC_ADDMASK) !=
-  		 (addr << VORTEX_CODEC_ADDSHIFT));
--
-+	printk(KERN_INFO "vortex_codec_read  %d %.2x : 
-%.4x\n",codec->num,addr,data & VORTEX_CODEC_DATMASK);
-  	/* return data. */
-  	return (u16) (data & VORTEX_CODEC_DATMASK);
-  }
+Simple mixer control 'PC Speaker',0
+Limits: Playback 0 - 15 *** (probably correct, haven't tested)
+
+Simple mixer control 'Aux',0
+Limits: Playback 0 - 31 *** (incorrect, hardware only supports 0 - 15)
+======================================================================
+
+----------------------------------------------------------------------
+ xolsonalsa - 09-16-05 14:03 
+----------------------------------------------------------------------
+I wrote the following patch for my own ac97_codec.c file feel free to use
+it if you wish:
+---
+/root/alsadriver1/alsa-driver-1.0.10rc1.orig/alsa-kernel/pci/ac97/ac97_codec.c
+     2005-08-16 09:05:05.000000000 -0700
++++
+/root/alsadriver1/alsa-driver-1.0.10rc1/alsa-kernel/pci/ac97/ac97_codec.c 
+2005-09-16 04:06:33.000000000 -0700
+@@ -1230,6 +1230,11 @@
+                        return err;
+        }
+        check_volume_resolution(ac97, reg, &lo_max, &hi_max);
++
++       if ((ac97->id == AC97_ID_CM9738) && ((reg == AC97_MIC) || (reg ==
+AC97_LINE) || (reg == AC97_CD) || (reg == AC97_AUX))) {
++               if (lo_max) lo_max = 15;
++               if (hi_max) hi_max = 15;
++       }
+        if (lo_max) {
+                sprintf(name, "%s Volume", pfx);
+                if ((err = snd_ac97_cvol_new(card, name, reg, lo_max,
+hi_max, ac97)) < 0)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-15-05 22:45 xolsonalsa     New Issue                                    
+09-16-05 14:03 xolsonalsa     Note Added: 0006243                          
+======================================================================
+
 
 
 
