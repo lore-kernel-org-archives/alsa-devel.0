@@ -1,13 +1,16 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: problems with snd_au8830 module under mandriva 2005
-Date: Fri, 16 Sep 2005 22:16:25 +0800
-Message-ID: <432AD3B9.8010200@netvigator.com>
-References: <4317CC51.3040709@netvigator.com>	 <200509042134.23916.alien999999999@users.sourceforge.net>	 <1126131309.17399.8.camel@pc-erik.lan>	 <44272.62.59.249.250.1126163238.squirrel@62.59.249.250> <1126668747.6835.11.camel@pc-erik.lan>
+From: Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: Problems with multiple simultaneous ac97 quirks
+Date: Fri, 16 Sep 2005 15:25:44 +0100
+Message-ID: <20050916142544.GA20279@srcf.ucam.org>
+References: <20050915180415.GA24705@srcf.ucam.org> <s5h4q8mm7qi.wl%tiwai@suse.de> <20050915202858.GA5169@srcf.ucam.org> <20050916104137.GA18311@srcf.ucam.org> <20050916123711.GA22825@tuxdriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1126668747.6835.11.camel@pc-erik.lan>
+Received: from vavatch.codon.org.uk (cavan.codon.org.uk [217.147.92.49])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E5D0187
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 16:25:46 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20050916123711.GA22825@tuxdriver.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,152 +20,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik <assie2@zonnet.nl>
-Cc: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  Erik Wrote:
-> ok here it is.
->
-> [root@pc-erik assie]# cat /proc/asound/au8830/codec97#0/ac97#0-0+regs
-> 0:00 = 6940
-> 0:02 = 0202
-> 0:04 = 0707
-> 0:06 = 0007
-> 0:08 = 0000
-> 0:0a = 0006
-> 0:0c = 0007
-> 0:0e = 0040
-> 0:10 = 0707
-> 0:12 = 0707
-> 0:14 = 0707
-> 0:16 = 0707
-> 0:18 = 1d1d
-> 0:1a = 0000
-> 0:1c = 0a0a
-> 0:1e = 0000
-> 0:20 = 2000
-> 0:22 = 000f
-> 0:24 = 0000
-> 0:26 = 800f
-> 0:28 = 0080
-> 0:2a = 0080
-> 0:2c = 0000
-> 0:2e = 0000
-> 0:30 = 0000
-> 0:32 = 0000
-> 0:34 = 0000
-> 0:36 = 0000
-> 0:38 = 0404
-> 0:3a = 0000
-> 0:3c = 0000
-> 0:3e = 0000
-> 0:40 = 0000
-> 0:42 = 0000
-> 0:44 = 0000
-> 0:46 = 0000
-> 0:48 = 0000
-> 0:4a = 0000
-> 0:4c = 0000
-> 0:4e = 0000
-> 0:50 = 0000
-> 0:52 = 0000
-> 0:54 = 0000
-> 0:56 = 0000
-> 0:58 = 0000
-> 0:5a = 0000
-> 0:5c = 0000
-> 0:5e = 0000
-> 0:60 = 0000
-> 0:62 = 0000
-> 0:64 = 0000
-> 0:66 = 0000
-> 0:68 = 0000
-> 0:6a = 0000
-> 0:6c = 0000
-> 0:6e = 000c
-> 0:70 = 0000
-> 0:72 = 0017
-> 0:74 = 0380
-> 0:76 = abba
-> 0:78 = 9380
-> 0:7a = 0000
-> 0:7c = 8384
-> 0:7e = 7608
->
->
->
-> 02:08.0 Class 0401: 12eb:0002 (rev fe)
->         Subsystem: 1092:3001
->         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-> ParErr- Stepping- SERR- FastB2B-
->         Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-> <TAbort- <MAbort- >SERR- <PERR-
->         Latency: 32 (1000ns min, 3000ns max), cache line size 08
->         Interrupt: pin A routed to IRQ 209
->         Region 0: Memory at 00000000fa000000 (32-bit, non-prefetchable)
-> [size=256K]
->         Region 1: I/O ports at b000 [size=8]
->         Region 2: I/O ports at b400 [size=8]
->         Capabilities: [dc] Power Management version 1
->                 Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-> PME(D0-,D1-,D2-,D3hot-,D3cold-)
->                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
->
->
->
-> On Wed, 2005-09-14 at 12:42 +0800, Raymond wrote:
-> > Erik wrote:
-> > > yup i have the first problem
-> > >  1. the ones where if you get 49% it's loud and on 51% quite 
-silently?
-> > >
-> > > but then from 51 to 100% is again soft to loud .
-> > >
-> > > next week i can find time to recompile the whole kernel
-> > >
+On Fri, Sep 16, 2005 at 08:37:13AM -0400, John W. Linville wrote:
 
-Have your try this switch in alsamixer ?
+> I don't suppose you have a list of PCI sub-system IDs that this helps?
 
-Simple mixer control 'Sigmatel Output Bias',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
+Yup:
 
-Do this patch fix your problem ?
+AC97_TUNE_HP_MUTE_LED
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_codec.c?r1=1.189&r2=1.190
+4200    103c:0938
+6120	103c:099c
+6220    103c:0944
+8220    103c:0934
 
-If the above don't work
+All of Those plus the following also want to be added to the list in 
+check_ad1981_hp_jack_sense():
 
- >>> Try the following patch to log the read/write of ac97 and post the
- >>> system log using dmesg. (loading au8830 and alsactl restore)
- >>>
- >>>
- >>> alsa-driver-1.0.9b/alsa-kernel/pci/au88x0/au88x0_core.c
- >>> @@ -2520,6 +2515,7 @@
- >>>     vortex_t *card = (vortex_t *) codec->private_data;
- >>>     unsigned int lifeboat = 0;
- >>>
- >>> +    printk(KERN_INFO "ac97 write %.2x : %.4x\n",addr,data);
- >>>     /* wait for transactions to clear */
- >>>     while (!(hwread(card->mmio, VORTEX_CODEC_CTRL) & 0x100)) {
- >>>         udelay(100);
- >>> @@ -2567,6 +2563,7 @@
- >>>         }
- >>>     } while ((data & VORTEX_CODEC_ADDMASK) !=
- >>>          (addr << VORTEX_CODEC_ADDSHIFT));
- >>> +    printk(KERN_INFO "ac97 read  %.2x : %.4x\n",addr,data &
- >>> VORTEX_CODEC_DATMASK);
- >>>
- >>>     /* return data. */
- >>>     return (u16) (data & VORTEX_CODEC_DATMASK);
- >>>
- >>
+4000/10 0e11:005a
 
+The 6125 wants AC97_TUNE_MUTE_LED - it's an ATI chipset, using the 
+snd-atiixp driver. It's 103c:308b. However, it doesn't need TUNE_HP_ONLY 
+and doesn't need to be added to check_ad1981_hp_jack_sense().
 
+I'd guess that the nx9600 probably needs the same, but I don't have 
+access to one of those to check. The 8230 and 8240 have the same IDs as 
+the 8220, and the 6110 shares with the 6120 (it doesn't actually have a 
+mute LED, but the motherboard is identical). The 6230 ought to be 
+identical to the 6220.
 
-
+I'd guess that some of the consumer range also has these requirements, 
+but I'm afraid I don't have any available to test.
+-- 
+Matthew Garrett | mjg59@srcf.ucam.org
 
 
 -------------------------------------------------------
