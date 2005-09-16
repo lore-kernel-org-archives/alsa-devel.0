@@ -1,100 +1,57 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
-Date: Fri, 16 Sep 2005 05:44:54 +0200
-Message-ID: <8025441c0bddf43dcd911348b95a7756@bugtrack.alsa-project.org>
+From: Horms <horms@debian.org>
+Subject: Re: [Alsa-devel] Problems with Hercules DJ Console and the usb-audio driver
+Date: Fri, 16 Sep 2005 13:17:15 +0900
+Message-ID: <20050916041715.GB18431@verge.net.au>
+References: <Pine.HPX.4.33n.0509151401160.21623-100000@studcom.urz.uni-halle.de> <1126807842.3185.3.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33C39173
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 05:44:54 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <bounce-debian-kernel=glddk-debian-kernel=m.gmane.org@lists.debian.org>
+Content-Disposition: inline
+In-Reply-To: <1126807842.3185.3.camel@mindpipe>
+Resent-Message-ID: <ytNI-.A._HD.KjkKDB@murphy>
+List-Post: <mailto:debian-kernel@lists.debian.org>
+List-Help: <mailto:debian-kernel-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-kernel-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-kernel-request@lists.debian.org?subject=unsubscribe>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Daniel Svensson <nano@nittionio.nu>, debian-kernel@lists.debian.org, Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Sep 15, 2005 at 02:10:41PM -0400, Lee Revell wrote:
+> On Thu, 2005-09-15 at 14:13 +0200, Clemens Ladisch wrote:
+> > Horms wrote:
+> > > On Wed, Sep 14, 2005 at 03:29:13PM +0200, Daniel Svensson wrote:
+> > > > CONFIG_USB_BANDWIDTH is enabled by default in the debian kernel. Could
+> > > > this be changed? According to the alsa developer who helped me debug the
+> > > > problem with my usb soundcard CONFIG_USB_BANDWIDTH should be disabled.
+> > > > The original email is forwarded here:
+> > >
+> > > That sounds fair enough to me, as long there are no objections
+> > > from the rest of the kernel-team.
+> > >
+> > > Clemens, could you provide a little more information on
+> > > the problems that CONFIG_USB_BANDWIDTH causes?
+> > 
+> > The code that implements it computes wrong values for the bandwidth
+> > utilization.  This doesn't seem to matter much for full speed stereo
+> > devices, but we have several bug reports for multichannel and/or high
+> > speed devices where usb_submit_urb() incorrectly returns -ENOSPC
+> > errors.
+> > 
+> > The comment above the usb_check_bandwidth() function in hcd.c lists
+> > several of the known bugs.
+> > 
+> > Perhaps CONFIG_USB_BANDWIDTH should have been marked BROKEN instead of
+> > just EXPERIMENTAL.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
-======================================================================
-Reported By:                philneves
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1337
-Category:                   ISA - sb16/sbawe
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10, and Redhat 7.3
-Kernel Version:             2.4 series.
-======================================================================
-Date Submitted:             08-15-2005 03:20 CEST
-Last Modified:              09-16-2005 05:44 CEST
-======================================================================
-Summary:                    AWE 32/64 driver crashes when using the skype
-program.
-Description: 
-This is a serious bug with the sb16/sbawe driver. It seems to crash when
-running the skype program. Problem can be reproduced on a regular basis.
-Although frequency of occurence is random. Once the driver crashes it
-disables all sound on my system and I must restart the computer to get the
-sound back. Reloading the driver doesn't work. Problem occurs on all
-versions of alsa and all versions of the 2.4 kernel. 
+Thanks for the clarification.
 
+> Has this been reported upstream?  Possibly the USB maintainers don't
+> know that this is causing real problems for users.
 
+That would be a good idea if it hasn't been done,
+but I know nought about this sistuation, so my
+comments are close to worthless.
 
-
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 09-11-05 04:18 
-----------------------------------------------------------------------
-If you reboot, then do "alsactl store", then reproduce the crash, does
-running "alsactl restore" give you back your sound?
-
-----------------------------------------------------------------------
- philneves - 09-16-05 05:44 
-----------------------------------------------------------------------
-I tried the alsactl store/restore twice. It didn't give me the sound back.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-15-05 03:20 philneves      New Issue                                    
-08-15-05 03:20 philneves      Distribution              => Slackware 10, and
-Redhat 7.3
-08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
-08-24-05 07:09 philneves      Note Added: 0005924                          
-09-09-05 02:34 philneves      Note Edited: 0005924                         
-09-09-05 02:42 philneves      Note Added: 0006086                          
-09-09-05 04:12 rlrevell       Note Added: 0006089                          
-09-09-05 12:31 tiwai          Note Added: 0006094                          
-09-11-05 01:36 philneves      Note Added: 0006131                          
-09-11-05 01:49 philneves      Note Added: 0006132                          
-09-11-05 03:08 philneves      Note Added: 0006134                          
-09-11-05 03:24 philneves      Note Added: 0006135                          
-09-11-05 03:32 philneves      Note Added: 0006136                          
-09-11-05 04:18 rlrevell       Note Added: 0006137                          
-09-16-05 05:44 philneves      Note Added: 0006241                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. 
-Download it for free - -and be entered to win a 42" plasma tv or your very
-own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+-- 
+Horms
