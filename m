@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001428]: My Audigy 1 Player [SB0090] card don't detect correct by alsa utils
-Date: Fri, 16 Sep 2005 23:22:21 +0200
-Message-ID: <ca1b56a49568f2d8b0095b3e491b13fa@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@gmail.com>
+Subject: Re: Re: au88x0 modem
+Date: Fri, 16 Sep 2005 23:34:41 +0200
+Message-ID: <1126906481.12111.7.camel@localhost.localdomain>
+References: <4325AEA3.1090602@netvigator.com> <20050913000909.GB19713@tecr>
+	 <20050913085552.GA2655@titan.lahn.de>
+	 <20050913173529.GD31269@sashak.softier1.local>
+	 <20050913174930.GA5816@titan.lahn.de> <4327DA14.3040205@netvigator.com>
+	 <20050914205608.GD14657@sashak.softier1.local>
+	 <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de>
+	 <20050915143533.GB23218@sashak.softier1.local>
+	 <20050915204345.GC27700@sashak.softier1.local>
+	 <432AD226.6010706@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E69E14E
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 23:22:21 +0200 (MEST)
+In-Reply-To: <432AD226.6010706@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +25,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1428> 
-======================================================================
-Reported By:                rusxakep
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1428
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             09-16-2005 18:56 CEST
-Last Modified:              09-16-2005 23:22 CEST
-======================================================================
-Summary:                    My Audigy 1 Player [SB0090] card don't detect
-correct by alsa utils
-Description: 
-On my soundcard (lspci -vvvn) .subsystem is 0x00511102
-======================================================================
+> The easy way is to create a PCM device "modem" on au8810
+> 
+> 
+> DMA -> FIFO -> SRC -> MIXIN --------> MIXOUT -> MC97(Modem Out)
+>                          |
+> 		        +-----------> MIXOUT -> EQ -> AC97(Audio Left)
+> 
+>     				Modem Speaker  On or Off
+> 
+>                                    +-> MIXOUT -> EQ -> AC97(Audio Right)
+>                                    |
+> DMA <- FIFO <- SRC <- MIXOUT <- MIXIN <-------- MC97(Modem IN)
+> 
+> 
+> or
+> 
+> 
+> DMA -> FIFO -> SRC -> MC97(modem) (Playback)
+> 
+> DMA <- FIFO <- SRC <- MC97(modem) (Capture)
+> 
 
-----------------------------------------------------------------------
- rlrevell - 09-16-05 23:22 
-----------------------------------------------------------------------
-Fixed in ALSA 1.0.10-rc1.  The easiest fix is to upgrade to kernel 2.6.13.
+Remove the samplerate converter, it does not make any sense on a modem.
+You will only loose signal precision with the samplerate converter
+anyway, and there are very few of them. 
+A direct route from the fifo to the modem codec will do it and the modem
+signal device will run at the codec native samplerate without any
+precision loss.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-16-05 18:56 rusxakep       New Issue                                    
-09-16-05 18:56 rusxakep       Distribution              => Gentoo          
-09-16-05 18:56 rusxakep       Kernel Version            => 2.6.12          
-09-16-05 18:56 rusxakep       Issue Monitored: rusxakep                    
-09-16-05 23:22 rlrevell       Note Added: 0006247                          
-======================================================================
+> 
+> What is the difference between modem application and audio application ?
+
+Nothing. The only modem extra functionality is the ability to switch the
+modem line off/on hook. It just sends and captures QAM modulated
+signals.
+
+> Do the modem application open two PCM streams (one for playback and the 
+> other for capture )?
+
+Yes, it should be full duplex. This will require 2 DMA's.
+
+> Where is the class SND_PCM_CLASS_MODEM specificed in the driver ?
+
+At least i did not.
+
+Best Regards,
+Manuel Jander
 
 
 
