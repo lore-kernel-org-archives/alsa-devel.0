@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001428]: My Audigy 1 Player [SB0090] card don't detect correct by alsa utils
-Date: Fri, 16 Sep 2005 23:45:45 +0200
-Message-ID: <93b51c33a44a166246367c06838aafc1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
+Date: Sat, 17 Sep 2005 00:54:27 +0200
+Message-ID: <6af24d0e7c3172a449d501520cc49e7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B12D151
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 23:45:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D99E5152
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 00:54:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1428> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
 ======================================================================
-Reported By:                rusxakep
-Assigned To:                rlrevell
+Reported By:                crimsunkg
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1428
-Category:                   PCI - emu10k1
+Issue ID:                   1429
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.12
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-8-686
 ======================================================================
-Date Submitted:             09-16-2005 18:56 CEST
-Last Modified:              09-16-2005 23:45 CEST
+Date Submitted:             09-17-2005 00:54 CEST
+Last Modified:              09-17-2005 00:54 CEST
 ======================================================================
-Summary:                    My Audigy 1 Player [SB0090] card don't detect
-correct by alsa utils
+Summary:                    hda_codec: Unknown model for ALC880
 Description: 
-On my soundcard (lspci -vvvn) .subsystem is 0x00511102
+Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
+
+Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
+
+Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
+hda_codec does not recognize the model with the ALC880 codec
+(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
+
+''lspci -nvv'' output is at
+http://bugzilla.ubuntu.com/attachment.cgi?id=3848
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 09-16-05 23:22 
-----------------------------------------------------------------------
-Fixed in ALSA 1.0.10-rc1.  The easiest fix is to upgrade to kernel 2.6.13.
-
-----------------------------------------------------------------------
- rlrevell - 09-16-05 23:45 
-----------------------------------------------------------------------
-Fixed in 1.0.10-rc1 and kernel 2.6.13
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-16-05 18:56 rusxakep       New Issue                                    
-09-16-05 18:56 rusxakep       Distribution              => Gentoo          
-09-16-05 18:56 rusxakep       Kernel Version            => 2.6.12          
-09-16-05 18:56 rusxakep       Issue Monitored: rusxakep                    
-09-16-05 23:22 rlrevell       Note Added: 0006247                          
-09-16-05 23:45 rlrevell       Status                   new => resolved     
-09-16-05 23:45 rlrevell       Resolution               open => fixed       
-09-16-05 23:45 rlrevell       Assigned To               => rlrevell        
-09-16-05 23:45 rlrevell       Note Added: 0006248                          
+09-17-05 00:54 crimsunkg      New Issue                                    
+09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
+09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
 ======================================================================
 
 
