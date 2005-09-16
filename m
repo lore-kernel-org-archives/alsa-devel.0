@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Fri, 16 Sep 2005 05:14:01 +0200
-Message-ID: <18f6de7cd67942949264964c07f6d296@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001337]: AWE 32/64 driver crashes when using the skype program.
+Date: Fri, 16 Sep 2005 05:44:54 +0200
+Message-ID: <8025441c0bddf43dcd911348b95a7756@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32C3D173
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 05:14:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33C39173
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 05:44:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,143 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1380> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1337> 
 ======================================================================
-Reported By:                Varanger
-Assigned To:                tiwai
+Reported By:                philneves
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1380
-Category:                   PCI - hda-intel
+Issue ID:                   1337
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
-Kernel Version:             Linux 2.6.11-1-686-smp
+Status:                     new
+Distribution:               Slackware 10, and Redhat 7.3
+Kernel Version:             2.4 series.
 ======================================================================
-Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              09-16-2005 05:14 CEST
+Date Submitted:             08-15-2005 03:20 CEST
+Last Modified:              09-16-2005 05:44 CEST
 ======================================================================
-Summary:                    Scratchy Intel HDA
+Summary:                    AWE 32/64 driver crashes when using the skype
+program.
 Description: 
-Hello.
+This is a serious bug with the sb16/sbawe driver. It seems to crash when
+running the skype program. Problem can be reproduced on a regular basis.
+Although frequency of occurence is random. Once the driver crashes it
+disables all sound on my system and I must restart the computer to get the
+sound back. Reloading the driver doesn't work. Problem occurs on all
+versions of alsa and all versions of the 2.4 kernel. 
 
-I am getting very scratchy audio in my Intel HDA card besides the sound is
-very low.
 
-lspci output is:  
 
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
 
-Reading every article I could have found on the net regarding this
-card, I discovered that i needed snd-azx (ALSA 1.0.8 ) or
-snd-hda-intel modules (ALSA 1.0.9rc* or later).
 
-I have downloaded every sources from 1.0.8 up to 1.0.10rc1 (including
-1.0.9 release candidates) from http://www.alsa-project.org, then built and
-installed them.
-
-In all those versions, I have followed this steps:
-alsa-driver : ./configure --with-oss=yes --with-cards=hda-intel && make &&
-make install
-library / oss-lib / utils : ./configure && make && make install
-
-I've looked every on the net and found that I could use position_fix=1
-or position_fix=2 to help me  but no good either.
-
-I've tried in Ubuntu, Kubuntu, Debian, even Mandriva 2005 LE and
-Fedora Core 4 (using the modules from the kernel) and it's the same
-problem in all of them.
-
-The card came with the mainboard Intel 915G (D915GEV or 915GEV)  
-
-more info about my soundcard:
-
-Running: "lspci -v" 
-
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e200
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at ff43c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] #10 [0091]
-
-/proc/sound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Jul  7 2005 for kernel 2.6.10-5-686-smp (SMP).
-
-/proc/asound/devices
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Thanks for the help,
-Varanger
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-16-05 05:06 
+ rlrevell - 09-11-05 04:18 
 ----------------------------------------------------------------------
-What is "Audio Device" set to in the XMMS ALSA configuration?  It should be
-"default".  Also try toggling "MMAP mode" (on the Advanced Settings tab).
+If you reboot, then do "alsactl store", then reproduce the crash, does
+running "alsactl restore" give you back your sound?
 
 ----------------------------------------------------------------------
- chrome - 09-16-05 05:14 
+ philneves - 09-16-05 05:44 
 ----------------------------------------------------------------------
-It is set to default. Toggling MMAP mode has no effect.
-
-I grabbed the latest CVS and compiled it with 'cvscompile' then did a make
-install. After a reboot, I confirmed the new version of Alsa:
-
-[root@vaio ~]# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1.
-Compiled on Sep 16 2005 for kernel 2.6.12-1.1447_FC4.
-
-I get the same results as above with the default settings.
-
-I then tried it with the following:
-
-[root@vaio ~]# rmmod snd_hda_intel
-[root@vaio ~]# modprobe snd_hda_intel position_fix=0
-[root@vaio ~]# rmmod snd_hda_intel
-[root@vaio ~]# modprobe snd_hda_intel position_fix=1
-[root@vaio ~]# rmmod snd_hda_intel
-[root@vaio ~]# modprobe snd_hda_intel position_fix=2
-[root@vaio ~]# rmmod snd_hda_intel
-[root@vaio ~]# modprobe snd_hda_intel position_fix=3
-
-None of these helped with the current CVS drivers... any other ideas?
+I tried the alsactl store/restore twice. It didn't give me the sound back.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 20:07 Varanger       New Issue                                    
-08-30-05 20:07 Varanger       Distribution              => Ubuntu 5.04 "Hoary
-Hedgehog"
-08-30-05 20:07 Varanger       Kernel Version            => Linux
-2.6.11-1-686-smp
-09-08-05 09:27 cventers       Note Added: 0006070                          
-09-12-05 19:02 mico           Note Added: 0006149                          
-09-12-05 19:04 mico           Note Edited: 0006149                         
-09-13-05 18:26 tiwai          Note Added: 0006154                          
-09-15-05 19:19 Varanger       Note Added: 0006218                          
-09-16-05 03:35 chrome         Note Added: 0006236                          
-09-16-05 04:03 rlrevell       Note Added: 0006237                          
-09-16-05 04:49 chrome         Note Added: 0006238                          
-09-16-05 05:06 rlrevell       Note Added: 0006239                          
-09-16-05 05:14 chrome         Note Added: 0006240                          
+08-15-05 03:20 philneves      New Issue                                    
+08-15-05 03:20 philneves      Distribution              => Slackware 10, and
+Redhat 7.3
+08-15-05 03:20 philneves      Kernel Version            => 2.4 series.     
+08-24-05 07:09 philneves      Note Added: 0005924                          
+09-09-05 02:34 philneves      Note Edited: 0005924                         
+09-09-05 02:42 philneves      Note Added: 0006086                          
+09-09-05 04:12 rlrevell       Note Added: 0006089                          
+09-09-05 12:31 tiwai          Note Added: 0006094                          
+09-11-05 01:36 philneves      Note Added: 0006131                          
+09-11-05 01:49 philneves      Note Added: 0006132                          
+09-11-05 03:08 philneves      Note Added: 0006134                          
+09-11-05 03:24 philneves      Note Added: 0006135                          
+09-11-05 03:32 philneves      Note Added: 0006136                          
+09-11-05 04:18 rlrevell       Note Added: 0006137                          
+09-16-05 05:44 philneves      Note Added: 0006241                          
 ======================================================================
 
 
