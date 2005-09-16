@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001380]: Scratchy Intel HDA
-Date: Fri, 16 Sep 2005 03:35:06 +0200
-Message-ID: <c2660a55ce27328add710a5148810214@bugtrack.alsa-project.org>
+Date: Fri, 16 Sep 2005 04:03:10 +0200
+Message-ID: <54f0ae568b0aeb3098271c1122deba10@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4519A165
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 03:35:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2857B16C
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2005 04:03:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.04 "Hoary Hedgehog"
 Kernel Version:             Linux 2.6.11-1-686-smp
 ======================================================================
 Date Submitted:             08-30-2005 20:07 CEST
-Last Modified:              09-16-2005 03:35 CEST
+Last Modified:              09-16-2005 04:03 CEST
 ======================================================================
 Summary:                    Scratchy Intel HDA
 Description: 
@@ -109,20 +109,6 @@ card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
 Thanks for the help,
 Varanger
 ======================================================================
-
-----------------------------------------------------------------------
- Varanger - 09-15-05 19:19 
-----------------------------------------------------------------------
-Should I do that with:
-
-- Alsa Driver 1.09b
-- Alsa Driver 1.10rc1
-- Alsa Driver CVS (where do I get the tarball??)
-
-I've done the dxs_support=2 with 1.09b and nothing happens. I got the same
-scratchy audio.
-
-Thanks for your help!
 
 ----------------------------------------------------------------------
  chrome - 09-16-05 03:35 
@@ -345,6 +331,32 @@ VE (LOM) Ethernet Controller Mobile (rev 03)
         I/O ports at 2000 [size=64]
         Capabilities: [dc] Power Management version 2
 
+----------------------------------------------------------------------
+ rlrevell - 09-16-05 04:03 
+----------------------------------------------------------------------
+I think tiwai was mistaken about the dxs_support parameter.  This only
+applies to the via82xx driver, not intel-hda.  So you only need to test
+position_fix=x where x is 0, 1, 2, and 3.
+
+First, try ALSA CVS or ALSA 1.0.10-rc1.  There have been many bugs fixed
+since 1.0.9-rc2.
+
+Then, if it still doesn't work, to verify that it's not a modutils bug,
+explicitly do:
+
+rmmod snd-intel-hda
+modprobe snd-intel-hda position_fix=0
+
+Then test the sound and repeat with position_fix=1, 2, and 3.
+
+Also, to narrow down the problem, do all testing with XMMS, and switch
+back and forth between the ALSA and OSS driver.  Make sure that XMMS is
+using the device "default".
+
+If your test results were using Rhythmbox+ALSA and XMMS+OSS to play the
+same MP3, then it looks like Rhythmbox might be using "hw:x,x" which is
+wrong, as it's reporting the sample rate as 48000 not 44100.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -359,6 +371,7 @@ Hedgehog"
 09-13-05 18:26 tiwai          Note Added: 0006154                          
 09-15-05 19:19 Varanger       Note Added: 0006218                          
 09-16-05 03:35 chrome         Note Added: 0006236                          
+09-16-05 04:03 rlrevell       Note Added: 0006237                          
 ======================================================================
 
 
