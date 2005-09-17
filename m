@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 17 Sep 2005 20:11:44 +0200
-Message-ID: <9ef90210437f24d12d9b2d2bb92dabf8@bugtrack.alsa-project.org>
+Date: Sat, 17 Sep 2005 20:10:58 +0200
+Message-ID: <1e216365419eb0313a247b116746211f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CD41166
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 20:11:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8B08165
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 20:10:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-17-2005 20:11 CEST
+Last Modified:              09-17-2005 20:10 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -56,6 +56,11 @@ has duplicate       0001228 Skype Does not work with aoss
 ======================================================================
 
 ----------------------------------------------------------------------
+ pzad - 09-17-05 19:55 
+----------------------------------------------------------------------
+Second patch is not good. This is only hack, it is not correct sollution.
+
+----------------------------------------------------------------------
  rlrevell - 09-17-05 20:10 
 ----------------------------------------------------------------------
 OK.  You did remove your .asoundrc right?
@@ -65,11 +70,6 @@ client.  Skype is hard to debug.
 
 Maybe you can run skype under gdb and get a backtrace (thread apply all
 bt).
-
-----------------------------------------------------------------------
- rlrevell - 09-17-05 20:11 
-----------------------------------------------------------------------
-pzad are you any closer to finding the real bug (s)?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -134,7 +134,6 @@ Date Modified  Username       Field                    Change
 09-17-05 19:50 rlrevell       Note Added: 0006255                          
 09-17-05 19:55 pzad           Note Added: 0006256                          
 09-17-05 20:10 rlrevell       Note Added: 0006257                          
-09-17-05 20:11 rlrevell       Note Added: 0006258                          
 ======================================================================
 
 
