@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 17 Sep 2005 20:10:58 +0200
-Message-ID: <1e216365419eb0313a247b116746211f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Sat, 17 Sep 2005 20:13:54 +0200
+Message-ID: <48c90de599c9a00bfa3ee62b60fdc74c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8B08165
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 20:10:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BD53166
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 20:13:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,116 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
 ======================================================================
-Reported By:                Hetfield
-Assigned To:                
+Reported By:                Quietti
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
+Issue ID:                   306
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-17-2005 20:10 CEST
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              09-17-2005 20:13 CEST
 ======================================================================
-Summary:                    artsd-like style
+Summary:                    compiles, but no sound comes out
 Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001228 Skype Does not work with aoss
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
+
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 09-17-05 19:55 
+ Quietti - 08-31-05 11:44 
 ----------------------------------------------------------------------
-Second patch is not good. This is only hack, it is not correct sollution.
+Kernel 2.6.13 shows some major improvements: 
+Almost everything ALSA works on Burgundy as it should! :-) 
+Whoever worked on this since 2.6.11 deserves a big hug!
+
+master volume:    works as expected.
+headphone volume: seems to control the internal stereo speakers instead.
+Oops!
+headphone detect: (what is this supposed to do?)
+analog CD volume: works as expected.
+line input:       (no analog signal to feed the input jack and test it)
+microphone input: (feedbacks if I rise it high enough, so I'd assume it
+works)
+mono PC speaker:  seems to control the stereo headphones instead. Oops!
+auto-mute:        (what is this supposed to do?)
+console beep:     works as expected.
+
+On a general note, I cannot seem to completely silence the internal stereo
+speakers or the headphones, other than by muting the master volume.
+
+Still, this is already a *major* improvement over previous ALSA releases:
+I finally get some sound on this iMac CRT's Burgundy chip! Many thanks!
+:-)
 
 ----------------------------------------------------------------------
- rlrevell - 09-17-05 20:10 
+ Quietti - 09-17-05 20:13 
 ----------------------------------------------------------------------
-OK.  You did remove your .asoundrc right?
-
-My point is that you need to reproduce this with some open source VOIP
-client.  Skype is hard to debug.
-
-Maybe you can run skype under gdb and get a backtrace (thread apply all
-bt).
+The Debian PPC community is compiling a list of current ALSA status for
+each PowerMac chipset at http://wiki.debian.net/?PowerpcSoundcards
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-07-04-05 11:49 pzad           File Added: aoss.patch                       
-07-04-05 11:53 pzad           Note Added: 0005384                          
-07-04-05 14:02 Hetfield       Note Added: 0005385                          
-07-08-05 12:16 tiwai          Note Added: 0005417                          
-07-08-05 12:27 Hetfield       Note Added: 0005418                          
-07-17-05 10:25 Hetfield       Note Added: 0005503                          
-07-17-05 10:29 rlrevell       Note Added: 0005504                          
-07-17-05 10:46 rlrevell       Note Added: 0005505                          
-07-17-05 11:10 Hetfield       Note Added: 0005506                          
-07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
-07-17-05 19:41 rlrevell       Note Added: 0005508                          
-07-17-05 19:50 Hetfield       Note Added: 0005509                          
-07-17-05 19:51 rlrevell       Note Added: 0005510                          
-07-17-05 20:21 Hetfield       Note Added: 0005511                          
-07-17-05 21:14 rlrevell       Note Added: 0005512                          
-07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
-07-17-05 21:22 Hetfield       File Added: log2                             
-07-17-05 21:23 Hetfield       Note Added: 0005513                          
-07-17-05 22:21 rlrevell       Note Added: 0005514                          
-07-17-05 23:28 Hetfield       Note Added: 0005515                          
-07-17-05 23:43 rlrevell       Note Added: 0005516                          
-07-18-05 03:33 rlrevell       Note Added: 0005517                          
-07-18-05 06:04 rlrevell       Note Added: 0005518                          
-07-18-05 07:33 rlrevell       Note Added: 0005519                          
-07-18-05 09:23 Hetfield       Note Added: 0005520                          
-07-18-05 09:24 Hetfield       File Added: asoundrc                         
-07-18-05 22:08 rlrevell       Note Added: 0005524                          
-07-21-05 19:55 Hetfield       Note Added: 0005540                          
-07-21-05 19:56 Hetfield       Note Added: 0005541                          
-07-24-05 09:55 Hetfield       Note Added: 0005556                          
-07-24-05 19:10 rlrevell       Note Added: 0005558                          
-07-28-05 22:40 rlrevell       Note Added: 0005578                          
-07-29-05 17:43 tiwai          Note Added: 0005579                          
-08-01-05 10:20 Hetfield       Note Added: 0005595                          
-08-10-05 00:49 rlrevell       Relationship added       has duplicate 0001228
-08-28-05 15:56 Hetfield       Note Added: 0005963                          
-09-02-05 19:57 tiwai          Note Added: 0006020                          
-09-02-05 20:22 Hetfield       Note Added: 0006021                          
-09-02-05 20:24 tiwai          Note Added: 0006022                          
-09-02-05 20:26 Hetfield       Note Added: 0006023                          
-09-02-05 20:31 Hetfield       Note Added: 0006024                          
-09-17-05 14:05 Hetfield       Note Added: 0006249                          
-09-17-05 14:51 Hetfield       Note Added: 0006250                          
-09-17-05 19:43 rlrevell       Note Added: 0006253                          
-09-17-05 19:46 Hetfield       Note Added: 0006254                          
-09-17-05 19:50 rlrevell       Note Added: 0006255                          
-09-17-05 19:55 pzad           Note Added: 0006256                          
-09-17-05 20:10 rlrevell       Note Added: 0006257                          
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
+02-04-05 09:22 Quietti        Note Added: 0003496                          
+02-04-05 13:04 tiwai          Note Added: 0003499                          
+04-02-05 13:33 Quietti        Note Added: 0004297                          
+08-06-05 20:24 Quietti        Note Added: 0005682                          
+08-06-05 20:31 rlrevell       Note Added: 0005683                          
+08-06-05 20:32 rlrevell       Note Added: 0005684                          
+08-06-05 20:53 rlrevell       Note Added: 0005685                          
+08-06-05 21:17 rlrevell       Note Added: 0005686                          
+08-06-05 23:54 rlrevell       Note Added: 0005687                          
+08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
+08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
+08-07-05 10:03 pochini        Note Added: 0005689                          
+08-07-05 10:31 Quietti        Note Added: 0005690                          
+08-07-05 10:46 rlrevell       Note Added: 0005691                          
+08-07-05 11:36 Quietti        Note Added: 0005692                          
+08-07-05 11:44 Quietti        Note Added: 0005693                          
+08-07-05 20:27 rlrevell       Note Added: 0005697                          
+08-08-05 14:53 Quietti        Note Added: 0005708                          
+08-08-05 19:42 rlrevell       Note Added: 0005711                          
+08-11-05 13:09 Johannes Berg  Note Added: 0005755                          
+08-11-05 13:09 Johannes Berg  Issue Monitored: Johannes Berg                    
+08-31-05 11:44 Quietti        Note Added: 0005986                          
+09-17-05 20:13 Quietti        Note Added: 0006259                          
 ======================================================================
 
 
