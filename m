@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 17 Sep 2005 14:51:45 +0200
-Message-ID: <bb59e958369528700589ea81801fb2a7@bugtrack.alsa-project.org>
+From: "Einladung" <montanadelmar@zona-andina.net>
+Subject: zum Gratisurlaub
+Date: Sat, 17 Sep 2005 14:55:51 +0200
+Message-ID: <E1EGcHH-0001xR-9k@mail.sourceforge.net>
+Reply-To: "Einladung" <remove_de_montana@zona-andina.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="= Multipart Boundary 0917051455"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00B1414F
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 14:51:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,130 +16,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multipart MIME message.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
-======================================================================
-Reported By:                Hetfield
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-17-2005 14:51 CEST
-======================================================================
-Summary:                    artsd-like style
-Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+--= Multipart Boundary 0917051455
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
-Relazioni           ID      Riassunto
-----------------------------------------------------------------------
-é duplicata da      0001228 Skype Does not work with aoss
-======================================================================
+Ohne jede Verpflichtung k=F6nnen Sie=20
+an unserer Verlosung teilnehmen und einen herrlichen
+Gratisurlaub in Spanien=20
+gewinnen. Das einzige, was Sie tun m=FCssen, ist, sich anzumelden.=20
+Sie brauchen uns nur Ihren Namen, den Wohnort, die Postleitzahl und das L=
+and
+anzugeben. Kein Adresse, keine Telefonnummer, nichts weiter=20
+Der Hauptgewinn ist ein komplett eingerichtetes Apartment
+in Monta=F1a del Mar / Spanien w=E4hrend einer Woche.
+Ausserdem gibt es mehrere "Trostpreise"=20
+zur Verlosung anmelden
 
-----------------------------------------------------------------------
- Hetfield - 09-17-05 14:05 
-----------------------------------------------------------------------
-i'm sorry, but i can't use cvs.
+--= Multipart Boundary 0917051455
+Content-Type: text/html;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-sourceforge one gives me errors about alsa_user not existing.
-i tried some snapshots, but some where corrupted, some (today's)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Verlosung Gratisferien</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
+1">
+<SCRIPT language=3DJavaScript>
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init=3D=3Dtrue) with (navigator) {if ((appName=3D=3D"Netscape")&&(p=
+arseInt(appVersion)=3D=3D4)) {
+    document.MM_pgW=3DinnerWidth; document.MM_pgH=3DinnerHeight; onresize=
+=3DMM_reloadPage; }}
+  else if (innerWidth!=3Ddocument.MM_pgW || innerHeight!=3Ddocument.MM_pg=
+H) location.reload();
+}
+MM_reloadPage(true);
+// -->
+</SCRIPT>
 
-have broken files, all files are suffixed by ",v"
+<STYLE type=3Dtext/css>
+<!--
+.Estilo1 {font-size: 14pt}
+.Estilo2 {font-size: 12px}
+.Estilo3 {font-size: 14px}
+body {
+	background-color: #000066;
+}
+.Estilo4 {
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.Estilo5 {
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.Estilo6 {color: #FFFFFF}
+.Estilo7 {font-size: 12px; color: #FFFFFF; }
+-->
+</STYLE>
 
-can you provide me a patch against 1.0.9x or 1.0.10rc1?
+<META content=3D"MSHTML 6.00.2800.1515" name=3DGENERATOR></HEAD>
+<BODY text=3D#000000>
+<DIV id=3DLayer1=20
+style=3D"Z-INDEX: 1; LEFT: 0px; WIDTH: 200px; POSITION: absolute; TOP: 0p=
+x; HEIGHT: 115px"><IMG=20
+height=3D864 src=3D"http://www.dominicana.com.do/fotos/playas/atardecer-0=
+1.jpg"=20
+width=3D775></DIV>
+<DIV id=3DLayer1=20
+style=3D"Z-INDEX: 4; LEFT: 19px; WIDTH: 510px; POSITION: absolute; TOP: 1=
+3px; HEIGHT: 115px">
+<P class=3D"Estilo2 Estilo4"><FONT face=3DArial>Ohne jede Verpflichtung k=
+=F6nnen Sie=20
+<BR>an unserer Verlosung teilnehmen und einen herrlichen</FONT></P>
+<P class=3DEstilo6><STRONG><SPAN style=3D"LETTER-SPACING: -2pt"><FONT fac=
+e=3DArial=20
+size=3D7>Gratisurlaub in Spanien </FONT></SPAN></STRONG></P>
+<P class=3DEstilo5><FONT face=3DArial>gewinnen. Das einzige, was Sie tun =
+m=FCssen,=20
+ist, sich anzumelden. <BR>Sie brauchen uns nur Ihren Namen, den Wohnort, =
+die=20
+Postleitzahl und das Land<BR>anzugeben. Kein Adresse, keine Telefonnummer=
+,=20
+nichts weiter </FONT></P>
+<P class=3DEstilo5><FONT face=3DArial>Der Hauptgewinn ist ein komplett=20
+eingerichtetes Apartment<BR>in Monta=F1a del Mar / Spanien w=E4hrend eine=
+r=20
+Woche.<BR>Ausserdem gibt es mehrere "Trostpreise" </FONT></P>
+<P class=3DEstilo5><FONT face=3DArial><SPAN class=3DEstilo3><A class=3DEs=
+tilo1=20
+href=3D"mailto:info_montana@hotmail.com">zur Verlosung=20
+anmelden</A></SPAN></FONT></P>
+<P class=3DEstilo6><STRONG><FONT face=3DArial><SPAN=20
+class=3DEstilo3></SPAN></FONT></STRONG></P></DIV>
+<DIV id=3DLayer3=20
+style=3D"Z-INDEX: 5; LEFT: 371px; WIDTH: 445px; POSITION: absolute; TOP: =
+10px; HEIGHT: 240px">
+<P class=3DEstilo2><FONT face=3DArial><BR><A=20
+href=3D"reservar_de.htm"><BR></A></FONT></P></DIV></BODY></HTML>
 
-or give me a snapshot working link for alsalib and alsa-oss.
-
-----------------------------------------------------------------------
- Hetfield - 09-17-05 14:51 
-----------------------------------------------------------------------
-oops!
-
-finally i got a cvs version. today's one.
-compiled libs and aoss.
-
-now kiax and gizmo have same problem, while skype crashes with SEG fault
-when accessing to audio card.
-
-bug is not fixed, seems the initialization problem is back!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-07-04-05 11:49 pzad           File Added: aoss.patch                       
-07-04-05 11:53 pzad           Note Added: 0005384                          
-07-04-05 14:02 Hetfield       Note Added: 0005385                          
-07-08-05 12:16 tiwai          Note Added: 0005417                          
-07-08-05 12:27 Hetfield       Note Added: 0005418                          
-07-17-05 10:25 Hetfield       Note Added: 0005503                          
-07-17-05 10:29 rlrevell       Note Added: 0005504                          
-07-17-05 10:46 rlrevell       Note Added: 0005505                          
-07-17-05 11:10 Hetfield       Note Added: 0005506                          
-07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
-07-17-05 19:41 rlrevell       Note Added: 0005508                          
-07-17-05 19:50 Hetfield       Note Added: 0005509                          
-07-17-05 19:51 rlrevell       Note Added: 0005510                          
-07-17-05 20:21 Hetfield       Note Added: 0005511                          
-07-17-05 21:14 rlrevell       Note Added: 0005512                          
-07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
-07-17-05 21:22 Hetfield       File Added: log2                             
-07-17-05 21:23 Hetfield       Note Added: 0005513                          
-07-17-05 22:21 rlrevell       Note Added: 0005514                          
-07-17-05 23:28 Hetfield       Note Added: 0005515                          
-07-17-05 23:43 rlrevell       Note Added: 0005516                          
-07-18-05 03:33 rlrevell       Note Added: 0005517                          
-07-18-05 06:04 rlrevell       Note Added: 0005518                          
-07-18-05 07:33 rlrevell       Note Added: 0005519                          
-07-18-05 09:23 Hetfield       Note Added: 0005520                          
-07-18-05 09:24 Hetfield       File Added: asoundrc                         
-07-18-05 22:08 rlrevell       Note Added: 0005524                          
-07-21-05 19:55 Hetfield       Note Added: 0005540                          
-07-21-05 19:56 Hetfield       Note Added: 0005541                          
-07-24-05 09:55 Hetfield       Note Added: 0005556                          
-07-24-05 19:10 rlrevell       Note Added: 0005558                          
-07-28-05 22:40 rlrevell       Note Added: 0005578                          
-07-29-05 17:43 tiwai          Note Added: 0005579                          
-08-01-05 10:20 Hetfield       Note Added: 0005595                          
-08-10-05 00:49 rlrevell       Relationship added       has duplicate 0001228
-08-28-05 15:56 Hetfield       Note Added: 0005963                          
-09-02-05 19:57 tiwai          Note Added: 0006020                          
-09-02-05 20:22 Hetfield       Note Added: 0006021                          
-09-02-05 20:24 tiwai          Note Added: 0006022                          
-09-02-05 20:26 Hetfield       Note Added: 0006023                          
-09-02-05 20:31 Hetfield       Note Added: 0006024                          
-09-17-05 14:05 Hetfield       Note Added: 0006249                          
-09-17-05 14:51 Hetfield       Note Added: 0006250                          
-======================================================================
-
+--= Multipart Boundary 0917051455--
 
 
 
