@@ -1,14 +1,14 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: [PATCH] AZT3328 driver update (#2)
-Date: Sat, 17 Sep 2005 12:42:48 +0200
-Message-ID: <20050917104248.GA12380@rhlx01.fht-esslingen.de>
-References: <20050916234828.GA23429@rhlx01.fht-esslingen.de> <1126918534.4986.110.camel@mindpipe>
-Reply-To: andi@lisas.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001432]: Add switch to use the headphone plug as an independent channel
+Date: Sat, 17 Sep 2005 13:17:26 +0200
+Message-ID: <d2ba39c3f871f6c92e7b1f650af73fef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1126918534.4986.110.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26A9D155
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 13:17:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,32 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: andi@lisas.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Fri, Sep 16, 2005 at 08:55:34PM -0400, Lee Revell wrote:
-> On Sat, 2005-09-17 at 01:48 +0200, Andreas Mohr wrote:
-> > - FOUND the 1us DirectX timer area (yay!), made the code respect it properly
-> 
-> You should add support for the ALSA timer API if possible, it's actually
-> quite simple.  This will allow the ALSA sequencer to use it.  See
-> sound/pci/emu10k1/timer.c for an example.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1432> 
+======================================================================
+Reported By:                wraiden
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1432
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-17-2005 13:17 CEST
+Last Modified:              09-17-2005 13:17 CEST
+======================================================================
+Summary:                    Add switch to use the headphone plug as an
+independent channel
+Description: 
+I request a switch and an extra playback channel for the headphone-plug on
+the emu10k1 driver supported chips.
+It's possible as far as i can see in the source the headphone signal is
+now only an duplicated playback signal.
+I think this wuld be a great feature for any kind of DJ app.
 
-Hah! I DID research it a bit (driver API docu, some drivers, ...),
-but the result didn't make me believe ALSA would find this timer very useful.
-I didn't even bother to ask about it any more since I was certain that there's
-no support API.
-Thanks a lot for mentioning it, against all odds!
+And yes, i plan to write one if nothing other show up in short range.
 
-I will add that support ASAP, however that shouldn't prevent anyone from
-committing my current patch if wanted.
+Thanks in advance.
 
-Thanks again,
+Marc
+======================================================================
 
-Andreas Mohr
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-17-05 13:17 wraiden        New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
