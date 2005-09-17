@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001431]: no sound with msi km4am-l
-Date: Sat, 17 Sep 2005 02:33:26 +0200
-Message-ID: <d1072f36ab4e9b3bcafcf664669fd0c9@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] AZT3328 driver update (#2)
+Date: Fri, 16 Sep 2005 20:55:34 -0400
+Message-ID: <1126918534.4986.110.camel@mindpipe>
+References: <20050916234828.GA23429@rhlx01.fht-esslingen.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9BDD152
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 02:33:26 +0200 (MEST)
+In-Reply-To: <20050916234828.GA23429@rhlx01.fht-esslingen.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +17,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: andi@lisas.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2005-09-17 at 01:48 +0200, Andreas Mohr wrote:
+> - FOUND the 1us DirectX timer area (yay!), made the code respect it properly
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1431> 
-======================================================================
-Reported By:                bunni
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1431
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               lfs
-Kernel Version:             2.6.13.1
-======================================================================
-Date Submitted:             09-17-2005 02:33 CEST
-Last Modified:              09-17-2005 02:33 CEST
-======================================================================
-Summary:                    no sound with msi km4am-l
-Description: 
-I hace an msi km4am-l with via 8237 onboard chip. First time i have
-compiled the via82xx and bt87x modules (in 2.6.13.1), i haven't any sound
-(test with aplay english.au and mythtv). I tried with the alsa 1.09
-drivers same problem.
-I have plugin my sb live 5.1 and compiled it's module in kernel as module
-and it's work fine.
-======================================================================
+You should add support for the ALSA timer API if possible, it's actually
+quite simple.  This will allow the ALSA sequencer to use it.  See
+sound/pci/emu10k1/timer.c for an example.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-17-05 02:33 bunni          New Issue                                    
-09-17-05 02:33 bunni          Distribution              => lfs             
-09-17-05 02:33 bunni          Kernel Version            => 2.6.13.1        
-======================================================================
-
+Lee
 
 
 
