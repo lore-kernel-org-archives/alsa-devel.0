@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2 ZS: No capture control
-Date: Sat, 17 Sep 2005 18:54:28 +0200
-Message-ID: <6d29f1a48a835a7c38789be2fa338a52@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001224]: artsd-like style
+Date: Sat, 17 Sep 2005 19:43:29 +0200
+Message-ID: <7e7a6344f47609eeb62a8b1095973fc7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 690EF161
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 18:54:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8764E165
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 19:43:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,85 +22,116 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
-Reported By:                phineas
+Reported By:                Hetfield
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1365
-Category:                   PCI - emu10k1
+Issue ID:                   1224
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing (etch)
-Kernel Version:             2.6.12.4 vanilla
+Distribution:               
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             08-24-2005 09:22 CEST
-Last Modified:              09-17-2005 18:54 CEST
+Date Submitted:             07-01-2005 14:49 CEST
+Last Modified:              09-17-2005 19:43 CEST
 ======================================================================
-Summary:                    Dell/Creative Labs Audigy 2 ZS: No capture control
+Summary:                    artsd-like style
 Description: 
-Unless this is a user overlooking a step...
+i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
+windows) style, i mean, multiple streams at once.
 
-There is no mute control on the "Master" item (or most other items for
-that matter).
-More importantly, the capture items do not have a capture control; they
-have level adjustments, but one cannot actually select an item for
-capturing.
-It appears that this Dell-supplied device (with Audigy subsytem 1003) is
-generally unknown to the drivers -- but it does work well for sound
-playback.
-
+that could be very important for example using skype voip and listening
+music at the same time.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001228 Skype Does not work with aoss
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 08-25-05 17:11 
+ Hetfield - 09-17-05 14:51 
 ----------------------------------------------------------------------
-All controls implemented in DSP don't have mute. No one implemented them.
+oops!
 
-Capture problem is related to your card not detected correctly.
-You can try add this to CVS version of alsa to file
-alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c to table
-emu_chip_details[]
+finally i got a cvs version. today's one.
+compiled libs and aoss.
 
-{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10031102,
-	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0353]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1,
-	 .ca0151_chip = 1,
-	 .spk71 = 1,
-	 .spdif_bug = 1,
-	 .ac97_chip = 1}
+now kiax and gizmo have same problem, while skype crashes with SEG fault
+when accessing to audio card.
 
-Then if your card is detected correctly look at
-http://alsa.opensrc.org/emu10k1
-7. How to record on Audigy and Audigy 2
+bug is not fixed, seems the initialization problem is back!
 
 ----------------------------------------------------------------------
- phineas - 08-26-05 22:04 
+ rlrevell - 09-17-05 19:43 
 ----------------------------------------------------------------------
-Okay, I was unable to compile alsa from cvs, so I applied the patch
-(without the .id field) to the alsa sources included with vanilla kernel
-2.6.12.4.  Everything seems to work now.  Do you need me to try it again
-with cvs for admission in a future release?
+Please get an strace of kiax when it crashes.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-24-05 09:22 phineas        New Issue                                    
-08-24-05 09:22 phineas        File Added: vegan.state                      
-08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
-08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
-08-24-05 20:58 phineas        Issue Monitored: phineas                     
-08-25-05 17:11 pzad           Note Added: 0005941                          
-08-26-05 22:04 phineas        Note Added: 0005958                          
-09-17-05 18:54 jdthood        Summary                  Dell/Creative Labs Audigy
-2 ZS mixer controls => Dell/Creative Labs Audigy 2 ZS: No capture control
+07-01-05 14:49 Hetfield       New Issue                                    
+07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
+07-01-05 20:16 Hetfield       Note Added: 0005337                          
+07-01-05 20:33 rlrevell       Note Added: 0005338                          
+07-01-05 22:56 Hetfield       Note Added: 0005343                          
+07-02-05 18:53 pzad           Note Added: 0005356                          
+07-02-05 20:11 Hetfield       Note Added: 0005357                          
+07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
+07-02-05 21:47 pzad           Note Added: 0005361                          
+07-03-05 09:25 Hetfield       Note Added: 0005370                          
+07-03-05 14:09 pzad           Note Added: 0005376                          
+07-03-05 15:57 Hetfield       Note Added: 0005378                          
+07-04-05 11:49 pzad           File Added: aoss.patch                       
+07-04-05 11:53 pzad           Note Added: 0005384                          
+07-04-05 14:02 Hetfield       Note Added: 0005385                          
+07-08-05 12:16 tiwai          Note Added: 0005417                          
+07-08-05 12:27 Hetfield       Note Added: 0005418                          
+07-17-05 10:25 Hetfield       Note Added: 0005503                          
+07-17-05 10:29 rlrevell       Note Added: 0005504                          
+07-17-05 10:46 rlrevell       Note Added: 0005505                          
+07-17-05 11:10 Hetfield       Note Added: 0005506                          
+07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
+07-17-05 19:41 rlrevell       Note Added: 0005508                          
+07-17-05 19:50 Hetfield       Note Added: 0005509                          
+07-17-05 19:51 rlrevell       Note Added: 0005510                          
+07-17-05 20:21 Hetfield       Note Added: 0005511                          
+07-17-05 21:14 rlrevell       Note Added: 0005512                          
+07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
+07-17-05 21:22 Hetfield       File Added: log2                             
+07-17-05 21:23 Hetfield       Note Added: 0005513                          
+07-17-05 22:21 rlrevell       Note Added: 0005514                          
+07-17-05 23:28 Hetfield       Note Added: 0005515                          
+07-17-05 23:43 rlrevell       Note Added: 0005516                          
+07-18-05 03:33 rlrevell       Note Added: 0005517                          
+07-18-05 06:04 rlrevell       Note Added: 0005518                          
+07-18-05 07:33 rlrevell       Note Added: 0005519                          
+07-18-05 09:23 Hetfield       Note Added: 0005520                          
+07-18-05 09:24 Hetfield       File Added: asoundrc                         
+07-18-05 22:08 rlrevell       Note Added: 0005524                          
+07-21-05 19:55 Hetfield       Note Added: 0005540                          
+07-21-05 19:56 Hetfield       Note Added: 0005541                          
+07-24-05 09:55 Hetfield       Note Added: 0005556                          
+07-24-05 19:10 rlrevell       Note Added: 0005558                          
+07-28-05 22:40 rlrevell       Note Added: 0005578                          
+07-29-05 17:43 tiwai          Note Added: 0005579                          
+08-01-05 10:20 Hetfield       Note Added: 0005595                          
+08-10-05 00:49 rlrevell       Relationship added       has duplicate 0001228
+08-28-05 15:56 Hetfield       Note Added: 0005963                          
+09-02-05 19:57 tiwai          Note Added: 0006020                          
+09-02-05 20:22 Hetfield       Note Added: 0006021                          
+09-02-05 20:24 tiwai          Note Added: 0006022                          
+09-02-05 20:26 Hetfield       Note Added: 0006023                          
+09-02-05 20:31 Hetfield       Note Added: 0006024                          
+09-17-05 14:05 Hetfield       Note Added: 0006249                          
+09-17-05 14:51 Hetfield       Note Added: 0006250                          
+09-17-05 19:43 rlrevell       Note Added: 0006253                          
 ======================================================================
 
 
