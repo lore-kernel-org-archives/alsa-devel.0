@@ -1,13 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] AZT3328 driver update (#2)
-Date: Fri, 16 Sep 2005 20:55:34 -0400
-Message-ID: <1126918534.4986.110.camel@mindpipe>
-References: <20050916234828.GA23429@rhlx01.fht-esslingen.de>
+From: ryan olejnik <ryno@audi0.org>
+Subject: porting alsa
+Date: Fri, 16 Sep 2005 22:41:46 -0500
+Message-ID: <432B907A.3060706@audi0.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050916234828.GA23429@rhlx01.fht-esslingen.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +15,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: andi@lisas.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-09-17 at 01:48 +0200, Andreas Mohr wrote:
-> - FOUND the 1us DirectX timer area (yay!), made the code respect it properly
+hello,
 
-You should add support for the ALSA timer API if possible, it's actually
-quite simple.  This will allow the ALSA sequencer to use it.  See
-sound/pci/emu10k1/timer.c for an example.
+I would like to get involved with porting alsa to NetBSD. does anyone
+know an official project, or is interested in helping this become a reality?
 
-Lee
-
+thanks,
+ryan olejnik
 
 
 -------------------------------------------------------
