@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 17 Sep 2005 21:21:15 +0200
-Message-ID: <9dbf67a283ad0c831833c1c6895cbb30@bugtrack.alsa-project.org>
+Date: Sat, 17 Sep 2005 22:05:52 +0200
+Message-ID: <ba7aa49f36824dfaf92e854ba70e7190@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA3E616A
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 21:21:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1EE3120
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 22:05:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-17-2005 21:21 CEST
+Last Modified:              09-17-2005 22:05 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,15 +50,10 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-Relazioni           ID      Riassunto
+Relationships       ID      Summary
 ----------------------------------------------------------------------
-é duplicata da      0001228 Skype Does not work with aoss
+has duplicate       0001228 Skype Does not work with aoss
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 09-17-05 20:11 
-----------------------------------------------------------------------
-pzad are you any closer to finding the real bug (s)?
 
 ----------------------------------------------------------------------
  Hetfield - 09-17-05 21:21 
@@ -87,6 +82,44 @@ so i repeat, the bug is with oss emulation, not with skype closed/open
 source :)
 
 ready to test!
+
+----------------------------------------------------------------------
+ rlrevell - 09-17-05 22:05 
+----------------------------------------------------------------------
+I know the bug is not in Skype but in order to debug aoss we need to be
+able to reproduce the problem with an open source app.  We have no idea
+what Skype is doing that triggers the bug!
+
+"i did not remove my .asoundrc.
+
+if i remove it..i won't get the dmix service, and it's useless (check the
+bug topic)."
+
+Wrong.  You NEED to remove the .asoundrc.  The ENS1370 already uses dmix
+by default.  Look at /usr/share/alsa/cards/ENS1370.conf:
+
+# default with dmix/dsnoop
+ENS1370.pcm.default {
+        @args [ CARD ]
+        @args.CARD {
+                type string
+        }
+        type asym
+        playback.pcm {
+                type plug
+                slave.pcm {
+                        @func concat
+                        strings [ "dmix:" $CARD ] 
+                }
+        }
+        capture.pcm {
+                type plug
+                slave.pcm {
+                        @func concat
+                        strings [ "dsnoop:" $CARD ] 
+                }
+        }
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -153,6 +186,7 @@ Date Modified  Username       Field                    Change
 09-17-05 20:10 rlrevell       Note Added: 0006257                          
 09-17-05 20:11 rlrevell       Note Added: 0006258                          
 09-17-05 21:21 Hetfield       Note Added: 0006261                          
+09-17-05 22:05 rlrevell       Note Added: 0006262                          
 ======================================================================
 
 
