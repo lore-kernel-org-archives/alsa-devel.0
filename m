@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
-Date: Sat, 17 Sep 2005 18:48:36 +0200
-Message-ID: <f3d8ff54f4f462a7eb9a38fd470f9319@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
+Date: Sat, 17 Sep 2005 18:52:20 +0200
+Message-ID: <edb1bcaa0f498303072d1042ee459f7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13627161
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 18:48:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1CFC161
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 18:52:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
 ======================================================================
-Reported By:                Soft
+Reported By:                colding
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1381
-Category:                   PCI - intel8x0
+Issue ID:                   1276
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             
+Status:                     feedback
+Distribution:               Gentoo AMD64 2005.0
+Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
+20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
-Date Submitted:             08-31-2005 09:50 CEST
-Last Modified:              09-17-2005 18:48 CEST
+Date Submitted:             07-22-2005 22:13 CEST
+Last Modified:              09-17-2005 18:52 CEST
 ======================================================================
-Summary:                    No sound on Thinkpad T40p
+Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
+playing any sound.
 Description: 
-When attempting to play a sound on a Thinkpad T40p, all sound players
-behave as if playing normally, but no sound comes out of the speakers. 
-This is with Debian Sarge + various package upgrades to testing, with a
-number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
-1.0.8/1.0.9/1.0.10rc1.
+I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
+I have enabled ALSA and OSS emulation in the kernel. I have tried as
+compiled in, no modules, and as module. The card is correctly detected on
+boot-up
+and apparently activated. 
 
-I have already tried various "tricks", including muting Headphone Jack
-Sense and Line Jack Sense.  Please see the following thread on alsa-user
-mailing-list:
-http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
-for more information.
+Everything seems to be configured correctly according to the alsa guide
+for Gentoo and all I could find at alsa-project and for Gnome. 
+
+The problem is that I am only hearing cyclically repeating clicks, with
+weak static noise in-between, when I am trying to play music. I have a
+set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
+analog output jack (Line Out 1) on the card.
+
+It seems that my problems are the same as in this former post to the
+list:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+
+That thread concluded with no solution but to revert to OSS.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-17-05 18:48 
+ colding - 08-17-05 09:05 
 ----------------------------------------------------------------------
-Try muting 'External Amplifier'.
+No. The card is absolutely silent when the "Audigy Analog/Digital Output
+Jack" is muted and has static noise when it is not. I can test with a
+debug patch if provided...
 
-Try raising the volume using the special keys on the ThinkPad.
+----------------------------------------------------------------------
+ jdthood - 09-17-05 18:52 
+----------------------------------------------------------------------
+Switch off "Audigy Analog/Digital Output Jack" and then try playing
+with other controls such as 'External Amplifier' to see if you can
+find a combination that works.  Please report your results here.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 09:50 Soft           New Issue                                    
-08-31-05 09:50 Soft           Distribution              => Debian          
-09-17-05 18:48 jdthood        Note Added: 0006251                          
+07-22-05 22:13 colding        New Issue                                    
+07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
+07-22-05 22:13 colding        Kernel Version            => Linux omc-2
+2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
+Processor 252 AuthenticAMD GNU/Linux
+07-23-05 12:53 colding        Issue Monitored: colding                     
+07-23-05 15:47 colding        Note Added: 0005553                          
+08-16-05 12:34 pzad           Note Added: 0005826                          
+08-16-05 16:52 rlrevell       Note Added: 0005829                          
+08-16-05 16:53 rlrevell       Status                   new => feedback     
+08-17-05 09:05 colding        Note Added: 0005834                          
+09-17-05 18:52 jdthood        Note Added: 0006252                          
 ======================================================================
 
 
