@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 17 Sep 2005 14:05:03 +0200
-Message-ID: <93d9c821896a9d847b500898d8b3d766@bugtrack.alsa-project.org>
+Date: Sat, 17 Sep 2005 14:51:45 +0200
+Message-ID: <bb59e958369528700589ea81801fb2a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05823164
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 14:05:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00B1414F
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 14:51:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-17-2005 14:05 CEST
+Last Modified:              09-17-2005 14:51 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -56,14 +56,6 @@ Relazioni           ID      Riassunto
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 09-02-05 20:31 
-----------------------------------------------------------------------
-even cvs...i'd pefer wait for rc2 if it's on the air...
-
-however i will test them on monday afternoon, if rc2 is out i'll test it,
-if not i'll test cvs.
-
-----------------------------------------------------------------------
  Hetfield - 09-17-05 14:05 
 ----------------------------------------------------------------------
 i'm sorry, but i can't use cvs.
@@ -76,6 +68,19 @@ have broken files, all files are suffixed by ",v"
 can you provide me a patch against 1.0.9x or 1.0.10rc1?
 
 or give me a snapshot working link for alsalib and alsa-oss.
+
+----------------------------------------------------------------------
+ Hetfield - 09-17-05 14:51 
+----------------------------------------------------------------------
+oops!
+
+finally i got a cvs version. today's one.
+compiled libs and aoss.
+
+now kiax and gizmo have same problem, while skype crashes with SEG fault
+when accessing to audio card.
+
+bug is not fixed, seems the initialization problem is back!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -134,6 +139,7 @@ Date Modified  Username       Field                    Change
 09-02-05 20:26 Hetfield       Note Added: 0006023                          
 09-02-05 20:31 Hetfield       Note Added: 0006024                          
 09-17-05 14:05 Hetfield       Note Added: 0006249                          
+09-17-05 14:51 Hetfield       Note Added: 0006250                          
 ======================================================================
 
 
