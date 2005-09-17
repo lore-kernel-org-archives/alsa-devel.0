@@ -1,12 +1,14 @@
-From: "Einladung" <montanadelmar@zona-andina.net>
-Subject: zum Gratisurlaub
-Date: Sat, 17 Sep 2005 14:55:51 +0200
-Message-ID: <E1EGcHH-0001xR-9k@mail.sourceforge.net>
-Reply-To: "Einladung" <remove_de_montana@zona-andina.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
+Date: Sat, 17 Sep 2005 18:48:36 +0200
+Message-ID: <f3d8ff54f4f462a7eb9a38fd470f9319@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="= Multipart Boundary 0917051455"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13627161
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 18:48:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,114 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multipart MIME message.
 
---= Multipart Boundary 0917051455
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
+======================================================================
+Reported By:                Soft
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1381
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             
+======================================================================
+Date Submitted:             08-31-2005 09:50 CEST
+Last Modified:              09-17-2005 18:48 CEST
+======================================================================
+Summary:                    No sound on Thinkpad T40p
+Description: 
+When attempting to play a sound on a Thinkpad T40p, all sound players
+behave as if playing normally, but no sound comes out of the speakers. 
+This is with Debian Sarge + various package upgrades to testing, with a
+number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
+1.0.8/1.0.9/1.0.10rc1.
 
-Ohne jede Verpflichtung k=F6nnen Sie=20
-an unserer Verlosung teilnehmen und einen herrlichen
-Gratisurlaub in Spanien=20
-gewinnen. Das einzige, was Sie tun m=FCssen, ist, sich anzumelden.=20
-Sie brauchen uns nur Ihren Namen, den Wohnort, die Postleitzahl und das L=
-and
-anzugeben. Kein Adresse, keine Telefonnummer, nichts weiter=20
-Der Hauptgewinn ist ein komplett eingerichtetes Apartment
-in Monta=F1a del Mar / Spanien w=E4hrend einer Woche.
-Ausserdem gibt es mehrere "Trostpreise"=20
-zur Verlosung anmelden
+I have already tried various "tricks", including muting Headphone Jack
+Sense and Line Jack Sense.  Please see the following thread on alsa-user
+mailing-list:
+http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
+for more information.
+======================================================================
 
---= Multipart Boundary 0917051455
-Content-Type: text/html;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ jdthood - 09-17-05 18:48 
+----------------------------------------------------------------------
+Try muting 'External Amplifier'.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>Verlosung Gratisferien</TITLE>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
-1">
-<SCRIPT language=3DJavaScript>
-<!--
-function MM_reloadPage(init) {  //reloads the window if Nav4 resized
-  if (init=3D=3Dtrue) with (navigator) {if ((appName=3D=3D"Netscape")&&(p=
-arseInt(appVersion)=3D=3D4)) {
-    document.MM_pgW=3DinnerWidth; document.MM_pgH=3DinnerHeight; onresize=
-=3DMM_reloadPage; }}
-  else if (innerWidth!=3Ddocument.MM_pgW || innerHeight!=3Ddocument.MM_pg=
-H) location.reload();
-}
-MM_reloadPage(true);
-// -->
-</SCRIPT>
+Try raising the volume using the special keys on the ThinkPad.
 
-<STYLE type=3Dtext/css>
-<!--
-.Estilo1 {font-size: 14pt}
-.Estilo2 {font-size: 12px}
-.Estilo3 {font-size: 14px}
-body {
-	background-color: #000066;
-}
-.Estilo4 {
-	font-weight: bold;
-	color: #FFFFFF;
-}
-.Estilo5 {
-	font-size: 12px;
-	font-weight: bold;
-	color: #FFFFFF;
-}
-.Estilo6 {color: #FFFFFF}
-.Estilo7 {font-size: 12px; color: #FFFFFF; }
--->
-</STYLE>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-31-05 09:50 Soft           New Issue                                    
+08-31-05 09:50 Soft           Distribution              => Debian          
+09-17-05 18:48 jdthood        Note Added: 0006251                          
+======================================================================
 
-<META content=3D"MSHTML 6.00.2800.1515" name=3DGENERATOR></HEAD>
-<BODY text=3D#000000>
-<DIV id=3DLayer1=20
-style=3D"Z-INDEX: 1; LEFT: 0px; WIDTH: 200px; POSITION: absolute; TOP: 0p=
-x; HEIGHT: 115px"><IMG=20
-height=3D864 src=3D"http://www.dominicana.com.do/fotos/playas/atardecer-0=
-1.jpg"=20
-width=3D775></DIV>
-<DIV id=3DLayer1=20
-style=3D"Z-INDEX: 4; LEFT: 19px; WIDTH: 510px; POSITION: absolute; TOP: 1=
-3px; HEIGHT: 115px">
-<P class=3D"Estilo2 Estilo4"><FONT face=3DArial>Ohne jede Verpflichtung k=
-=F6nnen Sie=20
-<BR>an unserer Verlosung teilnehmen und einen herrlichen</FONT></P>
-<P class=3DEstilo6><STRONG><SPAN style=3D"LETTER-SPACING: -2pt"><FONT fac=
-e=3DArial=20
-size=3D7>Gratisurlaub in Spanien </FONT></SPAN></STRONG></P>
-<P class=3DEstilo5><FONT face=3DArial>gewinnen. Das einzige, was Sie tun =
-m=FCssen,=20
-ist, sich anzumelden. <BR>Sie brauchen uns nur Ihren Namen, den Wohnort, =
-die=20
-Postleitzahl und das Land<BR>anzugeben. Kein Adresse, keine Telefonnummer=
-,=20
-nichts weiter </FONT></P>
-<P class=3DEstilo5><FONT face=3DArial>Der Hauptgewinn ist ein komplett=20
-eingerichtetes Apartment<BR>in Monta=F1a del Mar / Spanien w=E4hrend eine=
-r=20
-Woche.<BR>Ausserdem gibt es mehrere "Trostpreise" </FONT></P>
-<P class=3DEstilo5><FONT face=3DArial><SPAN class=3DEstilo3><A class=3DEs=
-tilo1=20
-href=3D"mailto:info_montana@hotmail.com">zur Verlosung=20
-anmelden</A></SPAN></FONT></P>
-<P class=3DEstilo6><STRONG><FONT face=3DArial><SPAN=20
-class=3DEstilo3></SPAN></FONT></STRONG></P></DIV>
-<DIV id=3DLayer3=20
-style=3D"Z-INDEX: 5; LEFT: 371px; WIDTH: 445px; POSITION: absolute; TOP: =
-10px; HEIGHT: 240px">
-<P class=3DEstilo2><FONT face=3DArial><BR><A=20
-href=3D"reservar_de.htm"><BR></A></FONT></P></DIV></BODY></HTML>
-
---= Multipart Boundary 0917051455--
 
 
 
