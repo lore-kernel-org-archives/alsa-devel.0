@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sat, 17 Sep 2005 22:38:53 +0200
-Message-ID: <6a9fb0e556c61b8f10be3e34b84f28dd@bugtrack.alsa-project.org>
+Date: Sat, 17 Sep 2005 22:52:53 +0200
+Message-ID: <0e0eb17613f2c58d4b279a1e5029fbb4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C822E0
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 22:38:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D726150
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 22:52:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-17-2005 22:38 CEST
+Last Modified:              09-17-2005 22:52 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -54,44 +54,6 @@ Relazioni           ID      Riassunto
 ----------------------------------------------------------------------
 é duplicata da      0001228 Skype Does not work with aoss
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 09-17-05 22:05 
-----------------------------------------------------------------------
-I know the bug is not in Skype but in order to debug aoss we need to be
-able to reproduce the problem with an open source app.  We have no idea
-what Skype is doing that triggers the bug!
-
-"i did not remove my .asoundrc.
-
-if i remove it..i won't get the dmix service, and it's useless (check the
-bug topic)."
-
-Wrong.  You NEED to remove the .asoundrc.  The ENS1370 already uses dmix
-by default.  Look at /usr/share/alsa/cards/ENS1370.conf:
-
-# default with dmix/dsnoop
-ENS1370.pcm.default {
-        @args [ CARD ]
-        @args.CARD {
-                type string
-        }
-        type asym
-        playback.pcm {
-                type plug
-                slave.pcm {
-                        @func concat
-                        strings [ "dmix:" $CARD ] 
-                }
-        }
-        capture.pcm {
-                type plug
-                slave.pcm {
-                        @func concat
-                        strings [ "dsnoop:" $CARD ] 
-                }
-        }
-}
 
 ----------------------------------------------------------------------
  Hetfield - 09-17-05 22:38 
@@ -109,6 +71,47 @@ Perhaps you do not have an input or output device?
 sab set 17 22:33:10 2005 IaxWrapper::event_text() Message: Type=3
 Message=Can't start audio
 PortAudio error at opening separate input stream: Invalid device ID.
+
+----------------------------------------------------------------------
+ Hetfield - 09-17-05 22:52 
+----------------------------------------------------------------------
+ALSA_OSS_DEBUG=1 aoss ./skype.bin
+open("/dev/mixer", 2, 0) -> 30
+open("/dev/mixer", 2, -1227408088) -> 32
+open("/dev/mixer", 2, 142850184) -> 35
+Opened PCM dsp0 for stream 0 (result = -2)
+Opened PCM default for stream 0 (result = 0)
+close(35) -> -1(errno=9)
+close(32) -> -1(errno=9)
+close(30) -> -1(errno=9)
+Opened PCM default for stream 1 (result = 0)
+open("/dev/dsp", 2, -1264432220) -> 37
+ioctl(37, SNDCTL_DSP_GETCAPS, 0xb6d73ccc) -> [13056]
+ioctl(37, SNDCTL_DSP_SETFRAGMENT, 0x8760d08[100008])
+ioctl(37, SNDCTL_DSP_STEREO, 0x8760d0c[0]) -> [0]
+ioctl(37, SNDCTL_DSP_SETFMT, 0x8760d10[16]) -> [16]
+ioctl(37, SNDCTL_DSP_SPEED, 0x8760d24[48000]) -> [48000]
+ioctl(37, SNDCTL_DSP_GETOSPACE, 0xb6d73cd0) -> {8 16 4096 33436}
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+
+
+[CUT] --> hangup
+
+write(37, 0xb63efcc0, 960) -> 960
+write(37, 0xb63efcc0, 960) -> 960
+ioctl(35, SOUND_MIXER_READ[12], 0xb6d72ac0) ->write(37, 0xb63efcc0, 960)
+-> 960
+ioctl(35, SOUND_MIXER_READ[12], 0xb6d73db0) ->
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -177,6 +180,7 @@ Date Modified  Username       Field                    Change
 09-17-05 21:21 Hetfield       Note Added: 0006261                          
 09-17-05 22:05 rlrevell       Note Added: 0006262                          
 09-17-05 22:38 Hetfield       Note Added: 0006263                          
+09-17-05 22:52 Hetfield       Note Added: 0006264                          
 ======================================================================
 
 
