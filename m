@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Sat, 17 Sep 2005 18:52:20 +0200
-Message-ID: <edb1bcaa0f498303072d1042ee459f7a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001365]: Dell/Creative Labs Audigy 2 ZS: No capture control
+Date: Sat, 17 Sep 2005 18:54:28 +0200
+Message-ID: <6d29f1a48a835a7c38789be2fa338a52@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1CFC161
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 18:52:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 690EF161
+	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 18:54:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1365> 
 ======================================================================
-Reported By:                colding
+Reported By:                phineas
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1276
+Issue ID:                   1365
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo AMD64 2005.0
-Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
-20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
+Status:                     new
+Distribution:               Debian testing (etch)
+Kernel Version:             2.6.12.4 vanilla
 ======================================================================
-Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              09-17-2005 18:52 CEST
+Date Submitted:             08-24-2005 09:22 CEST
+Last Modified:              09-17-2005 18:54 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
-playing any sound.
+Summary:                    Dell/Creative Labs Audigy 2 ZS: No capture control
 Description: 
-I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
-I have enabled ALSA and OSS emulation in the kernel. I have tried as
-compiled in, no modules, and as module. The card is correctly detected on
-boot-up
-and apparently activated. 
+Unless this is a user overlooking a step...
 
-Everything seems to be configured correctly according to the alsa guide
-for Gentoo and all I could find at alsa-project and for Gnome. 
-
-The problem is that I am only hearing cyclically repeating clicks, with
-weak static noise in-between, when I am trying to play music. I have a
-set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
-analog output jack (Line Out 1) on the card.
-
-It seems that my problems are the same as in this former post to the
-list:
-
-http://sourceforge.net/mailarchive/message.php?msg_id=11662616
-
-That thread concluded with no solution but to revert to OSS.
+There is no mute control on the "Master" item (or most other items for
+that matter).
+More importantly, the capture items do not have a capture control; they
+have level adjustments, but one cannot actually select an item for
+capturing.
+It appears that this Dell-supplied device (with Audigy subsytem 1003) is
+generally unknown to the drivers -- but it does work well for sound
+playback.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- colding - 08-17-05 09:05 
+ pzad - 08-25-05 17:11 
 ----------------------------------------------------------------------
-No. The card is absolutely silent when the "Audigy Analog/Digital Output
-Jack" is muted and has static noise when it is not. I can test with a
-debug patch if provided...
+All controls implemented in DSP don't have mute. No one implemented them.
+
+Capture problem is related to your card not detected correctly.
+You can try add this to CVS version of alsa to file
+alsa-driver/alsa-kernel/pci/emu10k1/emu10k1_main.c to table
+emu_chip_details[]
+
+{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10031102,
+	 .driver = "Audigy2", .name = "Audigy 2 ZS [SB0353]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 .ca0151_chip = 1,
+	 .spk71 = 1,
+	 .spdif_bug = 1,
+	 .ac97_chip = 1}
+
+Then if your card is detected correctly look at
+http://alsa.opensrc.org/emu10k1
+7. How to record on Audigy and Audigy 2
 
 ----------------------------------------------------------------------
- jdthood - 09-17-05 18:52 
+ phineas - 08-26-05 22:04 
 ----------------------------------------------------------------------
-Switch off "Audigy Analog/Digital Output Jack" and then try playing
-with other controls such as 'External Amplifier' to see if you can
-find a combination that works.  Please report your results here.
+Okay, I was unable to compile alsa from cvs, so I applied the patch
+(without the .id field) to the alsa sources included with vanilla kernel
+2.6.12.4.  Everything seems to work now.  Do you need me to try it again
+with cvs for admission in a future release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 22:13 colding        New Issue                                    
-07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
-07-22-05 22:13 colding        Kernel Version            => Linux omc-2
-2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
-Processor 252 AuthenticAMD GNU/Linux
-07-23-05 12:53 colding        Issue Monitored: colding                     
-07-23-05 15:47 colding        Note Added: 0005553                          
-08-16-05 12:34 pzad           Note Added: 0005826                          
-08-16-05 16:52 rlrevell       Note Added: 0005829                          
-08-16-05 16:53 rlrevell       Status                   new => feedback     
-08-17-05 09:05 colding        Note Added: 0005834                          
-09-17-05 18:52 jdthood        Note Added: 0006252                          
+08-24-05 09:22 phineas        New Issue                                    
+08-24-05 09:22 phineas        File Added: vegan.state                      
+08-24-05 09:22 phineas        Distribution              => Debian testing (etch)
+08-24-05 09:22 phineas        Kernel Version            => 2.6.12.4 vanilla
+08-24-05 20:58 phineas        Issue Monitored: phineas                     
+08-25-05 17:11 pzad           Note Added: 0005941                          
+08-26-05 22:04 phineas        Note Added: 0005958                          
+09-17-05 18:54 jdthood        Summary                  Dell/Creative Labs Audigy
+2 ZS mixer controls => Dell/Creative Labs Audigy 2 ZS: No capture control
 ======================================================================
 
 
