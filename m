@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sat, 17 Sep 2005 20:21:36 +0200
-Message-ID: <3ab5d0ce1a1221c77ce7bcbfca2f61cd@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Mixer improvements
+Date: Sat, 17 Sep 2005 19:39:47 +0100
+Message-ID: <432C62F3.3050302@superbug.co.uk>
+References: <43241A35.8080903@superbug.co.uk> <s5hr7buh3qv.wl%tiwai@suse.de> <Pine.LNX.4.61.0509121434440.9569@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22003167
-	for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2005 20:21:37 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0509121434440.9569@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +17,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Jaroslav Kysela wrote:
+> On Mon, 12 Sep 2005, Takashi Iwai wrote:
+> 
+> 
+>>>1) Unsigned integer index to percent <-> dB function.
+>>>2) Integer for Analog or Digital path. This will indicate which side of 
+>>>3) Link information.
+>>>4) Alternatively, we could implement this in alsa-lib, and just add 
+> 
+> 
+> I agree that 1 is the main required extension. 2 and 3 are optional in my 
+> eyes.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
-======================================================================
-Reported By:                Quietti
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   306
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             self-compiled 2.6.6 vanilla.
-======================================================================
-Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              09-17-2005 20:21 CEST
-======================================================================
-Summary:                    compiles, but no sound comes out
-Description: 
-This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
+Agreed.
 
-The kernel compiles fine, the snd_powermac module loads without any error,
-but no sound comes up.
+> 
+> 
+>>Moreover, we should be careful to handle the value <-> dB conversion.
+>>The dB isn't integer in general, and defining the fixed resolution is
+>>no generic solution.
+> 
+> 
+> It's signed integer - fixed float resolution (* 100) in my implementation. 
+> I think that it's enough for our purpose.
 
-Running alsamixer gives me a mixer screen where none of the sliders can be
-moved.
-======================================================================
+I have already checked into the alsa-utils cvs support for this API in 
+alsamixer. We just need to add the features to alsa-lib and alsa-driver.
 
-----------------------------------------------------------------------
- Quietti - 09-17-05 20:13 
-----------------------------------------------------------------------
-The Debian PPC community is compiling a list of current ALSA status for
-each PowerMac chipset at http://wiki.debian.net/?PowerpcSoundcards
+> 
+> 
+>>Adding a dB info into the driver would be required for the USB and HDA 
+>>stuff, at least, since they can (or need) retrieve such information from 
+>>the hardware directly. Meanwhile, others are basically given statically 
+>>- e.g. a simple table look-up for each ac97 codec.  This isn't 
+>>necessarily in the kernel code at all.
 
-----------------------------------------------------------------------
- rlrevell - 09-17-05 20:21 
-----------------------------------------------------------------------
-OK keep in mind the version of ALSA in the kernel is not the current ALSA
-version.  It lags by a month or two.  So make sure to test against the
-latest ALSA development release or (better) ALSA CVS.
+> 
+> 
+> I agree, the alsa-lib should have a database containing this static 
+> information. Also, I think that this information does not belong to the 
+> universal control API at all. We need to decide, if we need another 
+> midlevel module providing this information, or in my eyes, better way 
+> might be to use the hwdep device and pass this information to the user 
+> space. The alsa-lib modules driving the specific hardware will parse this 
+> information and do own things with it. Perhaps, we can pass simple text 
+> from the driver to user space. In this way, the procfs or devfs might be 
+> used.
+> 
+> 						Jaroslav
+> 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-04 20:35 Quietti        New Issue                                    
-05-25-04 20:35 Quietti        File Added: asound.state                     
-05-25-04 20:35 Quietti        Distribution              => Debian          
-05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
-vanilla.
-05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
-05-28-04 21:18 tiwai          Note Added: 0001274                          
-05-28-04 21:37 Quietti        Note Added: 0001275                          
-07-25-04 20:16 Quietti        Note Added: 0001473                          
-09-08-04 06:32 Quietti        Note Added: 0001726                          
-10-20-04 00:38 Quietti        Note Added: 0002209                          
-01-06-05 18:14 Quietti        Note Added: 0003093                          
-01-06-05 18:27 rlrevell       Note Added: 0003094                          
-01-06-05 19:43 Quietti        Note Added: 0003095                          
-01-07-05 00:00 Quietti        Note Added: 0003096                          
-01-07-05 00:19 Quietti        Note Added: 0003097                          
-01-07-05 00:30 Quietti        Note Added: 0003098                          
-01-14-05 00:53 Quietti        Note Added: 0003206                          
-02-04-05 09:22 Quietti        Note Added: 0003496                          
-02-04-05 13:04 tiwai          Note Added: 0003499                          
-04-02-05 13:33 Quietti        Note Added: 0004297                          
-08-06-05 20:24 Quietti        Note Added: 0005682                          
-08-06-05 20:31 rlrevell       Note Added: 0005683                          
-08-06-05 20:32 rlrevell       Note Added: 0005684                          
-08-06-05 20:53 rlrevell       Note Added: 0005685                          
-08-06-05 21:17 rlrevell       Note Added: 0005686                          
-08-06-05 23:54 rlrevell       Note Added: 0005687                          
-08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
-08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
-08-07-05 10:03 pochini        Note Added: 0005689                          
-08-07-05 10:31 Quietti        Note Added: 0005690                          
-08-07-05 10:46 rlrevell       Note Added: 0005691                          
-08-07-05 11:36 Quietti        Note Added: 0005692                          
-08-07-05 11:44 Quietti        Note Added: 0005693                          
-08-07-05 20:27 rlrevell       Note Added: 0005697                          
-08-08-05 14:53 Quietti        Note Added: 0005708                          
-08-08-05 19:42 rlrevell       Note Added: 0005711                          
-08-11-05 13:09 Johannes Berg  Note Added: 0005755                          
-08-11-05 13:09 Johannes Berg  Issue Monitored: Johannes Berg                    
-08-31-05 11:44 Quietti        Note Added: 0005986                          
-09-17-05 20:13 Quietti        Note Added: 0006259                          
-09-17-05 20:21 rlrevell       Note Added: 0006260                          
-======================================================================
+I will take a first bash at it, provide some patch code that we can then 
+discuss.
 
-
+James
 
 
 -------------------------------------------------------
