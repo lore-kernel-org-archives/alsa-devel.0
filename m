@@ -1,13 +1,13 @@
 From: Raymond <rayau@netvigator.com>
-Subject: Re: au88x0 modem
-Date: Sat, 17 Sep 2005 11:52:15 +0800
-Message-ID: <432B92EF.2020507@netvigator.com>
-References: <4325AEA3.1090602@netvigator.com> <20050913000909.GB19713@tecr>	 <20050913085552.GA2655@titan.lahn.de>	 <20050913173529.GD31269@sashak.softier1.local>	 <20050913174930.GA5816@titan.lahn.de> <4327DA14.3040205@netvigator.com>	 <20050914205608.GD14657@sashak.softier1.local>	 <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de>	 <20050915143533.GB23218@sashak.softier1.local>	 <20050915204345.GC27700@sashak.softier1.local>	 <432AD226.6010706@netvigator.com> <1126906481.12111.7.camel@localhost.localdomain>
+Subject: Re: [patch] au88x0: codec access procs for multiple AC97 codecs
+Date: Sat, 17 Sep 2005 12:01:37 +0800
+Message-ID: <432B9521.5010307@netvigator.com>
+References: <20050915205617.GD27700@sashak.softier1.local> <s5hoe6srhww.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1126906481.12111.7.camel@localhost.localdomain>
+In-Reply-To: <s5hoe6srhww.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,136 +17,205 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manuel Jander <manuel.jander@gmail.com>
-Cc: openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, Sasha Khapyorsky <sashak@smlink.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Philipp Matthias Hahn <pmhahn@titan.lahn.de>
 List-Id: alsa-devel@alsa-project.org
 
-Manuel Jander wrote:
-> Hi,
+Takashi Iwai wrote:
+> At Thu, 15 Sep 2005 23:56:17 +0300,
+> Sasha Khapyorsky wrote:
 > 
-> 
->>The easy way is to create a PCM device "modem" on au8810
+>>
+>>This modification of au88x0's AC97 codec access procedures enables to
+>>access multiple codecs.
+>>
+>>Tested with au8810 (secondary codec was initialized for this case),
+>>looks safe for others as well (au88x0 guys, please comment)
 >>
 >>
->>DMA -> FIFO -> SRC -> MIXIN --------> MIXOUT -> MC97(Modem Out)
->>                         |
->>		        +-----------> MIXOUT -> EQ -> AC97(Audio Left)
->>
->>    				Modem Speaker  On or Off
->>
->>                                   +-> MIXOUT -> EQ -> AC97(Audio Right)
->>                                   |
->>DMA <- FIFO <- SRC <- MIXOUT <- MIXIN <-------- MC97(Modem IN)
+>>Sasha.
 >>
 >>
->>or
 >>
+>>This patch extends au88x0 AC97 codec access procedures to handle multiple
+>>codecs properly.
 >>
->>DMA -> FIFO -> SRC -> MC97(modem) (Playback)
->>
->>DMA <- FIFO <- SRC <- MC97(modem) (Capture)
->>
+>>Signed-off-by: Sasha Khapyorsky
 > 
 > 
-> Remove the samplerate converter, it does not make any sense on a modem.
-
-AC-link requried 48kHz , is it controlled by the modem application ?
-
-Do we need to implement snd_vortex_modem_hw_params() ?
-
-> You will only loose signal precision with the samplerate converter
-> anyway, and there are very few of them. 
-
-When comparing au8810 and au8830, vortex_fifo_init() fail at 17th FIFO.
-
-au8810 seem to has only 16 FIFO and 16 SRC.
-
-http://lists.nongnu.org/archive/html/openvortex-dev/2004-03/msg00039.html
-
-
-> A direct route from the fifo to the modem codec will do it and the modem
-> signal device will run at the codec native samplerate without any
-> precision loss.
-> 
-
-What is the format of the PCM ? (16bits signed/unsigned)
-
-DMA -> FIFO -> MC97(modem) (Playback)
-
-DMA <- FIFO <- MC97(modem) (Capture)
-
-> 
->>What is the difference between modem application and audio application ?
+> It's on CVS.  Let me know if this breaks anything.
 > 
 > 
-> Nothing. The only modem extra functionality is the ability to switch the
-> modem line off/on hook. It just sends and captures QAM modulated
-> signals.
-> 
 
-What feature do SI3036 support ? (Data/Fax/speaker phone/Voice Modem)
-
-May be we can add a simple dialer in vortex control panel to make a 
-voice call ?
-
-http://alsa.opensrc.org/au88x0
-
-> 
->>Do the modem application open two PCM streams (one for playback and the 
->>other for capture )?
-> 
-> 
-> Yes, it should be full duplex. This will require 2 DMA's.
-> 
-
-Do we need different playback_ops for the wavetable ?
+Refer to Philipp Matthias Hahn 's ASUS L8400B notebook with onboard
+au8810 audio and Modem Daughter Card.
 
 
-diff -Naur modem/alsa-driver/alsa-kernel/pci/au88x0_orig/au88x0_pcm.c 
-modem/alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c
---- modem/alsa-driver/alsa-kernel/pci/au88x0_orig/au88x0_pcm.c 
-2005-09-15 19:34:02.000000000 +0800
-+++ modem/alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c	2005-09-16 
-23:19:55.000000000 +0800
-@@ -525,11 +580,19 @@
-  	VORTEX_PCM_TYPE(pcm) = idx;
-  	pcm->private_data = chip;
-  	/* set operators */
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
--			&snd_vortex_playback_ops);
--	if (idx == VORTEX_PCM_ADB)
--		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
--				&snd_vortex_playback_ops);
-+	switch (idx) {
-+#ifdef CHIP_AU8810
-+	case VORTEX_PCM_MODEM:
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, 
-&snd_vortex_modem_playback_ops);
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, 
-&snd_vortex_modem_capture_ops);
-+		break;
-+#endif
-+	case VORTEX_PCM_ADB:
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_vortex_playback_ops);
-+	default:
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, 
-&snd_vortex_playback_ops);
-+		break;
-+	};
-  	
-  	/* pre-allocation of Scatter-Gather buffers */
-  	
+0:7c = 8384
+0:7e = 7605
+
+Is ALSA report the wrong name of the audio codec ?
 
 
-> 
->>Where is the class SND_PCM_CLASS_MODEM specificed in the driver ?
-> 
-> 
-> At least i did not.
-> 
+Primary Audio Codec
 
-How do the modem application know which device of the sound card is a 
-modem ?
+0-0/0: SigmaTel STAC9704
+
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+
+0:00 = 6940
+0:02 = 0303
+0:04 = 8000
+0:06 = 801f
+0:08 = ffff
+0:0a = 9f1f
+0:0c = 801f
+0:0e = 881f
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 0707
+0:1a = 9818
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0808
+0:24 = 0000
+0:26 = 000f
+0:28 = ffff
+0:2a = ffff
+0:2c = ffff
+0:2e = ffff
+0:30 = ffff
+0:32 = ffff
+0:34 = ffff
+0:36 = ffff
+0:38 = ffff
+0:3a = ffff
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 0000
+0:7a = 0000
+0:7c = 8384
+0:7e = 7605
+
+Seconday Modem Codec
+
+1-1/0: Silicon Laboratory Si3036,8 rev 6
+
+Extended modem ID: codec=1 LIN1
+Modem status     : GPIO MREF ADC1 DAC1 PRE(ADC2) PRF(DAC2) PRG(HADC)
+PRH(HDAC)
+Line1 rate       : 8000Hz
+
+0:00 = 0000
+0:02 = 0000
+0:04 = 0000
+0:06 = 0000
+0:08 = 0000
+0:0a = 0000
+0:0c = 0000
+0:0e = 0000
+0:10 = 0000
+0:12 = 0000
+0:14 = 0000
+0:16 = 0000
+0:18 = 0000
+0:1a = 0000
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 0000
+0:28 = 0000
+0:2a = 0000
+0:2c = 0000
+0:2e = 0000
+0:30 = 0000
+0:32 = 0000
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 0000
+0:3c = 4001
+0:3e = f00f
+0:40 = 1f40
+0:42 = 0000
+0:44 = 0000
+0:46 = 8080
+0:48 = 0000
+0:4a = 0000
+0:4c = 003e
+0:4e = fffe
+0:50 = 003f
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0122
+0:5c = f210
+0:5e = 0040
+0:60 = 0000
+0:62 = 6000
+0:64 = 0002
+0:66 = 0a08
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 0000
+0:7a = 0000
+0:7c = 5349
+0:7e = 4c26
+
+
 
 
 
