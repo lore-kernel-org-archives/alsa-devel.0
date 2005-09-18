@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Best default values for "External Amplifier" and
- "Audigy Analog/Digital Output Jack"
-Date: Sun, 18 Sep 2005 12:44:18 +0100
-Message-ID: <432D5312.1000506@superbug.co.uk>
-References: <432D290E.4010506@yahoo.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000549]: Jackd crash randomly
+Date: Sun, 18 Sep 2005 13:53:21 +0200
+Message-ID: <c150bceb6808c83febd064eb930b1664@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <432D290E.4010506@yahoo.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18984152
+	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 13:53:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Hood <jdthood@yahoo.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Hood wrote:
-> Hello.  I am one of those responsible for packaging ALSA for Debian.
-> 
-> Does anyone have documentation of which machines require "External Amplifier"
-> to be on and which ones require EA to be off in order for sound to be emitted
-> in the simplest or most common machine configuration?
-> 
-> I have the same question about the "Audigy Analog/Digital Output Jack".
-> 
-> In Debian and Ubuntu we get complaints from users that sound "doesn't
-> work".  After some investigation it turns out that either EA or
-> AADOJ is set incorrectly.  Unlike other controls, it seems that there
-> is no one setting for these that is a "sane" value for all machines.  So
-> it seems that when our script is asked to set sane values, the script
-> will have to choose a value depending on the computer model.  But we have no
-> list of which models require the one setting and which models require the
-> other.  We thought that perhaps the ALSA developers have such a list.
-> 
-> What we would actually prefer is that the driver do this work and initialize
-> EA and AADOJ to "sane" values---if necessary depending on the computer model.
 
-Thomas,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=549> 
+======================================================================
+Reported By:                roswel
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   549
+Category:                   USB - usb-usx2y
+Reproducibility:            random
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sid/experimental
+Kernel Version:             2.6.9-rc2-bk14
+======================================================================
+Date Submitted:             09-29-2004 07:52 CEST
+Last Modified:              09-18-2005 13:53 CEST
+======================================================================
+Summary:                    Jackd crash randomly
+Description: 
+Hi,
+I still have some troubles with jackd. I rebuilt a kernel without
+USB_CONFIG_BANDWITH and now jackd start without problem. But sometimes, it
+hang with the following jackd error  : 
+04:25:29.436 Audio connection graph change.
+delay of 1022980.000 usecs exceeds estimated spare time of 17909.000;
+restart ...
+04:28:42.753 XRUN callback. (1)
 
-There is no real answer to your question. All motherboards and sound 
-cards that might contain the same sound chips, do not have the same 
-connections with the outside world. So, for some, setting EA to 1 
-enables sound, for others setting EA to 0 enables sound etc.
-The only way we can overcome this is on a case by case basis. We add 
-code to the driver so that it recognises a particular motherboard, and 
-set it correctly for that particular motherboard.
-So, the best way to fix this problem will be to raise an ALSA bug on 
-https://bugtrack.alsa-project.org/alsa-bug/ or on the kernel bug tracker 
-with full details of the motherboard and the sound chips involved, and 
-it will eventually be fixed.
+I never have this error with my integrated chip using intel_i8x0 driver.
+But wost, after a random time, jackd crash with the following error : 
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+could not start playback (Broken pipe)
+jackd watchdog: timeout - killing jackd
 
-We would need the following:
-The default settings, when not working:
-amixer contents
-cat /proc/asound/card0/codec97#0/ac97#0-0
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs
+And in my kernel logs, i've got : 
+Sequence Error!(ep=10;nuc=1,frame=643)
+Sequence Error!(ep=8;nuc=0,frame=643)
+Sequence Error!(ep=8;nuc=1,frame=644)
 
-The settings when working correctly:
-amixer contents
-cat /proc/asound/card0/codec97#0/ac97#0-0
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-lspci -vvn
+Jackd crashs also if i'm not doing anything. I tried to let it run
+sometimes without using it, and it crashs.
 
-James
+Thanx for your attention.
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 09-14-05 15:49 
+----------------------------------------------------------------------
+Submitter: Is the behavior any better in more recent ALSA versions?
+
+----------------------------------------------------------------------
+ roswel - 09-18-05 13:53 
+----------------------------------------------------------------------
+This seems not to happen anymore with recent alsa version. I actually have
+no more problem with my Tascam us-122. I guess this bug should be closed.
+Thanx a lot for the work of the all alsa team :)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-29-04 07:52 roswel         New Issue                                    
+09-29-04 07:52 roswel         Distribution              => Debian
+sid/experimental
+09-29-04 07:52 roswel         Kernel Version            => 2.6.9-rc2-bk14  
+09-29-04 07:52 roswel         Issue Monitored: roswel                      
+10-01-04 01:24 karsten        Note Added: 0001989                          
+10-01-04 10:07 roswel         Note Added: 0001996                          
+10-01-04 15:27 karsten        File Added: snd-usb-usx2y.patch.0.8.0             
+      
+10-01-04 15:29 karsten        Note Added: 0001998                          
+10-01-04 19:06 roswel         Note Added: 0002004                          
+10-05-04 08:32 roswel         Note Added: 0002015                          
+09-14-05 15:49 jdthood        Note Added: 0006159                          
+09-18-05 13:53 roswel         Note Added: 0006271                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
