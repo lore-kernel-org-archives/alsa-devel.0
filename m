@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 18 Sep 2005 09:36:27 +0200
-Message-ID: <967f63567f018d4d4819b371a9928baa@bugtrack.alsa-project.org>
+Date: Sun, 18 Sep 2005 10:14:26 +0200
+Message-ID: <adb934c32624c15c958f5779d8c076b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1ABF8128
-	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 09:36:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07D7B147
+	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 10:14:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-18-2005 09:36 CEST
+Last Modified:              09-18-2005 10:14 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,39 +50,10 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-Relazioni           ID      Riassunto
+Relationships       ID      Summary
 ----------------------------------------------------------------------
-é duplicata da      0001228 Skype Does not work with aoss
+has duplicate       0001228 Skype Does not work with aoss
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 09-18-05 03:33 
-----------------------------------------------------------------------
-OK, now we are getting somewhere.  Create a new .asoundrc containing only:
-
-cards.ENS1370.pcm.dmix.period_time 0
-cards.ENS1370.pcm.dmix.period_size 256
-cards.ENS1370.pcm.dmix.buffer_size 16384
-
-and post the Skype debug output again.
-
-The log shows that Skype uses SNDCTL_DSP_SETFRAGMENT ioctl to ask for one
-256 byte fragment per buffer then sets the format to 16 bit mono @48000Hz.
- Next it calls SNDCTL_DSP_GETOSPACE which tells us the buffer is 33436
-bytes, we can write 4096 fragments without blocking, the fragments are 16
-bytes, and the buffer is divided into 8 fragments.  These values obviously
-make no sense, but then Skype proceeds to loop write()ing 960 bytes at a
-time to the audio device.
-
-As Skype only uses one fragment per buffer, and does not bother to check
-the available space after each write, or notice that GETOSPACE returned
-bizarre values, it must be counting on write() eventually returning
--EWOULDBLOCK when the buffer fills up.
-
-IOW it looks like AOSS is still buggy, but Skype is really abusing the OSS
-API.
-
-
 
 ----------------------------------------------------------------------
  Hetfield - 09-18-05 09:36 
@@ -135,6 +106,17 @@ open("/dev/dsp", 2, 0) -> -1
 /dev/dsp-1: Dispositivo o risorsa occupata
 
 close(39) -> 0
+
+----------------------------------------------------------------------
+ rlrevell - 09-18-05 10:14 
+----------------------------------------------------------------------
+OK, you have to do one more thing:
+
+ALSA_OSS_DEBUG=1 ALSA_OSS_PCM_DEVICE="default" aoss ./skype.bin
+
+Also my last message was wrong - Skype asks for 16 fragments of 256 bytes
+not 1.  And I had the order of the structure wrong - GETOSPACE actually
+returned 8 of 16 4096K fragments in the buffer.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -207,6 +189,7 @@ Date Modified  Username       Field                    Change
 09-18-05 03:26 rlrevell       Note Added: 0006265                          
 09-18-05 03:33 rlrevell       Note Edited: 0006265                         
 09-18-05 09:36 Hetfield       Note Added: 0006266                          
+09-18-05 10:14 rlrevell       Note Added: 0006267                          
 ======================================================================
 
 
