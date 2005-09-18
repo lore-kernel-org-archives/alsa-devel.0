@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
-Date: Sun, 18 Sep 2005 15:47:10 +0200
-Message-ID: <3a7b091b5c6c6f35caa863c8bb6ab30e@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: dxs_support=5 works with my onboard sound
+Date: Sun, 18 Sep 2005 16:50:06 +0200
+Message-ID: <20050918145005.GA4516@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5BC5161
-	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 15:47:10 +0200 (MEST)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 55A36165
+	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 16:50:08 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
-======================================================================
-Reported By:                Soft
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1381
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             
-======================================================================
-Date Submitted:             08-31-2005 09:50 CEST
-Last Modified:              09-18-2005 15:47 CEST
-======================================================================
-Summary:                    No sound on Thinkpad T40p
-Description: 
-When attempting to play a sound on a Thinkpad T40p, all sound players
-behave as if playing normally, but no sound comes out of the speakers. 
-This is with Debian Sarge + various package upgrades to testing, with a
-number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
-1.0.8/1.0.9/1.0.10rc1.
+dmesg said:
 
-I have already tried various "tricks", including muting Headphone Jack
-Sense and Line Jack Sense.  Please see the following thread on alsa-user
-mailing-list:
-http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
-for more information.
-======================================================================
+<--   snip  -->
 
-----------------------------------------------------------------------
- jdthood - 09-17-05 18:48 
-----------------------------------------------------------------------
-Try muting 'External Amplifier'.
+via82xx: Assuming DXS channels with 48k fixed sample rate.
+         Please try dxs_support=5 option
+         and report if it works on your machine.
+         For more details, read ALSA-Configuration.txt.
+ACPI: PCI Interrupt 0000:00:11.5[C] -> GSI 22 (level, low) -> IRQ 21
+PCI: Via IRQ fixup for 0000:00:11.5, from 0 to 5
+PCI: Setting latency timer of device 0000:00:11.5 to 64
+codec_read: codec 0 is not valid [0xfe0000]
+codec_read: codec 0 is not valid [0xfe0000]
+codec_read: codec 0 is not valid [0xfe0000]
+codec_read: codec 0 is not valid [0xfe0000]
 
-Try raising the volume using the special keys on the ThinkPad.
+<--  snip  -->
 
-----------------------------------------------------------------------
- Soft - 09-18-05 15:47 
-----------------------------------------------------------------------
-> Try muting 'External Amplifier'.
-> Try raising the volume using the special keys on the ThinkPad.
+dxs_support=5 seems to work fine with multiple streams and 44.1kHz mp3s.
 
-I had already tried, and now tried again in vain.  But thanks for the
-suggestion.
+lspci output of the device:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-31-05 09:50 Soft           New Issue                                    
-08-31-05 09:50 Soft           Distribution              => Debian          
-09-17-05 18:48 jdthood        Note Added: 0006251                          
-09-18-05 15:47 Soft           Note Added: 0006272                          
-======================================================================
+0000:00:11.5 0401: 1106:3059 (rev 60)
+        Subsystem: 1043:810d
+        Flags: medium devsel, IRQ 21
+        I/O ports at e000 [size=256]
+        Capabilities: [c0] Power Management version 2
 
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
