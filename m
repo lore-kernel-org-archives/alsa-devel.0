@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
-Date: Sun, 18 Sep 2005 12:05:18 +0200
-Message-ID: <9ec6b8bd343fde7504a24ef9f76d476f@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Best default values for "External Amplifier" and
+ "Audigy Analog/Digital Output Jack"
+Date: Sun, 18 Sep 2005 12:44:18 +0100
+Message-ID: <432D5312.1000506@superbug.co.uk>
+References: <432D290E.4010506@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F56315C
-	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 12:05:19 +0200 (MEST)
+In-Reply-To: <432D290E.4010506@yahoo.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,97 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Thomas Hood <jdthood@yahoo.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thomas Hood wrote:
+> Hello.  I am one of those responsible for packaging ALSA for Debian.
+> 
+> Does anyone have documentation of which machines require "External Amplifier"
+> to be on and which ones require EA to be off in order for sound to be emitted
+> in the simplest or most common machine configuration?
+> 
+> I have the same question about the "Audigy Analog/Digital Output Jack".
+> 
+> In Debian and Ubuntu we get complaints from users that sound "doesn't
+> work".  After some investigation it turns out that either EA or
+> AADOJ is set incorrectly.  Unlike other controls, it seems that there
+> is no one setting for these that is a "sane" value for all machines.  So
+> it seems that when our script is asked to set sane values, the script
+> will have to choose a value depending on the computer model.  But we have no
+> list of which models require the one setting and which models require the
+> other.  We thought that perhaps the ALSA developers have such a list.
+> 
+> What we would actually prefer is that the driver do this work and initialize
+> EA and AADOJ to "sane" values---if necessary depending on the computer model.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
-======================================================================
-Reported By:                midnight
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1378
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sid
-Kernel Version:             2.6.12.5
-======================================================================
-Date Submitted:             08-30-2005 11:33 CEST
-Last Modified:              09-18-2005 12:05 CEST
-======================================================================
-Summary:                    Surround Channel and Surround mixer doesn't work
-with a CM9761chip
-Description: 
-The sound works fine on the center, LFE an front channels but I have no
-sound on the rear channel. also, I can't change the volume of the surround
-mixer in alsamixer (I can juste mute/unmute it).
+Thomas,
 
-I use the surround51 device to play my test sound and my test sound is a 6
-channels one.
+There is no real answer to your question. All motherboards and sound 
+cards that might contain the same sound chips, do not have the same 
+connections with the outside world. So, for some, setting EA to 1 
+enables sound, for others setting EA to 0 enables sound etc.
+The only way we can overcome this is on a case by case basis. We add 
+code to the driver so that it recognises a particular motherboard, and 
+set it correctly for that particular motherboard.
+So, the best way to fix this problem will be to raise an ALSA bug on 
+https://bugtrack.alsa-project.org/alsa-bug/ or on the kernel bug tracker 
+with full details of the motherboard and the sound chips involved, and 
+it will eventually be fixed.
 
-I use the via82xx module
+We would need the following:
+The default settings, when not working:
+amixer contents
+cat /proc/asound/card0/codec97#0/ac97#0-0
+cat /proc/asound/card0/codec97#0/ac97#0-0+regs
 
-thanks
-======================================================================
+The settings when working correctly:
+amixer contents
+cat /proc/asound/card0/codec97#0/ac97#0-0
+cat /proc/asound/card0/codec97#0/ac97#0-0+regs
+lspci -vvn
 
-----------------------------------------------------------------------
- tiwai - 09-13-05 18:27 
-----------------------------------------------------------------------
-Fixed on CVS version.  Please give a shot.
-
-----------------------------------------------------------------------
- midnight - 09-18-05 12:05 
-----------------------------------------------------------------------
-With today's CVS version, the sound is ok for the front and rear speakers
-but not for the center and LFE ones.
-
-if I use speaker-test with the front or surround40 device (4 speakers) it
-is ok.
-
-but if I use "speaker-test -c6 -Dsurround5", there is always a noise on
-the center and LFE speakers whatever the speaker selected. But no sound on
-the front and rears speakers.
-
-however, the value of the 0x64 register is OK when I use surround51
-device.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-30-05 11:33 midnight       New Issue                                    
-08-30-05 11:33 midnight       Distribution              => Debian Sid      
-08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
-09-07-05 11:20 midnight       Note Added: 0006053                          
-09-07-05 15:32 tiwai          Note Added: 0006054                          
-09-08-05 01:10 midnight       Note Added: 0006069                          
-09-08-05 18:58 tiwai          Note Added: 0006076                          
-09-08-05 19:00 midnight       Note Added: 0006077                          
-09-08-05 19:12 tiwai          Note Added: 0006080                          
-09-08-05 19:58 midnight       Note Added: 0006081                          
-09-08-05 20:42 tiwai          Note Added: 0006082                          
-09-08-05 20:44 tiwai          Note Added: 0006083                          
-09-08-05 23:20 midnight       Note Added: 0006084                          
-09-09-05 12:47 tiwai          Note Added: 0006096                          
-09-09-05 14:16 midnight       File Added: ac97#0-0                         
-09-09-05 14:16 midnight       File Added: asound.state                     
-09-09-05 14:21 midnight       Note Added: 0006097                          
-09-09-05 14:29 tiwai          Note Added: 0006098                          
-09-09-05 14:54 midnight       Note Added: 0006099                          
-09-09-05 16:32 tiwai          Note Added: 0006100                          
-09-09-05 19:50 midnight       Note Added: 0006104                          
-09-09-05 20:14 tiwai          Note Added: 0006105                          
-09-09-05 23:41 midnight       Note Added: 0006106                          
-09-13-05 18:27 tiwai          Note Added: 0006155                          
-09-18-05 12:05 midnight       Note Added: 0006270                          
-======================================================================
-
-
+James
 
 
 -------------------------------------------------------
