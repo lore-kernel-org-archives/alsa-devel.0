@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Sun, 18 Sep 2005 10:14:26 +0200
-Message-ID: <adb934c32624c15c958f5779d8c076b4@bugtrack.alsa-project.org>
+Date: Sun, 18 Sep 2005 10:28:41 +0200
+Message-ID: <0e113d5e27f2d33dd1d68c7bfae77b47@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07D7B147
-	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 10:14:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC50115C
+	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2005 10:28:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-18-2005 10:14 CEST
+Last Modified:              09-18-2005 10:28 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,62 +50,10 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-Relationships       ID      Summary
+Relazioni           ID      Riassunto
 ----------------------------------------------------------------------
-has duplicate       0001228 Skype Does not work with aoss
+é duplicata da      0001228 Skype Does not work with aoss
 ======================================================================
-
-----------------------------------------------------------------------
- Hetfield - 09-18-05 09:36 
-----------------------------------------------------------------------
-now skype works with aoss! but those settings are buggy.
-
-the problem is dmix is pretty disabled:
-skype using dsp? no other apps can use it.
-
-but even using 2 alsa native apps, i can't use both.
-playing mp3 and starting mplayer, make mplayer stops, waiting for mp3
-player to exit.
-
-kiax continues not to work, completly.
-
-
-
-
-ALSA_OSS_DEBUG=1 aoss ./skype.bin  
-open("/dev/mixer", 2, 0) -> 35
-open("/dev/mixer", 2, -1227608792) -> 37
-open("/dev/mixer", 2, 142850184) -> 39
-Opened PCM dsp0 for stream 0 (result = -2)
-Opened PCM default for stream 0 (result = 0)
-Opened PCM default for stream 1 (result = 0)
-open("/dev/dsp", 2, 145797372) -> 41
-ioctl(41, SNDCTL_DSP_GETCAPS, 0xb6d42ccc) -> [13056]
-ioctl(41, SNDCTL_DSP_SETFRAGMENT, 0x8760d08[100008])
-ioctl(41, SNDCTL_DSP_STEREO, 0x8760d0c[0]) -> [0]
-ioctl(41, SNDCTL_DSP_SETFMT, 0x8760d10[16]) -> [16]
-ioctl(41, SNDCTL_DSP_SPEED, 0x8760d24[48000]) -> [48000]
-ioctl(41, SNDCTL_DSP_GETOSPACE, 0xb6d42cd0) -> {16 16 256 4096}
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-write(41, 0xb41fdcc0, 960) -> 960
-
-[CUT]...i hangup
-
-Opened PCM dsp0 for stream 0 (result = -2)
-Opened PCM default for stream 0 (result = -16)
-open("/dev/dsp", 2, 0) -> -1
-/dev/dsp-1: Dispositivo o risorsa occupata
-
-close(39) -> 0
 
 ----------------------------------------------------------------------
  rlrevell - 09-18-05 10:14 
@@ -117,6 +65,11 @@ ALSA_OSS_DEBUG=1 ALSA_OSS_PCM_DEVICE="default" aoss ./skype.bin
 Also my last message was wrong - Skype asks for 16 fragments of 256 bytes
 not 1.  And I had the order of the structure wrong - GETOSPACE actually
 returned 8 of 16 4096K fragments in the buffer.
+
+----------------------------------------------------------------------
+ Hetfield - 09-18-05 10:28 
+----------------------------------------------------------------------
+same problems.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -190,6 +143,7 @@ Date Modified  Username       Field                    Change
 09-18-05 03:33 rlrevell       Note Edited: 0006265                         
 09-18-05 09:36 Hetfield       Note Added: 0006266                          
 09-18-05 10:14 rlrevell       Note Added: 0006267                          
+09-18-05 10:28 Hetfield       Note Added: 0006268                          
 ======================================================================
 
 
