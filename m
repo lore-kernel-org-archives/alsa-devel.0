@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001436]: Audigy NX2 miss suppor for S/PDIFF -> surround support
-Date: Mon, 19 Sep 2005 19:58:51 +0200
-Message-ID: <58a5d648bd48ba426252d284ed25f54f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
+Date: Mon, 19 Sep 2005 19:57:33 +0200
+Message-ID: <48ffbb0b28bd83386900d1b6164c622f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA6D9197
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 19:58:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BA8C197
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 19:57:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1436> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
 ======================================================================
-Reported By:                Uraeus
-Assigned To:                Clemens Ladisch
+Reported By:                iluxa
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1436
-Category:                   USB - usb-audio
+Issue ID:                   1435
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.12
+Distribution:               
+Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
-Date Submitted:             09-19-2005 17:46 CEST
-Last Modified:              09-19-2005 19:58 CEST
+Date Submitted:             09-19-2005 08:49 CEST
+Last Modified:              09-19-2005 19:57 CEST
 ======================================================================
-Summary:                    Audigy NX2 miss suppor for S/PDIFF -> surround
-support
+Summary:                    ac97 codec is not found when loading the driver
 Description: 
-I have a Audigy NX2 (model no. SB0300) and it seems support for S/PDIFF
-support is not implemented in the driver yet for this card. A lot of
-googling and the product matrix here have lead me to believe that at least
-:)
+When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
+saying
+"atiixp-modem: no codec available" and modem doesn't function after that.
 
-So this is a feature request bug that this gets added to driver.
+Little more investigation shown that snd_ac97_mixer thinks the codec is
+already 
+registered as sound codec by audio card driver.
+
+I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
+from CVS HEAD - all with same result.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-19-05 19:58 
+ sashak - 09-19-05 13:27 
 ----------------------------------------------------------------------
-Will do, when (or if) I find out how to do this.  There isn't any
-documentation from Creative.
+Please could you send us output of 'lspci -vv', content of files (audio
+related) '/proc/asound/card0/atiixp' and
+'/proc/asound/card0/atiixp/codec97#0/ac97#0-0'.
+If you are with CVS version of ALSA, please configure it with option
+'--with-debug=detect' and send us 'dmesg' output as well.
+
+Thanks, Sasha.
+
+----------------------------------------------------------------------
+ iluxa - 09-19-05 19:57 
+----------------------------------------------------------------------
+Damn.. uploaded wrong file
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-05 17:46 Uraeus         New Issue                                    
-09-19-05 17:46 Uraeus         Distribution              => Fedora Core     
-09-19-05 17:46 Uraeus         Kernel Version            => 2.6.12          
-09-19-05 19:58 Clemens LadischNote Added: 0006297                          
-09-19-05 19:58 Clemens LadischSeverity                 major => feature    
+09-19-05 08:49 iluxa          New Issue                                    
+09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
+09-19-05 13:27 sashak         Note Added: 0006292                          
+09-19-05 19:32 iluxa          File Added: pci.txt                          
+09-19-05 19:56 iluxa          File Added: comment.diff                     
+09-19-05 19:57 iluxa          Note Added: 0006296                          
 ======================================================================
 
 
