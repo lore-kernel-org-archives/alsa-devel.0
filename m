@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000935]: M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device open
-Date: Mon, 19 Sep 2005 10:06:43 +0200
-Message-ID: <85ccb8cb7df61d8824144a40a524e458@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
+Date: Mon, 19 Sep 2005 10:07:22 +0200
+Message-ID: <694e74043fc0e15798278e51d812b559@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4566413A
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:06:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27E4D13A
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:07:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=935> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
 ======================================================================
-Reported By:                stever8
-Assigned To:                
+Reported By:                hamishtpb
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   935
-Category:                   PCI - ice1712
+Issue ID:                   885
+Category:                   USB - usb-usx2y
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Redhat Linux 7.3, modified
-Kernel Version:             2.4.26
+Status:                     resolved
+Distribution:               Gentoo 2004.3
+Kernel Version:             2.4.28-Gentoo-r5
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-23-2005 20:09 CET
-Last Modified:              09-19-2005 10:06 CEST
+Date Submitted:             02-06-2005 05:57 CET
+Last Modified:              09-19-2005 10:07 CEST
 ======================================================================
-Summary:                    M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device
-open
+Summary:                    usx2y is unsupported in v 1.08 builds
 Description: 
-Our original report:
-
-When we first load the alsa drivers, we see a S/PDIF output signal from
-the 1010LT 
-on an oscilloscope. A minidisc player also sees this as a valid signal (it
-is all 
-zeros, silence).
-
-As soon as our program opens the audio device, however, the signal goes
-to 0V on the oscilloscope, and the minidisc of course sees "no signal".
-We can't output S/PDIF, no matter what settings we try in Envy24control.
-
-Strangely enough, if we do the following, we do get S/PDIF output :
-. Plug in an external S/PDIF input source (which is muted so as not to
-mix
-with our sound).
-. In Envy24control, set the Master Clock to "Word Clock". (it doesn't work
-if the 
-master clock is set to "S/PDIF")
-
-
-Jaroslav Kysela suggested:
-Strange. Could you try to comment lines:
-        //if (reset)        
-        //        snd_cs8427_reset(cs8427);
-
-in alsa-kernel/i2c/cs8427.c and test if the signal is present after this
-change?
-
-Which I did. The S/PDIF signal no longer goes away (it appears on the
-scope, and the minidisc player recognizes it as a valid signal) however it
-just contains silence.
-
+Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
+when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
+compile went smoothly.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 10:06 
+ hamishtpb - 02-18-05 16:27 
 ----------------------------------------------------------------------
-stever8: Were you able to solve this problem?  Have you tried playing with
-the various mixer switches listed by amixer?
+OK - rested and refreshed - the problem yesterday was a driver missing from
+Kernel :-| D'oh!
+
+
+So with 2.6 kernel I now have the Tascam working fine. I seem to remember
+that the usx2y support went AWOL in a release of ALSA 1.0.3 so maybe
+something like that happened again with 1.0.8? Either way I have it
+working now in the 2.6 kernel.
+
+----------------------------------------------------------------------
+ jdthood - 09-19-05 10:07 
+----------------------------------------------------------------------
+> I have it working now in the 2.6 kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 20:09 stever8        New Issue                                    
-02-23-05 20:09 stever8        Distribution              => Redhat Linux 7.3,
-modified
-02-23-05 20:09 stever8        Kernel Version            => 2.4.26          
-09-19-05 10:06 jdthood        Note Added: 0006284                          
+02-06-05 05:57 hamishtpb      New Issue                                    
+02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
+02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
+02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
+02-06-05 15:53 hamishtpb      Note Added: 0003525                          
+02-09-05 11:55 tiwai          Note Added: 0003545                          
+02-09-05 12:23 hamishtpb      Note Added: 0003549                          
+02-09-05 12:44 hamishtpb      Note Added: 0003551                          
+02-09-05 12:53 hamishtpb      Note Edited: 0003551                         
+02-11-05 15:42 Clemens LadischNote Added: 0003564                          
+02-11-05 17:22 hamishtpb      Note Added: 0003565                          
+02-17-05 15:04 hamishtpb      Note Added: 0003628                          
+02-17-05 15:05 hamishtpb      Issue End Monitor: hamishtpb                    
+02-17-05 18:19 tiwai          Note Added: 0003630                          
+02-17-05 20:00 hamishtpb      File Added: config-2.4.28-gentoo-r5               
+    
+02-17-05 20:02 hamishtpb      Note Added: 0003635                          
+02-18-05 16:27 hamishtpb      Note Added: 0003656                          
+09-19-05 10:07 jdthood        Status                   assigned => resolved
+09-19-05 10:07 jdthood        Resolution               open => fixed       
+09-19-05 10:07 jdthood        Note Added: 0006285                          
 ======================================================================
 
 
