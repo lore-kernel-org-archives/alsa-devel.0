@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Mon, 19 Sep 2005 09:12:19 +0200
-Message-ID: <6a20fd82cece025cac2c571d23289655@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
+Date: Mon, 19 Sep 2005 09:25:14 +0200
+Message-ID: <80959abece13bd5e5b9196932107490b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46D7811B
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:12:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B745188
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:25:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
 ======================================================================
-Reported By:                pcmcginty
-Assigned To:                jdthood
+Reported By:                colding
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
+Issue ID:                   1276
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Gentoo AMD64 2005.0
+Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
+20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              09-19-2005 09:12 CEST
+Date Submitted:             07-22-2005 22:13 CEST
+Last Modified:              09-19-2005 09:25 CEST
 ======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
+Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
+playing any sound.
 Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
+I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
+I have enabled ALSA and OSS emulation in the kernel. I have tried as
+compiled in, no modules, and as module. The card is correctly detected on
+boot-up
+and apparently activated. 
+
+Everything seems to be configured correctly according to the alsa guide
+for Gentoo and all I could find at alsa-project and for Gnome. 
+
+The problem is that I am only hearing cyclically repeating clicks, with
+weak static noise in-between, when I am trying to play music. I have a
+set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
+analog output jack (Line Out 1) on the card.
+
+It seems that my problems are the same as in this former post to the
+list:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+
+That thread concluded with no solution but to revert to OSS.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- JonathanL - 09-18-05 23:30 
+ jdthood - 09-17-05 18:52 
 ----------------------------------------------------------------------
-works fine now with recents kernel (gentoo-2.6.12-r8 for me)
+Switch off "Audigy Analog/Digital Output Jack" and then try playing
+with other controls such as 'External Amplifier' to see if you can
+find a combination that works.  Please report your results here.
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 09:12 
+ colding - 09-19-05 09:25 
 ----------------------------------------------------------------------
-OK, let's conclude that it is fixed.
+I've done that. I spend a few hours trying to find the magic combination,
+if any, but to no avail.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
-12-27-04 15:12 tiwai          Note Added: 0002961                          
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
-12-27-04 19:28 pcmcginty      Note Added: 0002973                          
-01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
-01-12-05 14:13 JonathanL      Note Added: 0003163                          
-01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
-    
-01-12-05 15:02 tiwai          Note Added: 0003164                          
-01-12-05 15:03 tiwai          Note Added: 0003165                          
-01-12-05 15:04 tiwai          Note Added: 0003166                          
-01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
-01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
-   
-01-12-05 16:13 JonathanL      Note Added: 0003174                          
-01-12-05 20:45 tiwai          Note Added: 0003178                          
-01-12-05 23:23 JonathanL      File Added: sub0                             
-01-12-05 23:23 JonathanL      Note Added: 0003180                          
-01-13-05 12:53 tiwai          Note Added: 0003184                          
-01-22-05 02:02 bengan         Note Added: 0003371                          
-01-22-05 02:03 bengan         Note Edited: 0003371                         
-01-22-05 02:12 bengan         Note Edited: 0003371                         
-01-23-05 01:38 JonathanL      Note Added: 0003384                          
-01-27-05 18:20 spr            Issue Monitored: spr                         
-01-27-05 18:22 spr            Note Added: 0003421                          
-09-15-05 15:18 jdthood        Note Added: 0006207                          
-09-15-05 20:29 spr            Note Added: 0006221                          
-09-16-05 16:29 jdthood        Note Added: 0006245                          
-09-18-05 23:30 JonathanL      Note Added: 0006273                          
-09-19-05 09:12 jdthood        Status                   new => resolved     
-09-19-05 09:12 jdthood        Resolution               open => fixed       
-09-19-05 09:12 jdthood        Assigned To               => jdthood         
-09-19-05 09:12 jdthood        Note Added: 0006275                          
+07-22-05 22:13 colding        New Issue                                    
+07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
+07-22-05 22:13 colding        Kernel Version            => Linux omc-2
+2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
+Processor 252 AuthenticAMD GNU/Linux
+07-23-05 12:53 colding        Issue Monitored: colding                     
+07-23-05 15:47 colding        Note Added: 0005553                          
+08-16-05 12:34 pzad           Note Added: 0005826                          
+08-16-05 16:52 rlrevell       Note Added: 0005829                          
+08-16-05 16:53 rlrevell       Status                   new => feedback     
+08-17-05 09:05 colding        Note Added: 0005834                          
+09-17-05 18:52 jdthood        Note Added: 0006252                          
+09-19-05 09:25 colding        Note Added: 0006276                          
 ======================================================================
 
 
