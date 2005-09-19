@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001006]: soundcard not supported
-Date: Mon, 19 Sep 2005 10:14:52 +0200
-Message-ID: <6e5d2864897f3721b96c52d77bd432b3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI playback
+Date: Mon, 19 Sep 2005 10:19:57 +0200
+Message-ID: <7a7e55f6dfbe0e9586a00727f6ef6e18@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6223F13A
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:14:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F14017B
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:19:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1006> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
 ======================================================================
-Reported By:                devas
-Assigned To:                jdthood
+Reported By:                skunk
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1006
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   block
+Issue ID:                   952
+Category:                   PCI - emu10k1
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               c't-debian
-Kernel Version:             2.4.27
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
 ======================================================================
-Date Submitted:             03-22-2005 21:18 CET
-Last Modified:              09-19-2005 10:14 CEST
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              09-19-2005 10:19 CEST
 ======================================================================
-Summary:                    soundcard not supported
+Summary:                    System freeze at end of MIDI playback
 Description: 
-configure: error: Unsupported soundcard cs4236
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
 
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
+
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
+
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- devas - 03-22-05 21:49 
+ jdthood - 09-19-05 10:10 
 ----------------------------------------------------------------------
-./configure --with-cards=emu10k1 tells me same message: seems to be a
-problem with the kernel and/or the sources (kernel-headers), i suppose (as
-i have a custom kernel).
+skunk: Do you have anything new to report about this problem?
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 10:14 
+ skunk - 09-19-05 10:19 
 ----------------------------------------------------------------------
-This was a local problem.  The user could not compile the drivers.
+I haven't been playing MIDI files much lately, so I haven't encountered
+this bug again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 21:18 devas          New Issue                                    
-03-22-05 21:18 devas          Distribution              => c't-debian      
-03-22-05 21:18 devas          Kernel Version            => 2.4.27          
-03-22-05 21:28 devas          Note Added: 0004132                          
-03-22-05 21:49 devas          Note Added: 0004133                          
-09-19-05 10:14 jdthood        Status                   new => resolved     
-09-19-05 10:14 jdthood        Resolution               open => not an issue
-09-19-05 10:14 jdthood        Assigned To               => jdthood         
-09-19-05 10:14 jdthood        Note Added: 0006289                          
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+09-19-05 10:10 jdthood        Note Added: 0006287                          
+09-19-05 10:19 skunk          Note Added: 0006290                          
 ======================================================================
 
 
