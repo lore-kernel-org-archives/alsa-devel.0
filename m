@@ -1,11 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: [alsa-utils/alsactl patch] Extend 'alsactl names' to show modem devices.
-Date: Tue, 20 Sep 2005 01:18:52 +0300
-Message-ID: <20050919221852.GC15916@tecr>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Audigy DSP questions.
+Date: Mon, 19 Sep 2005 17:05:08 -0400
+Message-ID: <1127163909.9899.46.camel@mindpipe>
+References: <432D8AA7.4040203@superbug.co.uk>
+	 <432DA3D7.2070904@superbug.co.uk>  <432DAB41.9070508@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <432DAB41.9070508@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,41 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-09-18 at 19:00 +0100, James Courtier-Dutton wrote:
+> James Courtier-Dutton wrote:
+> > I think I have worked it out.
+> > Take each value and divide by 0x80000000 to get a value between 0 and 1.
+> > This is then converted into dB with
+> > 0 == Mute
+> > 0x01571f82 == -19.8 dB
+> > 0x7fffffff == 0 dB
+> > With each value being a constant step of 0.2 dB.
+> > 
+> > James
+> > 
+> > 
+> Did anyone spot the deliberate mistake?
+> 
 
-Extend 'alsactl names' to show phoneline and modem device names.
+I give up, what is it and why do you think it's deliberate?
 
-Signed-off-by: Sasha Khapyorsky <sashak@smlink.com>
+Lee
 
-Index: alsa-utils/alsactl/names.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/alsactl/names.c,v
-retrieving revision 1.5
-diff -u -p -r1.5 names.c
---- alsa-utils/alsactl/names.c	17 May 2005 10:38:07 -0000	1.5
-+++ alsa-utils/alsactl/names.c	19 Sep 2005 13:28:54 -0000
-@@ -204,6 +204,8 @@ static int probe_pcm_card(int card, snd_
- 		"surround51:%i", "Front, Rear, Center and Woofer",
- 		"surround71:%i", "Front, Rear, Side, Center and Woofer",
- 		"spdif:%i", "S/PDIF (IEC958) Optical or Coaxial Wire",
-+		"phoneline:%i", "Phone Line Interface",
-+		"modem:%i", "Soft Modem",
- 		NULL
- 	};
- 	
-@@ -239,7 +241,8 @@ static int probe_pcm_card(int card, snd_
- 			class = snd_pcm_info_get_class(info2);
- 		}
- 		if (class != SND_PCM_CLASS_GENERIC &&
--		    class != SND_PCM_CLASS_MULTI)	/* skip this */
-+		    class != SND_PCM_CLASS_MULTI &&
-+		    class != SND_PCM_CLASS_MODEM )	/* skip this */
- 			continue;
- 		if (first) {
- 			for (idx = 0; vnames1[idx] != NULL; idx += 2)
 
 
 -------------------------------------------------------
