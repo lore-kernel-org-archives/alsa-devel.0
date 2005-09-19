@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000895]: Es1968 driver seems not to support "skype" in full duplex mode
-Date: Mon, 19 Sep 2005 10:05:11 +0200
-Message-ID: <1097abe800b138bf43dfd7c2cb445d3a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000935]: M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device open
+Date: Mon, 19 Sep 2005 10:06:43 +0200
+Message-ID: <85ccb8cb7df61d8824144a40a524e458@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90E7A13A
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:05:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4566413A
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:06:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=895> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=935> 
 ======================================================================
-Reported By:                woweil
-Assigned To:                tiwai
+Reported By:                stever8
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   895
-Category:                   PCI - es1968
+Issue ID:                   935
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     new
+Distribution:               Redhat Linux 7.3, modified
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             02-09-2005 13:00 CET
-Last Modified:              09-19-2005 10:05 CEST
+Date Submitted:             02-23-2005 20:09 CET
+Last Modified:              09-19-2005 10:06 CEST
 ======================================================================
-Summary:                    Es1968 driver seems not to support "skype" in full
-duplex mode
+Summary:                    M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device
+open
 Description: 
-When I tried a talk with the application "skype", I recognized that the
-soundcard solo-1 was not in full duplex mode. Every time when I have
-connection, there is a gread banging. The other part of the talk hears the
-banging too. A conversation is impossible, because no word can be
-recognized.
+Our original report:
 
-After that I tried an installation with Windows 2000. The software worked
-well and a conversation is possible without problems. So I suppose, that
-the duplexmode is not possible with the driver.
+When we first load the alsa drivers, we see a S/PDIF output signal from
+the 1010LT 
+on an oscilloscope. A minidisc player also sees this as a valid signal (it
+is all 
+zeros, silence).
 
-I use a Thinkpad 390X
+As soon as our program opens the audio device, however, the signal goes
+to 0V on the oscilloscope, and the minidisc of course sees "no signal".
+We can't output S/PDIF, no matter what settings we try in Envy24control.
+
+Strangely enough, if we do the following, we do get S/PDIF output :
+. Plug in an external S/PDIF input source (which is muted so as not to
+mix
+with our sound).
+. In Envy24control, set the Master Clock to "Word Clock". (it doesn't work
+if the 
+master clock is set to "S/PDIF")
+
+
+Jaroslav Kysela suggested:
+Strange. Could you try to comment lines:
+        //if (reset)        
+        //        snd_cs8427_reset(cs8427);
+
+in alsa-kernel/i2c/cs8427.c and test if the signal is present after this
+change?
+
+Which I did. The S/PDIF signal no longer goes away (it appears on the
+scope, and the minidisc player recognizes it as a valid signal) however it
+just contains silence.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 19:49 
+ jdthood - 09-19-05 10:06 
 ----------------------------------------------------------------------
-I guess it's an OSS app?
-A small testcase is necessary for debugging.
+stever8: Were you able to solve this problem?  Have you tried playing with
+the various mixer switches listed by amixer?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-05 13:00 woweil         New Issue                                    
-02-09-05 13:00 woweil         Distribution              => Debian          
-02-09-05 13:00 woweil         Kernel Version            => 2.6.9           
-02-14-05 19:49 tiwai          Note Added: 0003607                          
-09-19-05 10:05 jdthood        Summary                  Es1968 driver seems not
-to support full duplex mode => Es1968 driver seems not to support "skype" in
-full duplex mode
+02-23-05 20:09 stever8        New Issue                                    
+02-23-05 20:09 stever8        Distribution              => Redhat Linux 7.3,
+modified
+02-23-05 20:09 stever8        Kernel Version            => 2.4.26          
+09-19-05 10:06 jdthood        Note Added: 0006284                          
 ======================================================================
 
 
