@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Mon, 19 Sep 2005 19:57:33 +0200
-Message-ID: <48ffbb0b28bd83386900d1b6164c622f@bugtrack.alsa-project.org>
+Date: Mon, 19 Sep 2005 20:07:05 +0200
+Message-ID: <d1403431c0d9c9e0f1184c9f0497d7f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BA8C197
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 19:57:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A7EA194
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 20:07:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
 Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-19-2005 19:57 CEST
+Last Modified:              09-19-2005 20:07 CEST
 ======================================================================
 Summary:                    ac97 codec is not found when loading the driver
 Description: 
@@ -59,20 +59,31 @@ from CVS HEAD - all with same result.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 09-19-05 13:27 
-----------------------------------------------------------------------
-Please could you send us output of 'lspci -vv', content of files (audio
-related) '/proc/asound/card0/atiixp' and
-'/proc/asound/card0/atiixp/codec97#0/ac97#0-0'.
-If you are with CVS version of ALSA, please configure it with option
-'--with-debug=detect' and send us 'dmesg' output as well.
-
-Thanks, Sasha.
-
-----------------------------------------------------------------------
  iluxa - 09-19-05 19:57 
 ----------------------------------------------------------------------
 Damn.. uploaded wrong file
+
+----------------------------------------------------------------------
+ iluxa - 09-19-05 20:07 
+----------------------------------------------------------------------
+and here is dmesg output after running modprobe snd-atiixp and
+snd-atiixp-modem
+(--with-debug=detect)
+
+ACPI: PCI Interrupt 0000:00:14.5[B] -> GSI 17 (level, low) -> IRQ 185
+ACPI: PCI Interrupt 0000:00:14.6[B] -> GSI 17 (level, low) -> IRQ 185
+ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1084:
+atiixp-modem: codec 0 not available for modem
+ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1091:
+atiixp-modem: no codec available
+ACPI: PCI interrupt for device 0000:00:14.6 disabled
+
+BTW, on unrelated note - I had to tweak manually include/config.h - 
+CONFIG_HAVE_PCI_SAVED_CONFIG and CONFIG_HAVE_NEW_PCI_SAVE_STATE were
+undefined, even though it seems they should have been defined.
+I am not sure if it's something wrong with my build environment, or some
+changes in 2.6.14 that are affecting it.
+When building against 2.6.14 this compile problem didn't occur.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +94,10 @@ Date Modified  Username       Field                    Change
 09-19-05 19:32 iluxa          File Added: pci.txt                          
 09-19-05 19:56 iluxa          File Added: comment.diff                     
 09-19-05 19:57 iluxa          Note Added: 0006296                          
+09-19-05 20:01 iluxa          File Added: atiixp.txt                       
+09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
+   
+09-19-05 20:07 iluxa          Note Added: 0006298                          
 ======================================================================
 
 
