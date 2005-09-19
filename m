@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Tue, 20 Sep 2005 01:15:06 +0200
-Message-ID: <101b91247451bc8fc5a08f14de861ed8@bugtrack.alsa-project.org>
+From: MAILER-DAEMON@perex.cz (Mail Delivery System)
+Subject: Undelivered Mail Returned to Sender
+Date: Tue, 20 Sep 2005 01:39:28 +0200 (MEST)
+Message-ID: <20050919233928.E08B590576@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="6AB499158A.1127173168/mail.perex.cz"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D09A192
-	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 01:15:06 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A44CE194
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 01:40:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,101 +21,69 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a MIME-encapsulated message.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
-======================================================================
-Reported By:                iluxa
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1435
-Category:                   PCI - atiixp-modem
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13, 2.6.14-rc1
-======================================================================
-Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-20-2005 01:15 CEST
-======================================================================
-Summary:                    ac97 codec is not found when loading the driver
-Description: 
-When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
-saying
-"atiixp-modem: no codec available" and modem doesn't function after that.
+--6AB499158A.1127173168/mail.perex.cz
+Content-Description: Notification
+Content-Type: text/plain
 
-Little more investigation shown that snd_ac97_mixer thinks the codec is
-already 
-registered as sound codec by audio card driver.
+This is the Perex's E-mail Delivery System program at host mail.perex.cz.
 
-I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
-from CVS HEAD - all with same result.
+I'm sorry to have to inform you that the message returned
+below could not be delivered to one or more destinations.
 
+For further assistance, please send mail to <postmaster>
 
-======================================================================
+If you do so, please include this problem report. You can
+delete your own text from the message returned below.
 
-----------------------------------------------------------------------
- sashak - 09-20-05 01:06 
-----------------------------------------------------------------------
-Yes, this codec looks like combined Audio-Modem codec (AMC), some modem
-registers (>= 3c) are represented too.
+			The Perex's E-mail Delivery System program
 
-And I think that atiixp-modem fails to detect codec because detection
-procedure (interrupt driver) is "stolen" by audio driver. Try to unload
-both audio (snd-atiixp) and modem (snd-atiixp-modem) drivers, then load
-only atiixp-modem.
+<alsa-devel-request-old@alsa-project.org>: host
+    alsa.alsa-project.org[160.217.9.25] said: 450
+    <alsa-devel-request-old@alsa-project.org>: Recipient address rejected: User
+    unknown in local recipient table (in reply to RCPT TO command)
 
-Other way to verify this hypothesis is to try with uploaded patch (to
-apply: cd <alsa-dir> ; patch -p0 < atiixp-debug.patch ), then build (with
-'--with-debug=detect') and load both snd-atiixp, snd-atiixp-modem, dmesg
-should show that atiixp detects codec twice (second time when atiixp-modem
-is loaded).
+--6AB499158A.1127173168/mail.perex.cz
+Content-Description: Delivery error report
+Content-Type: message/delivery-status
 
-----------------------------------------------------------------------
- iluxa - 09-20-05 01:15 
-----------------------------------------------------------------------
-Well, as far as failure to detect - it seems that both drivers notice this
-codec,
-but whichever of them grabs it first, marks it as audio or modem codec
-respectively, and atiixp and atiixp-modem think that it is exclusive
-(they
-call snd_ac97_mixer with ac97.scaps SKIP_AUDIO/SKIP_MODEM flag set)
+Reporting-MTA: dns; mail.perex.cz
+Arrival-Date: Thu, 15 Sep 2005 01:22:03 +0200 (MEST)
 
-I tried loading snd-atiixp-modem before snd-atiixp, and modem driver
-loaded, while 
-audio did not. Now, question is if there is anything that could be done to
-actuall
-support modem (I don't think it actually worked even though it loaded fine
-by itself)
+Final-Recipient: rfc822; alsa-devel-request-old@alsa-project.org
+Action: failed
+Status: 4.0.0
+Diagnostic-Code: X-Perex's-E-mail-Delivery-System; host
+    alsa.alsa-project.org[160.217.9.25] said: 450
+    <alsa-devel-request-old@alsa-project.org>: Recipient address rejected: User
+    unknown in local recipient table (in reply to RCPT TO command)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-19-05 08:49 iluxa          New Issue                                    
-09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
-09-19-05 13:27 sashak         Note Added: 0006292                          
-09-19-05 19:32 iluxa          File Added: pci.txt                          
-09-19-05 19:56 iluxa          File Added: comment.diff                     
-09-19-05 19:57 iluxa          Note Added: 0006296                          
-09-19-05 20:01 iluxa          File Added: atiixp.txt                       
-09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
-   
-09-19-05 20:07 iluxa          Note Added: 0006298                          
-09-19-05 23:30 sashak         File Deleted: comment.diff                    
-09-19-05 23:38 sashak         Note Added: 0006304                          
-09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
-        
-09-19-05 23:44 iluxa          Note Added: 0006306                          
-09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
-09-20-05 01:06 sashak         Note Added: 0006307                          
-09-20-05 01:15 iluxa          Note Added: 0006308                          
-======================================================================
+--6AB499158A.1127173168/mail.perex.cz
+Content-Description: Undelivered Message
+Content-Type: message/rfc822
+
+Received: from alsa-project.org (unknown [222.36.44.142])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 6AB499158A
+	for <alsa-devel-request-old@alsa-project.org>; Thu, 15 Sep 2005 01:22:03 +0200 (MEST)
+To: Alsa-devel-request-old <alsa-devel-request-old@alsa-project.org>
+From: Brenton Dafonseca <alsa-devel@alsa-project.org>
+Subject: Your refill for Vitrx
+Date: Wed, 14 Sep 2005 19:20:21 -0400
+Message-ID: <1872015678@alsa-project.org>
+
+Hi, your Vitrx natural enhancement product is ready for ordering, as
+our records indicate that you are due for a refill.
+
+Simply press here to order 
+http://enlarge247.com/checkout.php?product_id=65&c=1207
+
+Please let us know if you have any questions. We are available 24x7.
+
+Dan Williams, customer support.
 
 
+--6AB499158A.1127173168/mail.perex.cz--
 
 
 -------------------------------------------------------
