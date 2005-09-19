@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
-Date: Mon, 19 Sep 2005 10:07:22 +0200
-Message-ID: <694e74043fc0e15798278e51d812b559@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000820]: Mic (and probably other inputs) recording does not work
+Date: Mon, 19 Sep 2005 10:08:38 +0200
+Message-ID: <a195b8f66d329d604198ca51946fc53c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27E4D13A
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:07:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AA7013A
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:08:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=820> 
 ======================================================================
-Reported By:                hamishtpb
-Assigned To:                karsten
+Reported By:                gadkadosh
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   885
-Category:                   USB - usb-usx2y
+Issue ID:                   820
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.4.28-Gentoo-r5
-Resolution:                 fixed
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.10
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-06-2005 05:57 CET
-Last Modified:              09-19-2005 10:07 CEST
+Date Submitted:             01-15-2005 12:49 CET
+Last Modified:              09-19-2005 10:08 CEST
 ======================================================================
-Summary:                    usx2y is unsupported in v 1.08 builds
+Summary:                    Mic (and probably other inputs) recording does not
+work
 Description: 
-Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
-when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
-compile went smoothly.
+I'm running gentoo linux with kernel 2.6.10, though it's the same with
+2.6.9 too. The alsa driver is compiled from the official kernel sources,
+version 1.0.6 according to /proc/asoumd/version.
+I'm trying to use a mic through the mic jack, and use it in GnomeMeeting.
+Mic is the Capture device and volume is at max. I can hear the sounds from
+the mic trough the sound card's speakers (laptop), but no sound gets
+recorded. Tried also with Gnome's Sound Recorder, and with arecord, with
+no success. The apps look as though they record and everything is fine,
+but the output file is just silence.
+I also tried setting Capture to CD, play a cd-audio and record it with
+arecord and got the same results. I suppose it's related. 
+The important point is that I have had the mic working already some time
+ago, with GnomeMeeting, but I can't recall what has changed since then.
+Kernel-2.6.9 has the same results. With kernel-2.6.8.1 the atiixp driver
+does not work at all. Also had an upgrade of alsa-headers lately to 1.0.8
+which I'm not sure is related or not.
 ======================================================================
 
 ----------------------------------------------------------------------
- hamishtpb - 02-18-05 16:27 
+ EPOdata - 02-27-05 01:12 
 ----------------------------------------------------------------------
-OK - rested and refreshed - the problem yesterday was a driver missing from
-Kernel :-| D'oh!
-
-
-So with 2.6 kernel I now have the Tascam working fine. I seem to remember
-that the usx2y support went AWOL in a release of ALSA 1.0.3 so maybe
-something like that happened again with 1.0.8? Either way I have it
-working now in the 2.6 kernel.
+I have the same problem with alsa 1.0.6 on Fedora Core 3 with AW320
+soundcard. The hardware is OK, I can both record and playback on Windows
+2000 on the same HW. wav-files can be played correctly but the wav files
+created by arecord are all silent, also when they are played back on
+Windows.
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 10:07 
+ jdthood - 09-19-05 10:08 
 ----------------------------------------------------------------------
-> I have it working now in the 2.6 kernel.
+Presumably a problem with mixer settings.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 05:57 hamishtpb      New Issue                                    
-02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
-02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
-02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
-02-06-05 15:53 hamishtpb      Note Added: 0003525                          
-02-09-05 11:55 tiwai          Note Added: 0003545                          
-02-09-05 12:23 hamishtpb      Note Added: 0003549                          
-02-09-05 12:44 hamishtpb      Note Added: 0003551                          
-02-09-05 12:53 hamishtpb      Note Edited: 0003551                         
-02-11-05 15:42 Clemens LadischNote Added: 0003564                          
-02-11-05 17:22 hamishtpb      Note Added: 0003565                          
-02-17-05 15:04 hamishtpb      Note Added: 0003628                          
-02-17-05 15:05 hamishtpb      Issue End Monitor: hamishtpb                    
-02-17-05 18:19 tiwai          Note Added: 0003630                          
-02-17-05 20:00 hamishtpb      File Added: config-2.4.28-gentoo-r5               
-    
-02-17-05 20:02 hamishtpb      Note Added: 0003635                          
-02-18-05 16:27 hamishtpb      Note Added: 0003656                          
-09-19-05 10:07 jdthood        Status                   assigned => resolved
-09-19-05 10:07 jdthood        Resolution               open => fixed       
-09-19-05 10:07 jdthood        Note Added: 0006285                          
+01-15-05 12:49 gadkadosh      New Issue                                    
+01-15-05 12:49 gadkadosh      Distribution              => Gentoo Linux    
+01-15-05 12:49 gadkadosh      Kernel Version            => 2.6.10          
+01-16-05 13:19 gadkadosh      Note Added: 0003215                          
+01-17-05 15:10 tiwai          Note Added: 0003237                          
+02-27-05 01:12 EPOdata        Note Added: 0003741                          
+09-19-05 10:08 jdthood        Status                   assigned => resolved
+09-19-05 10:08 jdthood        Resolution               open => not an issue
+09-19-05 10:08 jdthood        Note Added: 0006286                          
 ======================================================================
 
 
