@@ -1,14 +1,13 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: Best default values for "External Amplifier" and "Audigy Analog/Digital Output Jack"
-Date: Mon, 19 Sep 2005 15:03:42 +0200
-Message-ID: <m2fys1tdjl.fsf@vador.mandriva.com>
-References: <432D290E.4010506@yahoo.co.uk> <432D5312.1000506@superbug.co.uk>
-	<m21x3lutb7.fsf@vador.mandriva.com> <432EB331.2010600@yahoo.co.uk>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] Implement support for display of dB gain
+ in alsamixer.
+Date: Mon, 19 Sep 2005 15:36:21 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0509191511290.8552@dhcp73.suse.cz>
+References: <432D6C3A.4000001@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <432EB331.2010600@yahoo.co.uk> (Thomas Hood's message of "Mon, 19
-	Sep 2005 14:46:41 +0200")
+In-Reply-To: <432D6C3A.4000001@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +17,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Hood <jdthood@yahoo.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Hood <jdthood@yahoo.co.uk> writes:
+On Sun, 18 Sep 2005, James Courtier-Dutton wrote:
 
-> > i second that.
+> Hi,
 > 
-> Here are the controls that are (currently) set in the ALSA initscript
-> in Debian.  I would appreciate it if you could give me a similar list
-> of controls that are set by Mandriva.
+> Here is a first draft of one possible way to implement dB gain display in
+> alsamixer.
 
-cf http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/soft/sound-scripts/
+I would reject it. My comments:
 
-the "initialize sound level script" is alsa_default.pl whose latest
-version is:
-http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/soft/sound-scripts/alsa_default.pl?rev=1.28&content-type=text/x-cvsweb-markup
+1) breaks backward compatibility
+2) I don't like to have this information in the sndrv_ctl_elem_value 
+   struct
 
+My idea is to create an optional path between driver and user space to 
+give any additional information about controls and perhaps global mixer 
+view.
 
-it's called by reset_sound:
-http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/soft/sound-scripts/reset_sound?rev=1.3&content-type=text/x-cvsweb-markup
+- per control information (new ioctl)
 
-reset_sound is called by an udev rule (alsa.rules which runs alsa.dev)
-or by sound init script (if not using udev) on the first boot. It can
-also be directly run by the end user to reinitialize its sound level
-to what we set up on the first boot (ie if he messed up his config)
+struct sndrv_ctl_elem_addon {
+	struct sndrv_ctl_elem_id id;		/* W: element ID */
+	unsigned int size;
+	void *ptr;
+};
 
+I would propose to have this information in a text form parsed in the user 
+space (alsa-lib). It will be quite flexible (the old user space binary 
+will skip new tokens).
+
+So the addon should return something like (for ADDON_DB):
+
+dB_table -9600,-8000,-6400
+
+(explanation: index to table is the value written to driver, dB in * 100 
+form)
+
+or 
+
+dB_min -9600
+dB_max -6400
+dB_step 1600
+
+or
+
+dB_range -9600,-6400,1600
+
+(explanation: min,max,step)
+
+And some complex addon description (with routing description):
+
+mixer_block
+dB_range -9600,0,2000
+rt_in "PCM Plaback Volume",0
+rt_out "Master Playback Volume",0
+rt_cond_out xy
+/mixer_block
+
+etc. we need to define the syntax for signal routing description...
+
+- global mixer information
+
+Again, I would propose a text presentation. Actually, I'm not sure what 
+fits to this section, we can implement it on demand. Perhaps some complex 
+routing stuff etc.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
