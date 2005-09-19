@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Mon, 19 Sep 2005 20:20:28 +0200
-Message-ID: <d6fe373da8789fe364cab8801e51bafc@bugtrack.alsa-project.org>
+Date: Mon, 19 Sep 2005 21:08:10 +0200
+Message-ID: <412433c93327f3f72f849ace43e001a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24A8D179
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 20:20:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 268AA19A
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 21:08:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4 (mostly)
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              09-19-2005 20:20 CEST
+Last Modified:              09-19-2005 21:08 CEST
 ======================================================================
 Summary:                    driver can't initialise card
 Description: 
@@ -78,14 +78,6 @@ of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 09-13-05 00:16 
-----------------------------------------------------------------------
-Can you please remove your sound card from the PC and tell me what is says
-on the card for the model number. It should be something like "SB0350".
-We seem to have two different cards with exactly the same PCI IDs and I
-would like to see what the differences are.
-
-----------------------------------------------------------------------
  selflein - 09-19-05 20:20 
 ----------------------------------------------------------------------
 Hi,
@@ -111,6 +103,14 @@ error -5
 
 Thanks in advance.
 
+----------------------------------------------------------------------
+ hus - 09-19-05 21:08 
+----------------------------------------------------------------------
+My card is model "SB0060".
+
+So where does the PCI id come from? Does it just mark a firmware version,
+all "Live!" hardware being the same?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -133,6 +133,7 @@ Date Modified  Username       Field                    Change
 09-13-05 00:16 jcdutton       Resolution               open => reopened    
 09-13-05 00:16 jcdutton       Note Added: 0006150                          
 09-19-05 20:20 selflein       Note Added: 0006299                          
+09-19-05 21:08 hus            Note Added: 0006300                          
 ======================================================================
 
 
