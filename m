@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000549]: Jackd crash randomly
-Date: Mon, 19 Sep 2005 09:04:56 +0200
-Message-ID: <1afb220c678f8239fa01d4e3be312f6f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Mon, 19 Sep 2005 09:12:19 +0200
+Message-ID: <6a20fd82cece025cac2c571d23289655@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B52E17E
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:04:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46D7811B
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:12:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=549> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
 ======================================================================
-Reported By:                roswel
-Assigned To:                karsten
+Reported By:                pcmcginty
+Assigned To:                jdthood
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   549
-Category:                   USB - usb-usx2y
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   748
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian sid/experimental
-Kernel Version:             2.6.9-rc2-bk14
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-29-2004 07:52 CEST
-Last Modified:              09-19-2005 09:04 CEST
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              09-19-2005 09:12 CEST
 ======================================================================
-Summary:                    Jackd crash randomly
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
 Description: 
-Hi,
-I still have some troubles with jackd. I rebuilt a kernel without
-USB_CONFIG_BANDWITH and now jackd start without problem. But sometimes, it
-hang with the following jackd error  : 
-04:25:29.436 Audio connection graph change.
-delay of 1022980.000 usecs exceeds estimated spare time of 17909.000;
-restart ...
-04:28:42.753 XRUN callback. (1)
-
-I never have this error with my integrated chip using intel_i8x0 driver.
-But wost, after a random time, jackd crash with the following error : 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-could not start playback (Broken pipe)
-jackd watchdog: timeout - killing jackd
-
-And in my kernel logs, i've got : 
-Sequence Error!(ep=10;nuc=1,frame=643)
-Sequence Error!(ep=8;nuc=0,frame=643)
-Sequence Error!(ep=8;nuc=1,frame=644)
-
-Jackd crashs also if i'm not doing anything. I tried to let it run
-sometimes without using it, and it crashs.
-
-Thanx for your attention.
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- roswel - 09-18-05 13:53 
+ JonathanL - 09-18-05 23:30 
 ----------------------------------------------------------------------
-This seems not to happen anymore with recent alsa version. I actually have
-no more problem with my Tascam us-122. I guess this bug should be closed.
-Thanx a lot for the work of the all alsa team :)
+works fine now with recents kernel (gentoo-2.6.12-r8 for me)
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 09:04 
+ jdthood - 09-19-05 09:12 
 ----------------------------------------------------------------------
-> This seems not to happen anymore with recent alsa version.
-
-Thanks
+OK, let's conclude that it is fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-29-04 07:52 roswel         New Issue                                    
-09-29-04 07:52 roswel         Distribution              => Debian
-sid/experimental
-09-29-04 07:52 roswel         Kernel Version            => 2.6.9-rc2-bk14  
-09-29-04 07:52 roswel         Issue Monitored: roswel                      
-10-01-04 01:24 karsten        Note Added: 0001989                          
-10-01-04 10:07 roswel         Note Added: 0001996                          
-10-01-04 15:27 karsten        File Added: snd-usb-usx2y.patch.0.8.0             
-      
-10-01-04 15:29 karsten        Note Added: 0001998                          
-10-01-04 19:06 roswel         Note Added: 0002004                          
-10-05-04 08:32 roswel         Note Added: 0002015                          
-09-14-05 15:49 jdthood        Note Added: 0006159                          
-09-18-05 13:53 roswel         Note Added: 0006271                          
-09-19-05 09:04 jdthood        Status                   assigned => resolved
-09-19-05 09:04 jdthood        Resolution               open => fixed       
-09-19-05 09:04 jdthood        Note Added: 0006274                          
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
+01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
+01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+01-12-05 15:04 tiwai          Note Added: 0003166                          
+01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
+01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
+   
+01-12-05 16:13 JonathanL      Note Added: 0003174                          
+01-12-05 20:45 tiwai          Note Added: 0003178                          
+01-12-05 23:23 JonathanL      File Added: sub0                             
+01-12-05 23:23 JonathanL      Note Added: 0003180                          
+01-13-05 12:53 tiwai          Note Added: 0003184                          
+01-22-05 02:02 bengan         Note Added: 0003371                          
+01-22-05 02:03 bengan         Note Edited: 0003371                         
+01-22-05 02:12 bengan         Note Edited: 0003371                         
+01-23-05 01:38 JonathanL      Note Added: 0003384                          
+01-27-05 18:20 spr            Issue Monitored: spr                         
+01-27-05 18:22 spr            Note Added: 0003421                          
+09-15-05 15:18 jdthood        Note Added: 0006207                          
+09-15-05 20:29 spr            Note Added: 0006221                          
+09-16-05 16:29 jdthood        Note Added: 0006245                          
+09-18-05 23:30 JonathanL      Note Added: 0006273                          
+09-19-05 09:12 jdthood        Status                   new => resolved     
+09-19-05 09:12 jdthood        Resolution               open => fixed       
+09-19-05 09:12 jdthood        Assigned To               => jdthood         
+09-19-05 09:12 jdthood        Note Added: 0006275                          
 ======================================================================
 
 
