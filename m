@@ -1,12 +1,14 @@
-From: =?ISO-8859-1?Q?J=F6rgen_Lindroos?= <lindroosj@gmail.com>
-Subject: MAudio Audiophile 192
-Date: Mon, 19 Sep 2005 13:48:22 +0200
-Message-ID: <5c14960705091904481285b38b@mail.gmail.com>
-Reply-To: lindroosj@gmail.com
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: Best default values for "External Amplifier" and "Audigy Analog/Digital Output Jack"
+Date: Mon, 19 Sep 2005 14:30:22 +0200
+Message-ID: <m264sxutnl.fsf@vador.mandriva.com>
+References: <432D290E.4010506@yahoo.co.uk> <432D5312.1000506@superbug.co.uk>
+	<432E6D40.7080904@yahoo.co.uk> <8564sxh10w.fsf@Orfeo.duckcorp.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_5777_15748019.1127130502542"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <8564sxh10w.fsf@Orfeo.duckcorp.org> (Arnaud Patard's message of
+	"Mon, 19 Sep 2005 11:14:55 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +18,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>
+Cc: Thomas Hood <jdthood@yahoo.co.uk>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_5777_15748019.1127130502542
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org> writes:
 
-Will there be support for this card in the future? In case yes, when?
-There is support for it in oss, but not with alsa.
+> AFAIK, the behaviour of the switch is consistent accross all the
+> audigy cards. If you're using Digital Speakers connected to the
+> digital output of the card, you have to set it. Otherwise, don't set
+> it. It's setup dependant. IMHO you can't do anything about that. [
+> IIRC, even the OSS driver has this 'problem'. ]
 
-Regards
-/J Lindroos
+some drivers have a sense mixer element.
 
-------=_Part_5777_15748019.1127130502542
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+cannot more drivers be patched in order to have such a behavior (if
+possible)?
 
-Will there be support for this card in the future? In case yes, when?<br>
-There is support for it in oss, but not with alsa.<br>
-<br>
-Regards<br>
-/J Lindroos<br>
-
-------=_Part_5777_15748019.1127130502542--
 
 
 -------------------------------------------------------
