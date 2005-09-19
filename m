@@ -1,14 +1,14 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: [PATCH] AZT3328 driver update (#2)
-Date: Mon, 19 Sep 2005 10:50:41 +0200
-Message-ID: <20050919085041.GA6292@rhlx01.fht-esslingen.de>
-References: <20050916234828.GA23429@rhlx01.fht-esslingen.de> <1126918534.4986.110.camel@mindpipe>
-Reply-To: andi@lisas.de
+From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+Subject: Re: Best default values for "External Amplifier" and "Audigy Analog/Digital Output Jack"
+Date: Mon, 19 Sep 2005 11:14:55 +0200
+Message-ID: <8564sxh10w.fsf@Orfeo.duckcorp.org>
+References: <432D290E.4010506@yahoo.co.uk> <432D5312.1000506@superbug.co.uk>
+	<432E6D40.7080904@yahoo.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1126918534.4986.110.camel@mindpipe>
+In-Reply-To: <432E6D40.7080904@yahoo.co.uk> (Thomas Hood's message of "Mon, 19
+	Sep 2005 09:48:16 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,29 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: andi@lisas.de, alsa-devel@lists.sourceforge.net
+To: Thomas Hood <jdthood@yahoo.co.uk>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Thomas Hood <jdthood@yahoo.co.uk> writes:
 
-On Fri, Sep 16, 2005 at 08:55:34PM -0400, Lee Revell wrote:
-> On Sat, 2005-09-17 at 01:48 +0200, Andreas Mohr wrote:
-> > - FOUND the 1us DirectX timer area (yay!), made the code respect it properly
-> 
-> You should add support for the ALSA timer API if possible, it's actually
-> quite simple.  This will allow the ALSA sequencer to use it.  See
-> sound/pci/emu10k1/timer.c for an example.
+> James Courtier-Dutton wrote:
+>> So, the best way to fix this problem will be to raise an ALSA bug on
+>> https://bugtrack.alsa-project.org/alsa-bug/ or on the kernel bug tracker
+>> with full details of the motherboard and the sound chips involved, and
+>> it will eventually be fixed.
+>
+> OK
+>
+> You told me what information is needed for "External Amplifier".  This was:
+>
+> * The default settings, when not working:
+>   + The output of "amixer"
+>   + the contents /proc/asound/card0/codec97#0/ac97#0-0
+>   + the contents of /proc/asound/card0/codec97#0/ac97#0-0+regs
+> * The settings when working correctly:
+>   + The output of "amixer"
+>   + the contents /proc/asound/card0/codec97#0/ac97#0-0
+>   + the contents of /proc/asound/card0/codec97#0/ac97#0-0+regs
+> * The output of "lspci -vvn"
+>
+> What information is needed in order to deal with the
+> "Audigy Analog/Digital Output Jack" case?
+>
+> -- 
+AFAIK, the behaviour of the switch is consistent accross all the audigy
+cards. If you're using Digital Speakers connected to the digital output
+of the card, you have to set it. Otherwise, don't set it. It's setup
+dependant. IMHO you can't do anything about that. [ IIRC, even the OSS
+driver has this 'problem'. ]
 
-Is there any way (or a best way) to test this functionality?
-I've been adding most of that functionality on the weekend (remotely at my
-home over three machines ;), so it's almost finished but would want some
-testing (otherwise I'm quite sure that *something* would be broken one way
-or another).
 
-Thanks,
+Regards,
+Arnaud Patard
 
-Andreas Mohr
 
 
 -------------------------------------------------------
