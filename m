@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Mon, 19 Sep 2005 09:58:17 +0200
-Message-ID: <ebd7d0527fe50699409dff5d991f77ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000877]: balance problem with ALC880 (Intel HD Audio)
+Date: Mon, 19 Sep 2005 09:58:43 +0200
+Message-ID: <b349cffe254d6654fa0782a97950a537@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A116B147
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:58:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEDCB148
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:58:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=877> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
+Reported By:                alphacc
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   818
-Category:                   PCI - RME HDSP
+Issue ID:                   877
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Status:                     new
+Distribution:               Scientific Linux 3.03 (close to Redhat ES 3)
+Kernel Version:             2.4.21
 ======================================================================
-Date Submitted:             01-14-2005 18:35 CET
+Date Submitted:             02-02-2005 11:32 CET
 Last Modified:              09-19-2005 09:58 CEST
 ======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
+Summary:                    balance problem with ALC880 (Intel HD Audio)
 Description: 
-In my setup I's using 3 computers:
+module : snd-azx
 
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
+When I try to change the Front balance (left/right), the Front volume is
+going up or down randomly.
+Tested with xmms, alsamixer, gnome-alsamixer.
 
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
+Is it a known problem with other platforms / modules ?
 
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC #2
-
-So the signal flow looks like:
-
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
-
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-02-05 10:20 
-----------------------------------------------------------------------
-Thomas, could you check the patch I sent ago in alsa-devel ML?
-This adds 'sample clock lock' control like ice1712 driver.
 
 ----------------------------------------------------------------------
  jdthood - 09-19-05 09:58 
 ----------------------------------------------------------------------
-> Thomas, could you check the patch I sent ago in alsa-devel ML?
-> This adds 'sample clock lock' control like ice1712 driver.
-
-charbonnel: Did you try the patch?
+alphacc: Is there any improvement in later ALSA versions?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-02-01-05 21:35 charbonnel     Note Added: 0003466                          
-02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
-02-01-05 22:03 rlrevell       Note Added: 0003471                          
-02-01-05 22:07 charbonnel     Status                   assigned => resolved
-02-01-05 22:07 charbonnel     Resolution               open => not an issue
-02-01-05 22:07 charbonnel     Note Added: 0003472                          
-02-01-05 22:12 Mark Knecht    Status                   resolved => feedback
-02-01-05 22:12 Mark Knecht    Resolution               not an issue => reopened
-02-01-05 22:12 Mark Knecht    Note Added: 0003474                          
-02-02-05 10:20 tiwai          Note Added: 0003477                          
-09-19-05 09:58 jdthood        Note Added: 0006277                          
+02-02-05 11:32 alphacc        New Issue                                    
+02-02-05 11:32 alphacc        Distribution              => Scientific Linux 3.03
+(close to Redhat ES 3)
+02-02-05 11:32 alphacc        Kernel Version            => 2.4.21          
+09-19-05 09:58 jdthood        Note Added: 0006278                          
 ======================================================================
 
 
