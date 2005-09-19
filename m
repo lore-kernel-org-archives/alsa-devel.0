@@ -1,14 +1,15 @@
-From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
-Subject: Re: Best default values for "External Amplifier" and "Audigy Analog/Digital Output Jack"
-Date: Mon, 19 Sep 2005 11:14:55 +0200
-Message-ID: <8564sxh10w.fsf@Orfeo.duckcorp.org>
-References: <432D290E.4010506@yahoo.co.uk> <432D5312.1000506@superbug.co.uk>
-	<432E6D40.7080904@yahoo.co.uk>
+From: Daniel James <daniel@64studio.com>
+Subject: Re: More info on hard lock-ups with MIDI on envy24, x86_64 machine
+Date: Mon, 19 Sep 2005 10:17:13 +0100
+Message-ID: <200509191017.13233.daniel@64studio.com>
+References: <200508111525.07881.daniel@64studio.com> <200509161352.48802.daniel@64studio.com> <s5h4q8lrq80.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <432E6D40.7080904@yahoo.co.uk> (Thomas Hood's message of "Mon, 19
-	Sep 2005 09:48:16 +0200")
+In-Reply-To: <s5h4q8lrq80.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +19,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Hood <jdthood@yahoo.co.uk>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net, Free Ekanayaka <free@64studio.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Hood <jdthood@yahoo.co.uk> writes:
+Hi Takashi,
 
-> James Courtier-Dutton wrote:
->> So, the best way to fix this problem will be to raise an ALSA bug on
->> https://bugtrack.alsa-project.org/alsa-bug/ or on the kernel bug tracker
->> with full details of the motherboard and the sound chips involved, and
->> it will eventually be fixed.
+> > It's made no difference I'm afraid - and there are no clues
+> > in /var/log/messages that I can see.
 >
-> OK
->
-> You told me what information is needed for "External Amplifier".  This was:
->
-> * The default settings, when not working:
->   + The output of "amixer"
->   + the contents /proc/asound/card0/codec97#0/ac97#0-0
->   + the contents of /proc/asound/card0/codec97#0/ac97#0-0+regs
-> * The settings when working correctly:
->   + The output of "amixer"
->   + the contents /proc/asound/card0/codec97#0/ac97#0-0
->   + the contents of /proc/asound/card0/codec97#0/ac97#0-0+regs
-> * The output of "lspci -vvn"
->
-> What information is needed in order to deal with the
-> "Audigy Analog/Digital Output Jack" case?
->
-> -- 
-AFAIK, the behaviour of the switch is consistent accross all the audigy
-cards. If you're using Digital Speakers connected to the digital output
-of the card, you have to set it. Otherwise, don't set it. It's setup
-dependant. IMHO you can't do anything about that. [ IIRC, even the OSS
-driver has this 'problem'. ]
+> The patch is to the lock up of the driver, not the ACPI stuff.
 
+Other than running a MIDI program such as seq24 with strace, is there 
+anything I can do to help diagnose this lock-up? Any logging options 
+I should be enabling?
 
-Regards,
-Arnaud Patard
+I have found on the Tyan site that they released a BIOS update for 
+another one of their motherboards which was shipped with buggy IRQ 
+routing. When we have our second Opteron test system running (which 
+has an ASUS board) then we'll be able to confirm that it is a 
+specific hardware problem.
+ 
+Cheers!
 
+Daniel
 
 
 -------------------------------------------------------
