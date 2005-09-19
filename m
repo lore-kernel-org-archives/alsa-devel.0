@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Mon, 19 Sep 2005 22:45:09 +0200
-Message-ID: <4504fe35216c76f1d317edd195b4edae@bugtrack.alsa-project.org>
+From: peter plessas <plessas@mur.at>
+Subject: hdspmixer defaults
+Date: Mon, 19 Sep 2005 23:03:15 +0200 (CEST)
+Message-ID: <Pine.LNX.4.62.0509192300420.25606@hornet.mur.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 315FC19A
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 22:45:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,98 +14,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Dear List,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
-======================================================================
-Reported By:                JSchmitt
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   353
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              09-19-2005 22:45 CEST
-======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in
-snd_pcm_hw.c
-Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
+i have the following question about hdspmixer:
 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
+1.
+After booting, i have to start the hdspmixer application to get audio 
+output, i suppose the levels are muted before.
+Is this an hdspmixer issue or sth. about the alsa startup scripts?
 
-I will not get any sound.
-======================================================================
+2.
+If i close the hdspmixer and open it again, it loads the default settings 
+(if there are any) and thus gives me full levels on all channels. Ouch!
+This also happens if i saved my levels to a preset, may it be number 1 or 
+others.
+It even persists at saving to a file (/home/peter/hdspmixer_default.mix), 
+and making this the default file via the menu.
+Seems like the file doesn't get loaded automatically, though once loaded 
+via the menu, my old levels appear.
 
-----------------------------------------------------------------------
- jdthood - 03-24-05 08:16 
-----------------------------------------------------------------------
-> Sound works for the root user on the system, but no "regular"
-> users can access the sound functions. Other sound functions,
-> such as playing sound back through xmms, xine, or amarok work
-> when either alsa or arts is selected as the output.
+Any ideas are very welcome!!
 
-
-These two sentences appear to contradict each other.  Can you say
-more clearly what works and what does not?
-
-----------------------------------------------------------------------
- rob_hughes - 09-19-05 22:45 
-----------------------------------------------------------------------
-I'm believe that I was referring to accessing /dev/dsp would work for root,
-but not a regular user, as that was a problem I had for awhile before I
-finally just made the device node 666 instead of using groups, although
-the group access should have worked. This is still a problem I run into
-from time to time, where /dev/dsp is accessible to root, or if it's set
-666, but not when its owner is root:audio, permissions 660, and the user
-is a member of the audio group. Any rate, it's not related to this issue.
-
-At any rate, since I switched to Ubuntu (Alsa 1.0.8), the problem has gone
-away, so this is probably just more redhat kernel brokeness, unless
-someone else can reproduce it.
-
-As far as I'm concerned, and since the original reporter seems to have
-wandered off permanently, I'd say close it.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-30-04 19:36 JSchmitt       New Issue                                    
-07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
-07-15-04 14:20 perex          Note Added: 0001433                          
-07-15-04 17:57 JSchmitt       Note Added: 0001436                          
-08-17-04 06:11 samy           Note Added: 0001572                          
-08-17-04 06:11 samy           Issue Monitored: samy                        
-10-23-04 22:41 rob_hughes     Note Added: 0002256                          
-10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
-10-23-04 23:27 rob_hughes     Note Added: 0002258                          
-10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
-03-19-05 09:06 jdthood        Note Added: 0004011                          
-03-19-05 12:08 rob_hughes     Note Added: 0004034                          
-03-19-05 12:38 jdthood        Note Added: 0004035                          
-03-21-05 04:01 rob_hughes     Note Added: 0004115                          
-03-22-05 19:56 tiwai          Note Added: 0004130                          
-03-24-05 02:28 rob_hughes     Note Added: 0004190                          
-03-24-05 08:16 jdthood        Note Added: 0004192                          
-09-19-05 22:45 rob_hughes     Note Added: 0006303                          
-======================================================================
-
-
+Peter
 
 
 -------------------------------------------------------
