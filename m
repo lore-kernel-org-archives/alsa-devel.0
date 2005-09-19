@@ -1,14 +1,15 @@
-From: Thomas Hood <jdthood@yahoo.co.uk>
-Subject: Re: Best default values for "External Amplifier" and
- "Audigy Analog/Digital Output Jack"
-Date: Mon, 19 Sep 2005 14:46:41 +0200
-Message-ID: <432EB331.2010600@yahoo.co.uk>
-References: <432D290E.4010506@yahoo.co.uk> <432D5312.1000506@superbug.co.uk> <m21x3lutb7.fsf@vador.mandriva.com>
+From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+Subject: Re: Best default values for "External Amplifier" and "Audigy Analog/Digital Output Jack"
+Date: Mon, 19 Sep 2005 14:49:42 +0200
+Message-ID: <85hdchfcih.fsf@Orfeo.duckcorp.org>
+References: <432D290E.4010506@yahoo.co.uk> <432D5312.1000506@superbug.co.uk>
+	<432E6D40.7080904@yahoo.co.uk> <8564sxh10w.fsf@Orfeo.duckcorp.org>
+	<m264sxutnl.fsf@vador.mandriva.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m21x3lutb7.fsf@vador.mandriva.com>
+In-Reply-To: <m264sxutnl.fsf@vador.mandriva.com> (Thierry Vignaud's message of
+	"Mon, 19 Sep 2005 14:30:22 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,52 +20,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Thierry Vignaud <tvignaud@mandriva.com>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Thomas Hood <jdthood@yahoo.co.uk>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thierry Vignaud wrote:
-> i second that.
+Thierry Vignaud <tvignaud@mandriva.com> writes:
 
-Here are the controls that are (currently) set in the ALSA initscript
-in Debian.  I would appreciate it if you could give me a similar list
-of controls that are set by Mandriva.
+> Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org> writes:
+>
+>> AFAIK, the behaviour of the switch is consistent accross all the
+>> audigy cards. If you're using Digital Speakers connected to the
+>> digital output of the card, you have to set it. Otherwise, don't set
+>> it. It's setup dependant. IMHO you can't do anything about that. [
+>> IIRC, even the OSS driver has this 'problem'. ]
+>
+> some drivers have a sense mixer element.
+>
+> cannot more drivers be patched in order to have such a behavior (if
+> possible)?
 
-from /etc/init.d/alsa-utils:
+At least, on the audigy player/gamer, the connector used for the digital out is
+also used for analog out (see
+http://fr.europe.creative.com/support/downloads/download2.asp?manualID=807&Product_ID=237&regionID=3&Product_Name=Audigy+Gamer)
+. Thus detecting if there's a cable connected or not to set the 'Audigy
+Analog/Digital Output Jack' switch won't work.
 
-        unmute_and_set_level "Master" "80%"
-        unmute_and_set_level "Master Digital" "80%"   # E.g., cs4237B
-        unmute_and_set_level "Playback" "80%"
-        unmute_and_set_level "Headphone" "70%"
-        unmute_and_set_level "PCM" "80%"
-        unmute_and_set_level "PCM,1" "80%"   # E.g., ess1969
-        unmute_and_set_level "DAC" "80%"     # E.g., envy24, cs46xx
-        unmute_and_set_level "DAC,0" "80%"   # E.g., envy24
-        unmute_and_set_level "DAC,1" "80%"   # E.g., envy24
-        unmute_and_set_level "Synth" "80%"
-        unmute_and_set_level "CD" "80%"
 
-        mute_and_zero_level "Mic"
+Regards,
+Arnaud
 
-        # Intel P4P800-MX  (Ubuntu bug #5813)
-        switch_control "Master Playback Switch" on
-
-        # Trident/YMFPCI/emu10k1:
-        unmute_and_set_level "Wave" "80%"
-        unmute_and_set_level "Music" "80%"
-        unmute_and_set_level "AC97" "80%"
-
-        # DRC:
-        unmute_and_set_level "Dynamic Range Compression" "80%"
-
-        # Required at least for Via 823x hardware on DFI K8M800-MLVF
-        switch_control "IEC958 Capture Monitor" off
-
-        # Required on some notebooks with ICH4:
-        switch_control "Headphone Jack Sense" off
-        switch_control "Line Jack Sense" off
-
--- 
-Thomas Hood
 
 
 -------------------------------------------------------
