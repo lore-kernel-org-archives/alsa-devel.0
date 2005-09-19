@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000893]: KPhone output sounds like gibberish
-Date: Mon, 19 Sep 2005 10:02:27 +0200
-Message-ID: <6d7f7f92c96cf989f5c90058c11f2660@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000878]: No right channel
+Date: Mon, 19 Sep 2005 10:04:12 +0200
+Message-ID: <305bc94dc2d2764fd8ade939f6edd2bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 778A413A
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:02:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D55613A
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 10:04:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=893> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=878> 
 ======================================================================
-Reported By:                Luke-Jr
-Assigned To:                tiwai
+Reported By:                atermiles
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   893
-Category:                   PPC - powermac
+Issue ID:                   878
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             Linux 2.6.10-gentoo-r6
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-08-2005 21:51 CET
-Last Modified:              09-19-2005 10:02 CEST
+Date Submitted:             02-02-2005 17:36 CET
+Last Modified:              09-19-2005 10:04 CEST
 ======================================================================
-Summary:                    KPhone output sounds like gibberish
+Summary:                    No right channel
 Description: 
-On my iBook, the output from KPhone sounds like gibberish. Not sure what
-details could cause this.
+No right channel(always muted) (I use surround for listening).
+With 1.0.7 driver all ok.
 ======================================================================
 
 ----------------------------------------------------------------------
- Luke-Jr - 02-11-05 19:57 
+ jdthood - 09-19-05 09:59 
 ----------------------------------------------------------------------
-The problem also occurs with linphone
+atermiles: Did this problem get fixed in a later ALSA release?
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 10:02 
+ atermiles - 09-19-05 10:04 
 ----------------------------------------------------------------------
-Luke-Jr: Do you get better results with the latest ALSA release?
+jdthood: Yes
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 21:51 Luke-Jr        New Issue                                    
-02-08-05 21:51 Luke-Jr        Kernel Version            => Linux
-2.6.10-gentoo-r6
-02-11-05 19:57 Luke-Jr        Note Added: 0003567                          
-02-11-05 19:57 Luke-Jr        Issue Monitored: Luke-Jr                     
-09-19-05 10:02 jdthood        Note Added: 0006282                          
+02-02-05 17:36 atermiles      New Issue                                    
+04-15-05 19:50 atermiles      Issue Monitored: atermiles                    
+09-19-05 09:59 jdthood        Note Added: 0006279                          
+09-19-05 10:04 atermiles      Note Added: 0006283                          
 ======================================================================
 
 
