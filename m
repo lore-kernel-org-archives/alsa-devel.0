@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Mon, 19 Sep 2005 20:07:05 +0200
-Message-ID: <d1403431c0d9c9e0f1184c9f0497d7f5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001297]: driver can't initialise card
+Date: Mon, 19 Sep 2005 20:20:28 +0200
+Message-ID: <d6fe373da8789fe364cab8801e51bafc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A7EA194
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 20:07:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24A8D179
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 20:20:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,115 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
 ======================================================================
-Reported By:                iluxa
-Assigned To:                sashak
+Reported By:                hus
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1435
-Category:                   PCI - atiixp-modem
+Issue ID:                   1297
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13, 2.6.14-rc1
+Status:                     feedback
+Distribution:               Fedora Core 4 (mostly)
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-19-2005 20:07 CEST
+Date Submitted:             08-01-2005 14:27 CEST
+Last Modified:              09-19-2005 20:20 CEST
 ======================================================================
-Summary:                    ac97 codec is not found when loading the driver
+Summary:                    driver can't initialise card
 Description: 
-When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
-saying
-"atiixp-modem: no codec available" and modem doesn't function after that.
+My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
+box).
+The snd-emu10k1 module refuses to work for this card; the kernel logs:
 
-Little more investigation shown that snd_ac97_mixer thinks the codec is
-already 
-registered as sound codec by audio card driver.
+ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
+ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
+subsystem_vendor_id=0x80611102, subsystem_id=0x8061
+ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
+[Unknown], 
+vendor=0x1102, device=0x2, subsystem=0x80611102
+ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
+ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
 
-I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
-from CVS HEAD - all with same result.
+removing mixer.
+EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
+
+lspci shows
+02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+07)
+        Subsystem: Creative Labs SBLive! Player 5.1
+        Flags: bus master, medium devsel, latency 64, IRQ 17
+        I/O ports at 30c0 [size=32]
+        Capabilities: [dc] Power Management version 1
+(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
 
 
+The only deviation from the ordinary I can think of is that my system is
+dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
+PCI-to-PCI bridge. That's one thing our systems might have in common, as
+your message shows the card on bus 03. Perhaps this is some strange kind
+of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- iluxa - 09-19-05 19:57 
+ jcdutton - 09-13-05 00:16 
 ----------------------------------------------------------------------
-Damn.. uploaded wrong file
+Can you please remove your sound card from the PC and tell me what is says
+on the card for the model number. It should be something like "SB0350".
+We seem to have two different cards with exactly the same PCI IDs and I
+would like to see what the differences are.
 
 ----------------------------------------------------------------------
- iluxa - 09-19-05 20:07 
+ selflein - 09-19-05 20:20 
 ----------------------------------------------------------------------
-and here is dmesg output after running modprobe snd-atiixp and
-snd-atiixp-modem
-(--with-debug=detect)
+Hi,
 
-ACPI: PCI Interrupt 0000:00:14.5[B] -> GSI 17 (level, low) -> IRQ 185
-ACPI: PCI Interrupt 0000:00:14.6[B] -> GSI 17 (level, low) -> IRQ 185
-ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1084:
-atiixp-modem: codec 0 not available for modem
-ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1091:
-atiixp-modem: no codec available
-ACPI: PCI interrupt for device 0000:00:14.6 disabled
+not sure if this is the right place to respond, but i experience the exact
+same problems with a different card. Mine is a Soundblaster Live! Platinum
+ct4760 Sybsystem: 0x80401102
+Gentoo with a 2.6.13-ck4 kernel, but that problem existed with 2.6.12
+kernels before.
 
-BTW, on unrelated note - I had to tweak manually include/config.h - 
-CONFIG_HAVE_PCI_SAVED_CONFIG and CONFIG_HAVE_NEW_PCI_SAVE_STATE were
-undefined, even though it seems they should have been defined.
-I am not sure if it's something wrong with my build environment, or some
-changes in 2.6.14 that are affecting it.
-When building against 2.6.14 this compile problem didn't occur.
+This is what i get in my systemlog:
+Sep 19 18:17:18 garw ACPI: PCI Interrupt 0000:05:07.0[A] -> Link [APC2] ->
+GSI 17 (level, low) -> IRQ 66
+Sep 19 18:17:19 garw ALSA
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:1892:
+AC'97 0 does not respond - RESET
+Sep 19 18:17:19 garw ALSA
+/var/tmp/portage/alsa-driver-1.0.9b/work/alsa-driver-1.0.9b/pci/ac97/../../alsa-kernel/pci/ac97/ac97_codec.c:1901:
+AC'97 0 access is not valid [0xffffffff], removing mixer.
+Sep 19 18:17:19 garw ACPI: PCI interrupt for device 0000:05:07.0 disabled
+Sep 19 18:17:19 garw EMU10K1_Audigy: probe of 0000:05:07.0 failed with
+error -5
+
+Thanks in advance.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-05 08:49 iluxa          New Issue                                    
-09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
-09-19-05 13:27 sashak         Note Added: 0006292                          
-09-19-05 19:32 iluxa          File Added: pci.txt                          
-09-19-05 19:56 iluxa          File Added: comment.diff                     
-09-19-05 19:57 iluxa          Note Added: 0006296                          
-09-19-05 20:01 iluxa          File Added: atiixp.txt                       
-09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
-   
-09-19-05 20:07 iluxa          Note Added: 0006298                          
+08-01-05 14:27 hus            New Issue                                    
+08-01-05 14:27 hus            Distribution              => Fedora Core 4
+(mostly)
+08-01-05 14:27 hus            Kernel Version            => 2.6.12          
+08-01-05 14:28 hus            Issue Monitored: hus                         
+08-01-05 15:24 jcdutton       Status                   new => assigned     
+08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
+08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
+08-13-05 00:39 jcdutton       Note Added: 0005795                          
+08-13-05 00:40 jcdutton       Status                   assigned => feedback
+08-13-05 21:18 hus            Note Added: 0005809                          
+08-13-05 21:38 rlrevell       Note Added: 0005810                          
+08-14-05 00:32 hus            Note Added: 0005813                          
+09-10-05 13:00 jcdutton       Status                   feedback => closed  
+09-10-05 13:00 jcdutton       Note Added: 0006114                          
+09-13-05 00:16 jcdutton       Status                   closed => feedback  
+09-13-05 00:16 jcdutton       Resolution               open => reopened    
+09-13-05 00:16 jcdutton       Note Added: 0006150                          
+09-19-05 20:20 selflein       Note Added: 0006299                          
 ======================================================================
 
 
