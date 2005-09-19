@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000877]: balance problem with ALC880 (Intel HD Audio)
-Date: Mon, 19 Sep 2005 09:58:43 +0200
-Message-ID: <b349cffe254d6654fa0782a97950a537@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000878]: No right channel
+Date: Mon, 19 Sep 2005 09:59:19 +0200
+Message-ID: <bbc036973fe31141b4b88da5704b378f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEDCB148
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:58:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF8B9147
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 09:59:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,41 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=877> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=878> 
 ======================================================================
-Reported By:                alphacc
-Assigned To:                
+Reported By:                atermiles
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   877
-Category:                   PCI - azx
+Issue ID:                   878
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Scientific Linux 3.03 (close to Redhat ES 3)
-Kernel Version:             2.4.21
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-02-2005 11:32 CET
-Last Modified:              09-19-2005 09:58 CEST
+Date Submitted:             02-02-2005 17:36 CET
+Last Modified:              09-19-2005 09:59 CEST
 ======================================================================
-Summary:                    balance problem with ALC880 (Intel HD Audio)
+Summary:                    No right channel
 Description: 
-module : snd-azx
-
-When I try to change the Front balance (left/right), the Front volume is
-going up or down randomly.
-Tested with xmms, alsamixer, gnome-alsamixer.
-
-Is it a known problem with other platforms / modules ?
-
+No right channel(always muted) (I use surround for listening).
+With 1.0.7 driver all ok.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 09:58 
+ jdthood - 09-19-05 09:59 
 ----------------------------------------------------------------------
-alphacc: Is there any improvement in later ALSA versions?
+atermiles: Did this problem get fixed in a later ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-05 11:32 alphacc        New Issue                                    
-02-02-05 11:32 alphacc        Distribution              => Scientific Linux 3.03
-(close to Redhat ES 3)
-02-02-05 11:32 alphacc        Kernel Version            => 2.4.21          
-09-19-05 09:58 jdthood        Note Added: 0006278                          
+02-02-05 17:36 atermiles      New Issue                                    
+04-15-05 19:50 atermiles      Issue Monitored: atermiles                    
+09-19-05 09:59 jdthood        Note Added: 0006279                          
 ======================================================================
 
 
