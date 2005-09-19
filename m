@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Implement support for display of dB gain
- in alsamixer.
-Date: Mon, 19 Sep 2005 17:36:22 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0509191722130.8552@dhcp73.suse.cz>
-References: <432D6C3A.4000001@superbug.co.uk> <Pine.LNX.4.61.0509191511290.8552@dhcp73.suse.cz>
- <s5hirwxw0bo.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001436]: Audigy NX2 miss suppor for S/PDIFF -> surround support
+Date: Mon, 19 Sep 2005 17:46:39 +0200
+Message-ID: <601eedea17417b96cbe49c8ba0597a31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hirwxw0bo.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3650C191
+	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2005 17:46:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 19 Sep 2005, Takashi Iwai wrote:
 
-> Or, how about to define a struct like
-> {
-> 	snd_ctl_elem_id_t id;
-> 	char key[KEY_SIZE];
-> 	unsigned int size;
-> 	char *value;
-> }
-> so that the caller always asks with the certain key?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1436> 
+======================================================================
+Reported By:                Uraeus
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1436
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             09-19-2005 17:46 CEST
+Last Modified:              09-19-2005 17:46 CEST
+======================================================================
+Summary:                    Audigy NX2 miss suppor for S/PDIFF -> surround
+support
+Description: 
+I have a Audigy NX2 (model no. SB0300) and it seems support for S/PDIFF
+support is not implemented in the driver yet for this card. A lot of
+googling and the product matrix here have lead me to believe that at least
+:)
 
-It's also quite good method, but it avoids having multiple blocks with 
-same keys. For example:
+So this is a feature request bug that this gets added to driver.
+======================================================================
 
-block1-mixer
-key1
-key2
-/block1-mixer
-block2-pcm
-key1
-key2
-/block2-pcm
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-05 17:46 Uraeus         New Issue                                    
+09-19-05 17:46 Uraeus         Distribution              => Fedora Core     
+09-19-05 17:46 Uraeus         Kernel Version            => 2.6.12          
+======================================================================
 
-Maybe adding 'char group[GROUP_SIZE]' to the structure will help us.
 
-Also, we should consider to give a possibility to obtain the full list of 
-groups/keys to applications / alsa-lib. If we give the full contents the 
-applications can do rest otherwise the driver must implement an arbiter 
-which collects this information.
-
-I would vote to keep the kernel space as simple as possible and give the 
-whole contents to apps. They can implement reading/caching/filtering 
-themselves.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
