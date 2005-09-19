@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Audigy DSP questions.
-Date: Mon, 19 Sep 2005 17:05:08 -0400
-Message-ID: <1127163909.9899.46.camel@mindpipe>
-References: <432D8AA7.4040203@superbug.co.uk>
-	 <432DA3D7.2070904@superbug.co.uk>  <432DAB41.9070508@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
+Date: Tue, 20 Sep 2005 01:06:10 +0200
+Message-ID: <8248cd90a3b75236fdc9df5f7f92e6bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <432DAB41.9070508@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E8D8192
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 01:06:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,29 +18,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-09-18 at 19:00 +0100, James Courtier-Dutton wrote:
-> James Courtier-Dutton wrote:
-> > I think I have worked it out.
-> > Take each value and divide by 0x80000000 to get a value between 0 and 1.
-> > This is then converted into dB with
-> > 0 == Mute
-> > 0x01571f82 == -19.8 dB
-> > 0x7fffffff == 0 dB
-> > With each value being a constant step of 0.2 dB.
-> > 
-> > James
-> > 
-> > 
-> Did anyone spot the deliberate mistake?
-> 
 
-I give up, what is it and why do you think it's deliberate?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
+======================================================================
+Reported By:                iluxa
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1435
+Category:                   PCI - atiixp-modem
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.13, 2.6.14-rc1
+======================================================================
+Date Submitted:             09-19-2005 08:49 CEST
+Last Modified:              09-20-2005 01:06 CEST
+======================================================================
+Summary:                    ac97 codec is not found when loading the driver
+Description: 
+When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
+saying
+"atiixp-modem: no codec available" and modem doesn't function after that.
 
-Lee
+Little more investigation shown that snd_ac97_mixer thinks the codec is
+already 
+registered as sound codec by audio card driver.
+
+I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
+from CVS HEAD - all with same result.
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ iluxa - 09-19-05 23:44 
+----------------------------------------------------------------------
+> Hmm, this is some HP machine
+That's correct - it is Compaq Presario R4000 - one of those Athlon64-based
+things
+> and there is Conexant codec CXT30 (likely AMC) - we
+> don't know how to support it due to lack of datasheets. We may try to 
+> investigate it deeper, but chance to be supported is really small.
+:(
+
+> Please upload also '/proc/asound/card0/codec97#0/ac97#0-0+regs' file.
+Done.
+
+----------------------------------------------------------------------
+ sashak - 09-20-05 01:06 
+----------------------------------------------------------------------
+Yes, this codec looks like combined Audio-Modem codec (AMC), some modem
+registers (>= 3c) are represented too.
+
+And I think that atiixp-modem fails to detect codec because detection
+procedure (interrupt driver) is "stolen" by audio driver. Try to unload
+both audio (snd-atiixp) and modem (snd-atiixp-modem) drivers, then load
+only atiixp-modem.
+
+Other way to verify this hypothesis is to try with uploaded patch (to
+apply: cd <alsa-dir> ; patch -p0 < atiixp-debug.patch ), then build (with
+'--with-debug=detect') and load both snd-atiixp, snd-atiixp-modem, dmesg
+should show that atiixp detects codec twice (second time when atiixp-modem
+is loaded).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-05 08:49 iluxa          New Issue                                    
+09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
+09-19-05 13:27 sashak         Note Added: 0006292                          
+09-19-05 19:32 iluxa          File Added: pci.txt                          
+09-19-05 19:56 iluxa          File Added: comment.diff                     
+09-19-05 19:57 iluxa          Note Added: 0006296                          
+09-19-05 20:01 iluxa          File Added: atiixp.txt                       
+09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
+   
+09-19-05 20:07 iluxa          Note Added: 0006298                          
+09-19-05 23:30 sashak         File Deleted: comment.diff                    
+09-19-05 23:38 sashak         Note Added: 0006304                          
+09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
+        
+09-19-05 23:44 iluxa          Note Added: 0006306                          
+09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
+09-20-05 01:06 sashak         Note Added: 0006307                          
+======================================================================
+
 
 
 
