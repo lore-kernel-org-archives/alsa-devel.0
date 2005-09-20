@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Tue, 20 Sep 2005 20:20:19 +0200
-Message-ID: <391bfb31b49a24e16ff07777bcf8004e@bugtrack.alsa-project.org>
+Date: Tue, 20 Sep 2005 21:35:21 +0200
+Message-ID: <650997c89bf20a4795e1832bf4e2b7b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44A4C17B
-	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 20:20:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D5F1125
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 21:35:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-20-2005 20:20 CEST
+Last Modified:              09-20-2005 21:35 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,17 +50,10 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-Relationships       ID      Summary
+Relazioni           ID      Riassunto
 ----------------------------------------------------------------------
-has duplicate       0001228 Skype Does not work with aoss
+é duplicata da      0001228 Skype Does not work with aoss
 ======================================================================
-
-----------------------------------------------------------------------
- Hetfield - 09-20-05 16:02 
-----------------------------------------------------------------------
-i added mplayer-log file, with a better strace output.
-
-interesting things from line 1000  (or better 1100).
 
 ----------------------------------------------------------------------
  rlrevell - 09-20-05 20:20 
@@ -70,6 +63,22 @@ read(5, "cards.ENS1370.pcm.dmix.period_ti"..., 131072) = 117
 That should be buffer_size not period_time.  Leave period_time unset, and
 make sure period_size and buffer_size are powers of 2.  Try 4096 and
 32768.
+
+----------------------------------------------------------------------
+ Hetfield - 09-20-05 21:35 
+----------------------------------------------------------------------
+cat .asoundrc
+#cards.ENS1370.pcm.dmix.period_time 0
+cards.ENS1370.pcm.dmix.period_size 4096
+cards.ENS1370.pcm.dmix.buffer_size 32768
+
+
+same issue with provious config.
+
+buffer_size seems to be the important paramether. i tried from 1024 to
+128k...no change.
+
+seems alsa just doesn't want it!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -152,6 +161,8 @@ Date Modified  Username       Field                    Change
 09-20-05 15:59 Hetfield       File Added: mplayer-log                      
 09-20-05 16:02 Hetfield       Note Added: 0006316                          
 09-20-05 20:20 rlrevell       Note Added: 0006317                          
+09-20-05 21:33 Hetfield       File Added: mplayer-log2                     
+09-20-05 21:35 Hetfield       Note Added: 0006318                          
 ======================================================================
 
 
