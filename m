@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Tue, 20 Sep 2005 15:46:39 +0200
-Message-ID: <32f43c9c85c0c7ae04edbfb17abc8ea2@bugtrack.alsa-project.org>
+Date: Tue, 20 Sep 2005 16:02:37 +0200
+Message-ID: <0258ee444638975b3ce240d71c3d0b10@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1DB315C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 15:46:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 599FB170
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 16:02:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.x
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-20-2005 15:46 CEST
+Last Modified:              09-20-2005 16:02 CEST
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -54,12 +54,6 @@ Relazioni           ID      Riassunto
 ----------------------------------------------------------------------
 é duplicata da      0001228 Skype Does not work with aoss
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 09-20-05 14:56 
-----------------------------------------------------------------------
-Please get an strace of mplayer while it is hung waiting for the audio
-device.  Possibly both apps are trying to open /dev/mixer.
 
 ----------------------------------------------------------------------
  Hetfield - 09-20-05 15:46 
@@ -93,6 +87,13 @@ open("/dev/snd/pcmC0D0p", O_RDWR
 this is the only strace info.
 
 hope it's sufficient.
+
+----------------------------------------------------------------------
+ Hetfield - 09-20-05 16:02 
+----------------------------------------------------------------------
+i added mplayer-log file, with a better strace output.
+
+interesting things from line 1000  (or better 1100).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -172,6 +173,8 @@ Date Modified  Username       Field                    Change
 09-20-05 09:19 Hetfield       Note Added: 0006311                          
 09-20-05 14:56 rlrevell       Note Added: 0006314                          
 09-20-05 15:46 Hetfield       Note Added: 0006315                          
+09-20-05 15:59 Hetfield       File Added: mplayer-log                      
+09-20-05 16:02 Hetfield       Note Added: 0006316                          
 ======================================================================
 
 
