@@ -1,175 +1,318 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Tue, 20 Sep 2005 21:35:21 +0200
-Message-ID: <650997c89bf20a4795e1832bf4e2b7b5@bugtrack.alsa-project.org>
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: [PATCH 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
+Date: Tue, 20 Sep 2005 15:28:30 -0700
+Message-ID: <20050920152830.7ef6733b.akpm@osdl.org>
+References: <200509190639.j8J6dIM4007948@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D5F1125
-	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 21:35:21 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S965176AbVITW2o@vger.kernel.org>
+In-Reply-To: <200509190639.j8J6dIM4007948@localhost.localdomain>
+Sender: linux-kernel-owner@vger.kernel.org
+To: jayakumar.alsa@gmail.com
+Cc: perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+jayakumar.alsa@gmail.com wrote:
+>
+> Hi Jaroslav, Takashi, Martin, alsa and kernel folk,
+> 
+> Appended is my patch adding support for the CS5535 Audio device. I've
+> fixed up some errors as per Takashi's advice from the thread:
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
-======================================================================
-Reported By:                Hetfield
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1224
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              09-20-2005 21:35 CEST
-======================================================================
-Summary:                    artsd-like style
-Description: 
-i'd like to know if that's a roadmap to let alsa drivers have a artsd (or
-windows) style, i mean, multiple streams at once.
+Some triviata:
 
-that could be very important for example using skype voip and listening
-music at the same time.
-======================================================================
-Relazioni           ID      Riassunto
-----------------------------------------------------------------------
-é duplicata da      0001228 Skype Does not work with aoss
-======================================================================
+> +++ linux-2.6.13.1/MAINTAINERS	2005-09-15 15:00:19.000000000 +0800
+> @@ -621,6 +621,11 @@ M:	davem@davemloft.net
+>  L:	linux-crypto@vger.kernel.org
+>  S:	Maintained
+>  
+> +CS5535 Audio ALSA driver
+> +P:	Jaya Kumar
+> +M:	jayakumar.alsa@gmail.com
+> +S:	Maintained
+> +
 
-----------------------------------------------------------------------
- rlrevell - 09-20-05 20:20 
-----------------------------------------------------------------------
-read(5, "cards.ENS1370.pcm.dmix.period_ti"..., 131072) = 117
+Neat, thanks.
 
-That should be buffer_size not period_time.  Leave period_time unset, and
-make sure period_size and buffer_size are powers of 2.  Try 4096 and
-32768.
+> +
+> +#include <asm/io.h>
+> +#include <linux/delay.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/init.h>
+> +#include <linux/pci.h>
+> +#include <linux/slab.h>
+> +#include <linux/moduleparam.h>
+> +#include <sound/driver.h>
+> +#include <sound/core.h>
+> +#include <sound/control.h>
+> +#include <sound/pcm.h>
+> +#include <sound/rawmidi.h>
+> +#include <sound/ac97_codec.h>
+> +#include <sound/initval.h>
+> +#include <sound/asoundef.h>
+> +#include "cs5535audio.h"
 
-----------------------------------------------------------------------
- Hetfield - 09-20-05 21:35 
-----------------------------------------------------------------------
-cat .asoundrc
-#cards.ENS1370.pcm.dmix.period_time 0
-cards.ENS1370.pcm.dmix.period_size 4096
-cards.ENS1370.pcm.dmix.buffer_size 32768
+By convention we put the asm/ includes after the linux/ includes.
 
+> +
+> +static unsigned short snd_cs5535audio_codec_read(cs5535audio_t *cs5535au, 
 
-same issue with provious config.
+typedefs are unpopular in-kernel.  We generally don't get too fussed if a
+driver maintainer really wants them there.  The main objection is that we
+now have two names for the same thing.  Plus they cannot be used when
+forward-declaring a structure.
 
-buffer_size seems to be the important paramether. i tried from 1024 to
-128k...no change.
+> +
+> +	timeout = 500;
+> +	do {
+> +		tmp = cs_readl(ACC_CODEC_CNTL);
+> +		if (!(tmp & CMD_NEW)) 
+> +			break;
+> +		msleep(10);
+> +	} while (timeout--);
+> +	if (!timeout) {
+> +		snd_printk(KERN_ERR "Failure writing to cs5535 codec\n");
+> +	}
 
-seems alsa just doesn't want it!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-05 14:49 Hetfield       New Issue                                    
-07-01-05 14:49 Hetfield       Kernel Version            => 2.6.x           
-07-01-05 20:16 Hetfield       Note Added: 0005337                          
-07-01-05 20:33 rlrevell       Note Added: 0005338                          
-07-01-05 22:56 Hetfield       Note Added: 0005343                          
-07-02-05 18:53 pzad           Note Added: 0005356                          
-07-02-05 20:11 Hetfield       Note Added: 0005357                          
-07-02-05 21:46 pzad           File Added: aoss-fcntl.patch                    
-07-02-05 21:47 pzad           Note Added: 0005361                          
-07-03-05 09:25 Hetfield       Note Added: 0005370                          
-07-03-05 14:09 pzad           Note Added: 0005376                          
-07-03-05 15:57 Hetfield       Note Added: 0005378                          
-07-04-05 11:49 pzad           File Added: aoss.patch                       
-07-04-05 11:53 pzad           Note Added: 0005384                          
-07-04-05 14:02 Hetfield       Note Added: 0005385                          
-07-08-05 12:16 tiwai          Note Added: 0005417                          
-07-08-05 12:27 Hetfield       Note Added: 0005418                          
-07-17-05 10:25 Hetfield       Note Added: 0005503                          
-07-17-05 10:29 rlrevell       Note Added: 0005504                          
-07-17-05 10:46 rlrevell       Note Added: 0005505                          
-07-17-05 11:10 Hetfield       Note Added: 0005506                          
-07-17-05 11:11 Hetfield       File Added: log.tar.gz                       
-07-17-05 19:41 rlrevell       Note Added: 0005508                          
-07-17-05 19:50 Hetfield       Note Added: 0005509                          
-07-17-05 19:51 rlrevell       Note Added: 0005510                          
-07-17-05 20:21 Hetfield       Note Added: 0005511                          
-07-17-05 21:14 rlrevell       Note Added: 0005512                          
-07-17-05 21:22 Hetfield       File Added: log2.tar.gz                      
-07-17-05 21:22 Hetfield       File Added: log2                             
-07-17-05 21:23 Hetfield       Note Added: 0005513                          
-07-17-05 22:21 rlrevell       Note Added: 0005514                          
-07-17-05 23:28 Hetfield       Note Added: 0005515                          
-07-17-05 23:43 rlrevell       Note Added: 0005516                          
-07-18-05 03:33 rlrevell       Note Added: 0005517                          
-07-18-05 06:04 rlrevell       Note Added: 0005518                          
-07-18-05 07:33 rlrevell       Note Added: 0005519                          
-07-18-05 09:23 Hetfield       Note Added: 0005520                          
-07-18-05 09:24 Hetfield       File Added: asoundrc                         
-07-18-05 22:08 rlrevell       Note Added: 0005524                          
-07-21-05 19:55 Hetfield       Note Added: 0005540                          
-07-21-05 19:56 Hetfield       Note Added: 0005541                          
-07-24-05 09:55 Hetfield       Note Added: 0005556                          
-07-24-05 19:10 rlrevell       Note Added: 0005558                          
-07-28-05 22:40 rlrevell       Note Added: 0005578                          
-07-29-05 17:43 tiwai          Note Added: 0005579                          
-08-01-05 10:20 Hetfield       Note Added: 0005595                          
-08-10-05 00:49 rlrevell       Relationship added       has duplicate 0001228
-08-28-05 15:56 Hetfield       Note Added: 0005963                          
-09-02-05 19:57 tiwai          Note Added: 0006020                          
-09-02-05 20:22 Hetfield       Note Added: 0006021                          
-09-02-05 20:24 tiwai          Note Added: 0006022                          
-09-02-05 20:26 Hetfield       Note Added: 0006023                          
-09-02-05 20:31 Hetfield       Note Added: 0006024                          
-09-17-05 14:05 Hetfield       Note Added: 0006249                          
-09-17-05 14:51 Hetfield       Note Added: 0006250                          
-09-17-05 19:43 rlrevell       Note Added: 0006253                          
-09-17-05 19:46 Hetfield       Note Added: 0006254                          
-09-17-05 19:50 rlrevell       Note Added: 0006255                          
-09-17-05 19:55 pzad           Note Added: 0006256                          
-09-17-05 20:10 rlrevell       Note Added: 0006257                          
-09-17-05 20:11 rlrevell       Note Added: 0006258                          
-09-17-05 21:21 Hetfield       Note Added: 0006261                          
-09-17-05 22:05 rlrevell       Note Added: 0006262                          
-09-17-05 22:38 Hetfield       Note Added: 0006263                          
-09-17-05 22:52 Hetfield       Note Added: 0006264                          
-09-18-05 03:26 rlrevell       Note Added: 0006265                          
-09-18-05 03:33 rlrevell       Note Edited: 0006265                         
-09-18-05 09:36 Hetfield       Note Added: 0006266                          
-09-18-05 10:14 rlrevell       Note Added: 0006267                          
-09-18-05 10:28 Hetfield       Note Added: 0006268                          
-09-18-05 10:55 Hetfield       Note Added: 0006269                          
-09-19-05 21:44 rlrevell       Note Added: 0006301                          
-09-20-05 09:19 Hetfield       Note Added: 0006311                          
-09-20-05 14:56 rlrevell       Note Added: 0006314                          
-09-20-05 15:46 Hetfield       Note Added: 0006315                          
-09-20-05 15:59 Hetfield       File Added: mplayer-log                      
-09-20-05 16:02 Hetfield       Note Added: 0006316                          
-09-20-05 20:20 rlrevell       Note Added: 0006317                          
-09-20-05 21:33 Hetfield       File Added: mplayer-log2                     
-09-20-05 21:35 Hetfield       Note Added: 0006318                          
-======================================================================
+This isn't right.  `timeout' will have a value of -1 if we timed out. 
+(several instances).
 
 
+> +	timeout = 50;
+> +	do {
+> +		val = cs_readl(ACC_CODEC_STATUS);
+> +		if (	(val & STS_NEW) && 
+> +			((unsigned long) reg == ((0xFF000000 & val)>>24)) )
+> +			break;
+> +		msleep(10);
+> +	} while (timeout--);
+> +	if (!timeout) {
+> +		snd_printk(KERN_ERR "Failure reading cs5535 codec\n");
+> +	}
+
+Ditto.  Plus we prefer to not put braces around a single statement like this.
+
+> +	timeout = 50;
+> +	do {
+> +		tmp = cs_readl(ACC_CODEC_CNTL);
+> +		if (!(tmp & CMD_NEW)) 
+> +			break;
+> +		msleep(10);
+> +	} while (timeout--);
+> +	if (!timeout) {
+> +		snd_printk(KERN_ERR "Failure writing to cs5535 codec\n");
+> +	}
+
+Again.  Perhaps a helper function so this code (and its bug) don't get
+duplicated so much?
+
+> +	snd_cs5535audio_codec_write(cs5535au,reg,val);
+
+We normally put a space after commas.
+
+> +	if ((err = snd_ac97_bus(card, 0, &ops, NULL, &pbus)) < 0)
+
+And so do you ;)
+
+> +	if (bm_stat & EOP) {
+> +		cs5535audio_dma_t *dma;
+> +		dma = (cs5535audio_dma_t *) 
+> +			cs5535au->capture_substream->runtime->private_data;
+
+Unneeded typecast.
+
+> +		dma->index = (++(dma->index)) % dma->periods;
+
+Is no locking needed for dma->index?
+
+> +			switch (count) {
+> +				case IRQ_STS:
+> +					cs_readl(ACC_GPIO_STATUS);
+> +					break;
+> +				case WU_IRQ_STS:
+> +					cs_readl(ACC_GPIO_STATUS);
+> +					break;
+
+We normally do
+
+			switch (count) {
+			case IRQ_STS:
+				cs_readl(ACC_GPIO_STATUS);
+				break;
+			case WU_IRQ_STS:
+				cs_readl(ACC_GPIO_STATUS);
+				break;
+
+Just to save a tabstop.
+
+> +					break;
+> +				default:
+> +					snd_printk(KERN_ERR 
+> +						"Unexpected irq src\n");
+> +					break;	
+> +			}
+> +		}
+> +	}
+> +	return IRQ_HANDLED;
+> +}
+
+Perhaps the default case should return IRQ_NONE.
+
+> +static int snd_cs5535audio_free(cs5535audio_t *cs5535au)
+> +{
+> +	synchronize_irq(cs5535au->irq);
+> +	pci_set_power_state(cs5535au->pci, 3);
+> +
+> +	if (cs5535au->irq >= 0)
+> +		free_irq(cs5535au->irq, (void *)cs5535au);
+
+Unneeded typecast.
+
+> +static int __devinit snd_cs5535audio_create(snd_card_t *card,
+> +				     struct pci_dev *pci,
+> +				     cs5535audio_t **rcs5535au)
+> +{
+> +	cs5535audio_t *cs5535au;
+> +
+> +	int err;
+> +	static snd_device_ops_t ops = {
+> +		.dev_free =	snd_cs5535audio_dev_free,
+> +	};
+> +
+> +	*rcs5535au = NULL;
+> +	if ((err = pci_enable_device(pci)) < 0)
+> +		return err;
+> +
+> +	cs5535au = kcalloc(1, sizeof(*cs5535au), GFP_KERNEL);
+
+We have kzalloc() now.
+
+> +	if (cs5535au == NULL) {
+> +		pci_disable_device(pci);
+> +		return -ENOMEM;
+> +	}
+> +	spin_lock_init(&cs5535au->reg_lock);
+> +	cs5535au->card = card;
+> +	cs5535au->pci = pci;
+> +	cs5535au->irq = -1;
+> +	if ((err = pci_request_regions(pci, "CS5535 Audio")) < 0) {
+> +		kfree(cs5535au);
+> +		pci_disable_device(pci);
+> +		return err;
+> +	}
+> +	cs5535au->port = pci_resource_start(pci, 0);
+> +	if (request_irq(pci->irq, snd_cs5535audio_interrupt, 
+> +		SA_INTERRUPT|SA_SHIRQ, "CS5535 Audio", (void *) cs5535au)) {
+
+Unneeded typecast.
+
+> +		snd_printk("unable to grab IRQ %d\n", pci->irq);
+> +		snd_cs5535audio_free(cs5535au);
+> +		return -EBUSY;
+> +	}
+> +
+> +	cs5535au->irq = pci->irq;
+> +	pci_set_master(pci);
+> +
+> +	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, 
+> +					cs5535au, &ops)) < 0) {
+> +		snd_cs5535audio_free(cs5535au);
+> +		return err;
+> +	}
+> +
+> +	snd_card_set_dev(card, &pci->dev);
+> +
+> +	*rcs5535au = cs5535au;
+> +	return 0;
+> +}
+
+Please consider reworking functions such as the above so as to have a
+single `reutrn' statement.  Or one `return' for success and just one for
+the error paths.  Reason: a) it's easier to chack that all resources are
+being freed on the error paths and b) It's easier to add new stuff which
+allocates new resources which need to be released on error paths.  Involves
+goto spaghetti.
 
 
--------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. 
-Download it for free - -and be entered to win a 42" plasma tv or your very
-own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+> +static int __devinit snd_cs5535audio_probe(struct pci_dev *pci,
+> +					const struct pci_device_id *pci_id)
+> +{
+> +	static int dev;
+> +	snd_card_t *card;
+> +	cs5535audio_t *cs5535au;
+> +	int err;
+> +
+> +	if (dev >= SNDRV_CARDS)
+> +		return -ENODEV;
+> +	if (!enable[dev]) {
+> +		dev++;
+> +		return -ENOENT;
+> +	}
+> +
+> +	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
+> +	if (card == NULL)
+> +		return -ENOMEM;
+> +
+> +	if ((err = snd_cs5535audio_create(card, pci, &cs5535au)) < 0) {
+> +		snd_card_free(card);
+> +		return err;
+> +	}
+> +
+> +	if ((err = snd_cs5535audio_mixer(cs5535au)) < 0) {
+> +		snd_card_free(card);
+> +		return err;
+> +	}
+> +
+> +	if ((err = snd_cs5535audio_pcm(cs5535au)) < 0) {
+> +		snd_card_free(card);
+> +		return err;
+> +	}
+> +
+> +	strcpy(card->driver, DRIVER_NAME);
+> +
+> +	strcpy(card->shortname, "CS5535 Audio");
+> +	sprintf(card->longname, "%s %s at 0x%lx, irq %i",
+> +		card->shortname, card->driver,
+> +		cs5535au->port, cs5535au->irq);
+> +
+> +	if ((err = snd_card_register(card)) < 0) {
+> +		snd_card_free(card);
+> +		return err;
+> +	}
+> +
+> +	pci_set_drvdata(pci, card);
+> +	dev++;
+> +	return 0;
+> +}
+
+Ditto.
+
+The handling of `dev' is racy ;)
+
+> +	addr = (u32)substream->runtime->dma_addr;
+
+Nope, _snd_pcm_runtime.addr has type dma_addr_t, which is an opaque type,
+64-bit on some platforms.  I expect this driver will blow up on those
+platforms.
+
+> +	desc_addr = (u32)dma->desc_buf.addr;
+
+Ditto.
+
+> +	cs5535audio_t *cs5535au = snd_pcm_substream_chip(substream);
+> +	cs5535audio_dma_t *dma = (cs5535audio_dma_t *)
+> +					substream->runtime->private_data;
+
+Unneeded cast.
+
++#define cs_writel(reg, val) 	outl(val, (int) cs5535au->port + reg)
++#define cs_writeb(reg, val) 	outb(val, (int) cs5535au->port + reg)
++#define cs_readl(reg) 		inl((unsigned short) (cs5535au->port + reg))
++#define cs_readw(reg) 		inw((unsigned short) (cs5535au->port + reg))
++#define cs_readb(reg) 		inb((unsigned short) (cs5535au->port + reg))
+
+erk.   subsystem-wide helper macros which reference local variables?
+
+Oh well - it _is_ a sound driver ;)
