@@ -1,11 +1,12 @@
-From: David Cohen <david.cohen@indt.org.br>
-Subject: Problem with a stereo alsa driver
-Date: Tue, 20 Sep 2005 12:12:06 -0400
-Message-ID: <433034D6.5060203@indt.org.br>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: porting alsa
+Date: Tue, 20 Sep 2005 19:49:25 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509201944510.1996-100000@studcom.urz.uni-halle.de>
+References: <432B907A.3060706@audi0.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <432B907A.3060706@audi0.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,25 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: ryan olejnik <ryno@audi0.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+ryan olejnik wrote:
+> I would like to get involved with porting alsa to NetBSD.
 
-I am getting a problem with an alsa driver on arm platform. The codec
-works only with 2 channel and the driver was implemented with 2 channel
-support only too. But I guess that alsa can play a mono audio file
-making a software convertion from mono to stereo, is that correct?. My
-problem is that not all sample rates are playing well in mono mode. Some
-rates get into a loop and play the sound 3 times, and some rates play
-with no problem. With stereo audio files, I never get these problems,
-even with the same rates.
-Is there anything to do with the driver to fix this problem, or it might
-be a alsa error?
+Most drivers are licensed under the GPL only.  I doubt that
+"completely rewrite from scratch" is what you want to do.
 
-BR,
 
-David Cohen
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
