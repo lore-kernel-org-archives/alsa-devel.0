@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Tue, 20 Sep 2005 12:06:43 +0200
-Message-ID: <e2eb92756e98f74cc2e494e158ef0dac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Tue, 20 Sep 2005 12:23:27 +0200
+Message-ID: <375b80ee6fb3cc60c74f44440e7f50f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0795719C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 12:06:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A55219F
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2005 12:23:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,101 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
 ======================================================================
-Reported By:                JSchmitt
-Assigned To:                
+Reported By:                Quietti
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   353
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   306
+Category:                   PPC - powermac
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              09-20-2005 12:06 CEST
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              09-20-2005 12:23 CEST
 ======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in
-snd_pcm_hw.c
+Summary:                    compiles, but no sound comes out
 Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
 
-I will not get any sound.
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- rob_hughes - 09-19-05 22:45 
+ rlrevell - 09-17-05 20:21 
 ----------------------------------------------------------------------
-I'm believe that I was referring to accessing /dev/dsp would work for root,
-but not a regular user, as that was a problem I had for awhile before I
-finally just made the device node 666 instead of using groups, although
-the group access should have worked. This is still a problem I run into
-from time to time, where /dev/dsp is accessible to root, or if it's set
-666, but not when its owner is root:audio, permissions 660, and the user
-is a member of the audio group. Any rate, it's not related to this issue.
-
-At any rate, since I switched to Ubuntu (Alsa 1.0.8), the problem has gone
-away, so this is probably just more redhat kernel brokeness, unless
-someone else can reproduce it.
-
-As far as I'm concerned, and since the original reporter seems to have
-wandered off permanently, I'd say close it.
+OK keep in mind the version of ALSA in the kernel is not the current ALSA
+version.  It lags by a month or two.  So make sure to test against the
+latest ALSA development release or (better) ALSA CVS.
 
 ----------------------------------------------------------------------
- jdthood - 09-20-05 12:06 
+ Quietti - 09-20-05 12:23 
 ----------------------------------------------------------------------
-Apparently not a bug.
+That lag is something the ALSA team will have to live with. 
+
+Most people are not likely to even try grafting the current ALSA release
+onto an existing kernel tree, let alone fetching from the CVS tree.
+Pointless to think that end-users would do either one, when they don't
+even build their own kernels. As much as this would speed development up
+in a positive way, one simply cannot turn end-users into developers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 19:36 JSchmitt       New Issue                                    
-07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
-07-15-04 14:20 perex          Note Added: 0001433                          
-07-15-04 17:57 JSchmitt       Note Added: 0001436                          
-08-17-04 06:11 samy           Note Added: 0001572                          
-08-17-04 06:11 samy           Issue Monitored: samy                        
-10-23-04 22:41 rob_hughes     Note Added: 0002256                          
-10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
-10-23-04 23:27 rob_hughes     Note Added: 0002258                          
-10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
-03-19-05 09:06 jdthood        Note Added: 0004011                          
-03-19-05 12:08 rob_hughes     Note Added: 0004034                          
-03-19-05 12:38 jdthood        Note Added: 0004035                          
-03-21-05 04:01 rob_hughes     Note Added: 0004115                          
-03-22-05 19:56 tiwai          Note Added: 0004130                          
-03-24-05 02:28 rob_hughes     Note Added: 0004190                          
-03-24-05 08:16 jdthood        Note Added: 0004192                          
-09-19-05 22:45 rob_hughes     Note Added: 0006303                          
-09-20-05 12:06 jdthood        Status                   new => closed       
-09-20-05 12:06 jdthood        Note Added: 0006312                          
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
+02-04-05 09:22 Quietti        Note Added: 0003496                          
+02-04-05 13:04 tiwai          Note Added: 0003499                          
+04-02-05 13:33 Quietti        Note Added: 0004297                          
+08-06-05 20:24 Quietti        Note Added: 0005682                          
+08-06-05 20:31 rlrevell       Note Added: 0005683                          
+08-06-05 20:32 rlrevell       Note Added: 0005684                          
+08-06-05 20:53 rlrevell       Note Added: 0005685                          
+08-06-05 21:17 rlrevell       Note Added: 0005686                          
+08-06-05 23:54 rlrevell       Note Added: 0005687                          
+08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
+08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
+08-07-05 10:03 pochini        Note Added: 0005689                          
+08-07-05 10:31 Quietti        Note Added: 0005690                          
+08-07-05 10:46 rlrevell       Note Added: 0005691                          
+08-07-05 11:36 Quietti        Note Added: 0005692                          
+08-07-05 11:44 Quietti        Note Added: 0005693                          
+08-07-05 20:27 rlrevell       Note Added: 0005697                          
+08-08-05 14:53 Quietti        Note Added: 0005708                          
+08-08-05 19:42 rlrevell       Note Added: 0005711                          
+08-11-05 13:09 Johannes Berg  Note Added: 0005755                          
+08-11-05 13:09 Johannes Berg  Issue Monitored: Johannes Berg                    
+08-31-05 11:44 Quietti        Note Added: 0005986                          
+09-17-05 20:13 Quietti        Note Added: 0006259                          
+09-17-05 20:21 rlrevell       Note Added: 0006260                          
+09-20-05 12:23 Quietti        Note Added: 0006313                          
 ======================================================================
 
 
