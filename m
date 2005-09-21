@@ -1,79 +1,104 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-user] dmix not working with intel8x0 (ICH4)
-Date: Wed, 21 Sep 2005 03:05:59 -0400
-Message-ID: <1127286360.1421.5.camel@mindpipe>
-References: <431527EA.6000300@nilsen.com>	<4318EBBD.8060000@nilsen.com>
-	 <s5hfysjsevv.wl%tiwai@suse.de>  <431C8E81.1080701@nilsen.com>
-	 <1125948816.1772.15.camel@mindpipe> <431C9E94.6010408@nilsen.com>
-	 <433018DE.4060607@nilsen.com> <1127222378.20689.11.camel@mindpipe>
-	 <4330203D.9040405@nilsen.com> <1127240311.20689.92.camel@mindpipe>
-	 <433101BA.9080805@nilsen.com>
+From: jayakumar alsa <jayakumar.alsa@gmail.com>
+Subject: Re: [PATCH 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
+Date: Wed, 21 Sep 2005 15:08:26 +0800
+Message-ID: <47f5dce305092100085a13a5a7@mail.gmail.com>
+References: <200509190639.j8J6dIM4007948@localhost.localdomain>
+	 <20050920152830.7ef6733b.akpm@osdl.org>
+Reply-To: jayakumar.alsa@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <433101BA.9080805@nilsen.com>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751041AbVIUHIa@vger.kernel.org>
+In-Reply-To: <20050920152830.7ef6733b.akpm@osdl.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a bit over my head, someone on alsa-devel can probably answer.
-
-You can't easily "fix it" - softvol and dmix are incompatible so
-ICH4.conf is incorrect.  You have to use one or the other for now.
-
-Lee
-
-On Wed, 2005-09-21 at 08:46 +0200, Morten Nilsen wrote:
-> Lee Revell wrote:
-> > On Tue, 2005-09-20 at 16:44 +0200, Morten Nilsen wrote:
-> > 
-> >>mortenn@onihime ~$ xmms
-> >>Message: device: default
-> >>ALSA lib pcm_direct.c:777:(snd_pcm_direct_initialize_slave) unable to 
-> >>install hw params
-> >>ALSA lib pcm_dmix.c:814:(snd_pcm_dmix_open) unable to initialize slave
-> >>
-> >>** WARNING **: alsa_setup(): Failed to open pcm device (default): 
-> >>Inappropriate ioctl for device
-> > 
-> > OK it's the interaction with dmix and softvol.
-> > 
-> > alsa/alsa-lib/src/pcm/pcm_dmix.c:
-> > 
-> > ICH4.conf:
-> > 
-> > So these files disagree on whether dmix + softvol is legal.  
-> > Who does snd_pcm_type(spcm) not trigger the assert?  
-> > Did someone forget to add softvol to the list of types?
+> > +static int __devinit snd_cs5535audio_probe(struct pci_dev *pci,
+> > +                                     const struct pci_device_id *pci_id)
+> > +{
+> > +     static int dev;
+> > +     snd_card_t *card;
+> > +     cs5535audio_t *cs5535au;
+> > +     int err;
+> > +
+> > +     if (dev >= SNDRV_CARDS)
+> > +             return -ENODEV;
+> > +     if (!enable[dev]) {
+> > +             dev++;
+> > +             return -ENOENT;
+> > +     }
+> > +
+> > +     card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
+> > +     if (card == NULL)
+> > +             return -ENOMEM;
+> > +
+> > +     if ((err = snd_cs5535audio_create(card, pci, &cs5535au)) < 0) {
+> > +             snd_card_free(card);
+> > +             return err;
+> > +     }
+> > +
+> > +     if ((err = snd_cs5535audio_mixer(cs5535au)) < 0) {
+> > +             snd_card_free(card);
+> > +             return err;
+> > +     }
+> > +
+> > +     if ((err = snd_cs5535audio_pcm(cs5535au)) < 0) {
+> > +             snd_card_free(card);
+> > +             return err;
+> > +     }
+> > +
+> > +     strcpy(card->driver, DRIVER_NAME);
+> > +
+> > +     strcpy(card->shortname, "CS5535 Audio");
+> > +     sprintf(card->longname, "%s %s at 0x%lx, irq %i",
+> > +             card->shortname, card->driver,
+> > +             cs5535au->port, cs5535au->irq);
+> > +
+> > +     if ((err = snd_card_register(card)) < 0) {
+> > +             snd_card_free(card);
+> > +             return err;
+> > +     }
+> > +
+> > +     pci_set_drvdata(pci, card);
+> > +     dev++;
+> > +     return 0;
+> > +}
 > 
-> I did some poking about in pcm.c, and this wasn't enough to fix it, in 
-> any case..
+> Ditto.
 > 
-> --- alsa-lib-1.0.9.org/src/pcm/pcm.c    2005-05-24 16:14:31.000000000 +0200
-> +++ alsa-lib-1.0.9/src/pcm/pcm.c        2005-09-21 10:31:11.898017056 +0200
-> @@ -1512,6 +1512,7 @@
->          PCMTYPE(LADSPA),
->          PCMTYPE(DMIX),
->          PCMTYPE(JACK),
-> +       PCMTYPE(SOFTVOL),
->   };
-> 
->   static const char *snd_pcm_subformat_names[] = {
+> The handling of `dev' is racy ;)
 
+I took a quick look at the dev handling. 
 
+% egrep -B20 "dev\+\+" $lintree/sound/pci/*.c
+<snip>
+--
+../azt3328.c-           return -ENODEV;
+../azt3328.c-   if (!enable[dev]) {
+../azt3328.c:           dev++;
+--
+../azt3328.c-
+../azt3328.c-   pci_set_drvdata(pci, card);
+../azt3328.c:   dev++;
+--
+../cmipci.c-            return -ENODEV;
+../cmipci.c-    if (! enable[dev]) {
+../cmipci.c:            dev++;
+--
+../cmipci.c-    }
+../cmipci.c-    pci_set_drvdata(pci, card);
+../cmipci.c:    dev++;
+--
+<snip>
 
--------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. 
-Download it for free - -and be entered to win a 42" plasma tv or your very
-own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+So I think everyone is doing the same thing. I think probe is called
+from driver_probe_device through device_add and in this case that's
+from pci_bus_add_device/s from pci_do_scan_bus. I think the device
+probe functions are therefore called serially and there is no risk of
+a race condition. I hope that's right.
+
+Thanks,
+jk
