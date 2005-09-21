@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001360]: 16bit mono -> 24bit stereo conversion (plughw) produces noise in right channel
-Date: Wed, 21 Sep 2005 01:52:54 +0200
-Message-ID: <c6a3e1e5a0311563e3d09a156ad10911@bugtrack.alsa-project.org>
+From: jayakumar alsa <jayakumar.alsa@gmail.com>
+Subject: Re: [PATCH 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
+Date: Tue, 20 Sep 2005 20:03:40 -0400
+Message-ID: <47f5dce305092017031a2ba375@mail.gmail.com>
+References: <200509190639.j8J6dIM4007948@localhost.localdomain>
+	 <20050920152830.7ef6733b.akpm@osdl.org>
+Reply-To: jayakumar.alsa@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 255F8192
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 01:52:55 +0200 (MEST)
+In-Reply-To: <20050920152830.7ef6733b.akpm@osdl.org>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +20,144 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 9/20/05, Andrew Morton <akpm@osdl.org> wrote:
+> By convention we put the asm/ includes after the linux/ includes.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1360> 
-======================================================================
-Reported By:                grabner
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1360
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-22-2005 22:42 CEST
-Last Modified:              09-21-2005 01:52 CEST
-======================================================================
-Summary:                    16bit mono -> 24bit stereo conversion (plughw)
-produces noise in right channel
-Description: 
-The sample conversion from 16bit mono format to 24bit stereo format (using
-plughw:n) produces the correct signal in the left channel, but only noise
-in the right channel.
-======================================================================
+Will do. Thanks for the detailed review!
 
-----------------------------------------------------------------------
- grabner - 09-11-05 03:01 
-----------------------------------------------------------------------
-Unfortunately the problem still exists. I did "cvs update" and recompile
-the library several times, but nothing changed.
+>=20
+> > +
+> > +static unsigned short snd_cs5535audio_codec_read(cs5535audio_t *cs5535=
+au,
+>=20
+> typedefs are unpopular in-kernel.  We generally don't get too fussed if a
+> driver maintainer really wants them there.  The main objection is that we
+> now have two names for the same thing.  Plus they cannot be used when
+> forward-declaring a structure.
 
-----------------------------------------------------------------------
- grabner - 09-21-05 01:52 
-----------------------------------------------------------------------
-Ok, I overlooked that the libraries get installed in /usr/lib by default
-even on the AMD64 platform (instead of /usr/lib64), so the new libraries
-were never used :-( After explicitly forcing installation in /usr/lib64,
-the noise in the right channel is no longer present.
+I just used those typedefs in order to match the style in all the
+other alsa drivers. For example:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-22-05 22:42 grabner        New Issue                                    
-08-23-05 16:25 tiwai          Note Added: 0005906                          
-08-24-05 00:15 grabner        Note Added: 0005919                          
-09-02-05 19:14 tiwai          Note Added: 0006013                          
-09-11-05 03:01 grabner        Note Added: 0006133                          
-09-21-05 01:52 grabner        Note Added: 0006319                          
-======================================================================
+% egrep typedef $lintree/sound/pci/*.c
+als4000.c:typedef struct {
+atiixp.c:typedef struct snd_atiixp atiixp_t;
+atiixp.c:typedef struct snd_atiixp_dma atiixp_dma_t;
+atiixp.c:typedef struct snd_atiixp_dma_ops atiixp_dma_ops_t;
+atiixp.c:typedef struct atiixp_dma_desc {
+azt3328.c:typedef struct _snd_azf3328 azf3328_t;
+azt3328.c:typedef struct azf3328_mixer_reg {
+bt87x.c:typedef struct snd_bt87x bt87x_t;
+cmipci.c:typedef struct snd_stru_cmipci cmipci_t;
+<snip>
 
+I'm not sure what to do. I'd be happy to take them out. But I woudn't
+mind leaving them in if that's what alsa convention is.
 
+> This isn't right.  `timeout' will have a value of -1 if we timed out.
+> (several instances).
+
+How embarrassing. Will fix. :-)
+
+> Ditto.  Plus we prefer to not put braces around a single statement like t=
+his.
+
+Will fix.
+
+> Again.  Perhaps a helper function so this code (and its bug) don't get
+> duplicated so much?
+
+Will do.
+
+>=20
+> We normally put a space after commas.
+>=20
+> Unneeded typecast.
+
+Will fix.
+
+>=20
+> > +             dma->index =3D (++(dma->index)) % dma->periods;
+>=20
+> Is no locking needed for dma->index?
+
+Looks like I stopped using index after I found I don't need to track
+the individual descriptors. I'll take it out.
+
+>=20
+> Just to save a tabstop.
+
+Will do.
+
+> > +     }
+> > +     return IRQ_HANDLED;
+> > +}
+>=20
+> Perhaps the default case should return IRQ_NONE.
+
+In this case I think the code is correct as it is. I check that in the
+top level irq status register if the irq was from the cs5535 audio. I
+return NONE if it wasn't there. Then I proceed to read a bunch of
+other registers, all with the assumption that the irq was from us. I
+return HANDLED at that point since reading those other registers has
+cleared any irq from us even if it was from an unexpected src.
+
+> > +     cs5535au =3D kcalloc(1, sizeof(*cs5535au), GFP_KERNEL);
+>=20
+> We have kzalloc() now.
+
+Yes, Takashi pointed that out too. But I did the patch against 13.1
+which doesn't have kzalloc. I guess I'll redo the patch against -mm
+and switch to kzalloc.
+
+> Please consider reworking functions such as the above so as to have a
+> single `reutrn' statement.  Or one `return' for success and just one for
+> the error paths.  Reason: a) it's easier to chack that all resources are
+> being freed on the error paths and b) It's easier to add new stuff which
+> allocates new resources which need to be released on error paths.  Involv=
+es
+> goto spaghetti.
+
+Will do.
+
+>=20
+> The handling of `dev' is racy ;)
+
+Ok. Will look at that.
+
+>=20
+> > +     addr =3D (u32)substream->runtime->dma_addr;
+>=20
+> Nope, _snd_pcm_runtime.addr has type dma_addr_t, which is an opaque type,
+> 64-bit on some platforms.  I expect this driver will blow up on those
+> platforms.
+
+The 5535 hw's dma descriptor is only 32 bit capable. I guess I should
+look into informing the dma alloc that the buffers need to be in the
+lower 32. Would it be okay to drop the upper then?
+
+>From a practical standpoint, the 5535 is only used in x86-32
+embeddeded systems so high mem probably won't occur. But you are
+right, I'll go and try make it right.
+
+> +#define cs_writel(reg, val)    outl(val, (int) cs5535au->port + reg)
+> +#define cs_writeb(reg, val)    outb(val, (int) cs5535au->port + reg)
+> +#define cs_readl(reg)          inl((unsigned short) (cs5535au->port + re=
+g))
+> +#define cs_readw(reg)          inw((unsigned short) (cs5535au->port + re=
+g))
+> +#define cs_readb(reg)          inb((unsigned short) (cs5535au->port + re=
+g))
+>=20
+> erk.   subsystem-wide helper macros which reference local variables?
+
+Ok. I'll change that.
+
+Thanks,
+jk
 
 
 -------------------------------------------------------
