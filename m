@@ -1,19 +1,14 @@
-From: Allan Klinbail <allan_k@dodo.com.au>
-Subject: Re: [ALSA - driver 0001203]: mtpav driver locks X
-	on	64 bit native system
-Date: Thu, 22 Sep 2005 02:03:37 +1000
-Message-ID: <1127318617.9212.4.camel@daw.littlewolf>
-References: <4a2952cca628b67c731e72971c492bf2@bugtrack.alsa-project.org>
-	 <1126161408.9937.7.camel@daw.littlewolf>
-	 <1126197394.12697.2.camel@mindpipe>  <s5hk6hrsdkt.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Wed, 21 Sep 2005 19:34:49 +0200
+Message-ID: <efcb210d5c3017c88bfaee2a9a62f887@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from relay02.mail-hub.dodo.com.au (relay02.mail-hub.dodo.com.au [202.136.32.45])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D102017B
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 18:01:51 +0200 (MEST)
-In-Reply-To: <s5hk6hrsdkt.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2DF4170
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 19:34:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,91 +18,110 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry I haven't been on for a little while... how do I apply this patch?
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
+======================================================================
+Reported By:                Quietti
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   306
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
+======================================================================
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              09-21-2005 19:34 CEST
+======================================================================
+Summary:                    compiles, but no sound comes out
+Description: 
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
 
-On Thu, 2005-09-08 at 18:56 +0200, Takashi Iwai wrote:
-> At Thu, 08 Sep 2005 12:36:33 -0400,
-> Lee Revell wrote:
-> > 
-> > On Thu, 2005-09-08 at 16:36 +1000, Allan Klinbail wrote:
-> > > Is any work being done on this... 
-> > > 
-> > > To my horror and disgust for work purposes I needed to install winblows
-> > > on the amd64 and the MOTU proprietary 32 bit driver works...
-> > > 
-> > > This simply confirms I have all my printer port settings correct in
-> > > BIOS...  
-> > 
-> > Um, no, because the ALSA developers almost certainly don't have the
-> > hardware.  YOU need to work on it.
-> 
-> The problem is that we haven't changed the driver so much for a long
-> time.  And the driver is quite simple.  It's a parallel port.
-> So, I'm wondering what is broken.
-> 
-> You can try the following patch just for testing.  It postpones the
-> request_irq() call, in case any wandering irq caused the trouble.
-> 
-> 
-> Takashi
-> 
-> 
-> Index: alsa-kernel/drivers/mtpav.c
-> ===================================================================
-> RCS file: /home/iwai/cvs/alsa/alsa-kernel/drivers/mtpav.c,v
-> retrieving revision 1.29
-> diff -u -r1.29 mtpav.c
-> --- alsa-kernel/drivers/mtpav.c	5 Sep 2005 16:16:33 -0000	1.29
-> +++ alsa-kernel/drivers/mtpav.c	8 Sep 2005 16:55:34 -0000
-> @@ -592,13 +592,18 @@
->  /*
->   * get ISA resources
->   */
-> -static int snd_mtpav_get_ISA(mtpav_t * mcard)
-> +static int __init snd_mtpav_get_ISA_port(mtpav_t * mcard)
->  {
->  	if ((mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI")) == NULL) {
->  		snd_printk("MTVAP port 0x%lx is busy\n", port);
->  		return -EBUSY;
->  	}
->  	mcard->port = port;
-> +	return 0;
-> +}
-> +
-> +static int __init snd_mtpav_get_ISA_irq(mtpav_t * mcard)
-> +{
->  	if (request_irq(irq, snd_mtpav_irqh, SA_INTERRUPT, "MOTU MTPAV", (void *)mcard)) {
->  		snd_printk("MTVAP IRQ %d busy\n", irq);
->  		return -EBUSY;
-> @@ -742,7 +747,7 @@
->  		return -ENOMEM;
->  	}
->  
-> -	err = snd_mtpav_get_ISA(mtp_card);
-> +	err = snd_mtpav_get_ISA_port(mtp_card);
->  	//printk("snd_mtpav_get_ISA returned: %d\n", err);
->  	if (err < 0)
->  		goto __error;
-> @@ -769,6 +774,10 @@
->  
->  	snd_mtpav_portscan(mtp_card);
->  
-> +	err = snd_mtpav_get_ISA_irq(mtp_card);
-> +	if (err < 0)
-> +		goto __error;
-> +
->  	printk(KERN_INFO "Motu MidiTimePiece on parallel port irq: %d ioport: 0x%lx\n", irq, port);
->  
->  	return 0;
-> 
--- 
-Allan Klinbail <allan_k@dodo.com.au>
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
+======================================================================
+
+----------------------------------------------------------------------
+ Quietti - 09-21-05 13:02 
+----------------------------------------------------------------------
+rlrevell, this is the second time you suggest checking out CVS and, on both
+occasions, there was no change in the PPC directory that concern any of
+the defective drivers. The first time had no single change in the
+directory at all, while this time only has the addition of the toonie
+driver for the Mac Mini and even that is old news.
+
+----------------------------------------------------------------------
+ rlrevell - 09-21-05 19:34 
+----------------------------------------------------------------------
+You need to open separate bug reports for those issues.
+
+Bug #306 is "no sound" which you reported on 8-31 was fixed in 2.6.13.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
+02-04-05 09:22 Quietti        Note Added: 0003496                          
+02-04-05 13:04 tiwai          Note Added: 0003499                          
+04-02-05 13:33 Quietti        Note Added: 0004297                          
+08-06-05 20:24 Quietti        Note Added: 0005682                          
+08-06-05 20:31 rlrevell       Note Added: 0005683                          
+08-06-05 20:32 rlrevell       Note Added: 0005684                          
+08-06-05 20:53 rlrevell       Note Added: 0005685                          
+08-06-05 21:17 rlrevell       Note Added: 0005686                          
+08-06-05 23:54 rlrevell       Note Added: 0005687                          
+08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
+08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
+08-07-05 10:03 pochini        Note Added: 0005689                          
+08-07-05 10:31 Quietti        Note Added: 0005690                          
+08-07-05 10:46 rlrevell       Note Added: 0005691                          
+08-07-05 11:36 Quietti        Note Added: 0005692                          
+08-07-05 11:44 Quietti        Note Added: 0005693                          
+08-07-05 20:27 rlrevell       Note Added: 0005697                          
+08-08-05 14:53 Quietti        Note Added: 0005708                          
+08-08-05 19:42 rlrevell       Note Added: 0005711                          
+08-11-05 13:09 Johannes Berg  Note Added: 0005755                          
+08-11-05 13:09 Johannes Berg  Issue Monitored: Johannes Berg                    
+08-31-05 11:44 Quietti        Note Added: 0005986                          
+09-17-05 20:13 Quietti        Note Added: 0006259                          
+09-17-05 20:21 rlrevell       Note Added: 0006260                          
+09-20-05 12:23 Quietti        Note Added: 0006313                          
+09-21-05 03:59 rlrevell       Note Added: 0006320                          
+09-21-05 04:00 rlrevell       Note Added: 0006321                          
+09-21-05 10:52 Quietti        Note Added: 0006322                          
+09-21-05 13:02 Quietti        Note Added: 0006323                          
+09-21-05 19:34 rlrevell       Note Added: 0006324                          
+======================================================================
+
 
 
 
