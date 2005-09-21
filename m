@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Implement support for display of dB gain
- in alsamixer.
-Date: Wed, 21 Sep 2005 10:02:17 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0509210954590.12389@tm8103.perex-int.cz>
-References: <Pine.HPX.4.33n.0509201455140.23957-100000@studcom.urz.uni-halle.de>
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
+Date: Wed, 21 Sep 2005 09:31:09 +0100
+Message-ID: <20050921083109.GA27254@infradead.org>
+References: <200509190639.j8J6dIM4007948@localhost.localdomain> <20050920152830.7ef6733b.akpm@osdl.org> <47f5dce305092017031a2ba375@mail.gmail.com> <20050920172309.626db866.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0509201455140.23957-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
+In-Reply-To: <20050920172309.626db866.akpm@osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Andrew Morton <akpm@osdl.org>
+Cc: jayakumar.alsa@gmail.com, perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Sep 2005, Clemens Ladisch wrote:
-
-> Jaroslav Kysela wrote:
-> > On Mon, 19 Sep 2005, Takashi Iwai wrote:
-> > > > I would vote to keep the kernel space as simple as possible and give the
-> > > > whole contents to apps. They can implement reading/caching/filtering
-> > > > themselves.
-> > >
-> > > Agreed.
+On Tue, Sep 20, 2005 at 05:23:09PM -0700, Andrew Morton wrote:
+> > I'm not sure what to do. I'd be happy to take them out. But I woudn't
+> > mind leaving them in if that's what alsa convention is.
 > 
-> Too.
-> 
-> > Ok, good ideas. I would propose this final API:
-> >
-> > 1) one key with specific delimiters like:
-> >
-> > list		# list everything (all keys)
-> > list/master	# list only master keys (mixer, pcm etc.)
-> > list/mixer	# list only mixer keys
-> > list/pcm
-> 
-> This is _not_ a simple API.  AFAICS the idea was to have just one big
-> string/blob containing all descriptions, and to let the lib or
-> applications do the listing/searching/etc.
-> 
-> Accessing specific keys (elements) would be needed only if something
-> wasn't read only.
+> I'd be inclined to stick with the alsa style.  That's just an fyi if you
+> plan on working in other places.
 
-You need also take in account that keys might be added/removed at runtime.
-The question is still to have:
+I'd _really_ prefer to fix all of alsa.  Alsa is so full of wrappers
+and multiple names for the same thing that's it's almost impossibly
+for a normal kernel developer to fix anythign in there.
 
-1) manager code in the midlevel to register keys from drivers and do 
-   lookups; in this case the drivers will register the keys
-2) leave things simple for midlevel and the ioctl will be directly mapped 
-   to the driver code (the blob version of ioctl); in this case the driver 
-   must handle all things like memory allocation, key changes etc.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
