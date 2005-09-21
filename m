@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Wed, 21 Sep 2005 23:05:25 +0200
-Message-ID: <f8f5f444b3db4be2fd80877a3470f2d8@bugtrack.alsa-project.org>
+Date: Wed, 21 Sep 2005 23:40:13 +0200
+Message-ID: <814d691a088b364e38391029a16c9057@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E93B7170
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 23:05:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26217170
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 23:40:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
 Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-21-2005 23:05 CEST
+Last Modified:              09-21-2005 23:40 CEST
 ======================================================================
 Summary:                    ac97 codec is not found when loading the driver
 Description: 
@@ -59,23 +59,6 @@ from CVS HEAD - all with same result.
 ======================================================================
 
 ----------------------------------------------------------------------
- iluxa - 09-21-05 23:03 
-----------------------------------------------------------------------
-same result with the patch
-ACPI: PCI Interrupt 0000:00:14.5[B] -> GSI 17 (level, low) -> IRQ 185
-ACPI: PCI Interrupt 0000:00:14.6[B] -> GSI 17 (level, low) -> IRQ 185
-ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1084:
-atiixp-modem: codec 0 not available for modem
-ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1091:
-atiixp-modem: no codec available
-ACPI: PCI interrupt for device 0000:00:14.6 disabled
-
-Now, since you say it's one codec which does both audio and modem work,
-and audio and modem drivers seem to not want to share it, shouldn't _that_
-part
-be changed?
-
-----------------------------------------------------------------------
  iluxa - 09-21-05 23:05 
 ----------------------------------------------------------------------
 > Only reverse engineering I think, but it is not easy and probability of
@@ -87,6 +70,16 @@ about
 audio and soft-modems. I'd provide any info within my power, and perhaps
 access
 to machine in question of course.
+
+----------------------------------------------------------------------
+ sashak - 09-21-05 23:40 
+----------------------------------------------------------------------
+> Now, since you say it's one codec which does both audio and modem work,
+> and audio and modem drivers seem to not want to share it, shouldn't
+_that_ part
+> be changed?
+
+Oh yeah. The patch is uploaded.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -115,6 +108,9 @@ Date Modified  Username       Field                    Change
 09-21-05 22:38 sashak         Note Added: 0006326                          
 09-21-05 23:03 iluxa          Note Added: 0006328                          
 09-21-05 23:05 iluxa          Note Added: 0006329                          
+09-21-05 23:37 sashak         File Added: atiixp-modem-unshared.patch           
+        
+09-21-05 23:40 sashak         Note Added: 0006330                          
 ======================================================================
 
 
