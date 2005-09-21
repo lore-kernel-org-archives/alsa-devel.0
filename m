@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000058]: Amixer will not recognize SB Extigy
-Date: Wed, 21 Sep 2005 22:54:58 +0200
-Message-ID: <34ce3e4a8f07063430d111c17cebc527@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
+Date: Wed, 21 Sep 2005 23:03:31 +0200
+Message-ID: <178665acb42984bd6f4876c1419c93e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A75A916A
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 22:54:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2960170
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 23:03:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,97 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=58> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
 ======================================================================
-Reported By:                shraps
-Assigned To:                tiwai
+Reported By:                iluxa
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   58
-Category:                   USB - usb-audio
+Issue ID:                   1435
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.1
+Distribution:               
+Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
-Date Submitted:             02-13-2004 04:53 CET
-Last Modified:              09-21-2005 22:54 CEST
+Date Submitted:             09-19-2005 08:49 CEST
+Last Modified:              09-21-2005 23:03 CEST
 ======================================================================
-Summary:                    Amixer will not recognize SB Extigy
+Summary:                    ac97 codec is not found when loading the driver
 Description: 
-No matter what I do, amixer/alsamixer cannot load the extigy card. 
-However, other volume control programs can unmute and control the volume.
+When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
+saying
+"atiixp-modem: no codec available" and modem doesn't function after that.
 
-Errorcode:
-amixer: Mixer load error: hw:1
+Little more investigation shown that snd_ac97_mixer thinks the codec is
+already 
+registered as sound codec by audio card driver.
+
+I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
+from CVS HEAD - all with same result.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-08-05 18:09 
+ sashak - 09-21-05 22:38 
 ----------------------------------------------------------------------
-Does this problem still exists in the current ALSA driver?
+> Now, question is if there is anything that could be done to actuall
+support
+> modem (I don't think it actually worked even though it loaded fine by
+itself)
+
+Only reverse engineering I think, but it is not easy and probability of
+success is very low. Are you interesting to spend some time for this?
+
+If you will be able to load both drivers, drop me please mc97#0-0 and
+mc97#0-0_regs files.
 
 ----------------------------------------------------------------------
- shraps - 09-21-05 22:54 
+ iluxa - 09-21-05 23:03 
 ----------------------------------------------------------------------
-Sorry for the late response...  I hadn't been running linux for a while.  I
-recently put debian on one of my partitions and the alsa included in the
-2.6.8 kernel seems to perform well with my extigy.  I can get sound out of
-front right, front left, and center speakers (didn't test the two rear
-speakers because they aren't hooked up here).  I also have no problems
-seeing the extigy with amixer.
+same result with the patch
+ACPI: PCI Interrupt 0000:00:14.5[B] -> GSI 17 (level, low) -> IRQ 185
+ACPI: PCI Interrupt 0000:00:14.6[B] -> GSI 17 (level, low) -> IRQ 185
+ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1084:
+atiixp-modem: codec 0 not available for modem
+ALSA /root/alsa/alsa-driver/pci/../alsa-kernel/pci/atiixp_modem.c:1091:
+atiixp-modem: no codec available
+ACPI: PCI interrupt for device 0000:00:14.6 disabled
+
+Now, since you say it's one codec which does both audio and modem work,
+and audio and modem drivers seem to not want to share it, shouldn't _that_
+part
+be changed?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-04 04:53 shraps         New Issue                                    
-02-20-04 18:40 Clemens LadischNote Added: 0000277                          
-02-20-04 22:59 shraps         Note Added: 0000278                          
-02-24-04 08:46 Clemens LadischNote Added: 0000301                          
-02-24-04 22:50 shraps         Note Added: 0000306                          
-02-25-04 10:10 Clemens LadischIssue Monitored: Clemens Ladisch                  
- 
-02-25-04 10:11 Clemens LadischNote Added: 0000312                          
-02-25-04 22:33 shraps         Note Added: 0000326                          
-02-26-04 16:18 Clemens LadischNote Added: 0000353                          
-02-27-04 01:00 shraps         Note Added: 0000378                          
-03-01-04 18:49 Clemens LadischNote Added: 0000414                          
-03-01-04 18:49 Clemens LadischAssigned To              Clemens Ladisch => tiwai
-03-02-04 04:38 shraps         Note Added: 0000430                          
-03-04-04 18:47 tiwai          Note Added: 0000490                          
-03-04-04 22:56 shraps         Note Added: 0000493                          
-03-07-04 02:27 shraps         Note Added: 0000522                          
-03-10-04 17:51 tiwai          Note Added: 0000564                          
-03-11-04 17:07 shraps         Note Added: 0000572                          
-06-08-05 18:09 perex          Note Added: 0004969                          
-09-21-05 22:54 shraps         Note Added: 0006327                          
+09-19-05 08:49 iluxa          New Issue                                    
+09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
+09-19-05 13:27 sashak         Note Added: 0006292                          
+09-19-05 19:32 iluxa          File Added: pci.txt                          
+09-19-05 19:56 iluxa          File Added: comment.diff                     
+09-19-05 19:57 iluxa          Note Added: 0006296                          
+09-19-05 20:01 iluxa          File Added: atiixp.txt                       
+09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
+   
+09-19-05 20:07 iluxa          Note Added: 0006298                          
+09-19-05 23:30 sashak         File Deleted: comment.diff                    
+09-19-05 23:38 sashak         Note Added: 0006304                          
+09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
+        
+09-19-05 23:44 iluxa          Note Added: 0006306                          
+09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
+09-20-05 01:06 sashak         Note Added: 0006307                          
+09-20-05 01:15 iluxa          Note Added: 0006308                          
+09-21-05 22:24 sashak         Note Added: 0006325                          
+09-21-05 22:24 sashak         File Added: atiixp-codec-detection.patch          
+         
+09-21-05 22:38 sashak         Note Added: 0006326                          
+09-21-05 23:03 iluxa          Note Added: 0006328                          
 ======================================================================
 
 
