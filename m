@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Wed, 21 Sep 2005 23:58:00 +0200
-Message-ID: <08f1307817e6557a5fd68c36a5a06c1d@bugtrack.alsa-project.org>
+Date: Thu, 22 Sep 2005 00:02:34 +0200
+Message-ID: <e65af8e8acc60f11b652a5f4b58fb10e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88562176
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 23:58:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58DE5176
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 00:02:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
 Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-21-2005 23:57 CEST
+Last Modified:              09-22-2005 00:02 CEST
 ======================================================================
 Summary:                    ac97 codec is not found when loading the driver
 Description: 
@@ -59,16 +59,6 @@ from CVS HEAD - all with same result.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 09-21-05 23:40 
-----------------------------------------------------------------------
-> Now, since you say it's one codec which does both audio and modem work,
-> and audio and modem drivers seem to not want to share it, shouldn't
-_that_ part
-> be changed?
-
-Oh yeah. The patch is uploaded.
-
-----------------------------------------------------------------------
  iluxa - 09-21-05 23:57 
 ----------------------------------------------------------------------
 Ah! Now it's much better ;-)
@@ -81,6 +71,11 @@ Of course - there is a question wether making it unconditionally unshared
 is
 appropriate. Perhaps there are other cards, with MC97 codec, that _should_
 be shared...
+
+----------------------------------------------------------------------
+ iluxa - 09-22-05 00:02 
+----------------------------------------------------------------------
+And mc97 files are uploaded...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +108,11 @@ Date Modified  Username       Field                    Change
         
 09-21-05 23:40 sashak         Note Added: 0006330                          
 09-21-05 23:57 iluxa          Note Added: 0006331                          
+09-22-05 00:01 iluxa          File Added: card1_codec97_0_mc97_0-0              
+     
+09-22-05 00:02 iluxa          File Added: card1_codec97_0_mc97_0-0+regs         
+          
+09-22-05 00:02 iluxa          Note Added: 0006332                          
 ======================================================================
 
 
