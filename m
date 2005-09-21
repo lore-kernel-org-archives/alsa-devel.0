@@ -1,88 +1,130 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: [PATCH 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
-Date: Tue, 20 Sep 2005 17:23:09 -0700
-Message-ID: <20050920172309.626db866.akpm@osdl.org>
-References: <200509190639.j8J6dIM4007948@localhost.localdomain>
-	<20050920152830.7ef6733b.akpm@osdl.org>
-	<47f5dce305092017031a2ba375@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Wed, 21 Sep 2005 03:59:09 +0200
+Message-ID: <218260cf8f38a9fbe787dc3f829fddf6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750819AbVIUAX6@vger.kernel.org>
-In-Reply-To: <47f5dce305092017031a2ba375@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: jayakumar.alsa@gmail.com
-Cc: perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C32916D
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 03:59:09 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-jayakumar alsa <jayakumar.alsa@gmail.com> wrote:
->
-> > > +
-> > > +static unsigned short snd_cs5535audio_codec_read(cs5535audio_t *cs5535au,
-> > 
-> > typedefs are unpopular in-kernel.  We generally don't get too fussed if a
-> > driver maintainer really wants them there.  The main objection is that we
-> > now have two names for the same thing.  Plus they cannot be used when
-> > forward-declaring a structure.
-> 
-> I just used those typedefs in order to match the style in all the
-> other alsa drivers. For example:
-> 
-> % egrep typedef $lintree/sound/pci/*.c
-> als4000.c:typedef struct {
-> atiixp.c:typedef struct snd_atiixp atiixp_t;
-> atiixp.c:typedef struct snd_atiixp_dma atiixp_dma_t;
-> atiixp.c:typedef struct snd_atiixp_dma_ops atiixp_dma_ops_t;
-> atiixp.c:typedef struct atiixp_dma_desc {
-> azt3328.c:typedef struct _snd_azf3328 azf3328_t;
-> azt3328.c:typedef struct azf3328_mixer_reg {
-> bt87x.c:typedef struct snd_bt87x bt87x_t;
-> cmipci.c:typedef struct snd_stru_cmipci cmipci_t;
-> <snip>
-> 
-> I'm not sure what to do. I'd be happy to take them out. But I woudn't
-> mind leaving them in if that's what alsa convention is.
 
-I'd be inclined to stick with the alsa style.  That's just an fyi if you
-plan on working in other places.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
+======================================================================
+Reported By:                Quietti
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   306
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
+======================================================================
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              09-21-2005 03:59 CEST
+======================================================================
+Summary:                    compiles, but no sound comes out
+Description: 
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
-> > We have kzalloc() now.
-> 
-> Yes, Takashi pointed that out too. But I did the patch against 13.1
-> which doesn't have kzalloc. I guess I'll redo the patch against -mm
-> and switch to kzalloc.
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
 
-2.6.14-rc2 has kzalloc().  Generally, patches should only be based on -mm
-if there's other stuff in -mm which they depend upon.
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
+======================================================================
 
-> > 
-> > > +     addr = (u32)substream->runtime->dma_addr;
-> > 
-> > Nope, _snd_pcm_runtime.addr has type dma_addr_t, which is an opaque type,
-> > 64-bit on some platforms.  I expect this driver will blow up on those
-> > platforms.
-> 
-> The 5535 hw's dma descriptor is only 32 bit capable. I guess I should
-> look into informing the dma alloc that the buffers need to be in the
-> lower 32. Would it be okay to drop the upper then?
+----------------------------------------------------------------------
+ Quietti - 09-20-05 12:23 
+----------------------------------------------------------------------
+That lag is something the ALSA team will have to live with. 
 
-An IOMMU permits 64-bit platforms to use 32-bit PCI devices.
+Most people are not likely to even try grafting the current ALSA release
+onto an existing kernel tree, let alone fetching from the CVS tree.
+Pointless to think that end-users would do either one, when they don't
+even build their own kernels. As much as this would speed development up
+in a positive way, one simply cannot turn end-users into developers.
 
-> >From a practical standpoint, the 5535 is only used in x86-32
-> embeddeded systems so high mem probably won't occur. But you are
-> right, I'll go and try make it right.
+----------------------------------------------------------------------
+ rlrevell - 09-21-05 03:59 
+----------------------------------------------------------------------
+My point was that it's a waste of time reporting bugs in the kernel ALSA
+version that have already been fixed for a month in ALSA CVS, unless you
+plan to push the fix into the -stable kernel.  Have fun with that... ;-)
 
-Yup, try to honour the provided type system as much as poss.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
+02-04-05 09:22 Quietti        Note Added: 0003496                          
+02-04-05 13:04 tiwai          Note Added: 0003499                          
+04-02-05 13:33 Quietti        Note Added: 0004297                          
+08-06-05 20:24 Quietti        Note Added: 0005682                          
+08-06-05 20:31 rlrevell       Note Added: 0005683                          
+08-06-05 20:32 rlrevell       Note Added: 0005684                          
+08-06-05 20:53 rlrevell       Note Added: 0005685                          
+08-06-05 21:17 rlrevell       Note Added: 0005686                          
+08-06-05 23:54 rlrevell       Note Added: 0005687                          
+08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
+08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
+08-07-05 10:03 pochini        Note Added: 0005689                          
+08-07-05 10:31 Quietti        Note Added: 0005690                          
+08-07-05 10:46 rlrevell       Note Added: 0005691                          
+08-07-05 11:36 Quietti        Note Added: 0005692                          
+08-07-05 11:44 Quietti        Note Added: 0005693                          
+08-07-05 20:27 rlrevell       Note Added: 0005697                          
+08-08-05 14:53 Quietti        Note Added: 0005708                          
+08-08-05 19:42 rlrevell       Note Added: 0005711                          
+08-11-05 13:09 Johannes Berg  Note Added: 0005755                          
+08-11-05 13:09 Johannes Berg  Issue Monitored: Johannes Berg                    
+08-31-05 11:44 Quietti        Note Added: 0005986                          
+09-17-05 20:13 Quietti        Note Added: 0006259                          
+09-17-05 20:21 rlrevell       Note Added: 0006260                          
+09-20-05 12:23 Quietti        Note Added: 0006313                          
+09-21-05 03:59 rlrevell       Note Added: 0006320                          
+======================================================================
 
-> > +#define cs_writel(reg, val)    outl(val, (int) cs5535au->port + reg)
-> > +#define cs_writeb(reg, val)    outb(val, (int) cs5535au->port + reg)
-> > +#define cs_readl(reg)          inl((unsigned short) (cs5535au->port + reg))
-> > +#define cs_readw(reg)          inw((unsigned short) (cs5535au->port + reg))
-> > +#define cs_readb(reg)          inb((unsigned short) (cs5535au->port + reg))
-> > 
-> > erk.   subsystem-wide helper macros which reference local variables?
-> 
-> Ok. I'll change that.
 
-well, again, if that's alsa-style then you might choose to retain it.  But
-it'd be an unpopular approach in most other kernel code.
+
+
+-------------------------------------------------------
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. 
+Download it for free - -and be entered to win a 42" plasma tv or your very
+own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
