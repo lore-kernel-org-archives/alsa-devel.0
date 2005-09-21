@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Wed, 21 Sep 2005 23:03:31 +0200
-Message-ID: <178665acb42984bd6f4876c1419c93e1@bugtrack.alsa-project.org>
+Date: Wed, 21 Sep 2005 23:05:25 +0200
+Message-ID: <f8f5f444b3db4be2fd80877a3470f2d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2960170
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 23:03:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E93B7170
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 23:05:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
 Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-21-2005 23:03 CEST
+Last Modified:              09-21-2005 23:05 CEST
 ======================================================================
 Summary:                    ac97 codec is not found when loading the driver
 Description: 
@@ -59,20 +59,6 @@ from CVS HEAD - all with same result.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 09-21-05 22:38 
-----------------------------------------------------------------------
-> Now, question is if there is anything that could be done to actuall
-support
-> modem (I don't think it actually worked even though it loaded fine by
-itself)
-
-Only reverse engineering I think, but it is not easy and probability of
-success is very low. Are you interesting to spend some time for this?
-
-If you will be able to load both drivers, drop me please mc97#0-0 and
-mc97#0-0_regs files.
-
-----------------------------------------------------------------------
  iluxa - 09-21-05 23:03 
 ----------------------------------------------------------------------
 same result with the patch
@@ -88,6 +74,19 @@ Now, since you say it's one codec which does both audio and modem work,
 and audio and modem drivers seem to not want to share it, shouldn't _that_
 part
 be changed?
+
+----------------------------------------------------------------------
+ iluxa - 09-21-05 23:05 
+----------------------------------------------------------------------
+> Only reverse engineering I think, but it is not easy and probability of
+success 
+> is very low. Are you interesting to spend some time for this?
+
+I wouldn't mind, but 1. I don't have _that_ much time, and 2. I know nil
+about
+audio and soft-modems. I'd provide any info within my power, and perhaps
+access
+to machine in question of course.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -115,6 +114,7 @@ Date Modified  Username       Field                    Change
          
 09-21-05 22:38 sashak         Note Added: 0006326                          
 09-21-05 23:03 iluxa          Note Added: 0006328                          
+09-21-05 23:05 iluxa          Note Added: 0006329                          
 ======================================================================
 
 
