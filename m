@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Wed, 21 Sep 2005 22:24:03 +0200
-Message-ID: <f1d498ca2fc45e8b124319f7448f07b7@bugtrack.alsa-project.org>
+Date: Wed, 21 Sep 2005 22:38:37 +0200
+Message-ID: <c08677feedaf36e7596e3bf5b194f7e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E129F181
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 22:24:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DBB516A
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 22:38:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
 Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-21-2005 22:24 CEST
+Last Modified:              09-21-2005 22:38 CEST
 ======================================================================
 Summary:                    ac97 codec is not found when loading the driver
 Description: 
@@ -59,27 +59,24 @@ from CVS HEAD - all with same result.
 ======================================================================
 
 ----------------------------------------------------------------------
- iluxa - 09-20-05 01:15 
-----------------------------------------------------------------------
-Well, as far as failure to detect - it seems that both drivers notice this
-codec,
-but whichever of them grabs it first, marks it as audio or modem codec
-respectively, and atiixp and atiixp-modem think that it is exclusive
-(they
-call snd_ac97_mixer with ac97.scaps SKIP_AUDIO/SKIP_MODEM flag set)
-
-I tried loading snd-atiixp-modem before snd-atiixp, and modem driver
-loaded, while 
-audio did not. Now, question is if there is anything that could be done to
-actuall
-support modem (I don't think it actually worked even though it loaded fine
-by itself)
-
-----------------------------------------------------------------------
  sashak - 09-21-05 22:24 
 ----------------------------------------------------------------------
 Obviously the codec detection code is buggy in both drivers. Try please
 uploaded patch (against CVS).
+
+----------------------------------------------------------------------
+ sashak - 09-21-05 22:38 
+----------------------------------------------------------------------
+> Now, question is if there is anything that could be done to actuall
+support
+> modem (I don't think it actually worked even though it loaded fine by
+itself)
+
+Only reverse engineering I think, but it is not easy and probability of
+success is very low. Are you interesting to spend some time for this?
+
+If you will be able to load both drivers, drop me please mc97#0-0 and
+mc97#0-0_regs files.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +100,9 @@ Date Modified  Username       Field                    Change
 09-20-05 01:06 sashak         Note Added: 0006307                          
 09-20-05 01:15 iluxa          Note Added: 0006308                          
 09-21-05 22:24 sashak         Note Added: 0006325                          
+09-21-05 22:24 sashak         File Added: atiixp-codec-detection.patch          
+         
+09-21-05 22:38 sashak         Note Added: 0006326                          
 ======================================================================
 
 
