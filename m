@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Wed, 21 Sep 2005 03:59:09 +0200
-Message-ID: <218260cf8f38a9fbe787dc3f829fddf6@bugtrack.alsa-project.org>
+Date: Wed, 21 Sep 2005 04:00:27 +0200
+Message-ID: <b8c42fcf93678016744dc647aadc03f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C32916D
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 03:59:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33454170
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 04:00:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              09-21-2005 03:59 CEST
+Last Modified:              09-21-2005 04:00 CEST
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -54,22 +54,16 @@ moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 09-20-05 12:23 
-----------------------------------------------------------------------
-That lag is something the ALSA team will have to live with. 
-
-Most people are not likely to even try grafting the current ALSA release
-onto an existing kernel tree, let alone fetching from the CVS tree.
-Pointless to think that end-users would do either one, when they don't
-even build their own kernels. As much as this would speed development up
-in a positive way, one simply cannot turn end-users into developers.
-
-----------------------------------------------------------------------
  rlrevell - 09-21-05 03:59 
 ----------------------------------------------------------------------
 My point was that it's a waste of time reporting bugs in the kernel ALSA
 version that have already been fixed for a month in ALSA CVS, unless you
 plan to push the fix into the -stable kernel.  Have fun with that... ;-)
+
+----------------------------------------------------------------------
+ rlrevell - 09-21-05 04:00 
+----------------------------------------------------------------------
+Is it OK to close this?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +112,7 @@ vanilla.
 09-17-05 20:21 rlrevell       Note Added: 0006260                          
 09-20-05 12:23 Quietti        Note Added: 0006313                          
 09-21-05 03:59 rlrevell       Note Added: 0006320                          
+09-21-05 04:00 rlrevell       Note Added: 0006321                          
 ======================================================================
 
 
