@@ -1,20 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: au88x0 modem
-Date: Thu, 22 Sep 2005 01:12:30 +0300
-Message-ID: <20050921221230.GB22110@sashak.softier1.local>
-References: <20050914205608.GD14657@sashak.softier1.local>
- <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de>
- <20050915143533.GB23218@sashak.softier1.local>
- <20050915204345.GC27700@sashak.softier1.local>
- <20050916084653.GB524@titan.lahn.de> <20050916182524.GE17864@tecr>
- <20050919150025.GA3058@titan.lahn.de> <432EDA22.3060707@netvigator.com>
- <20050920132124.GA6599@titan.lahn.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
+Date: Wed, 21 Sep 2005 22:24:03 +0200
+Message-ID: <f1d498ca2fc45e8b124319f7448f07b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20050920132124.GA6599@titan.lahn.de>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E129F181
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2005 22:24:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,20 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
-Cc: openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net, Raymond <rayau@netvigator.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 15:21 Tue 20 Sep     , Philipp Matthias Hahn wrote:
-> ...
-> vortex_codec_read  1 54 :0000
-> vortex_codec_write 1 54 :0001
-> 
-> Writing to mc97#1-1+regs still doesn't seem to change anything.
 
-And 0x46 register, or any register?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
+======================================================================
+Reported By:                iluxa
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1435
+Category:                   PCI - atiixp-modem
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.13, 2.6.14-rc1
+======================================================================
+Date Submitted:             09-19-2005 08:49 CEST
+Last Modified:              09-21-2005 22:24 CEST
+======================================================================
+Summary:                    ac97 codec is not found when loading the driver
+Description: 
+When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
+saying
+"atiixp-modem: no codec available" and modem doesn't function after that.
 
-Sasha.
+Little more investigation shown that snd_ac97_mixer thinks the codec is
+already 
+registered as sound codec by audio card driver.
+
+I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
+from CVS HEAD - all with same result.
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ iluxa - 09-20-05 01:15 
+----------------------------------------------------------------------
+Well, as far as failure to detect - it seems that both drivers notice this
+codec,
+but whichever of them grabs it first, marks it as audio or modem codec
+respectively, and atiixp and atiixp-modem think that it is exclusive
+(they
+call snd_ac97_mixer with ac97.scaps SKIP_AUDIO/SKIP_MODEM flag set)
+
+I tried loading snd-atiixp-modem before snd-atiixp, and modem driver
+loaded, while 
+audio did not. Now, question is if there is anything that could be done to
+actuall
+support modem (I don't think it actually worked even though it loaded fine
+by itself)
+
+----------------------------------------------------------------------
+ sashak - 09-21-05 22:24 
+----------------------------------------------------------------------
+Obviously the codec detection code is buggy in both drivers. Try please
+uploaded patch (against CVS).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-05 08:49 iluxa          New Issue                                    
+09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
+09-19-05 13:27 sashak         Note Added: 0006292                          
+09-19-05 19:32 iluxa          File Added: pci.txt                          
+09-19-05 19:56 iluxa          File Added: comment.diff                     
+09-19-05 19:57 iluxa          Note Added: 0006296                          
+09-19-05 20:01 iluxa          File Added: atiixp.txt                       
+09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
+   
+09-19-05 20:07 iluxa          Note Added: 0006298                          
+09-19-05 23:30 sashak         File Deleted: comment.diff                    
+09-19-05 23:38 sashak         Note Added: 0006304                          
+09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
+        
+09-19-05 23:44 iluxa          Note Added: 0006306                          
+09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
+09-20-05 01:06 sashak         Note Added: 0006307                          
+09-20-05 01:15 iluxa          Note Added: 0006308                          
+09-21-05 22:24 sashak         Note Added: 0006325                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
