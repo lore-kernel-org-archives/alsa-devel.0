@@ -1,104 +1,73 @@
-From: jayakumar alsa <jayakumar.alsa@gmail.com>
-Subject: Re: [PATCH 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
-Date: Wed, 21 Sep 2005 15:08:26 +0800
-Message-ID: <47f5dce305092100085a13a5a7@mail.gmail.com>
-References: <200509190639.j8J6dIM4007948@localhost.localdomain>
-	 <20050920152830.7ef6733b.akpm@osdl.org>
-Reply-To: jayakumar.alsa@gmail.com
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] Implement support for display of dB gain
+ in alsamixer.
+Date: Wed, 21 Sep 2005 10:02:17 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0509210954590.12389@tm8103.perex-int.cz>
+References: <Pine.HPX.4.33n.0509201455140.23957-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751041AbVIUHIa@vger.kernel.org>
-In-Reply-To: <20050920152830.7ef6733b.akpm@osdl.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@osdl.org>
-Cc: perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0509201455140.23957-100000@studcom.urz.uni-halle.de>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> > +static int __devinit snd_cs5535audio_probe(struct pci_dev *pci,
-> > +                                     const struct pci_device_id *pci_id)
-> > +{
-> > +     static int dev;
-> > +     snd_card_t *card;
-> > +     cs5535audio_t *cs5535au;
-> > +     int err;
-> > +
-> > +     if (dev >= SNDRV_CARDS)
-> > +             return -ENODEV;
-> > +     if (!enable[dev]) {
-> > +             dev++;
-> > +             return -ENOENT;
-> > +     }
-> > +
-> > +     card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
-> > +     if (card == NULL)
-> > +             return -ENOMEM;
-> > +
-> > +     if ((err = snd_cs5535audio_create(card, pci, &cs5535au)) < 0) {
-> > +             snd_card_free(card);
-> > +             return err;
-> > +     }
-> > +
-> > +     if ((err = snd_cs5535audio_mixer(cs5535au)) < 0) {
-> > +             snd_card_free(card);
-> > +             return err;
-> > +     }
-> > +
-> > +     if ((err = snd_cs5535audio_pcm(cs5535au)) < 0) {
-> > +             snd_card_free(card);
-> > +             return err;
-> > +     }
-> > +
-> > +     strcpy(card->driver, DRIVER_NAME);
-> > +
-> > +     strcpy(card->shortname, "CS5535 Audio");
-> > +     sprintf(card->longname, "%s %s at 0x%lx, irq %i",
-> > +             card->shortname, card->driver,
-> > +             cs5535au->port, cs5535au->irq);
-> > +
-> > +     if ((err = snd_card_register(card)) < 0) {
-> > +             snd_card_free(card);
-> > +             return err;
-> > +     }
-> > +
-> > +     pci_set_drvdata(pci, card);
-> > +     dev++;
-> > +     return 0;
-> > +}
+On Tue, 20 Sep 2005, Clemens Ladisch wrote:
+
+> Jaroslav Kysela wrote:
+> > On Mon, 19 Sep 2005, Takashi Iwai wrote:
+> > > > I would vote to keep the kernel space as simple as possible and give the
+> > > > whole contents to apps. They can implement reading/caching/filtering
+> > > > themselves.
+> > >
+> > > Agreed.
 > 
-> Ditto.
+> Too.
 > 
-> The handling of `dev' is racy ;)
+> > Ok, good ideas. I would propose this final API:
+> >
+> > 1) one key with specific delimiters like:
+> >
+> > list		# list everything (all keys)
+> > list/master	# list only master keys (mixer, pcm etc.)
+> > list/mixer	# list only mixer keys
+> > list/pcm
+> 
+> This is _not_ a simple API.  AFAICS the idea was to have just one big
+> string/blob containing all descriptions, and to let the lib or
+> applications do the listing/searching/etc.
+> 
+> Accessing specific keys (elements) would be needed only if something
+> wasn't read only.
 
-I took a quick look at the dev handling. 
+You need also take in account that keys might be added/removed at runtime.
+The question is still to have:
 
-% egrep -B20 "dev\+\+" $lintree/sound/pci/*.c
-<snip>
---
-../azt3328.c-           return -ENODEV;
-../azt3328.c-   if (!enable[dev]) {
-../azt3328.c:           dev++;
---
-../azt3328.c-
-../azt3328.c-   pci_set_drvdata(pci, card);
-../azt3328.c:   dev++;
---
-../cmipci.c-            return -ENODEV;
-../cmipci.c-    if (! enable[dev]) {
-../cmipci.c:            dev++;
---
-../cmipci.c-    }
-../cmipci.c-    pci_set_drvdata(pci, card);
-../cmipci.c:    dev++;
---
-<snip>
+1) manager code in the midlevel to register keys from drivers and do 
+   lookups; in this case the drivers will register the keys
+2) leave things simple for midlevel and the ioctl will be directly mapped 
+   to the driver code (the blob version of ioctl); in this case the driver 
+   must handle all things like memory allocation, key changes etc.
 
-So I think everyone is doing the same thing. I think probe is called
-from driver_probe_device through device_add and in this case that's
-from pci_bus_add_device/s from pci_do_scan_bus. I think the device
-probe functions are therefore called serially and there is no risk of
-a race condition. I hope that's right.
+						Jaroslav
 
-Thanks,
-jk
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
+
+
+-------------------------------------------------------
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. 
+Download it for free - -and be entered to win a 42" plasma tv or your very
+own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
