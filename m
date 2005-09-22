@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001438]: AC3 playback not working with Terratec Aureon 5.1 USB MK-II
-Date: Thu, 22 Sep 2005 17:21:47 +0200
-Message-ID: <4722774668c8d36e9e845a0f9600c4ca@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001442]: snapper: no sound after resume
+Date: Thu, 22 Sep 2005 17:32:21 +0200
+Message-ID: <0fb5e076df0e6b364d891cd63c659b32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3CC5135
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 17:21:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC86713E
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 17:32:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1438> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1442> 
 ======================================================================
-Reported By:                mitch_f
-Assigned To:                Clemens Ladisch
+Reported By:                Johannes Berg
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1438
-Category:                   USB - usb-audio
+Issue ID:                   1442
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.4.28-gentoo-r9
+Distribution:               debian
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             09-21-2005 21:26 CEST
-Last Modified:              09-22-2005 17:21 CEST
+Date Submitted:             09-22-2005 17:32 CEST
+Last Modified:              09-22-2005 17:32 CEST
 ======================================================================
-Summary:                    AC3 playback not working with Terratec Aureon 5.1
-USB MK-II
+Summary:                    snapper: no sound after resume
 Description: 
-If I try to playback a file containing AC3 audio data with mplayer, it
-complains with:
+After resuming from suspend to disk there's no sound with a snapper chip on
+a post-february 2005 powerbook.
 
-alsa-init: 1 soundcard found, using: iec958:{CARD 0 AES0 0x02 AES1 0x82
-AES2 0x00 AES3 0x02}
-ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM iec958:{CARD
-0 AES0 0x02 AES1 0x82 AES2 0x00 AES3 0x02} definition (id: iec958, value:
-cards.pcm.iec958)
-alsa-init: playback open error: Invalid argument
-Could not open/initialize audio device -> no sound.
-
-2-channel audio works fine (analog and SPDIF) and AC3 playback also worked
-on the cmipci-based card I used before.
+alsactl restore doesn't help, the only way I have managed to work around
+this is to reload the module
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 09-22-05 17:21 
-----------------------------------------------------------------------
-The USB driver currently doesn't support AC3 streams because we have never
-seen any device that would implement it according to the USB Audio
-specification.
-
-Please show the output of "lsusb -v" for your device.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-05 21:26 mitch_f        New Issue                                    
-09-21-05 21:26 mitch_f        Distribution              => Gentoo          
-09-21-05 21:26 mitch_f        Kernel Version            => 2.4.28-gentoo-r9
-09-22-05 17:21 Clemens LadischNote Added: 0006354                          
+09-22-05 17:32 Johannes Berg  New Issue                                    
+09-22-05 17:32 Johannes Berg  Distribution              => debian          
+09-22-05 17:32 Johannes Berg  Kernel Version            => 2.6.13          
 ======================================================================
 
 
