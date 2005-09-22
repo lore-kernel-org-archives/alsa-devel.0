@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000850]: Clicking sound at the end of short audio files on Audigy DE.
-Date: Thu, 22 Sep 2005 15:17:35 +0200
-Message-ID: <32d08326ac521cc37df802bd05494217@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001081]: Clicking noise when short sound files are played.
+Date: Thu, 22 Sep 2005 15:17:33 +0200
+Message-ID: <0e00ce53b99e0871427d120de65a0524@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 170CF12E
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:17:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00803116
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:17:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001081.
+The following issue has been set as RELATED TO issue 0000850.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=850> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1081> 
 ======================================================================
-Reported By:                Lucid
+Reported By:                raid517
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   850
-Category:                   PCI - emu10k1
+Issue ID:                   1081
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.10
+Distribution:               Debian
+Kernel Version:             2.6.11.7
 ======================================================================
-Date Submitted:             01-27-2005 05:07 CET
-Last Modified:              01-27-2005 05:07 CET
+Date Submitted:             04-29-2005 07:39 CEST
+Last Modified:              09-22-2005 15:17 CEST
 ======================================================================
-Summary:                    Clicking sound at the end of short audio files on
-Audigy DE.
+Summary:                    Clicking noise when short sound files are played.
 Description: 
-When playing short audio files such as audio notifications there is a short
-clicking sound as the file is closed.
+Hi whenever I play .wav files (or any very short sound files) from sites
+such as the following, the sound plays fine, but it is always followed by
+a slight 'clicking' noise at the exact instant when the sound stops
+playing. What causes this - and how do I prevent it?
+
+(Just an example).
+
+http://www.wavsite.com/
+
+GJ
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001081 Clicking noise when short sound files a...
+related to          0000850 Clicking sound at the end of short audi...
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 09-22-05 15:16 
+----------------------------------------------------------------------
+Do you still have this problem?
+
+What sound hardware do you have?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-27-05 05:07 Lucid          New Issue                                    
-01-27-05 05:07 Lucid          Kernel Version            => 2.6.10          
-01-27-05 05:31 Lucid          Issue Monitored: Lucid                       
-09-22-05 15:17 jdthood        Relationship added       related to 0001081  
+04-29-05 07:39 raid517        New Issue                                    
+04-29-05 07:39 raid517        Distribution              => Debian          
+04-29-05 07:39 raid517        Kernel Version            => 2.6.11.7        
+09-22-05 15:16 jdthood        Note Added: 0006346                          
+09-22-05 15:17 jdthood        Relationship added       related to 0000850  
 ======================================================================
 
 
