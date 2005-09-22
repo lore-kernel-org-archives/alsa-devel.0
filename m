@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
-Date: Thu, 22 Sep 2005 19:40:45 +0200
-Message-ID: <ed689b6c527c5c007688b2c96a5fb088@bugtrack.alsa-project.org>
+Date: Thu, 22 Sep 2005 19:51:20 +0200
+Message-ID: <f616502038cfe14c75251480d5304a73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67B78151
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 19:40:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97420151
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 19:51:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sid (Unstable)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             02-25-2005 16:06 CET
-Last Modified:              09-22-2005 19:40 CEST
+Last Modified:              09-22-2005 19:51 CEST
 ======================================================================
 Summary:                    cmipci freezes the whole system
 Description: 
@@ -76,26 +76,22 @@ kernel-image-2.6.10-1-k7-4.
 ======================================================================
 
 ----------------------------------------------------------------------
- mitch_f - 09-16-05 15:27 
-----------------------------------------------------------------------
-I have the same soundcard and a slightly different problem: The system
-"only" freezes after 10 or 15 minutes of playback. If there is nothing
-else going on on the system (no network traffic, not much harddisc
-read/write access) it can be up to several hours until the freeze.
-
-I think it might be a problem with this specific soundcard model, as I
-already have the same chip onboard (I bought the soundcard for SPDIF
-output) and I used that for years without any problems.
-
-My Kernel version is 2.4.28-gentoo-r9. Alsa-drivers are 1.0.9b.
-
-I would gladly provide any information necessary to debug that problem.
-
-----------------------------------------------------------------------
  mitch_f - 09-22-05 19:40 
 ----------------------------------------------------------------------
 Since there seem to be several people with this problem, should this card
 perhaps be set to "not working" in the ALSA Soundcard Matrix?
+
+----------------------------------------------------------------------
+ sbambach - 09-22-05 19:51 
+----------------------------------------------------------------------
+I tried it on AMD, Intel and nForce chipset and there are NO problems.
+
+Only on my VIA chipset board. More research on google done and people
+having problems often have VIA chipset too (But most do not report about
+there chipset).
+
+I have a second card "Nightingale PRO 6" ... same soundchip and same
+problem on VIA. And again no problem at all for all three other chipsets.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +108,7 @@ Date Modified  Username       Field                    Change
 06-14-05 21:23 graf_eichbaum  Issue Monitored: graf_eichbaum                    
 09-16-05 15:27 mitch_f        Note Added: 0006244                          
 09-22-05 19:40 mitch_f        Note Added: 0006357                          
+09-22-05 19:51 sbambach       Note Added: 0006358                          
 ======================================================================
 
 
