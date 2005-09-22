@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Thu, 22 Sep 2005 20:07:11 +0200
-Message-ID: <3cd473e0978d8080acfeb18aea806e20@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
+Date: Thu, 22 Sep 2005 20:16:01 +0200
+Message-ID: <c227e3eac434ceecbdfe718011592970@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FD63151
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 20:07:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D409F138
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 20:16:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,106 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
 ======================================================================
-Reported By:                iluxa
-Assigned To:                sashak
+Reported By:                aisotton
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1435
-Category:                   PCI - atiixp-modem
+Issue ID:                   943
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13, 2.6.14-rc1
+Distribution:               Debian Sid (Unstable)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-22-2005 20:07 CEST
+Date Submitted:             02-25-2005 16:06 CET
+Last Modified:              09-22-2005 20:16 CEST
 ======================================================================
-Summary:                    ac97 codec is not found when loading the driver
+Summary:                    cmipci freezes the whole system
 Description: 
-When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
-saying
-"atiixp-modem: no codec available" and modem doesn't function after that.
+Hi,
 
-Little more investigation shown that snd_ac97_mixer thinks the codec is
-already 
-registered as sound codec by audio card driver.
+I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
+gigabit ethernet controller (the board is an Asus A7V600). The sound
+card uses the cmipci module, and the ethernet card the sk98lin module.
 
-I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
-from CVS HEAD - all with same result.
+Playing sound and using the network at the same time freezes the sytem
+after a short time (generally 15-30 seconds); nothing is logged or
+displayed (I checked syslog, kern.log and /var/log/messages), it just
+freezes everything, forcing a reset of the machine (and after the
+subsequent reboot my mouse isn't recognized any more, but I don't think
+that matters).
+
+I am using that network card since more than a year, and it never gave a
+problem; thus I think the bug is in the cmipci driver (the system never
+froze before I installed the sound card).
+
+I did a memtest, but my memory seems to be ok.
+
+This happens with all kernels I tested, specifically:
+
+Debian kernel-image-2.6.10-1-k7-4
+Debian kernel-image-2.6.9-2-k7-5
+Debian kernel-image-2.6.8-2-k7-13
+Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
+Vanilla kernel 2.6.10, compiled with the same options as Debian
+kernel-image-2.6.10-1-k7-4.
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- iluxa - 09-22-05 06:44 
+ sbambach - 09-22-05 19:52 
 ----------------------------------------------------------------------
-Yes, sound works fine with the patch, no interruption happens when I load
-modem driver
+I tried it on AMD, Intel and nForce chipset and there are NO problems.
+
+Only on my VIA chipset board. More research on google done and people
+having problems often have VIA chipset too (But most do not report there
+chipset).
+
+I have a second card "Nightingale PRO 6" ... same soundchip and same
+problem on VIA. And again no problem at all for all three other chipsets.
+
+Perhaps a strange hardware conflict ?!
+
+
 
 ----------------------------------------------------------------------
- sashak - 09-22-05 20:07 
+ runderwo - 09-22-05 20:16 
 ----------------------------------------------------------------------
-Good. There is (hopefully final) patch which removes 'shared_type'
-completely. It is against pure CVS version. Please check that it is ok
-with atiixp, I will check with my ICH.
+Compile the kernel with debug and SysRq enabled.  When the system
+"freezes", issue Alt-SysRq-T and see what is going on.  At least this will
+tell us whether the hardware or the kernel has stopped.
 
-Please mail me to 'sashak at smlink dot com' we will coordinate the rest
-(probably I will need ssh access to your machine).
+Also please try putting cmipci card on its own IRQ.  To do this you will
+need to disable whatever motherboard resources share PCI interrupt lines
+with that slot, and don't put any cards in slots that share PCI interrupt
+lines with it either.
+
+Perhaps this is a problem with PCI latency.  Try setting the latency to
+255 with setpci.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-05 08:49 iluxa          New Issue                                    
-09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
-09-19-05 13:27 sashak         Note Added: 0006292                          
-09-19-05 19:32 iluxa          File Added: pci.txt                          
-09-19-05 19:56 iluxa          File Added: comment.diff                     
-09-19-05 19:57 iluxa          Note Added: 0006296                          
-09-19-05 20:01 iluxa          File Added: atiixp.txt                       
-09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
-   
-09-19-05 20:07 iluxa          Note Added: 0006298                          
-09-19-05 23:30 sashak         File Deleted: comment.diff                    
-09-19-05 23:38 sashak         Note Added: 0006304                          
-09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
-        
-09-19-05 23:44 iluxa          Note Added: 0006306                          
-09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
-09-20-05 01:06 sashak         Note Added: 0006307                          
-09-20-05 01:15 iluxa          Note Added: 0006308                          
-09-21-05 22:24 sashak         Note Added: 0006325                          
-09-21-05 22:24 sashak         File Added: atiixp-codec-detection.patch          
-         
-09-21-05 22:38 sashak         Note Added: 0006326                          
-09-21-05 23:03 iluxa          Note Added: 0006328                          
-09-21-05 23:05 iluxa          Note Added: 0006329                          
-09-21-05 23:37 sashak         File Added: atiixp-modem-unshared.patch           
-        
-09-21-05 23:40 sashak         Note Added: 0006330                          
-09-21-05 23:57 iluxa          Note Added: 0006331                          
-09-22-05 00:01 iluxa          File Added: card1_codec97_0_mc97_0-0              
-     
-09-22-05 00:02 iluxa          File Added: card1_codec97_0_mc97_0-0+regs         
-          
-09-22-05 00:02 iluxa          Note Added: 0006332                          
-09-22-05 02:21 sashak         File Added: ac97-unshared.patch                   
-
-09-22-05 02:39 sashak         Note Added: 0006333                          
-09-22-05 06:44 iluxa          Note Added: 0006334                          
-09-22-05 20:02 sashak         File Added: ac97-unshared-full.patch              
-     
-09-22-05 20:07 sashak         Note Added: 0006359                          
+02-25-05 16:06 aisotton       New Issue                                    
+02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
+02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
+02-25-05 16:07 aisotton       Note Added: 0003734                          
+02-25-05 21:57 runderwo       Note Added: 0003736                          
+02-26-05 02:33 aisotton       Note Added: 0003737                          
+06-11-05 23:46 sbambach       Note Added: 0004996                          
+06-11-05 23:48 sbambach       Note Added: 0004997                          
+06-11-05 23:48 sbambach       Issue Monitored: sbambach                    
+06-14-05 21:23 graf_eichbaum  Issue Monitored: graf_eichbaum                    
+09-16-05 15:27 mitch_f        Note Added: 0006244                          
+09-22-05 19:40 mitch_f        Note Added: 0006357                          
+09-22-05 19:51 sbambach       Note Added: 0006358                          
+09-22-05 19:52 sbambach       Note Edited: 0006358                         
+09-22-05 20:16 runderwo       Note Added: 0006360                          
 ======================================================================
 
 
