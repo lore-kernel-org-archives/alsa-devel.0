@@ -1,14 +1,11 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: Packages to debian
-Date: Thu, 22 Sep 2005 11:32:53 +0200
-Message-ID: <20050922093253.GA11180@skinner.hem.za.org>
-References: <18881116.1127352574262.JavaMail.tomcat@gaza>
+From: Uwe Koziolek <uwe.koziolek@gmx.net>
+Subject: no Sound with SiS965L / Realtek ALC655
+Date: Thu, 22 Sep 2005 12:22:44 +0200
+Message-ID: <433285F4.5060509@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <18881116.1127352574262.JavaMail.tomcat@gaza>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,30 +18,35 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 21, 2005 at 10:29:34PM -0300, Leomar-Costa@via-rs.net wrote:
-> =A0Hi guys, =A0What packages I need install to make ALSA programs in de=
-bian ?=A0I was trying to compile this example ( http://equalarea.com/paul=
-/alsa-audio.html#playex ), but I give some errors.. I paste in the end of=
- this e-mail.=A0Are there some "apt-get install" that I can use ? Or I ne=
-ed download and install from another place ? =A0Thanks a lot, =A0Leomar=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=A0# gcc -o play play.cplay.c: =
-In function `main':play.c:44: warning: passing arg 3 of `snd_pcm_hw_param=
-s_set_rate_near' makes pointer from integer without a cast/tmp/ccaeBi5f.o=
-(.text+0x39): In function `main':: undefined reference to `snd_pcm_open'
+Hello,
 
-You'll need to install the libasound2-dev package and link against the
-asound library:
+I have Prolems with the ALSA-sound:
 
-  gcc -o play play.cplay.c -lasound
+Sep 22 12:09:54 uk5 kernel: ACPI: PCI Interrupt 0000:00:02.7[C] -> Link
+[LNKC] -> GSI 11 (level, low) -> IRQ 11
+Sep 22 12:09:55 uk5 kernel: ALSA
+/usr/src/alsa-driver-1.0.10rc1/pci/intel8x0.c:2216: codec_ready: codec
+is not ready [0x340000]
+Sep 22 12:09:55 uk5 kernel: ACPI: PCI interrupt for device 0000:00:02.7
+disabled
+Sep 22 12:09:55 uk5 kernel: Intel ICH: probe of 0000:00:02.7 failed with
+error -5
 
-/Mikael Magnusson
+The board is a Fujitsu-Siemens Board D2030 with SiS761 + SiS965L
+(SiS7012) + Realtek ALC655
 
+ALSA-modules from ALSA 1.0.10rc1
+
+Same result with modules  from 19.9.2005 CVS
+
+Any idea ?
+
+regards
+Uwe Koziolek
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server.=20
-Download it for free - -and be entered to win a 42" plasma tv or your ver=
-y
+Tame your development challenges with Apache's Geronimo App Server. 
+Download it for free - -and be entered to win a 42" plasma tv or your very
 own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
