@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000119]: Toshiba Laptop [2455-S305] ICH4 Chipset
-Date: Thu, 22 Sep 2005 15:02:10 +0200
-Message-ID: <a02434f043405ffcfcb1ce7c3b58f7b5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
+Date: Thu, 22 Sep 2005 15:03:08 +0200
+Message-ID: <164cec3c1def7c6f48d118d4bcd860a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0CC3152
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:02:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55045152
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:03:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,75 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=119> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
 ======================================================================
-Reported By:                haloboy
-Assigned To:                jdthood
+Reported By:                johnz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   119
+Issue ID:                   978
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo 2004.0 & 1.4
-Kernel Version:             2.6.3
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
+Distribution:               FC3
+Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
 ======================================================================
-Date Submitted:             03-06-2004 08:05 CET
-Last Modified:              09-22-2005 15:02 CEST
+Date Submitted:             03-10-2005 06:37 CET
+Last Modified:              09-22-2005 15:03 CEST
 ======================================================================
-Summary:                    Toshiba Laptop [2455-S305] ICH4 Chipset
+Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
+alsa 1.0.8
 Description: 
-I can use the 2.6.3 OSS Obselete Driver PERFECTLY except for a few skips
-every few minutes and only for a fraction of a second. When I use the ALSA
-Intel 8x0 driver I get now sound but the card is found since devfsd adds
-the dsp device and when I use a different not correct ALSA driver for a
-different card and devfsd does not add the dsp device. I also notice that
-when I play sound through most applications such as esd, nasd, most artsd
-my machine completely crashes. I even tried the kernel's builtin alsa
-drivers and the same thing happens. I can recreate the problem everytime,
-with of course a HARD reboot to resolve the crash since my entire systems
-totally hangs when alsa crashes. Again OSS works fine.
+On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
+kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
+mixer control works; volume sliders have no effect.)  There is no sound
+when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
+2.6.10 kernels with 1.0.8 alsa.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:18 
+ johnz - 03-11-05 03:19 
 ----------------------------------------------------------------------
-> When I use the ALSA Intel 8x0 driver I get now sound but the card
-> is found since devfsd adds the dsp device and when I use a different
-> not correct ALSA driver for a different card and devfsd does not add
-> the dsp device.
-
-
-This sentence makes no sense.  Can you please rephrase it?
-
-
-> I also notice that when I play sound through most applications
-> such as esd, nasd, most artsd my machine completely crashes.
-
-
-What are the exact symptoms of this crash?  Is there an oops?
+not sure I'll be able to do this, but will try.  Has anyone built an RPM
+for Fedora core?
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 15:02 
+ jdthood - 09-22-05 15:03 
 ----------------------------------------------------------------------
-Closing, since no additional information was forthcoming.
+Submitter: Has the problem been fixed in the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-06-04 08:05 haloboy        New Issue                                    
-03-10-05 15:18 jdthood        Note Added: 0003860                          
-09-22-05 15:02 jdthood        Status                   new => resolved     
-09-22-05 15:02 jdthood        Resolution               open => unable to
-duplicate
-09-22-05 15:02 jdthood        Assigned To               => jdthood         
-09-22-05 15:02 jdthood        Note Added: 0006341                          
+03-10-05 06:37 johnz          New Issue                                    
+03-10-05 06:37 johnz          File Added: asound.state                     
+03-10-05 06:37 johnz          Distribution              => FC3             
+03-10-05 06:37 johnz          Kernel Version            =>
+kernel-2.6.10-1.770_14.rhfc3.at
+03-10-05 06:39 johnz          Issue Monitored: johnz                       
+03-10-05 06:43 johnz          File Added: lsmod                            
+03-10-05 14:39 tiwai          Note Added: 0003853                          
+03-11-05 03:19 johnz          Note Added: 0003879                          
+09-22-05 15:03 jdthood        Note Added: 0006342                          
 ======================================================================
 
 
