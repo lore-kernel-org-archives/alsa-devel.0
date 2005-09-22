@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Thu, 22 Sep 2005 06:44:25 +0200
-Message-ID: <4970935c9eca7a5f5eefb528bf60cd59@bugtrack.alsa-project.org>
+From: Philipp Matthias Hahn <pmhahn@titan.lahn.de>
+Subject: Re: Re: au88x0 modem
+Date: Thu, 22 Sep 2005 08:24:41 +0200
+Message-ID: <20050922062441.GA14036@titan.lahn.de>
+References: <4327DA14.3040205@netvigator.com> <20050914205608.GD14657@sashak.softier1.local> <20050915091158.GA7314@titan.lahn.de> <20050915092155.GA7328@titan.lahn.de> <20050915143533.GB23218@sashak.softier1.local> <20050915204345.GC27700@sashak.softier1.local> <20050916084653.GB524@titan.lahn.de> <20050916182524.GE17864@tecr> <20050919150025.GA3058@titan.lahn.de> <20050921220305.GA22110@sashak.softier1.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5DFA176
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 06:44:25 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20050921220305.GA22110@sashak.softier1.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,119 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, Raymond <rayau@netvigator.com>, openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
-======================================================================
-Reported By:                iluxa
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1435
-Category:                   PCI - atiixp-modem
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13, 2.6.14-rc1
-======================================================================
-Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-22-2005 06:44 CEST
-======================================================================
-Summary:                    ac97 codec is not found when loading the driver
-Description: 
-When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
-saying
-"atiixp-modem: no codec available" and modem doesn't function after that.
+On Thu, Sep 22, 2005 at 01:03:05AM +0300, Sasha Khapyorsky wrote:
+> Ok, 0x42 and 0x44 are my mistake, sorry (need to look in datasheet from
+> time to time), Line level register is 0x46.
+> Try manual initialization (whole codec):
+>
+>  # echo 3c 0 > /proc/asound/card0/codec97#0/mc97#1-1+regs
+>  # echo 40 1f40 > /proc/asound/card0/codec97#0/mc97#1-1+regs
+>  # echo 3e 0 > /proc/asound/card0/codec97#0/mc97#1-1+regs
+>  # echo 46 0 > /proc/asound/card0/codec97#0/mc97#1-1+regs
+>
+> , then try to change 0x46 register (look at dmesg):
 
-Little more investigation shown that snd_ac97_mixer thinks the codec is
-already 
-registered as sound codec by audio card driver.
+Bingo:
+>  # echo 46 ffff > /proc/asound/card0/codec97#0/mc97#1-1+regs
+0:46 = 8e8e
+>  # echo 46 0 > /proc/asound/card0/codec97#0/mc97#1-1+regs
+0:46 = 0000
 
-I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
-from CVS HEAD - all with same result.
+> if it will not work than we have very strange behaviour there.
+> If it works try to change 0x54 register (this may work or not).
 
+Sorry, stays always the same. Tried 0,ffff,ff00,00ff,1
+0:54 = 0000
 
-======================================================================
+> > Sorry, yes. The is ALSA from linux-2.6.13.2 with CONFIG_SND_DEBUG=y,
+> > which is equivalent to --with-debug=detect.
+>
+> I think that CONFIG_SND_DEBUG_DETECT=y is equivalent, but registers
+> should writeble via proc with CONFIG_SND_DEBUG=y too.
 
-----------------------------------------------------------------------
- sashak - 09-22-05 02:39 
-----------------------------------------------------------------------
-> Of course - there is a question wether making it unconditionally unshared
-is
-> appropriate. Perhaps there are other cards, with MC97 codec, that
-_should_ be
-> shared... 
+Yes, should I recompile with CONFIG_SND_DEBUG_DETECT=y too?
 
-The shared "lock" was done some time ago to prevent ac97 bus
-reinitialization, actually this should protect your audio (atiixp) from
-modem and vice versa (and in our case this "protects" second driver very
-well :)).
-
-Since that codec initialization was modified and SKIP_AUDIO,SKIP_MODEM
-flags were introduced. I've reviewed briefly ac97_codec.c codec now, and
-seems that this is almost safe to "unshare" audio and modem codecs.
-
-Uploaded patch is some cleanup in this area (it masks likely safe but
-useless for modem operation). Try something like this:
-- unload both atiixp and atiixp-modem
-- load atiixp, start to play sound
-- load atiixp-modem - this should break nothing with audio
-
-----------------------------------------------------------------------
- iluxa - 09-22-05 06:44 
-----------------------------------------------------------------------
-Yes, sound works fine with the patch, no interruption happens when I load
-modem driver
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-19-05 08:49 iluxa          New Issue                                    
-09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
-09-19-05 13:27 sashak         Note Added: 0006292                          
-09-19-05 19:32 iluxa          File Added: pci.txt                          
-09-19-05 19:56 iluxa          File Added: comment.diff                     
-09-19-05 19:57 iluxa          Note Added: 0006296                          
-09-19-05 20:01 iluxa          File Added: atiixp.txt                       
-09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
-   
-09-19-05 20:07 iluxa          Note Added: 0006298                          
-09-19-05 23:30 sashak         File Deleted: comment.diff                    
-09-19-05 23:38 sashak         Note Added: 0006304                          
-09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
-        
-09-19-05 23:44 iluxa          Note Added: 0006306                          
-09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
-09-20-05 01:06 sashak         Note Added: 0006307                          
-09-20-05 01:15 iluxa          Note Added: 0006308                          
-09-21-05 22:24 sashak         Note Added: 0006325                          
-09-21-05 22:24 sashak         File Added: atiixp-codec-detection.patch          
-         
-09-21-05 22:38 sashak         Note Added: 0006326                          
-09-21-05 23:03 iluxa          Note Added: 0006328                          
-09-21-05 23:05 iluxa          Note Added: 0006329                          
-09-21-05 23:37 sashak         File Added: atiixp-modem-unshared.patch           
-        
-09-21-05 23:40 sashak         Note Added: 0006330                          
-09-21-05 23:57 iluxa          Note Added: 0006331                          
-09-22-05 00:01 iluxa          File Added: card1_codec97_0_mc97_0-0              
-     
-09-22-05 00:02 iluxa          File Added: card1_codec97_0_mc97_0-0+regs         
-          
-09-22-05 00:02 iluxa          Note Added: 0006332                          
-09-22-05 02:21 sashak         File Added: ac97-unshared.patch                   
-
-09-22-05 02:39 sashak         Note Added: 0006333                          
-09-22-05 06:44 iluxa          Note Added: 0006334                          
-======================================================================
-
-
+BYtE
+Philipp
+-- 
+  / /  (_)__  __ ____  __ Philipp Hahn
+ / /__/ / _ \/ // /\ \/ /
+/____/_/_//_/\_,_/ /_/\_\ pmhahn@titan.lahn.de
 
 
 -------------------------------------------------------
