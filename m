@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001081]: Clicking noise when short sound files are played.
-Date: Thu, 22 Sep 2005 15:17:33 +0200
-Message-ID: <0e00ce53b99e0871427d120de65a0524@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
+Date: Thu, 22 Sep 2005 15:20:54 +0200
+Message-ID: <9183c6d5571973ed1c6e874a303113cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00803116
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:17:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D812E12E
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:20:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000850.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1081> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
 ======================================================================
-Reported By:                raid517
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1081
-Category:                   CORE - control
+Issue ID:                   685
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.11.7
+Distribution:               debian
+Kernel Version:             2.6.9-nitro4
 ======================================================================
-Date Submitted:             04-29-2005 07:39 CEST
-Last Modified:              09-22-2005 15:17 CEST
+Date Submitted:             11-28-2004 14:55 CET
+Last Modified:              09-22-2005 15:20 CEST
 ======================================================================
-Summary:                    Clicking noise when short sound files are played.
+Summary:                    Doom3 doesn't work with alsa backend
 Description: 
-Hi whenever I play .wav files (or any very short sound files) from sites
-such as the following, the sound plays fine, but it is always followed by
-a slight 'clicking' noise at the exact instant when the sound stops
-playing. What causes this - and how do I prevent it?
+Latest doom3 client for linux has alsa support built in but doesn't work
+with my Hercules Fortissimo II (cs4624).
 
-(Just an example).
+The game show me this error:
+idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
 
-http://www.wavsite.com/
+dmesg output:
+ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
+ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
+start
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
+"SrcTask_SCB1"
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
+SrcTask_SCB1 rate to 44100
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<SrcTask_SCB1>
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
+"PCMReader_SCB2" (1)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<PCMReader_SCB2>
+ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
+buffer_size(32768)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
 
-GJ
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000850 Clicking sound at the end of short audi...
-======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 15:16 
+ darkbrain - 03-19-05 18:19 
 ----------------------------------------------------------------------
-Do you still have this problem?
+I don't know if it's an alsa problem btw doom3 doesn't work with cs46xx,
+instead it works well with an emu10k1
 
-What sound hardware do you have?
+----------------------------------------------------------------------
+ jdthood - 09-22-05 15:20 
+----------------------------------------------------------------------
+Does Doom3 work properly with the latest ALSA cs46xx driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 07:39 raid517        New Issue                                    
-04-29-05 07:39 raid517        Distribution              => Debian          
-04-29-05 07:39 raid517        Kernel Version            => 2.6.11.7        
-09-22-05 15:16 jdthood        Note Added: 0006346                          
-09-22-05 15:17 jdthood        Relationship added       related to 0000850  
+11-28-04 14:55 darkbrain      New Issue                                    
+11-28-04 14:55 darkbrain      Distribution              => debian          
+11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
+11-28-04 14:56 darkbrain      Issue Monitored: darkbrain                    
+12-02-04 19:27 tiwai          Note Added: 0002692                          
+03-19-05 16:30 jdthood        Note Added: 0004054                          
+03-19-05 18:19 darkbrain      Note Added: 0004062                          
+09-22-05 15:20 jdthood        Note Added: 0006348                          
 ======================================================================
 
 
