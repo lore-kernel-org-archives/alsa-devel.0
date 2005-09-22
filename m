@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000946]: Early playback DMA IRQ with CMI8738MC6 ==> extra noise
-Date: Thu, 22 Sep 2005 14:53:57 +0200
-Message-ID: <0e6f54f5f2606e58ad0299586f480638@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000934]: crash in snd-serial-u16550 as non-root user
+Date: Thu, 22 Sep 2005 14:56:47 +0200
+Message-ID: <4a53675c4b2dd19e9473248556072791@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79436146
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 14:53:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 443D3146
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 14:56:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=934> 
 ======================================================================
-Reported By:                charles_levert
-Assigned To:                tiwai
+Reported By:                laurent
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   946
-Category:                   PCI - cmipci
+Issue ID:                   934
+Category:                   GENERIC - serial-u16550
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4.22
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.4.29 and 2.6.10
 ======================================================================
-Date Submitted:             02-27-2005 14:20 CET
-Last Modified:              09-22-2005 14:53 CEST
+Date Submitted:             02-23-2005 07:42 CET
+Last Modified:              09-22-2005 14:56 CEST
 ======================================================================
-Summary:                    Early playback DMA IRQ with CMI8738MC6 ==> extra
-noise
+Summary:                    crash in snd-serial-u16550 as non-root user
 Description: 
-This problem combines both a feature of the CMI8738MC6
-hardware (alsa-kernel/pci/cmipci.c driver) and of the core
-pcm kernel code (in alsa-kernel/core/pcm_lib.c).
+Whenever I try to use a sequencer application (I tried: seq24, museseq,
+rosegarden) as a non-root user, I get a kernel Oops.
 
-It appears that the device produces an IRQ a little before
-the end of its programmed period.
+I was using alsa-driver 1.0.8 with the 2.4.29 kernel, and the built-in
+modules for the 2.6.10 kernel.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000951 Fix bugs with early IRQs mishandling, m...
+If you need more information than the stacks traces and lsmod please ask
+and I will do my best to provide them.
 ======================================================================
 
 ----------------------------------------------------------------------
- charles_levert - 02-28-05 21:34 
+ Clemens Ladisch - 03-08-05 11:45 
 ----------------------------------------------------------------------
-A new bug issue has been opened under
-"[ALSA - driver] CORE - pcm" and contains the new patch
-to generic kernel code.
-
-    <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951>
+What are the module parameters of snd-serial-u16550?
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 14:53 
+ jdthood - 09-22-05 14:56 
 ----------------------------------------------------------------------
-Submitter: What is the status of the issues you report here?
+Submitter: Do you still have this problem?
+
+If so, what are the module parameters of snd-serial-u16550?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-05 14:20 charles_levert New Issue                                    
-02-27-05 14:20 charles_levert File Added: pcm_lib.c.diff                    
-02-27-05 14:20 charles_levert Kernel Version            => 2.4.22          
-02-28-05 14:02 charles_levert Note Added: 0003743                          
-02-28-05 21:34 charles_levert Note Added: 0003749                          
-03-01-05 09:36 perex          Relationship added       related to 0000951  
-09-22-05 14:53 jdthood        Note Added: 0006336                          
+02-23-05 07:42 laurent        New Issue                                    
+02-23-05 07:42 laurent        Distribution              => Gentoo          
+02-23-05 07:42 laurent        Kernel Version            => 2.4.29 and 2.6.10
+03-08-05 11:45 Clemens LadischNote Added: 0003814                          
+09-22-05 14:56 jdthood        Note Added: 0006338                          
 ======================================================================
 
 
