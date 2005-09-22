@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001440]: headphone output loops to microphone input
-Date: Thu, 22 Sep 2005 00:13:28 +0200
-Message-ID: <addfa9ed09005edd6d08ec929708b007@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
+Date: Thu, 22 Sep 2005 02:39:30 +0200
+Message-ID: <1b2b4c065b3287270213dd8b3bcfe8eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E330A176
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 00:13:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC23617B
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 02:39:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,110 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1440> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
 ======================================================================
-Reported By:                dyfrgi
-Assigned To:                
+Reported By:                iluxa
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1440
-Category:                   PCI - intel8x0
+Issue ID:                   1435
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.13.1
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.13, 2.6.14-rc1
 ======================================================================
-Date Submitted:             09-22-2005 00:13 CEST
-Last Modified:              09-22-2005 00:13 CEST
+Date Submitted:             09-19-2005 08:49 CEST
+Last Modified:              09-22-2005 02:39 CEST
 ======================================================================
-Summary:                    headphone output loops to microphone input
+Summary:                    ac97 codec is not found when loading the driver
 Description: 
-I cannot use the headphone port when using full duplex on my laptop. Here
-are four scenarios, and the results:
+When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
+saying
+"atiixp-modem: no codec available" and modem doesn't function after that.
 
-1. System speakers, no microphone plugged in
-RESULTS:
-When recording from the microphone input, there is no sound. As expected.
+Little more investigation shown that snd_ac97_mixer thinks the codec is
+already 
+registered as sound codec by audio card driver.
 
-2. System speakers, microphone plugged in
-RESULTS:
-Only the sound that should be picked up by the microphone is recorded
-through the microphone input. As expected.
+I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
+from CVS HEAD - all with same result.
 
-3. Headphones plugged in, microphone not plugged in.
-RESULTS:
-No sound when recording. As expected.
 
-4. Headphones plugged in, microphone plugged in.
-RESULTS:
-Audio coming in through the microphone input is a combination of the
-expected audio and the audio that is being played through the headphone
-output. This is the problem.
-
-Could this be an ALSA issue, or should I have the laptop hardware looked
-at? I should note that this also happens if I use the OSS driver. That
-doesn't mean it's not a driver issue, though; it could be that some
-register is not being set up properly.
-
-The loopbacked volume is lower than if I set Mix or Mix Mono to be the
-capture channel. I'm using jaaa with noise output turned on to monitor.
 ======================================================================
+
+----------------------------------------------------------------------
+ iluxa - 09-22-05 00:02 
+----------------------------------------------------------------------
+And mc97 files are uploaded...
+
+----------------------------------------------------------------------
+ sashak - 09-22-05 02:39 
+----------------------------------------------------------------------
+> Of course - there is a question wether making it unconditionally unshared
+is
+> appropriate. Perhaps there are other cards, with MC97 codec, that
+_should_ be
+> shared... 
+
+The shared "lock" was done some time ago to prevent ac97 bus
+reinitialization, actually this should protect your audio (atiixp) from
+modem and vice versa (and in our case this "protects" second driver very
+well :)).
+
+Since that codec initialization was modified and SKIP_AUDIO,SKIP_MODEM
+flags were introduced. I've reviewed briefly ac97_codec.c codec now, and
+seems that this is almost safe to "unshare" audio and modem codecs.
+
+Uploaded patch is some cleanup in this area (it masks likely safe but
+useless for modem operation). Try something like this:
+- unload both atiixp and atiixp-modem
+- load atiixp, start to play sound
+- load atiixp-modem - this should break nothing with audio
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-05 00:13 dyfrgi         New Issue                                    
-09-22-05 00:13 dyfrgi         Distribution              => Gentoo          
-09-22-05 00:13 dyfrgi         Kernel Version            => 2.6.13.1        
+09-19-05 08:49 iluxa          New Issue                                    
+09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
+09-19-05 13:27 sashak         Note Added: 0006292                          
+09-19-05 19:32 iluxa          File Added: pci.txt                          
+09-19-05 19:56 iluxa          File Added: comment.diff                     
+09-19-05 19:57 iluxa          Note Added: 0006296                          
+09-19-05 20:01 iluxa          File Added: atiixp.txt                       
+09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
+   
+09-19-05 20:07 iluxa          Note Added: 0006298                          
+09-19-05 23:30 sashak         File Deleted: comment.diff                    
+09-19-05 23:38 sashak         Note Added: 0006304                          
+09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
+        
+09-19-05 23:44 iluxa          Note Added: 0006306                          
+09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
+09-20-05 01:06 sashak         Note Added: 0006307                          
+09-20-05 01:15 iluxa          Note Added: 0006308                          
+09-21-05 22:24 sashak         Note Added: 0006325                          
+09-21-05 22:24 sashak         File Added: atiixp-codec-detection.patch          
+         
+09-21-05 22:38 sashak         Note Added: 0006326                          
+09-21-05 23:03 iluxa          Note Added: 0006328                          
+09-21-05 23:05 iluxa          Note Added: 0006329                          
+09-21-05 23:37 sashak         File Added: atiixp-modem-unshared.patch           
+        
+09-21-05 23:40 sashak         Note Added: 0006330                          
+09-21-05 23:57 iluxa          Note Added: 0006331                          
+09-22-05 00:01 iluxa          File Added: card1_codec97_0_mc97_0-0              
+     
+09-22-05 00:02 iluxa          File Added: card1_codec97_0_mc97_0-0+regs         
+          
+09-22-05 00:02 iluxa          Note Added: 0006332                          
+09-22-05 02:21 sashak         File Added: ac97-unshared.patch                   
+
+09-22-05 02:39 sashak         Note Added: 0006333                          
 ======================================================================
 
 
