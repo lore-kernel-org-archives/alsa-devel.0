@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000934]: crash in snd-serial-u16550 as non-root user
-Date: Thu, 22 Sep 2005 14:56:47 +0200
-Message-ID: <4a53675c4b2dd19e9473248556072791@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio adapter
+Date: Thu, 22 Sep 2005 14:56:02 +0200
+Message-ID: <d9b77c7278c9f2eedd441bcabee32ca9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 443D3146
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 14:56:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48F60146
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 14:56:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=955> 
 ======================================================================
-Reported By:                laurent
-Assigned To:                
+Reported By:                mano1979
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   934
-Category:                   GENERIC - serial-u16550
+Issue ID:                   955
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.4.29 and 2.6.10
+Status:                     assigned
+Distribution:               Mandrake 10.1
+Kernel Version:             2.6.10.3
 ======================================================================
-Date Submitted:             02-23-2005 07:42 CET
+Date Submitted:             03-02-2005 00:13 CET
 Last Modified:              09-22-2005 14:56 CEST
 ======================================================================
-Summary:                    crash in snd-serial-u16550 as non-root user
+Summary:                    CN-126 - USB 5.1 Audio adapter
 Description: 
-Whenever I try to use a sequencer application (I tried: seq24, museseq,
-rosegarden) as a non-root user, I get a kernel Oops.
+I am in really need of a driver for this card. It needs to support 5.1
+surround and speaker setup....... well like the original software.
 
-I was using alsa-driver 1.0.8 with the 2.4.29 kernel, and the built-in
-modules for the 2.6.10 kernel.
+Please let me know if you're able to make it.
 
-If you need more information than the stacks traces and lsmod please ask
-and I will do my best to provide them.
+Regards, 
+
+Armand Blaaker
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 03-08-05 11:45 
+ Clemens Ladisch - 03-02-05 15:07 
 ----------------------------------------------------------------------
-What are the module parameters of snd-serial-u16550?
+Create a file named .asoundrc in your home directory (or a file named
+/etc/asound.conf if is hould be available for all users) and copy the
+lines from
+"pcm.umpix" to the last "}" into it.
+
+The configure your applications to use device name "upmix" instead of
+"default" or "hw:?".
 
 ----------------------------------------------------------------------
  jdthood - 09-22-05 14:56 
 ----------------------------------------------------------------------
-Submitter: Do you still have this problem?
-
-If so, what are the module parameters of snd-serial-u16550?
+mano1979: Were you able to solve this problem with the advice provided?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 07:42 laurent        New Issue                                    
-02-23-05 07:42 laurent        Distribution              => Gentoo          
-02-23-05 07:42 laurent        Kernel Version            => 2.4.29 and 2.6.10
-03-08-05 11:45 Clemens LadischNote Added: 0003814                          
-09-22-05 14:56 jdthood        Note Added: 0006338                          
+03-02-05 00:13 mano1979       New Issue                                    
+03-02-05 00:13 mano1979       Distribution              => Mandrake 10.1   
+03-02-05 00:13 mano1979       Kernel Version            => 2.6.10.3        
+03-02-05 00:14 mano1979       Issue Monitored: mano1979                    
+03-02-05 09:28 Clemens LadischNote Added: 0003762                          
+03-02-05 12:34 mano1979       Note Added: 0003763                          
+03-02-05 12:44 Clemens LadischNote Added: 0003764                          
+03-02-05 12:46 mano1979       Note Added: 0003765                          
+03-02-05 12:48 mano1979       Note Added: 0003766                          
+03-02-05 12:58 Clemens LadischNote Added: 0003767                          
+03-02-05 13:05 mano1979       Note Added: 0003769                          
+03-02-05 14:14 Clemens LadischNote Added: 0003773                          
+03-02-05 14:19 mano1979       Note Added: 0003774                          
+03-02-05 15:07 Clemens LadischNote Added: 0003777                          
+03-03-05 11:44 perex          View Status              private => public   
+09-22-05 14:56 jdthood        Note Added: 0006337                          
 ======================================================================
 
 
