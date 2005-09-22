@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001443]: ALSA Uses Space in Front of Name
-Date: Thu, 22 Sep 2005 22:26:37 +0200
-Message-ID: <626c88d55ecbcf6d07a12786aa9a0266@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
+Date: Thu, 22 Sep 2005 23:12:23 +0200
+Message-ID: <ea9349a5f604ae9291c57723e457f539@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 659A5147
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 22:26:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9C3C148
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 23:12:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1443> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
 ======================================================================
-Reported By:                b0ef
-Assigned To:                charbonnel
+Reported By:                Soft
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1443
-Category:                   PCI - RME HDSP
+Issue ID:                   1381
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
+Status:                     new
+Distribution:               Debian
 Kernel Version:             
 ======================================================================
-Date Submitted:             09-22-2005 22:26 CEST
-Last Modified:              09-22-2005 22:26 CEST
+Date Submitted:             08-31-2005 09:50 CEST
+Last Modified:              09-22-2005 23:12 CEST
 ======================================================================
-Summary:                    ALSA Uses Space in Front of Name
+Summary:                    No sound on Thinkpad T40p
 Description: 
-The midi port, previously named "DSP MIDI" is now named " MIDI" with a
-space in front. This causes problems with some applications, causing them
-to not work. 
+When attempting to play a sound on a Thinkpad T40p, all sound players
+behave as if playing normally, but no sound comes out of the speakers. 
+This is with Debian Sarge + various package upgrades to testing, with a
+number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
+1.0.8/1.0.9/1.0.10rc1.
 
-I don't think a space in front of the name is allowed even?
-
-linux-2.6.13-rt13 with alsa 1.0.9b
-
-I have the HDSP Multiface II, which is working fine, 100% firmware
-compatible and should be added to the ALSA supported devices list. 
+I have already tried various "tricks", including muting Headphone Jack
+Sense and Line Jack Sense.  Please see the following thread on alsa-user
+mailing-list:
+http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
+for more information.
 ======================================================================
+
+----------------------------------------------------------------------
+ Soft - 09-18-05 15:47 
+----------------------------------------------------------------------
+> Try muting 'External Amplifier'.
+> Try raising the volume using the special keys on the ThinkPad.
+
+I had already tried, and now tried again in vain.  But thanks for the
+suggestion.
+
+----------------------------------------------------------------------
+ Soft - 09-22-05 23:12 
+----------------------------------------------------------------------
+Upgraded to kernel 2.6.14-rc2, which I think integrates alsa-driver
+1.0.10rc1,
+No change.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-05 22:26 b0ef           New Issue                                    
+08-31-05 09:50 Soft           New Issue                                    
+08-31-05 09:50 Soft           Distribution              => Debian          
+09-17-05 18:48 jdthood        Note Added: 0006251                          
+09-18-05 15:47 Soft           Note Added: 0006272                          
+09-22-05 23:12 Soft           Note Added: 0006361                          
 ======================================================================
 
 
