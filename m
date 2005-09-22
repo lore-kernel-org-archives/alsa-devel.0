@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
-Date: Thu, 22 Sep 2005 23:12:23 +0200
-Message-ID: <ea9349a5f604ae9291c57723e457f539@bugtrack.alsa-project.org>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: 96KHz SPDIF output
+Date: Thu, 22 Sep 2005 15:50:23 -0600
+Message-ID: <4333271F.1080008@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9C3C148
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 23:12:23 +0200 (MEST)
+Received: from mail.redfish-solutions.com (mail.redfish-solutions.com [71.36.29.88])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B3D8148
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 23:50:26 +0200 (MEST)
+Received: from [192.168.1.5] ([192.168.1.5])
+	(authenticated bits=0)
+	by mail.redfish-solutions.com (8.13.1/8.13.1) with ESMTP id j8MLoN32030098
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:50:24 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,68 +26,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I was reading the datasheet on the VT1617A, that bit 3 (i.e. 0x0008) of
+register 0x76 (miscellaneous register) controls the SPDIF_96 mode...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
-======================================================================
-Reported By:                Soft
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1381
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             
-======================================================================
-Date Submitted:             08-31-2005 09:50 CEST
-Last Modified:              09-22-2005 23:12 CEST
-======================================================================
-Summary:                    No sound on Thinkpad T40p
-Description: 
-When attempting to play a sound on a Thinkpad T40p, all sound players
-behave as if playing normally, but no sound comes out of the speakers. 
-This is with Debian Sarge + various package upgrades to testing, with a
-number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
-1.0.8/1.0.9/1.0.10rc1.
+In this mode, the odd samples (N+1) go to SDATA_OUT1 (instead of
+SDATA_OUT)... which is supported if bit 1 (0x0002) is set when this
+register is read back (EN_DRA).
 
-I have already tried various "tricks", including muting Headphone Jack
-Sense and Line Jack Sense.  Please see the following thread on alsa-user
-mailing-list:
-http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
-for more information.
-======================================================================
+And was wondering if it was fairly simple/straightforward to add
+support for this...
 
-----------------------------------------------------------------------
- Soft - 09-18-05 15:47 
-----------------------------------------------------------------------
-> Try muting 'External Amplifier'.
-> Try raising the volume using the special keys on the ThinkPad.
-
-I had already tried, and now tried again in vain.  But thanks for the
-suggestion.
-
-----------------------------------------------------------------------
- Soft - 09-22-05 23:12 
-----------------------------------------------------------------------
-Upgraded to kernel 2.6.14-rc2, which I think integrates alsa-driver
-1.0.10rc1,
-No change.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-31-05 09:50 Soft           New Issue                                    
-08-31-05 09:50 Soft           Distribution              => Debian          
-09-17-05 18:48 jdthood        Note Added: 0006251                          
-09-18-05 15:47 Soft           Note Added: 0006272                          
-09-22-05 23:12 Soft           Note Added: 0006361                          
-======================================================================
-
+-Philip
 
 
 
