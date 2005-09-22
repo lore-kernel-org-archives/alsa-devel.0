@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
-Date: Thu, 22 Sep 2005 15:20:54 +0200
-Message-ID: <9183c6d5571973ed1c6e874a303113cc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000696]: Doom 3 crashes when using alsa
+Date: Thu, 22 Sep 2005 15:21:13 +0200
+Message-ID: <faac4faecc033fde288f4a3a09f69a62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D812E12E
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:20:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8078152
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:21:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=696> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                Mo6eB
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   685
-Category:                   PCI - cs46xx
+Issue ID:                   696
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.9-nitro4
+Distribution:               Gentoo
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-28-2004 14:55 CET
-Last Modified:              09-22-2005 15:20 CEST
+Date Submitted:             12-01-2004 20:18 CET
+Last Modified:              09-22-2005 15:21 CEST
 ======================================================================
-Summary:                    Doom3 doesn't work with alsa backend
+Summary:                    Doom 3 crashes when using alsa
 Description: 
-Latest doom3 client for linux has alsa support built in but doesn't work
-with my Hercules Fortissimo II (cs4624).
-
-The game show me this error:
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-
-dmesg output:
-ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
-ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
-start
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
-"SrcTask_SCB1"
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
-SrcTask_SCB1 rate to 44100
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<SrcTask_SCB1>
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
-"PCMReader_SCB2" (1)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<PCMReader_SCB2>
-ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
-buffer_size(32768)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
-
+Doom 3 crashes with the following error message:
+snd_pcm_writei short write: 4095 out of 4096
+snd_pcm_writei short write: 4095 out of 4096
+doom.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <=
+snd_pcm_mmap_avail(pcm)' failed.
+signal caught: Aborted
 
 ======================================================================
 
 ----------------------------------------------------------------------
- darkbrain - 03-19-05 18:19 
+ jdthood - 03-19-05 16:32 
 ----------------------------------------------------------------------
-I don't know if it's an alsa problem btw doom3 doesn't work with cs46xx,
-instead it works well with an emu10k1
+Submitter: Any progress with this problem?
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 15:20 
+ jdthood - 09-22-05 15:21 
 ----------------------------------------------------------------------
-Does Doom3 work properly with the latest ALSA cs46xx driver?
+Does Doom3 work properly with the latest ALSA intel8x0 driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 14:55 darkbrain      New Issue                                    
-11-28-04 14:55 darkbrain      Distribution              => debian          
-11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
-11-28-04 14:56 darkbrain      Issue Monitored: darkbrain                    
-12-02-04 19:27 tiwai          Note Added: 0002692                          
-03-19-05 16:30 jdthood        Note Added: 0004054                          
-03-19-05 18:19 darkbrain      Note Added: 0004062                          
-09-22-05 15:20 jdthood        Note Added: 0006348                          
+12-01-04 20:18 Mo6eB          New Issue                                    
+12-01-04 20:18 Mo6eB          Distribution              => Gentoo          
+12-01-04 20:18 Mo6eB          Kernel Version            => 2.6.9           
+12-01-04 23:26 tiwai          Note Added: 0002671                          
+03-19-05 16:32 jdthood        Note Added: 0004055                          
+09-22-05 15:21 jdthood        Note Added: 0006349                          
 ======================================================================
 
 
