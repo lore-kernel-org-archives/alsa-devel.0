@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000995]: "Scratchy" Sound
-Date: Thu, 22 Sep 2005 15:16:11 +0200
-Message-ID: <2899b4bc0dbce0a883b7deb18f86637e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
+Date: Thu, 22 Sep 2005 15:14:12 +0200
+Message-ID: <14a9572731268ed856dad3e1823351c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B7E2116
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:16:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16667152
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:14:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,107 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=995> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276> 
 ======================================================================
-Reported By:                antonios_eg
-Assigned To:                Clemens Ladisch
+Reported By:                colding
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   995
-Category:                   USB - usb-audio
+Issue ID:                   1276
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.10 (i have tested more)
+Status:                     acknowledged
+Distribution:               Gentoo AMD64 2005.0
+Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
+20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
-Date Submitted:             03-15-2005 10:33 CET
-Last Modified:              09-22-2005 15:16 CEST
+Date Submitted:             07-22-2005 22:13 CEST
+Last Modified:              09-22-2005 15:14 CEST
 ======================================================================
-Summary:                    "Scratchy" Sound
+Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
+playing any sound.
 Description: 
-My soundcard is audigy 2 nx
-My pc is laptop h/compaq nx7010 (centrino)
+I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
+I have enabled ALSA and OSS emulation in the kernel. I have tried as
+compiled in, no modules, and as module. The card is correctly detected on
+boot-up
+and apparently activated. 
 
-And the output(in every program or even in x) from the soundcard is bad.
-The sound comes out "scratchy" ang "a bit shaking". I ve really tried
-averything.
+Everything seems to be configured correctly according to the alsa guide
+for Gentoo and all I could find at alsa-project and for Gnome. 
 
-i am using kernel 2.6.10 (i ve tried more) and i tried many comnbination
-(alsa build in,alsa as module, snd-usb-audio build in / module etc )
+The problem is that I am only hearing cyclically repeating clicks, with
+weak static noise in-between, when I am trying to play music. I have a
+set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
+analog output jack (Line Out 1) on the card.
 
-In my dos works fine.
+It seems that my problems are the same as in this former post to the
+list:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+
+That thread concluded with no solution but to revert to OSS.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- antonios_eg - 03-15-05 10:53 
+ colding - 07-23-05 15:47 
 ----------------------------------------------------------------------
-looking back in the reported bugs i noticed another person having the same
-problem 
-:  "clicking/distortion with audigy 2 nx.
+"Fixed" by downgrading to OSS. Not exactly what I had in mind, but now I
+have sound.
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 15:16 
+ pzad - 08-16-05 12:34 
 ----------------------------------------------------------------------
-Submitter: Has the problem been fixed in the latest ALSA release?
+"Audigy Analog/Digital Output Jack" should be muted - otherways card is in
+digital mode
+
+----------------------------------------------------------------------
+ rlrevell - 08-16-05 16:52 
+----------------------------------------------------------------------
+Submitter: So did pzad's suggestion help?
+
+----------------------------------------------------------------------
+ colding - 08-17-05 09:05 
+----------------------------------------------------------------------
+No. The card is absolutely silent when the "Audigy Analog/Digital Output
+Jack" is muted and has static noise when it is not. I can test with a
+debug patch if provided...
+
+----------------------------------------------------------------------
+ jdthood - 09-17-05 18:52 
+----------------------------------------------------------------------
+Switch off "Audigy Analog/Digital Output Jack" and then try playing
+with other controls such as 'External Amplifier' to see if you can
+find a combination that works.  Please report your results here.
+
+----------------------------------------------------------------------
+ colding - 09-19-05 09:25 
+----------------------------------------------------------------------
+I've done that. I spend a few hours trying to find the magic combination,
+if any, but to no avail.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-05 10:33 antonios_eg    New Issue                                    
-03-15-05 10:33 antonios_eg    Kernel Version            => 2.6.10 (i have tested
-more)
-03-15-05 10:53 antonios_eg    Note Added: 0003914                          
-09-22-05 15:16 jdthood        Note Added: 0006345                          
+07-22-05 22:13 colding        New Issue                                    
+07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
+07-22-05 22:13 colding        Kernel Version            => Linux omc-2
+2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
+Processor 252 AuthenticAMD GNU/Linux
+07-23-05 12:53 colding        Issue Monitored: colding                     
+07-23-05 15:47 colding        Note Added: 0005553                          
+08-16-05 12:34 pzad           Note Added: 0005826                          
+08-16-05 16:52 rlrevell       Note Added: 0005829                          
+08-16-05 16:53 rlrevell       Status                   new => feedback     
+08-17-05 09:05 colding        Note Added: 0005834                          
+09-17-05 18:52 jdthood        Note Added: 0006252                          
+09-19-05 09:25 colding        Note Added: 0006276                          
+09-22-05 15:14 jdthood        Status                   feedback => acknowledged
 ======================================================================
 
 
