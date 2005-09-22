@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001081]: Clicking noise when short sound files are played.
-Date: Thu, 22 Sep 2005 15:16:49 +0200
-Message-ID: <0ad02d19e5e77b1e1d778759a0106dc4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000477]: Problem with esound-alsa
+Date: Thu, 22 Sep 2005 15:18:58 +0200
+Message-ID: <af821fa60e0438b3ca14504d45a5ca2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59E8F116
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:16:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DF1112E
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 15:18:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1081> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=477> 
 ======================================================================
-Reported By:                raid517
+Reported By:                zawadaa
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1081
-Category:                   CORE - control
+Issue ID:                   477
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.11.7
+Status:                     closed
+Distribution:               PLD LINUX DISTRIBUTION
+Kernel Version:             <=2.6.9-rc1
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-29-2005 07:39 CEST
-Last Modified:              09-22-2005 15:16 CEST
+Date Submitted:             09-02-2004 17:32 CEST
+Last Modified:              09-22-2005 15:18 CEST
 ======================================================================
-Summary:                    Clicking noise when short sound files are played.
+Summary:                    Problem with esound-alsa
 Description: 
-Hi whenever I play .wav files (or any very short sound files) from sites
-such as the following, the sound plays fine, but it is always followed by
-a slight 'clicking' noise at the exact instant when the sound stops
-playing. What causes this - and how do I prevent it?
+On kernel-2.4 was no problem. After I upgraded to kernel-2.6 (even newest
+one) my sound record system does not work :-(
+IMPORTANT: may be that's not ALSA problem just esound but...
 
-(Just an example).
+I have 7 sound card (1 snd_via82xx and 6 snd_ens1371):
+On boot I set up all cards by alsactl -f $i restore $j (i=conf,
+j=cardid).
+After that I run 7 times on diffrent ports:
+esd -tcp -public -promiscuous -d hw:0 -port 16001 &
+that's all.
+On second computer, when I wont record some sound:
 
-http://www.wavsite.com/
+/usr/bin/esdrec -s 192.168.2.206:16001|/usr/bin/lame -x -b 64 --lowpass 8
+- 1.mp3
 
-GJ
+And it works bur only with first card (snd_via82xx)
+on snd_ens1371 I have nothing and on the sound server is just:
+------------------------------------------------
+[root@magazyn root]# esd -tcp -public -promiscuous -d hw:6 -port 16007
+- using device hw:6
+- accepting connections on port 16007
+ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
+: Bad file descriptor
+ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
+: Bad file descriptor
+ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
+: Bad file descriptor
+ALSA lib pcm_hw.c:804:(snd_pcm_hw_munmap_status) status munmap failed:
+Invalid argument
+ALSA lib pcm_hw.c:823:(snd_pcm_hw_munmap_control) control munmap failed:
+Invalid argument
+free(): invalid pointer 0x8060220!
+Segmentation fault
+--------------------------------------------------
+after 4th connection.
+
+I attached strace of that.
+
+When I switch from esound-alsa to esound-oss - 
+esd -tcp -public -promiscuous -d /dev/dsp6 -port 16007
+everything is OK (on 2.6 of course)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 15:16 
+ jdthood - 03-19-05 10:10 
 ----------------------------------------------------------------------
-Do you still have this problem?
+Submitter: Did you submit a bug report to the EsoundD developers too?
+Do you have reason to think that this is an ALSA bug?  If not then I
+think that this report should be closed.  If so then I guess this
+report should be reassigned to alsa-lib.
 
-What sound hardware do you have?
+----------------------------------------------------------------------
+ jdthood - 09-22-05 15:18 
+----------------------------------------------------------------------
+Presumably an eSound bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 07:39 raid517        New Issue                                    
-04-29-05 07:39 raid517        Distribution              => Debian          
-04-29-05 07:39 raid517        Kernel Version            => 2.6.11.7        
-09-22-05 15:16 jdthood        Note Added: 0006346                          
+09-02-04 17:32 zawadaa        New Issue                                    
+09-02-04 17:32 zawadaa        File Added: esd_strace.gz                    
+09-02-04 17:32 zawadaa        Distribution              => PLD LINUX
+DISTRIBUTION
+09-02-04 17:32 zawadaa        Kernel Version            => <=2.6.9-rc1     
+09-02-04 17:35 zawadaa        Issue Monitored: zawadaa                     
+03-19-05 10:10 jdthood        Note Added: 0004031                          
+09-22-05 15:18 jdthood        Status                   new => closed       
+09-22-05 15:18 jdthood        Note Added: 0006347                          
 ======================================================================
 
 
