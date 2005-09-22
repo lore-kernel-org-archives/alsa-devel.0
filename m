@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001435]: ac97 codec is not found when loading the driver
-Date: Thu, 22 Sep 2005 02:39:30 +0200
-Message-ID: <1b2b4c065b3287270213dd8b3bcfe8eb@bugtrack.alsa-project.org>
+From: Leomar-Costa@via-rs.net
+Subject: Packages to debian
+Date: Wed, 21 Sep 2005 22:29:34 -0300 (BRT)
+Message-ID: <18881116.1127352574262.JavaMail.tomcat@gaza>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_7130_13721089.1127352574255"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC23617B
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 02:39:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,116 +15,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_7130_13721089.1127352574255
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1435> 
-======================================================================
-Reported By:                iluxa
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1435
-Category:                   PCI - atiixp-modem
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13, 2.6.14-rc1
-======================================================================
-Date Submitted:             09-19-2005 08:49 CEST
-Last Modified:              09-22-2005 02:39 CEST
-======================================================================
-Summary:                    ac97 codec is not found when loading the driver
-Description: 
-When loading snd-tiixp-modem _after_ loading snd-atiixp, I get a message
-saying
-"atiixp-modem: no codec available" and modem doesn't function after that.
+=A0Hi guys, =A0What packages I need install to make ALSA programs in debian=
+ ?=A0I was trying to compile this example ( http://equalarea.com/paul/alsa-=
+audio.html#playex ), but I give some errors.. I paste in the end of this e-=
+mail.=A0Are there some "apt-get install" that I can use ? Or I need downloa=
+d and install from another place ? =A0Thanks a lot, =A0Leomar=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=A0# gcc -o play play.cplay.c: In function=
+ `main':play.c:44: warning: passing arg 3 of `snd_pcm_hw_params_set_rate_ne=
+ar' makes pointer from integer without a cast/tmp/ccaeBi5f.o(.text+0x39): I=
+n function `main':: undefined reference to `snd_pcm_open'/tmp/ccaeBi5f.o(.t=
+ext+0x4d): In function `main':: undefined reference to `snd_strerror'/tmp/c=
+caeBi5f.o(.text+0x8c): In function `main':: undefined reference to `snd_pcm=
+_hw_params_malloc'/tmp/ccaeBi5f.o(.text+0xa0): In function `main':: undefin=
+ed reference to `snd_strerror'/tmp/ccaeBi5f.o(.text+0xdd): In function `mai=
+n':: undefined reference to `snd_pcm_hw_params_any'/tmp/ccaeBi5f.o(.text+0x=
+f1): In function `main':: undefined reference to `snd_strerror'/tmp/ccaeBi5=
+f.o(.text+0x136): In function `main':: undefined reference to `snd_pcm_hw_p=
+arams_set_access'/tmp/ccaeBi5f.o(.text+0x14a): In function `main':: undefin=
+ed reference to `snd_strerror'/tmp/ccaeBi5f.o(.text+0x18f): In function `ma=
+in':: undefined reference to `snd_pcm_hw_params_set_format'/tmp/ccaeBi5f.o(=
+.text+0x1a3): In function `main':: undefined reference to `snd_strerror'/tm=
+p/ccaeBi5f.o(.text+0x1f0): In function `main':: undefined reference to `snd=
+_pcm_hw_params_set_rate_near'/tmp/ccaeBi5f.o(.text+0x204): In function `mai=
+n':: undefined reference to `snd_strerror'/tmp/ccaeBi5f.o(.text+0x249): In =
+function `main':: undefined reference to `snd_pcm_hw_params_set_channels'/t=
+mp/ccaeBi5f.o(.text+0x25d): In function `main':: undefined reference to `sn=
+d_strerror'/tmp/ccaeBi5f.o(.text+0x29a): In function `main':: undefined ref=
+erence to `snd_pcm_hw_params'/tmp/ccaeBi5f.o(.text+0x2ae): In function `mai=
+n':: undefined reference to `snd_strerror'/tmp/ccaeBi5f.o(.text+0x2e1): In =
+function `main':: undefined reference to `snd_pcm_hw_params_free'/tmp/ccaeB=
+i5f.o(.text+0x2ef): In function `main':: undefined reference to `snd_pcm_pr=
+epare'/tmp/ccaeBi5f.o(.text+0x303): In function `main':: undefined referenc=
+e to `snd_strerror'/tmp/ccaeBi5f.o(.text+0x357): In function `main':: undef=
+ined reference to `snd_pcm_writei'/tmp/ccaeBi5f.o(.text+0x36f): In function=
+ `main':: undefined reference to `snd_strerror'/tmp/ccaeBi5f.o(.text+0x3a9)=
+: In function `main':: undefined reference to `snd_pcm_close'collect2: ld r=
+eturned 1 exit status
 
-Little more investigation shown that snd_ac97_mixer thinks the codec is
-already 
-registered as sound codec by audio card driver.
+------=_Part_7130_13721089.1127352574255
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I'v tried alsa-1.0.9, driver included in 2.6.13, 2.6.14-rc1 and drivers
-from CVS HEAD - all with same result.
+=A0Hi guys, <br /><br />=A0What packages I need install to make ALSA progra=
+ms in debian ?<br /><br />=A0I was trying to compile this example ( http://=
+equalarea.com/paul/alsa-audio.html#playex ), but I give some errors.. I pas=
+te in the end of this e-mail.<br /><br />=A0Are there some &quot;apt-get in=
+stall&quot; that I can use ? Or I need download and install from another pl=
+ace ? <br /><br />=A0Thanks a lot, <br /><br />=A0Leomar<br /><br />=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<br /><br />=A0# gcc -o play play.c<=
+br />play.c: In function `main':<br />play.c:44: warning: passing arg 3 of =
+`snd_pcm_hw_params_set_rate_near' makes pointer from integer without a cast=
+<br />/tmp/ccaeBi5f.o(.text+0x39): In function `main':<br />: undefined ref=
+erence to `snd_pcm_open'<br />/tmp/ccaeBi5f.o(.text+0x4d): In function `mai=
+n':<br />: undefined reference to `snd_strerror'<br />/tmp/ccaeBi5f.o(.text=
++0x8c): In function `main':<br />: undefined reference to `snd_pcm_hw_param=
+s_malloc'<br />/tmp/ccaeBi5f.o(.text+0xa0): In function `main':<br />: unde=
+fined reference to `snd_strerror'<br />/tmp/ccaeBi5f.o(.text+0xdd): In func=
+tion `main':<br />: undefined reference to `snd_pcm_hw_params_any'<br />/tm=
+p/ccaeBi5f.o(.text+0xf1): In function `main':<br />: undefined reference to=
+ `snd_strerror'<br />/tmp/ccaeBi5f.o(.text+0x136): In function `main':<br /=
+>: undefined reference to `snd_pcm_hw_params_set_access'<br />/tmp/ccaeBi5f=
+.o(.text+0x14a): In function `main':<br />: undefined reference to `snd_str=
+error'<br />/tmp/ccaeBi5f.o(.text+0x18f): In function `main':<br />: undefi=
+ned reference to `snd_pcm_hw_params_set_format'<br />/tmp/ccaeBi5f.o(.text+=
+0x1a3): In function `main':<br />: undefined reference to `snd_strerror'<br=
+ />/tmp/ccaeBi5f.o(.text+0x1f0): In function `main':<br />: undefined refer=
+ence to `snd_pcm_hw_params_set_rate_near'<br />/tmp/ccaeBi5f.o(.text+0x204)=
+: In function `main':<br />: undefined reference to `snd_strerror'<br />/tm=
+p/ccaeBi5f.o(.text+0x249): In function `main':<br />: undefined reference t=
+o `snd_pcm_hw_params_set_channels'<br />/tmp/ccaeBi5f.o(.text+0x25d): In fu=
+nction `main':<br />: undefined reference to `snd_strerror'<br />/tmp/ccaeB=
+i5f.o(.text+0x29a): In function `main':<br />: undefined reference to `snd_=
+pcm_hw_params'<br />/tmp/ccaeBi5f.o(.text+0x2ae): In function `main':<br />=
+: undefined reference to `snd_strerror'<br />/tmp/ccaeBi5f.o(.text+0x2e1): =
+In function `main':<br />: undefined reference to `snd_pcm_hw_params_free'<=
+br />/tmp/ccaeBi5f.o(.text+0x2ef): In function `main':<br />: undefined ref=
+erence to `snd_pcm_prepare'<br />/tmp/ccaeBi5f.o(.text+0x303): In function =
+`main':<br />: undefined reference to `snd_strerror'<br />/tmp/ccaeBi5f.o(.=
+text+0x357): In function `main':<br />: undefined reference to `snd_pcm_wri=
+tei'<br />/tmp/ccaeBi5f.o(.text+0x36f): In function `main':<br />: undefine=
+d reference to `snd_strerror'<br />/tmp/ccaeBi5f.o(.text+0x3a9): In functio=
+n `main':<br />: undefined reference to `snd_pcm_close'<br />collect2: ld r=
+eturned 1 exit status<br />
 
-
-======================================================================
-
-----------------------------------------------------------------------
- iluxa - 09-22-05 00:02 
-----------------------------------------------------------------------
-And mc97 files are uploaded...
-
-----------------------------------------------------------------------
- sashak - 09-22-05 02:39 
-----------------------------------------------------------------------
-> Of course - there is a question wether making it unconditionally unshared
-is
-> appropriate. Perhaps there are other cards, with MC97 codec, that
-_should_ be
-> shared... 
-
-The shared "lock" was done some time ago to prevent ac97 bus
-reinitialization, actually this should protect your audio (atiixp) from
-modem and vice versa (and in our case this "protects" second driver very
-well :)).
-
-Since that codec initialization was modified and SKIP_AUDIO,SKIP_MODEM
-flags were introduced. I've reviewed briefly ac97_codec.c codec now, and
-seems that this is almost safe to "unshare" audio and modem codecs.
-
-Uploaded patch is some cleanup in this area (it masks likely safe but
-useless for modem operation). Try something like this:
-- unload both atiixp and atiixp-modem
-- load atiixp, start to play sound
-- load atiixp-modem - this should break nothing with audio
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-19-05 08:49 iluxa          New Issue                                    
-09-19-05 08:49 iluxa          Kernel Version            => 2.6.13, 2.6.14-rc1
-09-19-05 13:27 sashak         Note Added: 0006292                          
-09-19-05 19:32 iluxa          File Added: pci.txt                          
-09-19-05 19:56 iluxa          File Added: comment.diff                     
-09-19-05 19:57 iluxa          Note Added: 0006296                          
-09-19-05 20:01 iluxa          File Added: atiixp.txt                       
-09-19-05 20:01 iluxa          File Added: codec97_0_ac97_0-0.txt                
-   
-09-19-05 20:07 iluxa          Note Added: 0006298                          
-09-19-05 23:30 sashak         File Deleted: comment.diff                    
-09-19-05 23:38 sashak         Note Added: 0006304                          
-09-19-05 23:41 iluxa          File Added: codec97_0_ac97_0-0+regs.txt           
-        
-09-19-05 23:44 iluxa          Note Added: 0006306                          
-09-20-05 01:03 sashak         File Added: atiixp-debug.patch                    
-09-20-05 01:06 sashak         Note Added: 0006307                          
-09-20-05 01:15 iluxa          Note Added: 0006308                          
-09-21-05 22:24 sashak         Note Added: 0006325                          
-09-21-05 22:24 sashak         File Added: atiixp-codec-detection.patch          
-         
-09-21-05 22:38 sashak         Note Added: 0006326                          
-09-21-05 23:03 iluxa          Note Added: 0006328                          
-09-21-05 23:05 iluxa          Note Added: 0006329                          
-09-21-05 23:37 sashak         File Added: atiixp-modem-unshared.patch           
-        
-09-21-05 23:40 sashak         Note Added: 0006330                          
-09-21-05 23:57 iluxa          Note Added: 0006331                          
-09-22-05 00:01 iluxa          File Added: card1_codec97_0_mc97_0-0              
-     
-09-22-05 00:02 iluxa          File Added: card1_codec97_0_mc97_0-0+regs         
-          
-09-22-05 00:02 iluxa          Note Added: 0006332                          
-09-22-05 02:21 sashak         File Added: ac97-unshared.patch                   
-
-09-22-05 02:39 sashak         Note Added: 0006333                          
-======================================================================
-
+------=_Part_7130_13721089.1127352574255--
 
 
 
