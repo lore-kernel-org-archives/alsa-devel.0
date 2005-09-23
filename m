@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: 96KHz SPDIF output
-Date: Fri, 23 Sep 2005 08:53:45 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0509230853080.28663-100000@studcom.urz.uni-halle.de>
-References: <4333271F.1080008@redfish-solutions.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001351]: The misc.c is reported to have incomplete type with thread_excited.
+Date: Fri, 23 Sep 2005 08:57:02 +0200
+Message-ID: <da18d3963620f792f9a315d9647a2c37@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7ECBE164
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 08:53:49 +0200 (MEST)
-In-Reply-To: <4333271F.1080008@redfish-solutions.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14B49164
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 08:57:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,26 +18,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Philip Prindeville wrote:
-> I was reading the datasheet on the VT1617A, that bit 3 (i.e. 0x0008) of
-> register 0x76 (miscellaneous register) controls the SPDIF_96 mode...
->
-> In this mode, the odd samples (N+1) go to SDATA_OUT1 (instead of
-> SDATA_OUT)... which is supported if bit 1 (0x0002) is set when this
-> register is read back (EN_DRA).
->
-> And was wondering if it was fairly simple/straightforward to add
-> support for this...
 
-Good question.  Thank you for volunteering to find out!  ;-)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1351> 
+======================================================================
+Reported By:                lionhead
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1351
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     feedback
+Distribution:               the structure description of thread_excited in
+acore/misc.c caused failure during compilation.
+Kernel Version:             linux-2.4.7-10
+======================================================================
+Date Submitted:             08-21-2005 12:32 CEST
+Last Modified:              09-23-2005 08:57 CEST
+======================================================================
+Summary:                    The misc.c is reported to have incomplete type with
+thread_excited.
+Description: 
+kernel :linux-2.4.7-10. 
+When I compile the alsa drive on my redhat7.2, it always failed with
+result as below.
 
+results:
+------------------------------------------------------------------------------
+[/home/ws/sound/alsa-driver-1.0.9rc4a]$ make
+make[1]: Entering directory `/home/ws/sound/alsa-driver-1.0.9rc4a/acore'
+gcc -D__KERNEL__ -DMODULE=1 -I/home/ws/sound/alsa-driver-1.0.9rc4a/include
+ -I/lib/modules/2.4.7-1
+0/build/include -O2 -mpreferred-stack-boundary=2 -march=athlon -DLINUX
+-Wall -Wstrict-prototypes -
+fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdi
+nc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.7-10/build/include/linux/modversio
+ns.h  -DKBUILD_BASENAME=misc   -c -o misc.o misc.c
+misc.c:289: field `thread_exited' has incomplete type <--------- 
+misc.c: In function `snd_compat_destroy_workqueue_Raba0304c':
+misc.c:340: warning: implicit declaration of function
+`wait_for_completion_R02032293'
+misc.c: In function `snd_compat_create_workqueue_R6659e20e':
+misc.c:388: warning: implicit declaration of function `init_completion'
+-------------------------------------------------------------------------------
+======================================================================
 
-SCNR
-Clemens
+----------------------------------------------------------------------
+ perex - 08-22-05 12:21 
+----------------------------------------------------------------------
+Could you retest with 1.0.10rc1?
+
+----------------------------------------------------------------------
+ croiset - 09-23-05 08:57 
+----------------------------------------------------------------------
+I also reproduce the problem with my configuration redhat 7.2 kernel 2.4.7
+in the release 1.0.9.
+
+I test also the new release 1.0.10rc1 and the problem still exist also :
+misc.c:289: field `thread_exited' has incomplete type
+misc.c: In function `snd_compat_destroy_workqueue_Raba0304c':
+misc.c:340: warning: implicit declaration of function
+`wait_for_completion_R020
+32293'
+misc.c: In function `snd_compat_create_workqueue_R6659e20e':
+misc.c:388: warning: implicit declaration of function `init_completion'
+make[1]: *** [misc.o] Erreur 1
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-21-05 12:32 lionhead       New Issue                                    
+08-21-05 12:32 lionhead       File Added: misc.c                           
+08-21-05 12:32 lionhead       Distribution              => the structure
+description of thread_excited in acore/misc.c caused failure during compilation.
+08-21-05 12:32 lionhead       Kernel Version            => linux-2.4.7-10  
+08-22-05 12:21 perex          Note Added: 0005891                          
+08-22-05 12:31 perex          Status                   assigned => feedback
+08-22-05 12:31 perex          Steps to Reproduce Updated                    
+08-29-05 14:54 lionhead       Issue Monitored: lionhead                    
+09-23-05 08:57 croiset        Note Added: 0006362                          
+======================================================================
+
 
 
 
