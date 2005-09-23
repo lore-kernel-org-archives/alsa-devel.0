@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001434]: Java plugin sound not working in OSS emulation
-Date: Fri, 23 Sep 2005 14:46:15 +0200
-Message-ID: <c0cc4bea7b5345a47d435ffdc3d7c2d7@bugtrack.alsa-project.org>
+From: "Leomar Costa" <leomar-costa@via-rs.net>
+Subject: Develop program to record the microphone sound
+Date: Fri, 23 Sep 2005 10:30:33 -0300
+Message-ID: <000a01c5c042$fb1eee50$15071cac@PROCERGS.REDERS>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0007_01C5C029.D4321010"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2173158
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 14:46:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +15,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1434> 
-======================================================================
-Reported By:                xolsonalsa
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1434
-Category:                   ISA - sb16/sbawe
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             09-18-2005 22:40 CEST
-Last Modified:              09-23-2005 14:46 CEST
-======================================================================
-Summary:                    Java plugin sound not working in OSS emulation
-Description: 
-Tried 2 different soundblaster 16 cards, and ISA and a pnp isa vibra 16. 
-PCM sounds won't play if the Java Sound Audio Engine (software mixer that
-opens /dev/dsp) is in use. Tried it with the JavaSoundDemo and also pogo
-games. The symptom is it seems to play one sound and then io through
-/dev/dsp becomes blocked. The only workaround is to start the web browser
-using aoss so that it opens the native alsa pcm device instead of
-/dev/dsp.
-======================================================================
+------=_NextPart_000_0007_01C5C029.D4321010
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- xolsonalsa - 09-23-05 14:46 
-----------------------------------------------------------------------
-Additional info that I found out.  If you start the browser using aoss, the
-java sound demo works if your asound.conf uses the dmix plugin.  However,
-if your asound.conf does not use dmix and you leave out the restrictive
-"format S16_LE" statement then the java sound demo locks up even if you
-start the browser with aoss.  I am thinking that java is probably
-selecting one of the other formats and the driver can't handle it, such as
-MU_LAW or U8.
----------------- asound.conf -----------
-pcm.shw {
-type hw
-card 0
-}
-ctl.smixer {
-type hw
-card 0
-}
-pcm.dsp0 {      
-	type plug      
-	slave {
-	pcm "hw:0,0"
-	format S16_LE
-	}
-}
+    How I can record what the people say in a microphone ?=20
+    Is Alsa the better way to do this ? Where I can find samples ?=20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-18-05 22:40 xolsonalsa     New Issue                                    
-09-23-05 14:46 xolsonalsa     Note Added: 0006367                          
-======================================================================
+    Thanks a lot !
 
+    Leomar
+------=_NextPart_000_0007_01C5C029.D4321010
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2668" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; How I can record =
+what the people=20
+say in a microphone ? </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Is Alsa&nbsp;the =
+better way to=20
+do this ? Where I can find samples ? </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Thanks a lot =
+!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;=20
+Leomar</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0007_01C5C029.D4321010--
 
 
 
