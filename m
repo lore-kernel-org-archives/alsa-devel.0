@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001444]: sb16: unable to compile driver and wrong build order
-Date: Fri, 23 Sep 2005 13:31:17 +0200
-Message-ID: <6a6374b9b793178df1d38fb8eeba84a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001434]: Java plugin sound not working in OSS emulation
+Date: Fri, 23 Sep 2005 14:46:15 +0200
+Message-ID: <c0cc4bea7b5345a47d435ffdc3d7c2d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E538A116
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 13:31:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2173158
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 14:46:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1444> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1434> 
 ======================================================================
-Reported By:                slashlos
-Assigned To:                perex
+Reported By:                xolsonalsa
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1444
-Category:                   0_compilation problem_!!!
+Issue ID:                   1434
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             2.4.20-31smp
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-23-2005 13:31 CEST
-Last Modified:              09-23-2005 13:31 CEST
+Date Submitted:             09-18-2005 22:40 CEST
+Last Modified:              09-23-2005 14:46 CEST
 ======================================================================
-Summary:                    sb16: unable to compile driver and wrong build order
+Summary:                    Java plugin sound not working in OSS emulation
 Description: 
-this this might be a noob issue, but the order suggested for build should
-be lib, util then driver; it seems driver needs some utils?
-
-Anyhow, when trying to build driver, I get this:
-
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/alsa/alsa-driver-1.0.10rc1/include 
--I/lib/modules/2.4.20-31.9smp/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -D__SMP__ -DCONFIG_SMP -DLINUX
--Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/lib/modules/2.4.20-31.9smp/build/include/linux/modversions.h
--I/usr/src/alsa/alsa-driver-1.0.10rc1/alsa-kernel/core/oss
--fno-omit-frame-pointer  -DEXPORT_SYMTAB -c mixer_oss.c
-mixer_oss.c:397: unknown field `unlocked_ioctl' specified in initializer
-mixer_oss.c:397: warning: initialization from incompatible pointer type
-mixer_oss.c:398: unknown field `compat_ioctl' specified in initializer
-make[2]: *** [mixer_oss.o] Error 1
-make[2]: Leaving directory
-`/usr/src/alsa/alsa-driver-1.0.10rc1/acore/oss'
-make[1]: *** [_modsubdir_oss] Error 2
-make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.10rc1/acore'
-make: *** [compile] Error 1
-
+Tried 2 different soundblaster 16 cards, and ISA and a pnp isa vibra 16. 
+PCM sounds won't play if the Java Sound Audio Engine (software mixer that
+opens /dev/dsp) is in use. Tried it with the JavaSoundDemo and also pogo
+games. The symptom is it seems to play one sound and then io through
+/dev/dsp becomes blocked. The only workaround is to start the web browser
+using aoss so that it opens the native alsa pcm device instead of
+/dev/dsp.
 ======================================================================
+
+----------------------------------------------------------------------
+ xolsonalsa - 09-23-05 14:46 
+----------------------------------------------------------------------
+Additional info that I found out.  If you start the browser using aoss, the
+java sound demo works if your asound.conf uses the dmix plugin.  However,
+if your asound.conf does not use dmix and you leave out the restrictive
+"format S16_LE" statement then the java sound demo locks up even if you
+start the browser with aoss.  I am thinking that java is probably
+selecting one of the other formats and the driver can't handle it, such as
+MU_LAW or U8.
+---------------- asound.conf -----------
+pcm.shw {
+type hw
+card 0
+}
+ctl.smixer {
+type hw
+card 0
+}
+pcm.dsp0 {      
+	type plug      
+	slave {
+	pcm "hw:0,0"
+	format S16_LE
+	}
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 13:31 slashlos       New Issue                                    
-09-23-05 13:31 slashlos       Kernel Version            => 2.4.20-31smp    
+09-18-05 22:40 xolsonalsa     New Issue                                    
+09-23-05 14:46 xolsonalsa     Note Added: 0006367                          
 ======================================================================
 
 
