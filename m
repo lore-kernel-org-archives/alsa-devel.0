@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001445]: jackplug and oss
-Date: Fri, 23 Sep 2005 17:23:28 +0200
-Message-ID: <3d20aecdcc5331eb451f474e907c8984@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001446]: snd_mixer_set_compare() is useless unless the structure of snd_mixer_elem_t is exposed in a public header file
+Date: Fri, 23 Sep 2005 17:29:47 +0200
+Message-ID: <578b0edf8ab9aa21c35cc3f40bd3c227@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45B7013F
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 17:23:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 069F4148
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 17:29:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,38 +24,42 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1445> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1446> 
 ======================================================================
-Reported By:                FishB8
+Reported By:                mikewhit
 Assigned To:                
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1445
-Category:                   PCM - jack
-Reproducibility:            always
-Severity:                   feature
+Project:                    ALSA - lib
+Issue ID:                   1446
+Category:                   0_general
+Reproducibility:            N/A
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-23-2005 17:23 CEST
-Last Modified:              09-23-2005 17:23 CEST
+Date Submitted:             09-23-2005 17:29 CEST
+Last Modified:              09-23-2005 17:29 CEST
 ======================================================================
-Summary:                    jackplug and oss
+Summary:                    snd_mixer_set_compare() is useless unless the
+structure of snd_mixer_elem_t is exposed in a public header file
 Description: 
-I've tried setting up an asound.conf with a config for pcm.dsp0 so that I
-can use aoss. No big deal. But then I thought it would be cool to set the
-slave to pcm.jack. That way I could use aoss to route oss to jack using
-alsa instead of some of the hacks out there that only work half the time.
+Unless you can write a snd_mixer_compare_t compliant function, there is no
+use for snd_mixer_set_compare() [Unless ALSA also provides a library of
+such functions.]
 
-No dice. It doesn't work. (Or at least I couldn't get it to work) Am I not
-understanding how to do this correctly, or is this just not possible the
-way things currently work?
+However, this requires knowledge of the fields of snd_mixer_elem_t in
+order to sensibly compare elements.
+
+snd_mixer_elem_t is only documented in mixer_local.h, which is not part of
+the public API.
+
+Or do I misunderstand something ?
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 17:23 FishB8         New Issue                                    
+09-23-05 17:29 mikewhit       New Issue                                    
 ======================================================================
 
 
