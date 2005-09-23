@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001448]: AC3 passthrou on emu10k1 with version 1.0.10rc1 does not work
-Date: Fri, 23 Sep 2005 20:47:34 +0200
-Message-ID: <61543b1d2906e862dd1c459df96c7386@bugtrack.alsa-project.org>
+From: Stephen Hemminger <shemminger@osdl.org>
+Subject: [BUG] snd_intel8x0 parameter error (2.6.14-rc2)
+Date: Fri, 23 Sep 2005 12:52:44 -0700
+Message-ID: <20050923125244.6ed69083@dxpl.pdx.osdl.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B56148
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 20:47:34 +0200 (MEST)
+Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85D06148
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 21:52:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +18,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Can't load sound with current kernel. I am running FC4 and
+it put the following in /etc/modprobe.conf
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1448> 
-======================================================================
-Reported By:                cocobo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1448
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
-======================================================================
-Date Submitted:             09-23-2005 20:47 CEST
-Last Modified:              09-23-2005 20:47 CEST
-======================================================================
-Summary:                    AC3 passthrou on emu10k1 with version 1.0.10rc1 does
-not work
-Description: 
-If I run kernel 2.6.14-rc[1-2] (alsa ver 1.0.10rc1) I can't get AC3 s/pdiff
-passthrou to work. The external decoder does not switch over to dolby
-mode. Kernel 2.6.13 work fine. I have a soundblaster live value soundcard
-and use mplayer dev-CVS-050810-20:56-3.4.4 or xine-1.1.0 to play sound.
-Ask me for more info if needed.
-======================================================================
+alias snd-card-0 snd-intel8x0
+options snd-card-0 index=0  
+options snd-intel8x0 index=0  
+remove snd-intel8x0 { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; }; /sbin/modprobe -r --ignore-remove snd-intel8x0
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-23-05 20:47 cocobo         New Issue                                    
-09-23-05 20:47 cocobo         Distribution              => Gentoo          
-09-23-05 20:47 cocobo         Kernel Version            => 2.6.14-rc2      
-======================================================================
+When snd-intel8x0 is loaded it gives:
+ snd_intel8x0: Unknown parameter `'
 
 
+It looks like the index parameter was changed to an array.
+But in the process you broke compatibility.
 
 
 -------------------------------------------------------
