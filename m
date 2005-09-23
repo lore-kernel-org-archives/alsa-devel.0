@@ -1,11 +1,14 @@
-From: "Leomar Costa" <leomar-costa@via-rs.net>
-Subject: Develop program to record the microphone sound
-Date: Fri, 23 Sep 2005 10:30:33 -0300
-Message-ID: <000a01c5c042$fb1eee50$15071cac@PROCERGS.REDERS>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - plugins 0001445]: jackplug and oss
+Date: Fri, 23 Sep 2005 17:23:28 +0200
+Message-ID: <3d20aecdcc5331eb451f474e907c8984@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0007_01C5C029.D4321010"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45B7013F
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 17:23:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,49 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0007_01C5C029.D4321010
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1445> 
+======================================================================
+Reported By:                FishB8
+Assigned To:                
+======================================================================
+Project:                    ALSA - plugins
+Issue ID:                   1445
+Category:                   PCM - jack
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-23-2005 17:23 CEST
+Last Modified:              09-23-2005 17:23 CEST
+======================================================================
+Summary:                    jackplug and oss
+Description: 
+I've tried setting up an asound.conf with a config for pcm.dsp0 so that I
+can use aoss. No big deal. But then I thought it would be cool to set the
+slave to pcm.jack. That way I could use aoss to route oss to jack using
+alsa instead of some of the hacks out there that only work half the time.
 
-    How I can record what the people say in a microphone ?=20
-    Is Alsa the better way to do this ? Where I can find samples ?=20
+No dice. It doesn't work. (Or at least I couldn't get it to work) Am I not
+understanding how to do this correctly, or is this just not possible the
+way things currently work?
+======================================================================
 
-    Thanks a lot !
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-23-05 17:23 FishB8         New Issue                                    
+======================================================================
 
-    Leomar
-------=_NextPart_000_0007_01C5C029.D4321010
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2668" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; How I can record =
-what the people=20
-say in a microphone ? </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Is Alsa&nbsp;the =
-better way to=20
-do this ? Where I can find samples ? </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Thanks a lot =
-!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;=20
-Leomar</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0007_01C5C029.D4321010--
 
 
 
