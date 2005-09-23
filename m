@@ -1,21 +1,15 @@
-From: "Claude" <gshinveqq@tsunami2.com>
-Subject: We do not show actor playing| we show real fucking incest!
-Date: Thu, 22 Sep 2005 03:38:30 -0500
-Message-ID: <2726097340.032401185109@tsunami2.com>
-Reply-To: "Claude Ray" <gshinveqq@tsunami2.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: 96KHz SPDIF output
+Date: Fri, 23 Sep 2005 08:53:45 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509230853080.28663-100000@studcom.urz.uni-halle.de>
+References: <4333271F.1080008@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from c-67-186-197-105.hsd1.ut.comcast.net (c-67-186-197-105.hsd1.ut.comcast.net [67.186.197.105])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 88630137
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 01:50:00 +0200 (MEST)
-Received: from mail.tsunami2.com
-	by c-67-186-197-105.hsd1.ut.comcast.net (Postfix) with ESMTP id 02BE70620B
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 03:38:30 -0500
-Received: from unknown (HELO cvdhyv) (94.161.128.77)
-	by mail.tsunami2.com (qmail-ldap-1.03) with SMTP
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2005 03:38:30 -0500
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7ECBE164
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 08:53:49 +0200 (MEST)
+In-Reply-To: <4333271F.1080008@redfish-solutions.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,20 +19,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Philip Prindeville wrote:
+> I was reading the datasheet on the VT1617A, that bit 3 (i.e. 0x0008) of
+> register 0x76 (miscellaneous register) controls the SPDIF_96 mode...
+>
+> In this mode, the odd samples (N+1) go to SDATA_OUT1 (instead of
+> SDATA_OUT)... which is supported if bit 1 (0x0002) is set when this
+> register is read back (EN_DRA).
+>
+> And was wondering if it was fairly simple/straightforward to add
+> support for this...
 
-Up and doing!
-
-I wanna to introduce u
-
-http://bifaduqo.com
-our hot and new models
+Good question.  Thank you for volunteering to find out!  ;-)
 
 
-would like to Tell our photographers what to do in their next photo session our video? No prob
-
+SCNR
+Clemens
 
 
 
