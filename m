@@ -1,17 +1,14 @@
-From: Stephen Hemminger <shemminger@osdl.org>
-Subject: Re: [BUG] snd_intel8x0 parameter error (2.6.14-rc2)
-Date: Fri, 23 Sep 2005 14:39:36 -0700
-Message-ID: <20050923143936.25cc2055@dxpl.pdx.osdl.net>
-References: <20050923125244.6ed69083@dxpl.pdx.osdl.net>
-	<1127508548.9921.18.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001449]: Sound is sometimes distorded
+Date: Sat, 24 Sep 2005 00:18:31 +0200
+Message-ID: <c4ee9fff488970284f1abd315088049f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 735B414D
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 23:39:17 +0200 (MEST)
-In-Reply-To: <1127508548.9921.18.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F223D4
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 00:18:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,35 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 23 Sep 2005 16:49:07 -0400
-Lee Revell <rlrevell@joe-job.com> wrote:
 
-> On Fri, 2005-09-23 at 12:52 -0700, Stephen Hemminger wrote:
-> > Can't load sound with current kernel. I am running FC4 and
-> > it put the following in /etc/modprobe.conf
-> > 
-> > alias snd-card-0 snd-intel8x0
-> > options snd-card-0 index=0  
-> > options snd-intel8x0 index=0  
-> > remove snd-intel8x0 { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; }; /sbin/modprobe -r --ignore-remove snd-intel8x0
-> > 
-> > When snd-intel8x0 is loaded it gives:
-> >  snd_intel8x0: Unknown parameter `'
-> > 
-> > 
-> > It looks like the index parameter was changed to an array.
-> > But in the process you broke compatibility.
-> 
-> Make sure there's no trailing whitespace in your modprobe.conf.
-> 
-> Lee
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1449> 
+======================================================================
+Reported By:                jbesiee
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1449
+Category:                   PCI - cs46xx
+Reproducibility:            sometimes
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             linux-2.6.13-gentoo-r1
+======================================================================
+Date Submitted:             09-24-2005 00:18 CEST
+Last Modified:              09-24-2005 00:18 CEST
+======================================================================
+Summary:                    Sound is sometimes distorded
+Description: 
+I use Xmms to play music on my computer.
+Once a while, let's say one time on 50, the sound is distorded. If y
+replay the sound, it get's alright. So it's not the mp3 problem. I get the
+same effect on mplayer, randomsly again.
+The distortion effect is as if a robot like voice was playing my music on
+a 8 bit stream (it's only a comparaison, not a fact).
+======================================================================
 
-There is trailing whitespace, but since it was auto generated
-it's probably a install tool problem.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-24-05 00:18 jbesiee        New Issue                                    
+09-24-05 00:18 jbesiee        Distribution              => Gentoo          
+09-24-05 00:18 jbesiee        Kernel Version            =>
+linux-2.6.13-gentoo-r1
+======================================================================
+
+
 
 
 -------------------------------------------------------
