@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
-Date: Fri, 23 Sep 2005 09:36:44 +0200
-Message-ID: <044abb02ceffa503ef77df993c8f1e19@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001431]: no sound with msi km4am-l
+Date: Fri, 23 Sep 2005 09:53:24 +0200
+Message-ID: <95e768a9fff8460ad5c88e19a11ab5fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2B0B147
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 09:36:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3F1D151
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 09:53:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1431> 
 ======================================================================
-Reported By:                Soft
+Reported By:                bunni
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1381
-Category:                   PCI - intel8x0
+Issue ID:                   1431
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             
+Distribution:               lfs
+Kernel Version:             2.6.13.1
 ======================================================================
-Date Submitted:             08-31-2005 09:50 CEST
-Last Modified:              09-23-2005 09:36 CEST
+Date Submitted:             09-17-2005 02:33 CEST
+Last Modified:              09-23-2005 09:53 CEST
 ======================================================================
-Summary:                    No sound on Thinkpad T40p
+Summary:                    no sound with msi km4am-l
 Description: 
-When attempting to play a sound on a Thinkpad T40p, all sound players
-behave as if playing normally, but no sound comes out of the speakers. 
-This is with Debian Sarge + various package upgrades to testing, with a
-number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
-1.0.8/1.0.9/1.0.10rc1.
-
-I have already tried various "tricks", including muting Headphone Jack
-Sense and Line Jack Sense.  Please see the following thread on alsa-user
-mailing-list:
-http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
-for more information.
+I hace an msi km4am-l with via 8237 onboard chip. First time i have
+compiled the via82xx and bt87x modules (in 2.6.13.1), i haven't any sound
+(test with aplay english.au and mythtv). I tried with the alsa 1.09
+drivers same problem.
+I have plugin my sb live 5.1 and compiled it's module in kernel as module
+and it's work fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- Soft - 09-22-05 23:12 
+ bunni - 09-23-05 09:53 
 ----------------------------------------------------------------------
-Upgraded to kernel 2.6.14-rc2, which I think integrates alsa-driver
-1.0.10rc1,
-No change.
-
-----------------------------------------------------------------------
- jdthood - 09-23-05 09:36 
-----------------------------------------------------------------------
->  Upgraded to kernel 2.6.14-rc2, which I think integrates alsa-driver
-1.0.10rc1,
-> No change.
-
-You can tell what ALSA version you have by looking in
-/proc/asound/version.
+There is no problem with the driver, i haven't jumper on my motherboard
+where i can plug the frontpanel. Sorry
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 09:50 Soft           New Issue                                    
-08-31-05 09:50 Soft           Distribution              => Debian          
-09-17-05 18:48 jdthood        Note Added: 0006251                          
-09-18-05 15:47 Soft           Note Added: 0006272                          
-09-22-05 23:12 Soft           Note Added: 0006361                          
-09-23-05 09:36 jdthood        Note Added: 0006363                          
+09-17-05 02:33 bunni          New Issue                                    
+09-17-05 02:33 bunni          Distribution              => lfs             
+09-17-05 02:33 bunni          Kernel Version            => 2.6.13.1        
+09-23-05 09:53 bunni          Note Added: 0006364                          
 ======================================================================
 
 
