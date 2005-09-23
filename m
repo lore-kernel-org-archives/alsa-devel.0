@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001447]: SPDIF IN>OUT Loop missing
-Date: Fri, 23 Sep 2005 20:47:21 +0200
-Message-ID: <7fc4461619c191f0bb04290892177782@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001448]: AC3 passthrou on emu10k1 with version 1.0.10rc1 does not work
+Date: Fri, 23 Sep 2005 20:47:34 +0200
+Message-ID: <61543b1d2906e862dd1c459df96c7386@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16D18148
-	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 20:47:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B56148
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2005 20:47:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1448> 
 ======================================================================
-Reported By:                Mimosius
+Reported By:                cocobo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1447
-Category:                   PCI - ymfpci
+Issue ID:                   1448
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             09-23-2005 20:47 CEST
 Last Modified:              09-23-2005 20:47 CEST
 ======================================================================
-Summary:                    SPDIF IN>OUT Loop missing
+Summary:                    AC3 passthrou on emu10k1 with version 1.0.10rc1 does
+not work
 Description: 
-Hi,
-
-I'm using a Hoontech Digital-XG and I was missing the capability to loop
-the digital signal from SPDIF-in to SPDIF- out, so I modified the
-ymfpci_main.c, adding an extra mixer switch (patch against latest CVS
-version included). Would anyone of the developers verify this patch and
-add this feature to the ymfpci module?
-
-Regards,
-Glen Masgai
+If I run kernel 2.6.14-rc[1-2] (alsa ver 1.0.10rc1) I can't get AC3 s/pdiff
+passthrou to work. The external decoder does not switch over to dolby
+mode. Kernel 2.6.13 work fine. I have a soundblaster live value soundcard
+and use mplayer dev-CVS-050810-20:56-3.4.4 or xine-1.1.0 to play sound.
+Ask me for more info if needed.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 20:47 Mimosius       New Issue                                    
-09-23-05 20:47 Mimosius       File Added: ymfpci_spdifloop.diff                 
-  
+09-23-05 20:47 cocobo         New Issue                                    
+09-23-05 20:47 cocobo         Distribution              => Gentoo          
+09-23-05 20:47 cocobo         Kernel Version            => 2.6.14-rc2      
 ======================================================================
 
 
