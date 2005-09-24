@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
-Date: Sat, 24 Sep 2005 22:06:30 +0200
-Message-ID: <9df984903e1ac8d0a2624fa362aa9aa2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001454]: requantizing to narrower types *MUST* dither
+Date: Sun, 25 Sep 2005 00:18:59 +0200
+Message-ID: <f2b65f195fdaa10f7ebcf8ebdc96771d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C7F16C
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 22:06:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7C9413F
+	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 00:18:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001453 has been set as DUPLICATE OF the following issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1454> 
 ======================================================================
-Reported By:                crimsunkg
-Assigned To:                tiwai
+Reported By:                ma
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1429
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   1454
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-8-686
+Status:                     new
 ======================================================================
-Date Submitted:             09-17-2005 00:54 CEST
-Last Modified:              09-24-2005 20:55 CEST
+Date Submitted:             09-25-2005 00:18 CEST
+Last Modified:              09-25-2005 00:18 CEST
 ======================================================================
-Summary:                    hda_codec: Unknown model for ALC880
+Summary:                    requantizing to narrower types *MUST* dither
 Description: 
-Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
+alsa-lib 1.0.9/1.0.10rc1 do not currently dither the signal when
+requantizing 16-bit hardware input to narrower types, say, 8-bit. It is a
+well-known fact in digital signal processing that any requantization
+requires dithering to avoid the nasty and hefty twitching noises
+particularly with data which is barely above the minimum level of the new,
+narrower type. dithering decorellates the quantization noise so it sounds
+less obtrusive and linearizes the quantization process.
+Books: the art of digital audio (John Watkinson); principles of digital
+audio (Ken C. Pohlmann)
 
-Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
-
-Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
-hda_codec does not recognize the model with the ALC880 codec
-(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
-
-''lspci -nvv'' output is at
-http://bugzilla.ubuntu.com/attachment.cgi?id=3848
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
-======================================================================
-
-----------------------------------------------------------------------
- crimsunkg - 09-24-05 20:55 
-----------------------------------------------------------------------
-This issue is duplicated in bug #1453.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-17-05 00:54 crimsunkg      New Issue                                    
-09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
-09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
-09-24-05 20:55 crimsunkg      Note Added: 0006377                          
-09-24-05 22:06 rlrevell       Relationship added       has duplicate 0001453
+09-25-05 00:18 ma             New Issue                                    
 ======================================================================
 
 
