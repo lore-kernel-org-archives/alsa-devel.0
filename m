@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
-Date: Sat, 24 Sep 2005 18:12:10 +0200
-Message-ID: <45a0b3a383b973c4667800415d0442e2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001422]: Timidity stops playing longer list of midi files
+Date: Sat, 24 Sep 2005 19:07:40 +0200
+Message-ID: <a0a8bae8eed3fb0318cfdfb7d8ce4f96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43B29165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 18:12:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7863B165
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 19:07:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,95 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1422> 
 ======================================================================
-Reported By:                aisotton
-Assigned To:                tiwai
+Reported By:                johnclubvec
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   943
-Category:                   PCI - cmipci
+Project:                    ALSA - lib
+Issue ID:                   1422
+Category:                   0_general
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Sid (Unstable)
-Kernel Version:             2.6.10
+Status:                     new
 ======================================================================
-Date Submitted:             02-25-2005 16:06 CET
-Last Modified:              09-24-2005 18:12 CEST
+Date Submitted:             09-15-2005 13:54 CEST
+Last Modified:              09-24-2005 19:07 CEST
 ======================================================================
-Summary:                    cmipci freezes the whole system
+Summary:                    Timidity stops playing longer list of midi files
 Description: 
-Hi,
+I use Timidity 2.13.2 for virmidi. When using alsa 1.0.9, Timidity (gtk
+interface) when playing a longer list of midi files, always stops
+functioning after playing around 10 or so. I could not track down the
+source of this error but it occurs every time. Timidity simply stops.
 
-I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
-gigabit ethernet controller (the board is an Asus A7V600). The sound
-card uses the cmipci module, and the ethernet card the sk98lin module.
-
-Playing sound and using the network at the same time freezes the sytem
-after a short time (generally 15-30 seconds); nothing is logged or
-displayed (I checked syslog, kern.log and /var/log/messages), it just
-freezes everything, forcing a reset of the machine (and after the
-subsequent reboot my mouse isn't recognized any more, but I don't think
-that matters).
-
-I am using that network card since more than a year, and it never gave a
-problem; thus I think the bug is in the cmipci driver (the system never
-froze before I installed the sound card).
-
-I did a memtest, but my memory seems to be ok.
-
-This happens with all kernels I tested, specifically:
-
-Debian kernel-image-2.6.10-1-k7-4
-Debian kernel-image-2.6.9-2-k7-5
-Debian kernel-image-2.6.8-2-k7-13
-Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
-Vanilla kernel 2.6.10, compiled with the same options as Debian
-kernel-image-2.6.10-1-k7-4.
-
-
+When I reverted back the driver and lib and utils to my previous alsa
+1.0.4, this problem completely disappeared.
 ======================================================================
 
 ----------------------------------------------------------------------
- mitch_f - 09-24-05 14:17 
+ johnclubvec - 09-15-05 22:32 
 ----------------------------------------------------------------------
-Alt-SysRq doesn't work in this case - nothing happens.
+Q. from rlrevell: Does the problem go away if you recompile Timidity
+against alsa-lib 1.0.9?
 
-The card already has its own IRQ. Also, nothing changes when setting
-latency to 255. :(
+A. Yes, it goes away -- unfortunately. I will now recompile all my
+audio-producing programs against 1.0.9 just to be on the safe side.
 
 ----------------------------------------------------------------------
- runderwo - 09-24-05 18:12 
+ johnclubvec - 09-24-05 19:07 
 ----------------------------------------------------------------------
-This is terrible.  Okay, is there any way you can do the following.  First,
-lspci -xxx and save the results in Linux.  Then, go to Windows and use a
-PCI dumper to dump the PCI configuration area there.  Post the results. 
-Also note whether or not the card works in Windows.  I know not everybody
-has access to windows so this is directed at those of you who have a
-windows installation to play with.
+After more testing, I can report that the problem is very much helped by
+recompiling against the 1.0.9 lib, but is not completely fixed. There are
+some (valid, uncorrupt) midi files that, using 1.0.9, Timidity will play
+singly, but not in sequence within a playlist. In this case, Timidity
+plays to the end of the first file, then stops. I have again reverted to
+1.0.4, because I never experience this problem using that version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-25-05 16:06 aisotton       New Issue                                    
-02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
-02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
-02-25-05 16:07 aisotton       Note Added: 0003734                          
-02-25-05 21:57 runderwo       Note Added: 0003736                          
-02-26-05 02:33 aisotton       Note Added: 0003737                          
-06-11-05 23:46 sbambach       Note Added: 0004996                          
-06-11-05 23:48 sbambach       Note Added: 0004997                          
-06-11-05 23:48 sbambach       Issue Monitored: sbambach                    
-06-14-05 21:23 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-09-16-05 15:27 mitch_f        Note Added: 0006244                          
-09-22-05 19:40 mitch_f        Note Added: 0006357                          
-09-22-05 19:51 sbambach       Note Added: 0006358                          
-09-22-05 19:52 sbambach       Note Edited: 0006358                         
-09-22-05 20:16 runderwo       Note Added: 0006360                          
-09-24-05 14:17 mitch_f        Note Added: 0006369                          
-09-24-05 18:12 runderwo       Note Added: 0006375                          
+09-15-05 13:54 johnclubvec    New Issue                                    
+09-15-05 20:07 rlrevell       Note Added: 0006220                          
+09-15-05 22:32 johnclubvec    Note Added: 0006224                          
+09-24-05 19:07 johnclubvec    Note Added: 0006376                          
 ======================================================================
 
 
