@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001297]: driver can't initialise card
-Date: Sat, 24 Sep 2005 17:54:51 +0200
-Message-ID: <0e3629d41e8e9866e0fc3146c7754829@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
+Date: Sat, 24 Sep 2005 18:12:10 +0200
+Message-ID: <45a0b3a383b973c4667800415d0442e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1156D165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 17:54:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43B29165
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 18:12:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
 ======================================================================
-Reported By:                hus
-Assigned To:                jcdutton
+Reported By:                aisotton
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1297
-Category:                   PCI - emu10k1
+Issue ID:                   943
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 (mostly)
-Kernel Version:             2.6.12
+Status:                     assigned
+Distribution:               Debian Sid (Unstable)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             08-01-2005 14:27 CEST
-Last Modified:              09-24-2005 17:54 CEST
+Date Submitted:             02-25-2005 16:06 CET
+Last Modified:              09-24-2005 18:12 CEST
 ======================================================================
-Summary:                    driver can't initialise card
+Summary:                    cmipci freezes the whole system
 Description: 
-My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
-box).
-The snd-emu10k1 module refuses to work for this card; the kernel logs:
+Hi,
 
-ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
-ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
-subsystem_vendor_id=0x80611102, subsystem_id=0x8061
-ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
-[Unknown], 
-vendor=0x1102, device=0x2, subsystem=0x80611102
-ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
-ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
+I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
+gigabit ethernet controller (the board is an Asus A7V600). The sound
+card uses the cmipci module, and the ethernet card the sk98lin module.
 
-removing mixer.
-EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
+Playing sound and using the network at the same time freezes the sytem
+after a short time (generally 15-30 seconds); nothing is logged or
+displayed (I checked syslog, kern.log and /var/log/messages), it just
+freezes everything, forcing a reset of the machine (and after the
+subsequent reboot my mouse isn't recognized any more, but I don't think
+that matters).
 
-lspci shows
-02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-07)
-        Subsystem: Creative Labs SBLive! Player 5.1
-        Flags: bus master, medium devsel, latency 64, IRQ 17
-        I/O ports at 30c0 [size=32]
-        Capabilities: [dc] Power Management version 1
-(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
+I am using that network card since more than a year, and it never gave a
+problem; thus I think the bug is in the cmipci driver (the system never
+froze before I installed the sound card).
+
+I did a memtest, but my memory seems to be ok.
+
+This happens with all kernels I tested, specifically:
+
+Debian kernel-image-2.6.10-1-k7-4
+Debian kernel-image-2.6.9-2-k7-5
+Debian kernel-image-2.6.8-2-k7-13
+Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
+Vanilla kernel 2.6.10, compiled with the same options as Debian
+kernel-image-2.6.10-1-k7-4.
 
 
-The only deviation from the ordinary I can think of is that my system is
-dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
-PCI-to-PCI bridge. That's one thing our systems might have in common, as
-your message shows the card on bus 03. Perhaps this is some strange kind
-of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- hus - 09-19-05 21:08 
+ mitch_f - 09-24-05 14:17 
 ----------------------------------------------------------------------
-My card is model "SB0060".
+Alt-SysRq doesn't work in this case - nothing happens.
 
-So where does the PCI id come from? Does it just mark a firmware version,
-all "Live!" hardware being the same?
+The card already has its own IRQ. Also, nothing changes when setting
+latency to 255. :(
 
 ----------------------------------------------------------------------
- dstaaf - 09-24-05 17:54 
+ runderwo - 09-24-05 18:12 
 ----------------------------------------------------------------------
-Unfortunately my SB Live Player (same subsystem id) do use an AC97 chip so
-git commit afe0f1f6688f4c4c9235873121548e76dedd8ef8 breaks my sound.
+This is terrible.  Okay, is there any way you can do the following.  First,
+lspci -xxx and save the results in Linux.  Then, go to Windows and use a
+PCI dumper to dump the PCI configuration area there.  Post the results. 
+Also note whether or not the card works in Windows.  I know not everybody
+has access to windows so this is directed at those of you who have a
+windows installation to play with.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-01-05 14:27 hus            New Issue                                    
-08-01-05 14:27 hus            Distribution              => Fedora Core 4
-(mostly)
-08-01-05 14:27 hus            Kernel Version            => 2.6.12          
-08-01-05 14:28 hus            Issue Monitored: hus                         
-08-01-05 15:24 jcdutton       Status                   new => assigned     
-08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
-08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
-08-13-05 00:39 jcdutton       Note Added: 0005795                          
-08-13-05 00:40 jcdutton       Status                   assigned => feedback
-08-13-05 21:18 hus            Note Added: 0005809                          
-08-13-05 21:38 rlrevell       Note Added: 0005810                          
-08-14-05 00:32 hus            Note Added: 0005813                          
-09-10-05 13:00 jcdutton       Status                   feedback => closed  
-09-10-05 13:00 jcdutton       Note Added: 0006114                          
-09-13-05 00:16 jcdutton       Status                   closed => feedback  
-09-13-05 00:16 jcdutton       Resolution               open => reopened    
-09-13-05 00:16 jcdutton       Note Added: 0006150                          
-09-19-05 20:20 selflein       Note Added: 0006299                          
-09-19-05 21:08 hus            Note Added: 0006300                          
-09-24-05 17:54 dstaaf         Note Added: 0006374                          
+02-25-05 16:06 aisotton       New Issue                                    
+02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
+02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
+02-25-05 16:07 aisotton       Note Added: 0003734                          
+02-25-05 21:57 runderwo       Note Added: 0003736                          
+02-26-05 02:33 aisotton       Note Added: 0003737                          
+06-11-05 23:46 sbambach       Note Added: 0004996                          
+06-11-05 23:48 sbambach       Note Added: 0004997                          
+06-11-05 23:48 sbambach       Issue Monitored: sbambach                    
+06-14-05 21:23 graf_eichbaum  Issue Monitored: graf_eichbaum                    
+09-16-05 15:27 mitch_f        Note Added: 0006244                          
+09-22-05 19:40 mitch_f        Note Added: 0006357                          
+09-22-05 19:51 sbambach       Note Added: 0006358                          
+09-22-05 19:52 sbambach       Note Edited: 0006358                         
+09-22-05 20:16 runderwo       Note Added: 0006360                          
+09-24-05 14:17 mitch_f        Note Added: 0006369                          
+09-24-05 18:12 runderwo       Note Added: 0006375                          
 ======================================================================
 
 
