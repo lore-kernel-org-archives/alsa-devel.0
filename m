@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001453]: 2.6.14-rc2 "Unknown model for ALC880"
-Date: Sat, 24 Sep 2005 22:06:29 +0200
-Message-ID: <bff3042c4478c607fad2b10a565c8456@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
+Date: Sat, 24 Sep 2005 22:06:30 +0200
+Message-ID: <9df984903e1ac8d0a2624fa362aa9aa2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D5EA16C
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 22:06:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C7F16C
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 22:06:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001429.
+The issue 0001453 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
 ======================================================================
-Reported By:                honschu
+Reported By:                crimsunkg
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1453
+Issue ID:                   1429
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian sarge
-Kernel Version:             2.6.14-rc2
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-8-686
 ======================================================================
-Date Submitted:             09-24-2005 17:22 CEST
-Last Modified:              09-24-2005 22:06 CEST
+Date Submitted:             09-17-2005 00:54 CEST
+Last Modified:              09-24-2005 20:55 CEST
 ======================================================================
-Summary:                    2.6.14-rc2 "Unknown model for ALC880"
+Summary:                    hda_codec: Unknown model for ALC880
 Description: 
-I have a Aopen i915Gm-HFS Motherboard with intel-hda chipset.
-Sound output (input not) works in kernel 2.6.12.
+Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
 
-For Kernel 2.6.14-rc2 I get error on boottime (see below)
+Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
 
-If you want me to do tests, feel free to ask.
+Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
+hda_codec does not recognize the model with the ALC880 codec
+(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
 
-[...]
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-[...]
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-
+''lspci -nvv'' output is at
+http://bugzilla.ubuntu.com/attachment.cgi?id=3848
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
+has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
 ======================================================================
+
+----------------------------------------------------------------------
+ crimsunkg - 09-24-05 20:55 
+----------------------------------------------------------------------
+This issue is duplicated in bug #1453.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 17:22 honschu        New Issue                                    
-09-24-05 17:22 honschu        Distribution              => Debian sarge    
-09-24-05 17:22 honschu        Kernel Version            => 2.6.14-rc2      
-09-24-05 22:06 rlrevell       Relationship added       duplicate of 0001429
+09-17-05 00:54 crimsunkg      New Issue                                    
+09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
+09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
+09-24-05 20:55 crimsunkg      Note Added: 0006377                          
+09-24-05 22:06 rlrevell       Relationship added       has duplicate 0001453
 ======================================================================
 
 
