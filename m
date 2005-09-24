@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
-Date: Sat, 24 Sep 2005 14:17:44 +0200
-Message-ID: <962c37a0f29c4a331368cc8511b5d211@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Sat, 24 Sep 2005 14:34:34 +0200
+Message-ID: <f1c3ed7f83f74aa0339bc36c6754e0ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E66D4165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 14:17:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42FAC165
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 14:34:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
 ======================================================================
-Reported By:                aisotton
-Assigned To:                tiwai
+Reported By:                midnight
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   943
-Category:                   PCI - cmipci
+Issue ID:                   1378
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Sid (Unstable)
-Kernel Version:             2.6.10
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
 ======================================================================
-Date Submitted:             02-25-2005 16:06 CET
-Last Modified:              09-24-2005 14:17 CEST
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              09-24-2005 14:34 CEST
 ======================================================================
-Summary:                    cmipci freezes the whole system
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
 Description: 
-Hi,
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
-gigabit ethernet controller (the board is an Asus A7V600). The sound
-card uses the cmipci module, and the ethernet card the sk98lin module.
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
 
-Playing sound and using the network at the same time freezes the sytem
-after a short time (generally 15-30 seconds); nothing is logged or
-displayed (I checked syslog, kern.log and /var/log/messages), it just
-freezes everything, forcing a reset of the machine (and after the
-subsequent reboot my mouse isn't recognized any more, but I don't think
-that matters).
+I use the via82xx module
 
-I am using that network card since more than a year, and it never gave a
-problem; thus I think the bug is in the cmipci driver (the system never
-froze before I installed the sound card).
-
-I did a memtest, but my memory seems to be ok.
-
-This happens with all kernels I tested, specifically:
-
-Debian kernel-image-2.6.10-1-k7-4
-Debian kernel-image-2.6.9-2-k7-5
-Debian kernel-image-2.6.8-2-k7-13
-Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
-Vanilla kernel 2.6.10, compiled with the same options as Debian
-kernel-image-2.6.10-1-k7-4.
-
-
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- runderwo - 09-22-05 20:16 
+ midnight - 09-18-05 15:59 
 ----------------------------------------------------------------------
-Compile the kernel with debug and SysRq enabled.  When the system
-"freezes", issue Alt-SysRq-T and see what is going on.  At least this will
-tell us whether the hardware or the kernel has stopped.
+With today's CVS version, the sound is ok for the front and rear speakers
+but not for the center and LFE ones.
 
-Also please try putting cmipci card on its own IRQ.  To do this you will
-need to disable whatever motherboard resources share PCI interrupt lines
-with that slot, and don't put any cards in slots that share PCI interrupt
-lines with it either.
+if I use speaker-test with the front or surround40 device (4 speakers) it
+is ok.
 
-Perhaps this is a problem with PCI latency.  Try setting the latency to
-255 with setpci.
+but if I use "speaker-test -c6 -Dsurround51", there is always a noise on
+the center and LFE speakers whatever the speaker selected. But no sound on
+the front and rears speakers.
+
+however, the value of the 0x64 register is OK when I use surround51
+device.
+
+
 
 ----------------------------------------------------------------------
- mitch_f - 09-24-05 14:17 
+ midnight - 09-24-05 14:34 
 ----------------------------------------------------------------------
-Alt-SysRq doesn't work in this case - nothing happens.
-
-The card already has its own IRQ. Also, nothing changes when setting
-latency to 255. :(
+it's the same with today's CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-25-05 16:06 aisotton       New Issue                                    
-02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
-02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
-02-25-05 16:07 aisotton       Note Added: 0003734                          
-02-25-05 21:57 runderwo       Note Added: 0003736                          
-02-26-05 02:33 aisotton       Note Added: 0003737                          
-06-11-05 23:46 sbambach       Note Added: 0004996                          
-06-11-05 23:48 sbambach       Note Added: 0004997                          
-06-11-05 23:48 sbambach       Issue Monitored: sbambach                    
-06-14-05 21:23 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-09-16-05 15:27 mitch_f        Note Added: 0006244                          
-09-22-05 19:40 mitch_f        Note Added: 0006357                          
-09-22-05 19:51 sbambach       Note Added: 0006358                          
-09-22-05 19:52 sbambach       Note Edited: 0006358                         
-09-22-05 20:16 runderwo       Note Added: 0006360                          
-09-24-05 14:17 mitch_f        Note Added: 0006369                          
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
+09-09-05 14:54 midnight       Note Added: 0006099                          
+09-09-05 16:32 tiwai          Note Added: 0006100                          
+09-09-05 19:50 midnight       Note Added: 0006104                          
+09-09-05 20:14 tiwai          Note Added: 0006105                          
+09-09-05 23:41 midnight       Note Added: 0006106                          
+09-13-05 18:27 tiwai          Note Added: 0006155                          
+09-18-05 12:05 midnight       Note Added: 0006270                          
+09-18-05 15:59 midnight       Note Edited: 0006270                         
+09-24-05 14:34 midnight       Note Added: 0006370                          
 ======================================================================
 
 
