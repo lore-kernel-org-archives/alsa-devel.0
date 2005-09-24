@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001452]: No Microphone input
-Date: Sat, 24 Sep 2005 17:30:13 +0200
-Message-ID: <48fd30ae3e4b96469238b7cfad14d63a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
+Date: Sat, 24 Sep 2005 17:47:56 +0200
+Message-ID: <20136d3d0c9ef6af75529a217df7b3f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA32F165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 17:30:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53519165
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 17:47:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1452> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
 ======================================================================
-Reported By:                honschu
-Assigned To:                tiwai
+Reported By:                ianw1234
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1452
-Category:                   PCI - hda-intel
+Issue ID:                   772
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sarge
-Kernel Version:             2.6.12
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.9-1.681_FC3
 ======================================================================
-Date Submitted:             09-24-2005 17:12 CEST
-Last Modified:              09-24-2005 17:30 CEST
+Date Submitted:             12-31-2004 23:02 CET
+Last Modified:              09-24-2005 17:47 CEST
 ======================================================================
-Summary:                    No Microphone input
+Summary:                    Analog/Digital output not working.
 Description: 
-Sound output works, but microphone input doesn't. I do not know why.
+I've been unable to get my SB Live! to send analog pcm out through the
+Analog/Digital port. It's connected through this port to my receiver, and
+while AC3 over the digital port works fine, I can't get anything else to
+go over the line. I have a 48kHz wave file I've been testing, and I've
+tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
+and hw0,2 (no effect). 
 
-For Kernel 2.6.13 or 2.6.14-rc2 (Alsa: 1.0.10rc1) sound output doesn't
-work.
+I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
+Analog/Digital Output Jack all either unmuted or set to max volume. I've
+tried loading the snd_pcm_oss module with various snd_dsp_map settings
+without success.
 
-I have a Aopen i915Gm-HFS Motherboard.
+I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
+the past, so I don't know if this was broken in the upgrade to 1.0.7
+(which I had to do because AC3 passthrough didn't work in the version that
+came with the 2.6.9 kernel) or whether I have some strange
+misconfiguration. Help is appreciated! Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- honschu - 09-24-05 17:30 
+ jdthood - 04-18-05 23:16 
 ----------------------------------------------------------------------
-it was due to a mixersetting, I rechecked it - and voila it works
-sorry for bothering ;)
+Submitter: Any improvement in more recent ALSA releases?
+
+----------------------------------------------------------------------
+ razer1 - 09-24-05 17:47 
+----------------------------------------------------------------------
+I've a similar bug too : geexbox distrib (multimedia usage :
+www.geexbox.org), based on kernel 2.6.12, mplayer 1.0-pre7 & alsa 1.0.9. 
+I try to use this SB Live 5.1 in 6 channels analog mode.
+2 channels mode works, the rear output duplicates the front, but no output
+via LFE/Center Jack Output (used for spdif too).
+In Surround5.1 mode, the card give an uggly noise instead of movie sound
+or music
+All different amixer config give same result
+Note : the card was working fine in this mode with an 2.6.7 on gentoo
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 17:12 honschu        New Issue                                    
-09-24-05 17:12 honschu        Distribution              => Debian sarge    
-09-24-05 17:12 honschu        Kernel Version            => 2.6.12          
-09-24-05 17:30 honschu        Note Added: 0006372                          
+12-31-04 23:02 ianw1234       New Issue                                    
+12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
+01-01-05 00:33 ianw1234       Note Added: 0003028                          
+01-01-05 02:28 rlrevell       Note Added: 0003030                          
+01-01-05 10:01 pzad           Note Added: 0003031                          
+01-01-05 22:48 ianw1234       Note Added: 0003039                          
+01-01-05 23:03 pzad           Note Added: 0003041                          
+01-02-05 19:15 jukkat         Note Added: 0003046                          
+01-02-05 19:20 jukkat         Note Edited: 0003046                         
+01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
+04-18-05 23:16 jdthood        Note Added: 0004516                          
+09-24-05 17:47 razer1         Note Added: 0006373                          
 ======================================================================
 
 
