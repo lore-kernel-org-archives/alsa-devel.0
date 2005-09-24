@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
-Date: Sat, 24 Sep 2005 17:47:56 +0200
-Message-ID: <20136d3d0c9ef6af75529a217df7b3f4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001297]: driver can't initialise card
+Date: Sat, 24 Sep 2005 17:54:51 +0200
+Message-ID: <0e3629d41e8e9866e0fc3146c7754829@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53519165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 17:47:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1156D165
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 17:54:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,97 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
 ======================================================================
-Reported By:                ianw1234
-Assigned To:                
+Reported By:                hus
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   772
+Issue ID:                   1297
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.9-1.681_FC3
+Status:                     feedback
+Distribution:               Fedora Core 4 (mostly)
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             12-31-2004 23:02 CET
-Last Modified:              09-24-2005 17:47 CEST
+Date Submitted:             08-01-2005 14:27 CEST
+Last Modified:              09-24-2005 17:54 CEST
 ======================================================================
-Summary:                    Analog/Digital output not working.
+Summary:                    driver can't initialise card
 Description: 
-I've been unable to get my SB Live! to send analog pcm out through the
-Analog/Digital port. It's connected through this port to my receiver, and
-while AC3 over the digital port works fine, I can't get anything else to
-go over the line. I have a 48kHz wave file I've been testing, and I've
-tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
-and hw0,2 (no effect). 
+My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
+box).
+The snd-emu10k1 module refuses to work for this card; the kernel logs:
 
-I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
-Analog/Digital Output Jack all either unmuted or set to max volume. I've
-tried loading the snd_pcm_oss module with various snd_dsp_map settings
-without success.
+ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
+ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
+subsystem_vendor_id=0x80611102, subsystem_id=0x8061
+ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
+[Unknown], 
+vendor=0x1102, device=0x2, subsystem=0x80611102
+ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
+ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
 
-I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
-the past, so I don't know if this was broken in the upgrade to 1.0.7
-(which I had to do because AC3 passthrough didn't work in the version that
-came with the 2.6.9 kernel) or whether I have some strange
-misconfiguration. Help is appreciated! Thanks!
+removing mixer.
+EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
+
+lspci shows
+02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+07)
+        Subsystem: Creative Labs SBLive! Player 5.1
+        Flags: bus master, medium devsel, latency 64, IRQ 17
+        I/O ports at 30c0 [size=32]
+        Capabilities: [dc] Power Management version 1
+(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
+
+
+The only deviation from the ordinary I can think of is that my system is
+dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
+PCI-to-PCI bridge. That's one thing our systems might have in common, as
+your message shows the card on bus 03. Perhaps this is some strange kind
+of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-18-05 23:16 
+ hus - 09-19-05 21:08 
 ----------------------------------------------------------------------
-Submitter: Any improvement in more recent ALSA releases?
+My card is model "SB0060".
+
+So where does the PCI id come from? Does it just mark a firmware version,
+all "Live!" hardware being the same?
 
 ----------------------------------------------------------------------
- razer1 - 09-24-05 17:47 
+ dstaaf - 09-24-05 17:54 
 ----------------------------------------------------------------------
-I've a similar bug too : geexbox distrib (multimedia usage :
-www.geexbox.org), based on kernel 2.6.12, mplayer 1.0-pre7 & alsa 1.0.9. 
-I try to use this SB Live 5.1 in 6 channels analog mode.
-2 channels mode works, the rear output duplicates the front, but no output
-via LFE/Center Jack Output (used for spdif too).
-In Surround5.1 mode, the card give an uggly noise instead of movie sound
-or music
-All different amixer config give same result
-Note : the card was working fine in this mode with an 2.6.7 on gentoo
+Unfortunately my SB Live Player (same subsystem id) do use an AC97 chip so
+git commit afe0f1f6688f4c4c9235873121548e76dedd8ef8 breaks my sound.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 23:02 ianw1234       New Issue                                    
-12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
-01-01-05 00:33 ianw1234       Note Added: 0003028                          
-01-01-05 02:28 rlrevell       Note Added: 0003030                          
-01-01-05 10:01 pzad           Note Added: 0003031                          
-01-01-05 22:48 ianw1234       Note Added: 0003039                          
-01-01-05 23:03 pzad           Note Added: 0003041                          
-01-02-05 19:15 jukkat         Note Added: 0003046                          
-01-02-05 19:20 jukkat         Note Edited: 0003046                         
-01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
-04-18-05 23:16 jdthood        Note Added: 0004516                          
-09-24-05 17:47 razer1         Note Added: 0006373                          
+08-01-05 14:27 hus            New Issue                                    
+08-01-05 14:27 hus            Distribution              => Fedora Core 4
+(mostly)
+08-01-05 14:27 hus            Kernel Version            => 2.6.12          
+08-01-05 14:28 hus            Issue Monitored: hus                         
+08-01-05 15:24 jcdutton       Status                   new => assigned     
+08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
+08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
+08-13-05 00:39 jcdutton       Note Added: 0005795                          
+08-13-05 00:40 jcdutton       Status                   assigned => feedback
+08-13-05 21:18 hus            Note Added: 0005809                          
+08-13-05 21:38 rlrevell       Note Added: 0005810                          
+08-14-05 00:32 hus            Note Added: 0005813                          
+09-10-05 13:00 jcdutton       Status                   feedback => closed  
+09-10-05 13:00 jcdutton       Note Added: 0006114                          
+09-13-05 00:16 jcdutton       Status                   closed => feedback  
+09-13-05 00:16 jcdutton       Resolution               open => reopened    
+09-13-05 00:16 jcdutton       Note Added: 0006150                          
+09-19-05 20:20 selflein       Note Added: 0006299                          
+09-19-05 21:08 hus            Note Added: 0006300                          
+09-24-05 17:54 dstaaf         Note Added: 0006374                          
 ======================================================================
 
 
