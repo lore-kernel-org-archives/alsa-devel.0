@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001422]: Timidity stops playing longer list of midi files
-Date: Sat, 24 Sep 2005 19:07:40 +0200
-Message-ID: <a0a8bae8eed3fb0318cfdfb7d8ce4f96@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
+Date: Sat, 24 Sep 2005 20:55:21 +0200
+Message-ID: <aae7d74f9cf88b084f2920e3a91c6c95@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7863B165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 19:07:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34FC7167
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 20:55:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1422> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
 ======================================================================
-Reported By:                johnclubvec
-Assigned To:                
+Reported By:                crimsunkg
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1422
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1429
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-8-686
 ======================================================================
-Date Submitted:             09-15-2005 13:54 CEST
-Last Modified:              09-24-2005 19:07 CEST
+Date Submitted:             09-17-2005 00:54 CEST
+Last Modified:              09-24-2005 20:55 CEST
 ======================================================================
-Summary:                    Timidity stops playing longer list of midi files
+Summary:                    hda_codec: Unknown model for ALC880
 Description: 
-I use Timidity 2.13.2 for virmidi. When using alsa 1.0.9, Timidity (gtk
-interface) when playing a longer list of midi files, always stops
-functioning after playing around 10 or so. I could not track down the
-source of this error but it occurs every time. Timidity simply stops.
+Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
 
-When I reverted back the driver and lib and utils to my previous alsa
-1.0.4, this problem completely disappeared.
+Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
+
+Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
+hda_codec does not recognize the model with the ALC880 codec
+(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
+
+''lspci -nvv'' output is at
+http://bugzilla.ubuntu.com/attachment.cgi?id=3848
 ======================================================================
 
 ----------------------------------------------------------------------
- johnclubvec - 09-15-05 22:32 
+ crimsunkg - 09-24-05 20:55 
 ----------------------------------------------------------------------
-Q. from rlrevell: Does the problem go away if you recompile Timidity
-against alsa-lib 1.0.9?
-
-A. Yes, it goes away -- unfortunately. I will now recompile all my
-audio-producing programs against 1.0.9 just to be on the safe side.
-
-----------------------------------------------------------------------
- johnclubvec - 09-24-05 19:07 
-----------------------------------------------------------------------
-After more testing, I can report that the problem is very much helped by
-recompiling against the 1.0.9 lib, but is not completely fixed. There are
-some (valid, uncorrupt) midi files that, using 1.0.9, Timidity will play
-singly, but not in sequence within a playlist. In this case, Timidity
-plays to the end of the first file, then stops. I have again reverted to
-1.0.4, because I never experience this problem using that version.
+This issue is duplicated in bug #1453.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-05 13:54 johnclubvec    New Issue                                    
-09-15-05 20:07 rlrevell       Note Added: 0006220                          
-09-15-05 22:32 johnclubvec    Note Added: 0006224                          
-09-24-05 19:07 johnclubvec    Note Added: 0006376                          
+09-17-05 00:54 crimsunkg      New Issue                                    
+09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
+09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
+09-24-05 20:55 crimsunkg      Note Added: 0006377                          
 ======================================================================
 
 
