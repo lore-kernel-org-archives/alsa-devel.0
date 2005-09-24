@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Sun, 25 Sep 2005 01:07:20 +0200
-Message-ID: <df75b5b14875b807fd9d634c64db3ba5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001434]: Java plugin sound not working in OSS emulation
+Date: Sun, 25 Sep 2005 01:07:05 +0200
+Message-ID: <eeac770ff456e2f7d1d0fe595e000b2c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00DBB169
-	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 01:07:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C960616A
+	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 01:07:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,114 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1434> 
 ======================================================================
-Reported By:                Quietti
-Assigned To:                tiwai
+Reported By:                xolsonalsa
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   306
-Category:                   PPC - powermac
+Issue ID:                   1434
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             self-compiled 2.6.6 vanilla.
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-25-2004 20:35 CEST
+Date Submitted:             09-18-2005 22:40 CEST
 Last Modified:              09-25-2005 01:07 CEST
 ======================================================================
-Summary:                    compiles, but no sound comes out
+Summary:                    Java plugin sound not working in OSS emulation
 Description: 
-This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
-
-The kernel compiles fine, the snd_powermac module loads without any error,
-but no sound comes up.
-
-Running alsamixer gives me a mixer screen where none of the sliders can be
-moved.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001441 snd-powermac: Burgundy: controls for he...
+Tried 2 different soundblaster 16 cards, and ISA and a pnp isa vibra 16. 
+PCM sounds won't play if the Java Sound Audio Engine (software mixer that
+opens /dev/dsp) is in use. Tried it with the JavaSoundDemo and also pogo
+games. The symptom is it seems to play one sound and then io through
+/dev/dsp becomes blocked. The only workaround is to start the web browser
+using aoss so that it opens the native alsa pcm device instead of
+/dev/dsp.
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 09-22-05 10:23 
+ xolsonalsa - 09-23-05 14:46 
 ----------------------------------------------------------------------
-While I *do* get some sound out, the Burgundy driver still has broken
-support for some of the chipset's features.
+Additional info that I found out.  If you start the browser using aoss, the
+java sound demo works if your asound.conf uses the dmix plugin.  However,
+if your asound.conf does not use dmix and you leave out the restrictive
+"format S16_LE" statement then the java sound demo locks up even if you
+start the browser with aoss.  I am thinking that java is probably
+selecting one of the other formats and the driver can't handle it, such as
+MU_LAW or U8.
+---------------- asound.conf -----------
+pcm.shw {
+type hw
+card 0
+}
+ctl.smixer {
+type hw
+card 0
+}
+pcm.dsp0 {      
+	type plug      
+	slave {
+	pcm "hw:0,0"
+	format S16_LE
+	}
+}
 
-As for other chipsets within the snd-powermac realm, indeed, others can
-file their own separate bug reports.
-
 ----------------------------------------------------------------------
- rlrevell - 09-25-05 01:07 
+ xolsonalsa - 09-25-05 01:07 
 ----------------------------------------------------------------------
-Closing, as the original problem (no sound and no mixer) is fixed.  The
-burgundy driver still has some problems, see #1441.
+I also noticed the following dmesg errors in the system logs after
+experiencing the problem:
+-------------------
+ALSA pcm_native.c:1455: playback drain error (DMA or IRQ trouble?)
+ALSA ../alsa-kernel/core/pcm_lib.c:2126: playback write error (DMA or IRQ
+trouble?)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-25-04 20:35 Quietti        New Issue                                    
-05-25-04 20:35 Quietti        File Added: asound.state                     
-05-25-04 20:35 Quietti        Distribution              => Debian          
-05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
-vanilla.
-05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
-05-28-04 21:18 tiwai          Note Added: 0001274                          
-05-28-04 21:37 Quietti        Note Added: 0001275                          
-07-25-04 20:16 Quietti        Note Added: 0001473                          
-09-08-04 06:32 Quietti        Note Added: 0001726                          
-10-20-04 00:38 Quietti        Note Added: 0002209                          
-01-06-05 18:14 Quietti        Note Added: 0003093                          
-01-06-05 18:27 rlrevell       Note Added: 0003094                          
-01-06-05 19:43 Quietti        Note Added: 0003095                          
-01-07-05 00:00 Quietti        Note Added: 0003096                          
-01-07-05 00:19 Quietti        Note Added: 0003097                          
-01-07-05 00:30 Quietti        Note Added: 0003098                          
-01-14-05 00:53 Quietti        Note Added: 0003206                          
-02-04-05 09:22 Quietti        Note Added: 0003496                          
-02-04-05 13:04 tiwai          Note Added: 0003499                          
-04-02-05 13:33 Quietti        Note Added: 0004297                          
-08-06-05 20:24 Quietti        Note Added: 0005682                          
-08-06-05 20:31 rlrevell       Note Added: 0005683                          
-08-06-05 20:32 rlrevell       Note Added: 0005684                          
-08-06-05 20:53 rlrevell       Note Added: 0005685                          
-08-06-05 21:17 rlrevell       Note Added: 0005686                          
-08-06-05 23:54 rlrevell       Note Added: 0005687                          
-08-06-05 23:55 rlrevell       Note Deleted: 0005683                        
-08-06-05 23:55 rlrevell       Note Deleted: 0005684                        
-08-07-05 10:03 pochini        Note Added: 0005689                          
-08-07-05 10:31 Quietti        Note Added: 0005690                          
-08-07-05 10:46 rlrevell       Note Added: 0005691                          
-08-07-05 11:36 Quietti        Note Added: 0005692                          
-08-07-05 11:44 Quietti        Note Added: 0005693                          
-08-07-05 20:27 rlrevell       Note Added: 0005697                          
-08-08-05 14:53 Quietti        Note Added: 0005708                          
-08-08-05 19:42 rlrevell       Note Added: 0005711                          
-08-11-05 13:09 Johannes Berg  Note Added: 0005755                          
-08-11-05 13:09 Johannes Berg  Issue Monitored: Johannes Berg                    
-08-31-05 11:44 Quietti        Note Added: 0005986                          
-09-17-05 20:13 Quietti        Note Added: 0006259                          
-09-17-05 20:21 rlrevell       Note Added: 0006260                          
-09-20-05 12:23 Quietti        Note Added: 0006313                          
-09-21-05 03:59 rlrevell       Note Added: 0006320                          
-09-21-05 04:00 rlrevell       Note Added: 0006321                          
-09-21-05 10:52 Quietti        Note Added: 0006322                          
-09-21-05 13:02 Quietti        Note Added: 0006323                          
-09-21-05 19:34 rlrevell       Note Added: 0006324                          
-09-22-05 10:23 Quietti        Note Added: 0006335                          
-09-25-05 01:03 rlrevell       Relationship added       related to 0001441  
-09-25-05 01:07 rlrevell       Status                   assigned => resolved
-09-25-05 01:07 rlrevell       Resolution               open => fixed       
-09-25-05 01:07 rlrevell       Note Added: 0006381                          
+09-18-05 22:40 xolsonalsa     New Issue                                    
+09-23-05 14:46 xolsonalsa     Note Added: 0006367                          
+09-25-05 01:07 xolsonalsa     Note Added: 0006380                          
 ======================================================================
 
 
