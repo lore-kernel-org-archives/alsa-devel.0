@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
-Date: Sat, 24 Sep 2005 15:46:34 +0200
-Message-ID: <3ee87cfdad159bf08027d13fc362f2ac@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001445]: jackplug and oss
+Date: Sat, 24 Sep 2005 16:58:35 +0200
+Message-ID: <e11b909d0a050c476067e4d1c194656b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E759165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 15:46:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26D30D8
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 16:58:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,41 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1451> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1445> 
 ======================================================================
-Reported By:                anli
+Reported By:                FishB8
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1451
-Category:                   PCI - ice1724
+Project:                    ALSA - plugins
+Issue ID:                   1445
+Category:                   PCM - jack
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             09-24-2005 15:46 CEST
-Last Modified:              09-24-2005 15:46 CEST
+Date Submitted:             09-23-2005 17:23 CEST
+Last Modified:              09-24-2005 16:58 CEST
 ======================================================================
-Summary:                    SPDF and Line out simultaneously
+Summary:                    jackplug and oss
 Description: 
-I tried to get the answer from user and dev lists to this question: how to
-configure the driver to make SPDF and Line-out work simultaneously. I was
-not lucky to get an answer. I have concluded, it's impossible. So -
-reporting the bug.
+I've tried setting up an asound.conf with a config for pcm.dsp0 so that I
+can use aoss. No big deal. But then I thought it would be cool to set the
+slave to pcm.jack. That way I could use aoss to route oss to jack using
+alsa instead of some of the hacks out there that only work half the time.
 
-It is almost impossible to do any serious mastering/editing work without
-such opportunity.
+No dice. It doesn't work. (Or at least I couldn't get it to work) Am I not
+understanding how to do this correctly, or is this just not possible the
+way things currently work?
 ======================================================================
+
+----------------------------------------------------------------------
+ b0ef - 09-24-05 16:58 
+----------------------------------------------------------------------
+You might try explaining a little more what "does not work" mean. What
+happens?. What apps are you testing with?. What does your config file look
+like?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 15:46 anli           New Issue                                    
+09-23-05 17:23 FishB8         New Issue                                    
+09-24-05 16:58 b0ef           Note Added: 0006371                          
 ======================================================================
 
 
