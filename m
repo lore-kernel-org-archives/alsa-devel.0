@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001453]: 2.6.14-rc2 "Unknown model for ALC880"
-Date: Sat, 24 Sep 2005 17:22:21 +0200
-Message-ID: <e32e5425682b15b8e5eb25fa823028e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001452]: No Microphone input
+Date: Sat, 24 Sep 2005 17:30:13 +0200
+Message-ID: <48fd30ae3e4b96469238b7cfad14d63a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48C8B165
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 17:22:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA32F165
+	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2005 17:30:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1452> 
 ======================================================================
 Reported By:                honschu
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1453
+Issue ID:                   1452
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
 Distribution:               Debian sarge
-Kernel Version:             2.6.14-rc2
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             09-24-2005 17:22 CEST
-Last Modified:              09-24-2005 17:22 CEST
+Date Submitted:             09-24-2005 17:12 CEST
+Last Modified:              09-24-2005 17:30 CEST
 ======================================================================
-Summary:                    2.6.14-rc2 "Unknown model for ALC880"
+Summary:                    No Microphone input
 Description: 
-I have a Aopen i915Gm-HFS Motherboard with intel-hda chipset.
-Sound output (input not) works in kernel 2.6.12.
+Sound output works, but microphone input doesn't. I do not know why.
 
-For Kernel 2.6.14-rc2 I get error on boottime (see below)
+For Kernel 2.6.13 or 2.6.14-rc2 (Alsa: 1.0.10rc1) sound output doesn't
+work.
 
-If you want me to do tests, feel free to ask.
-
-[...]
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-[...]
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-
+I have a Aopen i915Gm-HFS Motherboard.
 ======================================================================
+
+----------------------------------------------------------------------
+ honschu - 09-24-05 17:30 
+----------------------------------------------------------------------
+it was due to a mixersetting, I rechecked it - and voila it works
+sorry for bothering ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 17:22 honschu        New Issue                                    
-09-24-05 17:22 honschu        Distribution              => Debian sarge    
-09-24-05 17:22 honschu        Kernel Version            => 2.6.14-rc2      
+09-24-05 17:12 honschu        New Issue                                    
+09-24-05 17:12 honschu        Distribution              => Debian sarge    
+09-24-05 17:12 honschu        Kernel Version            => 2.6.12          
+09-24-05 17:30 honschu        Note Added: 0006372                          
 ======================================================================
 
 
