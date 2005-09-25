@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001454]: requantizing to narrower types *MUST* dither
-Date: Sun, 25 Sep 2005 01:09:15 +0200
-Message-ID: <8b3a2797b29f58ab77ae154237496035@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001323]: MIC jack not supported
+Date: Sun, 25 Sep 2005 04:00:54 +0200
+Message-ID: <83414490963cdf9df8541e0e4eaa75c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7126E11D
-	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 01:09:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62084170
+	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 04:00:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1454> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1323> 
 ======================================================================
-Reported By:                ma
-Assigned To:                
+Reported By:                submax82
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1454
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1323
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               debian 3.1 sarge
+Kernel Version:             linux 2.6.12.4
 ======================================================================
-Date Submitted:             09-25-2005 00:18 CEST
-Last Modified:              09-25-2005 01:09 CEST
+Date Submitted:             08-08-2005 22:10 CEST
+Last Modified:              09-25-2005 04:00 CEST
 ======================================================================
-Summary:                    requantizing to narrower types *MUST* dither
+Summary:                    MIC jack not supported
 Description: 
-alsa-lib 1.0.9/1.0.10rc1 do not currently dither the signal when
-requantizing 16-bit hardware input to narrower types, say, 8-bit. It is a
-well-known fact in digital signal processing that any requantization
-requires dithering to avoid the nasty and hefty twitching noises
-particularly with data which is barely above the minimum level of the new,
-narrower type. dithering decorellates the quantization noise so it sounds
-less obtrusive and linearizes the quantization process.
-Books: the art of digital audio (John Watkinson); principles of digital
-audio (Ken C. Pohlmann)
-
+The problem is simple but important! The alsamixer do not show the volume
+of the MIC therefore this do not work!
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-25-05 01:09 
+ qqtortqq - 09-15-05 06:44 
 ----------------------------------------------------------------------
-It sounds like you know a lot about DSP.  Why don't you send a patch?
+1) Check that the ALSA drivers are compiled as modules
+
+Check
+
+2) Check the ALSA driver version
+
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1.
+Compiled on Sep 14 2005 for kernel 2.6.12.2.
+
+3) Check the ALSA library version
+
+#define SND_LIB_VERSION_STR     "1.0.10rc1"
+
+4) Check the sound drivers for your card are active
+
+They are.
+
+----------------------------------------------------------------------
+ qqtortqq - 09-25-05 04:00 
+----------------------------------------------------------------------
+Anything I can provide to help you get this working with sb live 24 bit?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-05 00:18 ma             New Issue                                    
-09-25-05 01:09 rlrevell       Note Added: 0006382                          
+08-08-05 22:10 submax82       New Issue                                    
+08-08-05 22:10 submax82       Distribution              => debian 3.1 sarge
+08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
+08-08-05 22:59 submax82       Issue Monitored: submax82                    
+08-08-05 23:00 submax82       Note Added: 0005714                          
+08-10-05 05:21 rlrevell       Note Added: 0005746                          
+08-12-05 23:09 jcdutton       Note Added: 0005790                          
+08-12-05 23:09 jcdutton       Status                   assigned => feedback
+08-13-05 14:28 submax82       Note Added: 0005804                          
+08-13-05 14:33 submax82       Issue End Monitor: submax82                    
+08-17-05 17:02 submax82       Note Added: 0005839                          
+09-10-05 10:39 jcdutton       Note Added: 0006109                          
+09-15-05 06:44 qqtortqq       Note Added: 0006194                          
+09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
+09-25-05 04:00 qqtortqq       Note Added: 0006383                          
 ======================================================================
 
 
