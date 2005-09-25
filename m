@@ -1,15 +1,14 @@
-From: "Kepa Boydston" <boydkepa@comrise.com>
-Subject: Re: Meydications Really Wo rks Great
-Date: Sun, 25 Sep 2005 00:22:09 -0500
-Message-ID: <000501c5c191$13691680$d071a8c0@annalist>
-Reply-To: "Kepa Boydston" <boydkepa@comrise.com>
+From: Patrizio Bassi <patrizio.bassi@gmail.com>
+Subject: Re: [BUG] alsa volume and settings not restored after suspend
+Date: Sun, 25 Sep 2005 10:18:05 +0200
+Message-ID: <43365D3D.6050608@gmail.com>
+References: <4335909D.2070904@gmail.com> <1127593697.18892.1.camel@mindpipe>
+Reply-To: patrizio.bassi@gmail.com
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0002_01C5C167.2A930E80"
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from comrise.com (213-216-231-201-Korvensuora-TR1.suomi.net [213.216.231.201])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 72DA5175
-	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 07:22:09 +0200 (MEST)
+In-Reply-To: <1127593697.18892.1.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,65 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dianne Romanelli <alsa-devel@alsa-project.org>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: "Kernel," <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Lee Revell ha scritto:
 
-------=_NextPart_000_0002_01C5C167.2A930E80
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+>On Sat, 2005-09-24 at 19:45 +0200, Patrizio Bassi wrote:
+>  
+>
+>>-----BEGIN PGP SIGNED MESSAGE-----
+>>Hash: SHA1
+>>
+>>As topic.
+>>
+>>Suspend works perfectly, but after resume, no sound from audio card.
+>>    
+>>
+>
+>I'm not surprised, suspend/resume is not implemented for that device.
+>
+>It looks like it would not be too hard, see es1938.c for an example.
+>
+>Lee
+>
+>
+>  
+>
+ok, suspend/resume functions are very very simple.
 
-VCUMLPAC=
-VX
-AIleermeIa
-LAtrvoblAn
-ILriipieGa
-UIadteebR=
-x
-MSmiaracianre=
-xA 
-$3$1  $3 =
-75.21    .33 =
-http://www.lastaireith.com she wanted to be. proposal: seeing that Mr Woland =
-had no desire whatsoever to live in a hotel,
+the problem is i have really 0 experience in alsa devel, for example i 
+don't know
+the 0xa0 limit (in es1938...).
 
-------=_NextPart_000_0002_01C5C167.2A930E80
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+so...i'm asking for alsa devel to implement that, i'll be happy to help 
+you in testing and debugging.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DCourier>
-<DIV style=3D"FLOAT: left;">V<BR>C<BR>U<BR>M<BR>L<BR>P<BR>A<BR>C<BR>=
-V<BR>X</DIV>
-<DIV style=3D"FLOAT: left;">A<BR>I<BR>l<BR>e<BR>e<BR>r<BR>m<BR>e<BR>I<BR=
->a</DIV>
-<DIV style=3D"FLOAT: left;">L<BR>A<BR>t<BR>r<BR>v<BR>o<BR>b<BR>l<BR>A<B=
-R>n</DIV>
-<DIV style=3D"FLOAT: left;">I<BR>L<BR>r<BR>i<BR>i<BR>p<BR>i<BR>e<BR>G<BR=
->a</DIV>
-<DIV style=3D"FLOAT: left;">U<BR>I<BR>a<BR>d<BR>t<BR>e<BR>e<BR>b<BR>R<BR>=
-x</DIV>
-<DIV style=3D"FLOAT: left;">M<BR>S<BR>m<BR>ia<BR>ra<BR>cia<BR>n<BR>re=
-x<BR>A<BR> </DIV>
-<DIV style=3D"FLOAT: left;">$3<BR>$1<BR> <BR><BR><BR><BR> <BR><BR>$3<BR> =
-</DIV>
-<DIV style=3D"FLOAT: left;">.75<BR>.21<BR> <BR> <BR> <BR><BR> <BR><BR>.33<BR> =
-</DIV>
-<DIV style=3D"CLEAR: both">&nbsp;</DIV>
-<DIV><A href=3D"http://www.lastaireith.com">http://www.lastaireith.com<=
-/A></DIV></FONT></DIV></BODY></HTML>
+Thanks
 
-------=_NextPart_000_0002_01C5C167.2A930E80--
+Patrizio
 
 
 
