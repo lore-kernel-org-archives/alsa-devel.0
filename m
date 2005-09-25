@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001457]: Lagged sound
-Date: Sun, 25 Sep 2005 13:00:21 +0200
-Message-ID: <88f1cbd83f160cff2046f5e989b6aeeb@bugtrack.alsa-project.org>
+From: Manuel Lauss <mano@roarinelk.homelinux.net>
+Subject: EMU10K1 ac3 passthrough broken since 2.6.14-rc1
+Date: Sun, 25 Sep 2005 13:08:13 +0200
+Message-ID: <4336851D.7000809@roarinelk.homelinux.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABDB318C
-	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 13:00:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1457> 
-======================================================================
-Reported By:                mouse
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1457
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               ALT Linux
-Kernel Version:             from 2.6.10 to 2.6.12
-======================================================================
-Date Submitted:             09-25-2005 12:56 CEST
-Last Modified:              09-25-2005 13:00 CEST
-======================================================================
-Summary:                    Lagged sound
-Description: 
-Played music a bit lagged and in dmesg I see:
-vortex: IRQ fifo error
-======================================================================
+beginning with linux 2.6.14-rc1, mplayer's and xine's ac3 passthrough
+with EMU10K1 stopped working. Mplayer says:
 
-----------------------------------------------------------------------
- mouse - 09-25-05 13:00 
-----------------------------------------------------------------------
-lspci -vvn:
+mplayer -ac hwac3 lost.201.hrhd.avi
+...
+alsa-init: 1 soundcard found, using: iec958:{CARD 0 AES0 0x02 AES1 0x82 AES2 0x00 AES3 0x02}
+ALSA lib setup.c:549:(add_elem) Cannot obtain info for CTL elem(MIXER,'IEC958 Playback Default',0,0,0): No such file or directory
+alsa-init: playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+..
 
-0000:00:0e.0 Class 0401: 12eb:0002 (rev fe)
-        Subsystem: 1092:3003
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (1000ns min, 3000ns max), cache line size 08
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at df000000 (32-bit, non-prefetchable)
-        Region 1: I/O ports at b800 [size=8]
-        Region 2: I/O ports at bc00 [size=8]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-25-05 12:56 mouse          New Issue                                    
-09-25-05 12:56 mouse          Distribution              => ALT Linux       
-09-25-05 12:56 mouse          Kernel Version            => from 2.6.10 to 2.6.12
-09-25-05 13:00 mouse          Note Added: 0006386                          
-======================================================================
+Card is a SB Live! CT4620,
+alsa-lib 1.0.9
 
 
+Any ideas?
+
+Thanks,
+
+-- 
+  Manuel Lauss
 
 
 -------------------------------------------------------
