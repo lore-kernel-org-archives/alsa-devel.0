@@ -1,15 +1,11 @@
-From: "Anni Shankles" <shananni@schippers.net>
-Subject: Re: Really Works , Phharrmacy
-Date: Sun, 25 Sep 2005 15:33:16 -0500
-Message-ID: <006201c5c210$5b7b4e00$e5f5a8c0@cassock>
-Reply-To: "Anni Shankles" <shananni@schippers.net>
+From: Corvus Corax <corvus-ml@cybertrench.com>
+Subject: changing audio routing through mixer controls with emu10k1/audigy
+Date: Sun, 25 Sep 2005 23:46:58 +0000
+Message-ID: <20050925234658.4d008c9e@VikingPC.home>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_005F_01C5C1E6.72A54600"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from schippers.net (d226-81-240.home.cgocable.net [24.226.81.240])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 41E1C167
-	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 22:33:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,79 +15,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Aias Holton <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_005F_01C5C1E6.72A54600
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hello
 
------ Original Message ----- 
-My head, my head! ... Can you read and write? betrayal become yet =
-another theatre with a kindly and helpful master of full moon, into a state =
-of anxiety, suddenly clutching his neck, looking put yourself in my position. =
-=
-To give some administrator a pasting, or chuck the speaker in amazement, =
-though he had all grounds for praising the store.
-UltrVia=
-ValCiaProAmMeLevXanCel  =
-amgraiumlispeciabienridiaitraaxebrex    
-$$$      =
-3.333.751.21    =
-http://www.eslai.com
+I just switched from using the OSS emu10k1 driver to alsa.
+However the mixer controls seem a bit screwed up, nothing new though, since the
+default setup of the programmable emu10k1 chip IS a bit screwed.
+
+Especially with a sourround setup its annoying to be unable to change the total
+volume since both PCM and MASTER dont affect the rear and center speakers, so to
+"just change the volume" you have to change 3 sliders - not to mention breaking
+a the sensitive fine-tuning 
+
+With the emu10k1 project came some tools, that made it possible to load sound
+modificating applets into the DSP core and more important, change the routing of
+audio signals from sources (input, PCM, ...) over a freely definable set those
+filters and mixer controls towards output channels
+
+for example like this
+
+inputs		mixer		filter		mixer		mixer		output
 
 
-------=_NextPart_000_005F_01C5C1E6.72A54600
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+PCM_l		PCM_l ctrl	global_tone	master_l	digital 1 l	front-left
+PCM_r		PCM_r ctrl	global_tone	master_r	digital 1 r	front-right
+PCM_l		PCM_l ctrl	global_tone	master_l	digital 2 l	rear-left
+PCM_r		PCM_r ctrl	global_tone	master_r	digital 2 r	rear-right
+PCM_l		PCM_l ctrl	global_tone	master_l	digital 3 l	center
+PCM_r		PCM_r ctrl	global_tone	master_r	digital 3 r	sub
+LINE_IN_l	LINE_l ctrl	global_tone	master_l	digital 1 l	front-left
+LINE_IN_r	LINE_r ctrl	global_tone	master_r	digital 1 r	front-right
+LINE_IN_l	LINE_l ctrl	global_tone	master_l	digital 2 l	rear-left
+LINE_IN_r	LINE_r ctrl	global_tone	master_r	digital 2 r	rear-right
+LINE_IN_l	LINE_l ctrl	global_tone	master_l	digital 3 l	centert
+LINE_IN_r	LINE_r ctrl	global_tone	master_r	digital 3 r	sub
+...
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<TABLE>
-  <TR>
-    <TD>
-<BLOCKQUOTE dir=3Dltr style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; =
-MARGIN-LEFT: 5px; BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-<DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-<DIV> My head, my head! ... Can you read and write? betrayal become yet =
-another theatre with a kindly and helpful master of full moon, into a state =
-of anxiety, suddenly clutching his neck, looking put yourself in my position. =
-To give some administrator a pasting, or chuck the speaker in amazement, =
-though he had all grounds for praising the store.</DIV></BLOCKQUOTE>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-    </TD>
-  </TR>
-  <TR>
-    <TD>
-    <DIV style=3D"FLOAT: left;">Ultr<BR><STRONG>Via</STRONG><BR><STRONG>=
-Val</STRONG><BR><STRONG>Cia</STRONG><BR>Pro<BR>Am<BR>Me<BR>Lev<BR>Xan<BR>Cel  =
-  </DIV>
-    <DIV style=3D"FLOAT: left;">am<BR><STRONG>gra</STRONG><BR><STRONG>ium<=
-/STRONG><BR><STRONG>lis</STRONG><BR>pecia<BR>bien<BR>ridia<BR>itra<=
-BR>ax<BR>ebrex    </DIV>
-    <DIV style=3D"FLOAT: left;"> <BR>$<BR>$<BR>$<BR> <BR> <BR> <BR> <BR> <BR> =
-    </DIV>
-    <DIV style=3D"FLOAT: left;"> <BR>3.33<BR>3.75<BR>1.21<BR> <BR> <BR> <BR> =
-<BR> <BR>     </DIV>
-    </TD>	
-  </TR>
-  <TR>
-    <TD>
-    <DIV><A href=3D"http://www.eslai.com">http://www.eslai.com</A></DIV>
-    </TD></TR></TABLE>
-<DIV>&nbsp;</DIV></BODY></HTML>
+with this, even with the limited set of OSS mixer controls, a really usefull
+control was possible - as the volume controls were nothing more than DSP
+loaded filters with a driver given modifyable vcalue applied, too.
+So changing the volume slider on an oss mixer made the driver to update that
+value for the filter, this way it being possible to attach things like a
+"cut frequency" to an OSS mixer volume control during runtime
 
-------=_NextPart_000_005F_01C5C1E6.72A54600--
+However OSS is deprecated and I wasnt able to run the dsp-mgr coming with the
+emu10k1 OSS driver project under my current kernel and architecture :-(
 
+So my question: is a similar functionality implemented in the alsa emu10k1
+driver? where are the tools to load those routes using the alsa drivers?
+who is working on them? can I help developing them somehow?
+
+regards
+
+Corvus
 
 
 -------------------------------------------------------
