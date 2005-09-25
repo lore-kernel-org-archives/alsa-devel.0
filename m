@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001261]: poor recording with emu10k1
-Date: Mon, 26 Sep 2005 21:19:27 +0200
-Message-ID: <aff483eb2b8d2b8e65484cc0d4ff4f8b@bugtrack.alsa-project.org>
+From: "Kermit" <samufbv@noordhoff.com>
+Subject: Thimb VULGAR
+Date: Sun, 25 Sep 2005 16:33:27 -0500
+Message-ID: <3530990309.192906667257@noordhoff.com>
+Reply-To: "Kermit Bender" <samufbv@noordhoff.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42ED816F
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 21:19:27 +0200 (MEST)
+Received: from c-24-129-65-41.hsd1.fl.comcast.net (c-24-129-65-41.hsd1.fl.comcast.net [24.129.65.41])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9272118B
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 21:33:57 +0200 (MEST)
+Received: from mx1.biz.mail.yahoo.com (mx1.biz.mail.yahoo.com [67.28.113.13])
+	by c-24-129-65-41.hsd1.fl.comcast.net (8.12.11/8.12.11) with ESMTP id qbBtLykwazEg5r
+	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 16:33:27 -0500
+Received: from linx (219.142.74.77)
+	by mx1.biz.mail.yahoo.com (qmail-ldap-1.03) with SMTP
+	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 16:33:27 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +29,8 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1261> 
-======================================================================
-Reported By:                mal
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1261
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             all 2.6 versions
-======================================================================
-Date Submitted:             07-16-2005 09:28 CEST
-Last Modified:              09-26-2005 21:19 CEST
-======================================================================
-Summary:                    poor recording with emu10k1
-Description: 
-Sound recording does not work right with emu10k1 on linux 2.6
-
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144940
-
-This problem has ben an issue for a while. People can not use sound on
-linux because of it.
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 09-26-05 21:13 
-----------------------------------------------------------------------
-You have Mic, Mix, Capture, and AC97 all muted.  You need to unmute them
-with alsamixer (press F4 to see the capture controls)
-
-----------------------------------------------------------------------
- rlrevell - 09-26-05 21:19 
-----------------------------------------------------------------------
-Actually the bug referred to in the Fedora bugzilla has been fixed since
-8/27/05.    You need a newer ALSA.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-05 09:28 mal            New Issue                                    
-07-16-05 09:28 mal            Kernel Version            => all 2.6 versions
-07-16-05 09:31 mal            Note Added: 0005485                          
-07-16-05 09:49 rlrevell       Note Added: 0005486                          
-07-16-05 10:32 mal            Note Added: 0005487                          
-07-16-05 10:34 mal            Note Added: 0005488                          
-07-16-05 10:38 mal            Note Added: 0005489                          
-07-16-05 10:41 mal            File Added: tsts.wav                         
-07-16-05 10:51 mal            File Added: t44100.wav                       
-07-16-05 10:52 mal            Note Added: 0005490                          
-07-16-05 10:53 mal            File Added: t44100_stereo.wav                    
-07-16-05 11:00 mal            Note Added: 0005491                          
-07-16-05 11:07 mal            File Added: t_cd.wav                         
-07-16-05 11:08 mal            Note Added: 0005492                          
-07-16-05 11:09 mal            Note Edited: 0005492                         
-07-16-05 12:12 rlrevell       Note Added: 0005493                          
-07-16-05 12:32 mal            File Added: cc.wav                           
-07-16-05 12:33 mal            Note Added: 0005494                          
-09-26-05 20:14 vladak         Note Added: 0006397                          
-09-26-05 21:13 rlrevell       Note Added: 0006398                          
-09-26-05 21:19 rlrevell       Note Added: 0006399                          
-======================================================================
+Solely intriguing  target nymphets fair
+http://www.ztate.info/
 
 
 
