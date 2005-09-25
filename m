@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001323]: MIC jack not supported
-Date: Sun, 25 Sep 2005 04:00:54 +0200
-Message-ID: <83414490963cdf9df8541e0e4eaa75c1@bugtrack.alsa-project.org>
+From: "Kepa Boydston" <boydkepa@comrise.com>
+Subject: Re: Meydications Really Wo rks Great
+Date: Sun, 25 Sep 2005 00:22:09 -0500
+Message-ID: <000501c5c191$13691680$d071a8c0@annalist>
+Reply-To: "Kepa Boydston" <boydkepa@comrise.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0002_01C5C167.2A930E80"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62084170
-	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 04:00:54 +0200 (MEST)
+Received: from comrise.com (213-216-231-201-Korvensuora-TR1.suomi.net [213.216.231.201])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 72DA5175
+	for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2005 07:22:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +19,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dianne Romanelli <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1323> 
-======================================================================
-Reported By:                submax82
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1323
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     feedback
-Distribution:               debian 3.1 sarge
-Kernel Version:             linux 2.6.12.4
-======================================================================
-Date Submitted:             08-08-2005 22:10 CEST
-Last Modified:              09-25-2005 04:00 CEST
-======================================================================
-Summary:                    MIC jack not supported
-Description: 
-The problem is simple but important! The alsamixer do not show the volume
-of the MIC therefore this do not work!
-======================================================================
+------=_NextPart_000_0002_01C5C167.2A930E80
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- qqtortqq - 09-15-05 06:44 
-----------------------------------------------------------------------
-1) Check that the ALSA drivers are compiled as modules
+VCUMLPAC=
+VX
+AIleermeIa
+LAtrvoblAn
+ILriipieGa
+UIadteebR=
+x
+MSmiaracianre=
+xA 
+$3$1  $3 =
+75.21    .33 =
+http://www.lastaireith.com she wanted to be. proposal: seeing that Mr Woland =
+had no desire whatsoever to live in a hotel,
 
-Check
+------=_NextPart_000_0002_01C5C167.2A930E80
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-2) Check the ALSA driver version
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DCourier>
+<DIV style=3D"FLOAT: left;">V<BR>C<BR>U<BR>M<BR>L<BR>P<BR>A<BR>C<BR>=
+V<BR>X</DIV>
+<DIV style=3D"FLOAT: left;">A<BR>I<BR>l<BR>e<BR>e<BR>r<BR>m<BR>e<BR>I<BR=
+>a</DIV>
+<DIV style=3D"FLOAT: left;">L<BR>A<BR>t<BR>r<BR>v<BR>o<BR>b<BR>l<BR>A<B=
+R>n</DIV>
+<DIV style=3D"FLOAT: left;">I<BR>L<BR>r<BR>i<BR>i<BR>p<BR>i<BR>e<BR>G<BR=
+>a</DIV>
+<DIV style=3D"FLOAT: left;">U<BR>I<BR>a<BR>d<BR>t<BR>e<BR>e<BR>b<BR>R<BR>=
+x</DIV>
+<DIV style=3D"FLOAT: left;">M<BR>S<BR>m<BR>ia<BR>ra<BR>cia<BR>n<BR>re=
+x<BR>A<BR> </DIV>
+<DIV style=3D"FLOAT: left;">$3<BR>$1<BR> <BR><BR><BR><BR> <BR><BR>$3<BR> =
+</DIV>
+<DIV style=3D"FLOAT: left;">.75<BR>.21<BR> <BR> <BR> <BR><BR> <BR><BR>.33<BR> =
+</DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV><A href=3D"http://www.lastaireith.com">http://www.lastaireith.com<=
+/A></DIV></FONT></DIV></BODY></HTML>
 
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1.
-Compiled on Sep 14 2005 for kernel 2.6.12.2.
-
-3) Check the ALSA library version
-
-#define SND_LIB_VERSION_STR     "1.0.10rc1"
-
-4) Check the sound drivers for your card are active
-
-They are.
-
-----------------------------------------------------------------------
- qqtortqq - 09-25-05 04:00 
-----------------------------------------------------------------------
-Anything I can provide to help you get this working with sb live 24 bit?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-08-05 22:10 submax82       New Issue                                    
-08-08-05 22:10 submax82       Distribution              => debian 3.1 sarge
-08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
-08-08-05 22:59 submax82       Issue Monitored: submax82                    
-08-08-05 23:00 submax82       Note Added: 0005714                          
-08-10-05 05:21 rlrevell       Note Added: 0005746                          
-08-12-05 23:09 jcdutton       Note Added: 0005790                          
-08-12-05 23:09 jcdutton       Status                   assigned => feedback
-08-13-05 14:28 submax82       Note Added: 0005804                          
-08-13-05 14:33 submax82       Issue End Monitor: submax82                    
-08-17-05 17:02 submax82       Note Added: 0005839                          
-09-10-05 10:39 jcdutton       Note Added: 0006109                          
-09-15-05 06:44 qqtortqq       Note Added: 0006194                          
-09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
-09-25-05 04:00 qqtortqq       Note Added: 0006383                          
-======================================================================
-
+------=_NextPart_000_0002_01C5C167.2A930E80--
 
 
 
