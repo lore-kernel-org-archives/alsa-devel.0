@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001459]: Wrong link to JACK website.
-Date: Mon, 26 Sep 2005 13:30:48 +0200
-Message-ID: <6bb92410189921f8687df2d8096e5776@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001447]: SPDIF IN>OUT Loop missing
+Date: Mon, 26 Sep 2005 15:38:16 +0200
+Message-ID: <d10ff78b621a59acb2332fa858e5d913@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E0FB139
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 13:30:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A04FD17E
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 15:38:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,41 +22,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1459> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447> 
 ======================================================================
-Reported By:                knefas
+Reported By:                Mimosius
 Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1459
-Category:                   bad link
+Project:                    ALSA - driver
+Issue ID:                   1447
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-26-2005 13:30 CEST
-Last Modified:              09-26-2005 13:30 CEST
+Date Submitted:             09-23-2005 20:47 CEST
+Last Modified:              09-26-2005 15:38 CEST
 ======================================================================
-Summary:                    Wrong link to JACK website.
+Summary:                    SPDIF IN>OUT Loop missing
 Description: 
-Hi, here just a little typo: on
-http://www.alsa-project.org/alsa-doc/doc-php/template.php there's a wrong
-link.
-(http://jackit.sourcforge.net/)
+Hi,
 
-please change it to http://jackit.sourceforge.net/
+I'm using a Hoontech Digital-XG and I was missing the capability to loop
+the digital signal from SPDIF-in to SPDIF- out, so I modified the
+ymfpci_main.c, adding an extra mixer switch (patch against latest CVS
+version included). Would anyone of the developers verify this patch and
+add this feature to the ymfpci module?
 
-Cheers,
-Pietro
+Regards,
+Glen Masgai
 ======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 09-26-05 11:10 
+----------------------------------------------------------------------
+Please use a[0] instead of *a when accessing an array.
+There is a double semicolon.
+You don't really need separate variables for ref, shift, and mask; similar
+code in other functions was just copied from generic code that read these
+values from the mixer element.
+
+Please provide a patch description and Signed-off-by line.
+
+----------------------------------------------------------------------
+ Mimosius - 09-26-05 15:38 
+----------------------------------------------------------------------
+Hi Clemens,
+
+>Please use a[0] instead of *a when accessing an array.
+Of course, a[0] should be the better choice :)
+
+>You don't really need separate variables for ref, shift, and mask;
+similar code in other functions was just copied from generic code that
+read these values from the mixer element.
+
+... and this is my problem.
+To enable the loop bit 5 of register 0x34 has to be set as well as bit 1
+to enable Capture on SPDIF-in. If bit 5 is unset and bit 1 is set the
+signal from SPDIF-in gets routed through the SRC instead.
+In fact that YDSXGR_SPDIFINCTRL is defined as register 0x34 and it's
+already used to set bit 1, I really don't know how handle it with bit 5
+too in the functions:
+
+static int snd_ymfpci_info_single(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t * uinfo)
+static int snd_ymfpci_get_single(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
+static int snd_ymfpci_put_single(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
+
+which provides 
+ case YDSXGR_SPDIFINCTRL: break;
+
+Therefore I decided to use separate functions with own reg, shift and
+mask.
+
+Regards
+Glen Masgai
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-05 13:30 knefas         New Issue                                    
+09-23-05 20:47 Mimosius       New Issue                                    
+09-23-05 20:47 Mimosius       File Added: ymfpci_spdifloop.diff                 
+  
+09-23-05 20:47 Mimosius       Issue Monitored: Mimosius                    
+09-26-05 11:10 Clemens LadischNote Added: 0006392                          
+09-26-05 15:38 Mimosius       Note Added: 0006393                          
 ======================================================================
 
 
