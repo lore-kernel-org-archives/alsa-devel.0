@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001447]: SPDIF IN>OUT Loop missing
-Date: Mon, 26 Sep 2005 11:10:23 +0200
-Message-ID: <2e3debdd53223a880455867c246ed827@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Midi Out help
+Date: Mon, 26 Sep 2005 11:11:59 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509260959360.13755-100000@studcom.urz.uni-halle.de>
+References: <BAY13-F10379A920748A144124373EE890@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFBE0171
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 11:10:23 +0200 (MEST)
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FEA5171
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 11:12:01 +0200 (MEST)
+In-Reply-To: <BAY13-F10379A920748A144124373EE890@phx.gbl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +19,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Radu Olaru <iq9@hotmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Radu Olaru wrote:
+> I'm trying to send Midi messages to another Alsa program, a synth actually.
+> Well, I cannot hear any sound from the synth if I'm sending messages using
+> the program below.
+>
+> snd_seq_open(&rezultat,"default",SND_SEQ_OPEN_INPUT,0)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447> 
-======================================================================
-Reported By:                Mimosius
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1447
-Category:                   PCI - ymfpci
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             09-23-2005 20:47 CEST
-Last Modified:              09-26-2005 11:10 CEST
-======================================================================
-Summary:                    SPDIF IN>OUT Loop missing
-Description: 
-Hi,
+You cannot send (write) events if you've opened the sequencer for
+input only.  Use _DUPLEX here.
 
-I'm using a Hoontech Digital-XG and I was missing the capability to loop
-the digital signal from SPDIF-in to SPDIF- out, so I modified the
-ymfpci_main.c, adding an extra mixer switch (patch against latest CVS
-version included). Would anyone of the developers verify this patch and
-add this feature to the ymfpci module?
+> snd_seq_create_simple_port(...SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ...)
 
-Regards,
-Glen Masgai
-======================================================================
+These flags are OK.  As the owner, your program is allowed to write to
+this port even if the write flags aren't set.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 09-26-05 11:10 
-----------------------------------------------------------------------
-Please use a[0] instead of *a when accessing an array.
-There is a double semicolon.
-You don't really need separate variables for ref, shift, and mask; similar
-code in other functions was just copied from generic code that read these
-values from the mixer element.
+> 	snd_seq_ev_set_subs(&midiEvent);
 
-Please provide a patch description and Signed-off-by line.
+I hope you did connect your program to the synth.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-23-05 20:47 Mimosius       New Issue                                    
-09-23-05 20:47 Mimosius       File Added: ymfpci_spdifloop.diff                 
-  
-09-23-05 20:47 Mimosius       Issue Monitored: Mimosius                    
-09-26-05 11:10 Clemens LadischNote Added: 0006392                          
-======================================================================
+> 	snd_seq_free_event(&midiEvent);
 
+Don't call this for static variables.  This function was intended for
+events that had been dynamically allocated by snd_seq_read(), but it
+isn't needed even in that case.
+
+
+HTH
+Clemens
 
 
 
