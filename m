@@ -1,30 +1,14 @@
-From: Matthias Andree <matthias.andree@gmx.de>
-Subject: alsa-lib "convert" basic OPs (lack rounding and dithering)
-Date: Mon, 26 Sep 2005 15:47:33 +0200
-Message-ID: <m3zmq0kkju.fsf@merlin.emma.line.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001447]: SPDIF IN>OUT Loop missing
+Date: Mon, 26 Sep 2005 15:48:53 +0200
+Message-ID: <e500c37b563241714b889e884de8e617@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.dt.e-technik.uni-dortmund.de (krusty.dt.e-technik.Uni-Dortmund.DE [129.217.163.1])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8594117E
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 15:47:43 +0200 (MEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.dt.e-technik.uni-dortmund.de (Postfix) with ESMTP id 2520B444B0
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 15:47:38 +0200 (CEST)
-Received: from mail.dt.e-technik.uni-dortmund.de ([127.0.0.1])
- by localhost (krusty [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
- id 09094-02 for <alsa-devel@alsa-project.org>;
- Mon, 26 Sep 2005 15:47:36 +0200 (CEST)
-Received: from m2a2.dyndns.org (p5091342C.dip0.t-ipconnect.de [80.145.52.44])
-	by mail.dt.e-technik.uni-dortmund.de (Postfix) with ESMTP id 93A72443FB
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 15:47:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by merlin.emma.line.org (Postfix) with ESMTP id 50BAC170B24
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 15:47:34 +0200 (CEST)
-Received: from m2a2.dyndns.org ([127.0.0.1])
- by localhost (m2a2.dyndns.org [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 18160-05 for <alsa-devel@alsa-project.org>;
- Mon, 26 Sep 2005 15:47:33 +0200 (CEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C52417E
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 15:48:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,38 +21,101 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+
+The following issue has been ASSIGNED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447> 
+======================================================================
+Reported By:                Mimosius
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1447
+Category:                   PCI - ymfpci
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-23-2005 20:47 CEST
+Last Modified:              09-26-2005 15:48 CEST
+======================================================================
+Summary:                    SPDIF IN>OUT Loop missing
+Description: 
 Hi,
 
-I don't have much time (maintaining other open source software, real
-life work and all that you are familiar with), but I recently found out
-Alsa has not managed to deal with proper quantization over the past four
-years.
+I'm using a Hoontech Digital-XG and I was missing the capability to loop
+the digital signal from SPDIF-in to SPDIF- out, so I modified the
+ymfpci_main.c, adding an extra mixer switch (patch against latest CVS
+version included). Would anyone of the developers verify this patch and
+add this feature to the ymfpci module?
 
-My complaint at that time was that Alsa-lib wasn't even rounding, just
-truncating (>> 8 or & 0xff), let alone dithering.
+Regards,
+Glen Masgai
+======================================================================
 
-Rounding is simple to implement (just add 1/2 LSB before truncating) and
-increases the SNR by roughly 6 dB - which already makes a difference for
-8bit output from 16bit input.
+----------------------------------------------------------------------
+ Mimosius - 09-26-05 15:38 
+----------------------------------------------------------------------
+Hi Clemens,
 
-Rounding doesn't fix the other problem however: quantization noise
-correlation to the signal and non-linearity of the truncation.
+>Please use a[0] instead of *a when accessing an array.
+Of course, a[0] should be the better choice :)
 
-Dithering, that is, adding a specially shaped low "noise" signal,
-decorrelates the quantization noise, making it much more unobtrusive,
-and also makes the whole process linear. No more chirping and sharp
-clicking interspersed with blackouts of near-silent signals.
+>You don't really need separate variables for ref, shift, and mask;
+similar code in other functions was just copied from generic code that
+read these values from the mixer element.
 
-This is also filed as alsa - lib bug 001454, the bug report has two book
-recommendations, for a quick introduction into dithering.
+... and this is my problem.
+To enable the loop bit 5 of register 0x34 has to be set as well as bit 1
+to enable Capture on SPDIF-in. If bit 5 is unset and bit 1 is set the
+signal from SPDIF-in gets routed through the SRC instead.
+In fact that YDSXGR_SPDIFINCTRL is defined as register 0x34 and it's
+already used to set bit 1, I really don't know how handle it with bit 5
+too in the functions:
 
-I don't offer to take this project for reasons given in the first
-paragraph, but I will try to answer questions in this regard.
+static int snd_ymfpci_info_single(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t * uinfo)
+static int snd_ymfpci_get_single(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
+static int snd_ymfpci_put_single(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
 
-HTH,
+which provides 
+ case YDSXGR_SPDIFINCTRL: break;
 
--- 
-Matthias Andree
+Therefore I decided to use separate functions with own reg, shift and
+mask.
+
+Regards
+Glen Masgai
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 09-26-05 15:48 
+----------------------------------------------------------------------
+You could put two values (register and bit number) into the kcontrol's
+private_value field, like the AC'97 codec driver does.
+
+Don't bother too much with interdependencies between registers/bits; the
+mixer controls are supposed to reflect the actual hardware controls.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-23-05 20:47 Mimosius       New Issue                                    
+09-23-05 20:47 Mimosius       File Added: ymfpci_spdifloop.diff                 
+  
+09-23-05 20:47 Mimosius       Issue Monitored: Mimosius                    
+09-26-05 11:10 Clemens LadischNote Added: 0006392                          
+09-26-05 15:38 Mimosius       Note Added: 0006393                          
+09-26-05 15:48 Clemens LadischNote Added: 0006394                          
+09-26-05 15:48 Clemens LadischAssigned To               => Clemens Ladisch 
+09-26-05 15:48 Clemens LadischStatus                   new => assigned     
+======================================================================
+
+
 
 
 -------------------------------------------------------
