@@ -1,12 +1,15 @@
-From: Jennifer A.Clark <607danny@academicplanet.com>
-Subject: =?iso-8859-1?B?QWRvYmUgQWNyb2JhdCA2LjAgLSA3NSUgT0ZG?=
-Date: Mon, 26 Sep 2005 14:53:53 +0000
-Message-ID: <578901c5c2aa$59b3ae4c$0bd398e3@academicplanet.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Terratec Aureon 5.1 MKII slow
+Date: Mon, 26 Sep 2005 17:11:24 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509261706330.1797-100000@studcom.urz.uni-halle.de>
+References: <21ed1c3705092209171817de22@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_A69B2165.548348E1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5125017A
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 17:11:26 +0200 (MEST)
+In-Reply-To: <21ed1c3705092209171817de22@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,90 +19,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: Manuel Jander <manuel.jander@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Manuel Jander wrote:
+> Why is the maximum buffer so small ?
 
-------=_NextPart_000_0000_A69B2165.548348E1
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_D1B491A1.A05706D5"
+It's just some random value that was deemed appropriate several years
+ago when nobody knew about multichannel interfaces.
 
+> I would have expected that on a USB device the PCM buffer could be
+> arbitrary large, so why is it so small ?
 
-------=_NextPart_001_0001_D1B491A1.A05706D5
-Content-Type: text/plain;
-    charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-      Get access to all the popular software you need for prices substantially
-lower than in stores!
-We sell software 2-6 times cheaper than retail price.
-
-Examples:
-$79.95 Windows XP Professional (Including: Service Pack 2)
-$89.95 Microsoft Office 2003 Professional / $79.95 Office XP Professional
-$99.95 Adobe Photoshop 8.0/CS (Including: ImageReady CS)
-$69.95 Dreamweaver MX 2004 / Flash MX 2004 / Fireworks MX
-$149.95 Adobe Creative Suite Premium (5 CD)
-$79.95 Adobe Acrobat 6.0 Professional
-$59.95 Corel Draw Graphics Suite 11
-
-Special offers:
-$89.95 Windows XP Pro + Office XP Pro
-$129.95 Photoshop 7 + Premiere 7 + Illustrator 10
-$109.95 Dreamweaver MX 2004 + Flash MX 2004
-
-All main products from Microsoft, Adobe, Macromedia, Corel, etc.
-And many other... Go visit us at:
-
-http://www.disks-for-you.com
-
-Best,
-Jennifer A. Clark
+Indeed.  Version 1.0.10rc1 has increased this to 256 KB, the current
+CVS version has 1 MB.
 
 
-________________________________ 
-To be taken off future campaigns, go here
-________________________________ 
-
- 
-------=_NextPart_001_0001_D1B491A1.A05706D5
-Content-Type: text/html;
-    charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
-<META content="MSHTML 6.00.2900.2604" name=GENERATOR></HEAD>
-<BODY>
-<CENTER>
-<TABLE cellSpacing=0 cellPadding=0 width=800 align=center border=0>
-<table id="616C73612D646576656C406C697374732E73662E6E6574">  <TBODY>
-  <TR>
-    <TD>Get access to all the popular 
-      software you need for 
-      prices substantially lower than in stores!<BR>We sell software 2-6 times cheaper than retail 
-      price.<BR><BR>Examples:<BR>$79.95 Windows XP Professional (Including: Service Pack 
-      2)<BR>$89.95 Microsoft Office 2003 Professional / $79.95 Office 
-      XP Professional<BR>$99.95 Adobe Photoshop 8.0/CS (Including: ImageReady 
-      CS)<BR>$69.95 Dreamweaver MX 2004 / Flash MX 2004 / Fireworks MX<BR>$149.95 Adobe Creative Suite Premium (5 CD)<br>$79.95 Adobe Acrobat 6.0 
-      Professional<BR>$59.95 Corel Draw Graphics Suite 11<BR><BR>
-Special offers:<br>
-$89.95 Windows XP Pro + Office XP Pro<br>
-$129.95 Photoshop 7 + Premiere 7 + Illustrator 10<br>
-$109.95 Dreamweaver MX 2004 + Flash MX 2004<br><br>
-
-
-All main products from Microsoft, 
-      Adobe, Macromedia, Corel, etc.<BR>And many 
-      other... Go visit us at:<BR><BR><A 
-      href="http://www.disks-for-you.com">http://www.disks-for-you.com</A><BR><BR>Best,<BR>Jennifer A. Clark<BR><BR><BR>________________________________     <BR>To be taken off future campaigns, go <a href="http://www.disks-for-you.com/uns.htm">here</A><BR>________________________________
-
-      <P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
-
-------=_NextPart_001_0001_D1B491A1.A05706D5--
+HTH
+Clemens
 
 
 
-------=_NextPart_000_0000_A69B2165.548348E1--
+-------------------------------------------------------
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. 
+Download it for free - -and be entered to win a 42" plasma tv or your very
+own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
