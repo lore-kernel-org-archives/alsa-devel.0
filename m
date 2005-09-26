@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
-Date: Mon, 26 Sep 2005 19:14:42 +0200
-Message-ID: <4aa4a44316e8068a2de2a6cd30addf6e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001447]: SPDIF IN>OUT Loop missing
+Date: Mon, 26 Sep 2005 19:36:43 +0200
+Message-ID: <e73b1d9a1d0da22bd3f95b517eb91244@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6CDE185
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 19:14:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98F01183
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 19:36:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001460 has been set as DUPLICATE OF the following issue.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447> 
 ======================================================================
-Reported By:                crimsunkg
-Assigned To:                tiwai
+Reported By:                Mimosius
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1429
-Category:                   PCI - hda-intel
+Issue ID:                   1447
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-8-686
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-17-2005 00:54 CEST
-Last Modified:              09-24-2005 20:55 CEST
+Date Submitted:             09-23-2005 20:47 CEST
+Last Modified:              09-26-2005 19:36 CEST
 ======================================================================
-Summary:                    hda_codec: Unknown model for ALC880
+Summary:                    SPDIF IN>OUT Loop missing
 Description: 
-Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
+Hi,
 
-Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
+I'm using a Hoontech Digital-XG and I was missing the capability to loop
+the digital signal from SPDIF-in to SPDIF- out, so I modified the
+ymfpci_main.c, adding an extra mixer switch (patch against latest CVS
+version included). Would anyone of the developers verify this patch and
+add this feature to the ymfpci module?
 
-Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
-hda_codec does not recognize the model with the ALC880 codec
-(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
-
-''lspci -nvv'' output is at
-http://bugzilla.ubuntu.com/attachment.cgi?id=3848
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
-has duplicate       0001316 can't run mixer to adjusting volumes / ...
-has duplicate       0001460 no sound on Clevo 400a
+Regards,
+Glen Masgai
 ======================================================================
 
 ----------------------------------------------------------------------
- crimsunkg - 09-24-05 20:55 
+ Clemens Ladisch - 09-26-05 15:48 
 ----------------------------------------------------------------------
-This issue is duplicated in bug #1453.
+You could put two values (register and bit number) into the kcontrol's
+private_value field, like the AC'97 codec driver does.
+
+Don't bother too much with interdependencies between registers/bits; the
+mixer controls are supposed to reflect the actual hardware controls.
+
+----------------------------------------------------------------------
+ Mimosius - 09-26-05 19:36 
+----------------------------------------------------------------------
+Hi Clemens,
+
+I think some things are clarified now. :)
+I uploaded the new patch and I hope, there are no stupid mistakes
+anymore.
+
+Regards
+Glen Masgai
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-17-05 00:54 crimsunkg      New Issue                                    
-09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
-09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
-09-24-05 20:55 crimsunkg      Note Added: 0006377                          
-09-24-05 22:06 rlrevell       Relationship added       has duplicate 0001453
-09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001316
-09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001460
+09-23-05 20:47 Mimosius       New Issue                                    
+09-23-05 20:47 Mimosius       File Added: ymfpci_spdifloop.diff                 
+  
+09-23-05 20:47 Mimosius       Issue Monitored: Mimosius                    
+09-26-05 11:10 Clemens LadischNote Added: 0006392                          
+09-26-05 15:38 Mimosius       Note Added: 0006393                          
+09-26-05 15:48 Clemens LadischNote Added: 0006394                          
+09-26-05 15:48 Clemens LadischAssigned To               => Clemens Ladisch 
+09-26-05 15:48 Clemens LadischStatus                   new => assigned     
+09-26-05 19:35 Mimosius       File Added: ymfpci_spdif_inoutloop.diff           
+        
+09-26-05 19:36 Mimosius       Note Added: 0006396                          
 ======================================================================
 
 
