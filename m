@@ -1,15 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: changing audio routing through mixer controls
-	with emu10k1/audigy
-Date: Sun, 25 Sep 2005 21:09:42 -0400
-Message-ID: <1127696983.26124.6.camel@mindpipe>
-References: <20050925234658.4d008c9e@VikingPC.home>
-	 <1127696645.26124.4.camel@mindpipe>
+From: Brad Midgley <bmidgley@xmission.com>
+Subject: dmix vs. other plugins
+Date: Sun, 25 Sep 2005 23:52:03 -0600
+Message-ID: <43378C83.2020908@xmission.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1127696645.26124.4.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,25 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Corvus Corax <corvus-ml@cybertrench.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-09-25 at 21:04 -0400, Lee Revell wrote:
-> On Sun, 2005-09-25 at 23:46 +0000, Corvus Corax wrote:
-> > So my question: is a similar functionality implemented in the alsa
-> > emu10k1
-> > driver? where are the tools to load those routes using the alsa
-> > drivers?
-> > who is working on them? can I help developing them somehow? 
-> 
-> Yes, it's called ld10k1, the GUI is qlo10k1.  It's part of alsa-utils.
-> It's currently in rough shape, we could certainly use some developers.
+Hi
 
-Sorry, I mean alsa-tools, not alsa-utils.
+Is it true that dmix can't be used to mix down to a slave that is itself 
+an alsa-lib plugin?
 
-Lee
+I was excited to read about dmix and imagined using it to give multiple 
+access to the stereo bluetooth alsa-lib plugin in development.
 
+If dmix to alsa-lib-slave isn't working now, would it be a 
+straightforward change for me to work on?
+
+thanks
+Brad
 
 
 -------------------------------------------------------
