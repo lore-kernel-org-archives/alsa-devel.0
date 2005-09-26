@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001183]: Details about known bug "Capture doesn't work"
-Date: Mon, 26 Sep 2005 10:43:58 +0200
-Message-ID: <ce5486ea6d54f125630bbe41822b8052@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001447]: SPDIF IN>OUT Loop missing
+Date: Mon, 26 Sep 2005 11:10:23 +0200
+Message-ID: <2e3debdd53223a880455867c246ed827@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5810A165
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 10:43:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFBE0171
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 11:10:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1183> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447> 
 ======================================================================
-Reported By:                Jochen
-Assigned To:                tiwai
+Reported By:                Mimosius
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1183
-Category:                   PCI - es1968
+Issue ID:                   1447
+Category:                   PCI - ymfpci
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             06-11-2005 20:34 CEST
-Last Modified:              09-26-2005 10:43 CEST
+Date Submitted:             09-23-2005 20:47 CEST
+Last Modified:              09-26-2005 11:10 CEST
 ======================================================================
-Summary:                    Details about known bug "Capture doesn't work"
+Summary:                    SPDIF IN>OUT Loop missing
 Description: 
-I'm experiencing the problem with es1968 not supporting capture described
-in various places. This bug keeps me from using skype: the second it tries
-to read from the OSS compatibility device it receives and EINVAL
+Hi,
 
-using the old OSS maestro driver works thou.
+I'm using a Hoontech Digital-XG and I was missing the capability to loop
+the digital signal from SPDIF-in to SPDIF- out, so I modified the
+ymfpci_main.c, adding an extra mixer switch (patch against latest CVS
+version included). Would anyone of the developers verify this patch and
+add this feature to the ymfpci module?
 
-apparently this is the known bug "capture doesn't work"
-
-I'd like to ask for a little more information on this bug, and whether
-it's possible to contribute here.
+Regards,
+Glen Masgai
 ======================================================================
 
 ----------------------------------------------------------------------
- LawrenceG - 09-26-05 10:20 
+ Clemens Ladisch - 09-26-05 11:10 
 ----------------------------------------------------------------------
-I can confirm this behaviour on a Toshiba Satellite 4030cdt laptop. lspci
-shows the sound chip as an ESS Technology ES1978 Maestro 2E rev 10.
-Playback is working fine but attempts to read from /dev/dsp result in
-consistant returned errors on the read call of Invalid Argument. An ioctl
-(SNDCTL_DSP_GETISPACE) right before the read shows available 64k of buffer
-space, but always returns 0 available bytes and 0 available fragments.
-This problem is specific to the es1968 driver as the same application code
-runs fine on another sound card (ensoniq) in another pc. Any chance of
-getting this fixed? The laptop runs fine with the oss free drivers that
-came with rh8... perhaps the recording code can be ported?
+Please use a[0] instead of *a when accessing an array.
+There is a double semicolon.
+You don't really need separate variables for ref, shift, and mask; similar
+code in other functions was just copied from generic code that read these
+values from the mixer element.
 
-----------------------------------------------------------------------
- LawrenceG - 09-26-05 10:43 
-----------------------------------------------------------------------
-Another note... I can confirm that recording in stereo with audacity works
-and recording in mono with audacity does not (some distorted wave that
-looks like an undersampled sine offset by about 1/2 scale is the result).
-This is using the latest ubuntu breezy preview with 2.6.12 kernel and alsa
-1.0.9a.
+Please provide a patch description and Signed-off-by line.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 20:34 Jochen         New Issue                                    
-06-13-05 13:07 tiwai          Note Added: 0005007                          
-06-13-05 15:53 Jochen         Note Added: 0005011                          
-06-15-05 14:42 tiwai          Note Added: 0005028                          
-09-26-05 10:04 LawrenceG      Issue Monitored: LawrenceG                    
-09-26-05 10:20 LawrenceG      Note Added: 0006390                          
-09-26-05 10:43 LawrenceG      Note Added: 0006391                          
+09-23-05 20:47 Mimosius       New Issue                                    
+09-23-05 20:47 Mimosius       File Added: ymfpci_spdifloop.diff                 
+  
+09-23-05 20:47 Mimosius       Issue Monitored: Mimosius                    
+09-26-05 11:10 Clemens LadischNote Added: 0006392                          
 ======================================================================
 
 
