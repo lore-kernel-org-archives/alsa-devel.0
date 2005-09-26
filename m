@@ -1,15 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Midi Out help
-Date: Mon, 26 Sep 2005 11:11:59 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0509260959360.13755-100000@studcom.urz.uni-halle.de>
-References: <BAY13-F10379A920748A144124373EE890@phx.gbl>
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: Echoaudio, card "appears" later
+Date: Mon, 26 Sep 2005 12:02:55 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0509261159370.13989@denise.shiny.it>
+References: <Pine.HPX.4.33n.0509260955560.13755-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FEA5171
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 11:12:01 +0200 (MEST)
-In-Reply-To: <BAY13-F10379A920748A144124373EE890@phx.gbl>
+In-Reply-To: <Pine.HPX.4.33n.0509260955560.13755-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,39 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Radu Olaru <iq9@hotmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Radu Olaru wrote:
-> I'm trying to send Midi messages to another Alsa program, a synth actually.
-> Well, I cannot hear any sound from the synth if I'm sending messages using
-> the program below.
+
+
+On Mon, 26 Sep 2005, Clemens Ladisch wrote:
+
+> > I'm using alsa-lib/kernel/driver I downloaded last friday
+> > with cvs, linux 2.6.13rc6, 2.6.13.2, on SMP powerpc. Just
+> > after the moduled is loaded, aplay -l (or any other app)
+> > cannot find any card. After a few attemps to run the app the
+> > card becomes visible and everything works file.
 >
-> snd_seq_open(&rezultat,"default",SND_SEQ_OPEN_INPUT,0)
+> Are you using udev?  How fast are the device nodes in /dev/snd/ being
+> created?
 
-You cannot send (write) events if you've opened the sequencer for
-input only.  Use _DUPLEX here.
-
-> snd_seq_create_simple_port(...SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ...)
-
-These flags are OK.  As the owner, your program is allowed to write to
-this port even if the write flags aren't set.
-
-> 	snd_seq_ev_set_subs(&midiEvent);
-
-I hope you did connect your program to the synth.
-
-> 	snd_seq_free_event(&midiEvent);
-
-Don't call this for static variables.  This function was intended for
-events that had been dynamically allocated by snd_seq_read(), but it
-isn't needed even in that case.
+Ah. Yes, I installed Gentoo recently and it uses udev, indeed. Sorry for
+the noise.
 
 
-HTH
-Clemens
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
