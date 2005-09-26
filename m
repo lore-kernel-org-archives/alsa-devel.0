@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001462]: Internal OSS emulation doesn't use the hardware mixer?
-Date: Mon, 26 Sep 2005 19:10:49 +0200
-Message-ID: <4f9d5de8af9c23491968009b0880eeef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
+Date: Mon, 26 Sep 2005 19:14:26 +0200
+Message-ID: <a0c1067cdbf4b16ee25e881dc39f7a40@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 674C717A
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 19:10:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F13E188
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 19:14:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0001316 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1462> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
 ======================================================================
-Reported By:                mador
+Reported By:                crimsunkg
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1462
+Issue ID:                   1429
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1456_FC4smp #1 SMP Thu Sep 22 02:23:57 EDT
-2005 x86_64 x86_64 x86_64 GNU/Linux
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-8-686
 ======================================================================
-Date Submitted:             09-26-2005 16:38 CEST
-Last Modified:              09-26-2005 19:10 CEST
+Date Submitted:             09-17-2005 00:54 CEST
+Last Modified:              09-24-2005 20:55 CEST
 ======================================================================
-Summary:                    Internal OSS emulation doesn't use the hardware
-mixer?
+Summary:                    hda_codec: Unknown model for ALC880
 Description: 
-When using the alsa hardware device (not dmix) I can play multiple sounds
-in parallel but not with the OSS device. In addition, the OSS device shows
-as in use while Alsa device is used and vice-versa, the Alsa device is
-blocked when the OSS device is used. More then that the alsa
-infrastructure reports that there is only one available subdevice as if
-hardware mixing wasn't available. But when playing on hw:0 with aplay, I
-can have multiple sound files mixed.
-On ESS cards with 4 hardware mixed channels I was able to use in parallel
-the alsa  and the oss devices and I would like to be possible to use the
-emulated oss and not the aoss wrapper for the oss only applications.
+Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
+
+Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
+
+Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
+hda_codec does not recognize the model with the ALC880 codec
+(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
+
+''lspci -nvv'' output is at
+http://bugzilla.ubuntu.com/attachment.cgi?id=3848
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
+has duplicate       0001316 can't run mixer to adjusting volumes / ...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-26-05 19:10 
+ crimsunkg - 09-24-05 20:55 
 ----------------------------------------------------------------------
-You card does not support hardware mixing so this is not possible.  You'll
-have to use aoss.
+This issue is duplicated in bug #1453.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-05 16:38 mador          New Issue                                    
-09-26-05 16:38 mador          Distribution              => Fedora Core 4   
-09-26-05 16:38 mador          Kernel Version            => 2.6.12-1.1456_FC4smp
-#1 SMP Thu Sep 22 02:23:57 EDT 2005 x86_64 x86_64 x86_64 GNU/Linux
-09-26-05 19:10 rlrevell       Note Added: 0006395                          
+09-17-05 00:54 crimsunkg      New Issue                                    
+09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
+09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
+09-24-05 20:55 crimsunkg      Note Added: 0006377                          
+09-24-05 22:06 rlrevell       Relationship added       has duplicate 0001453
+09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001316
 ======================================================================
 
 
