@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001462]: Internal OSS emulation doesn't use the hardware mixer?
-Date: Mon, 26 Sep 2005 16:38:49 +0200
-Message-ID: <e0b5dda941b0201167ba146089dec39f@bugtrack.alsa-project.org>
+From: Jennifer A.Clark <607danny@academicplanet.com>
+Subject: =?iso-8859-1?B?QWRvYmUgQWNyb2JhdCA2LjAgLSA3NSUgT0ZG?=
+Date: Mon, 26 Sep 2005 14:53:53 +0000
+Message-ID: <578901c5c2aa$59b3ae4c$0bd398e3@academicplanet.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_A69B2165.548348E1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1ED3178
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 16:38:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +16,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1462> 
-======================================================================
-Reported By:                mador
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1462
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1456_FC4smp #1 SMP Thu Sep 22 02:23:57 EDT
-2005 x86_64 x86_64 x86_64 GNU/Linux
-======================================================================
-Date Submitted:             09-26-2005 16:38 CEST
-Last Modified:              09-26-2005 16:38 CEST
-======================================================================
-Summary:                    Internal OSS emulation doesn't use the hardware
-mixer?
-Description: 
-When using the alsa hardware device (not dmix) I can play multiple sounds
-in parallel but not with the OSS device. In addition, the OSS device shows
-as in use while Alsa device is used and vice-versa, the Alsa device is
-blocked when the OSS device is used. More then that the alsa
-infrastructure reports that there is only one available subdevice as if
-hardware mixing wasn't available. But when playing on hw:0 with aplay, I
-can have multiple sound files mixed.
-On ESS cards with 4 hardware mixed channels I was able to use in parallel
-the alsa  and the oss devices and I would like to be possible to use the
-emulated oss and not the aoss wrapper for the oss only applications.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-26-05 16:38 mador          New Issue                                    
-09-26-05 16:38 mador          Distribution              => Fedora Core 4   
-09-26-05 16:38 mador          Kernel Version            => 2.6.12-1.1456_FC4smp
-#1 SMP Thu Sep 22 02:23:57 EDT 2005 x86_64 x86_64 x86_64 GNU/Linux
-======================================================================
+------=_NextPart_000_0000_A69B2165.548348E1
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_D1B491A1.A05706D5"
 
 
+------=_NextPart_001_0001_D1B491A1.A05706D5
+Content-Type: text/plain;
+    charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+      Get access to all the popular software you need for prices substantially
+lower than in stores!
+We sell software 2-6 times cheaper than retail price.
+
+Examples:
+$79.95 Windows XP Professional (Including: Service Pack 2)
+$89.95 Microsoft Office 2003 Professional / $79.95 Office XP Professional
+$99.95 Adobe Photoshop 8.0/CS (Including: ImageReady CS)
+$69.95 Dreamweaver MX 2004 / Flash MX 2004 / Fireworks MX
+$149.95 Adobe Creative Suite Premium (5 CD)
+$79.95 Adobe Acrobat 6.0 Professional
+$59.95 Corel Draw Graphics Suite 11
+
+Special offers:
+$89.95 Windows XP Pro + Office XP Pro
+$129.95 Photoshop 7 + Premiere 7 + Illustrator 10
+$109.95 Dreamweaver MX 2004 + Flash MX 2004
+
+All main products from Microsoft, Adobe, Macromedia, Corel, etc.
+And many other... Go visit us at:
+
+http://www.disks-for-you.com
+
+Best,
+Jennifer A. Clark
 
 
--------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. 
-Download it for free - -and be entered to win a 42" plasma tv or your very
-own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+________________________________ 
+To be taken off future campaigns, go here
+________________________________ 
+
+ 
+------=_NextPart_001_0001_D1B491A1.A05706D5
+Content-Type: text/html;
+    charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content="MSHTML 6.00.2900.2604" name=GENERATOR></HEAD>
+<BODY>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=800 align=center border=0>
+<table id="616C73612D646576656C406C697374732E73662E6E6574">  <TBODY>
+  <TR>
+    <TD>Get access to all the popular 
+      software you need for 
+      prices substantially lower than in stores!<BR>We sell software 2-6 times cheaper than retail 
+      price.<BR><BR>Examples:<BR>$79.95 Windows XP Professional (Including: Service Pack 
+      2)<BR>$89.95 Microsoft Office 2003 Professional / $79.95 Office 
+      XP Professional<BR>$99.95 Adobe Photoshop 8.0/CS (Including: ImageReady 
+      CS)<BR>$69.95 Dreamweaver MX 2004 / Flash MX 2004 / Fireworks MX<BR>$149.95 Adobe Creative Suite Premium (5 CD)<br>$79.95 Adobe Acrobat 6.0 
+      Professional<BR>$59.95 Corel Draw Graphics Suite 11<BR><BR>
+Special offers:<br>
+$89.95 Windows XP Pro + Office XP Pro<br>
+$129.95 Photoshop 7 + Premiere 7 + Illustrator 10<br>
+$109.95 Dreamweaver MX 2004 + Flash MX 2004<br><br>
+
+
+All main products from Microsoft, 
+      Adobe, Macromedia, Corel, etc.<BR>And many 
+      other... Go visit us at:<BR><BR><A 
+      href="http://www.disks-for-you.com">http://www.disks-for-you.com</A><BR><BR>Best,<BR>Jennifer A. Clark<BR><BR><BR>________________________________     <BR>To be taken off future campaigns, go <a href="http://www.disks-for-you.com/uns.htm">here</A><BR>________________________________
+
+      <P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
+
+------=_NextPart_001_0001_D1B491A1.A05706D5--
+
+
+
+------=_NextPart_000_0000_A69B2165.548348E1--
