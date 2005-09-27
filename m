@@ -1,12 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Error when trying to compile code from CVS
-Date: Tue, 27 Sep 2005 08:48:18 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0509270845040.6513-100000@studcom.urz.uni-halle.de>
-References: <20050926174031.GA7590@martinkl.dialup.fu-berlin.de>
+From: "Morgan Oakes" <dsandinjhix@bhinc.com>
+Subject: Re: Your order (#fgdmtuybm)
+Date: Tue, 27 Sep 2005 03:21:47 -0500
+Message-ID: <0543596967.3152655626@bhinc.com>
+Reply-To: "Morgan Oakes" <dsandinjhix@bhinc.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050926174031.GA7590@martinkl.dialup.fu-berlin.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,23 +16,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Klaiber <martinkl@zedat.fu-berlin.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
-Martin Klaiber wrote:
-> when I try to compile the actual code from the CVS, I get the
-> following error:
->
->    In file included from memory.c:2:
->    ../alsa-kernel/core/memory.c:126: error: syntax error before "this_object_must_be_defined_as_export_objs_in_the_Makefile"
 
-Which kernel version are you running?  Which kernel version are you
-compiling for?  What is the output of the configure script?
+<HTML>
+<body>
+<center>
+<p>Hi there and welcome to wonderful Radio One it's seven thirty three in the morning and here's a golden oldie a great classic from Arthur Askey! :))<br>
+<b>Cial<welcome>is SOFTTA<most>BS</b> is the new impotence treatment drug that everyone is talking about.<br>
+It has benefits over Vi<the>agra and other ED treatment solutions.<br>
+Price for medium package is  <b>$ 2.49 per 20mg pill</b>.
+</p>
+<h1><a href="http://uk.geocities.com/mnaaased/"><dream>Shop <job>here</a></h1><br>
+Flavour: Mint Lemon Banana Strawberry<br>
+<b>Shipping world wide.</b>
+</a><br>
+A friend is known when needed.
+</body>
+</html>
 
-
-Regards,
-Clemens
 
 
 
