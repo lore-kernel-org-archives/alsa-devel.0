@@ -1,18 +1,14 @@
-From: Kronos <kronos@hefnerlabs.com>
-Subject: Ways to help developement on the EMU10K1 cards
-Date: Mon, 26 Sep 2005 23:38:46 -0400
-Message-ID: <1127792326.4991.16.camel@elnino.hefnerlabs.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001439]: OSS emulation fails for usb-audio
+Date: Tue, 27 Sep 2005 07:40:24 +0200
+Message-ID: <92bde7eaaded7230b22f0f0277d31f72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from rwcrmhc12.comcast.net (rwcrmhc13.comcast.net [204.127.198.39])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9334013F
-	for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2005 05:38:56 +0200 (MEST)
-Received: from [192.168.1.205] ([192.168.1.205])
-	(authenticated bits=0)
-	by elnino.hefnerlabs.com (8.13.1/8.13.1) with ESMTP id j8R3clHQ013935
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2005 23:38:47 -0400
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6567A16E
+	for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2005 07:40:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,18 +21,77 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I may be able to aquire 5 - 10 SBLIVE Cards and send them out to some of
-the devs working on the drivers and mixer components. 
 
-Would this be useful. might we see a marked improvement in the card
-handling and could we hope to see controls much like we see in windows
-XP for the card within say a few months (2-5 months) Or at least a
-massive step in that direction. 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1439> 
+======================================================================
+Reported By:                dagb
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1439
+Category:                   CORE OSS - pcm
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc2
+======================================================================
+Date Submitted:             09-21-2005 21:31 CEST
+Last Modified:              09-27-2005 07:40 CEST
+======================================================================
+Summary:                    OSS emulation fails for usb-audio
+Description: 
+With ALSA as found in 2.6.14-rc{12} 
+(which reports as as ALSA version 1.0.10-rc1?):
+When playing audio using the OSS emulation with beep-media-player through
+my USB headset adapter, there is no audio, and the time elapsed in BMP
+runs way too fast.
 
-Ive been watching the scene for a number of years now and it seems no
-one has yet cracked this card. What can i do to help it along. (no real
-programming skills here to speak of) If getting the card in more alsa
-folks hands will do the trick then ill see what i can do.
+It works if I use the native ALSA support in BMP.
+But, I cannot get any audio with skype with this kernel. This is my main
+beef.
+skype does not do ALSA. I have to use the OSS emulation.
+
+The exact same setup with 2.6.13-gentoo-r1 (using the vanilla kernel ALSA)
+works perfectly for me.
+
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 09-26-05 22:32 
+----------------------------------------------------------------------
+Do you have CONFIG_USB_BANDWIDTH disabled in both configs?
+
+----------------------------------------------------------------------
+ dagb - 09-27-05 07:40 
+----------------------------------------------------------------------
+dagb-home src # uname -sr 
+Linux 2.6.13-gentoo-r1
+
+dagb-home src # zcat /proc/config.gz | grep CONFIG_USB_BANDWIDTH
+# CONFIG_USB_BANDWIDTH is not set
+
+dagb-home src # grep CONFIG_USB_BANDWIDTH
+/usr/src/linux-2.6.14-rc1/.config
+# CONFIG_USB_BANDWIDTH is not set
+
+Yes. CONFIG_USB_BANDWIDTH disabled in both setups.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-21-05 21:31 dagb           New Issue                                    
+09-21-05 21:31 dagb           Distribution              => Gentoo          
+09-21-05 21:31 dagb           Kernel Version            => 2.6.14-rc2      
+09-21-05 21:31 dagb           Issue Monitored: dagb                        
+09-26-05 22:07 dagb           Note Added: 0006400                          
+09-26-05 22:32 rlrevell       Note Added: 0006401                          
+09-27-05 07:40 dagb           Note Added: 0006404                          
+======================================================================
+
 
 
 
