@@ -1,13 +1,12 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Audigy2 renamed, grrr...
-Date: Tue, 27 Sep 2005 18:48:34 +0100
-Message-ID: <433985F2.6000708@superbug.co.uk>
-References: <4338EF9A.1080906@poczta.fm> <1127824232.43393b683dff9@domainfactory-webmail.de>
+From: Andreas Mohr <andim2@users.sourceforge.net>
+Subject: Re: [PATCH] AZT3328 driver update (#2)
+Date: Tue, 27 Sep 2005 22:52:52 +0200
+Message-ID: <20050927205252.GA25702@rhlx01.fht-esslingen.de>
+Reply-To: andi@lisas.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1127824232.43393b683dff9@domainfactory-webmail.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,35 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Stl <stlman@poczta.fm>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Stl wrote:
-> 
->>Why the hell, Audigy2's name in alsa driver changes with every
->>kernel version?
-> 
-> 
-> The purpose (and the _only_ purpose) of these changes was to annoy
-> users like you.
-> 
-> 
->>Who is such a lunatic to revert it once every two months,
-> 
-> 
-> I doubt that jcd's behaviour is affected by moon phases.
-> Besides, moon phases aren't two months long.
-> 
-> 
->>from Audigy 2 ZS to SB350, from SB350 back to Audigy2
->>(why not ZS? I've got ZS!).
-> 
+Hi,
 
-I didn't change anything. What's the real problem here?
+any update on this one? It's not committed yet, but it could have been,
+since I'm not having too much luck with sequencer timer additions currently
+(it requires a working and verifiably correct MIDI environment first,
+and somehow I'm having a hard time there) and I won't have time for
+several days now to write further patches.
 
-James
+Thanks!
+
+Andreas Mohr
+
+-- 
+No programming skills!? Why not help translate many Linux applications! 
+https://launchpad.ubuntu.com/rosetta
 
 
 -------------------------------------------------------
