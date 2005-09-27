@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001434]: Java plugin sound not working in OSS emulation
-Date: Tue, 27 Sep 2005 03:54:12 +0200
-Message-ID: <c5a964838ec86612954c92d808ef156b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
+Date: Tue, 27 Sep 2005 04:43:54 +0200
+Message-ID: <9f4834bae1a62295070e8b73fe192e59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2FFD18A
-	for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2005 03:54:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75B62127
+	for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2005 04:43:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1434> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
 ======================================================================
-Reported By:                xolsonalsa
+Reported By:                johnz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1434
-Category:                   ISA - sb16/sbawe
+Issue ID:                   978
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               FC3
+Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
 ======================================================================
-Date Submitted:             09-18-2005 22:40 CEST
-Last Modified:              09-27-2005 03:54 CEST
+Date Submitted:             03-10-2005 06:37 CET
+Last Modified:              09-27-2005 04:43 CEST
 ======================================================================
-Summary:                    Java plugin sound not working in OSS emulation
+Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
+alsa 1.0.8
 Description: 
-Tried 2 different soundblaster 16 cards, and ISA and a pnp isa vibra 16. 
-PCM sounds won't play if the Java Sound Audio Engine (software mixer that
-opens /dev/dsp) is in use. Tried it with the JavaSoundDemo and also pogo
-games. The symptom is it seems to play one sound and then io through
-/dev/dsp becomes blocked. The only workaround is to start the web browser
-using aoss so that it opens the native alsa pcm device instead of
-/dev/dsp.
+On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
+kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
+mixer control works; volume sliders have no effect.)  There is no sound
+when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
+2.6.10 kernels with 1.0.8 alsa.
 ======================================================================
 
 ----------------------------------------------------------------------
- xolsonalsa - 09-25-05 12:38 
+ jdthood - 09-22-05 15:03 
 ----------------------------------------------------------------------
-Found out that if you set the card into half duplex mode by setting the
-snd-sb16 module parameter dma16 = -1, then the problems go away.  When
-both dma8 and dma16 are set to normal values the driver creates a sound
-card control called "16-bit DMA Allocation" which allows you to specify
-whether the 16 bit dma allocation is Auto, Playback, or Capture (0, 1, or
-2).  Since this control is similar to a mixer control it's likely that the
-Java Sound is changing it and thats what messes up the DMA and causes the
-lockups. Suggested fix: change the 16-bit DMA allocation into a module
-parameter instead of a sound card control.
+Submitter: Has the problem been fixed in the latest ALSA release?
 
 ----------------------------------------------------------------------
- xolsonalsa - 09-27-05 03:54 
+ johnz - 09-27-05 04:43 
 ----------------------------------------------------------------------
-Well i was wrong about the 16-bit dma allocation control being changed by
-Java Sound. I tried disabling the creation of that control and it still
-had the problem.  There is still the bug when both dma8 and dma16 are set
-normally and it seems to be related to full duplex operation. In
-sb16_main.c, commenting out the control this way fixes the problem:
+Problem is still present in most current fedora core 3 kernel and alsa
+module.
+uname -r
+2.6.12-1.1378_FC3
 
-/*	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
-		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
-	else */
-		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
+rpm -q alsa-kmdl-2.6.12-1.1378_FC3
+alsa-kmdl-2.6.12-1.1378_FC3-1.0.9rfb-40.rhfc3.at
 
-commenting out the control this way does not:
-/*	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
-		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
-	else 
-		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
-*/
 
--------
-So it looks like if pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX; the
-problem appears, and if pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX; it
-works.
+0:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] Sound
+Controller (rev a0)
+        Subsystem: ASRock Incorporation: Unknown device 7012
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at c800 [size=256]
+        I/O ports at c400 [size=128]
+        Capabilities: [48] Power Management version 2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-18-05 22:40 xolsonalsa     New Issue                                    
-09-23-05 14:46 xolsonalsa     Note Added: 0006367                          
-09-25-05 01:07 xolsonalsa     Note Added: 0006380                          
-09-25-05 12:38 xolsonalsa     Note Added: 0006385                          
-09-27-05 03:54 xolsonalsa     Note Added: 0006402                          
+03-10-05 06:37 johnz          New Issue                                    
+03-10-05 06:37 johnz          File Added: asound.state                     
+03-10-05 06:37 johnz          Distribution              => FC3             
+03-10-05 06:37 johnz          Kernel Version            =>
+kernel-2.6.10-1.770_14.rhfc3.at
+03-10-05 06:39 johnz          Issue Monitored: johnz                       
+03-10-05 06:43 johnz          File Added: lsmod                            
+03-10-05 14:39 tiwai          Note Added: 0003853                          
+03-11-05 03:19 johnz          Note Added: 0003879                          
+09-22-05 15:03 jdthood        Note Added: 0006342                          
+09-27-05 04:43 johnz          Note Added: 0006403                          
 ======================================================================
 
 
