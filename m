@@ -1,11 +1,14 @@
-From: Brant <operatives@yoda1.fsnet.co.uk>
-Subject: WallStreet Universe
-Date: Tue, 27 Sep 2005 17:38:02 +0900
-Message-ID: <101320117889.76233693@220.121.167.27>
-Mime-Version: 1.0 (Apple Message framework v728)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001465]: xmms volume slider malfunction in aoss
+Date: Tue, 27 Sep 2005 11:33:35 +0200
+Message-ID: <944428953ad607b9d68b9acac37ed10f@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88826157
+	for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2005 11:33:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,53 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-WE TOLD YOU TO WATCH.
-IT'S STILL NOT TOO LATE...
-TRADING ALERT!
-Timing is everything!!!
 
-Date: 27 Sep 2005
-Company: China World Trade Corporation
-Symbol: CWTD.OB
-Price: $1.91
-7-Day Target: $3-4
-3-Month Target: $8-9
-Status: Strong Buy
-Rating: 5(5)
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1465> 
+======================================================================
+Reported By:                xolsonalsa
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1465
+Category:                   ISA - sb16/sbawe
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-27-2005 11:33 CEST
+Last Modified:              09-27-2005 11:33 CEST
+======================================================================
+Summary:                    xmms volume slider malfunction in aoss
+Description: 
+When I run xmms it's built-in volume slider works normally, with OSS volume
+ranges 0 to 31.  When I run aoss xmms, the volume slider seems to have
+different ranges for the left and right channels.  When you turn it all
+the way up and look at the values with amixer or alsamixer the left
+channel is set to 31 and the right is set to 15.  Also the sound out the
+speakers agrees with this (left much louder).  The same problem happens
+with the master control if you tell xmms to use the master instead of the
+pcm volume.
+======================================================================
 
----
-About China World Trade Corporation
-
-China World Trade Corporation (CWTC) has established its business 
-in three distinct areas: the club and business centers throughout 
-major cities in China, business travel-related services, 
-and business value-added services. The Club and Business Center Division 
-is devoted to the building of the World Trade brand throughout China 
-via the opening and operating of business clubs in China's major, 
-positioning the CWTC to act as a platform to facilitate trade 
-between China and the world markets. The acquisition 
-of CEO Clubs China Limited ("CEO Clubs") in May 2004 further complements 
-CWTC's offerings by targeting high-level corporate executives 
-from premier companies. The Business Traveling Services Division, 
-New Generation, provides CWTC access to the rapidly growing 
-travel-related industry. New Generation is a pioneer 
-and market leader in the travel agency business through 
-its strong network of ticketing sales operations throughout Southern China. 
-The Business Value-Added Services Division focuses on value-added services 
-of credit cards, merchant-related business services, as well 
-as consultancy services to CWTC members and clients. 
-Guangdong World Trade Link Information Services Limited ("WTC Link"), 
-a subsidiary of CWTC, manages the Company's co-branded credit card project 
-and is an active provider of CRM solutions and services in China.
----
-
-WATCH OUT! STOCK is ready to ROCK !!!
-We could see a GREAT STORY IN THE MAKING !!!
-GOOD LUCK AND TRADE OUT AT THE TOP.
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-27-05 11:33 xolsonalsa     New Issue                                    
+======================================================================
 
 
 
