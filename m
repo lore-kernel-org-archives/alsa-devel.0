@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001447]: SPDIF IN>OUT Loop missing
-Date: Wed, 28 Sep 2005 09:20:44 +0200
-Message-ID: <6d05d88a71b7276a7850d6cc7cdc0997@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001458]: hda - High frequency noise in background and muting when changing volume
+Date: Wed, 28 Sep 2005 10:12:40 +0200
+Message-ID: <1ce19a860fee4c7af57e38f517bae36a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 678D416E
-	for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2005 09:20:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0013D171
+	for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2005 10:12:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1458> 
 ======================================================================
-Reported By:                Mimosius
-Assigned To:                Clemens Ladisch
+Reported By:                andres
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1447
-Category:                   PCI - ymfpci
+Issue ID:                   1458
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               ubuntu breezy badger
+Kernel Version:              2.6.12-9-386
 ======================================================================
-Date Submitted:             09-23-2005 20:47 CEST
-Last Modified:              09-28-2005 09:20 CEST
+Date Submitted:             09-25-2005 16:07 CEST
+Last Modified:              09-28-2005 10:12 CEST
 ======================================================================
-Summary:                    SPDIF IN>OUT Loop missing
+Summary:                    hda - High frequency noise in background and muting
+when changing volume
 Description: 
-Hi,
+When i play sound i hear a high (constant) frequency beep additionally to
+what i intend to play. I also tried to set position_fix=[0,1,2] and model,
+but that didnt help (for both, related?, problems)
+If i change volume via alsamixer no sound can be heard anymore till i
+unload and load the snd_hda_intel module.
 
-I'm using a Hoontech Digital-XG and I was missing the capability to loop
-the digital signal from SPDIF-in to SPDIF- out, so I modified the
-ymfpci_main.c, adding an extra mixer switch (patch against latest CVS
-version included). Would anyone of the developers verify this patch and
-add this feature to the ymfpci module?
+Thanks for helping
 
-Regards,
-Glen Masgai
+Andres
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Mimosius - 09-26-05 19:36 
+ andres - 09-28-05 10:12 
 ----------------------------------------------------------------------
-Hi Clemens,
-
-I think some things are clarified now. :)
-I uploaded the new patch and I hope, there are no stupid mistakes
-anymore.
-
-Regards
-Glen Masgai
+If you need any additional information, say it, i will give them as soon as
+i can.
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-28-05 09:20 
+ andres - 09-28-05 10:12 
 ----------------------------------------------------------------------
-Thanks, applied to CVS.
+If you need any additional information, say it, i will give them as soon as
+i can.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 20:47 Mimosius       New Issue                                    
-09-23-05 20:47 Mimosius       File Added: ymfpci_spdifloop.diff                 
-  
-09-23-05 20:47 Mimosius       Issue Monitored: Mimosius                    
-09-26-05 11:10 Clemens LadischNote Added: 0006392                          
-09-26-05 15:38 Mimosius       Note Added: 0006393                          
-09-26-05 15:48 Clemens LadischNote Added: 0006394                          
-09-26-05 15:48 Clemens LadischAssigned To               => Clemens Ladisch 
-09-26-05 15:48 Clemens LadischStatus                   new => assigned     
-09-26-05 19:35 Mimosius       File Added: ymfpci_spdif_inoutloop.diff           
-        
-09-26-05 19:36 Mimosius       Note Added: 0006396                          
-09-28-05 09:20 Clemens LadischStatus                   assigned => resolved
-09-28-05 09:20 Clemens LadischResolution               open => fixed       
-09-28-05 09:20 Clemens LadischNote Added: 0006406                          
+09-25-05 16:07 andres         New Issue                                    
+09-25-05 16:07 andres         Distribution              => ubuntu breezy badger
+09-25-05 16:07 andres         Kernel Version            =>  2.6.12-9-386   
+09-25-05 16:12 andres         Issue Monitored: andres                      
+09-28-05 10:12 andres         Note Added: 0006407                          
+09-28-05 10:12 andres         Note Added: 0006408                          
 ======================================================================
 
 
