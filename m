@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001458]: hda - High frequency noise in background and muting when changing volume
-Date: Wed, 28 Sep 2005 10:12:40 +0200
-Message-ID: <1ce19a860fee4c7af57e38f517bae36a@bugtrack.alsa-project.org>
+Date: Wed, 28 Sep 2005 10:12:05 +0200
+Message-ID: <4817ea031b4c8fcad7e6e1e88508044d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0013D171
-	for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2005 10:12:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BCD3171
+	for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2005 10:12:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -63,12 +63,6 @@ Andres
 If you need any additional information, say it, i will give them as soon as
 i can.
 
-----------------------------------------------------------------------
- andres - 09-28-05 10:12 
-----------------------------------------------------------------------
-If you need any additional information, say it, i will give them as soon as
-i can.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -77,7 +71,6 @@ Date Modified  Username       Field                    Change
 09-25-05 16:07 andres         Kernel Version            =>  2.6.12-9-386   
 09-25-05 16:12 andres         Issue Monitored: andres                      
 09-28-05 10:12 andres         Note Added: 0006407                          
-09-28-05 10:12 andres         Note Added: 0006408                          
 ======================================================================
 
 
