@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001442]: snapper: no sound after resume
-Date: Thu, 29 Sep 2005 20:55:36 +0200
-Message-ID: <0e93720ef35766ed710cdcaab195508e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001010]: Speaker output does not work.
+Date: Thu, 29 Sep 2005 21:01:29 +0200
+Message-ID: <28dc7cd643e730c2a5ba828747f3605f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CF2F188
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 20:55:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0602C188
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 21:01:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000057.
+The following issue has been set as RELATED TO issue 0001441.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1442> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
 ======================================================================
-Reported By:                Johannes Berg
+Reported By:                sylware
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1442
+Issue ID:                   1010
 Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               debian
-Kernel Version:             2.6.13
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             09-22-2005 17:32 CEST
-Last Modified:              09-29-2005 20:55 CEST
+Date Submitted:             03-24-2005 10:24 CET
+Last Modified:              03-29-2005 03:20 CEST
 ======================================================================
-Summary:                    snapper: no sound after resume
+Summary:                    Speaker output does not work.
 Description: 
-After resuming from suspend to disk there's no sound with a snapper chip on
-a post-february 2005 powerbook.
-
-alsactl restore doesn't help, the only way I have managed to work around
-this is to reload the module
+I use a powermac windtunnel newworld with a keywest snapper audio
+controller on the uninorth i2c bus (according to the /sys and /proc
+filesystems). I'm able to get sound from the headphone output at the front
+of the computer(it does automute the computer speaker when I plug the jack
+in) but I'm unable to get sound from the speaker output at the rear of the
+computer.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0000057 Kernel device in bad state after suspen...
+related to          0001441 snd-powermac: Burgundy: controls for he...
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-24-05 19:49 
+----------------------------------------------------------------------
+Snapper has two PCM volumes (you can see in alsamixer).  Does the second
+PCM (PCM,1) have any influence?
+
+----------------------------------------------------------------------
+ sylware - 04-25-05 17:31 
+----------------------------------------------------------------------
+Ok I did some testing: there is sound on the speaker output that is
+controled with (PCM,0) and not (PCM,1)... but the sound is very weak... I
+had to put almost my hi-fi system to the max to hear something!(I
+rebooted... I almost burned my hi-fi speakers with the "apple sound" at
+the start of the computer.
+If I do the same kind of testing when connected to the headphone output, I
+get the same results when the headphone output is mutted. Namely I get a
+very weak sound even it is muted. BTW I'm an electrical engineer, so you
+can ask me *hardcore* questions, I'm supposed to understand, and I have
+setup a little build environ on the targeted computer(with alsa 1.0.9rc2):
+I can recompile snd-powermac and try it.
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-05 17:32 Johannes Berg  New Issue                                    
-09-22-05 17:32 Johannes Berg  Distribution              => debian          
-09-22-05 17:32 Johannes Berg  Kernel Version            => 2.6.13          
-09-22-05 17:32 Johannes Berg  Issue Monitored: Johannes Berg                    
-09-29-05 20:55 jdthood        Relationship added       duplicate of 0000057
+03-24-05 10:24 sylware        New Issue                                    
+03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
+03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
+03-24-05 19:49 tiwai          Note Added: 0004198                          
+03-25-05 20:55 sylware        Note Added: 0004211                          
+03-29-05 03:20 sylware        Note Added: 0004242                          
+04-25-05 17:22 sylware        Note Deleted: 0004211                        
+04-25-05 17:25 sylware        Note Edited: 0004242                         
+04-25-05 17:31 sylware        Note Edited: 0004242                         
+09-29-05 21:01 jdthood        Relationship added       related to 0001441  
 ======================================================================
 
 
