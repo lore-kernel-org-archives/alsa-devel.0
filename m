@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001433]: No sound output
-Date: Thu, 29 Sep 2005 12:03:23 +0200
-Message-ID: <61f406a81bc067d4021d6429e5e486aa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000101]: SiS7012 LineIn low loudness
+Date: Thu, 29 Sep 2005 12:05:31 +0200
+Message-ID: <10db5d3865bfab75efa9c0574bb3badd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8FB9191
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:03:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5A8B11D
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:05:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,196 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001381.
+The following issue has been set as RELATED TO issue 0001092.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1433> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=101> 
 ======================================================================
-Reported By:                lithium7456
+Reported By:                goldenfish
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1433
+Issue ID:                   101
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.4.29
+Distribution:               Debian testing
+Kernel Version:             2.6.4-rc1
 ======================================================================
-Date Submitted:             09-18-2005 06:23 CEST
-Last Modified:              09-29-2005 12:03 CEST
+Date Submitted:             02-29-2004 11:43 CET
+Last Modified:              09-07-2005 16:32 CEST
 ======================================================================
-Summary:                    No sound output
+Summary:                    SiS7012 LineIn low loudness
 Description: 
-The driver has been installed with the system.
-First I use "alsaconf" to configure my soundcard.
-The program found my soundcard correctly, and there is no error message.
-I use "lsmod" and found that the driver is loaded.
-
-then I typed "alsamixer", But got a message saying that "No mixer elems
-found" (I realized that it is the modem)
-so I try "alsamixer -c 1", and I unmute and raise "Master" "PCM"
-Here is the "amixer -c 1"'s result:
-
----------BEGIN-------------
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 54 [86%] [on]
-  Front Right: Playback 54 [86%] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off]
-  Front Right: Playback 0 [0%] [off]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-Simple mixer control '3D Control - Switch',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off]
-  Front Right: Playback 0 [0%] [off]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [on]
-  Front Right: Capture [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Mic Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Video',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 0 [0%] [off]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 0 [0%] [off] Capture [off]
-  Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [on]
-  Front Right: Capture 0 [0%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-
----------END--------------
-
-But there is no sound output.("aplay XXXXX.wav")
-
-when I start KDE or Gnome, sound system crashed.
-
-what should I do?
-Thank you.
-
+i have SiS7012 integrated on motherboard. if i listen radio from linein
+from headphones, maximal loudnes is very low(60% maximal loudness of
+SBlive). loudness is in alsamixer is at maximum value(Line In, Master).
 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001381 No sound on Thinkpad T40p
+related to          0001092 Low volume output with snd-i8x0
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 09:26 
+----------------------------------------------------------------------
+Submitter: Is this still a problem?  Do you have better success if you
+use gamix to control the mixer levels?
+
+----------------------------------------------------------------------
+ Visionary - 03-31-05 15:48 
+----------------------------------------------------------------------
+I suffer from a similar problem:
+
+When trying to play any sound through SiS7012 PCI Audio Accelerator you
+cannot
+hear it through the built-in speakers (it's in a Medion SIM 2000 Laptop)
+and only very quietly through headphones.  All volumes in kmix, aumix and
+alsamixer etc. are at 100%.
+
+----------------------------------------------------------------------
+ goldenfish - 09-07-05 16:00 
+----------------------------------------------------------------------
+Sorry, i don't have already this hardware for testing.
+
+----------------------------------------------------------------------
+ Visionary - 09-07-05 16:32 
+----------------------------------------------------------------------
+Is there anything I can do to test my hardware for you?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-18-05 06:23 lithium7456    New Issue                                    
-09-18-05 06:23 lithium7456    Kernel Version            => 2.4.29          
-09-29-05 12:03 jdthood        Relationship added       duplicate of 0001381
+02-29-04 11:43 goldenfish     New Issue                                    
+02-29-04 11:43 goldenfish     File Added: sis7012.tar.bz2                    
+03-19-05 09:26 jdthood        Note Added: 0004017                          
+03-31-05 15:48 Visionary      Note Added: 0004281                          
+09-07-05 16:00 goldenfish     Note Added: 0006057                          
+09-07-05 16:32 Visionary      Note Added: 0006058                          
+09-29-05 12:05 jdthood        Relationship added       related to 0001092  
 ======================================================================
 
 
