@@ -1,13 +1,16 @@
-From: Michael Downey <downey@zymeta.com>
-Subject: Re: hda-intel module hanging if ACPI enabled
-Date: Thu, 29 Sep 2005 12:13:49 -0600
-Message-ID: <433C2EDD.4050005@zymeta.com>
-References: <433C261D.8090100@zymeta.com> <20050929105612.A8457@cox.net>
+From: Eric Shattow <lucent@gmail.com>
+Subject: Re: Hercules PC DJ Console (Windows Edition) information
+Date: Thu, 29 Sep 2005 13:53:02 -0500
+Message-ID: <2c746f6205092911534dacb588@mail.gmail.com>
+References: <2c746f6205092906046546188c@mail.gmail.com>
+	 <Pine.HPX.4.33n.0509291514120.4499-100000@studcom.urz.uni-halle.de>
+Reply-To: Eric Shattow <lucent@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050929105612.A8457@cox.net>
+In-Reply-To: <Pine.HPX.4.33n.0509291514120.4499-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,65 +20,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Matt Porter wrote:
+On 9/29/05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Eric Shattow wrote:
+> > I tried the above patch, and applied it to debian alsa-source package
+> > 1.0.9b4, and now the DJ Console is recognized.
+> >
+> > However, using amidi -d -p hw:2,0,n  does not yield any output when
+> > moving the controls.
+>
+> Probably the devices user a different protocol than I was assuming.
+> Please uncomment the DUMP_PACKETS line near the top of usbmidi.c and
+> show any "received packet" lines that end up in the system log.
+>
+>
+> Regards,
+> Clemens
+>
+>
 
->On Thu, Sep 29, 2005 at 11:36:29AM -0600, Michael Downey wrote:
->  
->
->>I have an Intel Desktop D945GTP motherboard and I am running gentoo with 
->>kernel 2.6.13-r2.  If I enable ACPI then the system will hang whenever 
->>the hda-intel kernel module is loaded.  I did some more testing and I 
->>found that if I enable "Local APIC support for uniprocessors" and 
->>"IO-APIC support on uniprocessors" in the kernel then the hda-intel 
->>module will load when ACPI is enabled.  The codec that is used on the 
->>motherboard is a Sigmatel STAC9221 A1.  Is APIC a requirement for this 
->>setup?  Also I've tried 1.0.10rc1 of the alsa-driver and got the same 
->>results.
->>    
->>
-> 
->I hadn't noticed this myself since I have local apic support on in
->my kernel, but have heard the same thing from other users. Haven't
->looked into it further yet.
->
->  
->
->>Also I was wondering how to go about retasking the audio jacks?  The 
->>default mixer only provides PCM, FRONT, CAPTURE, INPUT SELECT, and MIX.  
->>I would like to know how to set up 2 of the jacks to be output jacks 
->>which as far as I know is possible with hda-intel.
->>    
->>
->
->I am working on some updates to the SigmaTel HDA patch to support these
->motherboards. The basic issue is that the BIOS doesn't set up the
->proper configuration default registers on these motherboards so we
->need to detect the motherboard and load the proper configuration
->defaults. I also added in some switches to retask those jacks.
->
->I have an issue with my boards in that they don't properly reflect
->the Subsystem ID that should be used for identifying the motherboard
->and jack configuration.  Can you do a
->'grep Subsystem /proc/asound/card0/codec#2' and post the results?
->I'd like to verify that your board shows the proper ID.
->
->-Matt
->  
->
-Thanks for the quick reply. Here's my output:
-Subsystem Id: 0x0
+I tried your suggestion for DUMP_PACKETS and there was no output with
+1.0.9b4+patches. I will now try CVS with the above usbquirk.h patch
+and #define DUMP_PACKETS to see what happens:
 
-The board has a BIOS revision string of: 
-NT9410J.86A.1348.2005.0609.1737. I see that there is a newer BIOS 2104 
-released on Sept. 2 so updating the BIOS might make a difference. I will 
-probably try the update in a day or two so I'll post my results then.
+Sep 29 13:54:18 [kernel] input: USB HID v1.10 Joystick [Hercules
+Hercules DJ Console] on usb-0000:00:02.1-3
+Sep 29 13:54:18 [kernel] input: USB HID v1.10 Mouse [Hercules Hercules
+DJ Console] on usb-0000:00:02.1-3
+Sep 29 13:54:18 [kernel] input: USB HID v1.10 Keyboard [Hercules
+Hercules DJ Console] on usb-0000:00:02.1-3
+Sep 29 13:54:18 [kernel] snd-usb-audio: probe of 2-3:1.5 failed with error =
+-5
+Sep 29 13:54:18 [kernel] ALSA
+/tmp/alsa-cvs20050929/alsa-driver/usb/usbmixer.c:669: 2:6: cannot get
+min/max values for control 8 (id 2)
 
-Michael Downey
-Zymeta Corporation
-
+I think I've seen error -5 mentioned on the list archives, how to fix this?
 
 
 -------------------------------------------------------
