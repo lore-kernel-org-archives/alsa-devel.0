@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001010]: Speaker output does not work.
-Date: Thu, 29 Sep 2005 21:01:29 +0200
-Message-ID: <28dc7cd643e730c2a5ba828747f3605f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001441]: snd-powermac: Burgundy: controls for headphones and speakers inverted
+Date: Thu, 29 Sep 2005 21:01:27 +0200
+Message-ID: <68d6e611d1e0bf4cf3c40dc89b7a1b15@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0602C188
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 21:01:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FA89164
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 21:01:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001441.
+The following issue has been set as RELATED TO issue 0001010.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1441> 
 ======================================================================
-Reported By:                sylware
+Reported By:                Quietti
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1010
+Issue ID:                   1441
 Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
+Distribution:               Debian
+Kernel Version:             2.6.13.2
 ======================================================================
-Date Submitted:             03-24-2005 10:24 CET
-Last Modified:              03-29-2005 03:20 CEST
+Date Submitted:             09-22-2005 10:12 CEST
+Last Modified:              09-29-2005 21:01 CEST
 ======================================================================
-Summary:                    Speaker output does not work.
+Summary:                    snd-powermac: Burgundy: controls for headphones and
+speakers inverted
 Description: 
-I use a powermac windtunnel newworld with a keywest snapper audio
-controller on the uninorth i2c bus (according to the /sys and /proc
-filesystems). I'm able to get sound from the headphone output at the front
-of the computer(it does automute the computer speaker when I plug the jack
-in) but I'm unable to get sound from the speaker output at the rear of the
-computer.
+The control sliders for the volume of the stereo speakers and of the
+headphones are reversed. Additionally, the speaker controls are wrongfully
+a single mono slider. Another headphone-related issue is that the
+automatic muting of the speakers upon connection of headphones does not
+work. Likewise, the muting status of headphones and speakers is not saved.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001441 snd-powermac: Burgundy: controls for he...
+related to          0001010 Speaker output does not work.
+related to          0000306 compiles, but no sound comes out
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-24-05 19:49 
-----------------------------------------------------------------------
-Snapper has two PCM volumes (you can see in alsamixer).  Does the second
-PCM (PCM,1) have any influence?
-
-----------------------------------------------------------------------
- sylware - 04-25-05 17:31 
-----------------------------------------------------------------------
-Ok I did some testing: there is sound on the speaker output that is
-controled with (PCM,0) and not (PCM,1)... but the sound is very weak... I
-had to put almost my hi-fi system to the max to hear something!(I
-rebooted... I almost burned my hi-fi speakers with the "apple sound" at
-the start of the computer.
-If I do the same kind of testing when connected to the headphone output, I
-get the same results when the headphone output is mutted. Namely I get a
-very weak sound even it is muted. BTW I'm an electrical engineer, so you
-can ask me *hardcore* questions, I'm supposed to understand, and I have
-setup a little build environ on the targeted computer(with alsa 1.0.9rc2):
-I can recompile snd-powermac and try it.
-
-
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 10:24 sylware        New Issue                                    
-03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
-03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
-03-24-05 19:49 tiwai          Note Added: 0004198                          
-03-25-05 20:55 sylware        Note Added: 0004211                          
-03-29-05 03:20 sylware        Note Added: 0004242                          
-04-25-05 17:22 sylware        Note Deleted: 0004211                        
-04-25-05 17:25 sylware        Note Edited: 0004242                         
-04-25-05 17:31 sylware        Note Edited: 0004242                         
-09-29-05 21:01 jdthood        Relationship added       related to 0001441  
+09-22-05 10:12 Quietti        New Issue                                    
+09-22-05 10:12 Quietti        Distribution              => Debian          
+09-22-05 10:12 Quietti        Kernel Version            => 2.6.13.2        
+09-22-05 18:12 Quietti        Issue Monitored: Quietti                     
+09-25-05 01:03 rlrevell       Relationship added       related to 0000306  
+09-29-05 21:01 jdthood        Relationship added       related to 0001010  
 ======================================================================
 
 
