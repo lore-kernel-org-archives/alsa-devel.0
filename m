@@ -1,16 +1,13 @@
-From: Eric Shattow <lucent@gmail.com>
-Subject: Re: Hercules PC DJ Console (Windows Edition) information
-Date: Thu, 29 Sep 2005 13:53:02 -0500
-Message-ID: <2c746f6205092911534dacb588@mail.gmail.com>
-References: <2c746f6205092906046546188c@mail.gmail.com>
-	 <Pine.HPX.4.33n.0509291514120.4499-100000@studcom.urz.uni-halle.de>
-Reply-To: Eric Shattow <lucent@gmail.com>
+From: Matt Porter <mporter@embeddedalley.com>
+Subject: Re: hda-intel module hanging if ACPI enabled
+Date: Thu, 29 Sep 2005 11:55:17 -0700
+Message-ID: <20050929115517.C8457@cox.net>
+References: <433C261D.8090100@zymeta.com> <20050929105612.A8457@cox.net> <433C2EDD.4050005@zymeta.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0509291514120.4499-100000@studcom.urz.uni-halle.de>
 Content-Disposition: inline
+In-Reply-To: <433C2EDD.4050005@zymeta.com>; from downey@zymeta.com on Thu, Sep 29, 2005 at 12:13:49PM -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,45 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Michael Downey <downey@zymeta.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 9/29/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Eric Shattow wrote:
-> > I tried the above patch, and applied it to debian alsa-source package
-> > 1.0.9b4, and now the DJ Console is recognized.
+On Thu, Sep 29, 2005 at 12:13:49PM -0600, Michael Downey wrote:
+> Matt Porter wrote:
+> >I am working on some updates to the SigmaTel HDA patch to support these
+> >motherboards. The basic issue is that the BIOS doesn't set up the
+> >proper configuration default registers on these motherboards so we
+> >need to detect the motherboard and load the proper configuration
+> >defaults. I also added in some switches to retask those jacks.
 > >
-> > However, using amidi -d -p hw:2,0,n  does not yield any output when
-> > moving the controls.
->
-> Probably the devices user a different protocol than I was assuming.
-> Please uncomment the DUMP_PACKETS line near the top of usbmidi.c and
-> show any "received packet" lines that end up in the system log.
->
->
-> Regards,
-> Clemens
->
->
+> >I have an issue with my boards in that they don't properly reflect
+> >the Subsystem ID that should be used for identifying the motherboard
+> >and jack configuration.  Can you do a
+> >'grep Subsystem /proc/asound/card0/codec#2' and post the results?
+> >I'd like to verify that your board shows the proper ID.
+> >
+> Thanks for the quick reply. Here's my output:
+> Subsystem Id: 0x0
 
-I tried your suggestion for DUMP_PACKETS and there was no output with
-1.0.9b4+patches. I will now try CVS with the above usbquirk.h patch
-and #define DUMP_PACKETS to see what happens:
+Ugh, this is supposed to have a unique identifying value. Did
+you get a very early board from Intel?
 
-Sep 29 13:54:18 [kernel] input: USB HID v1.10 Joystick [Hercules
-Hercules DJ Console] on usb-0000:00:02.1-3
-Sep 29 13:54:18 [kernel] input: USB HID v1.10 Mouse [Hercules Hercules
-DJ Console] on usb-0000:00:02.1-3
-Sep 29 13:54:18 [kernel] input: USB HID v1.10 Keyboard [Hercules
-Hercules DJ Console] on usb-0000:00:02.1-3
-Sep 29 13:54:18 [kernel] snd-usb-audio: probe of 2-3:1.5 failed with error =
--5
-Sep 29 13:54:18 [kernel] ALSA
-/tmp/alsa-cvs20050929/alsa-driver/usb/usbmixer.c:669: 2:6: cannot get
-min/max values for control 8 (id 2)
+> The board has a BIOS revision string of: 
+> NT9410J.86A.1348.2005.0609.1737. I see that there is a newer BIOS 2104 
+> released on Sept. 2 so updating the BIOS might make a difference. I will 
+> probably try the update in a day or two so I'll post my results then.
 
-I think I've seen error -5 mentioned on the list archives, how to fix this?
+You can check. However, I've looked at the BIOS updates that appear
+to have no changes related to the HDA config default regs. My
+current patches load up the appropriate config default values but
+I currently have an issue with reliably identifying the appropriate
+board for each set of values.
+
+You'll also need the patch update to get the retasking controls.
+ 
+I'm working with SigmaTel on this so let me check on some things
+regarding board ID and then I'll hopefully have a patch to post
+that will work for you.  We may have to resort to manually
+specifying the model type for these boards...I'm hoping to
+avoid that though.
+
+-Matt
 
 
 -------------------------------------------------------
