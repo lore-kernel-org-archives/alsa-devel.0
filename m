@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000726]: headphone output on the docking station (Dell Lattitude D400) does not work
-Date: Thu, 29 Sep 2005 12:12:38 +0200
-Message-ID: <0c94dd7c20bf8d8e090e4bd36d989b60@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000079]: Dell Inspiron 8500 ICH4 no sound through internal speakers unless "External Amplifier" switched on
+Date: Thu, 29 Sep 2005 12:13:31 +0200
+Message-ID: <331ea9b09331a149b1b271ea6b98f29d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B431191
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:12:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01732191
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:13:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79> 
 ======================================================================
-Reported By:                vassili
+Reported By:                rocco
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   726
+Issue ID:                   79
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.8, custom build
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             12-15-2004 17:26 CET
-Last Modified:              09-29-2005 12:12 CEST
+Date Submitted:             02-22-2004 21:40 CET
+Last Modified:              09-29-2005 12:13 CEST
 ======================================================================
-Summary:                    headphone output on the docking station (Dell
-Lattitude D400) does not work
+Summary:                    Dell Inspiron 8500 ICH4 no sound through internal
+speakers unless "External Amplifier" switched on
 Description: 
-Support of a headphone jack on the docking station is missing.
-
-Hardware: Dell Latitude D400 with docking station, 
-Intel 82810DB AC97 Audio
+Alsa from kernel tree 2.6.3. Internal speakers of the laptop are not
+working, when pluggin in something in the headphone output sound is
+working. Mixer volume looks ok.
 ======================================================================
 
 ----------------------------------------------------------------------
- vassili - 01-11-05 15:52 
+ rocco - 02-26-04 13:00 
 ----------------------------------------------------------------------
-all output is inside the uploaded file "codecs"
-including /etc/asound.state /proc/asound/card0/codec97#0/ac97#0-0+regs
-and /proc/asound/card0/codec97#0/ac97#0-0
+External Amplifier Power Down must be off (toggled with m, mute) in
+alsamixer, then it there is sound in the internal speakers.
+
+This is far from logic, at least that one have to mute external to get
+sound.
 
 ----------------------------------------------------------------------
- jdthood - 09-29-05 12:12 
+ tiwai - 03-01-04 20:13 
 ----------------------------------------------------------------------
-vassili: Any improvement in the latest ALSA release?
+how is the default state of this switch?
+it must be off as default.  if it's on, it's a bug of the driver.
+
+and, yes, it's nasty...  note that it's a switch to turn OFF.
+maybe it's better to rename it as 'External Amplifier',
+and reverse the meaning of the switch.
+
+----------------------------------------------------------------------
+ tiwai - 03-10-04 17:57 
+----------------------------------------------------------------------
+now the switch is renamed to 'External Amplifier'.
+it's a bit more obvious than before :)
+
+about the default value: could you check again the default
+EAPD value?  stop once alsa service, then remove /etc/asound.state
+(or make backup), and start alsa again.
+
+----------------------------------------------------------------------
+ jdthood - 03-10-05 15:24 
+----------------------------------------------------------------------
+> stop once alsa service, then remove /etc/asound.state
+> (or make backup), and start alsa again.
+
+Submitter: What is the default External Amplifier state now?
+
+----------------------------------------------------------------------
+ jdthood - 09-29-05 12:09 
+----------------------------------------------------------------------
+Submitter: What is the default External Amplifier state now?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-15-04 17:26 vassili        New Issue                                    
-12-15-04 17:26 vassili        Distribution              => debian          
-12-15-04 17:26 vassili        Kernel Version            => 2.6.8, custom build
-01-07-05 19:56 tiwai          Note Added: 0003120                          
-01-11-05 13:02 vassili        File Added: codecs                           
-01-11-05 13:11 vassili        Note Added: 0003144                          
-01-11-05 13:15 vassili        Note Added: 0003145                          
-01-11-05 15:04 tiwai          Note Added: 0003147                          
-01-11-05 15:52 vassili        Note Added: 0003150                          
-09-29-05 12:12 jdthood        Note Added: 0006417                          
+02-22-04 21:40 rocco          New Issue                                    
+02-26-04 13:00 rocco          Note Added: 0000346                          
+03-01-04 20:13 tiwai          Note Added: 0000424                          
+03-10-04 17:57 tiwai          Note Added: 0000565                          
+03-10-05 15:24 jdthood        Note Added: 0003864                          
+09-29-05 12:09 jdthood        Note Added: 0006416                          
+09-29-05 12:09 jdthood        Status                   new => feedback     
+09-29-05 12:13 jdthood        Summary                  Dell Inspiron 8500 ICH4
+no sound through internal speakers, headphone ok. => Dell Inspiron 8500 ICH4 no
+sound through internal speakers unless "External Amplifier" switched on
 ======================================================================
 
 
