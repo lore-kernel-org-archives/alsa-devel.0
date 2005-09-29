@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001468]: Revolution7+1,module loaded, no proc info, no sound
-Date: Thu, 29 Sep 2005 21:34:46 +0200
-Message-ID: <aedc73af11265b10b66256225903772f@bugtrack.alsa-project.org>
+Date: Thu, 29 Sep 2005 21:37:41 +0200
+Message-ID: <a07d31a0becfcfcd3be893c673ab215d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8B0A15D
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 21:34:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33F5115D
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 21:37:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1468> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian testing
 Kernel Version:             2.6.13-rc6
 ======================================================================
 Date Submitted:             09-29-2005 21:34 CEST
-Last Modified:              09-29-2005 21:34 CEST
+Last Modified:              09-29-2005 21:37 CEST
 ======================================================================
 Summary:                    Revolution7+1,module loaded, no proc info, no sound
 Description: 
@@ -54,6 +54,11 @@ from card.
 thanks for help with this card.
 ======================================================================
 
+----------------------------------------------------------------------
+ goldenfish - 09-29-05 21:37 
+----------------------------------------------------------------------
+aditionall info: in the kernel.log no messages about this card.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -61,6 +66,7 @@ Date Modified  Username       Field                    Change
 09-29-05 21:34 goldenfish     File Added: lsmod_0                          
 09-29-05 21:34 goldenfish     Distribution              => Debian testing  
 09-29-05 21:34 goldenfish     Kernel Version            => 2.6.13-rc6      
+09-29-05 21:37 goldenfish     Note Added: 0006423                          
 ======================================================================
 
 
