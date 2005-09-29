@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001261]: poor recording with emu10k1
-Date: Thu, 29 Sep 2005 11:02:53 +0200
-Message-ID: <38f066f940ebd5bd16bf5411bca98579@bugtrack.alsa-project.org>
+Date: Thu, 29 Sep 2005 11:11:12 +0200
+Message-ID: <1e71cc05c771c6efa5c275dea3a05cbc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A51DE177
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 11:02:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BE31177
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 11:11:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             all 2.6 versions
 ======================================================================
 Date Submitted:             07-16-2005 09:28 CEST
-Last Modified:              09-29-2005 11:02 CEST
+Last Modified:              09-29-2005 11:11 CEST
 ======================================================================
 Summary:                    poor recording with emu10k1
 Description: 
@@ -54,16 +54,15 @@ linux because of it.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-26-05 21:19 
-----------------------------------------------------------------------
-Actually the bug referred to in the Fedora bugzilla has been fixed since
-8/27/05.    You need a newer ALSA.
-
-----------------------------------------------------------------------
  vladak - 09-29-05 11:02 
 ----------------------------------------------------------------------
 I have unmuted all capture controls I could and it is still not possible to
 record. What is the version number of ALSA containing the 8/27/05 fix ?
+
+----------------------------------------------------------------------
+ mal - 09-29-05 11:11 
+----------------------------------------------------------------------
+The reported problem still exists in kernel-2.6.12-1.1378_FC3
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +89,7 @@ Date Modified  Username       Field                    Change
 09-26-05 21:13 rlrevell       Note Added: 0006398                          
 09-26-05 21:19 rlrevell       Note Added: 0006399                          
 09-29-05 11:02 vladak         Note Added: 0006413                          
+09-29-05 11:11 mal            Note Added: 0006414                          
 ======================================================================
 
 
