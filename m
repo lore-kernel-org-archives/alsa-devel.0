@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000219]: Only pcm-2 (headphone) volume control works, others muted(?)
-Date: Thu, 29 Sep 2005 12:15:18 +0200
-Message-ID: <8b39feb41d286b87417996aa2c732c73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000079]: Dell Inspiron 8500 ICH4 no sound through internal speakers unless "External Amplifier" switched on
+Date: Thu, 29 Sep 2005 12:15:20 +0200
+Message-ID: <dc6dc638c2ca9be84e5c23577c253e7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D470E191
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:15:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 563ED194
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:15:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000079.
+The following issue has been set as RELATED TO issue 0000219.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79> 
 ======================================================================
-Reported By:                JonB
+Reported By:                rocco
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   219
+Issue ID:                   79
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 9.1
-Kernel Version:             2.4.24
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             04-17-2004 12:23 CEST
-Last Modified:              09-29-2005 12:15 CEST
+Date Submitted:             02-22-2004 21:40 CET
+Last Modified:              09-29-2005 12:13 CEST
 ======================================================================
-Summary:                    Only pcm-2 (headphone) volume control works, others
-muted(?)
+Summary:                    Dell Inspiron 8500 ICH4 no sound through internal
+speakers unless "External Amplifier" switched on
 Description: 
-Tried various applications from CLI and Dropline GNOME 2.6.0 to get sound
-output. Dell Inspiron 5150 laptop with 82801DBICH4.
-
-Master volume control, PCM, CD, Video have no effect on sound volume - no
-sound output from external speakers. Plugin headphones and can vary sound
-through headphones using the headphone control (also known as pcm-2 in
-aumix).
-
-Playing any CD with the GNOME CD Player does not produce any sound through
-headphones or speakers.
-
-Playing through headphones - only the headphone control has any effect.
-The master control has no effect.
-
-Have included output from various parts of the system including lspci,
-asound.state and some information in /proc/asound/card0.
-
-Sound was working in 1.0.2 (except PCM control was intermittent) -
-internal speakers worked, master volume control worked, etc.
+Alsa from kernel tree 2.6.3. Internal speakers of the laptop are not
+working, when pluggin in something in the headphone output sound is
+working. Mixer volume looks ok.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000079 Dell Inspiron 8500 ICH4 no sound throug...
+related to          0000219 Only pcm-2 (headphone) volume control w...
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:06 
+ rocco - 02-26-04 13:00 
 ----------------------------------------------------------------------
-Try switching on 'External Amplifier'.
+External Amplifier Power Down must be off (toggled with m, mute) in
+alsamixer, then it there is sound in the internal speakers.
+
+This is far from logic, at least that one have to mute external to get
+sound.
 
 ----------------------------------------------------------------------
- jdthood - 09-29-05 12:13 
+ tiwai - 03-01-04 20:13 
 ----------------------------------------------------------------------
-Submitter: Does switching on 'External Amplifier' fix the problem?
+how is the default state of this switch?
+it must be off as default.  if it's on, it's a bug of the driver.
+
+and, yes, it's nasty...  note that it's a switch to turn OFF.
+maybe it's better to rename it as 'External Amplifier',
+and reverse the meaning of the switch.
+
+----------------------------------------------------------------------
+ tiwai - 03-10-04 17:57 
+----------------------------------------------------------------------
+now the switch is renamed to 'External Amplifier'.
+it's a bit more obvious than before :)
+
+about the default value: could you check again the default
+EAPD value?  stop once alsa service, then remove /etc/asound.state
+(or make backup), and start alsa again.
+
+----------------------------------------------------------------------
+ jdthood - 03-10-05 15:24 
+----------------------------------------------------------------------
+> stop once alsa service, then remove /etc/asound.state
+> (or make backup), and start alsa again.
+
+Submitter: What is the default External Amplifier state now?
+
+----------------------------------------------------------------------
+ jdthood - 09-29-05 12:09 
+----------------------------------------------------------------------
+Submitter: What is the default External Amplifier state now?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-04 12:23 JonB           New Issue                                    
-04-17-04 12:23 JonB           File Added: intel8x0                         
-04-17-04 12:23 JonB           Distribution              => Slackware 9.1   
-04-17-04 12:23 JonB           Kernel Version            => 2.4.24          
-03-23-05 16:06 jdthood        Note Added: 0004171                          
-09-29-05 12:13 jdthood        Note Added: 0006418                          
-09-29-05 12:15 jdthood        Relationship added       related to 0000079  
+02-22-04 21:40 rocco          New Issue                                    
+02-26-04 13:00 rocco          Note Added: 0000346                          
+03-01-04 20:13 tiwai          Note Added: 0000424                          
+03-10-04 17:57 tiwai          Note Added: 0000565                          
+03-10-05 15:24 jdthood        Note Added: 0003864                          
+09-29-05 12:09 jdthood        Note Added: 0006416                          
+09-29-05 12:09 jdthood        Status                   new => feedback     
+09-29-05 12:13 jdthood        Summary                  Dell Inspiron 8500 ICH4
+no sound through internal speakers, headphone ok. => Dell Inspiron 8500 ICH4 no
+sound through internal speakers unless "External Amplifier" switched on
+09-29-05 12:15 jdthood        Relationship added       related to 0000219  
 ======================================================================
 
 
