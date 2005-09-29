@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000079]: Dell Inspiron 8500 ICH4 no sound through internal speakers unless "External Amplifier" switched on
-Date: Thu, 29 Sep 2005 12:15:20 +0200
-Message-ID: <dc6dc638c2ca9be84e5c23577c253e7d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001178]: "Master" does not control headphone or pc speaker volume
+Date: Thu, 29 Sep 2005 12:21:33 +0200
+Message-ID: <055c3624109b3e99ae96e01560eda4d5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 563ED194
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:15:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DAC2E191
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:21:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000219.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1178> 
 ======================================================================
-Reported By:                rocco
+Reported By:                sgoodall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   79
+Issue ID:                   1178
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian
-Kernel Version:             2.6.3
+Status:                     resolved
+Distribution:               Fedora Core 3
+Kernel Version:             kernel-2.6.11-1.27_FC3
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-22-2004 21:40 CET
-Last Modified:              09-29-2005 12:13 CEST
+Date Submitted:             06-09-2005 16:09 CEST
+Last Modified:              09-29-2005 12:21 CEST
 ======================================================================
-Summary:                    Dell Inspiron 8500 ICH4 no sound through internal
-speakers unless "External Amplifier" switched on
+Summary:                    "Master" does not control headphone or pc speaker
+volume
 Description: 
-Alsa from kernel tree 2.6.3. Internal speakers of the laptop are not
-working, when pluggin in something in the headphone output sound is
-working. Mixer volume looks ok.
+The master contol on this device does not affect the headphone speaker
+socket volume. This is a problem for assigning keyboard shortcuts (using
+gnome) to the voume controls as these get mapped to the master control. So
+when using headphones (which I usually do) i cannot control the volume.
+Ideally the master control can also affect the headphone volume, and have
+a separate control for the main speakers. (I would like to be able to keep
+these muted so sounds does not play should headphones not be plugged in
+unless I explicitly enable them).
+I am running fc3 on a dell inspiron 8500.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000219 Only pcm-2 (headphone) volume control w...
-======================================================================
 
 ----------------------------------------------------------------------
- rocco - 02-26-04 13:00 
+ jdthood - 07-16-05 17:05 
 ----------------------------------------------------------------------
-External Amplifier Power Down must be off (toggled with m, mute) in
-alsamixer, then it there is sound in the internal speakers.
+> That patch seems to work ok, however when using the gnome keyboard
+> shortcuts, it umutes the master contol when the volume changes.
 
-This is far from logic, at least that one have to mute external to get
-sound.
-
-----------------------------------------------------------------------
- tiwai - 03-01-04 20:13 
-----------------------------------------------------------------------
-how is the default state of this switch?
-it must be off as default.  if it's on, it's a bug of the driver.
-
-and, yes, it's nasty...  note that it's a switch to turn OFF.
-maybe it's better to rename it as 'External Amplifier',
-and reverse the meaning of the switch.
+Please submit a bug report against the appropriate GNOME package, then.
 
 ----------------------------------------------------------------------
- tiwai - 03-10-04 17:57 
+ jdthood - 09-29-05 12:21 
 ----------------------------------------------------------------------
-now the switch is renamed to 'External Amplifier'.
-it's a bit more obvious than before :)
-
-about the default value: could you check again the default
-EAPD value?  stop once alsa service, then remove /etc/asound.state
-(or make backup), and start alsa again.
-
-----------------------------------------------------------------------
- jdthood - 03-10-05 15:24 
-----------------------------------------------------------------------
-> stop once alsa service, then remove /etc/asound.state
-> (or make backup), and start alsa again.
-
-Submitter: What is the default External Amplifier state now?
-
-----------------------------------------------------------------------
- jdthood - 09-29-05 12:09 
-----------------------------------------------------------------------
-Submitter: What is the default External Amplifier state now?
+Apparently fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-04 21:40 rocco          New Issue                                    
-02-26-04 13:00 rocco          Note Added: 0000346                          
-03-01-04 20:13 tiwai          Note Added: 0000424                          
-03-10-04 17:57 tiwai          Note Added: 0000565                          
-03-10-05 15:24 jdthood        Note Added: 0003864                          
-09-29-05 12:09 jdthood        Note Added: 0006416                          
-09-29-05 12:09 jdthood        Status                   new => feedback     
-09-29-05 12:13 jdthood        Summary                  Dell Inspiron 8500 ICH4
-no sound through internal speakers, headphone ok. => Dell Inspiron 8500 ICH4 no
-sound through internal speakers unless "External Amplifier" switched on
-09-29-05 12:15 jdthood        Relationship added       related to 0000219  
+06-09-05 16:09 sgoodall       New Issue                                    
+06-09-05 16:09 sgoodall       Distribution              => Fedora Core 3   
+06-09-05 16:09 sgoodall       Kernel Version            =>
+kernel-2.6.11-1.27_FC3
+06-23-05 12:10 tiwai          Note Added: 0005177                          
+07-07-05 11:30 sgoodall       Note Added: 0005398                          
+07-08-05 11:51 tiwai          Note Added: 0005409                          
+07-08-05 12:39 sgoodall       Note Added: 0005420                          
+07-08-05 12:54 tiwai          Note Added: 0005421                          
+07-08-05 12:55 tiwai          File Added: ac97-bind-hp-vol.diff                 
+  
+07-11-05 18:21 sgoodall       Note Added: 0005450                          
+07-16-05 17:05 jdthood        Note Added: 0005498                          
+09-29-05 12:21 jdthood        Note Added: 0006419                          
+09-29-05 12:21 jdthood        Status                   new => resolved     
+09-29-05 12:21 jdthood        Resolution               open => fixed       
+09-29-05 12:21 jdthood        Summary                  Headphone and Speaker
+volume control => "Master" does not control headphone or pc speaker volume
 ======================================================================
 
 
