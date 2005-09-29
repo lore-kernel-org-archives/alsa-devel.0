@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000219]: Only pcm-2 (headphone) volume control works, others muted(?)
-Date: Thu, 29 Sep 2005 12:13:56 +0200
-Message-ID: <d54ccb3bd3e6c37a4d64d1a80513dcdb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000726]: headphone output on the docking station (Dell Lattitude D400) does not work
+Date: Thu, 29 Sep 2005 12:12:38 +0200
+Message-ID: <0c94dd7c20bf8d8e090e4bd36d989b60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B78AC191
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:13:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B431191
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:12:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=726> 
 ======================================================================
-Reported By:                JonB
+Reported By:                vassili
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   219
+Issue ID:                   726
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 9.1
-Kernel Version:             2.4.24
+Distribution:               debian
+Kernel Version:             2.6.8, custom build
 ======================================================================
-Date Submitted:             04-17-2004 12:23 CEST
-Last Modified:              09-29-2005 12:13 CEST
+Date Submitted:             12-15-2004 17:26 CET
+Last Modified:              09-29-2005 12:12 CEST
 ======================================================================
-Summary:                    Only pcm-2 (headphone) volume control works, others
-muted(?)
+Summary:                    headphone output on the docking station (Dell
+Lattitude D400) does not work
 Description: 
-Tried various applications from CLI and Dropline GNOME 2.6.0 to get sound
-output. Dell Inspiron 5150 laptop with 82801DBICH4.
+Support of a headphone jack on the docking station is missing.
 
-Master volume control, PCM, CD, Video have no effect on sound volume - no
-sound output from external speakers. Plugin headphones and can vary sound
-through headphones using the headphone control (also known as pcm-2 in
-aumix).
-
-Playing any CD with the GNOME CD Player does not produce any sound through
-headphones or speakers.
-
-Playing through headphones - only the headphone control has any effect.
-The master control has no effect.
-
-Have included output from various parts of the system including lspci,
-asound.state and some information in /proc/asound/card0.
-
-Sound was working in 1.0.2 (except PCM control was intermittent) -
-internal speakers worked, master volume control worked, etc.
+Hardware: Dell Latitude D400 with docking station, 
+Intel 82810DB AC97 Audio
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:06 
+ vassili - 01-11-05 15:52 
 ----------------------------------------------------------------------
-Try switching on 'External Amplifier'.
+all output is inside the uploaded file "codecs"
+including /etc/asound.state /proc/asound/card0/codec97#0/ac97#0-0+regs
+and /proc/asound/card0/codec97#0/ac97#0-0
 
 ----------------------------------------------------------------------
- jdthood - 09-29-05 12:13 
+ jdthood - 09-29-05 12:12 
 ----------------------------------------------------------------------
-Submitter: Does switching on 'External Amplifier' fix the problem?
+vassili: Any improvement in the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-04 12:23 JonB           New Issue                                    
-04-17-04 12:23 JonB           File Added: intel8x0                         
-04-17-04 12:23 JonB           Distribution              => Slackware 9.1   
-04-17-04 12:23 JonB           Kernel Version            => 2.4.24          
-03-23-05 16:06 jdthood        Note Added: 0004171                          
-09-29-05 12:13 jdthood        Note Added: 0006418                          
+12-15-04 17:26 vassili        New Issue                                    
+12-15-04 17:26 vassili        Distribution              => debian          
+12-15-04 17:26 vassili        Kernel Version            => 2.6.8, custom build
+01-07-05 19:56 tiwai          Note Added: 0003120                          
+01-11-05 13:02 vassili        File Added: codecs                           
+01-11-05 13:11 vassili        Note Added: 0003144                          
+01-11-05 13:15 vassili        Note Added: 0003145                          
+01-11-05 15:04 tiwai          Note Added: 0003147                          
+01-11-05 15:52 vassili        Note Added: 0003150                          
+09-29-05 12:12 jdthood        Note Added: 0006417                          
 ======================================================================
 
 
