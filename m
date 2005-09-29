@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000057]: Kernel device in bad state after suspend/resume
-Date: Thu, 29 Sep 2005 20:55:37 +0200
-Message-ID: <f1420efcac7633abfff51940e1b5ece4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001442]: snapper: no sound after resume
+Date: Thu, 29 Sep 2005 20:55:36 +0200
+Message-ID: <0e93720ef35766ed710cdcaab195508e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8501191
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 20:55:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CF2F188
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 20:55:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001442 has been set as DUPLICATE OF the following issue.
+The following issue has been set as DUPLICATE OF issue 0000057.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=57> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1442> 
 ======================================================================
-Reported By:                daenzer
+Reported By:                Johannes Berg
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   57
+Issue ID:                   1442
 Category:                   PPC - powermac
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               debian
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             02-13-2004 01:55 CET
-Last Modified:              05-14-2004 15:12 CEST
+Date Submitted:             09-22-2005 17:32 CEST
+Last Modified:              09-29-2005 20:55 CEST
 ======================================================================
-Summary:                    Kernel device in bad state after suspend/resume
+Summary:                    snapper: no sound after resume
 Description: 
-If a process has the kernel device open during a suspend/resume cycle,
-playing sound fails afterwards with
+After resuming from suspend to disk there's no sound with a snapper chip on
+a post-february 2005 powerbook.
 
-pcm_write:1084: write error: File descriptor in bad state
-
-until the process dies, then it works again.
+alsactl restore doesn't help, the only way I have managed to work around
+this is to reload the module
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001442 snapper: no sound after resume
+duplicate of        0000057 Kernel device in bad state after suspen...
 ======================================================================
-
-----------------------------------------------------------------------
- daenzer - 02-26-04 19:30 
-----------------------------------------------------------------------
-Any feedback on this? I'll gladly try to track it down myself given some
-pointers how to go about it.
-
-----------------------------------------------------------------------
- tiwai - 02-26-04 19:39 
-----------------------------------------------------------------------
-which chip model?  check /proc/asound/cards.
-
-----------------------------------------------------------------------
- daenzer - 02-26-04 22:47 
-----------------------------------------------------------------------
-0 [Snapper        ]: PMac Snapper - PowerMac Snapper
-                     PowerMac Snapper (Dev 26) Sub-frame 0
-
-----------------------------------------------------------------------
- tiwai - 05-14-04 15:12 
-----------------------------------------------------------------------
-does it happen with an OSS app or an ALSA app?
-
-do you see any kernel messages after resume?
-(e.g. tumbler_init_client error or so)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-04 01:55 daenzer        New Issue                                    
-02-26-04 19:30 daenzer        Note Added: 0000363                          
-02-26-04 19:39 tiwai          Note Added: 0000364                          
-02-26-04 22:47 daenzer        Note Added: 0000374                          
-05-14-04 15:12 tiwai          Note Added: 0001111                          
-09-29-05 20:55 jdthood        Relationship added       has duplicate 0001442
+09-22-05 17:32 Johannes Berg  New Issue                                    
+09-22-05 17:32 Johannes Berg  Distribution              => debian          
+09-22-05 17:32 Johannes Berg  Kernel Version            => 2.6.13          
+09-22-05 17:32 Johannes Berg  Issue Monitored: Johannes Berg                    
+09-29-05 20:55 jdthood        Relationship added       duplicate of 0000057
 ======================================================================
 
 
