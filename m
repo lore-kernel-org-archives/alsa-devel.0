@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001033]: hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-Date: Thu, 29 Sep 2005 21:59:48 +0200
-Message-ID: <63159e738c6b5e72a34fdec457100295@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001010]: Speaker output does not work.
+Date: Thu, 29 Sep 2005 22:16:01 +0200
+Message-ID: <334c559ac5184a4b98660210e4483e42@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B79D168
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 21:59:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 086F9137
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 22:16:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1033> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
 ======================================================================
-Reported By:                sjankie
-Assigned To:                
+Reported By:                sylware
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1033
-Category:                   PCI - azx
+Issue ID:                   1010
+Category:                   PPC - powermac
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11.6
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             04-03-2005 15:07 CEST
-Last Modified:              09-29-2005 21:59 CEST
+Date Submitted:             03-24-2005 10:24 CET
+Last Modified:              09-29-2005 22:16 CEST
 ======================================================================
-Summary:                    hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Summary:                    Speaker output does not work.
 Description: 
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-
-azx driver compliens about: NO AFG found.
-
-alsmixer starts, but no sound.
+I use a powermac windtunnel newworld with a keywest snapper audio
+controller on the uninorth i2c bus (according to the /sys and /proc
+filesystems). I'm able to get sound from the headphone output at the front
+of the computer(it does automute the computer speaker when I plug the jack
+in) but I'm unable to get sound from the speaker output at the rear of the
+computer.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001441 snd-powermac: Burgundy: controls for he...
 ======================================================================
 
 ----------------------------------------------------------------------
- Thomas - 04-08-05 21:08 
+ sylware - 04-25-05 17:31 
 ----------------------------------------------------------------------
-After some tweakings (don't ask me exactly what I did, I changed lots of
-stuff), I've got it working.
+Ok I did some testing: there is sound on the speaker output that is
+controled with (PCM,0) and not (PCM,1)... but the sound is very weak... I
+had to put almost my hi-fi system to the max to hear something!(I
+rebooted... I almost burned my hi-fi speakers with the "apple sound" at
+the start of the computer.
+If I do the same kind of testing when connected to the headphone output, I
+get the same results when the headphone output is mutted. Namely I get a
+very weak sound even it is muted. BTW I'm an electrical engineer, so you
+can ask me *hardcore* questions, I'm supposed to understand, and I have
+setup a little build environ on the targeted computer(with alsa 1.0.9rc2):
+I can recompile snd-powermac and try it.
 
-Some problems though. Headphone and my laptop speaker are not working.
-"Front" output works but there is lot of noise.
-"Surround" "Center/LFE" don't work. It might be normal as "Front" is not
-plugged.
 
-I can't test inputs.
 
 ----------------------------------------------------------------------
- slack_kid - 09-29-05 21:59 
+ Quietti - 09-29-05 22:16 
 ----------------------------------------------------------------------
-I am currently haveing the same issue wiht my Intel HDA Azalia Hardware. I
-purchased a Sager NP 3880 SUPRA recently, and sound is the only problem i
-have had thus far.  
+How is this supposed to be related to 1441?  
 
-The modules compiles, and loads without any errors except:
-
-ALSA sound/pci/hda/hda_codec.c:511: hda_codec: no AFG node found
-
-in dmesg output.  XMMS and all sound programs see the card and act as
-though nothing is wrong, but there is  no sound at all. I unmuted all the
-channels and turned them up so that if anythign was working i could hear
-it, but nothing worked.  I am curently running the 2.6.12 kernel, i
-believe it is the vanilla sources, just standard 2.6.12 from kernel.org
-
-
-
-Any help is much appreciated
+We're talking about two different soundchips and two different C files
+within the snd-powermac realm. Also, in this case, speakers don't work at
+all, while in 1441 they do but thanks to improper burgundy support they
+appear on the wrong sliders.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-05 15:07 sjankie        New Issue                                    
-04-03-05 15:07 sjankie        Kernel Version            => 2.6.11.6        
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-03-05 15:08 sjankie        Issue End Monitor: sjankie                    
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-04-05 17:09 1g0R           Note Added: 0004328                          
-04-05-05 14:52 sjankie        Note Added: 0004337                          
-04-05-05 18:48 Thomas         Issue Monitored: Thomas                      
-04-05-05 19:50 Thomas         Note Added: 0004339                          
-04-08-05 21:08 Thomas         Note Added: 0004373                          
-04-15-05 09:06 Thomas         Issue End Monitor: Thomas                    
-09-29-05 21:59 slack_kid      Note Added: 0006424                          
+03-24-05 10:24 sylware        New Issue                                    
+03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
+03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
+03-24-05 19:49 tiwai          Note Added: 0004198                          
+03-25-05 20:55 sylware        Note Added: 0004211                          
+03-29-05 03:20 sylware        Note Added: 0004242                          
+04-25-05 17:22 sylware        Note Deleted: 0004211                        
+04-25-05 17:25 sylware        Note Edited: 0004242                         
+04-25-05 17:31 sylware        Note Edited: 0004242                         
+09-29-05 21:01 jdthood        Relationship added       related to 0001441  
+09-29-05 22:15 sylware        Issue Monitored: sylware                     
+09-29-05 22:16 Quietti        Note Added: 0006425                          
 ======================================================================
 
 
