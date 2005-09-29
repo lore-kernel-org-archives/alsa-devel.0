@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001261]: poor recording with emu10k1
-Date: Thu, 29 Sep 2005 11:11:12 +0200
-Message-ID: <1e71cc05c771c6efa5c275dea3a05cbc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
+Date: Thu, 29 Sep 2005 12:02:14 +0200
+Message-ID: <f083bdbdfcd8accb0a5bfe42612f4870@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BE31177
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 11:11:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C902194
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:02:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as RELATED TO issue 0001381.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1261> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
 ======================================================================
-Reported By:                mal
+Reported By:                johnz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1261
-Category:                   PCI - emu10k1
+Issue ID:                   978
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             all 2.6 versions
+Distribution:               FC3
+Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
 ======================================================================
-Date Submitted:             07-16-2005 09:28 CEST
-Last Modified:              09-29-2005 11:11 CEST
+Date Submitted:             03-10-2005 06:37 CET
+Last Modified:              09-27-2005 04:43 CEST
 ======================================================================
-Summary:                    poor recording with emu10k1
+Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
+alsa 1.0.8
 Description: 
-Sound recording does not work right with emu10k1 on linux 2.6
-
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144940
-
-This problem has ben an issue for a while. People can not use sound on
-linux because of it.
-
+On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
+kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
+mixer control works; volume sliders have no effect.)  There is no sound
+when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
+2.6.10 kernels with 1.0.8 alsa.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001381 No sound on Thinkpad T40p
 ======================================================================
 
 ----------------------------------------------------------------------
- vladak - 09-29-05 11:02 
+ tiwai - 03-10-05 14:39 
 ----------------------------------------------------------------------
-I have unmuted all capture controls I could and it is still not possible to
-record. What is the version number of ALSA containing the 8/27/05 fix ?
+Try the CVS version.  Some bugs with CM9761 codec have been fixed.
 
 ----------------------------------------------------------------------
- mal - 09-29-05 11:11 
+ johnz - 03-11-05 03:19 
 ----------------------------------------------------------------------
-The reported problem still exists in kernel-2.6.12-1.1378_FC3
+not sure I'll be able to do this, but will try.  Has anyone built an RPM
+for Fedora core?
+
+----------------------------------------------------------------------
+ jdthood - 09-22-05 15:03 
+----------------------------------------------------------------------
+Submitter: Has the problem been fixed in the latest ALSA release?
+
+----------------------------------------------------------------------
+ johnz - 09-27-05 04:43 
+----------------------------------------------------------------------
+Problem is still present in most current fedora core 3 kernel and alsa
+module.
+uname -r
+2.6.12-1.1378_FC3
+
+rpm -q alsa-kmdl-2.6.12-1.1378_FC3
+alsa-kmdl-2.6.12-1.1378_FC3-1.0.9rfb-40.rhfc3.at
+
+
+0:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] Sound
+Controller (rev a0)
+        Subsystem: ASRock Incorporation: Unknown device 7012
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at c800 [size=256]
+        I/O ports at c400 [size=128]
+        Capabilities: [48] Power Management version 2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-05 09:28 mal            New Issue                                    
-07-16-05 09:28 mal            Kernel Version            => all 2.6 versions
-07-16-05 09:31 mal            Note Added: 0005485                          
-07-16-05 09:49 rlrevell       Note Added: 0005486                          
-07-16-05 10:32 mal            Note Added: 0005487                          
-07-16-05 10:34 mal            Note Added: 0005488                          
-07-16-05 10:38 mal            Note Added: 0005489                          
-07-16-05 10:41 mal            File Added: tsts.wav                         
-07-16-05 10:51 mal            File Added: t44100.wav                       
-07-16-05 10:52 mal            Note Added: 0005490                          
-07-16-05 10:53 mal            File Added: t44100_stereo.wav                    
-07-16-05 11:00 mal            Note Added: 0005491                          
-07-16-05 11:07 mal            File Added: t_cd.wav                         
-07-16-05 11:08 mal            Note Added: 0005492                          
-07-16-05 11:09 mal            Note Edited: 0005492                         
-07-16-05 12:12 rlrevell       Note Added: 0005493                          
-07-16-05 12:32 mal            File Added: cc.wav                           
-07-16-05 12:33 mal            Note Added: 0005494                          
-09-26-05 20:14 vladak         Note Added: 0006397                          
-09-26-05 21:13 rlrevell       Note Added: 0006398                          
-09-26-05 21:19 rlrevell       Note Added: 0006399                          
-09-29-05 11:02 vladak         Note Added: 0006413                          
-09-29-05 11:11 mal            Note Added: 0006414                          
+03-10-05 06:37 johnz          New Issue                                    
+03-10-05 06:37 johnz          File Added: asound.state                     
+03-10-05 06:37 johnz          Distribution              => FC3             
+03-10-05 06:37 johnz          Kernel Version            =>
+kernel-2.6.10-1.770_14.rhfc3.at
+03-10-05 06:39 johnz          Issue Monitored: johnz                       
+03-10-05 06:43 johnz          File Added: lsmod                            
+03-10-05 14:39 tiwai          Note Added: 0003853                          
+03-11-05 03:19 johnz          Note Added: 0003879                          
+09-22-05 15:03 jdthood        Note Added: 0006342                          
+09-27-05 04:43 johnz          Note Added: 0006403                          
+09-29-05 12:02 jdthood        Relationship added       related to 0001381  
 ======================================================================
 
 
