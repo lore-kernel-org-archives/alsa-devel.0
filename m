@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001261]: poor recording with emu10k1
-Date: Thu, 29 Sep 2005 12:06:11 +0200
-Message-ID: <40b9cbafce925c2d016979739438a4c5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000079]: Dell Inspiron 8500 ICH4 no sound through internal speakers, headphone ok.
+Date: Thu, 29 Sep 2005 12:09:52 +0200
+Message-ID: <43778a8094f6775411c48b7561d65f8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FA57ED
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:06:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E048F191
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:09:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1261> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79> 
 ======================================================================
-Reported By:                mal
+Reported By:                rocco
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1261
-Category:                   PCI - emu10k1
+Issue ID:                   79
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             all 2.6 versions
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             07-16-2005 09:28 CEST
-Last Modified:              09-29-2005 12:06 CEST
+Date Submitted:             02-22-2004 21:40 CET
+Last Modified:              09-29-2005 12:09 CEST
 ======================================================================
-Summary:                    poor recording with emu10k1
+Summary:                    Dell Inspiron 8500 ICH4 no sound through internal
+speakers, headphone ok.
 Description: 
-Sound recording does not work right with emu10k1 on linux 2.6
-
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144940
-
-This problem has ben an issue for a while. People can not use sound on
-linux because of it.
-
+Alsa from kernel tree 2.6.3. Internal speakers of the laptop are not
+working, when pluggin in something in the headphone output sound is
+working. Mixer volume looks ok.
 ======================================================================
 
 ----------------------------------------------------------------------
- mal - 09-29-05 11:11 
+ jdthood - 03-10-05 15:24 
 ----------------------------------------------------------------------
-The reported problem still exists in kernel-2.6.12-1.1378_FC3
+> stop once alsa service, then remove /etc/asound.state
+> (or make backup), and start alsa again.
+
+Submitter: What is the default External Amplifier state now?
 
 ----------------------------------------------------------------------
- pzad - 09-29-05 12:06 
+ jdthood - 09-29-05 12:09 
 ----------------------------------------------------------------------
-Check what alsa version is in /proc/asound/version
-
-If there is 1.0.10rc1 - then it should work. If there is 1.0.9 then this
-is old buggy alsa and you should update to latest alsa.
+Submitter: What is the default External Amplifier state now?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-05 09:28 mal            New Issue                                    
-07-16-05 09:28 mal            Kernel Version            => all 2.6 versions
-07-16-05 09:31 mal            Note Added: 0005485                          
-07-16-05 09:49 rlrevell       Note Added: 0005486                          
-07-16-05 10:32 mal            Note Added: 0005487                          
-07-16-05 10:34 mal            Note Added: 0005488                          
-07-16-05 10:38 mal            Note Added: 0005489                          
-07-16-05 10:41 mal            File Added: tsts.wav                         
-07-16-05 10:51 mal            File Added: t44100.wav                       
-07-16-05 10:52 mal            Note Added: 0005490                          
-07-16-05 10:53 mal            File Added: t44100_stereo.wav                    
-07-16-05 11:00 mal            Note Added: 0005491                          
-07-16-05 11:07 mal            File Added: t_cd.wav                         
-07-16-05 11:08 mal            Note Added: 0005492                          
-07-16-05 11:09 mal            Note Edited: 0005492                         
-07-16-05 12:12 rlrevell       Note Added: 0005493                          
-07-16-05 12:32 mal            File Added: cc.wav                           
-07-16-05 12:33 mal            Note Added: 0005494                          
-09-26-05 20:14 vladak         Note Added: 0006397                          
-09-26-05 21:13 rlrevell       Note Added: 0006398                          
-09-26-05 21:19 rlrevell       Note Added: 0006399                          
-09-29-05 11:02 vladak         Note Added: 0006413                          
-09-29-05 11:11 mal            Note Added: 0006414                          
-09-29-05 12:06 pzad           Note Added: 0006415                          
+02-22-04 21:40 rocco          New Issue                                    
+02-26-04 13:00 rocco          Note Added: 0000346                          
+03-01-04 20:13 tiwai          Note Added: 0000424                          
+03-10-04 17:57 tiwai          Note Added: 0000565                          
+03-10-05 15:24 jdthood        Note Added: 0003864                          
+09-29-05 12:09 jdthood        Note Added: 0006416                          
+09-29-05 12:09 jdthood        Status                   new => feedback     
 ======================================================================
 
 
