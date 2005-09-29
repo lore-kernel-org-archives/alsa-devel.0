@@ -1,13 +1,11 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: SB Live! (5.1) has gone silent again with ALSA CVS
-Date: Thu, 29 Sep 2005 18:02:39 +0100 (BST)
-Message-ID: <20050929170239.53292.qmail@web52902.mail.yahoo.com>
-References: <s5hhdc3dg7a.wl%tiwai@suse.de>
+From: Michael Downey <downey@zymeta.com>
+Subject: hda-intel module hanging if ACPI enabled
+Date: Thu, 29 Sep 2005 11:36:29 -0600
+Message-ID: <433C261D.8090100@zymeta.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhdc3dg7a.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,33 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---- Takashi Iwai <tiwai@suse.de> wrote:
-> > What shows /proc/asound/cards?
-> >=20
-> > If it's "SBLive! Platinum 5.1 [SB0060]", you hit a known bug.
-> > The below is a workaround, but it's not a right fix.
+I have an Intel Desktop D945GTP motherboard and I am running gentoo with 
+kernel 2.6.13-r2.  If I enable ACPI then the system will hang whenever 
+the hda-intel kernel module is loaded.  I did some more testing and I 
+found that if I enable "Local APIC support for uniprocessors" and 
+"IO-APIC support on uniprocessors" in the kernel then the hda-intel 
+module will load when ACPI is enabled.  The codec that is used on the 
+motherboard is a Sigmatel STAC9221 A1.  Is APIC a requirement for this 
+setup?  Also I've tried 1.0.10rc1 of the alsa-driver and got the same 
+results.
 
-$ cat /proc/asound/cards
-0 [SB-Live        ]: EMU10K1 - SBLive! Platinum 5.1 [SB0060]
-                     SBLive! Platinum 5.1 [SB0060] (rev.7, serial:0x80611=
-102) at 0xd800, irq 19
-
-I've always thought that this was an "SBLive! Gamer". However, the 2nd fi=
-x seems to have worked.
+Also I was wondering how to go about retasking the audio jacks?  The 
+default mixer only provides PCM, FRONT, CAPTURE, INPUT SELECT, and MIX.  
+I would like to know how to set up 2 of the jacks to be output jacks 
+which as far as I know is possible with hda-intel.
 
 Thanks,
-Chris
 
 
+Michael Downey
+Zymeta Corporation
 
-	=09
-___________________________________________________________=20
-To help you stay safe and secure online, we've developed the all new Yaho=
-o! Security Centre. http://uk.security.yahoo.com
 
 
 -------------------------------------------------------
