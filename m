@@ -1,8 +1,14 @@
-From: "Dann Vera" <cvfalsa-devel@alsa-project.org>
-Subject: FW: Alsa-devel
-Date: Thu, 29 Sep 2005 10:41:02 +0200 (MEST)
-Message-ID: <EYU55-Q29Y036MC2YY92QY78Z6656W83R2@jgm.pbe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001261]: poor recording with emu10k1
+Date: Thu, 29 Sep 2005 11:02:53 +0200
+Message-ID: <38f066f940ebd5bd16bf5411bca98579@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A51DE177
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 11:02:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,56 +21,78 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thu, 29 Sep 2005 04:40:57 -0500
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
 
-Thursday 09/29/2005
-Pinksheets: BHUB
-Hot Stock on Wall Street
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1261> 
+======================================================================
+Reported By:                mal
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1261
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             all 2.6 versions
+======================================================================
+Date Submitted:             07-16-2005 09:28 CEST
+Last Modified:              09-29-2005 11:02 CEST
+======================================================================
+Summary:                    poor recording with emu10k1
+Description: 
+Sound recording does not work right with emu10k1 on linux 2.6
 
-Watch BHUB trade today - This could be big.
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144940
 
-************************************
-*     BREAKING NEWS                *
-*     THIS COULD BE THE BIG ONE    *
-*                                  *
-*     Wednesday's Close: 0.003        *
-*     Increase: 300%               *
-*     Target Price: 0.05           *
-************************************
+This problem has ben an issue for a while. People can not use sound on
+linux because of it.
 
-PINKSHEETS: BHUB - MOMENTUM ALERT 
+======================================================================
 
-BIG HUB (Pinksheets: BHUB) is one of Wall Streets best kept secrets. This is a gem that is currently gaining huge momentum in the investor community. We urge you to take a look at this stock this morning and watch it trade. It is currently up approx 300% in 5 days worh of trading and we expect this to be VERY modest in comparison with what is to come in the coming week. Daytraders and power investors alike are begining to take notice of this as a powerful asset to their portfolios. As stated, the stock is currently up 300% from Last Wednesday's open and we believe that this week the gains could dwarf last weeks gains!
+----------------------------------------------------------------------
+ rlrevell - 09-26-05 21:19 
+----------------------------------------------------------------------
+Actually the bug referred to in the Fedora bugzilla has been fixed since
+8/27/05.    You need a newer ALSA.
 
-Who is Big Hub (Pinksheets: BHUB)?
+----------------------------------------------------------------------
+ vladak - 09-29-05 11:02 
+----------------------------------------------------------------------
+I have unmuted all capture controls I could and it is still not possible to
+record. What is the version number of ALSA containing the 8/27/05 fix ?
 
-BHUB is an online retail auto auction where consumers, new and used car dealers, OEM's, banks, leasing companies, and daily rental companies can buy or sell vehicles. BHUB will also offer a full menu of value-added services including vehicle financing, transportation, inspection/certification services, extended warranties, vehicle title and lemon checks, consumer credit checks, escrow services, retail and trade-in vehicle values, consumer and reliability information, vehicle accessories, and insurance products. 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-05 09:28 mal            New Issue                                    
+07-16-05 09:28 mal            Kernel Version            => all 2.6 versions
+07-16-05 09:31 mal            Note Added: 0005485                          
+07-16-05 09:49 rlrevell       Note Added: 0005486                          
+07-16-05 10:32 mal            Note Added: 0005487                          
+07-16-05 10:34 mal            Note Added: 0005488                          
+07-16-05 10:38 mal            Note Added: 0005489                          
+07-16-05 10:41 mal            File Added: tsts.wav                         
+07-16-05 10:51 mal            File Added: t44100.wav                       
+07-16-05 10:52 mal            Note Added: 0005490                          
+07-16-05 10:53 mal            File Added: t44100_stereo.wav                    
+07-16-05 11:00 mal            Note Added: 0005491                          
+07-16-05 11:07 mal            File Added: t_cd.wav                         
+07-16-05 11:08 mal            Note Added: 0005492                          
+07-16-05 11:09 mal            Note Edited: 0005492                         
+07-16-05 12:12 rlrevell       Note Added: 0005493                          
+07-16-05 12:32 mal            File Added: cc.wav                           
+07-16-05 12:33 mal            Note Added: 0005494                          
+09-26-05 20:14 vladak         Note Added: 0006397                          
+09-26-05 21:13 rlrevell       Note Added: 0006398                          
+09-26-05 21:19 rlrevell       Note Added: 0006399                          
+09-29-05 11:02 vladak         Note Added: 0006413                          
+======================================================================
 
-Products & Services of Big Hub (Pinksheets: BHUB)
 
-* Autos, trucks, vans, classic cars, motorcycles, boats, and RV's 
-* Warranty 
-* Insurance 
-* Financing 
-* Credit check 
-* Lien, title check on any vehicle (salvage check) 
-* Consumer and reliability information 
-* Kelly Blue Book price check on any vehicle 
-* Transportation - anywhere in North America 
-* Accessories - tires, rims, etc. 
-* Escrow Services 
-
-Other related online auction business including heavy equipment, airplanes, snowmobiles, and heavy trucks. BigHub.Com, Inc. may also explore other high-ticket items such as real estate, natural resources, and government surplus. BigHub.Com, Inc. may also offer a service to host and process closed auctions for retail and wholesale sellers. 
-
-
-
-DiscIaimer: 
-
-All material herein was based upon information supplied by the company or from other sources believed to be reliable. The information contained herein is not guaranteed to be accurate, and should not be considered all-inclusive.  The company covered has not approved the statements made herein. This profile contains F0RWARD-L00KING statements that involve risks and uncertainties.  A company's actual results could differ materially from those described in any F0RWARD-L00KING statements. The material listed herein is for informational purposes only and should not be construed as an offer or solicitation of an offer to buy or sell securities.  We are not a licensed broker, broker dealer, market maker, investment banker, investment advisor, analyst or underwriter.  Please consult a broker before purchasing any securities mentioned herein. Given the nature of the company profiled within, and t
- he lack of active trading in the market, investing in such a security is highly speculativ
- e and carries a high degree of risk.  We have been compensated by a third party, fifty thousand dollars, on behalf of the company featured in this profile. Our affiliates, officers, directors and employees may also have bought or may buy the shares discussed in this profile and may profit in the event that those shares rise in value.  We will not advise as to when to sell; each investor must make that decision based on his or her judgment of the market.
 
 
 -------------------------------------------------------
