@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001468]: Revolution7+1,module loaded, no proc info, no sound
-Date: Thu, 29 Sep 2005 21:37:41 +0200
-Message-ID: <a07d31a0becfcfcd3be893c673ab215d@bugtrack.alsa-project.org>
+From: Dirk Jagdmann <doj@cubic.org>
+Subject: Re: envy24control crash
+Date: Thu, 29 Sep 2005 21:44:43 +0200
+Message-ID: <433C442B.1080700@cubic.org>
+References: <MEGASERVERBhcJ5ptwf00002500@office.enfocus.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33F5115D
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 21:37:41 +0200 (MEST)
+In-Reply-To: <MEGASERVERBhcJ5ptwf00002500@office.enfocus.be>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Immanuel Litzroth <immanuell@enfocus.be>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello Immanuel,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1468> 
-======================================================================
-Reported By:                goldenfish
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1468
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.13-rc6
-======================================================================
-Date Submitted:             09-29-2005 21:34 CEST
-Last Modified:              09-29-2005 21:37 CEST
-======================================================================
-Summary:                    Revolution7+1,module loaded, no proc info, no sound
-Description: 
-I was purchased today M-Audio Revolution 7+1 card. I compiled kernel. I
-loaded module
-with modprobe snd-ice1724. by lsmod command module loaded.
+> Has any fixed the crashing envy24control when the midichannel is not given
+> as command line argument?
+> I have a 3 line fix which I could submit.
 
-But in /proc/asound/cards no card. alsaconf not found this card. No sound
-from card.
+I think this was already fixed in the CVS version. Please test the CVS 
+version. If it is still crashing, we would like to see your patch.
 
-thanks for help with this card.
-======================================================================
-
-----------------------------------------------------------------------
- goldenfish - 09-29-05 21:37 
-----------------------------------------------------------------------
-aditionall info: in the kernel.log no messages about this card.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-29-05 21:34 goldenfish     New Issue                                    
-09-29-05 21:34 goldenfish     File Added: lsmod_0                          
-09-29-05 21:34 goldenfish     Distribution              => Debian testing  
-09-29-05 21:34 goldenfish     Kernel Version            => 2.6.13-rc6      
-09-29-05 21:37 goldenfish     Note Added: 0006423                          
-======================================================================
-
-
+-- 
+---> Dirk Jagdmann ^ doj / cubic
+----> http://cubic.org/~doj
+-----> http://llg.cubic.org
 
 
 -------------------------------------------------------
