@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
-Date: Thu, 29 Sep 2005 12:31:04 +0200
-Message-ID: <cdeb87a0d9ea844386d2d5318fc8f5fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001433]: No sound output
+Date: Thu, 29 Sep 2005 12:38:13 +0200
+Message-ID: <e5c84dfe5ddef4ee2eb5ecba20d7ed1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93824192
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:31:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0447F194
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:38:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +22,202 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CONFIRMED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1433> 
 ======================================================================
-Reported By:                ignition
-Assigned To:                tiwai
+Reported By:                lithium7456
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   664
+Issue ID:                   1433
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     confirmed
-Distribution:               GNU/Linux Slackware 10.0
-Kernel Version:             2.4.28
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.29
 ======================================================================
-Date Submitted:             11-22-2004 18:29 CET
-Last Modified:              09-29-2005 12:31 CEST
+Date Submitted:             09-18-2005 06:23 CEST
+Last Modified:              09-29-2005 12:38 CEST
 ======================================================================
-Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
-have sound from the headphones, only internal speakers work.
+Summary:                    No sound output
 Description: 
-module: intel8x0
-card: SiS SI7012
-chip: Realtek ALC202 rev 0
+The driver has been installed with the system.
+First I use "alsaconf" to configure my soundcard.
+The program found my soundcard correctly, and there is no error message.
+I use "lsmod" and found that the driver is loaded.
 
-All ok but when I plug a jack from the headphones (or hi-fi system), there
-is no sound.
-And when I plug a jack halfway, I hear mono sound with bad quality from
-internal speaker AND from the headphones.
+then I typed "alsamixer", But got a message saying that "No mixer elems
+found" (I realized that it is the modem)
+so I try "alsamixer -c 1", and I unmute and raise "Master" "PCM"
+Here is the "amixer -c 1"'s result:
+
+---------BEGIN-------------
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 63
+  Front Left: Playback 54 [86%] [on]
+  Front Right: Playback 54 [86%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off]
+  Front Right: Playback 0 [0%] [off]
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Switch',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off]
+  Front Right: Playback 0 [0%] [off]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [on]
+  Front Right: Capture [on]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Video',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 15
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+
+---------END--------------
+
+But there is no sound output.("aplay XXXXX.wav")
+
+when I start KDE or Gnome, sound system crashed.
+
+what should I do?
+Thank you.
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0000014 No sound from headphone jack on Acer27*...
+duplicate of        0001381 No sound on Thinkpad T40p
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-22-04 18:48 
+ jdthood - 09-29-05 12:38 
 ----------------------------------------------------------------------
-This is a long-standing problem.
-Will look at this problem later again.
-
-----------------------------------------------------------------------
- jdthood - 03-23-05 15:41 
-----------------------------------------------------------------------
-This issue wasn't actually resolved.
-
-----------------------------------------------------------------------
- jdthood - 07-16-05 16:42 
-----------------------------------------------------------------------
-> All ok but when I plug a jack from the headphones (or hi-fi system),
-> there is no sound.  And when I plug a jack halfway, I hear mono sound
-> with bad quality from internal speaker AND from the headphones.
-
-Switch off "Headphone Jack Sense"?
-
-----------------------------------------------------------------------
- ignition - 08-02-05 21:21 
-----------------------------------------------------------------------
-In amixer, I have no "Headphone Jack Sense" but I tried `amixer set "Jack
-Detect" unmute` and the issue is the same.
+Does switching on 'External Amplifier' fix the problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-04 18:29 ignition       New Issue                                    
-11-22-04 18:29 ignition       File Added: report                           
-11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
-10.0
-11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
-11-22-04 18:48 tiwai          Relationship added       duplicate of 0000014
-11-22-04 18:48 tiwai          Duplicate ID             0 => 14             
-11-22-04 18:48 tiwai          Status                   new => resolved     
-11-22-04 18:48 tiwai          Resolution               open => duplicate   
-11-22-04 18:48 tiwai          Assigned To               => tiwai           
-11-22-04 18:48 tiwai          Note Added: 0002510                          
-11-22-04 18:51 ignition       Issue Monitored: ignition                    
-11-22-04 18:52 ignition       Issue End Monitor: ignition                    
-12-06-04 14:58 dale           Issue Monitored: dale                        
-01-20-05 18:52 jorge2         Issue Monitored: jorge2                      
-03-23-05 15:41 jdthood        Status                   resolved => feedback
-03-23-05 15:41 jdthood        Resolution               duplicate => reopened
-03-23-05 15:41 jdthood        Note Added: 0004163                          
-06-14-05 21:16 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-07-16-05 16:42 jdthood        Note Added: 0005497                          
-08-02-05 21:21 ignition       Note Added: 0005606                          
-09-15-05 16:12 ignition       Issue Monitored: ignition                    
-09-29-05 12:31 jdthood        Status                   feedback => confirmed
+09-18-05 06:23 lithium7456    New Issue                                    
+09-18-05 06:23 lithium7456    Kernel Version            => 2.4.29          
+09-29-05 12:03 jdthood        Relationship added       duplicate of 0001381
+09-29-05 12:38 jdthood        Note Added: 0006420                          
 ======================================================================
 
 
