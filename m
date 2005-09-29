@@ -1,14 +1,13 @@
-From: Stl <stlman@poczta.fm>
-Subject: Re: Audigy2 renamed, grrr...
-Date: Thu, 29 Sep 2005 18:26:48 +0200
-Message-ID: <433C15C8.5050507@poczta.fm>
-References: <4338EF9A.1080906@poczta.fm>	<1127824232.43393b683dff9@domainfactory-webmail.de>	<433985F2.6000708@superbug.co.uk>	<433BFC84.2080504@poczta.fm> <s5hmzlwc4hg.wl%tiwai@suse.de>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: SB Live! (5.1) has gone silent again with ALSA CVS
+Date: Thu, 29 Sep 2005 18:02:39 +0100 (BST)
+Message-ID: <20050929170239.53292.qmail@web52902.mail.yahoo.com>
+References: <s5hhdc3dg7a.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigB63B1A0611AB3A8D2ADE19C5"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hmzlwc4hg.wl%tiwai@suse.de>
+In-Reply-To: <s5hhdc3dg7a.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,55 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigB63B1A0611AB3A8D2ADE19C5
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+--- Takashi Iwai <tiwai@suse.de> wrote:
+> > What shows /proc/asound/cards?
+> >=20
+> > If it's "SBLive! Platinum 5.1 [SB0060]", you hit a known bug.
+> > The below is a workaround, but it's not a right fix.
 
-Takashi Iwai wrote:
-> At Thu, 29 Sep 2005 16:39:00 +0200,
-> Stl wrote:
->>After I had upgraded the kernel (2.6.12 to 2.6.13), alsactl (1.0.8) has=
+$ cat /proc/asound/cards
+0 [SB-Live        ]: EMU10K1 - SBLive! Platinum 5.1 [SB0060]
+                     SBLive! Platinum 5.1 [SB0060] (rev.7, serial:0x80611=
+102) at 0xd800, irq 19
 
->>started to complain that there is no soundcard SB0350
->=20
->=20
-> That was the bug.  Others are called "fixes".
+I've always thought that this was an "SBLive! Gamer". However, the 2nd fi=
+x seems to have worked.
 
-|bug| =3D=3D |fix|  (It suddenly doesn't work anymore.)
-
-OK, I stop complaining an start hoping everything's going to be fine :)
-
-> On 2.6.14, you get the same as on 2.6.12.
-
-[SIGH] Moon?
-
-OK. EOT :-)
---=20
-By=C5=82o mi bardzo mi=C5=82o.                    Trzecia pospolita kl=C4=
-=99ska, [...]
->=C5=81ukasz<                      Ju=C5=BC nie katolicka lecz z=C5=82odz=
-iejska.  (c)PP
+Thanks,
+Chris
 
 
---------------enigB63B1A0611AB3A8D2ADE19C5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFDPBXONdzY8sm9K9wRAt76AJsEG5X9DB5wkNLwHaIdhWVsARAyggCeM6lm
-kOO4SeHBahRfZO1ZHADcf48=
-=DZ17
------END PGP SIGNATURE-----
-
---------------enigB63B1A0611AB3A8D2ADE19C5--
+	=09
+___________________________________________________________=20
+To help you stay safe and secure online, we've developed the all new Yaho=
+o! Security Centre. http://uk.security.yahoo.com
 
 
 -------------------------------------------------------
