@@ -1,13 +1,14 @@
-From: Matt Porter <mporter@embeddedalley.com>
-Subject: Re: hda-intel module hanging if ACPI enabled
-Date: Thu, 29 Sep 2005 11:55:17 -0700
-Message-ID: <20050929115517.C8457@cox.net>
-References: <433C261D.8090100@zymeta.com> <20050929105612.A8457@cox.net> <433C2EDD.4050005@zymeta.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000057]: Kernel device in bad state after suspend/resume
+Date: Thu, 29 Sep 2005 20:55:37 +0200
+Message-ID: <f1420efcac7633abfff51940e1b5ece4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <433C2EDD.4050005@zymeta.com>; from downey@zymeta.com on Thu, Sep 29, 2005 at 12:13:49PM -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8501191
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 20:55:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Michael Downey <downey@zymeta.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 29, 2005 at 12:13:49PM -0600, Michael Downey wrote:
-> Matt Porter wrote:
-> >I am working on some updates to the SigmaTel HDA patch to support these
-> >motherboards. The basic issue is that the BIOS doesn't set up the
-> >proper configuration default registers on these motherboards so we
-> >need to detect the motherboard and load the proper configuration
-> >defaults. I also added in some switches to retask those jacks.
-> >
-> >I have an issue with my boards in that they don't properly reflect
-> >the Subsystem ID that should be used for identifying the motherboard
-> >and jack configuration.  Can you do a
-> >'grep Subsystem /proc/asound/card0/codec#2' and post the results?
-> >I'd like to verify that your board shows the proper ID.
-> >
-> Thanks for the quick reply. Here's my output:
-> Subsystem Id: 0x0
 
-Ugh, this is supposed to have a unique identifying value. Did
-you get a very early board from Intel?
+The issue 0001442 has been set as DUPLICATE OF the following issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=57> 
+======================================================================
+Reported By:                daenzer
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   57
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-13-2004 01:55 CET
+Last Modified:              05-14-2004 15:12 CEST
+======================================================================
+Summary:                    Kernel device in bad state after suspend/resume
+Description: 
+If a process has the kernel device open during a suspend/resume cycle,
+playing sound fails afterwards with
 
-> The board has a BIOS revision string of: 
-> NT9410J.86A.1348.2005.0609.1737. I see that there is a newer BIOS 2104 
-> released on Sept. 2 so updating the BIOS might make a difference. I will 
-> probably try the update in a day or two so I'll post my results then.
+pcm_write:1084: write error: File descriptor in bad state
 
-You can check. However, I've looked at the BIOS updates that appear
-to have no changes related to the HDA config default regs. My
-current patches load up the appropriate config default values but
-I currently have an issue with reliably identifying the appropriate
-board for each set of values.
+until the process dies, then it works again.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001442 snapper: no sound after resume
+======================================================================
 
-You'll also need the patch update to get the retasking controls.
- 
-I'm working with SigmaTel on this so let me check on some things
-regarding board ID and then I'll hopefully have a patch to post
-that will work for you.  We may have to resort to manually
-specifying the model type for these boards...I'm hoping to
-avoid that though.
+----------------------------------------------------------------------
+ daenzer - 02-26-04 19:30 
+----------------------------------------------------------------------
+Any feedback on this? I'll gladly try to track it down myself given some
+pointers how to go about it.
 
--Matt
+----------------------------------------------------------------------
+ tiwai - 02-26-04 19:39 
+----------------------------------------------------------------------
+which chip model?  check /proc/asound/cards.
+
+----------------------------------------------------------------------
+ daenzer - 02-26-04 22:47 
+----------------------------------------------------------------------
+0 [Snapper        ]: PMac Snapper - PowerMac Snapper
+                     PowerMac Snapper (Dev 26) Sub-frame 0
+
+----------------------------------------------------------------------
+ tiwai - 05-14-04 15:12 
+----------------------------------------------------------------------
+does it happen with an OSS app or an ALSA app?
+
+do you see any kernel messages after resume?
+(e.g. tumbler_init_client error or so)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-04 01:55 daenzer        New Issue                                    
+02-26-04 19:30 daenzer        Note Added: 0000363                          
+02-26-04 19:39 tiwai          Note Added: 0000364                          
+02-26-04 22:47 daenzer        Note Added: 0000374                          
+05-14-04 15:12 tiwai          Note Added: 0001111                          
+09-29-05 20:55 jdthood        Relationship added       has duplicate 0001442
+======================================================================
+
+
 
 
 -------------------------------------------------------
