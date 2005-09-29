@@ -1,11 +1,14 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: SB Live! (5.1) has gone silent again with ALSA CVS
-Date: Thu, 29 Sep 2005 15:28:25 +0100 (BST)
-Message-ID: <20050929142826.9947.qmail@web52902.mail.yahoo.com>
+From: Stl <stlman@poczta.fm>
+Subject: Re: Audigy2 renamed, grrr...
+Date: Thu, 29 Sep 2005 16:39:00 +0200
+Message-ID: <433BFC84.2080504@poczta.fm>
+References: <4338EF9A.1080906@poczta.fm> <1127824232.43393b683dff9@domainfactory-webmail.de> <433985F2.6000708@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig5DF38E1A285833E7288932FF"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <433985F2.6000708@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,193 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig5DF38E1A285833E7288932FF
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This happened before, then fixed itself but is now broken again: my SB Li=
-ve! 5.1 (rev 7) card has
-lost its Master Volume mixer control, and is now languishing in silence.
+James Courtier-Dutton wrote:
+> Clemens Ladisch wrote:
+>=20
+>> Stl wrote:
+>>
+>>> Why the hell, Audigy2's name in alsa driver changes with every
+>>> kernel version?
+[...]
+>>> Who is such a lunatic to revert it once every two months,
+>> I doubt that jcd's behaviour is affected by moon phases.
+>> Besides, moon phases aren't two months long.
+>>
+>>> from Audigy 2 ZS to SB350, from SB350 back to Audigy2
+>>> (why not ZS? I've got ZS!).
+> I didn't change anything. What's the real problem here?
 
-02:0a.0 Class 0401: 1102:0002 (rev 07)
-        Subsystem: 1102:8061
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParEr=
-r- Stepping- SERR-
-FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=3Dmedium >TAbort=
-- <TAbort- <MAbort- >SERR-
-<PERR-
-        Latency: 32 (500ns min, 5000ns max)
-        Interrupt: pin A routed to IRQ 19
-        Region 0: I/O ports at d800 [size=3D32]
-        Capabilities: <available only to root>
+After I had upgraded the kernel (2.6.12 to 2.6.13), alsactl (1.0.8) has
+started to complain that there is no soundcard SB0350 so I had to
+manually edit /etc/asound.state and change (AFAIR revert back)
+state.SB0350 to state.Audigy2. After I did that alsactl still moans:
 
-02:0a.1 Class 0980: 1102:7002 (rev 07)
-        Subsystem: 1102:0020
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParEr=
-r- Stepping- SERR-
-FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=3Dmedium >TAbort=
-- <TAbort- <MAbort- >SERR-
-<PERR-
-        Latency: 32
-        Region 0: I/O ports at d400 [size=3D8]
-        Capabilities: <available only to root>
+/usr/sbin/alsactl: set_control:930: warning: name mismatch (Audigy SPDIF
+Output Sample Rate/HD Analog Front Playback Volume) for control #219
+/usr/sbin/alsactl: set_control:1025: bad control.219.value type
 
-$ amixer
-Simple mixer control 'Headphone LFE',1
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Headphone',1
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 100
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'Headphone Center',1
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Tone',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 20 [50%]
-  Front Right: 20 [50%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 20 [50%]
-  Front Right: 20 [50%]
-Simple mixer control 'Front',0
-  Capabilities: pvolume cvolume cswitch cswitch-joined
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 100 [100%] Capture 0 [0%] [off]
-  Front Right: Playback 100 [100%] Capture 0 [0%] [off]
-Simple mixer control 'Surround',0
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 72 [72%] Capture 0 [0%] [off]
-  Front Right: Playback 72 [72%] Capture 0 [0%] [off]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 100
-  Mono: Playback 76 [76%]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 100
-  Mono: Playback 76 [76%]
-Simple mixer control 'Synth',0
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 76 [76%] Capture 76 [76%] [off]
-  Front Right: Playback 76 [76%] Capture 76 [76%] [off]
-Simple mixer control 'Wave',0
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 76 [76%] Capture 76 [76%] [off]
-  Front Right: Playback 76 [76%] Capture 76 [76%] [off]
-Simple mixer control 'Wave Center',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 100
-  Mono: Playback 76 [76%]
-Simple mixer control 'Wave LFE',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 100
-  Mono: Playback 76 [76%]
-Simple mixer control 'Wave Surround',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 100
-  Mono:
-  Front Left: Playback 84 [84%]
-  Front Right: Playback 84 [84%]
-Simple mixer control 'Line LiveDrive',0
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
-  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
-Simple mixer control 'Line2 LiveDrive',1
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
-  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
-Simple mixer control 'IEC958 Coaxial',0
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
-  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
-Simple mixer control 'IEC958 LiveDrive',0
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
-  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
-Simple mixer control 'IEC958 Optical Raw',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [off]
-  Front Right: Playback [off]
-Simple mixer control 'IEC958 TTL',0
-  Capabilities: pvolume cvolume cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 0 [0%] Capture 0 [0%] [off]
-  Front Right: Playback 0 [0%] Capture 0 [0%] [off]
-Simple mixer control 'AC97',0
-  Capabilities: pvolume cvolume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 100 Capture 0 - 100
-  Front Left: Playback 0 [0%] Capture 100 [100%]
-  Front Right: Playback 0 [0%] Capture 100 [100%]
-Simple mixer control 'SB Live Analog/Digital Output Jack',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-
-Cheers,
-Chris
+/proc/asound/cards:
+0 [Audigy2        ]: Audigy2 - Audigy 2 ZS [SB0350]
+                     Audigy 2 ZS [SB0350] (rev.4, serial:0x20021102) at
+0x7c40, irq 11
 
 
+--=20
+By=C5=82o mi bardzo mi=C5=82o.                    Trzecia pospolita kl=C4=
+=99ska, [...]
+>=C5=81ukasz<                      Ju=C5=BC nie katolicka lecz z=C5=82odz=
+iejska.  (c)PP
 
-	=09
-___________________________________________________________=20
-To help you stay safe and secure online, we've developed the all new Yaho=
-o! Security Centre. http://uk.security.yahoo.com
+
+--------------enig5DF38E1A285833E7288932FF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFDO/yKNdzY8sm9K9wRAnxQAJ91VdKNmAWQs2dd9Z2IHx6fFAIuoACfWFi2
+oVwAMnSQNMmIGgqjdtumuD0=
+=86L7
+-----END PGP SIGNATURE-----
+
+--------------enig5DF38E1A285833E7288932FF--
 
 
 -------------------------------------------------------
