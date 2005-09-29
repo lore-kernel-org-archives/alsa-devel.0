@@ -1,14 +1,12 @@
-From: Kenth Andersson <kenth@popwire.com>
-Subject: Strange shadow process when using alsa and .asoundrc dsnoop
-Date: Thu, 29 Sep 2005 08:24:21 +0200
-Message-ID: <535B7838-7AD2-4A84-9B3F-D84F7A2F4867@popwire.com>
-Mime-Version: 1.0 (Apple Message framework v733)
-Content-Type: text/plain;
-	charset=US-ASCII;
-	delsp=yes;
-	format=flowed
-Content-Transfer-Encoding: 7bit
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Big-endian to little-endian conversion
+Date: Thu, 29 Sep 2005 09:26:40 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0509290924260.4137-100000@studcom.urz.uni-halle.de>
+References: <BAY105-F230240E564304F590D37529F8D0@phx.gbl>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <BAY105-F230240E564304F590D37529F8D0@phx.gbl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: John Brewer <jbrew8@hotmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I got a M-Audio Delta 44 with 4 mono inputs, I use the .asoundrc file  
-to split this into four different sound devices (using dsnoop), one  
-for each mono channel. See .asoundrc below.
+John Brewer wrote:
+> I assume that the plughw interface automatically converts the
+> sound clip to the byte order required by the Quattro's playback
+> device.
 
-When I connect my program to one of the devices (cline1-4) it works  
-great, but if I run ps ax I can see that there are two instances of  
-my program, each with the same command line, but different PID, one  
-is my program but what is the other one? If I kill this "shadow  
-process" my program still works...
+Yes.
 
-Does anybody know anything about this?
-Can this shadow process be prevented from starting?
+> My question is, how I can I convert the data from big endian to little
+> endian within my application?
 
-My .asoundrc:
-#  
------------------------------------------------------------------------
-# Capture
-pcm.capture {
-     type dsnoop
-     ipc_key 1024
-     slave {
-         pcm "hw:0"
-         period_time 0
-         period_size 1024
-         buffer_size 4096
-         channels 4
-     }
-     bindings {
-         0 0
-         1 1
-         2 2
-         3 3
-     }
-}
+With 16-bit values, you can use swab(), but it would be easier to tell
+ALSA what sample format you want.  (Your program needs sample format
+conversions anyway if it runs into a sound card that supports only ten
+channels of 32-bit samples.)
 
-pcm.cline1 {
-     type plug
-     slave {
-         pcm "capture"
-         channels 4
-     }
-     ttable.0.0 1
-}
 
-pcm.cline2 {
-     type plug
-     slave {
-         pcm "capture"
-         channels 4
-     }
-     ttable.0.1 1
-}
-pcm.cline3 {
-     type plug
-     slave {
-         pcm "capture"
-         channels 4
-     }
-     ttable.0.2 1
-}
-
-pcm.cline4 {
-     type plug
-     slave {
-         pcm "capture"
-         channels 4
-     }
-     ttable.0.3 1
-}
-#  
------------------------------------------------------------------------
+HTH
+Clemens
 
 
 
