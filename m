@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
-Date: Thu, 29 Sep 2005 12:02:12 +0200
-Message-ID: <9a39266fe707ce33aca046b348a46967@bugtrack.alsa-project.org>
+Date: Thu, 29 Sep 2005 12:03:25 +0200
+Message-ID: <a5d9a8b3337190b3bc6de3ab5681e956@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C85E6191
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:02:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F7E4194
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2005 12:03:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000978.
+The issue 0001433 has been set as DUPLICATE OF the following issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
 ======================================================================
@@ -59,6 +59,7 @@ for more information.
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0000978 intel8x0 sound does not work on 2.6.10 ...
+has duplicate       0001433 No sound output
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -104,6 +105,7 @@ Date Modified  Username       Field                    Change
 09-22-05 23:12 Soft           Note Added: 0006361                          
 09-23-05 09:36 jdthood        Note Added: 0006363                          
 09-29-05 12:02 jdthood        Relationship added       related to 0000978  
+09-29-05 12:03 jdthood        Relationship added       has duplicate 0001433
 ======================================================================
 
 
