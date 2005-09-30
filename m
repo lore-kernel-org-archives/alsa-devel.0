@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001441]: snd-powermac: Burgundy: controls for headphones and speakers inverted
-Date: Fri, 30 Sep 2005 10:41:31 +0200
-Message-ID: <6fa96683e7930457b2af8e9b733361ea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001465]: left and right volumes unbalanced when adjusted with xmms slider running under aoss
+Date: Fri, 30 Sep 2005 11:13:21 +0200
+Message-ID: <27b884c0622e9949af5f7284fbfb4e6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8E7A173
-	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2005 10:41:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F86D160
+	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2005 11:13:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been marked as UNRELATED TO issue 0001010.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1441> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1465> 
 ======================================================================
-Reported By:                Quietti
-Assigned To:                tiwai
+Reported By:                xolsonalsa
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1441
-Category:                   PPC - powermac
+Issue ID:                   1465
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.13.2
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-22-2005 10:12 CEST
-Last Modified:              09-29-2005 22:17 CEST
+Date Submitted:             09-27-2005 11:33 CEST
+Last Modified:              09-30-2005 11:13 CEST
 ======================================================================
-Summary:                    snd-powermac: Burgundy: controls for headphones and
-speakers inverted
+Summary:                    left and right volumes unbalanced when adjusted with
+xmms slider running under aoss
 Description: 
-The control sliders for the volume of the stereo speakers and of the
-headphones are reversed. Additionally, the speaker controls are wrongfully
-a single mono slider. Another headphone-related issue is that the
-automatic muting of the speakers upon connection of headphones does not
-work. Likewise, the muting status of headphones and speakers is not saved.
+When I run xmms its built-in volume slider works normally, with OSS volume
+ranges 0 to 31.  When I run aoss xmms, the volume slider seems to have
+different ranges for the left and right channels.  When you turn it all
+the way up and look at the values with amixer or alsamixer the left
+channel is set to 31 and the right is set to 15.  Also the sound out the
+speakers agrees with this (left much louder).  The same problem happens
+with the master control if you tell xmms to use the master instead of the
+pcm volume.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000306 compiles, but no sound comes out
-======================================================================
-
-----------------------------------------------------------------------
- Quietti - 09-29-05 22:17 
-----------------------------------------------------------------------
-No, this is not related to 1010. This is a different problem and a
-different chipset altogether.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-05 10:12 Quietti        New Issue                                    
-09-22-05 10:12 Quietti        Distribution              => Debian          
-09-22-05 10:12 Quietti        Kernel Version            => 2.6.13.2        
-09-22-05 18:12 Quietti        Issue Monitored: Quietti                     
-09-25-05 01:03 rlrevell       Relationship added       related to 0000306  
-09-29-05 21:01 jdthood        Relationship added       related to 0001010  
-09-29-05 22:14 sylware        Issue Monitored: sylware                     
-09-29-05 22:17 Quietti        Note Added: 0006426                          
-09-30-05 10:41 jdthood        Relationship deleted     related to 0001010  
+09-27-05 11:33 xolsonalsa     New Issue                                    
+09-30-05 11:13 jdthood        Summary                  xmms volume slider
+malfunction in aoss => left and right volumes unbalanced when adjusted with xmms
+slider running under aoss
+09-30-05 11:13 jdthood        Description Updated                          
 ======================================================================
 
 
