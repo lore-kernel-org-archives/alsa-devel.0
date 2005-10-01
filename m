@@ -1,21 +1,12 @@
-From: Allan Klinbail <sonofzev@dodo.com.au>
-Subject: Re: [ALSA - driver 0001203]: mtpav driver locks
-	X	on	64 bit native system
-Date: Sun, 02 Oct 2005 01:01:21 +1000
-Message-ID: <1128178881.9366.2.camel@daw.littlewolf>
-References: <4a2952cca628b67c731e72971c492bf2@bugtrack.alsa-project.org>
-	 <1126161408.9937.7.camel@daw.littlewolf>
-	 <1126197394.12697.2.camel@mindpipe> <s5hk6hrsdkt.wl%tiwai@suse.de>
-	 <1127318617.9212.4.camel@daw.littlewolf>  <s5hoe6cdn4i.wl%tiwai@suse.de>
-	 <1128173021.7383.0.camel@daw.littlewolf>
+From: Cesc <cesc.santa@gmail.com>
+Subject: Non-blocking PCM playback stream ... noisy
+Date: Sat, 1 Oct 2005 03:55:49 +0200
+Message-ID: <ce8208420509301855h11f21b2et1c0eb357a3c7fc99@mail.gmail.com>
+Reply-To: Cesc <cesc.santa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_4294_7254275.1128131749196"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from relay02.mail-hub.dodo.com.au (relay02.mail-hub.dodo.com.au [202.136.32.45])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C87B111D
-	for <alsa-devel@alsa-project.org>; Sat,  1 Oct 2005 16:59:32 +0200 (MEST)
-In-Reply-To: <1128173021.7383.0.camel@daw.littlewolf>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,136 +16,124 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sorry , it actually looks liek the patch failed .. but no errors were
-reported but also patch didn't seem to do anything .....
+------=_Part_4294_7254275.1128131749196
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-I copied the text beginning with "Index", saved it to
-alsa-driver/alsa-kernel and then applied patch -p1, is that the correct
-process?
+SGksCgpJIGhhdmUgYW4gYXBwIChhIHNvZnQgcGhvbmUpIHdoaWNoIGlzIGN1cnJlbnRseSB1c2lu
+ZyBPU1MgYW5kIGkgd2FudCB0bwppbXBsZW1lbnQgQWxzYSAuLi4gc291bmRzIGJldHRlciB0aGFu
+IE9TUy4KVGhhbmtzIGluIGFkdmFuY2UgZm9yIHRoZSByZXBsaWVzLgoKQWN0dWFsbHksIGkgYWxy
+ZWFkeSBoYXZlIGl0ICJydW5uaW5nIiB3aXRoIGFsc2EsIGJ1dCBpbiBibG9ja2luZyBtb2RlLiBU
+aGUKcHJvYmxlbSB3aXRoIGJsb2NraW5nIGlzIHRoYXQgaSBuZWVkIHRoZSBwbGF5YmFjayBjb25z
+dW1lciB0aHJlYWQgdG8gcmVhZApldmVyeSAyMG1zIC4uLiBidXQgYXMgaXQgYmxvY2tzIGZvciB0
+aGF0IG11Y2ggdGltZSwgYWRkIHRoZSBwcm9jZXNzaW5nIHRpbWUKLi4uIGl0IHR1cm5zIG91dCB0
+aGF0IGkgZW5kIHVwIG5vdCBiZWluZyBhYmxlIHRvIGNhdGNoIHVwIHRoZSBwcm9kdWNlcgp0aHJl
+YWQuIEFwYXJ0IGZyb20gdGhpcyAic21hbGwiIGRldGFpbCwgYXVkaW8gc291bmRzIGFuZCB3aXRo
+IHZlcnkgZ29vZApxdWFsaXR5LgoKU28gd2hhdCBpIGRpZCBpcyB0cnkgdG8gdXNlIG5vbi1ibG9j
+ayBpbyBmb3IgdGhlIHBsYXliYWNrIG9ubHkgKHJlY29yZCBpcwpzdGlsbCBibG9ja2luZywgaXMg
+aXQgY29ycmVjdCB0byBkbyBzbz8pLgpUaGUgcHJvYmxlbSBpcyB0aGF0IGluIG5vbi1ibG9ja2lu
+ZywgaSBnZXQgdGhlIGF1ZGlvIHN0cmVhbSBidXQgd2l0aCBhCmRpc2d1c3Rpbmcgbm9pc3kgYmFj
+a2dyb3VuZCAuLi4ga2luZCBvZiBhCmZpeGVkIHdoaXRlIG5vaXNlIC4uLgpIZXJlIGlzIGFuIGFi
+c3RyYWN0aW9uIG9mIHRoZSBjb2RlOgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0Kd3JpdGVfdG9fY2FyZCggdm9pZCAqIGJ1ZmYsIGludCBmcmFtZXMpIHsK
+Ly9tYWtlIHN1cmUgdGhhdCAyMCBtcyBoYXZlIGVsYXBzZWQgYmV0d2VlbiB0aGlzIGNhbGwgYW5k
+IHRoZSBwcmV2aW91cwovLyBzbGVlcCBmb3Igc29tZSBtaWxpc2Vjb25kcyBpZiBuZWVkZWQKCnNo
+b3J0ICogZnJhbWVCdWZmID0gKHNob3J0ICopIGJ1ZmY7IC8vbXkgc2FtcGxlcyBhcmUgMi1ieXRl
+IGVhY2ggLi4uIHNob3J0cwppbnQgdG90YWxGcmFtZXNXcml0dGVuID0gMDsKCndoaWxlKCB0b3Rh
+bEZyYW1lc1dyaXR0ZW4gPCBmcmFtZXMgKSB7CndyaXR0ZW4gPSBzbmRfcGNtX3dyaXRlaSggd3Jp
+dGVIYW5kbGUsCiYgZnJhbWVCdWZmWyB0b3RhbEZyYW1lc1dyaXR0ZW4gKiAyXSwgLy9hZHZhbmNl
+IHRoZSBidWZmZXIgLi4uIGZyYW1lcyAqIDIKY2hhbnMgPSBudW0gc2FtcGxlcwpmcmFtZXMgLSB0
+b3RhbEZyYW1lc1dyaXR0ZW4gKTsKaWYoIHdyaXR0ZW4gPT0gLUVBR0FJTiB8fCB3cml0dGVuID09
+IC1FSU5UUiApCmNvbnRpbnVlOyAvLyBub24gYmxvY2tpbmcgLi4uCmlmKCB3cml0dGVuIDwgMCAp
+CnJldHVybiAtMTsgLy9lcnJvcgplbHNlCnRvdGFsRnJhbWVzV3JpdHRlbiArPSB3cml0dGVuOwp9
+Cgp9Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpUaGUg
+dGltaW5nIHBhcnQgd29ya3MgZmluZSAuLi4KVGhpcyBzYW1lIGNvZGUgc3RydWN0dXJlICh0aGUg
+d2hpbGUgbG9vcCBhbmQgc28gKSB3b3JrcyBmaW5lIHdpdGggYmxvY2tpbmcKYXVkaW8gLi4uIGJ1
+dCB0aGVuLAp3aGVuIHVzaW5nIGJsb2NraW5nIGlvLCBhbGwgdGhlIGZyYW1lcyBhcmUgd3JpdHRl
+biBhdCBvbmNlIC4uLiBidXQgd2hlbgp1c2luZyBub24tYmxvY2tpbmcsIHRoZSB3aGlsZQpuZWVk
+cyBhIGZldyBpdGVyYXRpb25zIChpIGhhdmUgOTYwIGZyYW1lcyAuLi4gaXQgd3JpdGVzIGEgYmln
+IGNodW5jaywgc2F5CjgzMiwgdGhlbiBpbiBncm91cHMgb2YgMTYgZnJhbWVzKS4KQ291bGQgdGhp
+cyBoYXZlIHNvbWV0aGluZyB0byBkbz8gY2FuIGkgZG8gc29tZXRoaW5nIChhbHNhIHBhcmFtcykg
+c28gYWxsIHRoZQpmcmFtZXMgY2FuIGJlIHdyaXR0ZW4gYXQgb25jZT8KQW55IGlkZWEgb24gd2h5
+IHRoZSBub2lzZT8gd2hhdCBhbSBpIGRvaW5nIHdyb25nPwoKVGtzIGEgbG90IQoKUmVnYXJkcywK
+CkNlc2MK
+------=_Part_4294_7254275.1128131749196
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-On Sat, 2005-10-01 at 23:23 +1000, Allan Klinbail wrote:
-> Hi Takashi, 
-> 
-> I tested the patch. I still get a hard lock when activating the driver
-> through any sequencer. 
-> 
-> cheers
-> 
-> Allan 
-> 
-> On Thu, 2005-09-29 at 15:22 +0200, Takashi Iwai wrote:
-> > At Thu, 22 Sep 2005 02:03:37 +1000,
-> > Allan Klinbail wrote:
-> > > 
-> > > Sorry I haven't been on for a little while... how do I apply this patch?
-> > 
-> > Copy the mail as a text file (as it is), and run the patch on your
-> > alsa-kernel tree (with -p1 option).
-> > 
-> > 
-> > Takashi
-> > 
-> > > 
-> > > 
-> > > 
-> > > On Thu, 2005-09-08 at 18:56 +0200, Takashi Iwai wrote:
-> > > > At Thu, 08 Sep 2005 12:36:33 -0400,
-> > > > Lee Revell wrote:
-> > > > > 
-> > > > > On Thu, 2005-09-08 at 16:36 +1000, Allan Klinbail wrote:
-> > > > > > Is any work being done on this... 
-> > > > > > 
-> > > > > > To my horror and disgust for work purposes I needed to install winblows
-> > > > > > on the amd64 and the MOTU proprietary 32 bit driver works...
-> > > > > > 
-> > > > > > This simply confirms I have all my printer port settings correct in
-> > > > > > BIOS...  
-> > > > > 
-> > > > > Um, no, because the ALSA developers almost certainly don't have the
-> > > > > hardware.  YOU need to work on it.
-> > > > 
-> > > > The problem is that we haven't changed the driver so much for a long
-> > > > time.  And the driver is quite simple.  It's a parallel port.
-> > > > So, I'm wondering what is broken.
-> > > > 
-> > > > You can try the following patch just for testing.  It postpones the
-> > > > request_irq() call, in case any wandering irq caused the trouble.
-> > > > 
-> > > > 
-> > > > Takashi
-> > > > 
-> > > > 
-> > > > Index: alsa-kernel/drivers/mtpav.c
-> > > > ===================================================================
-> > > > RCS file: /home/iwai/cvs/alsa/alsa-kernel/drivers/mtpav.c,v
-> > > > retrieving revision 1.29
-> > > > diff -u -r1.29 mtpav.c
-> > > > --- alsa-kernel/drivers/mtpav.c	5 Sep 2005 16:16:33 -0000	1.29
-> > > > +++ alsa-kernel/drivers/mtpav.c	8 Sep 2005 16:55:34 -0000
-> > > > @@ -592,13 +592,18 @@
-> > > >  /*
-> > > >   * get ISA resources
-> > > >   */
-> > > > -static int snd_mtpav_get_ISA(mtpav_t * mcard)
-> > > > +static int __init snd_mtpav_get_ISA_port(mtpav_t * mcard)
-> > > >  {
-> > > >  	if ((mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI")) == NULL) {
-> > > >  		snd_printk("MTVAP port 0x%lx is busy\n", port);
-> > > >  		return -EBUSY;
-> > > >  	}
-> > > >  	mcard->port = port;
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static int __init snd_mtpav_get_ISA_irq(mtpav_t * mcard)
-> > > > +{
-> > > >  	if (request_irq(irq, snd_mtpav_irqh, SA_INTERRUPT, "MOTU MTPAV", (void *)mcard)) {
-> > > >  		snd_printk("MTVAP IRQ %d busy\n", irq);
-> > > >  		return -EBUSY;
-> > > > @@ -742,7 +747,7 @@
-> > > >  		return -ENOMEM;
-> > > >  	}
-> > > >  
-> > > > -	err = snd_mtpav_get_ISA(mtp_card);
-> > > > +	err = snd_mtpav_get_ISA_port(mtp_card);
-> > > >  	//printk("snd_mtpav_get_ISA returned: %d\n", err);
-> > > >  	if (err < 0)
-> > > >  		goto __error;
-> > > > @@ -769,6 +774,10 @@
-> > > >  
-> > > >  	snd_mtpav_portscan(mtp_card);
-> > > >  
-> > > > +	err = snd_mtpav_get_ISA_irq(mtp_card);
-> > > > +	if (err < 0)
-> > > > +		goto __error;
-> > > > +
-> > > >  	printk(KERN_INFO "Motu MidiTimePiece on parallel port irq: %d ioport: 0x%lx\n", irq, port);
-> > > >  
-> > > >  	return 0;
-> > > > 
-> > > -- 
-> > > Allan Klinbail <allan_k@dodo.com.au>
-> > > 
-> > > 
-> > > 
-> > > -------------------------------------------------------
-> > > SF.Net email is sponsored by:
-> > > Tame your development challenges with Apache's Geronimo App Server. 
-> > > Download it for free - -and be entered to win a 42" plasma tv or your very
-> > > own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
-> > > _______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> > > 
-> > 
--- 
-Allan Klinbail <sonofzev@dodo.com.au>
-
+SGksPGJyPgo8YnI+CkkgaGF2ZSBhbiBhcHAgKGEgc29mdCBwaG9uZSkgd2hpY2ggaXMgY3VycmVu
+dGx5IHVzaW5nIE9TUyBhbmQgaSB3YW50IHRvIGltcGxlbWVudCBBbHNhIC4uLiBzb3VuZHMgYmV0
+dGVyIHRoYW4gT1NTLjxicj4KVGhhbmtzIGluIGFkdmFuY2UgZm9yIHRoZSByZXBsaWVzLjxicj48
+YnI+CkFjdHVhbGx5LCBpIGFscmVhZHkgaGF2ZSBpdCAmcXVvdDtydW5uaW5nJnF1b3Q7IHdpdGgg
+YWxzYSwgYnV0IGluIGJsb2NraW5nIG1vZGUuClRoZSBwcm9ibGVtIHdpdGggYmxvY2tpbmcgaXMg
+dGhhdCBpIG5lZWQgdGhlIHBsYXliYWNrIGNvbnN1bWVyIHRocmVhZAp0byByZWFkIGV2ZXJ5IDIw
+bXMgLi4uIGJ1dCBhcyBpdCBibG9ja3MgZm9yIHRoYXQgbXVjaCB0aW1lLCBhZGQgdGhlCnByb2Nl
+c3NpbmcgdGltZSAuLi4gaXQgdHVybnMgb3V0IHRoYXQgaSBlbmQgdXAgbm90IGJlaW5nIGFibGUg
+dG8gY2F0Y2gKdXAgdGhlIHByb2R1Y2VyIHRocmVhZC4gQXBhcnQgZnJvbSB0aGlzICZxdW90O3Nt
+YWxsJnF1b3Q7IGRldGFpbCwgYXVkaW8gc291bmRzCmFuZCB3aXRoIHZlcnkgZ29vZCBxdWFsaXR5
+Ljxicj4KPGJyPgpTbyB3aGF0IGkgZGlkIGlzIHRyeSB0byB1c2Ugbm9uLWJsb2NrIGlvIGZvciB0
+aGUgcGxheWJhY2sgb25seSAocmVjb3JkIGlzIHN0aWxsIGJsb2NraW5nLCBpcyBpdCBjb3JyZWN0
+IHRvIGRvIHNvPykuIDxicj4KVGhlIHByb2JsZW0gaXMgdGhhdCBpbiBub24tYmxvY2tpbmcsIGkg
+Z2V0IHRoZSBhdWRpbyBzdHJlYW0gYnV0IHdpdGggYSBkaXNndXN0aW5nIG5vaXN5IGJhY2tncm91
+bmQgLi4uIGtpbmQgb2YgYSA8YnI+CmZpeGVkIHdoaXRlIG5vaXNlIC4uLiA8YnI+CkhlcmUgaXMg
+YW4gYWJzdHJhY3Rpb24gb2YgdGhlIGNvZGU6PGJyPgo8YnI+Ci0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPGJyPgp3cml0ZV90b19jYXJkKCB2b2lkICogYnVm
+ZiwgaW50IGZyYW1lcykgezxicj4KJm5ic3A7IC8vbWFrZSBzdXJlIHRoYXQgMjAgbXMgaGF2ZSBl
+bGFwc2VkIGJldHdlZW4gdGhpcyBjYWxsIGFuZCB0aGUgcHJldmlvdXM8YnI+CiZuYnNwOyAvLyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBzbGVlcCBmb3Igc29tZSBtaWxpc2Vjb25kcyBpZiBuZWVk
+ZWQ8YnI+Cjxicj4KJm5ic3A7Jm5ic3A7IHNob3J0ICogZnJhbWVCdWZmID0gKHNob3J0ICopIGJ1
+ZmY7Jm5ic3A7Jm5ic3A7IC8vbXkgc2FtcGxlcyBhcmUgMi1ieXRlIGVhY2ggLi4uIHNob3J0czxi
+cj4KJm5ic3A7Jm5ic3A7IGludCB0b3RhbEZyYW1lc1dyaXR0ZW4gPSAwOzxicj4KPGJyPgombmJz
+cDsgd2hpbGUoIHRvdGFsRnJhbWVzV3JpdHRlbiAmbHQ7IGZyYW1lcyApIHs8YnI+CiZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyB3cml0dGVuID0gc25kX3BjbV93cml0ZWkoIHdyaXRlSGFuZGxlLCA8YnI+CiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOwom
+YW1wOyBmcmFtZUJ1ZmZbIHRvdGFsRnJhbWVzV3JpdHRlbiAqIDJdLCZuYnNwOyAvL2FkdmFuY2Ug
+dGhlIGJ1ZmZlcgouLi4gZnJhbWVzICogMiBjaGFucyA9IG51bSBzYW1wbGVzPGJyPgombmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsKZnJh
+bWVzIC0gdG90YWxGcmFtZXNXcml0dGVuICk7PGJyPgombmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsKaWYo
+IHdyaXR0ZW4gPT0gLUVBR0FJTiB8fCB3cml0dGVuID09IC1FSU5UUiApICZuYnNwOyAmbmJzcDsg
+PGJyPgombmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5i
+c3A7ICZuYnNwOyAmbmJzcDsKJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
+cDsgJm5ic3A7Jm5ic3A7IGNvbnRpbnVlOyAmbmJzcDsKLy8gbm9uIGJsb2NraW5nIC4uLjxicj4K
+Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IGlmKCB3cml0
+dGVuICZsdDsgMCApPGJyPgombmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNw
+OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsKJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7
+ICZuYnNwOyAmbmJzcDsgJm5ic3A7IHJldHVybiAtMTsgLy9lcnJvcjxicj4KJm5ic3A7ICZuYnNw
+OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IGVsc2UgPGJyPgombmJzcDsgJm5i
+c3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
+cDsmbmJzcDsgdG90YWxGcmFtZXNXcml0dGVuICs9IHdyaXR0ZW47Jm5ic3A7ICA8YnI+CiZuYnNw
+OyB9PGJyPgo8YnI+Cn08YnI+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tPGJyPgo8YnI+ClRoZSB0aW1pbmcgcGFydCB3b3JrcyBmaW5lIC4uLjxicj4KVGhp
+cyBzYW1lIGNvZGUgc3RydWN0dXJlICh0aGUgd2hpbGUgbG9vcCBhbmQgc28gKSB3b3JrcyBmaW5l
+IHdpdGggYmxvY2tpbmcgYXVkaW8gLi4uJm5ic3A7IGJ1dCB0aGVuLCA8YnI+CndoZW4gdXNpbmcg
+YmxvY2tpbmcgaW8sIGFsbCB0aGUgZnJhbWVzIGFyZSB3cml0dGVuIGF0IG9uY2UgLi4uIGJ1dCB3
+aGVuIHVzaW5nIG5vbi1ibG9ja2luZywgdGhlIHdoaWxlPGJyPgpuZWVkcyBhIGZldyBpdGVyYXRp
+b25zIChpIGhhdmUgOTYwIGZyYW1lcyAuLi4gaXQgd3JpdGVzIGEgYmlnIGNodW5jaywgc2F5IDgz
+MiwgdGhlbiBpbiBncm91cHMgb2YgMTYgZnJhbWVzKS48YnI+CkNvdWxkIHRoaXMgaGF2ZSBzb21l
+dGhpbmcgdG8gZG8/IGNhbiBpIGRvIHNvbWV0aGluZyAoYWxzYSBwYXJhbXMpIHNvIGFsbCB0aGUg
+ZnJhbWVzIGNhbiBiZSB3cml0dGVuIGF0IG9uY2U/PGJyPgpBbnkgaWRlYSBvbiB3aHkgdGhlIG5v
+aXNlPyB3aGF0IGFtIGkgZG9pbmcgd3Jvbmc/PGJyPgo8YnI+ClRrcyBhIGxvdCE8YnI+Cjxicj4K
+UmVnYXJkcyw8YnI+Cjxicj4KQ2VzYzxicj4KPGJyPgo=
+------=_Part_4294_7254275.1128131749196--
 
 
 -------------------------------------------------------
