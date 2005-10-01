@@ -1,26 +1,20 @@
-From: Allan Klinbail <allan_k@dodo.com.au>
-Subject: Re: [ALSA - driver 0001203]: mtpav driver locks
-	X	on	64 bit native system
-Date: Sat, 01 Oct 2005 23:23:41 +1000
-Message-ID: <1128173021.7383.0.camel@daw.littlewolf>
-References: <4a2952cca628b67c731e72971c492bf2@bugtrack.alsa-project.org>
-	 <1126161408.9937.7.camel@daw.littlewolf>
-	 <1126197394.12697.2.camel@mindpipe> <s5hk6hrsdkt.wl%tiwai@suse.de>
-	 <1127318617.9212.4.camel@daw.littlewolf>  <s5hoe6cdn4i.wl%tiwai@suse.de>
+From: Dr Ateeq Rahman Khan <ateeq49_khan@yahoo.co.in>
+Subject: Business Proposal
+Date: Sat, 01 Oct 2005 20:11:50 +0400
+Message-ID: <20051001161140.CA3896E5EB@mail.perex.cz>
+Reply-To: rahmkhan@zwallet.com
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="48b30742-a91f-4b1a-a22a-93896d6b8de4"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mx.ipex.cz (mx.ipex.cz [212.71.175.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECED915E
-	for <alsa-devel@alsa-project.org>; Sat,  1 Oct 2005 15:45:21 +0200 (MEST)
-Received: from gate.perex.cz (unknown [85.132.177.35])
-	by adriana.gin.cz (Postfix) with ESMTP id 1876ADC459
-	for <alsa-devel@alsa-project.org>; Sat,  1 Oct 2005 15:45:23 +0200 (CEST)
-Received: from relay02.mail-hub.dodo.com.au (relay02.mail-hub.dodo.com.au [202.136.32.45])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 90A9B9475A
-	for <alsa-devel@alsa-project.org>; Sat,  1 Oct 2005 15:21:57 +0200 (MEST)
-In-Reply-To: <s5hoe6cdn4i.wl%tiwai@suse.de>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04BD019D
+	for <alsa-devel@alsa-project.org>; Sat,  1 Oct 2005 18:11:54 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by adriana.gin.cz (Postfix) with ESMTP id 5D3FDDC1CD
+	for <alsa-devel@alsa-project.org>; Sat,  1 Oct 2005 18:11:56 +0200 (CEST)
+Received: from yahoo68.com (unknown [83.110.188.106])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id CA3896E5EB
+	for <alsa-devel@alsa-project.org>; Sat,  1 Oct 2005 18:11:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -30,127 +24,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi, 
 
-I tested the patch. I still get a hard lock when activating the driver
-through any sequencer. 
+This is a multi-part message in MIME format
+--48b30742-a91f-4b1a-a22a-93896d6b8de4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-cheers
-
-Allan 
-
-On Thu, 2005-09-29 at 15:22 +0200, Takashi Iwai wrote:
-> At Thu, 22 Sep 2005 02:03:37 +1000,
-> Allan Klinbail wrote:
-> > 
-> > Sorry I haven't been on for a little while... how do I apply this patch?
-> 
-> Copy the mail as a text file (as it is), and run the patch on your
-> alsa-kernel tree (with -p1 option).
-> 
-> 
-> Takashi
-> 
-> > 
-> > 
-> > 
-> > On Thu, 2005-09-08 at 18:56 +0200, Takashi Iwai wrote:
-> > > At Thu, 08 Sep 2005 12:36:33 -0400,
-> > > Lee Revell wrote:
-> > > > 
-> > > > On Thu, 2005-09-08 at 16:36 +1000, Allan Klinbail wrote:
-> > > > > Is any work being done on this... 
-> > > > > 
-> > > > > To my horror and disgust for work purposes I needed to install winblows
-> > > > > on the amd64 and the MOTU proprietary 32 bit driver works...
-> > > > > 
-> > > > > This simply confirms I have all my printer port settings correct in
-> > > > > BIOS...  
-> > > > 
-> > > > Um, no, because the ALSA developers almost certainly don't have the
-> > > > hardware.  YOU need to work on it.
-> > > 
-> > > The problem is that we haven't changed the driver so much for a long
-> > > time.  And the driver is quite simple.  It's a parallel port.
-> > > So, I'm wondering what is broken.
-> > > 
-> > > You can try the following patch just for testing.  It postpones the
-> > > request_irq() call, in case any wandering irq caused the trouble.
-> > > 
-> > > 
-> > > Takashi
-> > > 
-> > > 
-> > > Index: alsa-kernel/drivers/mtpav.c
-> > > ===================================================================
-> > > RCS file: /home/iwai/cvs/alsa/alsa-kernel/drivers/mtpav.c,v
-> > > retrieving revision 1.29
-> > > diff -u -r1.29 mtpav.c
-> > > --- alsa-kernel/drivers/mtpav.c	5 Sep 2005 16:16:33 -0000	1.29
-> > > +++ alsa-kernel/drivers/mtpav.c	8 Sep 2005 16:55:34 -0000
-> > > @@ -592,13 +592,18 @@
-> > >  /*
-> > >   * get ISA resources
-> > >   */
-> > > -static int snd_mtpav_get_ISA(mtpav_t * mcard)
-> > > +static int __init snd_mtpav_get_ISA_port(mtpav_t * mcard)
-> > >  {
-> > >  	if ((mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI")) == NULL) {
-> > >  		snd_printk("MTVAP port 0x%lx is busy\n", port);
-> > >  		return -EBUSY;
-> > >  	}
-> > >  	mcard->port = port;
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int __init snd_mtpav_get_ISA_irq(mtpav_t * mcard)
-> > > +{
-> > >  	if (request_irq(irq, snd_mtpav_irqh, SA_INTERRUPT, "MOTU MTPAV", (void *)mcard)) {
-> > >  		snd_printk("MTVAP IRQ %d busy\n", irq);
-> > >  		return -EBUSY;
-> > > @@ -742,7 +747,7 @@
-> > >  		return -ENOMEM;
-> > >  	}
-> > >  
-> > > -	err = snd_mtpav_get_ISA(mtp_card);
-> > > +	err = snd_mtpav_get_ISA_port(mtp_card);
-> > >  	//printk("snd_mtpav_get_ISA returned: %d\n", err);
-> > >  	if (err < 0)
-> > >  		goto __error;
-> > > @@ -769,6 +774,10 @@
-> > >  
-> > >  	snd_mtpav_portscan(mtp_card);
-> > >  
-> > > +	err = snd_mtpav_get_ISA_irq(mtp_card);
-> > > +	if (err < 0)
-> > > +		goto __error;
-> > > +
-> > >  	printk(KERN_INFO "Motu MidiTimePiece on parallel port irq: %d ioport: 0x%lx\n", irq, port);
-> > >  
-> > >  	return 0;
-> > > 
-> > -- 
-> > Allan Klinbail <allan_k@dodo.com.au>
-> > 
-> > 
-> > 
-> > -------------------------------------------------------
-> > SF.Net email is sponsored by:
-> > Tame your development challenges with Apache's Geronimo App Server. 
-> > Download it for free - -and be entered to win a 42" plasma tv or your very
-> > own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> > 
-> 
--- 
-Allan Klinbail <allan_k@dodo.com.au>
+Dear Friend, 
+With due respect I like to disclose a mutual transaction to you. I am Dr =
+Ateeq Rahman Khan, the Manager International Diplomatic Cargo Services.We =
+have consignment valued US$15.500,000,00 Fifteen Point Five Million United =
+State Dollars in our custody,deposited by a customer from Belgium.
+Now in our computer system it records that beneficiary of the deposited =
+consignment is dead on Air Crash early June 2003.Until date we have not =
+receive any signal from his relation for claiming of the deposited =
+consignment. Now I want your assistance to move out this consignment to your =
+country for investment.
+ As the manager of our company I would take all measures to make sure the =
+consignment successfully moved to your end. Immediately I receive your =
+positive response then I will update you on the procedures for success of =
+this our trustee transaction. I would appreciate you keep it utmost secret =
+because of my position. Expecting your reply via email address: =
+ateeqrahman_49@yahoo.co.in 
+Best Regards, 
+Dr Ateeq Rahman Khan  
+--48b30742-a91f-4b1a-a22a-93896d6b8de4--
 
 
 
