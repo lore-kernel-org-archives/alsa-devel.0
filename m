@@ -1,12 +1,14 @@
-From: Nico Schottelius <nico-linux-alsa@schottelius.org>
-Subject: snd-maestro3 mic problem
-Date: Sun, 2 Oct 2005 21:24:34 +0200
-Message-ID: <20051002192434.GA2000@schottelius.org>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: no Sound with SiS965L / Realtek ALC655
+Date: Sun, 02 Oct 2005 21:41:54 +0200
+Message-ID: <m21x33zoxp.fsf@vador.mandriva.com>
+References: <433285F4.5060509@gmx.net> <s5hmzlwdn0n.wl%tiwai@suse.de>
+	<433C4EE0.3010309@gmx.net> <s5hfyrmn4o5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hfyrmn4o5.wl%tiwai@suse.de> (Takashi Iwai's message of "Fri,
+	30 Sep 2005 14:03:38 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,62 +18,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Uwe Koziolek <uwe.koziolek@gmx.net>, alsa-devel@lists.sourceforge.net, Rainer Koenig <Rainer.Koenig@fujitsu-siemens.com>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai <tiwai@suse.de> writes:
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > yesterday i have build a minor patch against  alsa intel8x0.c  nearly
+> > alsa 1.0.10-rc1.
+> > I have removed 2 checks for the AC97 codec ready status. And it works now.
+> > 
+> > The status will go later to ready, if you start a play.
+> 
+> The latest version has already a workaround for this kind of problem.
+> Specify buggy_semaphore=1 module option.
 
-Hello!
+why not autoenable this option when encountering known buggy cards?
 
-If I want to use the microphone with my soundcard [0], I have to switch
-mic Select once (From 1 to 2) and then it works. Then I can switch back to
-Mic1 and it still works.
-
-What's the reason I first have to play with alsamixer and that it does not
-work from start?
-
-Sincerly,
-
-Nico
-
-P.S.: Please CC me, I am not subscribed.
-
-
-[0]: 0000:00:08.0 Multimedia audio controller: ESS Technology ES1988 Allegr=
-o-1 (rev 12)
-
---=20
-Latest project: cconfig (http://nico.schotteli.us/papers/linux/cconfig/)
-Open Source nutures open minds and free, creative developers.
-
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iQIVAwUBQ0Az8rOTBMvCUbrlAQINBQ/9Hhs4DVpDkhJyTAqNYzgyAQtjbVdUKyYg
-wUv7GF0U9J6p1wSWIrF+UKnSK4IdeL2Ucfpix8qzV/sMizG8KJ0b1srixjq4Q4o/
-2G5r2RnUXOrRmn8wUbaIfR99ZmUDBRSgQI4hhWi0MYHBQ0XgwhQDk6vyH5cXhiN4
-m1VOp4hUk4W/l4sDAKyQKspd56Y1UwwzJD16OvGoxWbkK2A6p4RG3ow+P0J/biqb
-6o5YEeUxqhywuvU9C1K51pcaJur/Z7BH70oJhhoflYLlKEBcXGVqCc1EQaqdQ/lZ
-Y6M2n6bLKXwO5ZjS6vKWAx8dn3E53SYeNv66t9ywwL5kjiW028j4+PlH1fhnE1WD
-lQxN8BuwTEclTMlLcowJ4dtXVZKX04ZGtaoGtu77RK8bX2WQpW+sH5UWF+dodF0L
-4q4Q85iYMGHpT0jCPAJC1OPRX1X8BPI1UaMoSVpiTjXvHkcdxkT9nwK1VANRfYO9
-4UCgzg+qXxo3uXrqw+eEHC9bWIGB+jwkjl6odICN2MgAivWhFzKicSG5SJL+09Pq
-TMXcwe3mwvRYM5L8hDK0HIlpOqHoa6PjqHDrlQakF9AE2jiWU3JEPn5bwv44Q3O5
-56cPelnSC8uKyI51iltaN4zrsMSFsqx3BXi17bo42kgXKGrtT+E+XJkveTqGD9Oc
-C4bN4A95txI=
-=+lFb
------END PGP SIGNATURE-----
-
---DocE+STaALJfprDB--
 
 
 -------------------------------------------------------
