@@ -1,14 +1,16 @@
-From: "Peter Zubaj" <pzad@pobox.sk>
-Subject: Re: Re: [ALSA] snd-emu10k1: ALSA bug#1297: Fix a error recognising the SB Live Platinum.
-Date: Mon, 03 Oct 2005 08:23:28 +0200
-Message-ID: <7a5967f2d895440aa1ca2fa1d201c380__11261.0591961586$1128320798$gmane$org@pobox.sk>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: Re: ac97 oops in ali modem driver
+Date: Mon, 3 Oct 2005 17:34:48 +0300
+Message-ID: <20051003143448.GA15786@tecr>
+References: <20051003010109.GA27888@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from paegas2.mail-atlas.net (paegas2.mail-atlas.net [212.47.13.187])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8F451B9
-	for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2005 08:23:49 +0200 (MEST)
+Received: from sa11.bezeqint.net (sa11.bezeqint.net [192.115.104.25])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66AE61A6
+	for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2005 16:19:44 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20051003010109.GA27888@redhat.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,126 +21,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Dave Jones <davej@redhat.com>
-Cc: alsa-devel@alsa-project.org, James@superbug.co.uk, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@suse.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-AFAIK this was fixed in CVS=2E Two cards have same model id (one has AC=
-97, one not)=2E
+On 21:01 Sun 02 Oct     , Dave Jones wrote:
+> I just had a user file a Fedora bug with the following oops.
 
-Fix:
+Is there other messages from ali5451 loading? The sound works I guess?
+What do you see when 'ls /proc/asound/ali5451/codec97#0'?
 
-http://sourceforge=2Enet/mailarchive/forum=2Ephp?thread_id=3D8360485&fo=
-rum_id=3D33141
+Sasha.
 
-Peter Zubaj
-
->-----P?vodn? spr?va-----
->Od: Dave Jones [mailto:davej@redhat=2Ecom]
->Odoslan?: 3=2E okt?bra 2005 1:28
->Komu: Linux Kernel Mailing List
->K?pia: alsa-devel@alsa-project=2Eorg; James@superbug=2Eco=2Euk; perex@=
-suse=2Ecz
->Predmet: [Alsa-devel] Re: [ALSA] snd-emu10k1: ALSA bug#1297: Fix a err=
-or recognising the SB Live Platinum=2E
->
->
->On Tue, Sep 13, 2005 at 12:07:43PM -0700, Linux Kernel wrote:
->> tree b885c7a937061624c7f7e34444122b96cced5c16
->> parent 1b44c28dc180f4d0ea109e1fe4339b3403c2d530
->> author James Courtier-Dutton <James@superbug=2Eco=2Euk> Sat, 10 Sep =
-2005 10:24:10 +0200
->> committer Jaroslav Kysela <perex@suse=2Ecz> Mon, 12 Sep 2005 10:48:3=
-2 +0200
->>
->> [ALSA] snd-emu10k1: ALSA bug#1297: Fix a error recognising the SB Li=
-ve Platinum=2E
->>
->> EMU10K1/EMU10K2 driver
->> The card does not have an AC97 chip=2E
->> =2Esubsystem =3D 0x80611102
->>
->> Signed-off-by: James Courtier-Dutton <James@superbug=2Eco=2Euk>
->>
->>  sound/pci/emu10k1/emu10k1_main=2Ec |    5 ++---
->>  1 files changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/sound/pci/emu10k1/emu10k1_main=2Ec b/sound/pci/emu10k1/=
-emu10k1_main=2Ec
->> --- a/sound/pci/emu10k1/emu10k1_main=2Ec
->> +++ b/sound/pci/emu10k1/emu10k1_main=2Ec
->> @@ -754,12 +754,11 @@ static emu_chip_details_t emu_chip_detai
->>  =09 =2Eemu10k1_chip =3D 1,
->>  =09 =2Eac97_chip =3D 1,
->>  =09 =2Esblive51 =3D 1} ,
->> -=09/* Tested by alsa bugtrack user "hus" 12th Sept 2005 */
->> +=09/* Tested by alsa bugtrack user "hus" bug #1297 12th Aug 2005 */
->>  =09{=2Evendor =3D 0x1102, =2Edevice =3D 0x0002, =2Esubsystem =3D 0x=
-80611102,
->> -=09 =2Edriver =3D "EMU10K1", =2Ename =3D "SBLive! Player 5=2E1 [SB0=
-060]",
->> +=09 =2Edriver =3D "EMU10K1", =2Ename =3D "SBLive! Platinum 5=2E1 [S=
-B0060]",
->>  =09 =2Eid =3D "Live",
->>  =09 =2Eemu10k1_chip =3D 1,
->> -=09 =2Eac97_chip =3D 1,
->>  =09 =2Esblive51 =3D 1} ,
->>  =09{=2Evendor =3D 0x1102, =2Edevice =3D 0x0002, =2Esubsystem =3D 0x=
-80511102,
->>  =09 =2Edriver =3D "EMU10K1", =2Ename =3D "SBLive! Value [CT4850]",
->
->That last line change reverts=2E=2E
->
->tree efc4e418c80bf61beb2e1cfd1b2db405b471111f
->parent 9970dce56686d7b71310388025d8925d3d29e6ec
->author Takashi Iwai <tiwai@suse=2Ede> Fri, 26 Aug 2005 17:26:40 +0200
->committer Jaroslav Kysela <perex@suse=2Ecz> Tue, 30 Aug 2005 08:47:46 =
-+0200
->
->[ALSA] emu10k1 - Add missing ac97 support on SBLive! Player 5=2E1
->
->EMU10K1/EMU10K2 driver
->Added the missing ac97 support on SBLive! Player 5=2E1=2E
->
->And makes peoples volume sliders disappear, which tends to upset folks=
-=2E
->See https://bugzilla=2Eredhat=2Ecom/bugzilla/show_bug=2Ecgi?id=3D16915=
-2
->for reference=2E
->
->Signed-off-by: Dave Jones <davej@redhat=2Ecom>
->
->--- linux-2=2E6=2E13/sound/pci/emu10k1/emu10k1_main=2Ec~=092005-10-02 =
-21:26:40=2E000000000 -0400
->+++ linux-2=2E6=2E13/sound/pci/emu10k1/emu10k1_main=2Ec=092005-10-02 2=
-1:26:57=2E000000000 -0400
->@@ -759,6 +759,7 @@ static emu_chip_details_t emu_chip_detai
->=2Edriver =3D "EMU10K1", =2Ename =3D "SBLive! Platinum 5=2E1 [SB0060]"=
-,
->=2Eid =3D "Live",
->=2Eemu10k1_chip =3D 1,
->+=09 =2Eac97_chip =3D 1,
->=2Esblive51 =3D 1} ,
->{=2Evendor =3D 0x1102, =2Edevice =3D 0x0002, =2Esubsystem =3D 0x805111=
-02,
->=2Edriver =3D "EMU10K1", =2Ename =3D "SBLive! Value [CT4850]",
->
->
->
->-------------------------------------------------------
->This SF=2ENet email is sponsored by:
->Power Architecture Resource Center: Free content, downloads, discussio=
-ns,
->and more=2E http://solutions=2Enewsforge=2Ecom/ibmarch=2Etmpl
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists=2Esourceforge=2Enet
->https://lists=2Esourceforge=2Enet/lists/listinfo/alsa-devel
-
-
-
-Aktivujte si neobmedzenu mailovu schranku na www.pobox.sk!
-
-
+> 
+> Unable to handle kernel NULL pointer dereference at virtual address 000001a4
+>  printing eip:
+> df969005
+> *pde = 12620067
+> Oops: 0000 [#1]
+> Modules linked in: nfs radeon drm nfsd exportfs lockd nfs_acl autofs4 sunrpc pcmcia dm_mod vid
+> eo button battery ac yenta_socket rsrc_nonstatic pcmcia_core ohci_hcd shpchp i2c_ali1535 i2c_c
+> ore snd_ali5451 snd_ac97_codec snd_seq_dummy snd_seq_oss snd_seq_midi_event snd_seq snd_seq_de
+> vice snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd soundcore snd_page_alloc prism54 8139cp m
+> ii floppy joydev ext3 jbd
+> CPU:    0
+> EIP:    0060:[<df969005>]    Not tainted VLI
+> EFLAGS: 00010202   (2.6.13-1.1526_FC4)
+> EIP is at snd_ac97_valid_reg+0x5/0x135 [snd_ac97_codec]
+> eax: 00000000   ebx: 00000040   ecx: 00000000   edx: 00000040
+> esi: 00000000   edi: 00000040   ebp: 00001f40   esp: ca515edc
+> ds: 007b   es: 007b   ss: 0068
+> Process gstreamer-prope (pid: 10503, threadinfo=ca515000 task=da809aa0)
+> Stack: 00000040 df969149 de2ac800 00000001 d4fb1000 de3bf560 df9207ca 00000000
+>        fffffff4 de3bf560 db6b9000 df92d6b2 00000000 00000001 00000246 00000000
+>        00000000 00000000 0000025c 0000025c d4fb1000 d4fb1000 fffffff4 de3bf560
+> Call Trace:
+>  [<df969149>] snd_ac97_write+0x14/0x5a [snd_ac97_codec]
+>  [<df9207ca>] snd_ali_modem_hw_params+0x2c/0x4c [snd_ali5451]
+>  [<df92d6b2>] snd_pcm_hw_params+0x290/0x609 [snd_pcm]
+>  [<df92da7b>] snd_pcm_hw_params_user+0x50/0x6a [snd_pcm]
+>  [<df9349b5>] snd_pcm_capture_ioctl1+0x2e/0x1ce [snd_pcm]
+>  [<df934b70>] snd_pcm_capture_ioctl+0x0/0x1b [snd_pcm]
+>  [<c01bf0e9>] do_ioctl+0x19/0x55
+>  [<c01bf217>] vfs_ioctl+0x50/0x1aa
+>  [<c01bf3ce>] sys_ioctl+0x5d/0x6b
+>  [<c0104409>] sysenter_past_esp+0x56/0x79
+> Code:  Bad EIP value.
+> 
+> 
+> It looks like we're somehow ending up with card->ac97 == NULL.
+> This kernel is based on 2.6.13.2, with no ALSA patches other than
+> an unrelated emu10k1 diff.  From eyeballing a quick diff of
+> the ali driver between 2.6.13.2 and current upstream 2.6.14rc3,
+> it doesn't look like this has been addressed already.
+> 
+> 		Dave
+> 
+> 
+> 
+> -------------------------------------------------------
+> This SF.Net email is sponsored by:
+> Power Architecture Resource Center: Free content, downloads, discussions,
+> and more. http://solutions.newsforge.com/ibmarch.tmpl
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
