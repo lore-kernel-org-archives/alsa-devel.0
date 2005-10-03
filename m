@@ -1,12 +1,29 @@
-From: Cesc <cesc.santa@gmail.com>
-Subject: Non-blocking PCM playback stream ... noisy
-Date: Sat, 1 Oct 2005 03:55:49 +0200
-Message-ID: <ce8208420509301855h11f21b2et1c0eb357a3c7fc99@mail.gmail.com>
-Reply-To: Cesc <cesc.santa@gmail.com>
+From: Dave Jones <davej@redhat.com>
+Subject: ac97 oops in ali modem driver
+Date: Sun, 2 Oct 2005 21:01:09 -0400
+Message-ID: <20051003010109.GA27888@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_4294_7254275.1128131749196"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A0D11B9
+	for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2005 03:01:12 +0200 (MEST)
+Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com [172.16.52.254])
+	by mx1.redhat.com (8.12.11/8.12.11) with ESMTP id j9311CLR008540
+	for <alsa-devel@alsa-project.org>; Sun, 2 Oct 2005 21:01:12 -0400
+Received: from devserv.devel.redhat.com (devserv.devel.redhat.com [172.16.58.1])
+	by int-mx1.corp.redhat.com (8.11.6/8.11.6) with ESMTP id j9311BV12153
+	for <alsa-devel@alsa-project.org>; Sun, 2 Oct 2005 21:01:12 -0400
+Received: from nwo.kernelslacker.org (vpn83-128.boston.redhat.com [172.16.83.128])
+	by devserv.devel.redhat.com (8.12.11/8.12.11) with ESMTP id j9311BF5030449
+	for <alsa-devel@alsa-project.org>; Sun, 2 Oct 2005 21:01:11 -0400
+Received: from nwo.kernelslacker.org (localhost.localdomain [127.0.0.1])
+	by nwo.kernelslacker.org (8.13.5/8.13.4) with ESMTP id j9311Auv032404
+	for <alsa-devel@alsa-project.org>; Sun, 2 Oct 2005 21:01:10 -0400
+Received: (from davej@localhost)
+	by nwo.kernelslacker.org (8.13.5/8.13.5/Submit) id j9311Ajm032403
+	for alsa-devel@alsa-project.org; Sun, 2 Oct 2005 21:01:10 -0400
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,124 +33,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_4294_7254275.1128131749196
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+I just had a user file a Fedora bug with the following oops.
 
-SGksCgpJIGhhdmUgYW4gYXBwIChhIHNvZnQgcGhvbmUpIHdoaWNoIGlzIGN1cnJlbnRseSB1c2lu
-ZyBPU1MgYW5kIGkgd2FudCB0bwppbXBsZW1lbnQgQWxzYSAuLi4gc291bmRzIGJldHRlciB0aGFu
-IE9TUy4KVGhhbmtzIGluIGFkdmFuY2UgZm9yIHRoZSByZXBsaWVzLgoKQWN0dWFsbHksIGkgYWxy
-ZWFkeSBoYXZlIGl0ICJydW5uaW5nIiB3aXRoIGFsc2EsIGJ1dCBpbiBibG9ja2luZyBtb2RlLiBU
-aGUKcHJvYmxlbSB3aXRoIGJsb2NraW5nIGlzIHRoYXQgaSBuZWVkIHRoZSBwbGF5YmFjayBjb25z
-dW1lciB0aHJlYWQgdG8gcmVhZApldmVyeSAyMG1zIC4uLiBidXQgYXMgaXQgYmxvY2tzIGZvciB0
-aGF0IG11Y2ggdGltZSwgYWRkIHRoZSBwcm9jZXNzaW5nIHRpbWUKLi4uIGl0IHR1cm5zIG91dCB0
-aGF0IGkgZW5kIHVwIG5vdCBiZWluZyBhYmxlIHRvIGNhdGNoIHVwIHRoZSBwcm9kdWNlcgp0aHJl
-YWQuIEFwYXJ0IGZyb20gdGhpcyAic21hbGwiIGRldGFpbCwgYXVkaW8gc291bmRzIGFuZCB3aXRo
-IHZlcnkgZ29vZApxdWFsaXR5LgoKU28gd2hhdCBpIGRpZCBpcyB0cnkgdG8gdXNlIG5vbi1ibG9j
-ayBpbyBmb3IgdGhlIHBsYXliYWNrIG9ubHkgKHJlY29yZCBpcwpzdGlsbCBibG9ja2luZywgaXMg
-aXQgY29ycmVjdCB0byBkbyBzbz8pLgpUaGUgcHJvYmxlbSBpcyB0aGF0IGluIG5vbi1ibG9ja2lu
-ZywgaSBnZXQgdGhlIGF1ZGlvIHN0cmVhbSBidXQgd2l0aCBhCmRpc2d1c3Rpbmcgbm9pc3kgYmFj
-a2dyb3VuZCAuLi4ga2luZCBvZiBhCmZpeGVkIHdoaXRlIG5vaXNlIC4uLgpIZXJlIGlzIGFuIGFi
-c3RyYWN0aW9uIG9mIHRoZSBjb2RlOgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0Kd3JpdGVfdG9fY2FyZCggdm9pZCAqIGJ1ZmYsIGludCBmcmFtZXMpIHsK
-Ly9tYWtlIHN1cmUgdGhhdCAyMCBtcyBoYXZlIGVsYXBzZWQgYmV0d2VlbiB0aGlzIGNhbGwgYW5k
-IHRoZSBwcmV2aW91cwovLyBzbGVlcCBmb3Igc29tZSBtaWxpc2Vjb25kcyBpZiBuZWVkZWQKCnNo
-b3J0ICogZnJhbWVCdWZmID0gKHNob3J0ICopIGJ1ZmY7IC8vbXkgc2FtcGxlcyBhcmUgMi1ieXRl
-IGVhY2ggLi4uIHNob3J0cwppbnQgdG90YWxGcmFtZXNXcml0dGVuID0gMDsKCndoaWxlKCB0b3Rh
-bEZyYW1lc1dyaXR0ZW4gPCBmcmFtZXMgKSB7CndyaXR0ZW4gPSBzbmRfcGNtX3dyaXRlaSggd3Jp
-dGVIYW5kbGUsCiYgZnJhbWVCdWZmWyB0b3RhbEZyYW1lc1dyaXR0ZW4gKiAyXSwgLy9hZHZhbmNl
-IHRoZSBidWZmZXIgLi4uIGZyYW1lcyAqIDIKY2hhbnMgPSBudW0gc2FtcGxlcwpmcmFtZXMgLSB0
-b3RhbEZyYW1lc1dyaXR0ZW4gKTsKaWYoIHdyaXR0ZW4gPT0gLUVBR0FJTiB8fCB3cml0dGVuID09
-IC1FSU5UUiApCmNvbnRpbnVlOyAvLyBub24gYmxvY2tpbmcgLi4uCmlmKCB3cml0dGVuIDwgMCAp
-CnJldHVybiAtMTsgLy9lcnJvcgplbHNlCnRvdGFsRnJhbWVzV3JpdHRlbiArPSB3cml0dGVuOwp9
-Cgp9Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpUaGUg
-dGltaW5nIHBhcnQgd29ya3MgZmluZSAuLi4KVGhpcyBzYW1lIGNvZGUgc3RydWN0dXJlICh0aGUg
-d2hpbGUgbG9vcCBhbmQgc28gKSB3b3JrcyBmaW5lIHdpdGggYmxvY2tpbmcKYXVkaW8gLi4uIGJ1
-dCB0aGVuLAp3aGVuIHVzaW5nIGJsb2NraW5nIGlvLCBhbGwgdGhlIGZyYW1lcyBhcmUgd3JpdHRl
-biBhdCBvbmNlIC4uLiBidXQgd2hlbgp1c2luZyBub24tYmxvY2tpbmcsIHRoZSB3aGlsZQpuZWVk
-cyBhIGZldyBpdGVyYXRpb25zIChpIGhhdmUgOTYwIGZyYW1lcyAuLi4gaXQgd3JpdGVzIGEgYmln
-IGNodW5jaywgc2F5CjgzMiwgdGhlbiBpbiBncm91cHMgb2YgMTYgZnJhbWVzKS4KQ291bGQgdGhp
-cyBoYXZlIHNvbWV0aGluZyB0byBkbz8gY2FuIGkgZG8gc29tZXRoaW5nIChhbHNhIHBhcmFtcykg
-c28gYWxsIHRoZQpmcmFtZXMgY2FuIGJlIHdyaXR0ZW4gYXQgb25jZT8KQW55IGlkZWEgb24gd2h5
-IHRoZSBub2lzZT8gd2hhdCBhbSBpIGRvaW5nIHdyb25nPwoKVGtzIGEgbG90IQoKUmVnYXJkcywK
-CkNlc2MK
-------=_Part_4294_7254275.1128131749196
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+Unable to handle kernel NULL pointer dereference at virtual address 000001a4
+ printing eip:
+df969005
+*pde = 12620067
+Oops: 0000 [#1]
+Modules linked in: nfs radeon drm nfsd exportfs lockd nfs_acl autofs4 sunrpc pcmcia dm_mod vid
+eo button battery ac yenta_socket rsrc_nonstatic pcmcia_core ohci_hcd shpchp i2c_ali1535 i2c_c
+ore snd_ali5451 snd_ac97_codec snd_seq_dummy snd_seq_oss snd_seq_midi_event snd_seq snd_seq_de
+vice snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd soundcore snd_page_alloc prism54 8139cp m
+ii floppy joydev ext3 jbd
+CPU:    0
+EIP:    0060:[<df969005>]    Not tainted VLI
+EFLAGS: 00010202   (2.6.13-1.1526_FC4)
+EIP is at snd_ac97_valid_reg+0x5/0x135 [snd_ac97_codec]
+eax: 00000000   ebx: 00000040   ecx: 00000000   edx: 00000040
+esi: 00000000   edi: 00000040   ebp: 00001f40   esp: ca515edc
+ds: 007b   es: 007b   ss: 0068
+Process gstreamer-prope (pid: 10503, threadinfo=ca515000 task=da809aa0)
+Stack: 00000040 df969149 de2ac800 00000001 d4fb1000 de3bf560 df9207ca 00000000
+       fffffff4 de3bf560 db6b9000 df92d6b2 00000000 00000001 00000246 00000000
+       00000000 00000000 0000025c 0000025c d4fb1000 d4fb1000 fffffff4 de3bf560
+Call Trace:
+ [<df969149>] snd_ac97_write+0x14/0x5a [snd_ac97_codec]
+ [<df9207ca>] snd_ali_modem_hw_params+0x2c/0x4c [snd_ali5451]
+ [<df92d6b2>] snd_pcm_hw_params+0x290/0x609 [snd_pcm]
+ [<df92da7b>] snd_pcm_hw_params_user+0x50/0x6a [snd_pcm]
+ [<df9349b5>] snd_pcm_capture_ioctl1+0x2e/0x1ce [snd_pcm]
+ [<df934b70>] snd_pcm_capture_ioctl+0x0/0x1b [snd_pcm]
+ [<c01bf0e9>] do_ioctl+0x19/0x55
+ [<c01bf217>] vfs_ioctl+0x50/0x1aa
+ [<c01bf3ce>] sys_ioctl+0x5d/0x6b
+ [<c0104409>] sysenter_past_esp+0x56/0x79
+Code:  Bad EIP value.
 
-SGksPGJyPgo8YnI+CkkgaGF2ZSBhbiBhcHAgKGEgc29mdCBwaG9uZSkgd2hpY2ggaXMgY3VycmVu
-dGx5IHVzaW5nIE9TUyBhbmQgaSB3YW50IHRvIGltcGxlbWVudCBBbHNhIC4uLiBzb3VuZHMgYmV0
-dGVyIHRoYW4gT1NTLjxicj4KVGhhbmtzIGluIGFkdmFuY2UgZm9yIHRoZSByZXBsaWVzLjxicj48
-YnI+CkFjdHVhbGx5LCBpIGFscmVhZHkgaGF2ZSBpdCAmcXVvdDtydW5uaW5nJnF1b3Q7IHdpdGgg
-YWxzYSwgYnV0IGluIGJsb2NraW5nIG1vZGUuClRoZSBwcm9ibGVtIHdpdGggYmxvY2tpbmcgaXMg
-dGhhdCBpIG5lZWQgdGhlIHBsYXliYWNrIGNvbnN1bWVyIHRocmVhZAp0byByZWFkIGV2ZXJ5IDIw
-bXMgLi4uIGJ1dCBhcyBpdCBibG9ja3MgZm9yIHRoYXQgbXVjaCB0aW1lLCBhZGQgdGhlCnByb2Nl
-c3NpbmcgdGltZSAuLi4gaXQgdHVybnMgb3V0IHRoYXQgaSBlbmQgdXAgbm90IGJlaW5nIGFibGUg
-dG8gY2F0Y2gKdXAgdGhlIHByb2R1Y2VyIHRocmVhZC4gQXBhcnQgZnJvbSB0aGlzICZxdW90O3Nt
-YWxsJnF1b3Q7IGRldGFpbCwgYXVkaW8gc291bmRzCmFuZCB3aXRoIHZlcnkgZ29vZCBxdWFsaXR5
-Ljxicj4KPGJyPgpTbyB3aGF0IGkgZGlkIGlzIHRyeSB0byB1c2Ugbm9uLWJsb2NrIGlvIGZvciB0
-aGUgcGxheWJhY2sgb25seSAocmVjb3JkIGlzIHN0aWxsIGJsb2NraW5nLCBpcyBpdCBjb3JyZWN0
-IHRvIGRvIHNvPykuIDxicj4KVGhlIHByb2JsZW0gaXMgdGhhdCBpbiBub24tYmxvY2tpbmcsIGkg
-Z2V0IHRoZSBhdWRpbyBzdHJlYW0gYnV0IHdpdGggYSBkaXNndXN0aW5nIG5vaXN5IGJhY2tncm91
-bmQgLi4uIGtpbmQgb2YgYSA8YnI+CmZpeGVkIHdoaXRlIG5vaXNlIC4uLiA8YnI+CkhlcmUgaXMg
-YW4gYWJzdHJhY3Rpb24gb2YgdGhlIGNvZGU6PGJyPgo8YnI+Ci0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPGJyPgp3cml0ZV90b19jYXJkKCB2b2lkICogYnVm
-ZiwgaW50IGZyYW1lcykgezxicj4KJm5ic3A7IC8vbWFrZSBzdXJlIHRoYXQgMjAgbXMgaGF2ZSBl
-bGFwc2VkIGJldHdlZW4gdGhpcyBjYWxsIGFuZCB0aGUgcHJldmlvdXM8YnI+CiZuYnNwOyAvLyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBzbGVlcCBmb3Igc29tZSBtaWxpc2Vjb25kcyBpZiBuZWVk
-ZWQ8YnI+Cjxicj4KJm5ic3A7Jm5ic3A7IHNob3J0ICogZnJhbWVCdWZmID0gKHNob3J0ICopIGJ1
-ZmY7Jm5ic3A7Jm5ic3A7IC8vbXkgc2FtcGxlcyBhcmUgMi1ieXRlIGVhY2ggLi4uIHNob3J0czxi
-cj4KJm5ic3A7Jm5ic3A7IGludCB0b3RhbEZyYW1lc1dyaXR0ZW4gPSAwOzxicj4KPGJyPgombmJz
-cDsgd2hpbGUoIHRvdGFsRnJhbWVzV3JpdHRlbiAmbHQ7IGZyYW1lcyApIHs8YnI+CiZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyB3cml0dGVuID0gc25kX3BjbV93cml0ZWkoIHdyaXRlSGFuZGxlLCA8YnI+CiZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOwom
-YW1wOyBmcmFtZUJ1ZmZbIHRvdGFsRnJhbWVzV3JpdHRlbiAqIDJdLCZuYnNwOyAvL2FkdmFuY2Ug
-dGhlIGJ1ZmZlcgouLi4gZnJhbWVzICogMiBjaGFucyA9IG51bSBzYW1wbGVzPGJyPgombmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsKZnJh
-bWVzIC0gdG90YWxGcmFtZXNXcml0dGVuICk7PGJyPgombmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsKaWYo
-IHdyaXR0ZW4gPT0gLUVBR0FJTiB8fCB3cml0dGVuID09IC1FSU5UUiApICZuYnNwOyAmbmJzcDsg
-PGJyPgombmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5i
-c3A7ICZuYnNwOyAmbmJzcDsKJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
-cDsgJm5ic3A7Jm5ic3A7IGNvbnRpbnVlOyAmbmJzcDsKLy8gbm9uIGJsb2NraW5nIC4uLjxicj4K
-Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IGlmKCB3cml0
-dGVuICZsdDsgMCApPGJyPgombmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNw
-OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsKJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7IHJldHVybiAtMTsgLy9lcnJvcjxicj4KJm5ic3A7ICZuYnNw
-OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IGVsc2UgPGJyPgombmJzcDsgJm5i
-c3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
-cDsmbmJzcDsgdG90YWxGcmFtZXNXcml0dGVuICs9IHdyaXR0ZW47Jm5ic3A7ICA8YnI+CiZuYnNw
-OyB9PGJyPgo8YnI+Cn08YnI+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tPGJyPgo8YnI+ClRoZSB0aW1pbmcgcGFydCB3b3JrcyBmaW5lIC4uLjxicj4KVGhp
-cyBzYW1lIGNvZGUgc3RydWN0dXJlICh0aGUgd2hpbGUgbG9vcCBhbmQgc28gKSB3b3JrcyBmaW5l
-IHdpdGggYmxvY2tpbmcgYXVkaW8gLi4uJm5ic3A7IGJ1dCB0aGVuLCA8YnI+CndoZW4gdXNpbmcg
-YmxvY2tpbmcgaW8sIGFsbCB0aGUgZnJhbWVzIGFyZSB3cml0dGVuIGF0IG9uY2UgLi4uIGJ1dCB3
-aGVuIHVzaW5nIG5vbi1ibG9ja2luZywgdGhlIHdoaWxlPGJyPgpuZWVkcyBhIGZldyBpdGVyYXRp
-b25zIChpIGhhdmUgOTYwIGZyYW1lcyAuLi4gaXQgd3JpdGVzIGEgYmlnIGNodW5jaywgc2F5IDgz
-MiwgdGhlbiBpbiBncm91cHMgb2YgMTYgZnJhbWVzKS48YnI+CkNvdWxkIHRoaXMgaGF2ZSBzb21l
-dGhpbmcgdG8gZG8/IGNhbiBpIGRvIHNvbWV0aGluZyAoYWxzYSBwYXJhbXMpIHNvIGFsbCB0aGUg
-ZnJhbWVzIGNhbiBiZSB3cml0dGVuIGF0IG9uY2U/PGJyPgpBbnkgaWRlYSBvbiB3aHkgdGhlIG5v
-aXNlPyB3aGF0IGFtIGkgZG9pbmcgd3Jvbmc/PGJyPgo8YnI+ClRrcyBhIGxvdCE8YnI+Cjxicj4K
-UmVnYXJkcyw8YnI+Cjxicj4KQ2VzYzxicj4KPGJyPgo=
-------=_Part_4294_7254275.1128131749196--
+
+It looks like we're somehow ending up with card->ac97 == NULL.
+This kernel is based on 2.6.13.2, with no ALSA patches other than
+an unrelated emu10k1 diff.  From eyeballing a quick diff of
+the ali driver between 2.6.13.2 and current upstream 2.6.14rc3,
+it doesn't look like this has been addressed already.
+
+		Dave
+
 
 
 -------------------------------------------------------
