@@ -1,12 +1,16 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Rates for the Revolution 7.1 card (ICE1724 chip)
-Date: Tue, 4 Oct 2005 15:18:36 -0700 (PDT)
-Message-ID: <20051004221836.10161.qmail@web60820.mail.yahoo.com>
-Reply-To: tsw@johana.com
+From: Eric Shattow <lucent@gmail.com>
+Subject: Re: Hercules PC DJ Console (Windows Edition) information
+Date: Tue, 4 Oct 2005 17:22:33 -0500
+Message-ID: <2c746f620510041522g6e5e1779vd8a143e161e402d9@mail.gmail.com>
+References: <2c746f620510040247h45af8fbaoa17c5276c97b8efc@mail.gmail.com>
+	 <Pine.HPX.4.33n.0510041451160.10984-100000@studcom.urz.uni-halle.de>
+Reply-To: Eric Shattow <lucent@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0510041451160.10984-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,31 +20,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa development <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In my musings, I have found that the M-Audio Revolution 7.1 card seems to=
- only
-support the following rates:
-32000, 44100, 48000, 64000, 88200, 96000, 176400, and 19200.
-These rates are from a small program I wrote using the
-"snd_pcm_hw_params_test_rate" routine, iterating by one from 1 to 192000.
-This is in contrast to the mixer control "Multi Track Internal Clock" (as
-shown on 'alsamixer' that indicates the following additional rates:
-8000, 9600, 11025, 12000, 16000, 22050, and 24000.
+On 10/4/05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Eric Shattow wrote:
+> > On 10/4/05, Clemens Ladisch <clemens@ladisch.de> wrote:
+> > > Eric Shattow wrote:
+> > > > It's not getting far enough to dump any packets.
+> > >
+> > > This means that no packets are sent by the device.
+> > >
+> > > It's possible that the controller data is reported by the HID
+> > > interfaces.  Did you test those?
+> >
+> > How would I make it so that usbhid module does not interfere?
+>
+> You wouldn't.  The 'proper' way would be to write a utility that reads
+> input events from the three HID interfaces and converts them to MIDI.
+> Otherwise, somebody would have to write a new driver for this device,
+> and change the usbhid driver accordingly.
+>
+>
+> Regards,
+> Clemens
+>
+>
 
-What could be the reason for this mismatch?  Shouldn't they be the same?
-Is this a bug?
+This HPCDJ Console is a USB MIDI device and from all indications I can
+see, should be made to function as such. The device has an MIDI IN
+port and an MIDI OUT port, as many USB-MIDI interfaces do. Event
+device (evdev) support is irrelevent to function in ALSA, no? If
+output from /dev/eventX for the HPCDJ would be helpful please let me
+know and I can make some captures.
 
---=20
-Tom Watson
-tsw@johana.com
+The Macintosh edition of HPCDJ Console works as an ALSA sound and midi
+device, and so I must question where you and fellow ALSA developers
+feel support for these DJ Console devices is most appropriate.
 
+Should the HPCDJ Console (Mac, and Windows editions) be supported in
+ALSA as sound devices only, ignoring the midi portion, or be supported
+in ALSA as sound and MIDI devices?
 
-	=09
-__________________________________=20
-Yahoo! Mail - PC Magazine Editors' Choice 2005=20
-http://mail.yahoo.com
+Is it appropriate to continue supporting all midi and sound usb
+devices with a single kernel module?
+
+My target application is to use the HPCDJ Console with Mixxx software,
+and Mixxx is requiring an OSS-style /dev/midi device to read data
+from. Ideally I expect to debug and see function of the HPCDJ Console
+Windows Edition approach that of the Mac edition, same device. It is
+then a simple matter to have ALSA OSS provide the needed /dev/midiX
+device.
+
+Besides the USB ID, are the Mac and Windows editions of HPCDJ Console diffe=
+ring?
+
+I'm eager to see this hardware work and have some fun. I'm not very
+good at writing code. Help in answering my questions and offering
+suggestions is most appreciated :)
 
 
 -------------------------------------------------------
