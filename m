@@ -1,13 +1,11 @@
-From: Mike Hearn <mike@plan99.net>
-Subject: Re: Re: Change processname for dmix/dsnoop process
-Date: Tue, 04 Oct 2005 19:38:05 +0100
-Message-ID: <4342CC0D.30104@plan99.net>
-References: <433D491A.8070700@vidsoft.de>	<s5hzmpulit5.wl%tiwai@suse.de>	<pan.2005.10.01.23.13.56.451320@plan99.net>	<s5h3bnheekv.wl%tiwai@suse.de>	<43429444.20903@plan99.net>	<s5hmzlpcozy.wl%tiwai@suse.de> <s5hfyrhch93.wl%tiwai@suse.de>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Hotplug firmware problems
+Date: Tue, 04 Oct 2005 20:04:44 +0100
+Message-ID: <1128452684.5085.4.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfyrhch93.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,18 +15,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: linuxsh-dev@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I am attempting to load the firmware my device (AICA sound on Dreamcast)
+needs via hotplug...
 
->It seems not always working.  At least, ps shows the old content while
->pstree shows the new name.  Possibly because /proc entry doesn't
->change.
->
+	/* Load the firmware */
+	const struct firmware *fw_entry;
+	err = request_firmware(&fw_entry, "aica_firmware.bin", &pd->dev);
+	if (err) goto freepcm;
 
-Try changing argv[0] before the exec() call - it's got something to do 
-with that. I don't remember exactly.
+(all the code can be seen at http://newgolddream.dyndns.info/repos)
+
+But the firmware load fails... you can see the log at
+http://newgolddream.dyndns.info/hotplug_fail.txt  -- but I have to
+confess I don't know much about what the messages mean. Anybody able to
+help me out?
+
+Adrian
+
 
 
 -------------------------------------------------------
