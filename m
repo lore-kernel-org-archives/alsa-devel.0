@@ -1,16 +1,16 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: ac97 oops in ali modem driver
-Date: Mon, 3 Oct 2005 17:34:48 +0300
-Message-ID: <20051003143448.GA15786@tecr>
-References: <20051003010109.GA27888@redhat.com>
+From: Dave Jones <davej@redhat.com>
+Subject: Re: Re: [ALSA] snd-emu10k1: ALSA bug#1297: Fix a error recognising the SB Live Platinum.
+Date: Mon, 3 Oct 2005 20:54:01 -0400
+Message-ID: <20051004005401.GC10697@redhat.com>
+References: <7a5967f2d895440aa1ca2fa1d201c380@pobox.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sa11.bezeqint.net (sa11.bezeqint.net [192.115.104.25])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66AE61A6
-	for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2005 16:19:44 +0200 (MEST)
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEDA31B9
+	for <alsa-devel@alsa-project.org>; Tue,  4 Oct 2005 02:54:05 +0200 (MEST)
 Content-Disposition: inline
-In-Reply-To: <20051003010109.GA27888@redhat.com>
+In-Reply-To: <7a5967f2d895440aa1ca2fa1d201c380@pobox.sk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,72 +20,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dave Jones <davej@redhat.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: alsa-devel@alsa-project.org, James@superbug.co.uk, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On 21:01 Sun 02 Oct     , Dave Jones wrote:
-> I just had a user file a Fedora bug with the following oops.
+On Mon, Oct 03, 2005 at 08:23:28AM +0200, Peter Zubaj wrote:
+ > AFAIK this was fixed in CVS. Two cards have same model id (one has AC97, one not).
+ > 
+ > Fix:
+ > 
+ > http://sourceforge.net/mailarchive/forum.php?thread_id=8360485&forum_id=33141
+ > 
 
-Is there other messages from ali5451 loading? The sound works I guess?
-What do you see when 'ls /proc/asound/ali5451/codec97#0'?
+>From the look of that patch, this will just print
+"emu10k1: AC97 is optional on this board Proceeding without ac97 mixers..."
+and do nothing about actually making things work for people again,
+or even to suggest what they can do to work around this situation
+when their volume control breaks.  At the least this sounds like it
+needs to mention a module parameter to force ac97 support.
 
-Sasha.
+What actually happens if we set ac97_chip=1 on the boards that
+don't have it ? Is it purely a cosmetic thing, showing some
+sliders that do nothing?
 
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address 000001a4
->  printing eip:
-> df969005
-> *pde = 12620067
-> Oops: 0000 [#1]
-> Modules linked in: nfs radeon drm nfsd exportfs lockd nfs_acl autofs4 sunrpc pcmcia dm_mod vid
-> eo button battery ac yenta_socket rsrc_nonstatic pcmcia_core ohci_hcd shpchp i2c_ali1535 i2c_c
-> ore snd_ali5451 snd_ac97_codec snd_seq_dummy snd_seq_oss snd_seq_midi_event snd_seq snd_seq_de
-> vice snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd soundcore snd_page_alloc prism54 8139cp m
-> ii floppy joydev ext3 jbd
-> CPU:    0
-> EIP:    0060:[<df969005>]    Not tainted VLI
-> EFLAGS: 00010202   (2.6.13-1.1526_FC4)
-> EIP is at snd_ac97_valid_reg+0x5/0x135 [snd_ac97_codec]
-> eax: 00000000   ebx: 00000040   ecx: 00000000   edx: 00000040
-> esi: 00000000   edi: 00000040   ebp: 00001f40   esp: ca515edc
-> ds: 007b   es: 007b   ss: 0068
-> Process gstreamer-prope (pid: 10503, threadinfo=ca515000 task=da809aa0)
-> Stack: 00000040 df969149 de2ac800 00000001 d4fb1000 de3bf560 df9207ca 00000000
->        fffffff4 de3bf560 db6b9000 df92d6b2 00000000 00000001 00000246 00000000
->        00000000 00000000 0000025c 0000025c d4fb1000 d4fb1000 fffffff4 de3bf560
-> Call Trace:
->  [<df969149>] snd_ac97_write+0x14/0x5a [snd_ac97_codec]
->  [<df9207ca>] snd_ali_modem_hw_params+0x2c/0x4c [snd_ali5451]
->  [<df92d6b2>] snd_pcm_hw_params+0x290/0x609 [snd_pcm]
->  [<df92da7b>] snd_pcm_hw_params_user+0x50/0x6a [snd_pcm]
->  [<df9349b5>] snd_pcm_capture_ioctl1+0x2e/0x1ce [snd_pcm]
->  [<df934b70>] snd_pcm_capture_ioctl+0x0/0x1b [snd_pcm]
->  [<c01bf0e9>] do_ioctl+0x19/0x55
->  [<c01bf217>] vfs_ioctl+0x50/0x1aa
->  [<c01bf3ce>] sys_ioctl+0x5d/0x6b
->  [<c0104409>] sysenter_past_esp+0x56/0x79
-> Code:  Bad EIP value.
-> 
-> 
-> It looks like we're somehow ending up with card->ac97 == NULL.
-> This kernel is based on 2.6.13.2, with no ALSA patches other than
-> an unrelated emu10k1 diff.  From eyeballing a quick diff of
-> the ali driver between 2.6.13.2 and current upstream 2.6.14rc3,
-> it doesn't look like this has been addressed already.
-> 
-> 		Dave
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by:
-> Power Architecture Resource Center: Free content, downloads, discussions,
-> and more. http://solutions.newsforge.com/ibmarch.tmpl
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+		Dave
+
 
 
 -------------------------------------------------------
