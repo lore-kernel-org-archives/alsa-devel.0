@@ -1,101 +1,119 @@
-From: VistaPrint <support@insupport.emv1.com>
-Subject: Essayez nos cartes de visite Gratuitement !
-Date: Wed, 5 Oct 2005 20:27:29 +0200 (CEST)
-Message-ID: <1400636335.390744.1128536849690@as4.emv2.com>
-Reply-To: production@impact-net.com
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: [Alsa-devel] Re: Hotplug firmware problems
+Date: Wed, 05 Oct 2005 20:17:25 +0100
+Message-ID: <1128539845.3388.2.camel@localhost.localdomain>
+References: <1128452684.5085.4.camel@localhost.localdomain>
+	 <1128463170.5085.8.camel@localhost.localdomain>
+	 <s5h8xx8chi3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/html; charset=iso-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ump.emv1.com (insupport.emv1.com [84.14.78.161])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E8701BD
-	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 20:30:38 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
+In-Reply-To: <s5h8xx8chi3.wl%tiwai@suse.de>
+Sender: linuxsh-dev-admin@lists.sourceforge.net
+Errors-To: linuxsh-dev-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linuxsh-dev@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<HTML>
-<HEAD>
-<TITLE>Des cartes de visite bien &agrave; vous</TITLE>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+On Wed, 2005-10-05 at 13:47 +0200, Takashi Iwai wrote:
+> At Tue, 04 Oct 2005 22:59:30 +0100,
+> Adrian McMenamin wrote:
+> > 
+> > On Tue, 2005-10-04 at 20:04 +0100, Adrian McMenamin wrote:
+> > > I am attempting to load the firmware my device (AICA sound on Dreamcast)
+> > > needs via hotplug...
+> > 
+> > 
+> > Messed about with the hotplug scripts and now get this ... but I don't
+> > know why firmware.agent doesn't load the firmware... and I assume there
+> > is no sound.agent available...
+> 
+> Does /etc/hotplug/firmware.agent work correctly?
+> 
 
-</HEAD>
-<BODY BGCOLOR=#FFFFFF LEFTMARGIN=0 TOPMARGIN=0 MARGINWIDTH=0 MARGINHEIGHT=0>
-<!-- ImageReady Slices (SchoolProd_FBC.psd) -->
-<img src="http://trk.ipt04.com/rapports/view.php?urlid=2282&user=unknown" border="0" width="1" height="1">
-<TABLE WIDTH=570 BORDER=0 align="center" CELLPADDING=0 CELLSPACING=0>
-  <TR> 
-    <TD COLSPAN=4> <a href="http://as1.emv2.com/I?X=f822644cf061a208e05293d58c1eaa88"><IMG SRC="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/border1.jpg" WIDTH=570 HEIGHT=37 ALT="" border="0"></a></TD>
-  </TR>
-  <TR> 
-    <TD width="52" ROWSPAN=2 valign="top"> <a href="http://as1.emv2.com/I?X=f822644cf061a20832c84eef2818656b"><IMG SRC="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/border2.jpg" WIDTH=52 HEIGHT=404 ALT="" border="0"></a></TD>
-    <TD COLSPAN=2 valign="top"> <a href="http://as1.emv2.com/I?X=f822644cf061a20846e12bcaa68e9196"><img src="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/ttl.gif" alt="" width=465 height=33 vspace="6" border="0"></a></TD>
-    <TD width="52" ROWSPAN=2 valign="top"> <a href="http://as1.emv2.com/I?X=f822644cf061a2080a6279f7e8d574c3"><img src="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/border3.jpg" width=53 height=404 alt="" border="0"></a></TD>
-  </TR>
-  <TR> 
-    <TD height="308" valign="top"> <a href="http://as1.emv2.com/I?X=f822644cf061a2083fce0e35aa5bdae3"><IMG SRC="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/cards.gif" WIDTH=260 HEIGHT=308 ALT="" border="0"></a></TD>
-    <TD valign="top"><table width="205" border="0" cellspacing="0" cellpadding="0">
-        <tr align="center"> 
-          <td height="39" colspan="2" valign="top"><img src="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/free.gif" width="205" height="39" vspace="10"></td>
-        </tr>
-        <tr> 
-          <td width="25" align="center" valign="top"><font color="#FF0000">&#8226;</font></td>
-          <td width="215" height="30" valign="top"><font face="Arial, Helvetica, sans-serif" size="2">Le 
-            portable de votre enfant</font></td>
-        </tr>
-        <tr> 
-          <td width="25" align="center" valign="top"><font color="#FF0000">&#8226;</font></td>
-          <td width="215" height="30" valign="top"><font face="Arial, Helvetica, sans-serif" size="2">Num&eacute;ro 
-            &agrave; appeler d&#8217;urgence</font></td>
-        </tr>
-        <tr> 
-          <td align="center" valign="top"><font color="#FF0000">&#8226;</font></td>
-          <td height="30" valign="top"><font face="Arial, Helvetica, sans-serif" size="2">Num&eacute;ro 
-            de la ma&icirc;tresse</font></td>
-        </tr>
-        <tr> 
-          <td align="center" valign="top"><font color="#FF0000">&#8226;</font></td>
-          <td height="30" valign="top"><font face="Arial, Helvetica, sans-serif" size="2">Et 
-            plus...</font></td>
-        </tr>
-        <tr> 
-          <td height="50" colspan="2" align="center"><b><font face="Arial, Helvetica, sans-serif" size="3" color="#FF3333">Commandez 
-            vos cartes<br>
-            de visite GRATUITES</font></b></td>
-        </tr>
-        <tr>
-          <td colspan="2" align="center"><a href="http://as1.emv2.com/I?X=f822644cf061a208b8cad3273bc00a5f"><img src="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/order.gif" alt="" width=205 height=113 border="0"></a></td>
-        </tr>
-      </table></TD>
-  </TR>
-  <TR> 
-    <TD COLSPAN=4> <img src="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/dotgray.gif" width="565" height="1"></TD>
-  </TR>
-  <TR> 
-    <TD COLSPAN=2 valign="top"> <IMG SRC="http://marketing.vistaprint.com/fr/imgs/email/backtoschool/logo_notag.gif" WIDTH=312 HEIGHT=59 ALT=""></TD>
-    <TD COLSPAN=2><font face="Tahoma, Arial, sans-serif" size="2" color="#666666">Hors 
-      frais de port. Consultez notre site pour plus d&#8217;informations. </font></TD>
-  </TR>
-</TABLE>
-<!-- End ImageReady Slices -->
-<div align="center"><font size="1" face="Arial, Helvetica, sans-serif">Conform&eacute;ment 
-  &agrave; la loi informatique et libert&eacute; du 06/01/1978 (art.27), vous 
-  disposez d'un droit d'acc&egrave;s et de rectification des donn&eacute;es vous 
-  concernant.<br>
-  </font><font size="1" face="Arial, Helvetica, sans-serif"> Si vous souhaitez 
-  modifier vos coordonn&eacute;es ou si vous ne d&eacute;sirez plus recevoir de 
-  messages &eacute;lectronique de la part de cet annonceur, cliquez <a href="http://as1.emv2.com/I?X=f822644cf061a208badc0864edcb4459">ici</a>. 
-  </font> </div>
-<img src="http://as1.emv2.com/S?0676eea33bc1b7e1-A-390744-354813.gif" border="0" alt="" width="1" height="1"></body>
-</HTML>
+Well, no, in the sense that no firmware is loaded :(
+
+The logs report its invocation though I've added some echo lines into
+the firware.agent I'm using and they don't appear in any log, suggesting
+it isn't being found...
+
+This is what it contains...
+
+[adrian@mayday ~]$
+cat /tftpboot/192.168.61.55/etc/hotplug/firmware.agent
+#!/bin/sh
+#
+# Firmware-specific hotplug policy agent.
+#
+# Kernel firmware hotplug params include:
+#
+#       ACTION=%s [add or remove]
+#       DEVPATH=%s [in 2.5 kernels, /sys/$DEVPATH]
+#       FIRMWARE=%s
+#
+# HISTORY:
+#
+# 24-Jul-2003   Initial version of "new" hotplug agent.
+#
+# $Id: firmware.agent,v 1.4 2004/09/20 21:23:51 kroah Exp $
+#
+echo "Trying to load firmware... "
+cd /etc/hotplug
+. ./hotplug.functions
+# DEBUG=yes export DEBUG
+
+# directory of the firmware files
+FIRMWARE_DIR=/lib/firmware
+
+# mountpoint of sysfs
+SYSFS=$(awk '$3 == "sysfs" { print $2 ; nextfile }' /proc/mounts)
+
+# use /proc for 2.4 kernels
+if [ "$SYSFS" = "" ]; then
+    SYSFS=/proc
+fi
+
+#
+# What to do with this firmware hotplug event?
+#
+echo "Trying... $ACTION"
+case "$ACTION" in
+
+add)
+    if [ ! -e $SYSFS/$DEVPATH/loading ]; then
+        sleep 1
+    fi
+
+    if [ -f "$FIRMWARE_DIR/$FIRMWARE" ]; then
+        echo 1 > $SYSFS/$DEVPATH/loading
+        cp "$FIRMWARE_DIR/$FIRMWARE" $SYSFS/$DEVPATH/data
+        echo 0 > $SYSFS/$DEVPATH/loading
+    else
+        echo -1 > $SYSFS/$DEVPATH/loading
+    fi
+
+    ;;
+
+remove)
+    ;;
+
+*)
+    mesg "Firmware '$ACTION' event not supported"
+    exit 1
+    ;;
+
+esac
+[adrian@mayday ~]$
+
+
 
 
 -------------------------------------------------------
