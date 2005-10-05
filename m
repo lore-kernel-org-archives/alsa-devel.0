@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
-Date: Wed, 5 Oct 2005 19:01:22 +0200
-Message-ID: <860598bd15b5b343187112478f8ec075@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Wed, 5 Oct 2005 19:04:21 +0200
+Message-ID: <2f6f5843d9eb0863e937279f1180a924@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31D141B7
-	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 19:01:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B61D1B7
+	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 19:04:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1451> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
 ======================================================================
-Reported By:                anli
+Reported By:                midnight
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1451
-Category:                   PCI - ice1724
+Issue ID:                   1378
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
 ======================================================================
-Date Submitted:             09-24-2005 15:46 CEST
-Last Modified:              10-05-2005 19:01 CEST
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              10-05-2005 19:04 CEST
 ======================================================================
-Summary:                    SPDF and Line out simultaneously
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
 Description: 
-I tried to get the answer from user and dev lists to this question: how to
-configure the driver to make SPDF and Line-out work simultaneously. I was
-not lucky to get an answer. I have concluded, it's impossible. So -
-reporting the bug.
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-It is almost impossible to do any serious mastering/editing work without
-such opportunity.
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
+
+I use the via82xx module
+
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-05-05 19:01 
+ midnight - 09-24-05 14:34 
 ----------------------------------------------------------------------
-They are transferred with different DMA channels.
-So, it's not possible on the hardware alone.
+it's the same with today's CVS.
 
-You can set up it via multi + route plugins.
+----------------------------------------------------------------------
+ tiwai - 10-05-05 19:04 
+----------------------------------------------------------------------
+Try -Dhw instead of -Dsurround51 after changing "Channel Mode" to "6ch"
+manually via alsamixer.
+If this works, it means that alsa-lib is broken for suddound51...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 15:46 anli           New Issue                                    
-10-05-05 19:01 tiwai          Note Added: 0006438                          
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
+09-09-05 14:54 midnight       Note Added: 0006099                          
+09-09-05 16:32 tiwai          Note Added: 0006100                          
+09-09-05 19:50 midnight       Note Added: 0006104                          
+09-09-05 20:14 tiwai          Note Added: 0006105                          
+09-09-05 23:41 midnight       Note Added: 0006106                          
+09-13-05 18:27 tiwai          Note Added: 0006155                          
+09-18-05 12:05 midnight       Note Added: 0006270                          
+09-18-05 15:59 midnight       Note Edited: 0006270                         
+09-24-05 14:34 midnight       Note Added: 0006370                          
+10-05-05 19:04 tiwai          Note Added: 0006439                          
 ======================================================================
 
 
