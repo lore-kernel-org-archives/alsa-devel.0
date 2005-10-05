@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001453]: 2.6.14-rc2 "Unknown model for ALC880"
-Date: Wed, 5 Oct 2005 18:34:54 +0200
-Message-ID: <8f6fff7e5454441c84e1bb63fc8fea30@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001469]: Japanese characters are broken with alsaconf
+Date: Wed, 5 Oct 2005 18:36:08 +0200
+Message-ID: <0291af20d5431055b1a776648b9594cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C2FE190
-	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 18:34:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85C79190
+	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 18:36:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,39 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1469> 
 ======================================================================
-Reported By:                honschu
-Assigned To:                tiwai
+Reported By:                speedking
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1453
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   1469
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sarge
-Kernel Version:             2.6.14-rc2
+Status:                     new
 ======================================================================
-Date Submitted:             09-24-2005 17:22 CEST
-Last Modified:              10-05-2005 18:34 CEST
+Date Submitted:             10-05-2005 18:01 CEST
+Last Modified:              10-05-2005 18:36 CEST
 ======================================================================
-Summary:                    2.6.14-rc2 "Unknown model for ALC880"
+Summary:                    Japanese characters are broken with alsaconf
 Description: 
-I have a Aopen i915Gm-HFS Motherboard with intel-hda chipset.
-Sound output (input not) works in kernel 2.6.12.
-
-For Kernel 2.6.14-rc2 I get error on boottime (see below)
-
-If you want me to do tests, feel free to ask.
-
-[...]
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-[...]
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
+"alsaconf" displays broken characters for k/d button messages while using
+Japanese.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-05-05 18:34 
+ tiwai - 10-05-05 18:36 
 ----------------------------------------------------------------------
-Try to pass "model=3stack" module option.
-
-But the warning messages are weird.  They correspond to an ADC and the CD
-volume.
+It works for me.  You need ncurses with wide-char support, and pass the
+proper configure optoin for that.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 17:22 honschu        New Issue                                    
-09-24-05 17:22 honschu        Distribution              => Debian sarge    
-09-24-05 17:22 honschu        Kernel Version            => 2.6.14-rc2      
-09-24-05 22:06 rlrevell       Relationship added       duplicate of 0001429
-10-05-05 18:34 tiwai          Note Added: 0006430                          
+10-05-05 18:01 speedking      New Issue                                    
+10-05-05 18:36 tiwai          Note Added: 0006431                          
 ======================================================================
 
 
