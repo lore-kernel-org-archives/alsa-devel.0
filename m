@@ -1,16 +1,16 @@
-From: Eric Shattow <lucent@gmail.com>
-Subject: Re: Hercules PC DJ Console (Windows Edition) information
-Date: Tue, 4 Oct 2005 17:22:33 -0500
-Message-ID: <2c746f620510041522g6e5e1779vd8a143e161e402d9@mail.gmail.com>
-References: <2c746f620510040247h45af8fbaoa17c5276c97b8efc@mail.gmail.com>
-	 <Pine.HPX.4.33n.0510041451160.10984-100000@studcom.urz.uni-halle.de>
-Reply-To: Eric Shattow <lucent@gmail.com>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: Re: ac97 oops in ali modem driver
+Date: Wed, 5 Oct 2005 03:01:32 +0300
+Message-ID: <20051005000132.GA23616@tecr>
+References: <20051003010109.GA27888@redhat.com> <20051003143448.GA15786@tecr> <s5hy859czkw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0510041451160.10984-100000@studcom.urz.uni-halle.de>
+Received: from sa9.bezeqint.net (sa9.bezeqint.net [192.115.104.23])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0079A19E
+	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 01:46:19 +0200 (MEST)
 Content-Disposition: inline
+In-Reply-To: <s5hy859czkw.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,64 +20,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dave Jones <davej@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/4/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Eric Shattow wrote:
-> > On 10/4/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> > > Eric Shattow wrote:
-> > > > It's not getting far enough to dump any packets.
-> > >
-> > > This means that no packets are sent by the device.
-> > >
-> > > It's possible that the controller data is reported by the HID
-> > > interfaces.  Did you test those?
-> >
-> > How would I make it so that usbhid module does not interfere?
->
-> You wouldn't.  The 'proper' way would be to write a utility that reads
-> input events from the three HID interfaces and converts them to MIDI.
-> Otherwise, somebody would have to write a new driver for this device,
-> and change the usbhid driver accordingly.
->
->
-> Regards,
-> Clemens
->
->
+On 13:05 Tue 04 Oct     , Takashi Iwai wrote:
+> At Mon, 3 Oct 2005 17:34:48 +0300,
+> Sasha Khapyorsky wrote:
+> > 
+> > On 21:01 Sun 02 Oct     , Dave Jones wrote:
+> > > I just had a user file a Fedora bug with the following oops.
+> > 
+> > Is there other messages from ali5451 loading? The sound works I guess?
+> > What do you see when 'ls /proc/asound/ali5451/codec97#0'?
+> 
+> Maybe the probe of secondary codec failed?
+> Then the patch below might fix.
 
-This HPCDJ Console is a USB MIDI device and from all indications I can
-see, should be made to function as such. The device has an MIDI IN
-port and an MIDI OUT port, as many USB-MIDI interfaces do. Event
-device (evdev) support is irrelevent to function in ALSA, no? If
-output from /dev/eventX for the HPCDJ would be helpful please let me
-know and I can make some captures.
+Quite possible and we expect to see something about it in dmesg.
+The patch is obviously correct and will help in such cases. Frankly I
+would prefer like this:
 
-The Macintosh edition of HPCDJ Console works as an ALSA sound and midi
-device, and so I must question where you and fellow ALSA developers
-feel support for these DJ Console devices is most appropriate.
 
-Should the HPCDJ Console (Mac, and Windows editions) be supported in
-ALSA as sound devices only, ignoring the midi portion, or be supported
-in ALSA as sound and MIDI devices?
+--- alsa-kernel/pci/ali5451/ali5451.c	4 Oct 2005 12:50:44 -0000	1.73
++++ alsa-kernel/pci/ali5451/ali5451.c	4 Oct 2005 23:06:43 -0000
+@@ -1844,7 +1844,7 @@ static int __devinit snd_ali_build_pcms(
+ {
+ 	int i, err;
+ 	for(i = 0 ; i < codec->num_of_codecs && i < ARRAY_SIZE(ali_pcms) ; i++)
+-		if((err = snd_ali_pcm(codec, i, &ali_pcms[i])) < 0)
++		if(codec->ac97[i] && (err = snd_ali_pcm(codec, i, &ali_pcms[i])) < 0)
+ 			return err;
+ 	return 0;
+ }
 
-Is it appropriate to continue supporting all midi and sound usb
-devices with a single kernel module?
 
-My target application is to use the HPCDJ Console with Mixxx software,
-and Mixxx is requiring an OSS-style /dev/midi device to read data
-from. Ideally I expect to debug and see function of the HPCDJ Console
-Windows Edition approach that of the Mac edition, same device. It is
-then a simple matter to have ALSA OSS provide the needed /dev/midiX
-device.
+So it will be "more" on controller's side. But not critical.
 
-Besides the USB ID, are the Mac and Windows editions of HPCDJ Console diffe=
-ring?
+Thanks,
+Sasha.
 
-I'm eager to see this hardware work and have some fun. I'm not very
-good at writing code. Help in answering my questions and offering
-suggestions is most appreciated :)
+> 
+> 
+> --- linux/sound/pci/ali5451/ali5451.c	29 Sep 2005 10:47:07 -0000	1.71
+> +++ linux/sound/pci/ali5451/ali5451.c	4 Oct 2005 11:03:38 -0000
+> @@ -1994,8 +1994,10 @@
+>  		if ((err = snd_ac97_mixer(codec->ac97_bus, &ac97, &codec->ac97[i])) < 0) {
+>  			snd_printk("ali mixer %d creating error.\n", i);
+>  			if(i == 0)
+> -		return err;
+> -	}
+> +				return err;
+> +			codec->num_of_codecs = 1;
+> +			break;
+> +		}
+>  	}
+>  
+>  	if (codec->spdif_support) {
+> 
 
 
 -------------------------------------------------------
