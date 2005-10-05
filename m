@@ -1,16 +1,14 @@
-From: Sasha Khapyorsky <sashak@smlink.com>
-Subject: Re: ac97 oops in ali modem driver
-Date: Wed, 5 Oct 2005 03:01:32 +0300
-Message-ID: <20051005000132.GA23616@tecr>
-References: <20051003010109.GA27888@redhat.com> <20051003143448.GA15786@tecr> <s5hy859czkw.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001033]: hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Date: Wed, 5 Oct 2005 04:48:50 +0200
+Message-ID: <4067308fc7a2cbf39ba08c816252bcff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sa9.bezeqint.net (sa9.bezeqint.net [192.115.104.23])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0079A19E
-	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 01:46:19 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <s5hy859czkw.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32EAE198
+	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 04:48:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,64 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dave Jones <davej@redhat.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13:05 Tue 04 Oct     , Takashi Iwai wrote:
-> At Mon, 3 Oct 2005 17:34:48 +0300,
-> Sasha Khapyorsky wrote:
-> > 
-> > On 21:01 Sun 02 Oct     , Dave Jones wrote:
-> > > I just had a user file a Fedora bug with the following oops.
-> > 
-> > Is there other messages from ali5451 loading? The sound works I guess?
-> > What do you see when 'ls /proc/asound/ali5451/codec97#0'?
-> 
-> Maybe the probe of secondary codec failed?
-> Then the patch below might fix.
 
-Quite possible and we expect to see something about it in dmesg.
-The patch is obviously correct and will help in such cases. Frankly I
-would prefer like this:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1033> 
+======================================================================
+Reported By:                sjankie
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1033
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11.6
+======================================================================
+Date Submitted:             04-03-2005 15:07 CEST
+Last Modified:              10-05-2005 04:48 CEST
+======================================================================
+Summary:                    hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Description: 
+0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+
+azx driver compliens about: NO AFG found.
+
+alsmixer starts, but no sound.
+======================================================================
+
+----------------------------------------------------------------------
+ slack_kid - 09-29-05 21:59 
+----------------------------------------------------------------------
+I am currently haveing the same issue wiht my Intel HDA Azalia Hardware. I
+purchased a Sager NP 3880 SUPRA recently, and sound is the only problem i
+have had thus far.  
+
+The modules compiles, and loads without any errors except:
+
+ALSA sound/pci/hda/hda_codec.c:511: hda_codec: no AFG node found
+
+in dmesg output.  XMMS and all sound programs see the card and act as
+though nothing is wrong, but there is  no sound at all. I unmuted all the
+channels and turned them up so that if anythign was working i could hear
+it, but nothing worked.  I am curently running the 2.6.12 kernel, i
+believe it is the vanilla sources, just standard 2.6.12 from kernel.org
 
 
---- alsa-kernel/pci/ali5451/ali5451.c	4 Oct 2005 12:50:44 -0000	1.73
-+++ alsa-kernel/pci/ali5451/ali5451.c	4 Oct 2005 23:06:43 -0000
-@@ -1844,7 +1844,7 @@ static int __devinit snd_ali_build_pcms(
- {
- 	int i, err;
- 	for(i = 0 ; i < codec->num_of_codecs && i < ARRAY_SIZE(ali_pcms) ; i++)
--		if((err = snd_ali_pcm(codec, i, &ali_pcms[i])) < 0)
-+		if(codec->ac97[i] && (err = snd_ali_pcm(codec, i, &ali_pcms[i])) < 0)
- 			return err;
- 	return 0;
- }
+
+Any help is much appreciated
+
+----------------------------------------------------------------------
+ crimsunkg - 10-05-05 04:48 
+----------------------------------------------------------------------
+slack_kid, have you tried a cvs checkout of alsa-kernel and alsa-driver?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-03-05 15:07 sjankie        New Issue                                    
+04-03-05 15:07 sjankie        Kernel Version            => 2.6.11.6        
+04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
+04-03-05 15:08 sjankie        Issue End Monitor: sjankie                    
+04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
+04-04-05 17:09 1g0R           Note Added: 0004328                          
+04-05-05 14:52 sjankie        Note Added: 0004337                          
+04-05-05 18:48 Thomas         Issue Monitored: Thomas                      
+04-05-05 19:50 Thomas         Note Added: 0004339                          
+04-08-05 21:08 Thomas         Note Added: 0004373                          
+04-15-05 09:06 Thomas         Issue End Monitor: Thomas                    
+09-29-05 21:59 slack_kid      Note Added: 0006424                          
+09-29-05 22:13 slack_kid      Issue Monitored: slack_kid                    
+10-05-05 04:48 crimsunkg      Note Added: 0006429                          
+======================================================================
 
 
-So it will be "more" on controller's side. But not critical.
-
-Thanks,
-Sasha.
-
-> 
-> 
-> --- linux/sound/pci/ali5451/ali5451.c	29 Sep 2005 10:47:07 -0000	1.71
-> +++ linux/sound/pci/ali5451/ali5451.c	4 Oct 2005 11:03:38 -0000
-> @@ -1994,8 +1994,10 @@
->  		if ((err = snd_ac97_mixer(codec->ac97_bus, &ac97, &codec->ac97[i])) < 0) {
->  			snd_printk("ali mixer %d creating error.\n", i);
->  			if(i == 0)
-> -		return err;
-> -	}
-> +				return err;
-> +			codec->num_of_codecs = 1;
-> +			break;
-> +		}
->  	}
->  
->  	if (codec->spdif_support) {
-> 
 
 
 -------------------------------------------------------
