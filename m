@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000057]: Kernel device in bad state after suspend/resume
-Date: Wed, 5 Oct 2005 18:40:49 +0200
-Message-ID: <b954bd41ad7b94257735393d5628ded7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001430]: powermac sound doesn't work on the latest iBooks because snapper chips get detected as awacs
+Date: Wed, 5 Oct 2005 18:42:11 +0200
+Message-ID: <249dff464fcc7a6467dac7cb36dffe94@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E073190
-	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 18:40:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41757190
+	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 18:42:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=57> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1430> 
 ======================================================================
-Reported By:                daenzer
+Reported By:                thouters
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   57
+Issue ID:                   1430
 Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.13.1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-13-2004 01:55 CET
-Last Modified:              10-05-2005 18:40 CEST
+Date Submitted:             09-17-2005 02:21 CEST
+Last Modified:              10-05-2005 18:42 CEST
 ======================================================================
-Summary:                    Kernel device in bad state after suspend/resume
+Summary:                    powermac sound doesn't work on the latest iBooks
+because snapper chips get detected as awacs
 Description: 
-If a process has the kernel device open during a suspend/resume cycle,
-playing sound fails afterwards with
+On the latest Apple iBooks, snapper chips get detected as
+awacs, aparently this is because of some sort of chip id
+(I am not a programmer, not even familar in this matter - though I was
+able to make a fix)
 
-pcm_write:1084: write error: File descriptor in bad state
+Note that this is to linux kernel 2.6.13.1. 
+Also note that somebody else has submitted another patch that looks
+very similar to this one, though it is NOT the same.
+(the 1.42ghz iBooks need 0x5C, the 1.33ghz iBooks 0x50)
 
-until the process dies, then it works again.
+I hope this information is useful enough to get into alsa-cvs,
+thank you and have a nice day.
+
+*** sound/ppc/pmac.c.orig       2005-09-17 02:07:49.000000000 +0200
+--- sound/ppc/pmac.c    2005-09-14 19:18:12.000000000 +0200
+***************
+*** 988,993 ****
+--- 988,994 ----
+                case 0x33:
+                case 0x29:
+                case 0x24:
++               case 0x50:
+                        chip->num_freqs = ARRAY_SIZE(tumbler_freqs);
+                        chip->model = PMAC_SNAPPER;
+                        chip->can_byte_swap = 0; /* FIXME: check this */
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001442 snapper: no sound after resume
-======================================================================
 
 ----------------------------------------------------------------------
- Johannes Berg - 09-29-05 23:59 
+ tiwai - 10-05-05 18:42 
 ----------------------------------------------------------------------
-Since my bug was marked as a duplicate, I'll add a note here. For me, this
-is different -- applications can play sound but no sound actually comes
-out, and killing all applications that had a device open doesn't help
-either. The only thing that does help is reloading the snd_powermac
-module.
-
-After resume, there's no message from the sound driver at all.
-
-----------------------------------------------------------------------
- tiwai - 10-05-05 18:40 
-----------------------------------------------------------------------
-Does touching mixer volumes change anything (instead of reloading)?
+Already fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-04 01:55 daenzer        New Issue                                    
-02-26-04 19:30 daenzer        Note Added: 0000363                          
-02-26-04 19:39 tiwai          Note Added: 0000364                          
-02-26-04 22:47 daenzer        Note Added: 0000374                          
-05-14-04 15:12 tiwai          Note Added: 0001111                          
-09-29-05 20:55 jdthood        Relationship added       has duplicate 0001442
-09-29-05 23:52 Johannes Berg  Issue Monitored: Johannes Berg                    
-09-29-05 23:59 Johannes Berg  Note Added: 0006427                          
-10-05-05 18:40 tiwai          Note Added: 0006432                          
+09-17-05 02:21 thouters       New Issue                                    
+09-17-05 02:21 thouters       Kernel Version            => 2.6.13.1        
+09-29-05 21:02 jdthood        Summary                  powermac sound does't
+work on the latest iBooks => powermac sound doesn't work on the latest iBooks
+because snapper chips get detected as awacs
+10-05-05 18:42 tiwai          Status                   assigned => resolved
+10-05-05 18:42 tiwai          Resolution               open => fixed       
+10-05-05 18:42 tiwai          Note Added: 0006433                          
 ======================================================================
 
 
