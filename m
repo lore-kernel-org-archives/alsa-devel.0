@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001448]: AC3 passthrou on emu10k1 with version 1.0.10rc1 does not work
-Date: Wed, 5 Oct 2005 19:05:22 +0200
-Message-ID: <3e1f7cfb8978703453312bbd59e39bf5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001450]: SPDIF out is limited with 48KHz
+Date: Wed, 5 Oct 2005 19:07:46 +0200
+Message-ID: <3b5c14f9523bfa469e5931b4a33b3f3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F17911B7
-	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 19:05:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DD8B1B7
+	for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2005 19:07:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1448> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1450> 
 ======================================================================
-Reported By:                cocobo
+Reported By:                anli
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1448
-Category:                   PCI - emu10k1
+Issue ID:                   1450
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-23-2005 20:47 CEST
-Last Modified:              10-05-2005 19:05 CEST
+Date Submitted:             09-24-2005 15:33 CEST
+Last Modified:              10-05-2005 19:07 CEST
 ======================================================================
-Summary:                    AC3 passthrou on emu10k1 with version 1.0.10rc1 does
-not work
+Summary:                    SPDIF out is limited with 48KHz
 Description: 
-If I run kernel 2.6.14-rc[1-2] (alsa ver 1.0.10rc1) I can't get AC3 s/pdiff
-passthrou to work. The external decoder does not switch over to dolby
-mode. Kernel 2.6.13 work fine. I have a soundblaster live value soundcard
-and use mplayer dev-CVS-050810-20:56-3.4.4 or xine-1.1.0 to play sound.
-Ask me for more info if needed.
+Last the driver version which worked perfectly (i.e. with 96KHz SPDIF out
+sample rate) is 1.04. And I was able to use SPDIF out with JACK at
+96KHz/32bit mode _without_ any problems.
+
+Now SPDIF out is limited with 48KHz srate. Long time ago developers
+argumented 48KHz limit as it is SPDIF standard. On the other hand all
+(semi)pro DACs suuport 96KHz. This is true for all ice1724 cards too.
+Moreover, we are in the open source world at last :-)
+
+Please, revert this limit back. I'm ready to test the driver from CVS
+tree.
+
+Andrew
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-05-05 19:05 
+ tiwai - 10-05-05 19:07 
 ----------------------------------------------------------------------
-Are you using the latest version of alsa-lib, too?
+Hmm, we should the limitation of the codec, too, then.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 20:47 cocobo         New Issue                                    
-09-23-05 20:47 cocobo         Distribution              => Gentoo          
-09-23-05 20:47 cocobo         Kernel Version            => 2.6.14-rc2      
-10-05-05 19:05 tiwai          Note Added: 0006440                          
+09-24-05 15:33 anli           New Issue                                    
+10-05-05 19:07 tiwai          Note Added: 0006441                          
 ======================================================================
 
 
