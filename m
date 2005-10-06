@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001450]: SPDIF out is limited with 48KHz
-Date: Thu, 6 Oct 2005 16:40:36 +0200
-Message-ID: <e5ab5f9b57790f9d9b2548e4473e3298@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+From: Dan Malek <dan@embeddedalley.com>
+Subject: Re: Au1550 OSS driver issues
+Date: Thu, 6 Oct 2005 10:47:58 -0700
+Message-ID: <4859ec3c2433e1f14a592d2dd1d7d425@embeddedalley.com>
+References: <43452054.2090305@ru.mvista.com>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31EC816C
-	for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2005 16:40:37 +0200 (MEST)
+In-Reply-To: <43452054.2090305@ru.mvista.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +17,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Sergei Shtylylov <sshtylyov@ru.mvista.com>
+Cc: ralf@linux-mips.org, alsa-devel@lists.sourceforge.net, ppopov@linux-mips.org, Konstantin Baidarov <kbaidarov@dev.rtsoft.ru>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1450> 
-======================================================================
-Reported By:                anli
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1450
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             09-24-2005 15:33 CEST
-Last Modified:              10-06-2005 16:40 CEST
-======================================================================
-Summary:                    SPDIF out is limited with 48KHz
-Description: 
-Last the driver version which worked perfectly (i.e. with 96KHz SPDIF out
-sample rate) is 1.04. And I was able to use SPDIF out with JACK at
-96KHz/32bit mode _without_ any problems.
+On Oct 6, 2005, at 6:02 AM, Sergei Shtylylov wrote:
 
-Now SPDIF out is limited with 48KHz srate. Long time ago developers
-argumented 48KHz limit as it is SPDIF standard. On the other hand all
-(semi)pro DACs suuport 96KHz. This is true for all ice1724 cards too.
-Moreover, we are in the open source world at last :-)
+>     We have found some issues with Au1550 AC'97 OSS driver in 2.6
 
-Please, revert this limit back. I'm ready to test the driver from CVS
-tree.
+Thanks.  I have some other updates queued for this driver and
+I'll take care of it.
 
-Andrew
-
-======================================================================
-
-----------------------------------------------------------------------
- anli - 10-06-05 16:36 
-----------------------------------------------------------------------
-BTW, the AES3-2003 document has nothing about 48KHz restriction. Moreover,
-a status channel byte 4 has bits to set a sample rate uo to 192KHz.
-
-----------------------------------------------------------------------
- anli - 10-06-05 16:40 
-----------------------------------------------------------------------
-Tiwai,
-
-Sorry, have not uderstood your comment. The WM8770 codec hasn't such
-limitations. And, again, few versions ago I used 96KHz with JACK server
-without noticed problems (and used DAC showed explicitly 96KHz sample
-rate).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-05 15:33 anli           New Issue                                    
-10-05-05 19:07 tiwai          Note Added: 0006441                          
-10-06-05 16:36 anli           Note Added: 0006443                          
-10-06-05 16:40 anli           Note Added: 0006444                          
-======================================================================
-
+	-- Dan
 
 
 
