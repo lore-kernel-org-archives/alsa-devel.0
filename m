@@ -1,15 +1,14 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [linuxsh-dev] Hotplug firmware problems
-Date: Thu, 6 Oct 2005 09:32:28 -0400
-Message-ID: <200510060932.28168.vapier@gentoo.org>
-References: <1128452684.5085.4.camel@localhost.localdomain> <s5h8xx8chi3.wl%tiwai@suse.de> <1128539845.3388.2.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001450]: SPDIF out is limited with 48KHz
+Date: Thu, 6 Oct 2005 16:36:20 +0200
+Message-ID: <df3cdd3e80f67b372b49f133c7eba5f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1128539845.3388.2.camel@localhost.localdomain>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8228416C
+	for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2005 16:36:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,34 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linuxsh-dev@lists.sourceforge.net
-Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 05 October 2005 03:17 pm, Adrian McMenamin wrote:
-> On Wed, 2005-10-05 at 13:47 +0200, Takashi Iwai wrote:
-> > At Tue, 04 Oct 2005 22:59:30 +0100,
-> >
-> > Adrian McMenamin wrote:
-> > > On Tue, 2005-10-04 at 20:04 +0100, Adrian McMenamin wrote:
-> > > > I am attempting to load the firmware my device (AICA sound on
-> > > > Dreamcast) needs via hotplug...
-> > >
-> > > Messed about with the hotplug scripts and now get this ... but I don't
-> > > know why firmware.agent doesn't load the firmware... and I assume there
-> > > is no sound.agent available...
-> >
-> > Does /etc/hotplug/firmware.agent work correctly?
->
-> Well, no, in the sense that no firmware is loaded :(
->
-> The logs report its invocation though I've added some echo lines into
-> the firware.agent I'm using and they don't appear in any log, suggesting
-> it isn't being found...
 
-try redirecting the debug echos into a file instead ?
-echo blah >> /tmp/firmware-log
--mike
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1450> 
+======================================================================
+Reported By:                anli
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1450
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-24-2005 15:33 CEST
+Last Modified:              10-06-2005 16:36 CEST
+======================================================================
+Summary:                    SPDIF out is limited with 48KHz
+Description: 
+Last the driver version which worked perfectly (i.e. with 96KHz SPDIF out
+sample rate) is 1.04. And I was able to use SPDIF out with JACK at
+96KHz/32bit mode _without_ any problems.
+
+Now SPDIF out is limited with 48KHz srate. Long time ago developers
+argumented 48KHz limit as it is SPDIF standard. On the other hand all
+(semi)pro DACs suuport 96KHz. This is true for all ice1724 cards too.
+Moreover, we are in the open source world at last :-)
+
+Please, revert this limit back. I'm ready to test the driver from CVS
+tree.
+
+Andrew
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 10-05-05 19:07 
+----------------------------------------------------------------------
+Hmm, we should the limitation of the codec, too, then.
+
+----------------------------------------------------------------------
+ anli - 10-06-05 16:36 
+----------------------------------------------------------------------
+BTW, the AES3-2003 document has nothing about 48KHz restriction. Moreover,
+a status channel byte 4 has bits to set a sample rate uo to 192KHz.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-24-05 15:33 anli           New Issue                                    
+10-05-05 19:07 tiwai          Note Added: 0006441                          
+10-06-05 16:36 anli           Note Added: 0006443                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
