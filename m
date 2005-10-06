@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001450]: SPDIF out is limited with 48KHz
-Date: Thu, 6 Oct 2005 16:36:20 +0200
-Message-ID: <df3cdd3e80f67b372b49f133c7eba5f7@bugtrack.alsa-project.org>
+Date: Thu, 6 Oct 2005 16:40:36 +0200
+Message-ID: <e5ab5f9b57790f9d9b2548e4473e3298@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8228416C
-	for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2005 16:36:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31EC816C
+	for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2005 16:40:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             09-24-2005 15:33 CEST
-Last Modified:              10-06-2005 16:36 CEST
+Last Modified:              10-06-2005 16:40 CEST
 ======================================================================
 Summary:                    SPDIF out is limited with 48KHz
 Description: 
@@ -61,15 +61,20 @@ Andrew
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-05-05 19:07 
-----------------------------------------------------------------------
-Hmm, we should the limitation of the codec, too, then.
-
-----------------------------------------------------------------------
  anli - 10-06-05 16:36 
 ----------------------------------------------------------------------
 BTW, the AES3-2003 document has nothing about 48KHz restriction. Moreover,
 a status channel byte 4 has bits to set a sample rate uo to 192KHz.
+
+----------------------------------------------------------------------
+ anli - 10-06-05 16:40 
+----------------------------------------------------------------------
+Tiwai,
+
+Sorry, have not uderstood your comment. The WM8770 codec hasn't such
+limitations. And, again, few versions ago I used 96KHz with JACK server
+without noticed problems (and used DAC showed explicitly 96KHz sample
+rate).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -77,6 +82,7 @@ Date Modified  Username       Field                    Change
 09-24-05 15:33 anli           New Issue                                    
 10-05-05 19:07 tiwai          Note Added: 0006441                          
 10-06-05 16:36 anli           Note Added: 0006443                          
+10-06-05 16:40 anli           Note Added: 0006444                          
 ======================================================================
 
 
