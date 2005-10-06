@@ -1,14 +1,11 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH] Implement support for display of dB gain
- in alsamixer.
-Date: Thu, 06 Oct 2005 13:54:37 +0100
-Message-ID: <43451E8D.9010402@superbug.co.uk>
-References: <Pine.HPX.4.33n.0509201455140.23957-100000@studcom.urz.uni-halle.de> <Pine.LNX.4.61.0509210954590.12389@tm8103.perex-int.cz>
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
+Subject: Au1550 OSS driver issues
+Date: Thu, 06 Oct 2005 17:02:12 +0400
+Message-ID: <43452054.2090305@ru.mvista.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------020903010402080404030206"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0509210954590.12389@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +15,174 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net, dan@embeddededge.com, ralf@linux-mips.org, ppopov@linux-mips.org
+Cc: Konstantin Baidarov <kbaidarov@dev.rtsoft.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+This is a multi-part message in MIME format.
+--------------020903010402080404030206
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
->On Tue, 20 Sep 2005, Clemens Ladisch wrote:
->
->  
->
->>Jaroslav Kysela wrote:
->>    
->>
->>>On Mon, 19 Sep 2005, Takashi Iwai wrote:
->>>      
->>>
->>>>>I would vote to keep the kernel space as simple as possible and give the
->>>>>whole contents to apps. They can implement reading/caching/filtering
->>>>>themselves.
->>>>>          
->>>>>
->>>>Agreed.
->>>>        
->>>>
->>Too.
->>
->>    
->>
->>>Ok, good ideas. I would propose this final API:
->>>
->>>1) one key with specific delimiters like:
->>>
->>>list		# list everything (all keys)
->>>list/master	# list only master keys (mixer, pcm etc.)
->>>list/mixer	# list only mixer keys
->>>list/pcm
->>>      
->>>
->>This is _not_ a simple API.  AFAICS the idea was to have just one big
->>string/blob containing all descriptions, and to let the lib or
->>applications do the listing/searching/etc.
->>
->>Accessing specific keys (elements) would be needed only if something
->>wasn't read only.
->>    
->>
->
->You need also take in account that keys might be added/removed at runtime.
->The question is still to have:
->
->1) manager code in the midlevel to register keys from drivers and do 
->   lookups; in this case the drivers will register the keys
->2) leave things simple for midlevel and the ioctl will be directly mapped 
->   to the driver code (the blob version of ioctl); in this case the driver 
->   must handle all things like memory allocation, key changes etc.
->
->						Jaroslav
->  
->
+Hello.
 
-I think that a simple TLV(type, length, value) approach might be more 
-efficient for kernel -> alsa-lib info passing.
-The message can easily be made hyrachical. One starts with one TLV as a 
-wrapper around all information passed. Inside that TLV will be other 
-TLVs, and inside those others. This allows the alsa-lib to simply skip 
-values it does not yet know about. We can even use a TLV in the request 
-from alsa-lib to the kernel.
+     We have found some issues with Au1550 AC'97 OSS driver in 2.6
+(sound/oss/au1550_ac97.c), though it also should concern 2.4 driver
+(drivers/sound/au1550_psc.c).
+     First, we don't think that using readl() calls instead of au_readl() is
+correct -- readl() is subject to byte-swapping etc., so may not work in
+big-endian mode anymore and au_readl() is intended for embedded Au1550 devices
+for which the byte swapping issue is resolved automagically, and BTW the same
+PSC_AC97STAT register is read "both ways" in the driver. That's what the first
+patch is about.
+     Second, start_dac() grabs a spinlock already held by its caller, 
+au1550_write(). This doesn't show up with the standard UP spinlock 
+impelmentation but when the different one (mutex based) is in use, a lockup 
+happens. The second patch demonstates a possible solution but here's a 
+question: why there's no "symmetric" spinlock logic in start_adc(), may be 
+here exits another potential issue?
 
-The T(Type) value is a simple 32bit integer. The receiving function 
-simply uses a lookup to find the parameter name, and also the type of 
-the value, e.g. Integer, string etc.
-
-For an example of a protocol already using this approach, look at the 
-RFCs for RADIUS.
-
-James
+WBR, Sergei
 
 
+--------------020903010402080404030206
+Content-Type: text/plain;
+ name="au1550_ac97_readl.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="au1550_ac97_readl.patch"
 
-*
-*
+Index: linux/sound/oss/au1550_ac97.c
+===================================================================
+--- linux.orig/sound/oss/au1550_ac97.c
++++ linux/sound/oss/au1550_ac97.c
+@@ -463,7 +463,7 @@ stop_dac(struct au1550_state *s)
+ 	/* Wait for Transmit Busy to show disabled.
+ 	*/
+ 	do {
+-		stat = readl((void *)PSC_AC97STAT);
++		stat = au_readl(PSC_AC97STAT);
+ 		au_sync();
+ 	} while ((stat & PSC_AC97STAT_TB) != 0);
+ 
+@@ -492,7 +492,7 @@ stop_adc(struct au1550_state *s)
+ 	/* Wait for Receive Busy to show disabled.
+ 	*/
+ 	do {
+-		stat = readl((void *)PSC_AC97STAT);
++		stat = au_readl(PSC_AC97STAT);
+ 		au_sync();
+ 	} while ((stat & PSC_AC97STAT_RB) != 0);
+ 
+@@ -542,7 +542,7 @@ set_xmit_slots(int num_channels)
+ 	/* Wait for Device ready.
+ 	*/
+ 	do {
+-		stat = readl((void *)PSC_AC97STAT);
++		stat = au_readl(PSC_AC97STAT);
+ 		au_sync();
+ 	} while ((stat & PSC_AC97STAT_DR) == 0);
+ }
+@@ -574,7 +574,7 @@ set_recv_slots(int num_channels)
+ 	/* Wait for Device ready.
+ 	*/
+ 	do {
+-		stat = readl((void *)PSC_AC97STAT);
++		stat = au_readl(PSC_AC97STAT);
+ 		au_sync();
+ 	} while ((stat & PSC_AC97STAT_DR) == 0);
+ }
+@@ -1989,7 +1989,7 @@ au1550_probe(void)
+ 	/* Wait for PSC ready.
+ 	*/
+ 	do {
+-		val = readl((void *)PSC_AC97STAT);
++		val = au_readl(PSC_AC97STAT);
+ 		au_sync();
+ 	} while ((val & PSC_AC97STAT_SR) == 0);
+ 
+@@ -2012,7 +2012,7 @@ au1550_probe(void)
+ 	/* Wait for Device ready.
+ 	*/
+ 	do {
+-		val = readl((void *)PSC_AC97STAT);
++		val = au_readl(PSC_AC97STAT);
+ 		au_sync();
+ 	} while ((val & PSC_AC97STAT_DR) == 0);
+ 
+
+
+--------------020903010402080404030206
+Content-Type: text/plain;
+ name="au1550_ac97-spinlock.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="au1550_ac97-spinlock.patch"
+
+Index: linux/sound/oss/au1550_ac97.c
+===================================================================
+--- linux.orig/sound/oss/au1550_ac97.c
++++ linux/sound/oss/au1550_ac97.c
+@@ -74,6 +74,9 @@
+ 
+ #define err(format, arg...) printk(KERN_ERR format "\n" , ## arg)
+ 
++#define START_DAC_NOSL 1
++#define START_DAC_SL 0
++
+ /* Boot options
+  * 0 = no VRA, 1 = use VRA if codec supports it
+  */
+@@ -580,7 +583,7 @@ set_recv_slots(int num_channels)
+ }
+ 
+ static void
+-start_dac(struct au1550_state *s)
++start_dac(struct au1550_state *s, int no_sl)
+ {
+ 	struct dmabuf  *db = &s->dma_dac;
+ 	unsigned long   flags;
+@@ -588,7 +591,8 @@ start_dac(struct au1550_state *s)
+ 	if (!db->stopped)
+ 		return;
+ 
+-	spin_lock_irqsave(&s->lock, flags);
++	if( !no_sl )
++		spin_lock_irqsave(&s->lock, flags);
+ 
+ 	set_xmit_slots(db->num_channels);
+ 	au_writel(PSC_AC97PCR_TC, PSC_AC97PCR);
+@@ -600,7 +604,8 @@ start_dac(struct au1550_state *s)
+ 
+ 	db->stopped = 0;
+ 
+-	spin_unlock_irqrestore(&s->lock, flags);
++	if( !no_sl )
++		spin_unlock_irqrestore(&s->lock, flags);
+ }
+ 
+ static void
+@@ -1182,7 +1187,7 @@ au1550_write(struct file *file, const ch
+ 				db->nextOut -= db->dmasize;
+ 			db->total_bytes += db->dma_fragsize;
+ 			if (db->dma_qcount == 0)
+-				start_dac(s);
++				start_dac(s,START_DAC_NOSL);
+ 			db->dma_qcount++;
+ 		}
+ 		spin_unlock_irqrestore(&s->lock, flags);
+@@ -1578,7 +1583,7 @@ au1550_ioctl(struct inode *inode, struct
+ 		}
+ 		if (file->f_mode & FMODE_WRITE) {
+ 			if (val & PCM_ENABLE_OUTPUT)
+-				start_dac(s);
++				start_dac(s,START_DAC_SL);
+ 			else
+ 				stop_dac(s);
+ 		}
+
+
+--------------020903010402080404030206--
 
 
 -------------------------------------------------------
