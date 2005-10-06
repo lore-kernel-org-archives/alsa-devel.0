@@ -1,35 +1,29 @@
-From: Dan Malek <dan@embeddedalley.com>
-Subject: Re: Au1550 OSS driver issues
-Date: Thu, 6 Oct 2005 10:47:58 -0700
-Message-ID: <4859ec3c2433e1f14a592d2dd1d7d425@embeddedalley.com>
-References: <43452054.2090305@ru.mvista.com>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: [Alsa-devel] Re: Hotplug firmware problems
+Date: Thu, 06 Oct 2005 20:53:07 +0100
+Message-ID: <1128628387.3296.19.camel@localhost.localdomain>
+References: <1128539845.3388.2.camel@localhost.localdomain>
+	 <Pine.HPX.4.33n.0510060850270.2481-100000@studcom.urz.uni-halle.de>
+	 <45978.217.150.108.178.1128587911.squirrel@newgolddream.dyndns.info>
+Mime-Version: 1.0
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43452054.2090305@ru.mvista.com>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sergei Shtylylov <sshtylyov@ru.mvista.com>
-Cc: ralf@linux-mips.org, alsa-devel@lists.sourceforge.net, ppopov@linux-mips.org, Konstantin Baidarov <kbaidarov@dev.rtsoft.ru>
+Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
+In-Reply-To: <45978.217.150.108.178.1128587911.squirrel@newgolddream.dyndns.info>
+Sender: linuxsh-dev-admin@lists.sourceforge.net
+Errors-To: linuxsh-dev-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+To: linuxsh-dev@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-On Oct 6, 2005, at 6:02 AM, Sergei Shtylylov wrote:
-
->     We have found some issues with Au1550 AC'97 OSS driver in 2.6
-
-Thanks.  I have some other updates queued for this driver and
-I'll take care of it.
-
-	-- Dan
+The firmware.agent failed because it relied on awk which wasn't
+available on the limited environment I was using.
 
 
 
