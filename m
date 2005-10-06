@@ -1,14 +1,16 @@
-From: "Adrian McMenamin" <adrian@mcmen.demon.co.uk>
-Subject: Re: Re: [linuxsh-dev] Hotplug firmware problems
-Date: Thu, 6 Oct 2005 09:38:31 +0100 (BST)
-Message-ID: <45978.217.150.108.178.1128587911.squirrel@newgolddream.dyndns.info>
-References: <1128539845.3388.2.camel@localhost.localdomain>
-    <Pine.HPX.4.33n.0510060850270.2481-100000@studcom.urz.uni-halle.de>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: Re: ac97 oops in ali modem driver
+Date: Thu, 6 Oct 2005 13:00:10 +0300
+Message-ID: <20051006100009.GA32039@tecr>
+References: <20051003010109.GA27888@redhat.com> <20051003143448.GA15786@tecr> <s5hy859czkw.wl%tiwai@suse.de> <20051005000132.GA23616@tecr> <s5hbr24cmlg.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0510060850270.2481-100000@studcom.urz.uni-halle.de>
+Received: from sa9.bezeqint.net (sa9.bezeqint.net [192.115.104.23])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D587163
+	for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2005 11:44:50 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hbr24cmlg.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, Takashi Iwai <tiwai@suse.de>, linuxsh-dev@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dave Jones <davej@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 6 October, 2005 7:51 am, Clemens Ladisch wrote:
-> Adrian McMenamin wrote:
->>     if [ -f "$FIRMWARE_DIR/$FIRMWARE" ]; then
->>         echo 1 > $SYSFS/$DEVPATH/loading
->>         cp "$FIRMWARE_DIR/$FIRMWARE" $SYSFS/$DEVPATH/data
->>         echo 0 > $SYSFS/$DEVPATH/loading
->>     else
->>         echo -1 > $SYSFS/$DEVPATH/loading
->>     fi
->
-> Try to add an echo to the else part; I guess $FIRMWARE_DIR/$FIRMWARE
-> may not exist.
+On 11:57 Wed 05 Oct     , Takashi Iwai wrote:
+> 
+> The NULL ac97[] and pcm[] are referred in suspend/resume code, too.
 
+Sure, and there are already pcm[i] and ac97[i] != NULL checkings.
 
-I tried this and no out put - but then I don't think (despite the message
-in the log) that firmware.agent is being invoked but never executed.
+> It should be fixed in your case.  Or correct codec->num_of_codecs as
+> in my patch.
+> 
+> Anyway, I already committed my patch to ALSA CVS tree.
 
-Reading up about all this I wonder if it is a deeper problem - do I need
-to worry about the hotplug methods in the kset? This is a bespoke device
-(on the platform bus etc) so I am not sure what the kset being used is.
+Yeah, I see :). Let's run your patch - my note was really cosmetic.
 
->
->
-> HTH
-> Clemens
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by:
-> Power Architecture Resource Center: Free content, downloads, discussion=
-s,
-> and more. http://solutions.newsforge.com/ibmarch.tmpl
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+Sasha.
 
-
+> A clean up patch is welcome, of course :)
+> 
+> 
+> Takashi
+> 
 
 
 -------------------------------------------------------
