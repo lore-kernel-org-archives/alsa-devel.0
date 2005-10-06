@@ -1,12 +1,13 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: RFC - Clean up of ALSA kernel codes
-Date: Thu, 6 Oct 2005 13:51:40 -0700 (PDT)
-Message-ID: <20051006205140.76619.qmail@web60813.mail.yahoo.com>
-Reply-To: tsw@johana.com
+From: love926dolphin@infoseek.jp <love926dolphin@infoseek.jp>
+Subject: =?ISO-2022-JP?B?GyRCNEpDMSEqOWI8fUZ+ISohKhsoQg==?=
+Date: Fri, 07 Oct 2005 02:22:02 +0900
+Message-ID: <20051006.1722020404@love926dolphin-infoseek.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-2022-JP
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from hoge (pl353.nas922.ichikawa.nttpc.ne.jp [210.165.235.97])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 326AD170
+	for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2005 23:28:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,51 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In your message you mentioned:
-"8. Clean up proc fs handlers".
-
-My only idea is to make the /proc stuff a little more "page friendly".  M=
-any
-of the register dumps are one register per line.  It is a bit easier (in =
-my
-opinion) to have them say 8 register values per line.  It makes the thing=
-s
-easier to read, and refer without scrolling back and forth.  As an exampl=
-e
-(not limited to JUST this sound card): /proc/asound/V8235/via82xx produce=
-s
-over 40 lines of register data.  It could have just as easily been format=
-ted
-horizontally and be at a minimum 1/4 of the number of lines.
-
-Yes, this is a picky item, but having register data in a nice readable fo=
-rmat
-makes for nicer debugging.  Obviously this is not a "high priority" item,=
- as
-the current setup does function.  I will leave it to others to determine =
-the
-priority of such a change.
-
-I do have a driver in the planning stages, and my intent is to make the /=
-proc
-printouts "nicely formatted".  We shall see when I publish the driver whi=
-ch
-is one of those "real soon now" (in the works for 2+ years) things.
-
-Just random thoughts.
-
---=20
-Tom Watson
-tsw@johana.com
+先日はアンケート調査にご協力頂きありがとうございました。
+ご協力お礼と致しまして高額逆援助できる女性に貴方様のプロフィール
+を公表した所、お１人様ではありますが立候補女性がいました。
+以下、詳細になりますのでご確認下さい♪
+http://www.romancegod.net/?disk08
+【名前】真理
+【年齢】28歳
+【身長】150cm
+【体重】43kg
+【３サイズ】85/58/85
+【写真】顔＋全身
+【メッセージ】今日から旦那が子供と実家に帰っているのでかなり暇してます。
+　　　　　　　私で良ければ電話でエッチな事しませんか？
+　　　　　　　会えるなら車で迎えにも行けます♪
+http://www.romancegod.net/?disk08
+登録『無料』後は『直接』真理様から連絡が来ます。
 
 
-	=09
-__________________________________=20
-Yahoo! Mail - PC Magazine Editors' Choice 2005=20
-http://mail.yahoo.com
+
+
+
+逆援助拒否
+me622133@members.interq.or.jp
+
 
 
 -------------------------------------------------------
