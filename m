@@ -1,13 +1,14 @@
-From: love926dolphin@infoseek.jp <love926dolphin@infoseek.jp>
-Subject: =?ISO-2022-JP?B?GyRCNEpDMSEqOWI8fUZ+ISohKhsoQg==?=
-Date: Fri, 07 Oct 2005 02:22:02 +0900
-Message-ID: <20051006.1722020404@love926dolphin-infoseek.jp>
+From: Bill Gatliff <bgat@billgatliff.com>
+Subject: What is the format of dma_area?
+Date: Thu, 06 Oct 2005 22:15:49 -0500
+Message-ID: <4345E865.9060102@billgatliff.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hoge (pl353.nas922.ichikawa.nttpc.ne.jp [210.165.235.97])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 326AD170
-	for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2005 23:28:40 +0200 (MEST)
+Received: from saturn.billgatliff.com (saturn.billgatliff.com [209.251.101.200])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8669B173
+	for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2005 05:16:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,29 +21,49 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-先日はアンケート調査にご協力頂きありがとうございました。
-ご協力お礼と致しまして高額逆援助できる女性に貴方様のプロフィール
-を公表した所、お１人様ではありますが立候補女性がいました。
-以下、詳細になりますのでご確認下さい♪
-http://www.romancegod.net/?disk08
-【名前】真理
-【年齢】28歳
-【身長】150cm
-【体重】43kg
-【３サイズ】85/58/85
-【写真】顔＋全身
-【メッセージ】今日から旦那が子供と実家に帰っているのでかなり暇してます。
-　　　　　　　私で良ければ電話でエッチな事しませんか？
-　　　　　　　会えるなら車で迎えにも行けます♪
-http://www.romancegod.net/?disk08
-登録『無料』後は『直接』真理様から連絡が来ます。
+Guys:
 
 
+I'm trying to write a PCM driver that uses an AC97 codec, on an ARM 
+host, but no DMA.  (Please pardon some of my terminology, I'm a bit of 
+an ALSA noob).
+
+My trigger() looks something like this:
+
+int *buffer;
+int bytes;
+...
+  switch (cmd) {
+  case SNDRV_PCM_TRIGGER_START:
+    bytes = frames_to_bytes(substream->runtime, 
+substream->runtime->period_size);
+    buffer = substream->runtime->dma_area;
+...
+
+Then, I copy *buffer++ out to the codec one 32-bit chunk (truncated to 
+20 bits) at a time.
+
+One thing I don't understand is how dma_area is formatted.  Is it a 
+stream of integers, like this?
+
+int dma_area[channels][samples];
+
+... or like this?
+
+int dma_area[samples][channels];
+
+... or what?  I'm having trouble figuring out where the left- and 
+right-channel data is in the dma buffer.
 
 
+Thanks!
 
-逆援助拒否
-me622133@members.interq.or.jp
+
+b.g.
+
+-- 
+Bill Gatliff
+bgat@billgatliff.com
 
 
 
