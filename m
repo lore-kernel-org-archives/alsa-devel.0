@@ -1,7 +1,7 @@
 From: Sebastian Kuzminsky <seb.kuzminsky@gmail.com>
-Subject: Should dmix really work this way?
-Date: Thu, 6 Oct 2005 21:29:18 -0600
-Message-ID: <7f55de720510062029i3ef469r8a98686fa63773d@mail.gmail.com>
+Subject: how do I configure it for Capture?
+Date: Thu, 6 Oct 2005 21:59:53 -0600
+Message-ID: <7f55de720510062059y5e653114v81552bc6b26b61ed@mail.gmail.com>
 Reply-To: Sebastian Kuzminsky <seb.kuzminsky@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
@@ -20,23 +20,10 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-It seems like there's one dmix "context" per system, not per playback devic=
-e.
-
-If I run "aplay -D plug:dmix:0 zero.wav", it comes out the speakers
-for card 0, as expected.  If I kill that and then run "aplay -D
-plug:dmix:1 one.wav", it comes out the speakers for card 1, as
-expected.  But if I leave that running and run the first command
-again, zero.wav comes out card 1 (mixed together with one.wav).
-
-If I play via dmix to card 0 first, then try to dmix something else to
-card 1, the second sound comes out card 0 too.  Which ever dmix starts
-first determines where all the subsequent dmix sounds go.
-
-Is this how it's supposed to work, or am I just being a retard and
-doing something wrong?
-
-I'm using ALSA 1.0.9 with Debian Etch/Sid, FWIW.
+Is there a generic way to configure the mixer elements for a capture
+device so it'll actually record?  It seems like whenever I plug in a
+new card I always have to fiddle with it and experiment to get it to
+record.  What am I missing?
 
 
 --
