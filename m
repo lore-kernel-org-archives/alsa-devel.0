@@ -1,14 +1,13 @@
-From: Bill Gatliff <bgat@billgatliff.com>
-Subject: What is the format of dma_area?
-Date: Thu, 06 Oct 2005 22:15:49 -0500
-Message-ID: <4345E865.9060102@billgatliff.com>
+From: Sebastian Kuzminsky <seb.kuzminsky@gmail.com>
+Subject: Should dmix really work this way?
+Date: Thu, 6 Oct 2005 21:29:18 -0600
+Message-ID: <7f55de720510062029i3ef469r8a98686fa63773d@mail.gmail.com>
+Reply-To: Sebastian Kuzminsky <seb.kuzminsky@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from saturn.billgatliff.com (saturn.billgatliff.com [209.251.101.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8669B173
-	for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2005 05:16:08 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Guys:
+It seems like there's one dmix "context" per system, not per playback devic=
+e.
+
+If I run "aplay -D plug:dmix:0 zero.wav", it comes out the speakers
+for card 0, as expected.  If I kill that and then run "aplay -D
+plug:dmix:1 one.wav", it comes out the speakers for card 1, as
+expected.  But if I leave that running and run the first command
+again, zero.wav comes out card 1 (mixed together with one.wav).
+
+If I play via dmix to card 0 first, then try to dmix something else to
+card 1, the second sound comes out card 0 too.  Which ever dmix starts
+first determines where all the subsequent dmix sounds go.
+
+Is this how it's supposed to work, or am I just being a retard and
+doing something wrong?
+
+I'm using ALSA 1.0.9 with Debian Etch/Sid, FWIW.
 
 
-I'm trying to write a PCM driver that uses an AC97 codec, on an ARM 
-host, but no DMA.  (Please pardon some of my terminology, I'm a bit of 
-an ALSA noob).
-
-My trigger() looks something like this:
-
-int *buffer;
-int bytes;
-...
-  switch (cmd) {
-  case SNDRV_PCM_TRIGGER_START:
-    bytes = frames_to_bytes(substream->runtime, 
-substream->runtime->period_size);
-    buffer = substream->runtime->dma_area;
-...
-
-Then, I copy *buffer++ out to the codec one 32-bit chunk (truncated to 
-20 bits) at a time.
-
-One thing I don't understand is how dma_area is formatted.  Is it a 
-stream of integers, like this?
-
-int dma_area[channels][samples];
-
-... or like this?
-
-int dma_area[samples][channels];
-
-... or what?  I'm having trouble figuring out where the left- and 
-right-channel data is in the dma buffer.
-
-
-Thanks!
-
-
-b.g.
-
--- 
-Bill Gatliff
-bgat@billgatliff.com
-
+--
+Sebastian Kuzminsky
 
 
 -------------------------------------------------------
