@@ -1,20 +1,11 @@
-From: Kenth Andersson <kenth@popwire.com>
-Subject: DSnoop Latency
-Date: Fri, 7 Oct 2005 15:01:03 +0200
-Message-ID: <997BA7FD-4755-47D7-8AB9-1DBCB4FEE445@popwire.com>
-Mime-Version: 1.0 (Apple Message framework v733)
-Content-Type: text/plain;
-	charset=US-ASCII;
-	delsp=yes;
-	format=flowed
-Content-Transfer-Encoding: 7bit
+From: Mail Delivery Subsystem <MAILER-DAEMON@bucknell.edu>
+Subject: Returned mail: see transcript for details
+Date: Fri, 7 Oct 2005 09:09:42 -0400 (EDT)
+Message-ID: <200510071309.j97D9gvJ010320@marburg.bucknell.edu>
+Mime-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="j97D9gvJ010320.1128690582/marburg.bucknell.edu"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.popwire.com (mail.popwire.com [62.20.78.55])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED13F152
-	for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2005 15:01:30 +0200 (MEST)
-Received: from [10.50.5.115] (kenth.i.popwire.com [10.50.5.115])
-	by mail.popwire.com (Postfix) with ESMTP id AAC751CCC8
-	for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2005 15:11:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,35 +15,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is a MIME-encapsulated message
 
-I'm using a M-Audio Delta 44 sound card which is 4 mono channels. I'm  
-using DSnoop
-plugin to divide this 4 mono channels into two virtual sound cards,  
-cline1-2, each with a stereo configuration.
+--j97D9gvJ010320.1128690582/marburg.bucknell.edu
 
-My setup is as follows:
-I got two live sound streams running, streaming sound over the network
-from cline1 I'm capturing 8000 mono s16_le sound
-from cline2 I'm capturing 22050 stereo s16_le sound
+The original message was received at Fri, 7 Oct 2005 09:09:38 -0400 (EDT)
+from lan-202-144-86-45.maa.sify.net [202.144.86.45] (may be forged)
 
-I'm running this on a P4 3,2GHz HT Machine and it uses about 20% of CPU.
+   ----- The following addresses had permanent fatal errors -----
+<dhcp-dns@bucknell.edu>
+    (reason: 550 5.1.1 <dhcp-dns@bucknell.edu>... User unknown)
 
-My problem is that there are BIG latency in the stereo stream, why is  
-that? I understand that dsnoop
-has to do a sample rate conversion from input sample rate to both  
-8000 and 22050, but it looks like this
-conversion is very slow, without using all my CPU.
+   ----- Transcript of session follows -----
+... while talking to marge.bucknell.edu.:
+>>> DATA
+<<< 550 5.1.1 <dhcp-dns@bucknell.edu>... User unknown
+550 5.1.1 <dhcp-dns@bucknell.edu>... User unknown
+<<< 503 5.0.0 Need RCPT (recipient)
 
-1. Anybody know anything about this, it it possible to prevent the  
-latency?
-2. Does anyone know of a better solution then dsnoop, that don't have  
-this latency?
+--j97D9gvJ010320.1128690582/marburg.bucknell.edu
+Content-Type: message/delivery-status
 
-/Kenth
+Reporting-MTA: dns; marburg.bucknell.edu
+Received-From-MTA: DNS; lan-202-144-86-45.maa.sify.net
+Arrival-Date: Fri, 7 Oct 2005 09:09:38 -0400 (EDT)
+
+Final-Recipient: RFC822; dhcp-dns@bucknell.edu
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; marge.bucknell.edu
+Diagnostic-Code: SMTP; 550 5.1.1 <dhcp-dns@bucknell.edu>... User unknown
+Last-Attempt-Date: Fri, 7 Oct 2005 09:09:42 -0400 (EDT)
+
+--j97D9gvJ010320.1128690582/marburg.bucknell.edu
+Content-Type: message/rfc822
+
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Received: from bucknell.edu (lan-202-144-86-45.maa.sify.net [202.144.86.45] (may be forged))
+	by marburg.bucknell.edu (8.13.4/8.13.4) with SMTP id j97D9XvJ010292
+	for <dhcp-dns@bucknell.edu>; Fri, 7 Oct 2005 09:09:38 -0400 (EDT)
+Message-Id: <200510071309.j97D9XvJ010292@marburg.bucknell.edu>
+From: alsa-devel@lists.sourceforge.net
+To: dhcp-dns@bucknell.edu
+Subject: [Virus - generic malware.a!zip] Re: Protected Mail Delivery
+Date: Fri, 7 Oct 2005 18:40:58 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary-1128674880"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Proofpoint-Spam-Details: rule=opt-in_notspam policy=opt-in score=0 mlx=0 adultscore=0 adjust=0 engine=2.5.0-05091301 definitions=2.5.0-05100700
+
+--boundary-1128674880
+Content-Type: text/plain
+Content-Length: 255
+Lines: 2
+
+WARNING:
+This email contains a .zip file attachment.  It may contain a virus.  You should not click on or open the file unless you have specifically requested it from the sender.  If you have any questions, please call the Technology Desk at x. 77777. 
+--boundary-1128674880
+Content-Type: message/rfc822
+Content-Length: 1001
+Lines: 32
+
+Received: from lan-202-144-86-45.maa.sify.net ([202.144.86.45])
+	by localhost (unknown MTA) with ESMTP id unknown
+	for <alsa-devel@lists.sourceforge.net>;
+	Fri, 07 Oct 2005 09:09:41 -0400
+From: alsa-devel@lists.sf.net
+To: dhcp-dns@bucknell.edu
+Date: Fri, 7 Oct 2005 18:40:58 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Subject: [Virus - generic malware.a!zip] Re: Protected Mail Delivery
+X-Proofpoint-Spam-Details: rule=opt-in_notspam policy=opt-in score=0 mlx=0 adultscore=0 adjust=0 engine=2.5.0-05091301 definitions=2.5.0-05100700
+
+This is a multi-part message in MIME format.
+------=_NextPart_000_0016----=_NextPart_000_0016
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+
+
+Please authenticate the secure message.
+
+
++++ Attachment: No Virus found
++++ Bitdefender AntiVirus - www.bitdefender.com
+------=_NextPart_000_0016----=_NextPart_000_0016--
+
+--boundary-1128674880--
+
+--j97D9gvJ010320.1128690582/marburg.bucknell.edu--
 
 
 
