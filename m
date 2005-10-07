@@ -1,13 +1,12 @@
-From: Sebastian Kuzminsky <seb.kuzminsky@gmail.com>
-Subject: how do I configure it for Capture?
-Date: Thu, 6 Oct 2005 21:59:53 -0600
-Message-ID: <7f55de720510062059y5e653114v81552bc6b26b61ed@mail.gmail.com>
-Reply-To: Sebastian Kuzminsky <seb.kuzminsky@gmail.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: RFC - Clean up of ALSA kernel codes
+Date: Fri, 7 Oct 2005 09:16:44 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510070914310.8709@tm8103.perex-int.cz>
+References: <20051006205140.76619.qmail@web60813.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20051006205140.76619.qmail@web60813.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,17 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tsw@johana.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Is there a generic way to configure the mixer elements for a capture
-device so it'll actually record?  It seems like whenever I plug in a
-new card I always have to fiddle with it and experiment to get it to
-record.  What am I missing?
+On Thu, 6 Oct 2005, Tom Watson wrote:
 
+> In your message you mentioned:
+> "8. Clean up proc fs handlers".
+> 
+> My only idea is to make the /proc stuff a little more "page friendly".  
+> Many of the register dumps are one register per line.  It is a bit 
+> easier (in my opinion) to have them say 8 register values per line.  It 
 
---
-Sebastian Kuzminsky
+I don't agree here. We have a lot text utilities (grep, awk etc.) which 
+can be used to filter the registers for which one looks for. Having them 
+mixed on one line means more mess (and you need the datasheet to check 
+offsets by hand).
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
