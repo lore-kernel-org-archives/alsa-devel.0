@@ -1,11 +1,11 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 1/2] Echoaudio, remove useless code
-Date: Sat, 8 Oct 2005 12:46:55 +0000
-Message-ID: <20051008124655.373ff4bd.pochini@shiny.it>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: arecord peak meter for S24_3 format
+Date: Sat, 8 Oct 2005 15:34:31 +0100
+Message-ID: <20051008143431.GA7457@palantir8>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,119 +15,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I have an edirol ua-25 (uses S24_3LE format) connected to my
+powerbook (i.e. big endian).
+When I used 'arecord -vv tst.wav' the peak meter is always 0.
+Using the patch below (against 1.0.10rc1) I get what looks to be
+good output.
 
-- Remove unneeded calls to set_nominal_level() because the comm page has
-just been zeroed by init_dsp_comm_page().
+But now I wonder why the other code does not acount for endianess
+differences between format and cpu?
 
+My alsa kernel driver is still 1.0.8. Not sure if there are any fixes
+related to this in later version. The actual recording sounds ok when
+played back on the ua-25 or the built-in powermac chip.
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+Kinda confused,
+-- 
+Martin
 
-diff -dup alsa-driver__orig/pci/echoaudio/darla24_dsp.c alsa-driver/pci/echoaudio/darla24_dsp.c
---- alsa-driver__orig/pci/echoaudio/darla24_dsp.c	2005-04-23 10:28:27.000000000 +0000
-+++ alsa-driver/pci/echoaudio/darla24_dsp.c	2005-10-08 09:14:11.000000000 +0000
-@@ -62,10 +62,6 @@ static int init_hw(echoaudio_t *chip, u1
- 	if ((err = init_line_levels(chip)) < 0)
- 		return err;
- 
--	/* Set professional nominal levels. This card has no digital i/o, so analog pipes are contiguous */
--	for (i = 0; i < num_busses_out(chip) + num_busses_in(chip); i++)
--		err = set_nominal_level(chip, i, FALSE);	/* FALSE is +4dBu here */
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
-diff -dup alsa-driver__orig/pci/echoaudio/echo3g_dsp.c alsa-driver/pci/echoaudio/echo3g_dsp.c
---- alsa-driver__orig/pci/echoaudio/echo3g_dsp.c	2005-09-24 11:54:35.000000000 +0000
-+++ alsa-driver/pci/echoaudio/echo3g_dsp.c	2005-10-08 09:14:11.000000000 +0000
-@@ -111,13 +111,6 @@ static int init_hw(echoaudio_t *chip, u1
- 	/* Must call this here after DSP is init to init gains and mutes */
- 	err = init_line_levels(chip);
- 
--	/* Set professional nominal levels (FALSE is +4dBu) */
--	for (i = 0; i < num_analog_busses_out(chip); i++)
--		err = set_nominal_level(chip, i, FALSE);
--
--	for (i = 0; i < num_analog_busses_in(chip); i++)
--		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
--
- 	/* Set the digital mode to S/PDIF RCA */
- 	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
- 	set_phantom_power(chip, 0);
-diff -dup alsa-driver__orig/pci/echoaudio/gina24_dsp.c alsa-driver/pci/echoaudio/gina24_dsp.c
---- alsa-driver__orig/pci/echoaudio/gina24_dsp.c	2005-04-23 10:28:27.000000000 +0000
-+++ alsa-driver/pci/echoaudio/gina24_dsp.c	2005-10-08 09:14:11.000000000 +0000
-@@ -83,13 +83,6 @@ static int init_hw(echoaudio_t *chip, u1
- 	/* Must call this here after DSP is init to init gains and mutes */
- 	err = init_line_levels(chip);
- 
--	/* Set professional nominal levels (FALSE is +4dBu) */
--	for (i = 0; i < num_analog_busses_out(chip); i++)
--		err = set_nominal_level(chip, i, FALSE);
--
--	for (i = 0; i < num_analog_busses_in(chip); i++)
--		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
--
- 	/* Set the digital mode to S/PDIF RCA */
- 	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
- 
-diff -dup alsa-driver__orig/pci/echoaudio/layla20_dsp.c alsa-driver/pci/echoaudio/layla20_dsp.c
---- alsa-driver__orig/pci/echoaudio/layla20_dsp.c	2005-04-23 10:28:27.000000000 +0000
-+++ alsa-driver/pci/echoaudio/layla20_dsp.c	2005-10-08 09:14:11.000000000 +0000
-@@ -68,13 +68,6 @@ static int init_hw(echoaudio_t *chip, u1
- 	if ((err = init_line_levels(chip)) < 0)
- 		return err;
- 
--	/* Set professional nominal levels (FALSE is +4dBu) */
--	for (i = 0; i < num_analog_busses_out(chip); i++)
--		err = set_nominal_level(chip, i, FALSE);
--
--	for (i = 0; i < num_analog_busses_in(chip); i++)
--		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
--
- 	/* Set the S/PDIF output format to "professional" */
- 	err = set_professional_spdif(chip, TRUE);
- 
-diff -dup alsa-driver__orig/pci/echoaudio/layla24_dsp.c alsa-driver/pci/echoaudio/layla24_dsp.c
---- alsa-driver__orig/pci/echoaudio/layla24_dsp.c	2005-04-23 10:28:27.000000000 +0000
-+++ alsa-driver/pci/echoaudio/layla24_dsp.c	2005-10-08 09:14:11.000000000 +0000
-@@ -74,13 +74,6 @@ static int init_hw(echoaudio_t *chip, u1
- 	if ((err = init_line_levels(chip)) < 0)
- 		return err;
- 
--	/* Set professional nominal levels (FALSE is +4dBu) */
--	for (i = 0; i < num_analog_busses_out(chip); i++)
--		err = set_nominal_level(chip, i, FALSE);
--
--	for (i = 0; i < num_analog_busses_in(chip); i++)
--		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
--
- 	/* Set the digital mode to S/PDIF RCA */
- 	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
- 
-diff -dup alsa-driver__orig/pci/echoaudio/mia_dsp.c alsa-driver/pci/echoaudio/mia_dsp.c
---- alsa-driver__orig/pci/echoaudio/mia_dsp.c	2005-04-23 10:28:27.000000000 +0000
-+++ alsa-driver/pci/echoaudio/mia_dsp.c	2005-10-08 09:14:11.000000000 +0000
-@@ -69,13 +69,6 @@ static int init_hw(echoaudio_t *chip, u1
- 	if ((err = init_line_levels(chip)))
- 		return err;
- 
--	/* Set professional nominal levels (FALSE is +4dBu) */
--	for (i = 0; i < num_analog_busses_out(chip); i++)
--		err = set_nominal_level(chip, i, FALSE);
--
--	for (i = 0; i < num_analog_busses_in(chip); i++)
--		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
--
- 	/* Default routing of the virtual channels: vchannels 0-3 go to analog
- 	outputs and vchannels 4-7 go to S/PDIF outputs */
- 	set_vmixer_gain(chip, 0, 0, 0);
-
-
---
-Giuliano.
+--- aplay.c.orig	2005-10-08 11:41:18.000000000 +0100
++++ aplay.c	2005-10-08 15:01:44.000000000 +0100
+@@ -1099,6 +1100,7 @@
+ static void compute_max_peak(u_char *data, size_t count)
+ {
+ 	signed int val, max, max_peak = 0, perc;
++	static	int	run = 0;
+ 	size_t ocount = count;
+ 	
+ 	switch (bits_per_sample) {
+@@ -1125,6 +1127,33 @@
+ 		}
+ 		break;
+ 	}
++	case 24: {
++		unsigned char *valp = data;
++		signed int mask = snd_pcm_format_silence_32(hwparams.format);
++		int	format_little = snd_pcm_format_little_endian(hwparams.format);
++		count /= 3;
++		while (count-- > 0) {
++			if (format_little) {
++				val = valp[0] | (valp[1]<<8) | (valp[2]<<16);
++				//val = __le32_to_cpu(val) >> 8;
++			} else {
++				val = (valp[0]<<16) | (valp[1]<<8) | valp[2];
++				//val = __be32_to_cpu(val) >> 8;
++			}
++			// Correct signed bit in 32-bit value
++			if (val & (1<<(bits_per_sample-1))) {
++				val |= 0xff<<24;	// Negate upper bits too
++				val = -val;
++			}
++//printf("0x%lx\t",val);
++
++			val = abs(val) ^ mask;
++			if (max_peak < val)
++				max_peak = val;
++			data += 3;
++		}
++		break;
++	}
+ 	case 32: {
+ 		signed int *valp = (signed int *)data;
+ 		signed int mask = snd_pcm_format_silence_32(hwparams.format);
+@@ -1138,7 +1167,11 @@
+ 		break;
+ 	}
+ 	default:
+-		break;
++		if (run == 0) {
++			fprintf(stderr, "Unsupported bit size %d.\n", bits_per_sample);
++			run = 1;
++		}
++		return;
+ 	}
+ 	max = 1 << (bits_per_sample-1);
+ 	if (max <= 0)
 
 
 -------------------------------------------------------
