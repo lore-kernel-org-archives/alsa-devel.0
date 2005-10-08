@@ -1,14 +1,11 @@
-From: jack christe <jack_alyz@yahoo.co.in>
-Subject: complied error
-Date: Sat, 8 Oct 2005 02:27:07 +0100 (BST)
-Message-ID: <20051008012707.76091.qmail@web8608.mail.in.yahoo.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH 2/2] Echoaudio, remove useless code
+Date: Sat, 8 Oct 2005 12:47:10 +0000
+Message-ID: <20051008124710.3fbb7da2.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web8608.mail.in.yahoo.com (web8608.mail.in.yahoo.com [202.43.219.83])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A5EDA167
-	for <alsa-devel@alsa-project.org>; Sat,  8 Oct 2005 03:27:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +15,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-hi=20
-i got this error=20
 
-whn i m running ./configure --with-cards=3Dazx
-              gives=20
-checking for which soundcards to compile driver for...
-configure: error: Unsupported soundcard azx
-
-thn i ran for all cards..
-
-after..
-
- whn i m (make) compiling alsa-driver-1.0.8rc1=20
-i got this error..
-"/root/alsa-driver-1.0.8rc1/acore/init.c: In function
-`snd_card_module_info_read':
-/root/alsa-driver-1.0.8rc1/acore/init.c:526: error:
-dereferencing pointer to incomplete type  "
-
-so wht shld i do nxt????
+- The whole comm page was zeroed a few lines above.
 
 
-OS - GENTOO , kernel 2.6.11, sound card =3D intel high
-definition ....
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+
+diff -dup alsa-driver__orig/pci/echoaudio/echoaudio_dsp.c alsa-driver/pci/echoaudio/echoaudio_dsp.c
+--- alsa-driver__orig/pci/echoaudio/echoaudio_dsp.c	2005-04-23 10:28:27.000000000 +0000
++++ alsa-driver/pci/echoaudio/echoaudio_dsp.c	2005-10-08 12:30:28.000000000 +0000
+@@ -1000,8 +1000,6 @@ static int init_dsp_comm_page(echoaudio_
+ 	chip->comm_page->midi_out_free_count = __constant_cpu_to_le32(DSP_MIDI_OUT_FIFO_SIZE);
+ 	chip->comm_page->sample_rate = __constant_cpu_to_le32(44100);
+ 	chip->sample_rate = 44100;
+-	for (i = 0; i < DSP_MAXAUDIOINPUTS; i++)
+-		chip->comm_page->line_in_level[i] = 0;
+ 
+ 	/* Set line levels so we don't blast any inputs on startup */
+ 	memset(chip->comm_page->monitors, ECHOGAIN_MUTED, MONITOR_ARRAY_SIZE);
 
 
-
-	=09
-__________________________________________________________=20
-Yahoo! India Matrimony: Find your partner now. Go to http://yahoo.shaadi.=
-com
+--
+Giuliano.
 
 
 -------------------------------------------------------
