@@ -1,7 +1,7 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 2/2] Echoaudio, remove useless code
-Date: Sat, 8 Oct 2005 12:47:10 +0000
-Message-ID: <20051008124710.3fbb7da2.pochini@shiny.it>
+Subject: [PATCH 1/2] Echoaudio, remove useless code
+Date: Sat, 8 Oct 2005 12:46:55 +0000
+Message-ID: <20051008124655.373ff4bd.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -19,23 +19,111 @@ To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-- The whole comm page was zeroed a few lines above.
+- Remove unneeded calls to set_nominal_level() because the comm page has
+just been zeroed by init_dsp_comm_page().
 
 
 Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
-diff -dup alsa-driver__orig/pci/echoaudio/echoaudio_dsp.c alsa-driver/pci/echoaudio/echoaudio_dsp.c
---- alsa-driver__orig/pci/echoaudio/echoaudio_dsp.c	2005-04-23 10:28:27.000000000 +0000
-+++ alsa-driver/pci/echoaudio/echoaudio_dsp.c	2005-10-08 12:30:28.000000000 +0000
-@@ -1000,8 +1000,6 @@ static int init_dsp_comm_page(echoaudio_
- 	chip->comm_page->midi_out_free_count = __constant_cpu_to_le32(DSP_MIDI_OUT_FIFO_SIZE);
- 	chip->comm_page->sample_rate = __constant_cpu_to_le32(44100);
- 	chip->sample_rate = 44100;
--	for (i = 0; i < DSP_MAXAUDIOINPUTS; i++)
--		chip->comm_page->line_in_level[i] = 0;
+diff -dup alsa-driver__orig/pci/echoaudio/darla24_dsp.c alsa-driver/pci/echoaudio/darla24_dsp.c
+--- alsa-driver__orig/pci/echoaudio/darla24_dsp.c	2005-04-23 10:28:27.000000000 +0000
++++ alsa-driver/pci/echoaudio/darla24_dsp.c	2005-10-08 09:14:11.000000000 +0000
+@@ -62,10 +62,6 @@ static int init_hw(echoaudio_t *chip, u1
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
  
- 	/* Set line levels so we don't blast any inputs on startup */
- 	memset(chip->comm_page->monitors, ECHOGAIN_MUTED, MONITOR_ARRAY_SIZE);
+-	/* Set professional nominal levels. This card has no digital i/o, so analog pipes are contiguous */
+-	for (i = 0; i < num_busses_out(chip) + num_busses_in(chip); i++)
+-		err = set_nominal_level(chip, i, FALSE);	/* FALSE is +4dBu here */
+-
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+ }
+diff -dup alsa-driver__orig/pci/echoaudio/echo3g_dsp.c alsa-driver/pci/echoaudio/echo3g_dsp.c
+--- alsa-driver__orig/pci/echoaudio/echo3g_dsp.c	2005-09-24 11:54:35.000000000 +0000
++++ alsa-driver/pci/echoaudio/echo3g_dsp.c	2005-10-08 09:14:11.000000000 +0000
+@@ -111,13 +111,6 @@ static int init_hw(echoaudio_t *chip, u1
+ 	/* Must call this here after DSP is init to init gains and mutes */
+ 	err = init_line_levels(chip);
+ 
+-	/* Set professional nominal levels (FALSE is +4dBu) */
+-	for (i = 0; i < num_analog_busses_out(chip); i++)
+-		err = set_nominal_level(chip, i, FALSE);
+-
+-	for (i = 0; i < num_analog_busses_in(chip); i++)
+-		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
+-
+ 	/* Set the digital mode to S/PDIF RCA */
+ 	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
+ 	set_phantom_power(chip, 0);
+diff -dup alsa-driver__orig/pci/echoaudio/gina24_dsp.c alsa-driver/pci/echoaudio/gina24_dsp.c
+--- alsa-driver__orig/pci/echoaudio/gina24_dsp.c	2005-04-23 10:28:27.000000000 +0000
++++ alsa-driver/pci/echoaudio/gina24_dsp.c	2005-10-08 09:14:11.000000000 +0000
+@@ -83,13 +83,6 @@ static int init_hw(echoaudio_t *chip, u1
+ 	/* Must call this here after DSP is init to init gains and mutes */
+ 	err = init_line_levels(chip);
+ 
+-	/* Set professional nominal levels (FALSE is +4dBu) */
+-	for (i = 0; i < num_analog_busses_out(chip); i++)
+-		err = set_nominal_level(chip, i, FALSE);
+-
+-	for (i = 0; i < num_analog_busses_in(chip); i++)
+-		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
+-
+ 	/* Set the digital mode to S/PDIF RCA */
+ 	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
+ 
+diff -dup alsa-driver__orig/pci/echoaudio/layla20_dsp.c alsa-driver/pci/echoaudio/layla20_dsp.c
+--- alsa-driver__orig/pci/echoaudio/layla20_dsp.c	2005-04-23 10:28:27.000000000 +0000
++++ alsa-driver/pci/echoaudio/layla20_dsp.c	2005-10-08 09:14:11.000000000 +0000
+@@ -68,13 +68,6 @@ static int init_hw(echoaudio_t *chip, u1
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
+ 
+-	/* Set professional nominal levels (FALSE is +4dBu) */
+-	for (i = 0; i < num_analog_busses_out(chip); i++)
+-		err = set_nominal_level(chip, i, FALSE);
+-
+-	for (i = 0; i < num_analog_busses_in(chip); i++)
+-		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
+-
+ 	/* Set the S/PDIF output format to "professional" */
+ 	err = set_professional_spdif(chip, TRUE);
+ 
+diff -dup alsa-driver__orig/pci/echoaudio/layla24_dsp.c alsa-driver/pci/echoaudio/layla24_dsp.c
+--- alsa-driver__orig/pci/echoaudio/layla24_dsp.c	2005-04-23 10:28:27.000000000 +0000
++++ alsa-driver/pci/echoaudio/layla24_dsp.c	2005-10-08 09:14:11.000000000 +0000
+@@ -74,13 +74,6 @@ static int init_hw(echoaudio_t *chip, u1
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
+ 
+-	/* Set professional nominal levels (FALSE is +4dBu) */
+-	for (i = 0; i < num_analog_busses_out(chip); i++)
+-		err = set_nominal_level(chip, i, FALSE);
+-
+-	for (i = 0; i < num_analog_busses_in(chip); i++)
+-		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
+-
+ 	/* Set the digital mode to S/PDIF RCA */
+ 	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
+ 
+diff -dup alsa-driver__orig/pci/echoaudio/mia_dsp.c alsa-driver/pci/echoaudio/mia_dsp.c
+--- alsa-driver__orig/pci/echoaudio/mia_dsp.c	2005-04-23 10:28:27.000000000 +0000
++++ alsa-driver/pci/echoaudio/mia_dsp.c	2005-10-08 09:14:11.000000000 +0000
+@@ -69,13 +69,6 @@ static int init_hw(echoaudio_t *chip, u1
+ 	if ((err = init_line_levels(chip)))
+ 		return err;
+ 
+-	/* Set professional nominal levels (FALSE is +4dBu) */
+-	for (i = 0; i < num_analog_busses_out(chip); i++)
+-		err = set_nominal_level(chip, i, FALSE);
+-
+-	for (i = 0; i < num_analog_busses_in(chip); i++)
+-		err = set_nominal_level(chip, bx_analog_in(chip) + i, FALSE);
+-
+ 	/* Default routing of the virtual channels: vchannels 0-3 go to analog
+ 	outputs and vchannels 4-7 go to S/PDIF outputs */
+ 	set_vmixer_gain(chip, 0, 0, 0);
 
 
 --
