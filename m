@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001448]: AC3 passthrou on emu10k1 with version 1.0.10rc1 does not work
-Date: Sun, 9 Oct 2005 13:26:33 +0200
-Message-ID: <ee208c4b0734d9bda4212401cedd089c@bugtrack.alsa-project.org>
+Date: Sun, 9 Oct 2005 19:33:48 +0200
+Message-ID: <657927c179a9efefa834de3ada0822b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4ED4813D
-	for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2005 13:26:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D81691A7
+	for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2005 19:33:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             09-23-2005 20:47 CEST
-Last Modified:              10-09-2005 13:26 CEST
+Last Modified:              10-09-2005 19:33 CEST
 ======================================================================
 Summary:                    AC3 passthrou on emu10k1 with version 1.0.10rc1 does
 not work
@@ -53,39 +53,6 @@ Ask me for more info if needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- hugo4711 - 10-09-05 13:16 
-----------------------------------------------------------------------
-Same issue here. AC3 passthrough does not work. However my versions are
-different:
-
-uname -a:
-Linux ravine 2.6.13-1.1526_FC4 #1 Wed Sep 28 19:15:10 EDT 2005 i686 athlon
-i386 GNU/Linux
-
-cat /proc/asound/version:
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1.
-Compiled on Oct  4 2005 for kernel 2.6.13-1.1526_FC4
-
-cat /proc/asound/cards:
-0 [Audigy         ]: Audigy - Audigy 1 [SB0090]
-                     Audigy 1 [SB0090] (rev.3, serial:0x511102) at 0xe400,
-irq 11
-1 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
-                     Ensoniq AudioPCI ENS1371 at 0xe800, irq 10
-2 [Bt878          ]: Bt87x - Brooktree Bt878
-                     Brooktree Bt878 at 0xdddfe000, irq 11
-
-MPlayer version 1.0pre7-4.0.0
-
-The output from mplayer is the following when initializing the soundcard:
-
-alsa-init: 1 soundcard found, using: iec958:{CARD 0 AES0 0x02 AES1 0x82
-AES2 0x00 AES3 0x02}
-ALSA lib setup.c:549:(add_elem) Cannot obtain info for CTL elem
-(MIXER,'IEC958 Playback Default',0,0,0): No such file or directory
-alsa-init: playback open error: No such file or directory
-
-----------------------------------------------------------------------
  jcdutton - 10-09-05 13:26 
 ----------------------------------------------------------------------
 The version of alsa-driver and alsa-lib should match.
@@ -96,6 +63,12 @@ It will tell you how to check the alsa-driver and alsa-lib versions.
 I see you have alsa-driver version 1.0.10rc1, what about the alsa-lib
 version?
 
+----------------------------------------------------------------------
+ hugo4711 - 10-09-05 19:33 
+----------------------------------------------------------------------
+Ok. I have installed alsa-utils and alsa-lib with the corresponding
+versions. Now it works. Thank you!
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -105,6 +78,7 @@ Date Modified  Username       Field                    Change
 10-05-05 19:05 tiwai          Note Added: 0006440                          
 10-09-05 13:16 hugo4711       Note Added: 0006445                          
 10-09-05 13:26 jcdutton       Note Added: 0006446                          
+10-09-05 19:33 hugo4711       Note Added: 0006447                          
 ======================================================================
 
 
