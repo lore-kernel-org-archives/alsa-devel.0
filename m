@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001448]: AC3 passthrou on emu10k1 with version 1.0.10rc1 does not work
-Date: Sun, 9 Oct 2005 13:16:51 +0200
-Message-ID: <3a18089357125fa9d880309bee311c0f@bugtrack.alsa-project.org>
+Date: Sun, 9 Oct 2005 13:26:33 +0200
+Message-ID: <ee208c4b0734d9bda4212401cedd089c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CCA11A2
-	for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2005 13:16:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4ED4813D
+	for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2005 13:26:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             09-23-2005 20:47 CEST
-Last Modified:              10-09-2005 13:16 CEST
+Last Modified:              10-09-2005 13:26 CEST
 ======================================================================
 Summary:                    AC3 passthrou on emu10k1 with version 1.0.10rc1 does
 not work
@@ -51,11 +51,6 @@ mode. Kernel 2.6.13 work fine. I have a soundblaster live value soundcard
 and use mplayer dev-CVS-050810-20:56-3.4.4 or xine-1.1.0 to play sound.
 Ask me for more info if needed.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-05-05 19:05 
-----------------------------------------------------------------------
-Are you using the latest version of alsa-lib, too?
 
 ----------------------------------------------------------------------
  hugo4711 - 10-09-05 13:16 
@@ -90,6 +85,17 @@ ALSA lib setup.c:549:(add_elem) Cannot obtain info for CTL elem
 (MIXER,'IEC958 Playback Default',0,0,0): No such file or directory
 alsa-init: playback open error: No such file or directory
 
+----------------------------------------------------------------------
+ jcdutton - 10-09-05 13:26 
+----------------------------------------------------------------------
+The version of alsa-driver and alsa-lib should match.
+Please refer to the wiki:
+http://alsa.opensrc.org/TroubleShooting
+
+It will tell you how to check the alsa-driver and alsa-lib versions.
+I see you have alsa-driver version 1.0.10rc1, what about the alsa-lib
+version?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -98,6 +104,7 @@ Date Modified  Username       Field                    Change
 09-23-05 20:47 cocobo         Kernel Version            => 2.6.14-rc2      
 10-05-05 19:05 tiwai          Note Added: 0006440                          
 10-09-05 13:16 hugo4711       Note Added: 0006445                          
+10-09-05 13:26 jcdutton       Note Added: 0006446                          
 ======================================================================
 
 
