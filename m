@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001448]: AC3 passthrou on emu10k1 with version 1.0.10rc1 does not work
-Date: Sun, 9 Oct 2005 19:33:48 +0200
-Message-ID: <657927c179a9efefa834de3ada0822b2@bugtrack.alsa-project.org>
+From: Kronos <kronos@hefnerlabs.com>
+Subject: Re: SOUNDCARD DONATION OFFER: 10 SBlive (EMU10K1)
+	Cards for Core Developers
+Date: Sun, 09 Oct 2005 17:52:04 -0400
+Message-ID: <1128894724.18406.21.camel@elnino.hefnerlabs.com>
+References: <1128536480.8276.4.camel@elnino.hefnerlabs.com>
+	 <434457D6.3010208@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D81691A7
-	for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2005 19:33:48 +0200 (MEST)
+In-Reply-To: <434457D6.3010208@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +19,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Ill wait until i get a few more responses before i ship them all out 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1448> 
-======================================================================
-Reported By:                cocobo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1448
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
-======================================================================
-Date Submitted:             09-23-2005 20:47 CEST
-Last Modified:              10-09-2005 19:33 CEST
-======================================================================
-Summary:                    AC3 passthrou on emu10k1 with version 1.0.10rc1 does
-not work
-Description: 
-If I run kernel 2.6.14-rc[1-2] (alsa ver 1.0.10rc1) I can't get AC3 s/pdiff
-passthrou to work. The external decoder does not switch over to dolby
-mode. Kernel 2.6.13 work fine. I have a soundblaster live value soundcard
-and use mplayer dev-CVS-050810-20:56-3.4.4 or xine-1.1.0 to play sound.
-Ask me for more info if needed.
-======================================================================
+For others interested, please send your messages directly to me.
+Otherwise theyll get drowned out in the rest of the traffic on the list.
 
-----------------------------------------------------------------------
- jcdutton - 10-09-05 13:26 
-----------------------------------------------------------------------
-The version of alsa-driver and alsa-lib should match.
-Please refer to the wiki:
-http://alsa.opensrc.org/TroubleShooting
+After i figure out who wants a card, ill verify that you are on the core
+dev team, then ill send out the cards.
 
-It will tell you how to check the alsa-driver and alsa-lib versions.
-I see you have alsa-driver version 1.0.10rc1, what about the alsa-lib
-version?
+ALSA kicks ass. Linux needs to dominate the OS wars and having the same
+sound support or better than in windows will bring us one step closer to
+that end.
 
-----------------------------------------------------------------------
- hugo4711 - 10-09-05 19:33 
-----------------------------------------------------------------------
-Ok. I have installed alsa-utils and alsa-lib with the corresponding
-versions. Now it works. Thank you!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-23-05 20:47 cocobo         New Issue                                    
-09-23-05 20:47 cocobo         Distribution              => Gentoo          
-09-23-05 20:47 cocobo         Kernel Version            => 2.6.14-rc2      
-10-05-05 19:05 tiwai          Note Added: 0006440                          
-10-09-05 13:16 hugo4711       Note Added: 0006445                          
-10-09-05 13:26 jcdutton       Note Added: 0006446                          
-10-09-05 19:33 hugo4711       Note Added: 0006447                          
-======================================================================
-
+On Wed, 2005-10-05 at 23:46 +0100, James Courtier-Dutton wrote:
+> Kronos wrote:
+> > I would like to see the developement of alsa move faster and better
+> > (specificly i have an sblive value and id like to see the same level of
+> > functionality as in windows). I can get some sblive cards for the core
+> > development team if interested. 
+> > 
+> 
+> Send one to:
+Address deleted for privacy
+> 
+> Make sure you mark it as being worth less than 30 UK pounds, otherwise 
+> customs will charge me masses in tax for it.
+> 
+> Thank you very much
+> 
+> James
 
 
 
