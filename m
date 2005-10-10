@@ -1,10 +1,14 @@
-From: R.Marek@sh.cvut.cz
-Subject: [PATCH] ESS Solo1 IRQ issue take 2
-Date: 10 Oct 2005 09:46:29 -0000
-Message-ID: <20051010094629.12123.qmail@desitka.sh.cvut.cz>
-References: <20051010085543.GB2369@elf.ucw.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001460]: no sound on Clevo 400a
+Date: Mon, 10 Oct 2005 12:21:40 +0200
+Message-ID: <66e54763704c8064522b6db2c83991ac@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051010085543.GB2369@elf.ucw.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 843701AD
+	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2005 12:21:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,58 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net, pavel@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
->ACK (modulo formatting). [It is probably best to cc alsa-devel or
->linux-kernel, even on small changes].
->Pavel
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1460> 
+======================================================================
+Reported By:                imre
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1460
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.14-rc2-git5
+======================================================================
+Date Submitted:             09-26-2005 16:02 CEST
+Last Modified:              10-10-2005 12:21 CEST
+======================================================================
+Summary:                    no sound on Clevo 400a
+Description: 
+On my Clevo M400A the integrated soundcard doesn't work. When starting
+alsa
+the kernel logs the following:
 
-Ok here we go - second try.
+hda_codec: num_steps = 0 for NID=0xb
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 50
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA sound/pci/hda/hda_intel.c:624: codec_mask = 0x3
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+hda_codec: num_steps = 0 for NID=0x8
 
-This patch fixes the suspend/resume issue I'm having with ESS-Solo1
-soundcard. Without this patch I might get after resume message
-that kernel is disabling the IRQ5 (soundcard). If there was something
-playing it wont continue after resume without this patch.
+and the last message is printed several times
 
-Signed-Off-By: Rudolf Marek <r.marek@sh.cvut.cz>
+Maybe this is the same issue that was reported in #1316
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001429 hda_codec: Unknown model for ALC880
+======================================================================
 
-There is one thing left. When I suspending to ram or to disk while
-playing something I got repeated sound what left without the IRQ.
-Like ta ta ta ta ta ta you know that sound ;)
-I tried to disable the DMA crt on the soundcard in suspend routine
-but it wont help. Perhaps userspace process is stopped and is not
-delivering new data?! Will pci_disable_device also disable the DMA?
+----------------------------------------------------------------------
+ drlizau - 10-10-05 12:21 
+----------------------------------------------------------------------
+I seem to have the same trouble with the same version of this controller in
+an Itbox Sonoma C240.
 
-Thanks,
+00:1b.0 0403 Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition 
+Audio Controller 04 00 CLEVO/KAPOK Computer 5401
 
-Regards
-Rudolf
+Running Alsa 1.0.9b on a 2.6.12 Debian machine.
+
+tiwai seems to have access to a series of model codes which can be tried
+on the modprobe line.
+can you point me to a copy of this list, as i would be quite happy to try
+any combination to get this operational?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-26-05 16:02 imre           New Issue                                    
+09-26-05 16:02 imre           Distribution              => Debian sid      
+09-26-05 16:02 imre           Kernel Version            => 2.6.14-rc2-git5 
+09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
+10-10-05 12:21 drlizau        Note Added: 0006448                          
+======================================================================
 
 
---- a/sound/pci/es1938.c	2005-09-30 23:17:35.000000000 +0200
-+++ b/pci/es1938.c	2005-10-02 01:23:31.000000000 +0200
-@@ -1390,7 +1397,8 @@
- 		*d = snd_es1938_reg_read(chip, *s);
- 
- 	outb(0x00, SLIO_REG(chip, IRQCONTROL)); /* disable irqs */
--
-+	if (chip->irq >= 0)                                                                         
-+		free_irq(chip->irq, (void *)chip);  
- 	pci_disable_device(chip->pci);
- 	return 0;
- }
-@@ -1401,6 +1409,7 @@
- 	unsigned char *s, *d;
- 
- 	pci_enable_device(chip->pci);
-+	request_irq(chip->pci->irq, snd_es1938_interrupt, SA_INTERRUPT|SA_SHIRQ, "ES1938", (void *)chip);
- 	snd_es1938_chip_init(chip);
- 
- 	/* restore mixer-related registers */
 
 
 -------------------------------------------------------
