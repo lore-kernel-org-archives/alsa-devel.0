@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001470]: Hdspmixer resets all levels at startup, does not remeber levels at closing
-Date: Mon, 10 Oct 2005 15:10:19 +0200
-Message-ID: <cb76f2d0783e736f27f78f3c3e6f6ddf@bugtrack.alsa-project.org>
+From: "Alvin Pauly" <pauja@gdatp.com>
+Subject: Re: Capricia Sturgill Pcharmcy
+Date: Mon, 10 Oct 2005 08:42:38 -0500
+Message-ID: <001b01c5cda0$7a491b00$c2f7a8c0@nodular>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0018_01C5CD76.91731300"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E121D1B4
-	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2005 15:10:19 +0200 (MEST)
+Received: from gdatp.com (bmt8.neoplus.adsl.tpnet.pl [83.28.239.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EF2DC1B9
+	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2005 15:42:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +18,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Apollinaris Goewey <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1470> 
-======================================================================
-Reported By:                plessas
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1470
-Category:                   hdsp progs
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             10-10-2005 15:10 CEST
-Last Modified:              10-10-2005 15:10 CEST
-======================================================================
-Summary:                    Hdspmixer resets all levels at startup, does not
-remeber levels at closing
-Description: 
-After system boot i have to start the hdspmixer once to get audio output.
-It loads then the "default preset" which means full 0dB on all channels.
+------=_NextPart_000_0018_01C5CD76.91731300
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-After adjusting the levels, and saving them to a file, and even making
-this file the "default", at next application startup hdspmixer gives the
-full 0dB again.
+jinnee 
+border-left-width 0px
+border-right 0px
+margin-right 0px
+word-spacing normal
+float left
+border-top-width 0px
+font-family courier
 
-More useful behavior IMHO would be to restore exactly the levels i did set
-when i closed the hdspmixer. And these settings should then be resored
-after a reboot.
-======================================================================
+highboy 
+border-left-width 0px
+clear both
+border-color ffffff
+border-bottom 0px
+padding-right 0px
+border-right 0px
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-10-05 15:10 plessas        New Issue                                    
-======================================================================
+xalecivaamvi
+naviallibiag
+xtrais  $um  $enra $
+170 30 pi161 90 pi 135 30 pi
+llslls lls
+read more
 
+
+------=_NextPart_000_0018_01C5CD76.91731300
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE>
+#jinnee {
+BORDER-LEFT-WIDTH: 0px;
+BORDER-RIGHT: 0px;
+MARGIN-RIGHT: 0px;
+WORD-SPACING: normal;
+FLOAT: left;
+BORDER-TOP-WIDTH: 0px;
+FONT-FAMILY: Courier;
+}
+
+#highboy {
+BORDER-LEFT-WIDTH: 0px;
+CLEAR: both;
+BORDER-COLOR: #FFFFFF;
+BORDER-BOTTOM: 0px;
+PADDING-RIGHT: 0px;
+BORDER-RIGHT: 0px;
+}
+</STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<SPAN>&nbsp;<BR></SPAN><DIV><DIV ID=3D"jinnee">Xa<BR>Le<BR>Ci<BR>Va<B=
+R>Am<BR>Vi</DIV>
+<DIV ID=3D"jinnee">na<BR>vi<BR>al<BR>li<BR>bi<BR>ag</DIV>
+<DIV ID=3D"jinnee">x<BR>tra<BR>is  $<BR>um  $<BR>en<BR>ra $</DIV>
+<DIV ID=3D"jinnee"> <BR> <BR>170 30 pi<BR>161 90 pi<BR> <BR>135 30 pi</DIV>
+<DIV ID=3D"jinnee"> <BR> <BR>lls<BR>lls<BR> <BR>lls</DIV></DIV><BR>
+<DIV ID=3D"highboy"><P><BR><A href=3D"http://brxla.feelnorcer.com"><FONT =
+face=3DArial>Read more</FONT></A></P></DIV>
+</BODY></HTML>
+
+------=_NextPart_000_0018_01C5CD76.91731300--
 
 
 
