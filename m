@@ -1,14 +1,13 @@
-From: "Alvin Pauly" <pauja@gdatp.com>
-Subject: Re: Capricia Sturgill Pcharmcy
-Date: Mon, 10 Oct 2005 08:42:38 -0500
-Message-ID: <001b01c5cda0$7a491b00$c2f7a8c0@nodular>
+From: <pradeep.gane@wipro.com>
+Subject: Question on Interrupt Handling...
+Date: Mon, 10 Oct 2005 19:19:38 +0530
+Message-ID: <D6DA3A176076B2408E53467FC0B0056B018CB490@BLR-EC-MBX04.wipro.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0018_01C5CD76.91731300"
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gdatp.com (bmt8.neoplus.adsl.tpnet.pl [83.28.239.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EF2DC1B9
-	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2005 15:42:34 +0200 (MEST)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Apollinaris Goewey <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------=_NextPart_000_0018_01C5CD76.91731300
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I am using the mmap feature of ALSA framework (without PCI DMA). I am
+expecting an interrupt after data of scheduled size is transferred by
+the hardware. I am supposed to call the snd_pcm_period_elapsed() API in
+the interrupt handler.=20
 
-jinnee 
-border-left-width 0px
-border-right 0px
-margin-right 0px
-word-spacing normal
-float left
-border-top-width 0px
-font-family courier
+My questions are...
 
-highboy 
-border-left-width 0px
-clear both
-border-color ffffff
-border-bottom 0px
-padding-right 0px
-border-right 0px
+1 - Is the snd_pcm_period_elapsed call sufficient for my driver?=20
+2 - How are error conditions like under-run and over-run supposed to be
+passed to the higher layers? Should I call snd_pcm_period_elapsed in
+this case as well?
 
-xalecivaamvi
-naviallibiag
-xtrais  $um  $enra $
-170 30 pi161 90 pi 135 30 pi
-llslls lls
-read more
+Thanks very much in advance.
 
-
-------=_NextPart_000_0018_01C5CD76.91731300
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE>
-#jinnee {
-BORDER-LEFT-WIDTH: 0px;
-BORDER-RIGHT: 0px;
-MARGIN-RIGHT: 0px;
-WORD-SPACING: normal;
-FLOAT: left;
-BORDER-TOP-WIDTH: 0px;
-FONT-FAMILY: Courier;
-}
-
-#highboy {
-BORDER-LEFT-WIDTH: 0px;
-CLEAR: both;
-BORDER-COLOR: #FFFFFF;
-BORDER-BOTTOM: 0px;
-PADDING-RIGHT: 0px;
-BORDER-RIGHT: 0px;
-}
-</STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<SPAN>&nbsp;<BR></SPAN><DIV><DIV ID=3D"jinnee">Xa<BR>Le<BR>Ci<BR>Va<B=
-R>Am<BR>Vi</DIV>
-<DIV ID=3D"jinnee">na<BR>vi<BR>al<BR>li<BR>bi<BR>ag</DIV>
-<DIV ID=3D"jinnee">x<BR>tra<BR>is  $<BR>um  $<BR>en<BR>ra $</DIV>
-<DIV ID=3D"jinnee"> <BR> <BR>170 30 pi<BR>161 90 pi<BR> <BR>135 30 pi</DIV>
-<DIV ID=3D"jinnee"> <BR> <BR>lls<BR>lls<BR> <BR>lls</DIV></DIV><BR>
-<DIV ID=3D"highboy"><P><BR><A href=3D"http://brxla.feelnorcer.com"><FONT =
-face=3DArial>Read more</FONT></A></P></DIV>
-</BODY></HTML>
-
-------=_NextPart_000_0018_01C5CD76.91731300--
-
+Best Regards,
+Pradeep
 
 
 -------------------------------------------------------
