@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001460]: no sound on Clevo 400a
-Date: Tue, 11 Oct 2005 16:33:04 +0200
-Message-ID: <339afe8cdaa56eaf19b92e1ad4e0b00f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001448]: AC3 passthrou on emu10k1 with version 1.0.10rc1 does not work
+Date: Tue, 11 Oct 2005 16:33:50 +0200
+Message-ID: <7ed1fe151b0e65af0cf0b3af17484a83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A05E139
-	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2005 16:33:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8866414F
+	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2005 16:33:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1460> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1448> 
 ======================================================================
-Reported By:                imre
+Reported By:                cocobo
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1460
-Category:                   PCI - hda-intel
+Issue ID:                   1448
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.14-rc2-git5
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-26-2005 16:02 CEST
+Date Submitted:             09-23-2005 20:47 CEST
 Last Modified:              10-11-2005 16:33 CEST
 ======================================================================
-Summary:                    no sound on Clevo 400a
+Summary:                    AC3 passthrou on emu10k1 with version 1.0.10rc1 does
+not work
 Description: 
-On my Clevo M400A the integrated soundcard doesn't work. When starting
-alsa
-the kernel logs the following:
-
-hda_codec: num_steps = 0 for NID=0xb
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 50
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_intel.c:624: codec_mask = 0x3
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-
-and the last message is printed several times
-
-Maybe this is the same issue that was reported in #1316
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
+If I run kernel 2.6.14-rc[1-2] (alsa ver 1.0.10rc1) I can't get AC3 s/pdiff
+passthrou to work. The external decoder does not switch over to dolby
+mode. Kernel 2.6.13 work fine. I have a soundblaster live value soundcard
+and use mplayer dev-CVS-050810-20:56-3.4.4 or xine-1.1.0 to play sound.
+Ask me for more info if needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- drlizau - 10-10-05 12:21 
+ hugo4711 - 10-09-05 19:33 
 ----------------------------------------------------------------------
-I seem to have the same trouble with the same version of this controller in
-an Itbox Sonoma C240.
-
-00:1b.0 0403 Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition 
-Audio Controller 04 00 CLEVO/KAPOK Computer 5401
-
-Running Alsa 1.0.9b on a 2.6.12 Debian machine.
-
-tiwai seems to have access to a series of model codes which can be tried
-on the modprobe line.
-can you point me to a copy of this list, as i would be quite happy to try
-any combination to get this operational?
+Ok. I have installed alsa-utils and alsa-lib with the corresponding
+versions. Now it works. Thank you!
 
 ----------------------------------------------------------------------
  tiwai - 10-11-05 16:33 
 ----------------------------------------------------------------------
-First of all, please elaborate what you mean "doesn't work".
-
-The num_steps are harmless unless you access to the corresponding node
-(i.e. try to adjust CD volume).  It seems that the device has no CD and no
-corresponding ADC nodes.
-
-As you can see in the log, the BIOS is broken.  Pass model=3stack option,
-for example, to specify the model to use.
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-05 16:02 imre           New Issue                                    
-09-26-05 16:02 imre           Distribution              => Debian sid      
-09-26-05 16:02 imre           Kernel Version            => 2.6.14-rc2-git5 
-09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
-10-10-05 12:21 drlizau        Note Added: 0006448                          
-10-10-05 12:24 drlizau        Issue Monitored: drlizau                     
-10-11-05 16:33 tiwai          Note Added: 0006453                          
+09-23-05 20:47 cocobo         New Issue                                    
+09-23-05 20:47 cocobo         Distribution              => Gentoo          
+09-23-05 20:47 cocobo         Kernel Version            => 2.6.14-rc2      
+10-05-05 19:05 tiwai          Note Added: 0006440                          
+10-09-05 13:16 hugo4711       Note Added: 0006445                          
+10-09-05 13:26 jcdutton       Note Added: 0006446                          
+10-09-05 19:33 hugo4711       Note Added: 0006447                          
+10-11-05 16:33 tiwai          Status                   new => resolved     
+10-11-05 16:33 tiwai          Resolution               open => fixed       
+10-11-05 16:33 tiwai          Assigned To               => tiwai           
+10-11-05 16:33 tiwai          Note Added: 0006454                          
 ======================================================================
 
 
