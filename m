@@ -1,10 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: [ALSA] 1.0.10rc2 release
-Date: Tue, 11 Oct 2005 16:43:22 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510111641430.9618@tm8103.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001450]: SPDIF out is limited with 48KHz
+Date: Tue, 11 Oct 2005 17:22:40 +0200
+Message-ID: <b800b5591fd19711e4f78fe07b97d40f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85503189
+	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2005 17:22:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,165 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: ALSA Announce <alsa-announce@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-	1.0.10rc2 ALSA packages are available for download.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1450> 
+======================================================================
+Reported By:                anli
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1450
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-24-2005 15:33 CEST
+Last Modified:              10-11-2005 17:22 CEST
+======================================================================
+Summary:                    SPDIF out is limited with 48KHz
+Description: 
+Last the driver version which worked perfectly (i.e. with 96KHz SPDIF out
+sample rate) is 1.04. And I was able to use SPDIF out with JACK at
+96KHz/32bit mode _without_ any problems.
 
-						Jaroslav
+Now SPDIF out is limited with 48KHz srate. Long time ago developers
+argumented 48KHz limit as it is SPDIF standard. On the other hand all
+(semi)pro DACs suuport 96KHz. This is true for all ice1724 cards too.
+Moreover, we are in the open source world at last :-)
+
+Please, revert this limit back. I'm ready to test the driver from CVS
+tree.
+
+Andrew
+
+======================================================================
+
+----------------------------------------------------------------------
+ anli - 10-06-05 20:40 
+----------------------------------------------------------------------
+Tiwai,
+
+Sorry, have not uderstood your comment. The WM8770 codec hasn't such
+limitations. And, again, few the driver versions ago I used 96KHz with
+JACK server without noticed problems (and used DAC showed explicitly 96KHz
+sample rate).
 
 
-Changelog between 1.0.10rc1 and 1.0.10rc2 releases
-**************************************************
 
-* alsa-driver
-  + Sound Core
-    - Add check of CONFIG_ISA_DMA_API
-    - Merge hpklinux to alsa-driver tree
-    - Fix detection of CONFIG_ISA_DMA_API
-    - ad1889: add AD1889 driver docs
-    - disable HPET driver
-    - Add a wrapper for register_sound_special_device()
-    - Add pci_ids.h wrapper
-    - Added kzalloc() wrapper
-    - release 1.0.10rc2
-  + ALSA Core
-    - Define CONFIG_ISA_DMA_API for older kernels
-    - sparse: add __nocast to wrappers
-    - Add snd_card_set_generic_dev() call
-    - Add a wrapper for register_sound_special_device()
-    - Add pci_ids.h wrapper
-    - Add wrappers for pci_get_device() and pci_dev_put()
-    - Fixed compilation with older 2.6 kernels
-    - Added kzalloc() wrapper
-    - Replace with kzalloc()
-    - Try to fix compiling to work. More problems exist.
-    - fix typo that prevented compiling.
-    - include new PCI IDs with 2.2.x kernels
-    - set owner field in struct pci_driver
-    - fix driver_register() on old kernels
-    - fix missing return value of dummy snd_card_set_generic_dev()
-    - fix warning about CONFIG_ISA_DMA_API redefinition
-    - fix compilation on 2.2.x kernels
-    - Fix PCI IDs in rme32/96 driver
-    - Add getnstimeofday() wrapper.
-    - Move kmalloc wrappers to alsa-driver tree
-    - Fix compile without CONFIG_SND_DEBUG_MEMORY
-  + Generic drivers
-    - Add snd_card_set_generic_dev() call
-    - Replace with kzalloc()
-  + IOCTL32 emulation
-    - Replace with kzalloc()
-  + MPU401 UART
-    - mpu401: fix patch
-  + MSND driver
-    - sparse address space annotations
-    - msnd-pinnacle: remove strange escapes
-    - Remove vmalloc wrapper, kfree_nocheck()
-  + Memalloc module
-    - Move kmalloc wrappers to alsa-driver tree
-  + Opti9xx drivers
-    - Add snd_card_set_generic_dev() call
-* alsa-lib
-  + Core
-    - moved simple mixer abstraction modules to modules/mixer/simple directory
-    - mixer API - extend simple enumerated controls for direction tests
-    - Fix type-punning
-    - release 1.0.10rc2
-  + Mixer API
-    - mixer API - extend simple enumerated controls for direction tests
-  + Mixer Abstraction API
-    - moved simple mixer abstraction modules to modules/mixer/simple directory
-    - mixer API - extend simple enumerated controls for direction tests
-  + PCM API
-    - PCM API - handle EINTR from poll() in snd_pcm_wait() function
-    - Fix call of semctl IPC_RMID
-    - Workaround for crash with knotify
-    - Fix buffer allocation and mmap with plugins
-    - Fix compile warnings
-    - direct plugins - change group according ipc_gid for the socket file
-    - fix segfault then hooks list is empty
-    - Don't return error if chown() fails
-    - Removed unused function
-    - Fix endianess with dmix plugin
-    - pcm - Add SOFTVOL pcm type
-    - PCM add missing pcm types - DSNOOP, IEC958, IOPLUG, EXTPLUG
-    - fixed typo in comment
-    - Fix type-punning
-    - Fix mmap and channel_info of hook plugin
-  + Sequencer API
-    - Fix type-punning
-  + /Makefile.am
-    - moved simple mixer abstraction modules to modules/mixer/simple directory
-  + /include/Makefile.am
-    - Allow separate build and source trees
-  + /modules/Makefile.am
-    - moved simple mixer abstraction modules to modules/mixer/simple directory
-  + /src/Makefile.am
-    - Allow separate build and source trees
-  + Configuration
-    - Fix configuration for ICE1724
-    - dmix and dsnoop configuration - added ipc_perm 0660 (to handle all users with audio group)
-    - modem's pcm "two device" config
-    - Add modem pcm definition for hda-intel driver
-    - emu10k1: Front channels via fxbus 8 and 9
-    - Use S16_LE as default for dmix
-    - Fix endianess of PMac driver
-    -  New @func - pcm_args_by_class
-    - use dmix/dsnoop for default PCM on ca0106
-  + Kernel Headers
-    - Fix type-punning
-  + Simple Abstraction Mixer Modules
-    - Allow separate build and source trees
-  + Test/Example code
-    - pcm.c test / example - Added EINTR handling
-    - test/pcm.c - remove -EINTR handling (a job for alsa-lib)
-* alsa-utils
-  + Core
-    - release 1.0.10rc2
-  + ALSA Control (alsactl)
-    - Fix / clean up man pages
-    - Extend 'alsactl names' to show modem devices
-  + ALSA RawMidi Utility (amidi)
-    - Fix / clean up man pages
-  + Speaker Test
-    - speaker-test: Add support for testing FLOAT_LE format.
-  + alsaconf
-    - Allow separate build and source trees
-    - Fix hwcfg file name by alsaconf
-  + alsamixer
-    - Fix / clean up man pages
-    - Use strsignal()
-    - Implement dB gain level display.
-  + amixer
-    - Fix / clean up man pages
-    - Added more better error fault handling for sset toggle
-    - Fix for more better error fault handling for sset toggle
-  + aplay/arecord
-    - aplay - added -EINTR error code handling for read/write operations
-    - aplay - remove EINTR handling (a job for alsa-lib)
-* alsa-tools
-  + Core
-    - release 1.0.10rc2
-  + Envy24 Control
-    - Fix segfault of envy24control
-* alsa-oss
-  + Core
-    - Use $LIB for LD_PRELOAD path in aoss
-    - release 1.0.10rc2
-  + PCM Emulation
-    - Fix suspend/resume with aoss
-    - More fix for PM
-  + aoss script
-    - Use $LIB for LD_PRELOAD path in aoss
+----------------------------------------------------------------------
+ tiwai - 10-11-05 17:22 
+----------------------------------------------------------------------
+Ah sorry, I misunerdstood the topic about ice1712.
+Could you try the attached patch?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-24-05 15:33 anli           New Issue                                    
+10-05-05 19:07 tiwai          Note Added: 0006441                          
+10-06-05 16:36 anli           Note Added: 0006443                          
+10-06-05 16:40 anli           Note Added: 0006444                          
+10-06-05 17:14 anli           Note Edited: 0006443                         
+10-06-05 17:25 anli           Issue Monitored: anli                        
+10-06-05 20:40 anli           Note Edited: 0006444                         
+10-07-05 11:16 anli           Note Edited: 0006443                         
+10-11-05 17:22 tiwai          Note Added: 0006455                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
