@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001450]: SPDIF out is limited with 48KHz
-Date: Tue, 11 Oct 2005 21:24:00 +0200
-Message-ID: <64af772a74c724be4c6ac764d958db32@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
+Date: Tue, 11 Oct 2005 21:30:35 +0200
+Message-ID: <a010b55986c095d6ea84a1b10eaa66aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F80218E
-	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2005 21:24:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2011F18E
+	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2005 21:30:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1450> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1451> 
 ======================================================================
 Reported By:                anli
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1450
+Issue ID:                   1451
 Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
@@ -39,61 +39,44 @@ Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             09-24-2005 15:33 CEST
-Last Modified:              10-11-2005 21:23 CEST
+Date Submitted:             09-24-2005 15:46 CEST
+Last Modified:              10-11-2005 21:30 CEST
 ======================================================================
-Summary:                    SPDIF out is limited with 48KHz
+Summary:                    SPDF and Line out simultaneously
 Description: 
-Last the driver version which worked perfectly (i.e. with 96KHz SPDIF out
-sample rate) is 1.04. And I was able to use SPDIF out with JACK at
-96KHz/32bit mode _without_ any problems.
+I tried to get the answer from user and dev lists to this question: how to
+configure the driver to make SPDF and Line-out work simultaneously. I was
+not lucky to get an answer. I have concluded, it's impossible. So -
+reporting the bug.
 
-Now SPDIF out is limited with 48KHz srate. Long time ago developers
-argumented 48KHz limit as it is SPDIF standard. On the other hand all
-(semi)pro DACs suuport 96KHz. This is true for all ice1724 cards too.
-Moreover, we are in the open source world at last :-)
-
-Please, revert this limit back. I'm ready to test the driver from CVS
-tree.
-
-Andrew
-
+It is almost impossible to do any serious mastering/editing work without
+such opportunity.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-11-05 17:22 
+ tiwai - 10-11-05 17:24 
 ----------------------------------------------------------------------
-Ah sorry, I misunerdstood the topic about ice1712.
-Could you try the attached patch?
+As another thought: it's possible by sharing the same buffer for different
+DMAs.  But it may not work reliablly enough...
 
 ----------------------------------------------------------------------
- anli - 10-11-05 21:23 
+ anli - 10-11-05 21:30 
 ----------------------------------------------------------------------
 Takashi,
 
-I have applayed the patch, and - it is incredible! - 96KHz works: I have
-loopbacked SPDIF out to SPDIF input, started JACK and jaaa, and now I am
-observing at jaaa screen an accuracy of this SPDIF loopback :-)
-
-Big-big thanks!
+I'll try to recognize how to do it via multi and route plugins. It will
+take some time to learn and try.
 
 Andrew
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 15:33 anli           New Issue                                    
-10-05-05 19:07 tiwai          Note Added: 0006441                          
-10-06-05 16:36 anli           Note Added: 0006443                          
-10-06-05 16:40 anli           Note Added: 0006444                          
-10-06-05 17:14 anli           Note Edited: 0006443                         
+09-24-05 15:46 anli           New Issue                                    
+10-05-05 19:01 tiwai          Note Added: 0006438                          
 10-06-05 17:25 anli           Issue Monitored: anli                        
-10-06-05 20:40 anli           Note Edited: 0006444                         
-10-07-05 11:16 anli           Note Edited: 0006443                         
-10-11-05 17:22 tiwai          Note Added: 0006455                          
-10-11-05 17:23 tiwai          File Added: ice1724-spdif-rate-fix.diff           
-        
-10-11-05 21:23 anli           Note Added: 0006459                          
+10-11-05 17:24 tiwai          Note Added: 0006456                          
+10-11-05 21:30 anli           Note Added: 0006460                          
 ======================================================================
 
 
