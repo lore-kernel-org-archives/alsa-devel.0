@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
-Date: Tue, 11 Oct 2005 21:30:35 +0200
-Message-ID: <a010b55986c095d6ea84a1b10eaa66aa@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Kacy Macdonald" <Clotildealsa-devel@alsa-project.org>
+Subject: not making enough money?
+Date: Tue, 11 Oct 2005 22:08:25 +0200 (MEST)
+Message-ID: <FLD55-D40J466RE3BI95OP21H6358O99V4@gxl.isv>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2011F18E
-	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2005 21:30:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +15,38 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Tue, 11 Oct 2005 16:08:24 -0500
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1451> 
-======================================================================
-Reported By:                anli
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1451
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             09-24-2005 15:46 CEST
-Last Modified:              10-11-2005 21:30 CEST
-======================================================================
-Summary:                    SPDF and Line out simultaneously
-Description: 
-I tried to get the answer from user and dev lists to this question: how to
-configure the driver to make SPDF and Line-out work simultaneously. I was
-not lucky to get an answer. I have concluded, it's impossible. So -
-reporting the bug.
+A Genuine College Degree in 2 Weeks!
 
-It is almost impossible to do any serious mastering/editing work without
-such opportunity.
-======================================================================
+Have you ever thought that the only thing stopping you from a
+a great job and better pay was a few letters behind your name?
 
-----------------------------------------------------------------------
- tiwai - 10-11-05 17:24 
-----------------------------------------------------------------------
-As another thought: it's possible by sharing the same buffer for different
-DMAs.  But it may not work reliablly enough...
+Well now you can get them!
 
-----------------------------------------------------------------------
- anli - 10-11-05 21:30 
-----------------------------------------------------------------------
-Takashi,
+BA BSc MA MSc MBA PHD
 
-I'll try to recognize how to do it via multi and route plugins. It will
-take some time to learn and try.
+Within 2 weeks!
+No Study Required!
+100% Verifiable
 
-Andrew
+These are real, genuine degrees that include Bachelors, Masters 
+and Doctorate degrees. They are verifiable and student records and
+transcripts are also available. This little known secret has been
+kept quiet for years. The opportunity exists due to a legal loophole
+allowing some established colleges to award degrees at their discretion.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-05 15:46 anli           New Issue                                    
-10-05-05 19:01 tiwai          Note Added: 0006438                          
-10-06-05 17:25 anli           Issue Monitored: anli                        
-10-11-05 17:24 tiwai          Note Added: 0006456                          
-10-11-05 21:30 anli           Note Added: 0006460                          
-======================================================================
+With all of the attention that this news has been generating, I wouldn't 
+be surprised to see this loophole closed very soon.
 
+Order yours today!
+You'll thank me later...
 
+Call 1-206-350-7390 Now For More Information
+
+With Love
 
 
 -------------------------------------------------------
