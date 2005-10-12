@@ -1,11 +1,15 @@
-From: Jack Thomasson <jkt@Helius.COM>
-Subject: bugtrack offline?
-Date: Wed, 12 Oct 2005 07:10:42 -0600
-Message-ID: <dij20i$aj3$1@sea.gmane.org>
+From: Andrew Gaydenko <a@gaydenko.com>
+Subject: Re: bugtrack offline?
+Date: Wed, 12 Oct 2005 17:40:03 +0400
+Message-ID: <200510121740.03384@goldspace.net>
+References: <dij20i$aj3$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <dij20i$aj3$1@sea.gmane.org>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,6 +22,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I have the problem too (last traceroute strings are shown below). Sometimes (verys seldom)
+I can access the host via my provider proxy, but never - via local own squid. I have reported
+the problem to inway.net and have not got any answer yet.
+
+Andrew
+__________________________
+...
+20  212.24.132.158 (212.24.132.158)  101.933 ms  98.092 ms  99.579 ms
+21  budejovice.inway.net (213.151.70.198)  115.436 ms  130.363 ms  116.341 ms
+22  budejovice.inway.net (213.151.70.198)  623.096 ms !H  3106.950 ms !H  3104.940 ms !H
+
+
+======= On Wednesday 12 October 2005 17:10, Jack Thomasson wrote: =======
 for the last week i have been unable to reach bugtrack.alsa-project.org from
 home or office.  here is a traceroute excerpt:
 
@@ -49,6 +66,17 @@ ms
 thanks in advance,
 
 :{)}
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by:
+Power Architecture Resource Center: Free content, downloads, discussions,
+and more. http://solutions.newsforge.com/ibmarch.tmpl
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 
