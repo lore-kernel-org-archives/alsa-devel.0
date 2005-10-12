@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Wed, 12 Oct 2005 18:50:30 +0200
-Message-ID: <4d165a3b7647b946b770323a0ca39fdd@bugtrack.alsa-project.org>
+Date: Wed, 12 Oct 2005 18:55:20 +0200
+Message-ID: <7861f57a3a070d0ea8ab1f4b34fa2041@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99A4515D
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 18:50:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB362EB
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 18:55:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC2
 Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
 Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              10-12-2005 18:50 CEST
+Last Modified:              10-12-2005 18:55 CEST
 ======================================================================
 Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
 9652 to be invalid
@@ -75,18 +75,17 @@ either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-12-05 18:20 
-----------------------------------------------------------------------
-hdspmixer is no normal mixer.  It's a veeery special one.
-Run alsamixer or whatever.
-
-----------------------------------------------------------------------
  Mark Knecht - 10-12-05 18:50 
 ----------------------------------------------------------------------
 But alsmixer doesn't talk to the hdsp9652 which is the card in question
 here. I think I'm getting lost. Maybe the patch you are now discussing is
 for other sound cards and not the one I originally filed this bug request
 for?
+
+----------------------------------------------------------------------
+ tiwai - 10-12-05 18:55 
+----------------------------------------------------------------------
+Did you really start alsamixer?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +111,7 @@ Date Modified  Username       Field                    Change
 10-12-05 18:17 Mark Knecht    Note Added: 0006468                          
 10-12-05 18:20 tiwai          Note Added: 0006469                          
 10-12-05 18:50 Mark Knecht    Note Added: 0006470                          
+10-12-05 18:55 tiwai          Note Added: 0006471                          
 ======================================================================
 
 
