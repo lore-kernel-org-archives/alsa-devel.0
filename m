@@ -1,14 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Wed, 12 Oct 2005 14:17:59 +0200
-Message-ID: <48a1804fb9586db385c7af2f9f1cc70e@bugtrack.alsa-project.org>
+From: Thomas Hood <jdthood@yahoo.co.uk>
+Subject: 1.0.10rc2 alsa-driver build errors under gcc 4.0.2
+Date: Wed, 12 Oct 2005 15:11:26 +0200
+Message-ID: <434D0B7E.705@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24857172
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 14:18:00 +0200 (MEST)
+Received: from mailservice.tudelft.nl (mailservice.tudelft.nl [130.161.131.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31295178
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 15:11:26 +0200 (MEST)
+Received: from localhost (localhost [127.0.0.1])
+	by rav.antivirus (Postfix) with ESMTP id 9C620800D0
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 15:11:24 +0200 (CEST)
+Received: from aglu.demon.nl (x104.decis.nl [130.161.177.104])
+	by mx4.tudelft.nl (Postfix) with ESMTP id 0063A8003A
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 15:11:23 +0200 (CEST)
+Received: from [127.0.0.1] (localhost.localdomain [127.0.0.1])
+	by aglu.demon.nl (Postfix) with ESMTP id 24A143FE96
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 15:11:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,97 +30,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+FYI
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
-======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   818
-Category:                   PCI - RME HDSP
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-======================================================================
-Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              10-12-2005 14:17 CEST
-======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
-Description: 
-In my setup I's using 3 computers:
-
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
-
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
-
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC #2
-
-So the signal flow looks like:
-
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
-
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-05-05 18:50 
-----------------------------------------------------------------------
-... because no one tried the patch!
-
-I can't include it without confirmation that it works.
-
-----------------------------------------------------------------------
- tiwai - 10-12-05 14:17 
-----------------------------------------------------------------------
-Grrr, apparently I'm wrong.  It's already in the latest tree :)
-
-You just need to turn on "Sample Clock Source Locking" switch on a normal
-mixer app.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-02-01-05 21:35 charbonnel     Note Added: 0003466                          
-02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
-02-01-05 22:03 rlrevell       Note Added: 0003471                          
-02-01-05 22:07 charbonnel     Status                   assigned => resolved
-02-01-05 22:07 charbonnel     Resolution               open => not an issue
-02-01-05 22:07 charbonnel     Note Added: 0003472                          
-02-01-05 22:12 Mark Knecht    Status                   resolved => feedback
-02-01-05 22:12 Mark Knecht    Resolution               not an issue => reopened
-02-01-05 22:12 Mark Knecht    Note Added: 0003474                          
-02-02-05 10:20 tiwai          Note Added: 0003477                          
-09-19-05 09:58 jdthood        Note Added: 0006277                          
-09-29-05 00:30 Mark Knecht    Note Added: 0006411                          
-10-05-05 18:50 tiwai          Note Added: 0006436                          
-10-12-05 14:17 tiwai          Note Added: 0006466                          
-======================================================================
-
+$ grep -C5 rror alsa-driver_1.0.9+1.0.10rc2-1~1_i386.build
+make[2]: Entering directory `/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-driver-1.0.9+1.0.10rc2/debian/alsa-source/usr/src/modules/alsa-driver/acore'
+Makefile:6: /home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-driver-1.0.9+1.0.10rc2/debian/alsa-source/usr/src/modules/alsa-driver/Makefile.conf: No such file or directory
+/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-driver-1.0.9+1.0.10rc2/debian/alsa-source/usr/src/modules/alsa-driver/Rules.make:75: /Rules.make1: No such file or directory
+make[2]: *** No rule to make target `/Rules.make1'.  Stop.
+make[2]: Leaving directory `/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-driver-1.0.9+1.0.10rc2/debian/alsa-source/usr/src/modules/alsa-driver/acore'
+make[1]: *** [clean] Error 1
+make[1]: Leaving directory `/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-driver-1.0.9+1.0.10rc2/debian/alsa-source/usr/src/modules/alsa-driver'
+make: [build-source] Error 2 (ignored)
+chown -R root:src debian/alsa-source/usr/src
+# alsa-source/debian/*
+install -m755 debian/alsa-source.rules debian/alsa-source/usr/src/modules/alsa-driver/debian/rules
+install -m644 debian/alsa-source.control debian/alsa-source/usr/src/modules/alsa-driver/debian/control
+install -m644 debian/copyright debian/alsa-source/usr/src/modules/alsa-driver/debian/copyright
 
 
 
