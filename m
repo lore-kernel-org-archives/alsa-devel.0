@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Wed, 12 Oct 2005 13:49:45 +0200
-Message-ID: <c0a442aca38ce0a91267789361674114@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001472]: Constant distortion noise on digital mixer
+Date: Wed, 12 Oct 2005 13:50:58 +0200
+Message-ID: <f79895690a30b974fd48f7c5c0604469@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4016116B
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 13:49:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97F1F16B
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 13:50:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,142 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1472> 
 ======================================================================
-Reported By:                Jean-Louis Crouzet
-Assigned To:                tiwai
+Reported By:                Atraides
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   875
-Category:                   PCI - nm256
+Issue ID:                   1472
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             # uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+Status:                     new
+Distribution:               Suse
+Kernel Version:             2.6.11.4-21.9
 ======================================================================
-Date Submitted:             02-01-2005 16:17 CET
-Last Modified:              10-12-2005 13:49 CEST
+Date Submitted:             10-12-2005 02:02 CEST
+Last Modified:              10-12-2005 13:50 CEST
 ======================================================================
-Summary:                    Can't get nm256 up & running
+Summary:                    Constant distortion noise on digital mixer
 Description: 
-I trying since ages to get this nm256 up & running with ALSA, w/o any
-sucess.
-
-PC Omnibook 900 (not a 900B)
-
-# uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-
-
-#lspci  -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-04.0  Texas Instruments PCI1225
-      +-04.1  Texas Instruments PCI1225
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
-	
-# modinfo snd_nm256
-filename:      
-/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
-author:         Takashi Iwai <tiwai@suse.de>
-description:    NeoMagic NM256AV/ZX
-license:        GPL
-vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
-depends:        snd-pcm,snd,snd-ac97-codec
-alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
-parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
-parm:           use_cache:Enable the cache for coefficient table access.
-parm:           buffer_top:Set the top address of audio buffer for
-NeoMagic 256AV/ZX soundcard.
-parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
-soundcard.
-parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
-soundcard.
-parm:           playback_bufsize:DAC frame size in kB for NeoMagic
-256AV/ZX soundcard.
-parm:           enable:Enable this soundcard.
-parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
-parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
-
-# alsaconf
-Unloading sound driver modules...done.
-Building card database..
-
-
-Running update-modules...
-Loading driver...
-FATAL: Error running install command for snd_nm256
-Setting default volumes...
-Saving the mixer setup used for this in /var/lib/alsa/asound.state.
-/usr/sbin/alsactl: save_state:1061: No soundcards found...
-
-===============================================================================
-
- Now ALSA is ready to use.
- For adjustment of volumes, use your favorite mixer.
-
- Have a lot of fun!
-
-
-???????????????????????????,,
+The hardware in question is a Terratec DMX 6Fire 24/96. I have a constant
+crackling (like an old UKW radio between to stations) on the digital
+mixer. The noise disappears for a few seconds if I switch the Phono Input,
+the Breakout LED or Line In Selector. It changes the noise character when
+switching the S/PDIF Input from coaxial to optical. Even if all ins and
+outs are muted or tracked down its still there (I can see it in the
+Monitor Mixer).
 ======================================================================
 
 ----------------------------------------------------------------------
- Jean-Louis Crouzet - 10-11-05 19:51 
+ tiwai - 10-12-05 13:50 
 ----------------------------------------------------------------------
-Hi Tiwai,
-
-this is impressive! I have no time to check it now, I'll try later. Any
-chance that those patch will be implemented in any new release or is it
-specific to me ?
-
-Have a nice day,
-JL
-
-----------------------------------------------------------------------
- tiwai - 10-12-05 13:49 
-----------------------------------------------------------------------
-It'll be merged to the ALSA public tree only if it's confirmed to work.
-Remember that the patch is really untested.  It might freeze your system
-;)
+Any chance to try the newer version of ALSA?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
-02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-02-02-05 11:18 tiwai          Note Added: 0003483                          
-02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
-02-02-05 12:46 tiwai          Note Added: 0003486                          
-02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
-02-09-05 12:09 tiwai          Note Added: 0003547                          
-02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
-02-14-05 19:46 tiwai          Note Added: 0003605                          
-02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
-02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
-03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
-03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
-03-16-05 12:27 tiwai          Note Added: 0003940                          
-03-16-05 14:53 Jean-Louis CrouzetNote Added: 0003960                          
-09-22-05 15:07 jdthood        Note Added: 0006343                          
-09-22-05 15:43 Jean-Louis CrouzetNote Added: 0006352                          
-10-05-05 19:12 tiwai          Note Added: 0006442                          
-10-11-05 19:24 tiwai          Note Added: 0006457                          
-10-11-05 19:25 tiwai          File Added: cs4232-pnpbios.diff                   
-
-10-11-05 19:51 Jean-Louis CrouzetNote Added: 0006458                          
-10-12-05 13:49 tiwai          Note Added: 0006464                          
+10-12-05 02:02 Atraides       New Issue                                    
+10-12-05 02:02 Atraides       Distribution              => Suse            
+10-12-05 02:02 Atraides       Kernel Version            => 2.6.11.4-21.9   
+10-12-05 13:50 tiwai          Note Added: 0006465                          
 ======================================================================
 
 
