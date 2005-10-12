@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Wed, 12 Oct 2005 18:55:20 +0200
-Message-ID: <7861f57a3a070d0ea8ab1f4b34fa2041@bugtrack.alsa-project.org>
+Date: Wed, 12 Oct 2005 19:03:19 +0200
+Message-ID: <95088ebf92396a32ed6883abea9b5e70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB362EB
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 18:55:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21C1615E
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 19:03:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC2
 Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
 Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              10-12-2005 18:55 CEST
+Last Modified:              10-12-2005 19:03 CEST
 ======================================================================
 Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
 9652 to be invalid
@@ -75,17 +75,24 @@ either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- Mark Knecht - 10-12-05 18:50 
-----------------------------------------------------------------------
-But alsmixer doesn't talk to the hdsp9652 which is the card in question
-here. I think I'm getting lost. Maybe the patch you are now discussing is
-for other sound cards and not the one I originally filed this bug request
-for?
-
-----------------------------------------------------------------------
  tiwai - 10-12-05 18:55 
 ----------------------------------------------------------------------
 Did you really start alsamixer?
+
+----------------------------------------------------------------------
+ Mark Knecht - 10-12-05 19:03 
+----------------------------------------------------------------------
+Yes, I started alsamixer. It talks to sound card 0:
+
+mark@lightning ~ $ cat /proc/asound/cards
+0 [CK804          ]: NFORCE - NVidia CK804
+                     NVidia CK804 with ALC850 at 0xda103000, irq 225
+1 [DSP            ]: H-DSP - Hammerfall DSP
+                     RME Hammerfall HDSP 9652 at 0xda000000, irq 58
+mark@lightning ~ $
+
+How do I tell alsamixer, when it's talking to the NVidia chip to lock the
+frequency on the hdsp 9652?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +119,7 @@ Date Modified  Username       Field                    Change
 10-12-05 18:20 tiwai          Note Added: 0006469                          
 10-12-05 18:50 Mark Knecht    Note Added: 0006470                          
 10-12-05 18:55 tiwai          Note Added: 0006471                          
+10-12-05 19:03 Mark Knecht    Note Added: 0006472                          
 ======================================================================
 
 
