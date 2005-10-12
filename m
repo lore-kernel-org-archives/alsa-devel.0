@@ -1,19 +1,14 @@
-From: Josh Hefner <jdhefner@hefnerlabs.com>
-Subject: Re: SOUNDCARD DONATION OFFER: 10 SBlive (EMU10K1)
-	Cards for Core Developers
-Date: Wed, 12 Oct 2005 14:17:37 -0400
-Message-ID: <1129141057.28092.27.camel@elnino.hefnerlabs.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000057]: Kernel device in bad state after suspend/resume
+Date: Wed, 12 Oct 2005 21:02:51 +0200
+Message-ID: <90fe000f8d9ebe20ad92b66eed53d4e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from rwcrmhc11.comcast.net (rwcrmhc11.comcast.net [204.127.198.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBE74165
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 20:17:58 +0200 (MEST)
-Received: from [192.168.1.205] ([192.168.1.205])
-	(authenticated bits=0)
-	by elnino.hefnerlabs.com (8.13.1/8.13.1) with ESMTP id j9CIHcpv016265
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 14:17:38 -0400
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD4B0169
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 21:02:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,14 +21,67 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For folks concerned about import taxes on these cards - I am going to
-acquire these cards for 10USD or less each. and will note their value at
-not more than 10USD(8.32EUR, 5.71GBP, 11.70CAD, 13.26AUD, 14.35NZD, etc)
-on any customs forms. 
 
-Im thinking it might cost me more to get these cards to you than to
-actually get them in my hands. But helping the OSS community is worth it
-- so im gonna do it anyway.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=57> 
+======================================================================
+Reported By:                daenzer
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   57
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-13-2004 01:55 CET
+Last Modified:              10-12-2005 21:02 CEST
+======================================================================
+Summary:                    Kernel device in bad state after suspend/resume
+Description: 
+If a process has the kernel device open during a suspend/resume cycle,
+playing sound fails afterwards with
+
+pcm_write:1084: write error: File descriptor in bad state
+
+until the process dies, then it works again.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001442 snapper: no sound after resume
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 10-05-05 18:40 
+----------------------------------------------------------------------
+Does touching mixer volumes change anything (instead of reloading)?
+
+----------------------------------------------------------------------
+ Johannes Berg - 10-12-05 21:02 
+----------------------------------------------------------------------
+tiwai, no it did not, all was silent. However, the code in 2.6.14 fixes the
+problem entirely for me.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-04 01:55 daenzer        New Issue                                    
+02-26-04 19:30 daenzer        Note Added: 0000363                          
+02-26-04 19:39 tiwai          Note Added: 0000364                          
+02-26-04 22:47 daenzer        Note Added: 0000374                          
+05-14-04 15:12 tiwai          Note Added: 0001111                          
+09-29-05 20:55 jdthood        Relationship added       has duplicate 0001442
+09-29-05 23:52 Johannes Berg  Issue Monitored: Johannes Berg                    
+09-29-05 23:59 Johannes Berg  Note Added: 0006427                          
+10-05-05 18:40 tiwai          Note Added: 0006432                          
+10-12-05 21:02 Johannes Berg  Note Added: 0006474                          
+======================================================================
+
 
 
 
