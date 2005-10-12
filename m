@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Wed, 12 Oct 2005 18:17:57 +0200
-Message-ID: <6a9777de88e7f0661e742bb4129eef6a@bugtrack.alsa-project.org>
+Date: Wed, 12 Oct 2005 18:20:40 +0200
+Message-ID: <3a28f551a5147a56f38f4493cb9ce478@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0E6A14D
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 18:17:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE9F814D
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 18:20:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC2
 Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
 Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              10-12-2005 18:17 CEST
+Last Modified:              10-12-2005 18:20 CEST
 ======================================================================
 Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
 9652 to be invalid
@@ -75,14 +75,6 @@ either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-12-05 14:17 
-----------------------------------------------------------------------
-Grrr, apparently I'm wrong.  It's already in the latest tree :)
-
-You just need to turn on "Sample Clock Source Locking" switch on a normal
-mixer app.
-
-----------------------------------------------------------------------
  Mark Knecht - 10-12-05 18:17 
 ----------------------------------------------------------------------
 "You just need to turn on "Sample Clock Source Locking" switch on a normal
@@ -90,6 +82,12 @@ mixer app."
 
 I'm not sure if the hdspmixer qualifies as a 'normal mixing app' but I
 cannot find a switch to turn this on. Please advise.
+
+----------------------------------------------------------------------
+ tiwai - 10-12-05 18:20 
+----------------------------------------------------------------------
+hdspmixer is no normal mixer.  It's a veeery special one.
+Run alsamixer or whatever.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +111,7 @@ Date Modified  Username       Field                    Change
 10-05-05 18:50 tiwai          Note Added: 0006436                          
 10-12-05 14:17 tiwai          Note Added: 0006466                          
 10-12-05 18:17 Mark Knecht    Note Added: 0006468                          
+10-12-05 18:20 tiwai          Note Added: 0006469                          
 ======================================================================
 
 
