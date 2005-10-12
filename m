@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001450]: SPDIF out is limited with 48KHz
-Date: Wed, 12 Oct 2005 12:39:06 +0200
-Message-ID: <3280dfdd594494d5f0f5a037667a0a71@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001473]: mic and line-in with very low volume
+Date: Wed, 12 Oct 2005 13:48:02 +0200
+Message-ID: <4b460acdf630b701722667407bea17c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFB8B197
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 12:39:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6FF4216B
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2005 13:48:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1450> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1473> 
 ======================================================================
-Reported By:                anli
-Assigned To:                tiwai
+Reported By:                oka
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1450
-Category:                   PCI - ice1724
+Issue ID:                   1473
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             09-24-2005 15:33 CEST
-Last Modified:              10-12-2005 12:39 CEST
+Date Submitted:             10-12-2005 09:21 CEST
+Last Modified:              10-12-2005 13:48 CEST
 ======================================================================
-Summary:                    SPDIF out is limited with 48KHz
+Summary:                    mic and line-in with very low volume
 Description: 
-Last the driver version which worked perfectly (i.e. with 96KHz SPDIF out
-sample rate) is 1.04. And I was able to use SPDIF out with JACK at
-96KHz/32bit mode _without_ any problems.
+Same issue like bug #1232 and #1346 but with Codec Analog Devices AD1986.
 
-Now SPDIF out is limited with 48KHz srate. Long time ago developers
-argumented 48KHz limit as it is SPDIF standard. On the other hand all
-(semi)pro DACs suuport 96KHz. This is true for all ice1724 cards too.
-Moreover, we are in the open source world at last :-)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346
 
-Please, revert this limit back. I'm ready to test the driver from CVS
-tree.
+Line-in and mic record only with very low volume. I have only rear jacks
+and don't know how they are connected to the board (locked case :-( 
+I've tried Alsa 1.0.9 and 1.0.10-rc1 with no success.
 
-Andrew
 
 ======================================================================
 
 ----------------------------------------------------------------------
- anli - 10-11-05 21:23 
+ tiwai - 10-12-05 13:48 
 ----------------------------------------------------------------------
-Takashi,
-
-I have applayed the patch, and - it is incredible! - 96KHz works: I have
-loopbacked SPDIF out to SPDIF input, started JACK and jaaa, and now I am
-observing at jaaa screen an accuracy of this SPDIF loopback :-)
-
-Big-big thanks!
-
-Andrew
-
-----------------------------------------------------------------------
- tiwai - 10-12-05 12:39 
-----------------------------------------------------------------------
-Thanks for confirmation.  It's on CVS now.
+Do you mean "record" as the captured volume (e.g. via arecord), or the
+playback volume as a loopback from line-in or mic?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 15:33 anli           New Issue                                    
-10-05-05 19:07 tiwai          Note Added: 0006441                          
-10-06-05 16:36 anli           Note Added: 0006443                          
-10-06-05 16:40 anli           Note Added: 0006444                          
-10-06-05 17:14 anli           Note Edited: 0006443                         
-10-06-05 17:25 anli           Issue Monitored: anli                        
-10-06-05 20:40 anli           Note Edited: 0006444                         
-10-07-05 11:16 anli           Note Edited: 0006443                         
-10-11-05 17:22 tiwai          Note Added: 0006455                          
-10-11-05 17:23 tiwai          File Added: ice1724-spdif-rate-fix.diff           
-        
-10-11-05 21:23 anli           Note Added: 0006459                          
-10-12-05 12:39 tiwai          Status                   new => resolved     
-10-12-05 12:39 tiwai          Resolution               open => fixed       
-10-12-05 12:39 tiwai          Assigned To               => tiwai           
-10-12-05 12:39 tiwai          Note Added: 0006462                          
+10-12-05 09:21 oka            New Issue                                    
+10-12-05 09:21 oka            File Added: asound.state                     
+10-12-05 09:21 oka            Distribution              => Gentoo          
+10-12-05 09:21 oka            Kernel Version            => 2.6.13          
+10-12-05 13:48 tiwai          Note Added: 0006463                          
 ======================================================================
 
 
