@@ -1,10 +1,12 @@
-From: "zhouc" <zhouc@mails.tsinghua.edu.cn>
-Subject: How to compile c programs with ALSA API
-Date: Thu, 13 Oct 2005 22:47:47 +0800
-Message-ID: <329214867.00900@mails.tsinghua.edu.cn>
-Reply-To: "zhouc" <zhouc@mails.tsinghua.edu.cn>
-Content-Type: text/plain
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: How to compile c programs with ALSA API
+Date: Thu, 13 Oct 2005 17:23:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0510131721580.18256@denise.shiny.it>
+References: <329214867.00900@mails.tsinghua.edu.cn>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <329214867.00900@mails.tsinghua.edu.cn>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,18 +16,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: zhouc <zhouc@mails.tsinghua.edu.cn>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-besides including :
-#include <alsa/asoundlib.h>
-do i have to give other compile options when compile the program?
-for example if i have soundplay.c using ALSA API
-how can I compile it ?
-or just 
-gcc soundplay.c -o soundplay?
 
 
+On Thu, 13 Oct 2005, zhouc wrote:
+
+> how can I compile it ?
+
+cc -lasound soundplay.c -o soundplay
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
