@@ -1,17 +1,18 @@
-From: "Areli Kulesza" <kule@gdt1.com>
-Subject: Re: Vladimir Hester Mleds
-Date: Thu, 13 Oct 2005 11:35:00 -0500
-Message-ID: <001d01c5d014$0dd65200$6920a8c0@wintry>
+From: Jesper Juhl <jesper.juhl@gmail.com>
+Subject: [PATCH 13/14] Big kfree NULL check cleanup - sound
+Date: Thu, 13 Oct 2005 21:30:43 +0200
+Message-ID: <200510132130.43423.jesper.juhl__38935.3405488238$1129232220$gmane$org@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001A_01C5CFEA.25004A00"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gdt1.com (dsl-201-128-22-39.prod-infinitum.com.mx [201.128.22.39])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5A5B61AC
-	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2005 18:34:44 +0200 (MEST)
-Received: from wintry (192.168.32.105)
-	by gdt1.com (Omnipotent ie 4.93) with SMTP id YfqxPL-xYCeDR-Lk
-	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2005 11:35:05 -0500
+Received: from xproxy.gmail.com (xproxy.gmail.com [66.249.82.199])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F28516D
+	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2005 21:27:54 +0200 (MEST)
+Received: by xproxy.gmail.com with SMTP id h26so296121wxd
+        for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2005 12:27:53 -0700 (PDT)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,63 +22,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lawanda Mark <alsa-devel@alsa-project.org>
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Andrew Morton <akpm@osdl.org>, Kyle McMartin <kyle@parisc-linux.org>, Thibaut Varene <varenet@parisc-linux.org>, perex@suse.cz, alsa-devel@alsa-project.org, Jesper Juhl <jesper.juhl@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+This is the sound/ part of the big kfree cleanup patch.
 
-------=_NextPart_000_001A_01C5CFEA.25004A00
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Remove pointless checks for NULL prior to calling kfree() in sound/.
 
-Hello,
-CxElebrex
-Cnlalis   $99,95
-Vxlagra $69,95
-PnRopecia
-XnAnax
-LxEvitra
-MnEridia
-VxAlium $85,45
-AnMbien
-UnLtram
-PnRozac
-More info
-Best Regards.
 
-------=_NextPart_000_001A_01C5CFEA.25004A00
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Sorry about the long Cc: list, but I wanted to make sure I included everyone
+who's code I've changed with this patch.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D3>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3>CxElebrex</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3><STRONG>Cnlalis&nbsp;&nbsp; $99,95</STR=
-ONG></FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>&nbsp;</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3><STRONG>Vxlagra $69,95</STRONG></FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>PnRopecia</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>XnAnax</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>LxEvitra</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>MnEridia</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3><STRONG>VxAlium $85,45</STRONG></FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>AnMbien</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>UnLtram</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>PnRozac</FONT></DIV>
-<DIV><DIV><P><FONT face=3DArial><A href=3D"http://necessaryacc.specleplor.=
-com">More info</A></FONT></P></DIV></DIV>
-<DIV><FONT face=3DArial size=3D3>Best Regards.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_001A_01C5CFEA.25004A00--
+Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+---
+
+Please see the initial announcement mail on LKML with subject
+"[PATCH 00/14] Big kfree NULL check cleanup"
+for additional details.
+
+ sound/pci/ad1889.c        |    3 +--
+ sound/pci/rme9652/hdspm.c |    3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+--- linux-2.6.14-rc4-orig/sound/pci/rme9652/hdspm.c	2005-10-11 22:41:41.000000000 +0200
++++ linux-2.6.14-rc4/sound/pci/rme9652/hdspm.c	2005-10-13 11:49:26.000000000 +0200
+@@ -3563,8 +3563,7 @@ static int snd_hdspm_free(hdspm_t * hdsp
+ 		free_irq(hdspm->irq, (void *) hdspm);
+ 
+ 
+-	if (hdspm->mixer)
+-		kfree(hdspm->mixer);
++	kfree(hdspm->mixer);
+ 
+ 	if (hdspm->iobase)
+ 		iounmap(hdspm->iobase);
+--- linux-2.6.14-rc4-orig/sound/pci/ad1889.c	2005-10-11 22:41:36.000000000 +0200
++++ linux-2.6.14-rc4/sound/pci/ad1889.c	2005-10-13 11:49:33.000000000 +0200
+@@ -982,8 +982,7 @@ snd_ad1889_create(snd_card_t *card,
+ 	return 0;
+ 
+ free_and_ret:
+-	if (chip)
+-		kfree(chip);
++	kfree(chip);
+ 	pci_disable_device(pci);
+ 
+ 	return err;
+
+
 
 
 
