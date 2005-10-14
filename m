@@ -1,13 +1,14 @@
 From: Szekeres =?iso-8859-2?Q?Istv=E1n?= <szekeres@iii.hu>
 Subject: Re: USB headset problem
-Date: Fri, 14 Oct 2005 22:21:53 +0200
-Message-ID: <20051014202153.GA1428@pulsussoft.hu>
-References: <20051014091716.GA30524@pulsussoft.hu> <Pine.HPX.4.33n.0510141250040.23443-100000@studcom.urz.uni-halle.de>
+Date: Sat, 15 Oct 2005 00:05:39 +0200
+Message-ID: <20051014220539.GA1818@pulsussoft.hu>
+References: <20051014091716.GA30524@pulsussoft.hu> <Pine.HPX.4.33n.0510141250040.23443-100000@studcom.urz.uni-halle.de> <20051014202153.GA1428@pulsussoft.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0510141250040.23443-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <20051014202153.GA1428@pulsussoft.hu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,22 +21,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > Now I'm a bit confused. Do I have a problem at all? :)
-> 
-> No.
+On Fri, Oct 14, 2005 at 10:21:53PM +0200, Szekeres Istv=E1n wrote:
+> Indeed. The microphone is really working. Now the only problem is that =
+I
+> tried it under skype (that's why I bought the headset), and under skype=
+ it
+> is not working at all (strace revealed that skype is writing 0s to the =
+sound
+> device) - so I'm afraid this problem is out of the scope of this mailin=
+g
+> list.
 
-Indeed. The microphone is really working. Now the only problem is that I
-tried it under skype (that's why I bought the headset), and under skype it
-is not working at all (strace revealed that skype is writing 0s to the sound
-device) - so I'm afraid this problem is out of the scope of this mailing
-list.
+Ok, after some experimenting the results are the following:
 
-Other applications (e.g. gnomemeeting) are working correctly - both for
-playback and recording through the microphone.
+- Using latest git version of the kernel -> skype is not working
+- Using 2.6.12.5 -> skype is working
+- Other apps are working in both versions.
 
-Thanks for the help anyways. At least now I know that the problem is not in
-the headset.
+How can I investigate why does not skype working in case of the git versi=
+on?
 
+Thanks,
 Szekeres Istvan
 
 
