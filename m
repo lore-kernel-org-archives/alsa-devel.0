@@ -1,11 +1,11 @@
-From: Martin Habets <errandir_news@mph.eclipse.co.uk>
-Subject: lib-plugins 1.0.10rc2 ?
-Date: Fri, 14 Oct 2005 11:59:26 +0100
-Message-ID: <20051014105926.GA28620@palantir8>
+From: jmal8295 <jmal8295@artax.karlin.mff.cuni.cz>
+Subject: via82xx.c, snd_via8233_dxs_volume_put change
+Date: Fri, 14 Oct 2005 13:00:20 +0200 (CEST)
+Message-ID: <Pine.LNX.4.62.0510141244070.17656@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: MULTIPART/MIXED; BOUNDARY="1908636959-1216080335-1129286717=:17656"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Content-ID: <Pine.LNX.4.62.0510141245340.17656@artax.karlin.mff.cuni.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,19 +15,182 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-The alsa homepage lists lib-plugins version 1.0.10rc2, but I cannot
-see it in the ftp directory.
+--1908636959-1216080335-1129286717=:17656
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; FORMAT=flowed
+Content-ID: <Pine.LNX.4.62.0510141245341.17656@artax.karlin.mff.cuni.cz>
 
-Can your fix this, please?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Thanks,
-Martin
+I noticed in 2.6.12 is only global PCM volume control, while in 2.6.11
+I could use four labeled "VIA DXS Playback Volume", one for each sound,
+AND global PCM volume.
+I checked in source and in snd_via8233_dxs_volume_put all four controls are
+set to same value.
+I mailed with Takashi Iwai <tiwai@suse.de> about that and he tell me some 
+codecs have no global PCM so he created one this way.
+
+I have no such codec so I don't like that decision. In proposed patch,
+I copyed some code from 2.6.11 to 2.6.12 so it should work both way:
+On card with global PCM, DXS is normally usable. On card without, DXS is 
+used to PCM emulation.
+Also, experimentally, if you remove one else (by #define), you can have 
+usable DXS and global PCM working as override. It look confusing, so
+I don't think this should be default behavior, but leaving it this way (or 
+maybee with better comment) don't harm anybody.
+
+Patched driver work for me, but I have only one variant of codec. Can 
+someone with another variant of codec, mainly with the "no global PCM" 
+one, test it ? I assume if all test goes well, it could be added to 
+kernel.
+ 	Honza
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFDT4/ItYQjN8jZGdQRAligAJ0WBUWi3hLH9jN/Gqsau7HueBDE+QCfUKDf
+Syw/mojA5StCQEhEWWJNa/c=
+=M8Bo
+-----END PGP SIGNATURE-----
+
+--1908636959-1216080335-1129286717=:17656
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME=via82xxDXS.patch
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.62.0510141245170.17656@artax.karlin.mff.cuni.cz>
+Content-Description: Proposed patch
+Content-Disposition: ATTACHMENT; FILENAME=via82xxDXS.patch
+
+ZGlmZiAtTmF1ciBsaW51eC0yLjYuMTIvc291bmQvcGNpL3ZpYTgyeHguYyBs
+aW51eC0yLjYuMTItcG9rL3NvdW5kL3BjaS92aWE4Mnh4LmMNCi0tLSBsaW51
+eC0yLjYuMTIvc291bmQvcGNpL3ZpYTgyeHguYwkyMDA1LTA4LTE0IDE0OjE4
+OjI3LjAwMDAwMDAwMCArMDIwMA0KKysrIGxpbnV4LTIuNi4xMi1wb2svc291
+bmQvcGNpL3ZpYTgyeHguYwkyMDA1LTEwLTEzIDIwOjEwOjU1LjAwMDAwMDAw
+MCArMDIwMA0KQEAgLTM2Nyw3ICszNjcsOCBAQA0KIAl1bnNpZ25lZCBpbnQg
+bXB1X3BvcnRfc2F2ZWQ7DQogI2VuZGlmDQogDQotCXVuc2lnbmVkIGNoYXIg
+cGxheWJhY2tfdm9sdW1lWzJdOyAvKiBmb3IgVklBODIzMy9DLzgyMzU7IGRl
+ZmF1bHQgPSAwICovDQorCXVuc2lnbmVkIGNoYXIgcGxheWJhY2tfdm9sdW1l
+WzRdWzJdOyAvKiBmb3IgVklBODIzMy9DLzgyMzU7IGRlZmF1bHQgPSAwICov
+DQorCXVuc2lnbmVkIGNoYXIgcGxheWJhY2tfdm9sdW1lX2NbMl07IC8qIGZv
+ciBWSUE4MjMzL0MvODIzNTsgZGVmYXVsdCA9IDAgKi8NCiANCiAJdW5zaWdu
+ZWQgaW50IGludHJfbWFzazsgLyogU0dEX1NIQURPVyBtYXNrIHRvIGNoZWNr
+IGludGVycnVwdHMgKi8NCiANCkBAIC05NDEsOCArOTQyLDggQEANCiAJc25k
+X2Fzc2VydCgocmJpdHMgJiB+MHhmZmZmZikgPT0gMCwgcmV0dXJuIC1FSU5W
+QUwpOw0KIAlzbmRfdmlhODJ4eF9jaGFubmVsX3Jlc2V0KGNoaXAsIHZpYWRl
+dik7DQogCXNuZF92aWE4Mnh4X3NldF90YWJsZV9wdHIoY2hpcCwgdmlhZGV2
+KTsNCi0Jb3V0YihjaGlwLT5wbGF5YmFja192b2x1bWVbMF0sIFZJQURFVl9S
+RUcodmlhZGV2LCBPRlNfUExBWUJBQ0tfVk9MVU1FX0wpKTsNCi0Jb3V0Yihj
+aGlwLT5wbGF5YmFja192b2x1bWVbMV0sIFZJQURFVl9SRUcodmlhZGV2LCBP
+RlNfUExBWUJBQ0tfVk9MVU1FX1IpKTsNCisJb3V0YihjaGlwLT5wbGF5YmFj
+a192b2x1bWVbdmlhZGV2LT5yZWdfb2Zmc2V0IC8gMHgxMF1bMF0sIFZJQURF
+Vl9SRUcodmlhZGV2LCBPRlNfUExBWUJBQ0tfVk9MVU1FX0wpKTsNCisJb3V0
+YihjaGlwLT5wbGF5YmFja192b2x1bWVbdmlhZGV2LT5yZWdfb2Zmc2V0IC8g
+MHgxMF1bMV0sIFZJQURFVl9SRUcodmlhZGV2LCBPRlNfUExBWUJBQ0tfVk9M
+VU1FX1IpKTsNCiAJb3V0bCgocnVudGltZS0+Zm9ybWF0ID09IFNORFJWX1BD
+TV9GT1JNQVRfUzE2X0xFID8gVklBODIzM19SRUdfVFlQRV8xNkJJVCA6IDAp
+IHwgLyogZm9ybWF0ICovDQogCSAgICAgKHJ1bnRpbWUtPmNoYW5uZWxzID4g
+MSA/IFZJQTgyMzNfUkVHX1RZUEVfU1RFUkVPIDogMCkgfCAvKiBzdGVyZW8g
+Ki8NCiAJICAgICByYml0cyB8IC8qIHJhdGUgKi8NCkBAIC0xNDk2LDE0ICsx
+NDk3LDQ2IEBADQogc3RhdGljIGludCBzbmRfdmlhODIzM19keHNfdm9sdW1l
+X2dldChzbmRfa2NvbnRyb2xfdCAqa2NvbnRyb2wsIHNuZF9jdGxfZWxlbV92
+YWx1ZV90ICp1Y29udHJvbCkNCiB7DQogCXZpYTgyeHhfdCAqY2hpcCA9IHNu
+ZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsNCi0JdWNvbnRyb2wtPnZhbHVl
+LmludGVnZXIudmFsdWVbMF0gPSBWSUFfRFhTX01BWF9WT0xVTUUgLSBjaGlw
+LT5wbGF5YmFja192b2x1bWVbMF07DQotCXVjb250cm9sLT52YWx1ZS5pbnRl
+Z2VyLnZhbHVlWzFdID0gVklBX0RYU19NQVhfVk9MVU1FIC0gY2hpcC0+cGxh
+eWJhY2tfdm9sdW1lWzFdOw0KKwl1bnNpZ25lZCBpbnQgaWR4ID0gc25kX2N0
+bF9nZXRfaW9mZihrY29udHJvbCwgJnVjb250cm9sLT5pZCk7DQorDQorCXVj
+b250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdID0gVklBX0RYU19NQVhf
+Vk9MVU1FIC0gY2hpcC0+cGxheWJhY2tfdm9sdW1lW2lkeF1bMF07DQorCXVj
+b250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzFdID0gVklBX0RYU19NQVhf
+Vk9MVU1FIC0gY2hpcC0+cGxheWJhY2tfdm9sdW1lW2lkeF1bMV07DQorCXJl
+dHVybiAwOw0KK30NCisNCitzdGF0aWMgaW50IHNuZF92aWE4MjMzX3BjbWR4
+c192b2x1bWVfZ2V0KHNuZF9rY29udHJvbF90ICprY29udHJvbCwgc25kX2N0
+bF9lbGVtX3ZhbHVlX3QgKnVjb250cm9sKQ0KK3sNCisJdmlhODJ4eF90ICpj
+aGlwID0gc25kX2tjb250cm9sX2NoaXAoa2NvbnRyb2wpOw0KKwl1Y29udHJv
+bC0+dmFsdWUuaW50ZWdlci52YWx1ZVswXSA9IFZJQV9EWFNfTUFYX1ZPTFVN
+RSAtIGNoaXAtPnBsYXliYWNrX3ZvbHVtZV9jWzBdOw0KKwl1Y29udHJvbC0+
+dmFsdWUuaW50ZWdlci52YWx1ZVsxXSA9IFZJQV9EWFNfTUFYX1ZPTFVNRSAt
+IGNoaXAtPnBsYXliYWNrX3ZvbHVtZV9jWzFdOw0KIAlyZXR1cm4gMDsNCiB9
+DQogDQogc3RhdGljIGludCBzbmRfdmlhODIzM19keHNfdm9sdW1lX3B1dChz
+bmRfa2NvbnRyb2xfdCAqa2NvbnRyb2wsIHNuZF9jdGxfZWxlbV92YWx1ZV90
+ICp1Y29udHJvbCkNCiB7DQogCXZpYTgyeHhfdCAqY2hpcCA9IHNuZF9rY29u
+dHJvbF9jaGlwKGtjb250cm9sKTsNCisJdW5zaWduZWQgaW50IGlkeCA9IHNu
+ZF9jdGxfZ2V0X2lvZmYoa2NvbnRyb2wsICZ1Y29udHJvbC0+aWQpOw0KKwl1
+bnNpZ25lZCBsb25nIHBvcnQgPSBjaGlwLT5wb3J0ICsgMHgxMCAqIGlkeDsN
+CisJdW5zaWduZWQgY2hhciB2YWw7DQorCWludCBpLCBjaGFuZ2UgPSAwOw0K
+Kw0KKwlmb3IgKGkgPSAwOyBpIDwgMjsgaSsrKSB7DQorCQl2YWwgPSB1Y29u
+dHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVtpXTsNCisJCWlmICh2YWwgPiBW
+SUFfRFhTX01BWF9WT0xVTUUpDQorCQkJdmFsID0gVklBX0RYU19NQVhfVk9M
+VU1FOw0KKwkJdmFsID0gVklBX0RYU19NQVhfVk9MVU1FIC0gdmFsOw0KKwkJ
+Y2hhbmdlIHw9IHZhbCAhPSBjaGlwLT5wbGF5YmFja192b2x1bWVbaWR4XVtp
+XTsNCisJCWlmIChjaGFuZ2UpIHsNCisJCQljaGlwLT5wbGF5YmFja192b2x1
+bWVbaWR4XVtpXSA9IHZhbDsNCisJCQlvdXRiKHZhbCwgcG9ydCArIFZJQV9S
+RUdfT0ZTX1BMQVlCQUNLX1ZPTFVNRV9MICsgaSk7DQorCQl9DQorCX0NCisJ
+cmV0dXJuIGNoYW5nZTsNCit9DQorDQorc3RhdGljIGludCBzbmRfdmlhODIz
+M19wY21keHNfdm9sdW1lX3B1dChzbmRfa2NvbnRyb2xfdCAqa2NvbnRyb2ws
+IHNuZF9jdGxfZWxlbV92YWx1ZV90ICp1Y29udHJvbCkNCit7DQorCXZpYTgy
+eHhfdCAqY2hpcCA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsNCiAJ
+dW5zaWduZWQgaW50IGlkeDsNCiAJdW5zaWduZWQgY2hhciB2YWw7DQogCWlu
+dCBpLCBjaGFuZ2UgPSAwOw0KQEAgLTE1MTMsMTEgKzE1NDYsMTIgQEANCiAJ
+CWlmICh2YWwgPiBWSUFfRFhTX01BWF9WT0xVTUUpDQogCQkJdmFsID0gVklB
+X0RYU19NQVhfVk9MVU1FOw0KIAkJdmFsID0gVklBX0RYU19NQVhfVk9MVU1F
+IC0gdmFsOw0KLQkJaWYgKHZhbCAhPSBjaGlwLT5wbGF5YmFja192b2x1bWVb
+aV0pIHsNCisJCWlmICh2YWwgIT0gY2hpcC0+cGxheWJhY2tfdm9sdW1lX2Nb
+aV0pIHsNCiAJCQljaGFuZ2UgPSAxOw0KLQkJCWNoaXAtPnBsYXliYWNrX3Zv
+bHVtZVtpXSA9IHZhbDsNCisJCQljaGlwLT5wbGF5YmFja192b2x1bWVfY1tp
+XSA9IHZhbDsNCiAJCQlmb3IgKGlkeCA9IDA7IGlkeCA8IDQ7IGlkeCsrKSB7
+DQogCQkJCXVuc2lnbmVkIGxvbmcgcG9ydCA9IGNoaXAtPnBvcnQgKyAweDEw
+ICogaWR4Ow0KKwkJCQljaGlwLT5wbGF5YmFja192b2x1bWVbaWR4XVtpXSA9
+IHZhbDsNCiAJCQkJb3V0Yih2YWwsIHBvcnQgKyBWSUFfUkVHX09GU19QTEFZ
+QkFDS19WT0xVTUVfTCArIGkpOw0KIAkJCX0NCiAJCX0NCkBAIC0xNTI1LDEw
+ICsxNTU5LDE5IEBADQogCXJldHVybiBjaGFuZ2U7DQogfQ0KIA0KLXN0YXRp
+YyBzbmRfa2NvbnRyb2xfbmV3X3Qgc25kX3ZpYTgyMzNfZHhzX3ZvbHVtZV9j
+b250cm9sIF9fZGV2aW5pdGRhdGEgPSB7DQorc3RhdGljIHNuZF9rY29udHJv
+bF9uZXdfdCBzbmRfdmlhODIzM19wY21keHNfdm9sdW1lX2NvbnRyb2wgX19k
+ZXZpbml0ZGF0YSA9IHsNCiAJLm5hbWUgPSAiUENNIFBsYXliYWNrIFZvbHVt
+ZSIsDQogCS5pZmFjZSA9IFNORFJWX0NUTF9FTEVNX0lGQUNFX01JWEVSLA0K
+IAkuaW5mbyA9IHNuZF92aWE4MjMzX2R4c192b2x1bWVfaW5mbywNCisJLmdl
+dCA9IHNuZF92aWE4MjMzX3BjbWR4c192b2x1bWVfZ2V0LA0KKwkucHV0ID0g
+c25kX3ZpYTgyMzNfcGNtZHhzX3ZvbHVtZV9wdXQsDQorfTsNCisNCitzdGF0
+aWMgc25kX2tjb250cm9sX25ld190IHNuZF92aWE4MjMzX2R4c192b2x1bWVf
+Y29udHJvbCBfX2RldmluaXRkYXRhID0gew0KKwkubmFtZSA9ICJWSUEgRFhT
+IFBsYXliYWNrIFZvbHVtZSIsDQorCS5pZmFjZSA9IFNORFJWX0NUTF9FTEVN
+X0lGQUNFX01JWEVSLA0KKwkuY291bnQgPSA0LA0KKwkuaW5mbyA9IHNuZF92
+aWE4MjMzX2R4c192b2x1bWVfaW5mbywNCiAJLmdldCA9IHNuZF92aWE4MjMz
+X2R4c192b2x1bWVfZ2V0LA0KIAkucHV0ID0gc25kX3ZpYTgyMzNfZHhzX3Zv
+bHVtZV9wdXQsDQogfTsNCkBAIC0xNzIzLDEyICsxNzY2LDIxIEBADQogCQlz
+dHJjcHkoc2lkLm5hbWUsICJQQ00gUGxheWJhY2sgVm9sdW1lIik7DQogCQlz
+aWQuaWZhY2UgPSBTTkRSVl9DVExfRUxFTV9JRkFDRV9NSVhFUjsNCiAJCWlm
+ICghIHNuZF9jdGxfZmluZF9pZChjaGlwLT5jYXJkLCAmc2lkKSkgew0KKwkJ
+CXByaW50ayhLRVJOX1dBUk5JTkcgIldhcm5pbmc6IFVzaW5nIERYUyBhcyBQ
+Q00gUGxheWJhY2tcbiIpOw0KKwkJCWVyciA9IHNuZF9jdGxfYWRkKGNoaXAt
+PmNhcmQsIHNuZF9jdGxfbmV3MSgmc25kX3ZpYTgyMzNfcGNtZHhzX3ZvbHVt
+ZV9jb250cm9sLCBjaGlwKSk7DQorCQkJaWYgKGVyciA8IDApDQorCQkJCXJl
+dHVybiBlcnI7DQorCQl9DQorI2lmbmRlZiBFWFBFUklNRU5UQUxMWV9VU0Vf
+RFhTX0JPVEhfQVNfUENNX0FORF9EWFMNCisJCWVsc2UNCisjZW5kaWYNCisJ
+CXsNCisJCQkvKiBTdGFuZGFsb25lIERYUyAqLw0KIAkJCWVyciA9IHNuZF9j
+dGxfYWRkKGNoaXAtPmNhcmQsIHNuZF9jdGxfbmV3MSgmc25kX3ZpYTgyMzNf
+ZHhzX3ZvbHVtZV9jb250cm9sLCBjaGlwKSk7DQogCQkJaWYgKGVyciA8IDAp
+DQogCQkJCXJldHVybiBlcnI7DQogCQl9DQogCX0NCi0NCiAJLyogc2VsZWN0
+IHNwZGlmIGRhdGEgc2xvdCAxMC8xMSAqLw0KIAlwY2lfcmVhZF9jb25maWdf
+Ynl0ZShjaGlwLT5wY2ksIFZJQTgyMzNfU1BESUZfQ1RSTCwgJnZhbCk7DQog
+CXZhbCA9ICh2YWwgJiB+VklBODIzM19TUERJRl9TTE9UX01BU0spIHwgVklB
+ODIzM19TUERJRl9TTE9UXzEwMTE7DQpAQCAtMTkzOSw3ICsxOTkxLDcgQEAN
+CiAJCWZvciAoaWR4ID0gMDsgaWR4IDwgNDsgaWR4KyspIHsNCiAJCQl1bnNp
+Z25lZCBsb25nIHBvcnQgPSBjaGlwLT5wb3J0ICsgMHgxMCAqIGlkeDsNCiAJ
+CQlmb3IgKGkgPSAwOyBpIDwgMjsgaSsrKQ0KLQkJCQlvdXRiKGNoaXAtPnBs
+YXliYWNrX3ZvbHVtZVtpXSwgcG9ydCArIFZJQV9SRUdfT0ZTX1BMQVlCQUNL
+X1ZPTFVNRV9MICsgaSk7DQorCQkJCW91dGIoY2hpcC0+cGxheWJhY2tfdm9s
+dW1lW2lkeF1baV09Y2hpcC0+cGxheWJhY2tfdm9sdW1lX2NbaV0sIHBvcnQg
+KyBWSUFfUkVHX09GU19QTEFZQkFDS19WT0xVTUVfTCArIGkpOw0KIAkJfQ0K
+IAl9DQogDQo=
+
+--1908636959-1216080335-1129286717=:17656--
 
 
 -------------------------------------------------------
