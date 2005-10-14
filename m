@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001475]: Support for M Audio Audiophile 192
-Date: Fri, 14 Oct 2005 13:41:58 +0200
-Message-ID: <d92ab654dfdcd0e8310fb62724ba5639@bugtrack.alsa-project.org>
+Date: Fri, 14 Oct 2005 13:56:38 +0200
+Message-ID: <4cd44068e272a79eead6a49b4dcaa70d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D339B16C
-	for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2005 13:41:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5BE1176
+	for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2005 13:56:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.*
 ======================================================================
 Date Submitted:             10-14-2005 13:41 CEST
-Last Modified:              10-14-2005 13:41 CEST
+Last Modified:              10-14-2005 13:56 CEST
 ======================================================================
 Summary:                    Support for M Audio Audiophile 192
 Description: 
@@ -49,12 +49,26 @@ looks to me like it's based on the ICE1724 chipset. I'd settle for simple
 CD playback for starters. ;-)
 ======================================================================
 
+----------------------------------------------------------------------
+ Dazed - 10-14-05 13:56 
+----------------------------------------------------------------------
+I'm no coder, but if there's anything I might do to help, I'm willing to
+try. Images of the card might be helpful, right? I'm in Norway, so lending
+a developer my card might prove difficult, but someone else might be
+willing.
+
+OSS claims to support the card (there's even a link from the M Audio
+site), even though I haven't had much luck with it myself, and with that
+being open source and all, the OSS code might perhaps give some ponters?
+...But what do I know?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-14-05 13:41 Dazed          New Issue                                    
 10-14-05 13:41 Dazed          Distribution              => FC3             
 10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
+10-14-05 13:56 Dazed          Note Added: 0006480                          
 ======================================================================
 
 
