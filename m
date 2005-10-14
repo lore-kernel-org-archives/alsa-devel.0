@@ -1,14 +1,13 @@
 From: Szekeres =?iso-8859-2?Q?Istv=E1n?= <szekeres@iii.hu>
 Subject: Re: USB headset problem
-Date: Fri, 14 Oct 2005 11:17:16 +0200
-Message-ID: <20051014091716.GA30524@pulsussoft.hu>
-References: <20051014054335.GA29438@pulsussoft.hu> <Pine.HPX.4.33n.0510141004300.13918-100000@studcom.urz.uni-halle.de>
+Date: Fri, 14 Oct 2005 11:22:10 +0200
+Message-ID: <20051014092210.GA30614@pulsussoft.hu>
+References: <20051014054335.GA29438@pulsussoft.hu> <20051014080026.GA27930@palantir8>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0510141004300.13918-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <20051014080026.GA27930@palantir8>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,44 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Fri, Oct 14, 2005 at 10:07:30AM +0200, Clemens Ladisch wrote:
-> Szekeres Istv=E1n wrote:
-> > I've just bought a "Gembird EHS-USB" headset (this is with a micropho=
-ne).
-> > Audio playback is OK, but recording is not. Applications do not find =
-the
-> > "capture channel".
->=20
-> Does something show up in the output of "arecord -l"?
+> > I've just bought a "Gembird EHS-USB" headset (this is with a microphone).
+> > Audio playback is OK, but recording is not. Applications do not find the
+> > "capture channel". E.g. alsamixer shows only the PCM channel, but when I try
+> > to switch to "capture view", it quits with:
+> 
+> In the dmesg output I could not see snd-usb-audio being loaded. Could you
+> check with lsmod if that module gets loaded, and modprobe it if it is not
+> loaded. Also, check if there is acapture device in /proc/asound/devices
+> for this "card".
 
-card 1: default [USB Audio CODEC ], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+the module is loaded and the playback is fine. Only recording is a problem..
 
->=20
-> > E.g. alsamixer shows only the PCM channel, but when I try to
-> > switch to "capture view", it quits with:
-> >
-> > alsamixer: function snd_mixer_find_selem() failed: Invalid argument
->=20
-> Your device does not have any capture mixer elements.
->=20
-> Old versions of alsamixer had a bug that would cause it to crash like
-> above in this case.
+/proc/asound/devices:
 
-This is AlsaMixer v1.0.9a.
+ 48: [1- 0]: digital audio playback
+ 56: [1- 0]: digital audio capture
+ 32: [1- 0]: ctl
 
-Now I'm a bit confused. Do I have a problem at all? :)
-If arecord seems to find it, but there is no mixer
-for it, does this mean that the microphone is visible for alsa but no
-recording level can be set for it?=20
-Afternoon at home I have to experiment with it a little more..
+> Could you post the output of "amixer"?
+
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 128
+  Front Left: Playback 128 [100%] [on]
+  Front Right: Playback 128 [100%] [on]
 
 Thanks,
 Szekeres Istvan
