@@ -1,9 +1,10 @@
-From: "zhouc" <zhouc@mails.tsinghua.edu.cn>
-Subject: problem of setting sample rate
-Date: Fri, 14 Oct 2005 17:31:25 +0800
-Message-ID: <329282285.26254@mails.tsinghua.edu.cn>
-Reply-To: "zhouc" <zhouc@mails.tsinghua.edu.cn>
+From: "Ward Bell" <wardbellqs@roedlusa.com>
+Subject: Stockmarket Smallcap Profile
+Date: Fri, 14 Oct 2005 21:22:29 +0000
+Message-ID: <OOLHAHFLLDIGOIJCEJCOBEGPDMAB.wardbellqs@roedlusa.com>
+Mime-Version: 1.0
 Content-Type: text/plain
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -14,109 +15,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-announce@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am new to ALSA, and I got a sample code, try to learn form it:
-but when I set the sampling rate to 8000, I got an error:
-alsaplayback: pcm_params.c:146: snd_pcm_hw_param_get_min: Assertion
-`!snd_interval_empty(i)' failed.
-when I set the value to 16000, it works well
-so what is the matter here??
-thanx!!
-
-the code is listed below:
-#define ALSA_PCM_NEW_HW_PARAMS_API
-#include <alsa/asoundlib.h>
-int main() {
-  long loops;
-  int rc;
-  int size;
-  snd_pcm_t *handle;
-  snd_pcm_hw_params_t *params;
-  unsigned int val;
-  int dir;
-  snd_pcm_uframes_t frames;
-  char *buffer;
-  /* Open PCM device for playback. */
-  rc = snd_pcm_open(&handle, "default",
-                    SND_PCM_STREAM_PLAYBACK, 0);
-  if (rc < 0) {
-    fprintf(stderr,
-            "unable to open pcm device: %s\n",
-            snd_strerror(rc));
-    exit(1);
-  }
-  /* Allocate a hardware parameters object. */
-  snd_pcm_hw_params_alloca(&params);
-  /* Fill it in with default values. */
-  snd_pcm_hw_params_any(handle, params);
-  /* Set the desired hardware parameters. */
-  /* Interleaved mode */
-  snd_pcm_hw_params_set_access(handle, params,
-                      SND_PCM_ACCESS_RW_INTERLEAVED);
-  /* Signed 16-bit little-endian format */
-  snd_pcm_hw_params_set_format(handle, params,
-                              SND_PCM_FORMAT_S16_LE);
-  /* Two channels (stereo) */
-  snd_pcm_hw_params_set_channels(handle, params, 2);
-  /* 44100 bits/second sampling rate (CD quality) */
-  val = 8000;
-  snd_pcm_hw_params_set_rate_near(handle, params,
-                                  &val, &dir);
-  /* Set period size to 32 frames. */
-  frames = 64;
-  snd_pcm_hw_params_set_period_size_near(handle,
-                              params, &frames, &dir);
-  /* Write the parameters to the driver */
-  rc = snd_pcm_hw_params(handle, params);
-  if (rc < 0) {
-    fprintf(stderr,
-            "unable to set hw parameters: %s\n",
-            snd_strerror(rc));
-    exit(1);
-  }
-  /* Use a buffer large enough to hold one period */
-  snd_pcm_hw_params_get_period_size(params, &frames,
-                                    &dir);
-  size = frames * 4; /* 2 bytes/sample, 2 channels */
-  buffer = (char *) malloc(size);
-  /* We want to loop for 5 seconds */
-  snd_pcm_hw_params_get_period_time(params,
-                                    &val, &dir);
-  /* 5 seconds in microseconds divided by
-   * period time */
-  loops = 5000000 / val;
-  while (loops > 0) {
-    loops--;
-    rc = read(0, buffer, size);
-    if (rc == 0) {
-      fprintf(stderr, "end of file on input\n");
-      break;
-    } else if (rc != size) {
-      fprintf(stderr,
-              "short read: read %d bytes\n", rc);
-    }
-    rc = snd_pcm_writei(handle, buffer, frames);
-    if (rc == -EPIPE) {
-      /* EPIPE means underrun */
-      fprintf(stderr, "underrun occurred\n");
-      snd_pcm_prepare(handle);
-    } else if (rc < 0) {
-      fprintf(stderr,
-              "error from writei: %s\n",
-              snd_strerror(rc));
-    }  else if (rc != (int)frames) {
-      fprintf(stderr,
-              "short write, write %d frames\n", rc);
-    }
-  }
-  snd_pcm_drain(handle);
-  snd_pcm_close(handle);
-  free(buffer);
-  return 0;
-}
-
+SGlnaGVyIEdyb3VuZCBFcXVpdGllcyBPY3RvYmVyIElzc3VlDQoNCk1ha2Ug
+bm8gbWlzdGFrZTogT3VyIG1pc3Npb24gYXQgSGlnaGVyDQpHcm91bmQgRXF1
+aXRpZXMgaXMgdG8gc2lmdCB0aHJvdWdoIHRoZQ0KdGhvdXNhbmRzIG9mIHVu
+ZGVycGVyZm9ybWluZyBjb21wYW5pZXMgb3V0DQp0aGVyZSB0byBmaW5kIHRo
+ZSBnb2xkZW4gbmVlZGxlIGluIHRoZQ0KaGF5c3RhY2suICBUaGUgbWljcjAt
+Y2FwIERJQU1PTkQgdGhhdCBjYW4NCmJyaW5nIHRoZSBoaWdoIHJldHVybnMg
+eW91IGFyZSBsb29raW5nIGZvci4NCg0KTW9yZSBvZnRlbiB0aGFuIG5vdCwg
+dGhlIHN0MGNrcyB3ZSBwcm9maWxlDQpzaG93IGEgc2lnbmlmaWNhbnQgaW5j
+cmVhc2UgaW4gc3QwY2sgcHJpY2UsDQpzb21ldGltZXMgaW4gZGF5cywgbm90
+IG1vbnRocyBvciB5ZWFycy4gIFdlDQpoYXZlIGNvbWUgYWNyb3NzIHdoYXQg
+d2UgZmVlbCBpcyBvbmUgb2YNCnRob3NlIHJhcmUgZGVhbHMgdGhhdCB0aGUg
+cHVibGljIGhhcyBub3QNCmhlYXJkIGFib3V0IHlldC4gIFJlYWQgb24gdG8g
+ZmluZCBvdXQgbW9yZS4NCg0KDQpUb2RheSdzIEZlYXR1cmU6DQorKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNClNwYXJy
+b3d0ZWNoLCBJbmMuDQoNClN5bWJvbDogU1BNQyAuIFBLDQpDdXJyZW50IFBy
+aWNlOiAgICAgIAkgICAgJDAuMDcNClNob3J0IFRlcm0gVGFyZ2V0IFByaWNl
+OiAgICAkMC4xNg0KMTIgbW9udGggVGFyZ2V0IFByaWNlOiAgICAgICQwLjI1
+DQoNClRoZSBtYWpvciBQUiBjYW1wYWlnbiBoYXMgYmVndW4gaG93IHdpbGwg
+dGhpcw0KU3QwY2sgcmVhY3QgdG8gaW52ZXN0b3JzIGluIHRoZSBrbm93Pw0K
+DQorKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysNCg0KKioqQWJvdXQgdGhlIENvbXBhbnkqKioNCg0KDQpzeW6VZXKVZ3kg
+KG4pDQoNCjEuIFRoZSBpbnRlcmFjdGlvbiBvZiB0d28gb3IgbW9yZSBhZ2Vu
+dHMgb3INCmZvcmNlcyBzbyB0aGF0IHRoZWlyIGNvbWJpbmVkIGVmZmVjdCBp
+cw0KZ3JlYXRlciB0aGFuIHRoZSBzdW0gb2YgdGhlaXIgaW5kaXZpZHVhbA0K
+ZWZmZWN0cy4NCg0KMi4gQ29vcGVyYXRpdmUgaW50ZXJhY3Rpb24gYW1vbmcg
+Z3JvdXBzLA0KZXNwZWNpYWxseSBhbW9uZyB0aGUgYWNxdWlyZWQgc3Vic2lk
+aWFyaWVzDQpvciBtZXJnZWQgcGFydHMgb2YgYSBjb3Jwb3JhdGlvbiwgdGhh
+dA0KY3JlYXRlcyBhbiBlbmhhbmNlZCBjb21iaW5lZCBlZmZlY3QuDQoNCg0K
+U3luZXJneSBpcyB3aGF0IFNwYXJyb3d0ZWNoIGlzIGFsbCBhYm91dC4NClNw
+YXJyb3d0ZWNoIChTUE1DKSBpcyBhIGNvbXBhbnkgZW5nYWdlZCBpbg0KdGhl
+IGN1cnJlbnRseSBleHBsb2RpbmcgaG9zcGl0YWxpdHkNCmluZHVzdHJ5LiAg
+VGhlIGNvbXBhbnkgaGFzIGRlc2lnbmVkIGEgc3RhdGUtDQpvZi10aGUtYXJ0
+IHByZW1pZXIgZ2xvYmFsIHNlcnZpY2luZyB2ZWhpY2xlDQp0aGF0IHdpbGwg
+b2ZmZXIgYSB1bmlxdWUgYW5kIHByb2dyZXNzaXZlDQphcHByb2FjaCB0byBp
+bmR1c3RyeSByZXByZXNlbnRhdGlvbiwgbmV0d29yaw0KZGV2ZWxvcG1lbnQs
+IGFuZCBwcm9kdWN0IGRpc3RyaWJ1dGlvbi4gVGhlDQpDb21wYW55J3MgbWFq
+b3IgZm9jdXMgaXMgb24gdGhlIG11bHRpLQ0KYmlsbGlvbiBkb2xsYXIgaG9z
+cGl0YWxpdHksIGZvb2Qgc2VydmljZSwNCmFuZCB0b3VyaXNtIGluZHVzdHJp
+ZXMsIHNwZWNpZmljYWxseQ0KYmVjb21pbmcgYSBsZWFkaW5nIGRlc3RpbmF0
+aW9uIGZvciBCMkIgZS0NCmNvbW1lcmNlIGFuZCBCMkMgcHJvZHVjdHMsIHNl
+cnZpY2VzLA0Kb3Bwb3J0dW5pdGllcywgYW5kIHBlcnNvbm5lbC4gVGhyb3Vn
+aCB0aGUNCmVmZmVjdGl2ZSB1c2Ugb2YgYWxsIG1lZGlhIG91dGxldHMsDQpp
+bmNsdWRpbmcgcHJpbnQsIHRlbGV2aXNpb24sIEludGVybmV0LCBhbmQNCnJh
+ZGlvLCBTcGFycm93dGVjaCB3aWxsIGNyZWF0ZSBhIHN0cm9uZw0KYnJhbmQg
+YXdhcmVuZXNzIHRoYXQgd2lsbCBhbGxvdyB0aGUgQ29tcGFueQ0KdG8gc3Vz
+dGFpbiByZXZlbnVlIGdyb3d0aCBmcm9tIGEgbXVsdGl0dWRlDQpvZiByZXZl
+bnVlIHNvdXJjZXMuDQoNCkJ5IGNyZWF0aW5nIGEgbXVsdGktbmV0d29ya2Vk
+LCBtdWx0aS0NCnBsYXRmb3JtIHNlcnZpY2luZyB2ZWhpY2xlIHdpdGggc2Vs
+Zg0KY29udGFpbmVkIG1hcmtldGluZyBhbmQgYWR2ZXJ0aXNpbmcNCmNhcGFi
+aWxpdGllcywgU3BhcnJvd3RlY2gncyBleHRlbnNpdmUgb25saW5lDQpwcmVz
+ZW5jZSB3aWxsIGF0dHJhY3QgYSBicm9hZCByYW5nZSBvZg0KcmV0YWlsIGFu
+ZCBjb21tZXJjaWFsIGRpc3RyaWJ1dG9ycyBhbmQNCnB1cmNoYXNlcnMuDQoN
+CkJ5IHByb21vdGluZyBhIGNvbW1vbiCTYnJhbmSUIGNvbnNjaW91c25lc3MN
+CmFtb25nc3QgYWxsIHBsYXRmb3JtcywgbWFya2V0IGluZmlsdHJhdGlvbg0K
+d2lsbCBvY2N1ciBtb3JlIHJlYWRpbHksIHRodXMgbWluaW1pemluZyB0aGUN
+CnN0YW5kYXJkIG1hcmtldCBwZW5ldHJhdGlvbiBwZXJpb2QuDQoNCg0KVGhp
+cyBjb21wYW55IGlzIHJlYWR5IHRvIGV4cGxvZGUuICBUaGV5IGFyZQ0KcGVy
+ZmVjdGx5IHBvc2l0aW9uZWQgaW4gYSBSZWQgSG90IGJ1c2luZXNzDQpzZWN0
+b3IuICBCaWcgbmV3cyBpcyBhZm9vdCB3aGljaCB3aWxsIHNlbmQNCnRoaXMg
+Y29tcGFueSBza3lyb2NrZXRpbmchDQoNCg0KUGxlYXNlIHdhdGNoIHRoaXMg
+b25lIHRyYWRlIGFsbCB3ZWVrIQ0KDQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXw0KDQpJbmZvcm1hdGlvbiB3aXRoaW4g
+dGhpcyBlbWFpbCBjb250YWlucw0KImZvcndhcmQgbG9va2luZyBzdGF0ZW1l
+bnRzIiB3aXRoaW4gdGhlDQptZWFuaW5nIG9mIFNlY3Rpb24gMjdBIG9mIHRo
+ZSBTZWN1cml0aWVzIA0KQWN0b2YgMTkzMyBhbmQgU2VjdGlvbiAyMUIgb2Yg
+dGhlIFNlY3VyaXRpZXMNCkV4Y2hhbmdlIEFjdCBvZiAxOTM0LiBBbnkgc3Rh
+dGVtZW50cyB0aGF0DQpleHByZXNzIG9yIGludm9sdmUgZGlzY3Vzc2lvbnMg
+d2l0aCByZXNwZWN0DQp0byBwcmVkaWN0aW9ucywgZ29hbHMsZXhwZWN0YXRp
+b25zLCBiZWxpZWZzLCANCnBsYW5zLCBwcm9qZWN0aW9ucyxvYmplY3RpdmVz
+LCBhc3N1bXB0aW9ucyBvciANCmZ1dHVyZSBldmVudHMgb3JwZXJmb3JtYW5j
+ZSBhcmUgbm90IHN0YXRlbWVudHMgDQpvZiBoaXN0b3JpY2FsIGZhY3QgYW5k
+IG1heSBiZSAiZjBydzRyZCBsMG9rMW5nIA0Kc3Q0dGVtZW50cy4iRjBydzRy
+ZCBsMDBrfG5nIHN0NHRlbWVudHMgYXJlIA0KYmFzZWQgb25leHBlY3RhdGlv
+bnMsIGVzdGltYXRlcyBhbmQgcHJvamVjdGlvbnMgDQphdCB0aGUgdGltZSB0
+aGUgc3RhdGVtZW50cyBhcmUgbWFkZSB0aGF0DQppbnZvbHZlIGEgbnVtYmVy
+IG9mIHJpc2tzIGFuZCB1bmNlcnRhaW50aWVzDQp3aGljaCBjb3VsZCBjYXVz
+ZSBhY3R1YWwgcmVzdWx0cyBvciBldmVudHMNCnRvIGRpZmZlciBtYXRlcmlh
+bGx5IGZyb20gdGhvc2UgcHJlc2VudGx5DQphbnRpY2lwYXRlZC4NCkYwcnc0
+cmQgbDAwa3xuZyBzdDR0ZW1lbnQgaW4gdGhpcyBhY3Rpb24NCm1heSBiZSBp
+ZGVudGlmaWVkIHRocm91Z2ggdGhlIHVzZSBvZiB3b3Jkcw0Kc3VjaCBhczog
+InByb2plY3RzIiwgImZvcmVzZWUiLCAiZXhwZWN0cyIsDQoiZXN0aW1hdGVz
+LCIgImJlbGlldmVzLCIgInVuZGVyc3RhbmRzIg0KIndpbGwsIiAicGFydCBv
+ZjogImFudGljaXBhdGVzLCIgb3IgdGhhdCBieQ0Kc3RhdGVtZW50cyBpbmRp
+Y2F0aW5nIGNlcnRhaW4gYWN0aW9ucyAibWF5LCINCiJjb3VsZCwiIG9yICJt
+aWdodCIgb2NjdXIuIEFsbCBpbmZvcm1hdGlvbg0KcHJvdmlkZWQgd2l0aGlu
+IHRoaXMgZW1haWwgcGVydGFpbmluZyB0bw0KaW52ZXN0aW5nLCBzdDBjLmtz
+LCBzZWN1cml0aWVzIG11c3QgYmUNCnVuZGVyc3Rvb2QgYXMgaW5mb3JtYXRp
+b24gcHJvdmlkZWQgYW5kIG5vdA0KaW52ZXN0bWVudCBhZHZpY2UuRW1lcmdp
+bmcgRXF1aXR5IEFsZXJ0IA0KYWR2aXNlcyBhbGwgcmVhZGVycyBhbmQgc3Vi
+c2NyaWJlcnMgdG8gc2VlayANCmFkdmljZSBmcm9tIGEgcmVnaXN0ZXJlZCBw
+cm9mZXNzaW9uYWwgDQpzZWN1cml0aWVzIHJlcHJlc2VudGF0aXZlIGJlZm9y
+ZSBkZWNpZGluZyANCnRvIHRyYWRlIGluIHN0b2Mua3MgZmVhdHVyZWQgd2l0
+aGluIHRoaXMgZW1haWwuDQpOb25lIG9mdGhlIG1hdGVyaWFsIHdpdGhpbiB0
+aGlzIHJlcG9ydCBzaGFsbCANCmJlIGNvbnN0cnVlZCBhcyBhbnkga2luZCBv
+ZiBpbnZlc3RtZW50IGFkdmljZS4NClBsZWFzZSBoYXZlIGluIG1pbmQgdGhh
+dCB0aGUgaW50ZXJwcmV0YXRpb24NCm9mIHRoZSB3cml0ZXIgb2YgdGhpcyBu
+ZXdzbGV0dGVyIGFib3V0IHRoZQ0KbmV3cyBwdWJsaXNoZWQgYnkgdGhlIGNv
+bXBhbnkgZG9lcyBub3QNCnJlcHJlc2VudCB0aGUgY29tcGFueSBvZmZpY2lh
+bCBzdGF0ZW1lbnQgYW5kDQppbiBmYWN0IG1heSBkaWZmZXIgZnJvbSB0aGUg
+cmVhbCBtZWFuaW5nIG9mDQp3aGF0IHRoZSBuZXdzIHJlbGVhc2UgbWVhbnQg
+dG8gc2F5LiAgTG9vayBhdA0KdGhlIG5ld3MgcmVsZWFzZSBieSB5b3Vyc2Vs
+ZiBhbmQganVkZ2UgYnkNCnlvdXJzZWxmIGFib3V0IHRoZSBkZXRhaWxzIGlu
+IGl0Lg==
 
 
 
