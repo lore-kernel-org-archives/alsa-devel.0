@@ -1,14 +1,17 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: Re: [ALSA - driver 0001450]: SPDIF out is limited with
- 48KHz
-Date: Fri, 14 Oct 2005 21:28:50 -0600
-Message-ID: <43507772.3080402@redfish-solutions.com>
-References: <b800b5591fd19711e4f78fe07b97d40f@bugtrack.alsa-project.org>	<200510112152.18159@goldspace.net> <s5hmzlfhxwo.wl%tiwai@suse.de>
+From: "Mandi Applebee" <mandiapple@lego.com>
+Subject: Damayanti Chenail Very special Offr
+Date: Sat, 15 Oct 2005 00:01:16 -0500
+Message-ID: <004201c5d145$78d37600$adb3a8c0@pigheaded>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_003F_01C5D11B.8FFD6E00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hmzlfhxwo.wl%tiwai@suse.de>
+Received: from lego.com (cm218-252-13-103.hkcable.com.hk [218.252.13.103])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 448C917C
+	for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2005 07:00:54 +0200 (MEST)
+Received: from pigheaded (192.168.179.173)
+	by lego.com (Positivism ti 3.1) with SMTP id ALcLfO-vGcfFx-rb
+	for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2005 00:01:19 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,127 +21,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Gaydenko <a@gaydenko.com>, alsa-devel@lists.sourceforge.net
+To: Alia Hunsinger <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+This is a multi-part message in MIME format.
 
->At Tue, 11 Oct 2005 21:52:18 +0400,
->Andrew Gaydenko wrote:
->  
->
->>Takashi,
->>
->>Unfortunately, routing problem still exists for (my host)-(bugtrack.alsa-project.org)
->>path. Is it possible to use the mailing list or my direct email (a@gaydenko.com) to
->>send the patch?
->>    
->>
->
->BTS host seems instable for the time being.
->
->Anyway, the patch is below, and I already committed it to CVS tree now
->:)
->
->
->Takashi
->
->Index: alsa-kernel/pci/ice1712/ice1724.c
->===================================================================
->RCS file: /home/iwai/cvs/alsa/alsa-kernel/pci/ice1712/ice1724.c,v
->retrieving revision 1.67
->diff -u -r1.67 ice1724.c
->--- alsa-kernel/pci/ice1712/ice1724.c	12 Sep 2005 10:27:50 -0000	1.67
->+++ alsa-kernel/pci/ice1712/ice1724.c	11 Oct 2005 15:18:42 -0000
->@@ -675,9 +675,12 @@
-> 				 SNDRV_PCM_INFO_MMAP_VALID |
-> 				 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_SYNC_START),
-> 	.formats =		SNDRV_PCM_FMTBIT_S32_LE,
->-	.rates =	        SNDRV_PCM_RATE_32000|SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
->+	.rates =	        (SNDRV_PCM_RATE_32000|SNDRV_PCM_RATE_44100|
->+				 SNDRV_PCM_RATE_48000|SNDRV_PCM_RATE_88200|
->+				 SNDRV_PCM_RATE_96000|SNDRV_PCM_RATE_176400|
->+				 SNDRV_PCM_RATE_192000),
-> 	.rate_min =		32000,
->-	.rate_max =		48000,
->+	.rate_max =		192000,
-> 	.channels_min =		2,
-> 	.channels_max =		2,
-> 	.buffer_bytes_max =	(1UL << 18),	/* 16bits dword */
->@@ -905,6 +908,10 @@
-> 	case 44100: break;
-> 	case 48000: nval |= 2 << 12; break;
-> 	case 32000: nval |= 3 << 12; break;
->+	case 88200: nval |= 4 << 12; break;
->+	case 96000: nval |= 5 << 12; break;
->+	case 192000: nval |= 6 << 12; break;
->+	case 176400: nval |= 7 << 12; break;
-> 	}
-> 	if (val != nval)
-> 		update_spdif_bits(ice, nval);
->@@ -1292,22 +1299,32 @@
-> 
-> static unsigned int encode_spdif_bits(snd_aes_iec958_t *diga)
-> {
->-	unsigned int val;
->+	unsigned int val, rbits;
-> 
-> 	val = diga->status[0] & 0x03; /* professional, non-audio */
-> 	if (val & 0x01) {
-> 		/* professional */
-> 		if ((diga->status[0] & IEC958_AES0_PRO_EMPHASIS) == IEC958_AES0_PRO_EMPHASIS_5015)
-> 			val |= 1U << 3;
->-		switch (diga->status[0] & IEC958_AES0_PRO_FS) {
->-		case IEC958_AES0_PRO_FS_44100:
->-			break;
->-		case IEC958_AES0_PRO_FS_32000:
->-			val |= 3U << 12;
->-			break;
->-		default:
->-			val |= 2U << 12;
->-			break;
->+		rbits = (diga->status[4] >> 3) & 0x0f;
->+		if (rbits) {
->+			switch (rbits) {
->+			case 2: val |= 5 << 12; break; /* 96k */
->+			case 3: val |= 6 << 12; break; /* 192k */
->+			case 10: val |= 4 << 12; break; /* 88.2k */
->+			case 11: val |= 7 << 12; break; /* 176.4k */
->+			}
->+		} else {
->+			switch (diga->status[0] & IEC958_AES0_PRO_FS) {
->+			case IEC958_AES0_PRO_FS_44100:
->+				break;
->+			case IEC958_AES0_PRO_FS_32000:
->+				val |= 3U << 12;
->+				break;
->+			default:
->+				val |= 2U << 12;
->+				break;
->+			}
-> 		}
-> 	} else {
-> 		/* consumer */
->
->  
->
+------=_NextPart_000_003F_01C5D11B.8FFD6E00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I don't suppose the patch is anyway applicable to the DRS capable
-VIA southbridges, is it?
+AMnbien
+CEnlebrex
+PRnozac
+ULntram
+LEnvitra
+XAxnax
+Vlnagra $70
+PRnopecia
+Clnalis   $99
+VAnlium $85
+MEnridia
+http://cruralouj.goatractivater.info
 
-Also... on a broader note...  SPDIF is an asynchronous transport, right?
+------=_NextPart_000_003F_01C5D11B.8FFD6E00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-The transmission rate is unrelated to the actual playback rate, since you
-can carry compressed PCM, DTS, DolbyD, etc. all over the same
-transport...
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D3></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D3>AMnbien</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>CEnlebrex</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>PRnozac</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>ULntram</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>LEnvitra</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>XAxnax</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3><STRONG>Vlnagra $70</STRONG></FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>PRnopecia</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3><STRONG>Clnalis&nbsp;&nbsp; $99</STRONG><=
+/FONT></DIV>
+<DIV><FONT face=3DArial size=3D3><STRONG>VAnlium $85</STRONG></FONT></DIV>
+<DIV><FONT face=3DArial size=3D3>MEnridia</FONT></DIV>
+<DIV><DIV><P><FONT face=3DArial><A href=3D"http://cruralouj.goatractivat=
+er.info">http://cruralouj.goatractivater.info</A></FONT></P></DIV></DI=
+V></BODY></HTML>
 
-If that's the case, why not send 44.1kHz data as uncompressed "compressed
-PCM" (i.e. flag it as being compressed, but then don't really compress it,
-or compress it losslessly) over SPDIF if it can only do 48kHz (on the
-sender's side)?
-
--Philip
+------=_NextPart_000_003F_01C5D11B.8FFD6E00--
 
 
 
