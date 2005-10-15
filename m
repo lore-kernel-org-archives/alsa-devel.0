@@ -1,14 +1,14 @@
-From: Szekeres =?iso-8859-2?Q?Istv=E1n?= <szekeres@iii.hu>
-Subject: Re: USB headset problem
-Date: Sat, 15 Oct 2005 00:05:39 +0200
-Message-ID: <20051014220539.GA1818@pulsussoft.hu>
-References: <20051014091716.GA30524@pulsussoft.hu> <Pine.HPX.4.33n.0510141250040.23443-100000@studcom.urz.uni-halle.de> <20051014202153.GA1428@pulsussoft.hu>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: [ALSA - driver 0001450]: SPDIF out is limited with
+ 48KHz
+Date: Fri, 14 Oct 2005 21:28:50 -0600
+Message-ID: <43507772.3080402@redfish-solutions.com>
+References: <b800b5591fd19711e4f78fe07b97d40f@bugtrack.alsa-project.org>	<200510112152.18159@goldspace.net> <s5hmzlfhxwo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20051014202153.GA1428@pulsussoft.hu>
+In-Reply-To: <s5hmzlfhxwo.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +18,128 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andrew Gaydenko <a@gaydenko.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 14, 2005 at 10:21:53PM +0200, Szekeres Istv=E1n wrote:
-> Indeed. The microphone is really working. Now the only problem is that =
-I
-> tried it under skype (that's why I bought the headset), and under skype=
- it
-> is not working at all (strace revealed that skype is writing 0s to the =
-sound
-> device) - so I'm afraid this problem is out of the scope of this mailin=
-g
-> list.
+Takashi Iwai wrote:
 
-Ok, after some experimenting the results are the following:
+>At Tue, 11 Oct 2005 21:52:18 +0400,
+>Andrew Gaydenko wrote:
+>  
+>
+>>Takashi,
+>>
+>>Unfortunately, routing problem still exists for (my host)-(bugtrack.alsa-project.org)
+>>path. Is it possible to use the mailing list or my direct email (a@gaydenko.com) to
+>>send the patch?
+>>    
+>>
+>
+>BTS host seems instable for the time being.
+>
+>Anyway, the patch is below, and I already committed it to CVS tree now
+>:)
+>
+>
+>Takashi
+>
+>Index: alsa-kernel/pci/ice1712/ice1724.c
+>===================================================================
+>RCS file: /home/iwai/cvs/alsa/alsa-kernel/pci/ice1712/ice1724.c,v
+>retrieving revision 1.67
+>diff -u -r1.67 ice1724.c
+>--- alsa-kernel/pci/ice1712/ice1724.c	12 Sep 2005 10:27:50 -0000	1.67
+>+++ alsa-kernel/pci/ice1712/ice1724.c	11 Oct 2005 15:18:42 -0000
+>@@ -675,9 +675,12 @@
+> 				 SNDRV_PCM_INFO_MMAP_VALID |
+> 				 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_SYNC_START),
+> 	.formats =		SNDRV_PCM_FMTBIT_S32_LE,
+>-	.rates =	        SNDRV_PCM_RATE_32000|SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+>+	.rates =	        (SNDRV_PCM_RATE_32000|SNDRV_PCM_RATE_44100|
+>+				 SNDRV_PCM_RATE_48000|SNDRV_PCM_RATE_88200|
+>+				 SNDRV_PCM_RATE_96000|SNDRV_PCM_RATE_176400|
+>+				 SNDRV_PCM_RATE_192000),
+> 	.rate_min =		32000,
+>-	.rate_max =		48000,
+>+	.rate_max =		192000,
+> 	.channels_min =		2,
+> 	.channels_max =		2,
+> 	.buffer_bytes_max =	(1UL << 18),	/* 16bits dword */
+>@@ -905,6 +908,10 @@
+> 	case 44100: break;
+> 	case 48000: nval |= 2 << 12; break;
+> 	case 32000: nval |= 3 << 12; break;
+>+	case 88200: nval |= 4 << 12; break;
+>+	case 96000: nval |= 5 << 12; break;
+>+	case 192000: nval |= 6 << 12; break;
+>+	case 176400: nval |= 7 << 12; break;
+> 	}
+> 	if (val != nval)
+> 		update_spdif_bits(ice, nval);
+>@@ -1292,22 +1299,32 @@
+> 
+> static unsigned int encode_spdif_bits(snd_aes_iec958_t *diga)
+> {
+>-	unsigned int val;
+>+	unsigned int val, rbits;
+> 
+> 	val = diga->status[0] & 0x03; /* professional, non-audio */
+> 	if (val & 0x01) {
+> 		/* professional */
+> 		if ((diga->status[0] & IEC958_AES0_PRO_EMPHASIS) == IEC958_AES0_PRO_EMPHASIS_5015)
+> 			val |= 1U << 3;
+>-		switch (diga->status[0] & IEC958_AES0_PRO_FS) {
+>-		case IEC958_AES0_PRO_FS_44100:
+>-			break;
+>-		case IEC958_AES0_PRO_FS_32000:
+>-			val |= 3U << 12;
+>-			break;
+>-		default:
+>-			val |= 2U << 12;
+>-			break;
+>+		rbits = (diga->status[4] >> 3) & 0x0f;
+>+		if (rbits) {
+>+			switch (rbits) {
+>+			case 2: val |= 5 << 12; break; /* 96k */
+>+			case 3: val |= 6 << 12; break; /* 192k */
+>+			case 10: val |= 4 << 12; break; /* 88.2k */
+>+			case 11: val |= 7 << 12; break; /* 176.4k */
+>+			}
+>+		} else {
+>+			switch (diga->status[0] & IEC958_AES0_PRO_FS) {
+>+			case IEC958_AES0_PRO_FS_44100:
+>+				break;
+>+			case IEC958_AES0_PRO_FS_32000:
+>+				val |= 3U << 12;
+>+				break;
+>+			default:
+>+				val |= 2U << 12;
+>+				break;
+>+			}
+> 		}
+> 	} else {
+> 		/* consumer */
+>
+>  
+>
 
-- Using latest git version of the kernel -> skype is not working
-- Using 2.6.12.5 -> skype is working
-- Other apps are working in both versions.
+I don't suppose the patch is anyway applicable to the DRS capable
+VIA southbridges, is it?
 
-How can I investigate why does not skype working in case of the git versi=
-on?
+Also... on a broader note...  SPDIF is an asynchronous transport, right?
 
-Thanks,
-Szekeres Istvan
+The transmission rate is unrelated to the actual playback rate, since you
+can carry compressed PCM, DTS, DolbyD, etc. all over the same
+transport...
+
+If that's the case, why not send 44.1kHz data as uncompressed "compressed
+PCM" (i.e. flag it as being compressed, but then don't really compress it,
+or compress it losslessly) over SPDIF if it can only do 48kHz (on the
+sender's side)?
+
+-Philip
+
 
 
 -------------------------------------------------------
