@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001464]: No digital passthrough for Turtle Beach Audio Advantage Micro
-Date: Sun, 16 Oct 2005 03:50:29 +0200
-Message-ID: <ac95db54e48fc13239fe9d84230d192f@bugtrack.alsa-project.org>
+From: Tilman Kranz <tilman.kranz@tk-sls.de>
+Subject: ca0106 with MIDI
+Date: Sun, 16 Oct 2005 11:31:36 +0200
+Message-ID: <43521DF8.2040401@tk-sls.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA7C2191
-	for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 03:50:29 +0200 (MEST)
+Received: from mail.tk-sls.de (linuxfoo.de [83.151.18.109])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6AF1197
+	for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 11:31:44 +0200 (MEST)
+Received: from [192.168.1.100] (p54AC62B0.dip.t-dialin.net [84.172.98.176])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "sls.thelair", Issuer "Tilman Kranz" (verified OK))
+	by mail.tk-sls.de (Postfix) with ESMTP id B9ACF30005
+	for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 11:31:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +26,56 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1464> 
-======================================================================
-Reported By:                mactalla
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1464
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.12-gentoo-r4
-======================================================================
-Date Submitted:             09-27-2005 00:35 CEST
-Last Modified:              10-16-2005 03:50 CEST
-======================================================================
-Summary:                    No digital passthrough for Turtle Beach Audio
-Advantage Micro
-Description: 
-After loading the snd-usb-audio module, alsamixer only displays a single
-control (PCM).  This correctly controls the headphone jack on the sound
-card, but does not control the S/PDIF output.  The S/PDIF does output
-stereo sound.
+with regards to the "ca0106" driver for the Creative Audigy LS I would 
+like to ask if there are activities to make the "Creative External MIDI" 
+(MS W* nomenclatura) resp. the "Creative Labs SB Audigy LS MIDI/Game 
+port" (Linux PCI name Db. nomenclatura) available.
 
-Bug 0001438 also requests digital passthrough for snd-usb-audio, but since
-I have a different lsusb output, this may require attention of its own.
+I have a MIDI In/Out connection attached. I currently am performing a 
+variety of tests  using win+sequencer software. 
 
-I've included lsusb -v output, but am more than happy to do any additional
-poking around to figure out the hardware (just need to be told what).
-======================================================================
+Specifically:
 
-----------------------------------------------------------------------
- mactalla - 10-16-05 03:50 
-----------------------------------------------------------------------
-UPDATE
+I run with Linux Kernel 2.6.12.3. I also have access to CVS alsa-kernel.
 
-I was looking in all the wrong places.  Links on the internet indicate
-digital outputs must be "enabled".  So I thought it was harder than it
-was.  As it turns out, the S/PDIF output is identical to the headphones
-jack, and passthrough works just fine.
+I appear to have the "SB0312" model of the Audigy LS. Thus, the rest of 
+this mail is the output of lspci, first -v without -n to document the 
+model name I have, afterwards with -vn as requested on the blacklist.
 
-True the only volume control in alsamixer doesn't affect the optical out
-(even when playing stereo), but I have enough volume dials that I don't
-care.  As far as I'm concerned, this bug can be marked RESOLVE - NOTABUG
-but I don't seem to have control to do that myself.
+Greetings,
+Tilman.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-27-05 00:35 mactalla       New Issue                                    
-09-27-05 00:35 mactalla       Distribution              => Gentoo          
-09-27-05 00:35 mactalla       Kernel Version            => 2.6.12-gentoo-r4
-10-16-05 03:50 mactalla       Note Added: 0006481                          
-======================================================================
+ $ lspci -n
+
+0000:01:08.0 Multimedia audio controller: Creative Labs SB Audigy LS
+        Subsystem: Creative Labs SB0312 Audigy LS
+        Flags: bus master, medium devsel, latency 32, IRQ 18
+        I/O ports at 9800 [size=32]
+        Capabilities: [dc] Power Management version 2
+
+0000:01:08.1 Input device controller: Creative Labs SB Audigy LS 
+MIDI/Game port
+        Subsystem: Creative Labs SB0312 Audigy LS MIDI/Game port
+        Flags: bus master, medium devsel, latency 32
+        I/O ports at 9c00 [size=8]
+        Capabilities: [dc] Power Management version 2
+
+
+ $ lspci -vn
+
+0000:01:08.0 0401: 1102:0007
+        Subsystem: 1102:1002
+        Flags: bus master, medium devsel, latency 32, IRQ 18
+        I/O ports at 9800 [size=32]
+        Capabilities: [dc] Power Management version 2
+
+0000:01:08.1 0980: 1102:7005
+        Subsystem: 1102:1002
+        Flags: bus master, medium devsel, latency 32
+        I/O ports at 9c00 [size=8]
+        Capabilities: [dc] Power Management version 2
 
 
 
