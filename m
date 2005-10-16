@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001478]: No sound after volume adjustment during playback
-Date: Mon, 17 Oct 2005 00:57:52 +0200
-Message-ID: <2a02b7f80a3fe1c6a10a833bab383e88@bugtrack.alsa-project.org>
+Date: Mon, 17 Oct 2005 00:59:28 +0200
+Message-ID: <7fbd91f99f66fa0dacc8204e74f046bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 739F0158
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 00:57:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A569C13C
+	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 00:59:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1478> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo 2.6.13-r4
 Kernel Version:             2.6.13
 ======================================================================
 Date Submitted:             10-17-2005 00:57 CEST
-Last Modified:              10-17-2005 00:57 CEST
+Last Modified:              10-17-2005 00:59 CEST
 ======================================================================
 Summary:                    No sound after volume adjustment during playback
 Description: 
@@ -51,12 +51,18 @@ playback, it disappears till reinserting of alsa modules.
 I use alsa kernel modules.
 ======================================================================
 
+----------------------------------------------------------------------
+ dzi - 10-17-05 00:59 
+----------------------------------------------------------------------
+I forgot to mention, that my sound card is AD1986A on my notebook.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-17-05 00:57 dzi            New Issue                                    
 10-17-05 00:57 dzi            Distribution              => Gentoo 2.6.13-r4
 10-17-05 00:57 dzi            Kernel Version            => 2.6.13          
+10-17-05 00:59 dzi            Note Added: 0006485                          
 ======================================================================
 
 
