@@ -1,14 +1,10 @@
-From: Tehn Yit Chin <tehn.yit.chin@gmail.com>
-Subject: Re: how does alsa keep passing data into driver?
-Date: Mon, 17 Oct 2005 00:00:11 +1000
-Message-ID: <bf04f99c0510160700y490bc9b6q8db1bd77957de4c2@mail.gmail.com>
-References: <bf04f99c0510131947m1a5e0a68n631b761818887222@mail.gmail.com>
-	 <XFMail.20051014093633.pochini@shiny.it>
+From: "Spider (D.m.D. Lj.)" <spider@gentoo.org>
+Subject: Hard lock on rawmidi
+Date: Sun, 16 Oct 2005 16:13:17 +0200
+Message-ID: <1129471997.1574.3.camel@Darkmere.darkmere>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_5170_25769102.1129471211283"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Q/FMdZArixwN/tmbp0G1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20051014093633.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +14,136 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_5170_25769102.1129471211283
-Content-Type: text/plain; charset=ISO-8859-1
+
+--=-Q/FMdZArixwN/tmbp0G1
+Content-Type: multipart/mixed; boundary="=-2Arxh05izNOxDmAS6dNy"
+
+
+--=-2Arxh05izNOxDmAS6dNy
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-On 10/14/05, Giuliano Pochini <pochini@shiny.it> wrote:
->
->
-> On 14-Oct-2005 Tehn Yit Chin wrote:
->
-> > I am trying to understand how the ALSA pass PCM data to the driver. I
-> have
-> > understand that when the driver starts up, a start trigger event is
-> created
-> > and some PCM data is passed in. After that, how does the subsequent PCM
-> data
-> > get pass into the driver?
->
-> The ALSA middle layer passes PCM data to the driver only if the driver
-> attaches a function to the .copy() callback. Otherwise (and this is the
-> most common case) the ALSA ml copies data to/from the buffer on its own.
+Hello,
+  Ever since kernel 2.6.12 (2.6.11 series were the last that work)
+winecfg and other wine tasks have been hard-locking my computer.
+
+Some time spent with debugging, and some printk's, I find that the
+mpu401_uart  and its input_trigger gets called constantly, up to a point
+where everything else is locked down (including network stack and so on)
 
 
-So when would it appropriate to attached a function to the .copy callback?
-Are you able to give me a clue which function actual performs the copying i=
-n
-the ALSA middle layer?
+The hardware in question is a Hoontech 4DWave NX,  trident chipset.
+Attached is a traceback from when its hung, however I'm not sure how
+important that is.
 
-Thanks for you reponse thus far.
+I don't have any midi equipment plugged in, nor do I have a joystick
+attached.
 
-------=_Part_5170_25769102.1129471211283
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-<br><br><div><span class=3D"gmail_quote">On 10/14/05, <b class=3D"gmail_sen=
-dername">Giuliano Pochini</b> &lt;<a href=3D"mailto:pochini@shiny.it">pochi=
-ni@shiny.it</a>&gt; wrote:</span><blockquote class=3D"gmail_quote" style=3D=
-"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padd=
-ing-left: 1ex;">
-<br>On 14-Oct-2005 Tehn Yit Chin wrote:<br><br>&gt; I am trying to understa=
-nd how the ALSA pass PCM data to the driver. I have<br>&gt; understand that=
- when the driver starts up, a start trigger event is created<br>&gt; and so=
-me PCM data is passed in. After that, how does the subsequent PCM data
-<br>&gt; get pass into the driver?<br><br>The ALSA middle layer passes PCM =
-data to the driver only if the driver<br>attaches a function to the .copy()=
- callback. Otherwise (and this is the<br>most common case) the ALSA ml copi=
-es data to/from the buffer on its own.
-</blockquote><div><br>
-So when would it appropriate to attached a function to the .copy
-callback? Are you able to give me a clue which function actual performs
-the copying in the ALSA middle layer?<br>
-<br>
-Thanks for you reponse thus far.<br>
-<br>
-&nbsp;</div><br></div><br>
 
-------=_Part_5170_25769102.1129471211283--
+Please CC me, as I am not on the list.
+
+//Spider
+--=20
+begin  .signature
+Tortured users / Laughing in pain
+See Microsoft KB Article Q265230 for more information.
+end
+
+
+--=-2Arxh05izNOxDmAS6dNy
+Content-Disposition: attachment; filename=output.txt
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; name=output.txt; charset=UTF-8
+
+WyAgIDI0LjQzMTE4NF0gQWRkaW5nIDk3OTk1Nmsgc3dhcCBvbiAvZGV2L2hkYTIuICBQcmlvcml0
+eTotMSBleHRlbnRzOjENClsgIDY5NS4wMTM2NzZdIFN5c1JxIDogQ2hhbmdpbmcgTG9nbGV2ZWwN
+ClsgIDY5NS4wMjgzMzddIExvZ2xldmVsIHNldCB0byA4DQpbICA3NDYuNzgzNTEwXSBjbWQ6IDB4
+ZmYgZmFpbGVkIGF0IDB4MjAgKHN0YXR1cyA9IDB4ZmYsIGRhdGEgPSAweDExKQ0KWyAgNzQ2Ljgz
+NjkyNF0gY21kOiAweDNmIGZhaWxlZCBhdCAweDIwIChzdGF0dXMgPSAweDNmLCBkYXRhID0gMHgx
+MSkNClsgIDc1NC45MzAzMzVdIFN5c1JxIDogRW1lcmdlbmN5IFN5bmMNClsgIDc1Ny4xODU0NzFd
+IFN5c1JxIDogSEVMUCA6IGxvZ2xldmVsMC04IHJlQm9vdCB0RXJtIEZ1bGwga0lsbCBzYUsgc2hv
+d01lbSBOaWNlIHBvd2VyT2ZmIHNob3dQDQpbICA3NTkuNTA2NTEwXSBTeXNScSA6IENoYW5naW5n
+IExvZ2xldmVsDQpbICA3NTkuNTE0NTg4XSBMb2dsZXZlbCBzZXQgdG8gOA0KWyAgNzY1LjA0OTc4
+NV0gU3lzUnEgOiBOaWNlIEFsbCBSVCBUYXNrcw0KWyAgNzcwLjg1NDQ2OF0gU3lzUnEgOiBTaG93
+IFJlZ3MNClsgIDc3MC44NjEwMjVdDQpbICA3NzAuODY0Mjk5XSBQaWQ6IDUyMTUsIGNvbW06ICAg
+ICAgIHdpbmUtcHJlbG9hZGVyDQpbICA3NzAuODc0NjY4XSBFSVA6IDAwNjA6WzxmMTJhMmQ1Nj5d
+IENQVTogMA0KWyAgNzcwLjg4MzUwOF0gRUlQIGlzIGF0IHNuZF9tcHU0MDFfdWFydF9pbnB1dF90
+cmlnZ2VyKzB4ZDYvMHgxZDAgW3NuZF9tcHU0MDFfdWFydF0NClsgIDc3MC44OTk4MjJdICBFRkxB
+R1M6IDAwMDAwMjg2ICAgIE5vdCB0YWludGVkICAoMi42LjEzLWdlbnRvby1kYmcpDQpbICA3NzAu
+OTEzMjU2XSBFQVg6IDAwMDAwMDAxIEVCWDogMDAwMDAyODYgRUNYOiBlZGJmZTdmYyBFRFg6IDAw
+MDAwMTAzDQpbICA3NzAuOTI3MDcxXSBFU0k6IGVmOWM5M2Q0IEVESTogZThlOTFiOTQgRUJQOiBl
+OGU5MWI1MCBEUzogMDA3YiBFUzogMDA3Yg0KWyAgNzcwLjk0MTY2NF0gQ1IwOiA4MDA1MDAzYiBD
+UjI6IDdmM2RmM2ViIENSMzogMmQ2MDcwMDAgQ1I0OiAwMDAwMDZkMA0KWyAgNzcwLjk1NTQ3OF0g
+IFs8YzAxMDEzNzY+XSBzaG93X3JlZ3MrMHgxMzYvMHgxNjANClsgIDc3MC45NjU1MDFdICBbPGMw
+MzZiZmNlPl0gc3lzcnFfaGFuZGxlX3Nob3dyZWdzKzB4ZS8weDEwDQpbICA3NzAuOTc3MjM4XSAg
+WzxjMDM2YzIxZT5dIF9faGFuZGxlX3N5c3JxKzB4ZWUvMHgyODANClsgIDc3MC45ODgwMjNdICBb
+PGMwMzZjM2NkPl0gaGFuZGxlX3N5c3JxKzB4MWQvMHgzMA0KWyAgNzcxLjAwNTg1NF0gIFs8YzAz
+NjZjZDI+XSBrYmRfa2V5Y29kZSsweDJkMi8weDMzMA0KWyAgNzcxLjAyMzc4OV0gIFs8YzAzNjZl
+MTM+XSBrYmRfZXZlbnQrMHhlMy8weDEwMA0KWyAgNzcxLjA0MTA2Nl0gIFs8YzAzYmE2MTM+XSBp
+bnB1dF9ldmVudCsweDE0My8weDNhMA0KWyAgNzcxLjA1ODkxM10gIFs8YzAzYmQ0ZmI+XSBhdGti
+ZF9yZXBvcnRfa2V5KzB4MmIvMHg5MA0KWyAgNzcxLjA3NzMxNl0gIFs8YzAzYmQ4NzI+XSBhdGti
+ZF9pbnRlcnJ1cHQrMHgzMTIvMHg1ZTANClsgIDc3MS4wOTU4MjNdICBbPGMwM2FkNTdhPl0gc2Vy
+aW9faW50ZXJydXB0KzB4OWEvMHgxYmQNClsgIDc3MS4xMTQwNjldICBbPGMwM2FlOWNlPl0gaTgw
+NDJfaW50ZXJydXB0KzB4MjZlLzB4NDUwDQpbICA3NzEuMTMyNDg5XSAgWzxjMDE1MzA3NT5dIGhh
+bmRsZV9JUlFfZXZlbnQrMHgzNS8weDcwDQpbICA3NzEuMTUwNjgzXSAgWzxjMDE1MzIwYT5dIF9f
+ZG9fSVJRKzB4MTVhLzB4MzcwDQpbICA3NzEuMTY3NjQ5XSAgWzxjMDEwNjVmMz5dIGRvX0lSUSsw
+eDMzLzB4NjANClsgIDc3MS4xODM4MTddICBbPGMwMTA0NzUyPl0gY29tbW9uX2ludGVycnVwdCsw
+eDFhLzB4MjANClsgIDc3MS4yMDE4OTBdICBbPGYxMmI3MTg3Pl0gc25kX3Jhd21pZGlfaW5wdXRf
+dHJpZ2dlcisweDE3LzB4NTAgW3NuZF9yYXdtaWRpXQ0KWyAgNzcxLjIyNDM3OF0gIFs8ZjEyYjkx
+NWY+XSBzbmRfcmF3bWlkaV9rZXJuZWxfcmVhZCsweDFmLzB4NDAgW3NuZF9yYXdtaWRpXQ0KWyAg
+NzcxLjI0NjQzM10gIFs8ZjE0MGEwNWU+XSBzbmRfbWlkaV9pbnB1dF9ldmVudCsweDVlLzB4ZjAg
+W3NuZF9zZXFfbWlkaV0NClsgIDc3MS4yNjgwOTBdICBbPGYxMmI3MDA5Pl0gc25kX3Jhd21pZGlf
+aW5wdXRfZXZlbnRfdGFza2xldCsweDkvMHgxMCBbc25kX3Jhd21pZGldDQpbICA3NzEuMjkxNDc4
+XSAgWzxjMDEyY2MwZD5dIHRhc2tsZXRfaGlfYWN0aW9uKzB4M2QvMHg3MA0KWyAgNzcxLjMwOTY4
+OV0gIFs8YzAxMmM4NzI+XSBfX2RvX3NvZnRpcnErMHg1Mi8weGEwDQpbICA3NzEuMzI2ODgwXSAg
+WzxjMDEyYzhmMj5dIGRvX3NvZnRpcnErMHgzMi8weDQwDQpbICA3NzEuMzQzNjM3XSAgWzxjMDEy
+YzllND5dIGlycV9leGl0KzB4NDQvMHg1MA0KWyAgNzcxLjM1OTk5N10gIFs8YzAxMTcwYWE+XSBz
+bXBfYXBpY190aW1lcl9pbnRlcnJ1cHQrMHg0YS8weDkwDQpbICA3NzEuMzc5NDAyXSAgWzxjMDEw
+NDc3ND5dIGFwaWNfdGltZXJfaW50ZXJydXB0KzB4MWMvMHgyNA0KWyAgNzcxLjM5Nzk3OV0gIFs8
+ZjEyYjcxODc+XSBzbmRfcmF3bWlkaV9pbnB1dF90cmlnZ2VyKzB4MTcvMHg1MCBbc25kX3Jhd21p
+ZGldDQpbICA3NzEuNDIwMjA3XSAgWzxmMTJiOTE1Zj5dIHNuZF9yYXdtaWRpX2tlcm5lbF9yZWFk
+KzB4MWYvMHg0MCBbc25kX3Jhd21pZGldDQpbICA3NzEuNDQyMDU0XSAgWzxmMTQwYTJhND5dIG1p
+ZGlzeW50aF9zdWJzY3JpYmUrMHg4NC8weGIwIFtzbmRfc2VxX21pZGldDQpbICA3NzEuNDYzMjc4
+XSAgWzxmMTQ0NDJkMj5dIHN1YnNjcmliZV9wb3J0KzB4YzIvMHgxNzAgW3NuZF9zZXFdDQpbICA3
+NzEuNDgyNzcwXSAgWzxmMTQ0NDVlMT5dIHNuZF9zZXFfcG9ydF9jb25uZWN0KzB4MTExLzB4MmYw
+IFtzbmRfc2VxXQ0KWyAgNzcxLjUwMzU3OV0gIFs8ZjE0M2MyMTk+XSBzbmRfc2VxX2lvY3RsX3N1
+YnNjcmliZV9wb3J0KzB4YTkvMHhlMCBbc25kX3NlcV0NClsgIDc3MS41MjU1NDddICBbPGYxNDNk
+MGFmPl0gc25kX3NlcV9kb19pb2N0bCsweDZmLzB4ODAgW3NuZF9zZXFdDQpbICA3NzEuNTQ1MTc4
+XSAgWzxmMTQzZDNkMz5dIHNuZF9zZXFfa2VybmVsX2NsaWVudF9jdGwrMHg0My8weDYwIFtzbmRf
+c2VxXQ0KWyAgNzcxLjU2NjQ4OF0gIFs8ZjEzNGRkMTg+XSBzbmRfc2VxX29zc19taWRpX29wZW4r
+MHhjOC8weDEyMCBbc25kX3NlcV9vc3NdDQpbICA3NzEuNTg3OTg5XSAgWzxmMTM0ZGMxZT5dIHNu
+ZF9zZXFfb3NzX21pZGlfb3Blbl9hbGwrMHgxZS8weDMwIFtzbmRfc2VxX29zc10NClsgIDc3MS42
+MTAwNDVdICBbPGYxMzQ5NjFjPl0gc25kX3NlcV9vc3Nfb3BlbisweDI4Yy8weDJkMCBbc25kX3Nl
+cV9vc3NdDQpbICA3NzEuNjMwNjk4XSAgWzxmMTM0OTA0Mz5dIG9kZXZfb3BlbisweDQzLzB4NjAg
+W3NuZF9zZXFfb3NzXQ0KWyAgNzcxLjY0OTYwMl0gIFs8ZjEyOWJjNWE+XSBzb3VuZGNvcmVfb3Bl
+bisweDQwYS8weDZlMCBbc291bmRjb3JlXQ0KWyAgNzcxLjY2OTQ1OF0gIFs8YzAxOGYzYTY+XSBj
+aHJkZXZfb3BlbisweDM4Ni8weDRkMA0KWyAgNzcxLjY4NjQ0MF0gIFs8YzAxODAwYzY+XSBkZW50
+cnlfb3BlbisweDFiNi8weDI3MA0KWyAgNzcxLjcwMzMzNl0gIFs8YzAxN2ZmMDE+XSBmaWxwX29w
+ZW4rMHg0MS8weDUwDQpbICA3NzEuNzE5NDIwXSAgWzxjMDE4MDZiOD5dIHN5c19vcGVuKzB4NDgv
+MHhkMA0KWyAgNzcxLjczNTI3Nl0gIFs8YzAxMDNkM2I+XSBzeXNlbnRlcl9wYXN0X2VzcCsweDU0
+LzB4NzUNCg0KDQo=
+
+
+--=-2Arxh05izNOxDmAS6dNy--
+
+--=-Q/FMdZArixwN/tmbp0G1
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQBDUl/9ZS9CZTi033kRAthXAJwPibQfPMGLIT8FNxynEiPP72TNxACgrOtl
+vuYlZbEl06+E20uTjckALrM=
+=PiWn
+-----END PGP SIGNATURE-----
+
+--=-Q/FMdZArixwN/tmbp0G1--
+
 
 
 -------------------------------------------------------
