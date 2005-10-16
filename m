@@ -1,13 +1,11 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: how does alsa keep passing data into driver?
-Date: Sun, 16 Oct 2005 16:26:12 +0100
-Message-ID: <43527114.2040601@superbug.co.uk>
-References: <bf04f99c0510131947m1a5e0a68n631b761818887222@mail.gmail.com>	 <XFMail.20051014093633.pochini@shiny.it> <bf04f99c0510160700y490bc9b6q8db1bd77957de4c2@mail.gmail.com>
+From: federico <xaero@inwind.it>
+Subject: combining two subdevs of the same device
+Date: Sun, 16 Oct 2005 16:21:04 +0200
+Message-ID: <435261D0.8060601@inwind.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <bf04f99c0510160700y490bc9b6q8db1bd77957de4c2@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,72 +15,235 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tehn Yit Chin <tehn.yit.chin@gmail.com>
-Cc: Giuliano Pochini <pochini@shiny.it>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tehn Yit Chin wrote:
-> On 10/14/05, Giuliano Pochini <pochini@shiny.it> wrote:
-> 
->>
->>On 14-Oct-2005 Tehn Yit Chin wrote:
->>
->>
->>>I am trying to understand how the ALSA pass PCM data to the driver. I
->>
->>have
->>
->>>understand that when the driver starts up, a start trigger event is
->>
->>created
->>
->>>and some PCM data is passed in. After that, how does the subsequent PCM
->>
->>data
->>
->>>get pass into the driver?
->>
->>The ALSA middle layer passes PCM data to the driver only if the driver
->>attaches a function to the .copy() callback. Otherwise (and this is the
->>most common case) the ALSA ml copies data to/from the buffer on its own.
-> 
-> 
-> 
-> So when would it appropriate to attached a function to the .copy callback?
-> Are you able to give me a clue which function actual performs the copying in
-> the ALSA middle layer?
-> 
-> Thanks for you reponse thus far.
-> 
+i just bought an ADAT I/O box (8+8).
+i plugged into my soundcard, believing that it would extend my number of 
+audio channels, from 2in+8out to 10in+16outs.
 
-Most sound cards use DMA to transfer sound samples from memory to the 
-sound card hardware. The trigger(start) function initiates these DMA 
-transfers, and the sound card controls the DMA. The sound card will just 
-continue to repeat DMA transfers until told to trigger(stop). Each time 
-a DMA transaction completes, an interrupt is generated. Each DMA 
-transaction normally transfers one period of samples at a time from the 
-ring buffer, so the interrupt routine calls period_elapsed to tell the 
-rest of alsa that some samples have been transfered to the sound card. 
-Inside period_elapsed, the hardware pointer in updated, so that alsa 
-knows the current state of the sample ring buffer. If the sound 
-application uses a callback method, this callback is then scheduled, and 
-the sound application can then transfer another period of samples to the 
-ring buffer.
+unfortunately seems that jack can't handle more than one (sub)device at 
+time (i can use hw:1,0, wich is the analog part, OR hw:1,1 wich is the 
+digital part)
 
-If your sound card cannot do DMA transfers, you still need to ensure 
-that the sound card can still generate interrupts. So the period_elapsed 
-function is still called for each samples period. You then need to 
-ensure that during the period_elapsed call, new samples are written to 
-the sound card hardware. To do this, you implement the .copy function, 
-and period_elapsed will call that to transfer the samples to the sound 
-card on each interrupt.
+i tried even various configurations of /etc/asound.conf, trying to merge 
+the 1,0 and 1,1 subdevs, but no luck (you can see my asound.conf files 
+in te bottom of message).... and someone told me that i cannot merge two 
+subdevices that are part of the same device, because the ctl.* is the 
+same, and it cannot control both subdevs.
 
-If your sound card cannot generate interrupts for each samples period, 
-you basically cannot use it with Linux.
+does anyone knows how to workaround this?
 
-I hope this helps
 
-James
+here is asound.conf (1st try): (i used asym because Gina24 has 2 analog 
+inputs, and 8 analog outputs)
+
+pcm.!default {
+   type plug
+   slave sl44100
+}
+ctl.!default {
+   type hw
+   card 1
+}
+pcm_slave.sl44100 {
+   pcm "hw:1,0"
+   channels 2
+   rate 44100
+}
+
+pcm.Gina_Capture {
+   type asym
+   playback {
+       pcm {
+           type null
+       }
+   }
+   capture {
+       pcm {
+           type hw
+           card 1
+           device 0
+       }
+   }
+}
+pcm.Gina_Playback {
+   type asym
+   playback {
+       pcm {
+           type hw
+           card 1
+           device 0
+       }
+   }
+   capture {
+       pcm {
+           type null
+       }
+   }
+}
+pcm.Fostex_ADAT {
+   type hw
+   card 1
+   device 1
+}
+
+pcm.multi {
+   type multi
+   slaves.a.pcm "Gina_Playback"
+   slaves.a.channels 8
+   slaves.b.pcm "Gina_Capture"
+   slaves.b.channels 2
+   slaves.z.pcm "Fostex_ADAT"
+   slaves.z.channels 8
+   bindings.0.slave a
+   bindings.0.channel 0
+   bindings.1.slave a
+   bindings.1.channel 1
+   bindings.2.slave a
+   bindings.2.channel 2
+   bindings.3.slave a
+   bindings.3.channel 3
+   bindings.4.slave a
+   bindings.4.channel 4
+   bindings.5.slave a
+   bindings.5.channel 5
+   bindings.6.slave a
+   bindings.6.channel 6
+   bindings.7.slave a
+   bindings.7.channel 7
+   bindings.8.slave z
+   bindings.8.channel 0
+   bindings.9.slave z
+   bindings.9.channel 1
+   bindings.10.slave z
+   bindings.10.channel 2
+   bindings.11.slave z
+   bindings.11.channel 3
+   bindings.12.slave z
+   bindings.12.channel 4
+   bindings.13.slave z
+   bindings.13.channel 5
+   bindings.14.slave z
+   bindings.14.channel 6
+   bindings.15.slave z
+   bindings.15.channel 7
+   bindings.16.slave b
+   bindings.16.channel 0
+   bindings.17.slave b
+   bindings.17.channel 1
+}
+ctl.multi {
+   type hw
+   card 1
+}
+
+pcm.ttable {
+   type route
+   slave.pcm "multi"
+   ttable.0.0 1
+   ttable.1.1 1
+   ttable.2.2 1
+   ttable.3.3 1
+   ttable.4.4 1
+   ttable.5.5 1
+   ttable.6.6 1
+   ttable.7.7 1
+   ttable.8.8 1
+   ttable.9.9 1
+   ttable.10.10 1
+   ttable.11.11 1
+   ttable.12.12 1
+   ttable.13.13 1
+   ttable.14.14 1
+   ttable.15.15 1
+   ttable.16.16 1
+   ttable.17.17 1
+}
+ctl.ttable {
+   type hw
+   card 1
+}
+
+
+here is the second try:
+pcm.!default {
+   type plug
+   slave sl44100
+}
+ctl.!default {
+   type hw
+   card 1
+}
+pcm_slave.sl44100 {
+   pcm "hw:1,0"
+   channels 2
+   rate 44100
+}
+
+pcm.Gina {
+   type hw
+   card 1
+   device 0
+}
+pcm.Fostex_ADAT {
+   type hw
+   card 1
+   device 1
+}
+
+pcm.multi {
+   type multi
+   slaves.b.pcm "Gina"
+   slaves.b.channels 2
+   slaves.z.pcm "Fostex_ADAT"
+   slaves.z.channels 8
+   bindings.0.slave z
+   bindings.0.channel 0
+   bindings.1.slave z
+   bindings.1.channel 1
+   bindings.2.slave z
+   bindings.2.channel 2
+   bindings.3.slave z
+   bindings.3.channel 3
+   bindings.4.slave z
+   bindings.4.channel 4
+   bindings.5.slave z
+   bindings.5.channel 5
+   bindings.6.slave z
+   bindings.6.channel 6
+   bindings.7.slave z
+   bindings.7.channel 7
+   bindings.8.slave b
+   bindings.8.channel 0
+   bindings.9.slave b
+   bindings.9.channel 1
+}
+ctl.multi {
+   type hw
+   card 1
+}
+
+pcm.ttable {
+   type route
+   slave.pcm "multi"
+   ttable.0.0 1
+   ttable.1.1 1
+   ttable.2.2 1
+   ttable.3.3 1
+   ttable.4.4 1
+   ttable.5.5 1
+   ttable.6.6 1
+   ttable.7.7 1
+   ttable.8.8 1
+   ttable.9.9 1
+}
+ctl.ttable {
+   type hw
+   card 1
+}
+
+
 
 
 -------------------------------------------------------
