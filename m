@@ -1,19 +1,14 @@
-From: Eric Shattow <lucent@gmail.com>
-Subject: Re: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Sun, 16 Oct 2005 16:09:25 -0500
-Message-ID: <2c746f620510161409g486363a9jabda7e2f11daf233@mail.gmail.com>
-References: <0f726cb808ee46786583ca1bad9aa2d4@bugtrack.alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001478]: No sound after volume adjustment during playback
+Date: Mon, 17 Oct 2005 00:57:52 +0200
+Message-ID: <2a02b7f80a3fe1c6a10a833bab383e88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from xproxy.gmail.com (xproxy.gmail.com [66.249.82.196])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C2B71A4
-	for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 23:09:26 +0200 (MEST)
-Received: by xproxy.gmail.com with SMTP id i31so590236wxd
-        for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 14:09:25 -0700 (PDT)
-In-Reply-To: <0f726cb808ee46786583ca1bad9aa2d4@bugtrack.alsa-project.org>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 739F0158
+	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 00:57:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,163 +21,45 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/16/05, bugtrack@alsa-project.org <bugtrack@alsa-project.org> wrote:
->
-> A NOTE has been added to this issue.
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D818>
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Reported By:                Mark Knecht
-> Assigned To:                charbonnel
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Project:                    ALSA - driver
-> Issue ID:                   818
-> Category:                   PCI - RME HDSP
-> Reproducibility:            always
-> Severity:                   major
-> Priority:                   normal
-> Status:                     feedback
-> Distribution:               FC2
-> Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Date Submitted:             01-14-2005 18:35 CET
-> Last Modified:              10-16-2005 22:25 CEST
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Summary:                    Web browsing in Mozilla causes ADAT clocks on=
- HDSP
-> 9652 to be invalid
-> Description:
-> In my setup I's using 3 computers:
->
-> 1) PanetCCRMA with HDSP 9652 as the center of an audio hub
->
-> 2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming t=
-o
-> HDSP 9652 (ADAT input for clock)
->
-> 3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC #2
->
-> So the signal flow looks like:
->
-> XP         Linux           XP
-> GSt =3D=3D=3D=3D> HDSP 9652 =3D=3D=3D=3D> Pro Tools
->    <=3D=3D=3D (ADAT Clock)
->
-> The HDSP 9652 is the master clock for the network. Both XP machine sync t=
-o
-> the HDSP 9652.
->
-> When no specific audio apps are running on the Linux box then this
-> configuration will work for hours if not days with no problems. All audio
-> data from GSt flows through the HDSP 9652's hardware and the hardware
-> mixer sends it on to the Pro Tools box. It works perfectly.
->
-> When Mozilla is started and I switch from page to page, after a few
-> minutes I will receive a message on the Pro Tools box that the clock
-> supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-> either XP box and I do not corrupt the clocks.
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> ----------------------------------------------------------------------
->  Mark Knecht - 10-16-05 16:24
-> ----------------------------------------------------------------------
-> So, indeed, alsamixer does now work with the HDSP 9652, at least for some
-> of the global settings that I've normally done with hdspconf. There is a
-> new rate locking option in alsamixer. However, to try it out will require
-> reconfiguring my system to make the HDSP 9652 the primary device. I will
-> try to do this in the next few days.
->
-> (This response was delayed by problems with the Alsa bug tracking system
-> being unavailable.)
->
-> ----------------------------------------------------------------------
->  Mark Knecht - 10-16-05 22:25
-> ----------------------------------------------------------------------
-> OK, moderately good news. Turning on Clock Locking in alsamixer does seem
-> to lock the clock down much better, but not perfectly. With the feature
-> turned off I get the horrible noises that I've suffered with for 2-3
-> years. With the feature turned on I now get just a couple of little sound
-> blips. This is definately usable in a static sense, but it wouldn't be
-> good enough to use in a recording session.
->
-> Note: I also found today that startine Wine, even when Wine is using the
-> built-in sound device, not the HDSP 9652, causes the HDSP 9652's clock to
-> change frequency and cause the loud noises. With this feature enabled it
-> now just causes the few sound blips.
->
-> Much, much better than before.
->
-> QUESTION: How do I turn this on from the command line? I need some comman=
-d
-> that I can execute at boot time to ensure it's always set correctly?
->
-> Issue History
-> Date Modified  Username       Field                    Change
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> 01-14-05 18:35 Mark Knecht    New Issue
-> 01-14-05 18:35 Mark Knecht    Distribution              =3D> FC2
-> 01-14-05 18:35 Mark Knecht    Kernel Version            =3D>
-> 2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-> 02-01-05 21:35 charbonnel     Note Added: 0003466
-> 02-01-05 21:46 Mark Knecht    Note Added: 0003470
-> 02-01-05 22:03 rlrevell       Note Added: 0003471
-> 02-01-05 22:07 charbonnel     Status                   assigned =3D> reso=
-lved
-> 02-01-05 22:07 charbonnel     Resolution               open =3D> not an i=
-ssue
-> 02-01-05 22:07 charbonnel     Note Added: 0003472
-> 02-01-05 22:12 Mark Knecht    Status                   resolved =3D> feed=
-back
-> 02-01-05 22:12 Mark Knecht    Resolution               not an issue =3D> =
-reopened
-> 02-01-05 22:12 Mark Knecht    Note Added: 0003474
-> 02-02-05 10:20 tiwai          Note Added: 0003477
-> 09-19-05 09:58 jdthood        Note Added: 0006277
-> 09-29-05 00:30 Mark Knecht    Note Added: 0006411
-> 10-05-05 18:50 tiwai          Note Added: 0006436
-> 10-12-05 14:17 tiwai          Note Added: 0006466
-> 10-12-05 18:17 Mark Knecht    Note Added: 0006468
-> 10-12-05 18:20 tiwai          Note Added: 0006469
-> 10-12-05 18:50 Mark Knecht    Note Added: 0006470
-> 10-12-05 18:55 tiwai          Note Added: 0006471
-> 10-12-05 19:03 Mark Knecht    Note Added: 0006472
-> 10-12-05 19:08 tiwai          Note Added: 0006473
-> 10-16-05 16:24 Mark Knecht    Note Added: 0006482
-> 10-16-05 22:25 Mark Knecht    Note Added: 0006484
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by:
-> Power Architecture Resource Center: Free content, downloads, discussions,
-> and more. http://solutions.newsforge.com/ibmarch.tmpl
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
 
-In theory your OS should be executing 'alsactl store' on shutdown, and
-'alsactl restore' on startup. That would restore mixer settings from
-the previous OS session.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1478> 
+======================================================================
+Reported By:                dzi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1478
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo 2.6.13-r4
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             10-17-2005 00:57 CEST
+Last Modified:              10-17-2005 00:57 CEST
+======================================================================
+Summary:                    No sound after volume adjustment during playback
+Description: 
+If I adjust volume during playback, there is no sound anymore. After
+reinserting alsa modules sound is ok. I can adjust sound when playback is
+stopped and then I can play sound again. But if I adjust volume during
+playback, it disappears till reinserting of alsa modules.
+I use alsa kernel modules.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-17-05 00:57 dzi            New Issue                                    
+10-17-05 00:57 dzi            Distribution              => Gentoo 2.6.13-r4
+10-17-05 00:57 dzi            Kernel Version            => 2.6.13          
+======================================================================
+
+
 
 
 -------------------------------------------------------
