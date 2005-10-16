@@ -1,11 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Writing a driver: what do I do next?
-Date: Sun, 16 Oct 2005 16:53:05 +0100
-Message-ID: <1129477985.3290.12.camel@localhost.localdomain>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Soundcard matrix update - Echoaudio
+Date: Sun, 16 Oct 2005 16:05:41 +0000
+Message-ID: <20051016160541.29f34177.pochini@shiny.it>
+References: <20051015191158.37e0f620.pochini@shiny.it>
+	<2c746f620510151456u3d40181bi1de819300e8f85e3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <2c746f620510151456u3d40181bi1de819300e8f85e3@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,35 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Eric Shattow <lucent@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am writing a driver for the Sega Dreamcast (see
-http://newgolddream.dydndns.info/repos for the code). Some years ago I
-wrote the OSS/Free driver for this on 2.4 kernels but now (obviously)
-want to write a driver for ALSA and also using DMA (the OSS one used
-polling and took a big hit on high bitrate sounds as you might expect).
+On Sat, 15 Oct 2005 16:56:03 -0500
+Eric Shattow <lucent@gmail.com> wrote:
 
-The DMA code on the DC is a bit messy (ie it doesn't work) but I think
-it is fixible. But I don't really understand what I need to do to join
-all the bit together in ALSA. Under OSS it was simple - fed in the
-sample 'by hand' and it got played.
+> Would you like to write driver support for the Echo AudioFire series
+> of hardware? I contacted a guy at Echo who seemed positive about
+> providing information necessary. If you write the driver, I will do my
+> best to provide you with hardware to test it on (this means contacting
+> echo for a sample unit, or even funding one from my own pocket).
 
-The complication with the DMA is that the sound card is on a different
-bus and so I think I need to use the DMA to take samples fed into the
-main (SH4) bus and send them over to the buffer on the ARM7 bus of the
-sound chip.
+I may write the driver for the new FW cards, but take into account that I
+work on it in my spare time, a driver for a fw soundcard is very different
+than the PCI driver, and I cannot say how much time I can take to write it.
+The Freebob project http://sourceforge.net/projects/freebob/ is (very
+slowly) developing drivers for FW cards but it's still alpha version and it
+supports only cards with the AV/C command set (so says the page above, no
+idea what is it). Furthermore, I have to learn how to talk with the card
+kernel-side from scratch and without tutorials..
 
-So what should I do? Create a buffer in the SH4 bus space and have the
-data feed into that? Which call handles the reading in of data from
-userspace? (ie is there a simple way that userland can write data and I
-can then get hold of that and start the DMA transfer?)
-
-Sorry if this is not too clear - to be honest I am finding it quite
-difficult to see the wood for the trees with ALSA.
-
-
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
