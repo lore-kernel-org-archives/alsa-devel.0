@@ -1,16 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: ca0106 with MIDI
-Date: Sun, 16 Oct 2005 11:53:15 +0100
-Message-ID: <4352311B.1050607@superbug.co.uk>
-References: <43521DF8.2040401@tk-sls.de>
+From: Tehn Yit Chin <tehn.yit.chin@gmail.com>
+Subject: Re: how does alsa keep passing data into driver?
+Date: Mon, 17 Oct 2005 00:00:11 +1000
+Message-ID: <bf04f99c0510160700y490bc9b6q8db1bd77957de4c2@mail.gmail.com>
+References: <bf04f99c0510131947m1a5e0a68n631b761818887222@mail.gmail.com>
+	 <XFMail.20051014093633.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_5170_25769102.1129471211283"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8E13197
-	for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 11:47:27 +0200 (MEST)
-In-Reply-To: <43521DF8.2040401@tk-sls.de>
+In-Reply-To: <XFMail.20051014093633.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,36 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tilman Kranz <tilman.kranz@tk-sls.de>
-Cc: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tilman Kranz wrote:
-> Hello.
-> 
-> with regards to the "ca0106" driver for the Creative Audigy LS I would 
-> like to ask if there are activities to make the "Creative External MIDI" 
-> (MS W* nomenclatura) resp. the "Creative Labs SB Audigy LS MIDI/Game 
-> port" (Linux PCI name Db. nomenclatura) available.
-> 
-> I have a MIDI In/Out connection attached. I currently am performing a 
-> variety of tests  using win+sequencer software.
-> Specifically:
-> 
-> I run with Linux Kernel 2.6.12.3. I also have access to CVS alsa-kernel.
-> 
-> I appear to have the "SB0312" model of the Audigy LS. Thus, the rest of 
-> this mail is the output of lspci, first -v without -n to document the 
-> model name I have, afterwards with -vn as requested on the blacklist.
-> 
-> Greetings,
-> Tilman.
-> 
+------=_Part_5170_25769102.1129471211283
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-MIDI is not currently supported on the ca0106.
-I have no way to test it, so I did not try to add MIDI support.
-The implementation should be fairly easy, as I think it uses the same or 
-similar driver code as the snd-emu10k1x driver uses.
+On 10/14/05, Giuliano Pochini <pochini@shiny.it> wrote:
+>
+>
+> On 14-Oct-2005 Tehn Yit Chin wrote:
+>
+> > I am trying to understand how the ALSA pass PCM data to the driver. I
+> have
+> > understand that when the driver starts up, a start trigger event is
+> created
+> > and some PCM data is passed in. After that, how does the subsequent PCM
+> data
+> > get pass into the driver?
+>
+> The ALSA middle layer passes PCM data to the driver only if the driver
+> attaches a function to the .copy() callback. Otherwise (and this is the
+> most common case) the ALSA ml copies data to/from the buffer on its own.
+
+
+So when would it appropriate to attached a function to the .copy callback?
+Are you able to give me a clue which function actual performs the copying i=
+n
+the ALSA middle layer?
+
+Thanks for you reponse thus far.
+
+------=_Part_5170_25769102.1129471211283
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+<br><br><div><span class=3D"gmail_quote">On 10/14/05, <b class=3D"gmail_sen=
+dername">Giuliano Pochini</b> &lt;<a href=3D"mailto:pochini@shiny.it">pochi=
+ni@shiny.it</a>&gt; wrote:</span><blockquote class=3D"gmail_quote" style=3D=
+"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padd=
+ing-left: 1ex;">
+<br>On 14-Oct-2005 Tehn Yit Chin wrote:<br><br>&gt; I am trying to understa=
+nd how the ALSA pass PCM data to the driver. I have<br>&gt; understand that=
+ when the driver starts up, a start trigger event is created<br>&gt; and so=
+me PCM data is passed in. After that, how does the subsequent PCM data
+<br>&gt; get pass into the driver?<br><br>The ALSA middle layer passes PCM =
+data to the driver only if the driver<br>attaches a function to the .copy()=
+ callback. Otherwise (and this is the<br>most common case) the ALSA ml copi=
+es data to/from the buffer on its own.
+</blockquote><div><br>
+So when would it appropriate to attached a function to the .copy
+callback? Are you able to give me a clue which function actual performs
+the copying in the ALSA middle layer?<br>
+<br>
+Thanks for you reponse thus far.<br>
+<br>
+&nbsp;</div><br></div><br>
+
+------=_Part_5170_25769102.1129471211283--
 
 
 -------------------------------------------------------
