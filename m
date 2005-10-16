@@ -1,14 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Soundcard matrix update - Echoaudio
-Date: Sun, 16 Oct 2005 16:05:41 +0000
-Message-ID: <20051016160541.29f34177.pochini@shiny.it>
-References: <20051015191158.37e0f620.pochini@shiny.it>
-	<2c746f620510151456u3d40181bi1de819300e8f85e3@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001473]: mic and line-in with very low volume
+Date: Sun, 16 Oct 2005 18:11:39 +0200
+Message-ID: <8a91b2d1f3871922e6bc34ebda843999@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2c746f620510151456u3d40181bi1de819300e8f85e3@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3973F19C
+	for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 18:11:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,30 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Shattow <lucent@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 15 Oct 2005 16:56:03 -0500
-Eric Shattow <lucent@gmail.com> wrote:
 
-> Would you like to write driver support for the Echo AudioFire series
-> of hardware? I contacted a guy at Echo who seemed positive about
-> providing information necessary. If you write the driver, I will do my
-> best to provide you with hardware to test it on (this means contacting
-> echo for a sample unit, or even funding one from my own pocket).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1473> 
+======================================================================
+Reported By:                oka
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1473
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             10-12-2005 09:21 CEST
+Last Modified:              10-16-2005 18:11 CEST
+======================================================================
+Summary:                    mic and line-in with very low volume
+Description: 
+Same issue like bug #1232 and #1346 but with Codec Analog Devices AD1986.
 
-I may write the driver for the new FW cards, but take into account that I
-work on it in my spare time, a driver for a fw soundcard is very different
-than the PCI driver, and I cannot say how much time I can take to write it.
-The Freebob project http://sourceforge.net/projects/freebob/ is (very
-slowly) developing drivers for FW cards but it's still alpha version and it
-supports only cards with the AV/C command set (so says the page above, no
-idea what is it). Furthermore, I have to learn how to talk with the card
-kernel-side from scratch and without tutorials..
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346
 
---
-Giuliano.
+Line-in and mic record only with very low volume. I have only rear jacks
+and don't know how they are connected to the board (locked case :-( 
+I've tried Alsa 1.0.9 and 1.0.10-rc1 with no success.
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 10-12-05 13:48 
+----------------------------------------------------------------------
+Do you mean "record" as the captured volume (e.g. via arecord), or the
+playback volume as a loopback from line-in or mic?
+
+----------------------------------------------------------------------
+ oka - 10-16-05 18:11 
+----------------------------------------------------------------------
+I mean record as the captured volume (via krec)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-12-05 09:21 oka            New Issue                                    
+10-12-05 09:21 oka            File Added: asound.state                     
+10-12-05 09:21 oka            Distribution              => Gentoo          
+10-12-05 09:21 oka            Kernel Version            => 2.6.13          
+10-12-05 13:48 tiwai          Note Added: 0006463                          
+10-16-05 18:11 oka            Note Added: 0006483                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
