@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001477]: inserting maestro3 hangs system
-Date: Sun, 16 Oct 2005 17:03:20 +0200
-Message-ID: <cf328a4a2a86fb723c9c988f84f19317@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Writing a driver: what do I do next?
+Date: Sun, 16 Oct 2005 16:53:05 +0100
+Message-ID: <1129477985.3290.12.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8344193
-	for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2005 17:03:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I am writing a driver for the Sega Dreamcast (see
+http://newgolddream.dydndns.info/repos for the code). Some years ago I
+wrote the OSS/Free driver for this on 2.4 kernels but now (obviously)
+want to write a driver for ALSA and also using DMA (the OSS one used
+polling and took a big hit on high bitrate sounds as you might expect).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1477> 
-======================================================================
-Reported By:                cra
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1477
-Category:                   PCI - maestro3
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5 (development)
-Kernel Version:             2.6.13-1.1600_FC5
-======================================================================
-Date Submitted:             10-16-2005 17:03 CEST
-Last Modified:              10-16-2005 17:03 CEST
-======================================================================
-Summary:                    inserting maestro3 hangs system
-Description: 
-Kernel hangs upon loading snd-maestro3 driver during hardware
-initialization.  The system only hangs if Windows was not booted prior to
-booting Linux.  So it seems that the Windows driver is poking the hardware
-in some way that "helps" the Linux driver, and basically the ALSA driver
-is not initializing the hardware correctly.
+The DMA code on the DC is a bit messy (ie it doesn't work) but I think
+it is fixible. But I don't really understand what I need to do to join
+all the bit together in ALSA. Under OSS it was simple - fed in the
+sample 'by hand' and it got played.
 
-Bug cross-reference:
+The complication with the DMA is that the sound card is on a different
+bus and so I think I need to use the DMA to take samples fed into the
+main (SH4) bus and send them over to the buffer on the ARM7 bus of the
+sound chip.
 
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000376
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=134507
+So what should I do? Create a buffer in the SH4 bus space and have the
+data feed into that? Which call handles the reading in of data from
+userspace? (ie is there a simple way that userland can write data and I
+can then get hold of that and start the DMA transfer?)
 
-======================================================================
+Sorry if this is not too clear - to be honest I am finding it quite
+difficult to see the wood for the trees with ALSA.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-16-05 17:03 cra            New Issue                                    
-10-16-05 17:03 cra            Distribution              => Fedora Core 5
-(development)
-10-16-05 17:03 cra            Kernel Version            => 2.6.13-1.1600_FC5
-======================================================================
 
 
 
