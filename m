@@ -1,13 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB headset problem
-Date: Mon, 17 Oct 2005 09:04:20 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0510170903440.12935-100000@studcom.urz.uni-halle.de>
-References: <20051014202153.GA1428@pulsussoft.hu>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Soundcard matrix update - Echoaudio
+Date: Mon, 17 Oct 2005 09:32:31 +0200 (CEST)
+Message-ID: <XFMail.20051017093231.pochini@shiny.it>
+References: <2c746f620510161407j657b1601w9e5c22dd3d50af1b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051014202153.GA1428@pulsussoft.hu>
+In-Reply-To: <2c746f620510161407j657b1601w9e5c22dd3d50af1b@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Szekeres =?iso-8859-2?Q?Istv=E1n?= <szekeres@iii.hu>
+To: Eric Shattow <lucent@gmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Szekeres Istv=E1n wrote:
-> ... under skype it is not working at all (strace revealed that
-> skype is writing 0s to the sound device)
 
-Does it read non-zero data?
+On 16-Oct-2005 Eric Shattow wrote:
+
+> Also, Freebob does not make use of ALSA code. I am to understand that
+> Freebob in its present state operates directly as a JACK plugin.
+
+It's a design decision. ALSA supports userspace drivers too. For
+example the "disk writer" plugin (I don't recall the exact name)
+is all inside alsa-lib.
 
 
-Regards,
-Clemens
+> ALSA as a sound device driver project would do well to define USB and
+> IEEE1394 APIs that when compiled for the foo protocol, result in a
+> base class kernel module snd-foo-audio and snd-foo-your_driver_here
+> modules. The monolithic snd-usb-audio module now would be a bad way to
+> start Firewire audio support.
 
+The ALSA usb core exists because nearly all usb soundcards use the
+same protocol. I don't know if it's the same about firewire devices
+and, in that case, if echoaudio cards follow the standard.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
