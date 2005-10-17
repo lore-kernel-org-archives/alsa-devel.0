@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001472]: Constant distortion noise on digital mixer
-Date: Mon, 17 Oct 2005 20:41:19 +0200
-Message-ID: <f90e6fa108862d32a3cb096d25af981c@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: This mailing list
+Date: Mon, 17 Oct 2005 19:46:10 +0100
+Message-ID: <1129574770.3367.9.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38C3B188
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 20:41:20 +0200 (MEST)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8800B188
+	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 20:46:32 +0200 (MEST)
+Received: from mayday.localdomain (mayday [192.168.62.101])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id j9HIkBm4017865
+	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 19:46:27 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,76 +24,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+About half the spam that makes it into my in box and the majority of
+viruses I get sent are from this mailing list.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1472> 
-======================================================================
-Reported By:                Atraides
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1472
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Suse
-Kernel Version:             2.6.11.4-21.9
-======================================================================
-Date Submitted:             10-12-2005 02:02 CEST
-Last Modified:              10-17-2005 20:41 CEST
-======================================================================
-Summary:                    Constant distortion noise on digital mixer
-Description: 
-The hardware in question is a Terratec DMX 6Fire 24/96. I have a constant
-crackling (like an old UKW radio between to stations) on the digital
-mixer. The noise disappears for a few seconds if I switch the Phono Input,
-the Breakout LED or Line In Selector. It changes the noise character when
-switching the S/PDIF Input from coaxial to optical. Even if all ins and
-outs are muted or tracked down its still there (I can see it in the
-Monitor Mixer).
-======================================================================
+Is there any way to fix that. I'll volunteer to install spamassassin and
+clamav on the server and keep them up to date.
 
-----------------------------------------------------------------------
- alanmann - 10-14-05 12:55 
-----------------------------------------------------------------------
-It does sound like the same problem if influenced by screening.  However I
-think it is not pre-amp type, as it is linked to the digital DXF etc
-connector not the analog lines, and most other physical areas of the card
-are not involved.  Perhaps an unwanted clock input active?  I wonder if
-anyone has data-info on this cards extra functions?
-
-----------------------------------------------------------------------
- Atraides - 10-17-05 20:41 
-----------------------------------------------------------------------
-Investigation Update:
-
-I played around with envy24control and alsamixer and found something
-strange. I get that noise on digital mixer and if I use alsamixer if I set
-H/W and H/W 1 (which corresponds to H/W Out 1(L) and H/W Out 2(R) in
-envy24control)  to H/W In 7. I can see envy24control switching to the
-actual settings when I switch  through the options in alsamixer but
-envy24control doesn't know H/W In 6 and 7.
-
-Hope this helps in some kind.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-12-05 02:02 Atraides       New Issue                                    
-10-12-05 02:02 Atraides       Distribution              => Suse            
-10-12-05 02:02 Atraides       Kernel Version            => 2.6.11.4-21.9   
-10-12-05 13:50 tiwai          Note Added: 0006465                          
-10-12-05 15:19 Atraides       Note Added: 0006467                          
-10-13-05 10:19 alanmann       Note Added: 0006475                          
-10-13-05 13:39 Atraides       Note Added: 0006477                          
-10-14-05 11:48 Atraides       Note Edited: 0006477                         
-10-14-05 12:55 alanmann       Note Added: 0006478                          
-10-17-05 20:41 Atraides       Note Added: 0006488                          
-======================================================================
-
+It's worth the effort just to cut the spam.
 
 
 
