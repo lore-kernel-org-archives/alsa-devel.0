@@ -1,17 +1,16 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: This mailing list
-Date: Mon, 17 Oct 2005 19:46:10 +0100
-Message-ID: <1129574770.3367.9.camel@localhost.localdomain>
+From: =?iso-8859-1?q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: Re: regression in handling VIA onboard sound chip, ALSA, 2.6.13, 2.6.14-rc4
+Date: Mon, 17 Oct 2005 20:52:56 +0200
+Message-ID: <200510172052.59224.rene@exactcode.de>
+References: <200510171032.29040.rene@exactcode.de> <s5hk6gczb6h.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed;
+  boundary="nextPart6214711.kLSjZWLZ1i";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8800B188
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 20:46:32 +0200 (MEST)
-Received: from mayday.localdomain (mayday [192.168.62.101])
-	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id j9HIkBm4017865
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 19:46:27 +0100
+In-Reply-To: <s5hk6gczb6h.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,17 +20,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-About half the spam that makes it into my in box and the majority of
-viruses I get sent are from this mailing list.
+--nextPart6214711.kLSjZWLZ1i
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Is there any way to fix that. I'll volunteer to install spamassassin and
-clamav on the server and keep them up to date.
+Hi,
 
-It's worth the effort just to cut the spam.
+On Monday 17 October 2005 12:32, Takashi Iwai wrote:
 
+> Ren=E9 Rebe wrote:
+> > up to 2.6.12-* the VIA onboard sound chip did always work as expected.
+> > Recently (2.6.13.* - I also tested 2.6.14-rc4) I get a timeout reading
+> > AC97 registers:
+> >
+> > PCI: Via IRQ fixup for 0000:00:11.5, from 0 to 4
+> > via82cxxx: Six channel audio available
+> > PCI: Setting latency timer of device 0000:00:11.5 to 64
+> > via82cxxx: timeout while reading AC97 codec (0xAA0000)
+> > ac97_codec: AC97 Audio codec, id: ADS112 (Analog Devices AD1981)
+> > via82cxxx: board #1 at 0xE000, IRQ 20
+>
+> No wonder, they are messages from OSS via82cxxx driver...
+
+You are so right - sorry for the stray report. With the ALSA driver all is=
+=20
+fine as usual.
+
+Yours,
+
+=2D-=20
+Ren=E9 Rebe - Rubensstr. 64 - 12157 Berlin (Europe / Germany)
+            http://www.exactcode.de | http://www.t2-project.org
+            +49 (0)30  255 897 45
+
+--nextPart6214711.kLSjZWLZ1i
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBDU/MLQuICExGFvYIRAkkLAJ42IQb9TJT/3xhVRCf7x1hPkrVfOQCZARQl
+8xRMDFuD4CGbMTYQh/qbfxw=
+=i16s
+-----END PGP SIGNATURE-----
+
+--nextPart6214711.kLSjZWLZ1i--
 
 
 -------------------------------------------------------
