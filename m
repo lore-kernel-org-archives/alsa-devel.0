@@ -1,13 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Soundcard matrix update - Echoaudio
-Date: Mon, 17 Oct 2005 09:32:31 +0200 (CEST)
-Message-ID: <XFMail.20051017093231.pochini@shiny.it>
-References: <2c746f620510161407j657b1601w9e5c22dd3d50af1b@mail.gmail.com>
+From: =?utf-8?q?Ren=C3=A9_Rebe?= <rene@exactcode.de>
+Subject: regression in handling VIA onboard sound chip, ALSA, 2.6.13, 2.6.14-rc4
+Date: Mon, 17 Oct 2005 10:32:28 +0200
+Message-ID: <200510171032.29040.rene@exactcode.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2c746f620510161407j657b1601w9e5c22dd3d50af1b@mail.gmail.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,34 +17,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Shattow <lucent@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-On 16-Oct-2005 Eric Shattow wrote:
+up to 2.6.12-* the VIA onboard sound chip did always work as expected.=20
+Recently (2.6.13.* - I also tested 2.6.14-rc4) I get a timeout reading=20
+AC97 registers:
 
-> Also, Freebob does not make use of ALSA code. I am to understand that
-> Freebob in its present state operates directly as a JACK plugin.
+PCI: Via IRQ fixup for 0000:00:11.5, from 0 to 4
+via82cxxx: Six channel audio available
+PCI: Setting latency timer of device 0000:00:11.5 to 64
+via82cxxx: timeout while reading AC97 codec (0xAA0000)
+ac97_codec: AC97 Audio codec, id: ADS112 (Analog Devices AD1981)
+via82cxxx: board #1 at 0xE000, IRQ 20
 
-It's a design decision. ALSA supports userspace drivers too. For
-example the "disk writer" plugin (I don't recall the exact name)
-is all inside alsa-lib.
+And no entry in /proc/asound/cards, there is only one for the Midiman Delta=
+=20
+1010 also in the system:
 
+0 [M1010          ]: ICE1712 - M Audio Delta 1010
+                     M Audio Delta 1010 at 0xb400, irq 19
 
-> ALSA as a sound device driver project would do well to define USB and
-> IEEE1394 APIs that when compiled for the foo protocol, result in a
-> base class kernel module snd-foo-audio and snd-foo-your_driver_here
-> modules. The monolithic snd-usb-audio module now would be a bad way to
-> start Firewire audio support.
+An the working kernel (2.6.12.5) I get this in dmesg:
 
-The ALSA usb core exists because nearly all usb soundcards use the
-same protocol. I don't know if it's the same about firewire devices
-and, in that case, if echoaudio cards follow the standard.
+PCI: Via IRQ fixup for 0000:00:11.5, from 0 to 6
+PCI: Setting latency timer of device 0000:00:11.5 to 64
+codec_read: codec 0 is not valid [0xfe0000]
+codec_read: codec 0 is not valid [0xfe0000]
+codec_read: codec 0 is not valid [0xfe0000]
+codec_read: codec 0 is not valid [0xfe0000]
 
+However the device works well, devices entry:
 
---
-Giuliano.
+0 [M1010          ]: ICE1712 - M Audio Delta 1010
+                     M Audio Delta 1010 at 0xb400, irq 18
+1 [V8235          ]: VIA8233 - VIA 8235
+                     VIA 8235 with AD1980 at 0xe000, irq 22
+
+Any known regressions or something I could give a try?
+
+Yours,
+
+=2D-=20
+Ren=C3=A9 Rebe - Rubensstr. 64 - 12157 Berlin (Europe / Germany)
+            http://www.exactcode.de | http://www.t2-project.org
+            +49 (0)30  255 897 45
 
 
 -------------------------------------------------------
