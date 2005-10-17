@@ -1,13 +1,14 @@
-From: Ville Herva <vherva@v.iki.fi>
-Subject: ice1724 M-Audio Revolution 5.1 support?
-Date: Mon, 17 Oct 2005 22:21:56 +0300
-Message-ID: <20051017192155.GA16945@v.iki.fi>
-Reply-To: alsa-devel@lists.sourceforge.net, v@iki.fi
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001480]: alsa-driver 1.0.10rc2 fails to compile with kernel suse-2.4.21
+Date: Tue, 18 Oct 2005 00:20:07 +0200
+Message-ID: <bbf819180cfa6f98276a7f5b25cb84f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C77CE167
+	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 00:20:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-=20
-is support for M-Audio Revolution 5.1 planned? It appears quite similar t=
-o
-7.1. I tried the monkey-see-monkey-do approach, and simply added the devi=
-ce
-ID to the driver (see the attached patch against 2.6.14-rc4), but that
-doesn't quite work - I get
-=20
-   alsa_setup(): Sample format not available for playback: Invalid argume=
-nt
-=20
-thanks...
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1480> 
+======================================================================
+Reported By:                roadrunner
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1480
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               SuSE Linux
+Kernel Version:             Linux version 2.4.21-297-default (root@i386.suse.de)
+(gcc version 3.3.1 (SuSE Linux)) #1 Sat Jul 23 07:47:39 UTC 2005
+======================================================================
+Date Submitted:             10-18-2005 00:20 CEST
+Last Modified:              10-18-2005 00:20 CEST
+======================================================================
+Summary:                    alsa-driver 1.0.10rc2 fails to compile with kernel
+suse-2.4.21
+Description: 
+Compiling fails:
+
+command:
+./cvscompile --with-cards=ca0106 --with-debug=basic
+
+result:
+[...]
+make[1]: Entering directory
+`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
+gcc -D__KERNEL__ -DMODULE=1
+-I/home/erik/archiv/alsa-driver-1.0.10rc2/include 
+-I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include -DMODVERSIONS -include
+/lib/modules/2.4.21-297-default/build/include/linux/modversions.h  
+-DEXPORT_SYMTAB -c memalloc.c
+In file included from memalloc.inc:13,
+                 from memalloc.c:1:
+/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:667:5: missing
+binary operator before token "("
+/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:688:5: missing
+binary operator before token "("
+make[1]: *** [memalloc.o] Error 1
+make[1]: Leaving directory
+`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
+make: *** [compile] Error 1
+
+compiler: gcc-3.3.6
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-18-05 00:20 roadrunner     New Issue                                    
+10-18-05 00:20 roadrunner     Distribution              => SuSE Linux      
+10-18-05 00:20 roadrunner     Kernel Version            => Linux version
+2.4.21-297-default (root@i386.suse.de) (gcc version 3.3.1 (SuSE Linux)) #1 Sat
+Jul 23 07:47:39 UTC 2005
+======================================================================
 
 
---
-"Se oli kuin noituutta:  Ei pystytty k=E4sitt=E4m=E4=E4n, kuinka suurmieh=
-i=E4kin
-Gleb ivallaan sai itkem=E4=E4n!  Mursi muutamalla sanalla: lause tai kaks=
-i!=20
-H=E4nt=E4 alettiin kutsua teurastajaksi. " - YUP
 
 
 -------------------------------------------------------
