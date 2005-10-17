@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001478]: No sound after volume adjustment during playback
-Date: Mon, 17 Oct 2005 00:59:28 +0200
-Message-ID: <7fbd91f99f66fa0dacc8204e74f046bb@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB headset problem
+Date: Mon, 17 Oct 2005 09:04:20 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0510170903440.12935-100000@studcom.urz.uni-halle.de>
+References: <20051014202153.GA1428@pulsussoft.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A569C13C
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 00:59:28 +0200 (MEST)
+In-Reply-To: <20051014202153.GA1428@pulsussoft.hu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +17,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Szekeres =?iso-8859-2?Q?Istv=E1n?= <szekeres@iii.hu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Szekeres Istv=E1n wrote:
+> ... under skype it is not working at all (strace revealed that
+> skype is writing 0s to the sound device)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1478> 
-======================================================================
-Reported By:                dzi
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1478
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2.6.13-r4
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             10-17-2005 00:57 CEST
-Last Modified:              10-17-2005 00:59 CEST
-======================================================================
-Summary:                    No sound after volume adjustment during playback
-Description: 
-If I adjust volume during playback, there is no sound anymore. After
-reinserting alsa modules sound is ok. I can adjust sound when playback is
-stopped and then I can play sound again. But if I adjust volume during
-playback, it disappears till reinserting of alsa modules.
-I use alsa kernel modules.
-======================================================================
+Does it read non-zero data?
 
-----------------------------------------------------------------------
- dzi - 10-17-05 00:59 
-----------------------------------------------------------------------
-I forgot to mention, that my sound card is AD1986A on my notebook.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-17-05 00:57 dzi            New Issue                                    
-10-17-05 00:57 dzi            Distribution              => Gentoo 2.6.13-r4
-10-17-05 00:57 dzi            Kernel Version            => 2.6.13          
-10-17-05 00:59 dzi            Note Added: 0006485                          
-======================================================================
-
+Regards,
+Clemens
 
 
 
