@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001477]: inserting maestro3 hangs system
-Date: Mon, 17 Oct 2005 19:37:58 +0200
-Message-ID: <f313ffd950a193fae69dd32e150575ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001472]: Constant distortion noise on digital mixer
+Date: Mon, 17 Oct 2005 20:41:19 +0200
+Message-ID: <f90e6fa108862d32a3cb096d25af981c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E815157
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 19:37:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38C3B188
+	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2005 20:41:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1477> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1472> 
 ======================================================================
-Reported By:                cra
-Assigned To:                tiwai
+Reported By:                Atraides
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1477
-Category:                   PCI - maestro3
+Issue ID:                   1472
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5 (development)
-Kernel Version:             2.6.13-1.1600_FC5
+Status:                     new
+Distribution:               Suse
+Kernel Version:             2.6.11.4-21.9
 ======================================================================
-Date Submitted:             10-16-2005 17:03 CEST
-Last Modified:              10-17-2005 19:37 CEST
+Date Submitted:             10-12-2005 02:02 CEST
+Last Modified:              10-17-2005 20:41 CEST
 ======================================================================
-Summary:                    inserting maestro3 hangs system
+Summary:                    Constant distortion noise on digital mixer
 Description: 
-Kernel hangs upon loading snd-maestro3 driver during hardware
-initialization.  The system only hangs if Windows was not booted prior to
-booting Linux.  So it seems that the Windows driver is poking the hardware
-in some way that "helps" the Linux driver, and basically the ALSA driver
-is not initializing the hardware correctly.
-
-Bug cross-reference:
-
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000376
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=134507
-
+The hardware in question is a Terratec DMX 6Fire 24/96. I have a constant
+crackling (like an old UKW radio between to stations) on the digital
+mixer. The noise disappears for a few seconds if I switch the Phono Input,
+the Breakout LED or Line In Selector. It changes the noise character when
+switching the S/PDIF Input from coaxial to optical. Even if all ins and
+outs are muted or tracked down its still there (I can see it in the
+Monitor Mixer).
 ======================================================================
 
 ----------------------------------------------------------------------
- cra - 10-17-05 19:37 
+ alanmann - 10-14-05 12:55 
 ----------------------------------------------------------------------
-The attached patch linux-2.6-maestro3-assp-init.patch fixes this issue for
-me.  It seems that the driver tries to start the ASSP before downloading
-the DSP code to it, which explains why booting Windows before warm-booting
-Linux works.  A warm boot must not clear the DSP memory, which allows the
-ASSP startup to succeed.
+It does sound like the same problem if influenced by screening.  However I
+think it is not pre-amp type, as it is linked to the digital DXF etc
+connector not the analog lines, and most other physical areas of the card
+are not involved.  Perhaps an unwanted clock input active?  I wonder if
+anyone has data-info on this cards extra functions?
 
-The fix is to call the snd_m3_assp_init function to write the DSP firmware
-into the ASSP chip before sending the RUN_ASSP command.  I also made the
-same fix in the OSS driver, but I did not test the OSS fix.
+----------------------------------------------------------------------
+ Atraides - 10-17-05 20:41 
+----------------------------------------------------------------------
+Investigation Update:
+
+I played around with envy24control and alsamixer and found something
+strange. I get that noise on digital mixer and if I use alsamixer if I set
+H/W and H/W 1 (which corresponds to H/W Out 1(L) and H/W Out 2(R) in
+envy24control)  to H/W In 7. I can see envy24control switching to the
+actual settings when I switch  through the options in alsamixer but
+envy24control doesn't know H/W In 6 and 7.
+
+Hope this helps in some kind.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-16-05 17:03 cra            New Issue                                    
-10-16-05 17:03 cra            Distribution              => Fedora Core 5
-(development)
-10-16-05 17:03 cra            Kernel Version            => 2.6.13-1.1600_FC5
-10-16-05 17:18 cra            File Added: dmesg.txt                        
-10-16-05 17:19 cra            File Added: lspci.txt                        
-10-16-05 17:19 cra            File Added: dmidecode.txt                    
-10-16-05 17:40 cra            File Added: linux-2.6-debug-maestro3.patch        
-           
-10-16-05 17:41 cra            File Added: alsa-warmboot-after-win2k.txt         
-          
-10-16-05 17:43 cra            File Added: alsa-coldboot-hang.txt                
-   
-10-16-05 17:44 cra            File Added: oss-coldboot-hang.txt                 
-  
-10-17-05 19:32 cra            File Added: linux-2.6-maestro3-assp-init.patch    
-               
-10-17-05 19:37 cra            Note Added: 0006487                          
+10-12-05 02:02 Atraides       New Issue                                    
+10-12-05 02:02 Atraides       Distribution              => Suse            
+10-12-05 02:02 Atraides       Kernel Version            => 2.6.11.4-21.9   
+10-12-05 13:50 tiwai          Note Added: 0006465                          
+10-12-05 15:19 Atraides       Note Added: 0006467                          
+10-13-05 10:19 alanmann       Note Added: 0006475                          
+10-13-05 13:39 Atraides       Note Added: 0006477                          
+10-14-05 11:48 Atraides       Note Edited: 0006477                         
+10-14-05 12:55 alanmann       Note Added: 0006478                          
+10-17-05 20:41 Atraides       Note Added: 0006488                          
 ======================================================================
 
 
