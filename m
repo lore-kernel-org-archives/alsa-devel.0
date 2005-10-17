@@ -1,16 +1,13 @@
-From: =?iso-8859-1?q?Ren=E9_Rebe?= <rene@exactcode.de>
-Subject: Re: regression in handling VIA onboard sound chip, ALSA, 2.6.13, 2.6.14-rc4
-Date: Mon, 17 Oct 2005 20:52:56 +0200
-Message-ID: <200510172052.59224.rene@exactcode.de>
-References: <200510171032.29040.rene@exactcode.de> <s5hk6gczb6h.wl%tiwai@suse.de>
+From: Ville Herva <vherva@v.iki.fi>
+Subject: ice1724 M-Audio Revolution 5.1 support?
+Date: Mon, 17 Oct 2005 22:21:56 +0300
+Message-ID: <20051017192155.GA16945@v.iki.fi>
+Reply-To: alsa-devel@lists.sourceforge.net, v@iki.fi
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart6214711.kLSjZWLZ1i";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hk6gczb6h.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,56 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
---nextPart6214711.kLSjZWLZ1i
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
 Hi,
-
-On Monday 17 October 2005 12:32, Takashi Iwai wrote:
-
-> Ren=E9 Rebe wrote:
-> > up to 2.6.12-* the VIA onboard sound chip did always work as expected.
-> > Recently (2.6.13.* - I also tested 2.6.14-rc4) I get a timeout reading
-> > AC97 registers:
-> >
-> > PCI: Via IRQ fixup for 0000:00:11.5, from 0 to 4
-> > via82cxxx: Six channel audio available
-> > PCI: Setting latency timer of device 0000:00:11.5 to 64
-> > via82cxxx: timeout while reading AC97 codec (0xAA0000)
-> > ac97_codec: AC97 Audio codec, id: ADS112 (Analog Devices AD1981)
-> > via82cxxx: board #1 at 0xE000, IRQ 20
->
-> No wonder, they are messages from OSS via82cxxx driver...
-
-You are so right - sorry for the stray report. With the ALSA driver all is=
 =20
-fine as usual.
+is support for M-Audio Revolution 5.1 planned? It appears quite similar t=
+o
+7.1. I tried the monkey-see-monkey-do approach, and simply added the devi=
+ce
+ID to the driver (see the attached patch against 2.6.14-rc4), but that
+doesn't quite work - I get
+=20
+   alsa_setup(): Sample format not available for playback: Invalid argume=
+nt
+=20
+thanks...
 
-Yours,
 
-=2D-=20
-Ren=E9 Rebe - Rubensstr. 64 - 12157 Berlin (Europe / Germany)
-            http://www.exactcode.de | http://www.t2-project.org
-            +49 (0)30  255 897 45
-
---nextPart6214711.kLSjZWLZ1i
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQBDU/MLQuICExGFvYIRAkkLAJ42IQb9TJT/3xhVRCf7x1hPkrVfOQCZARQl
-8xRMDFuD4CGbMTYQh/qbfxw=
-=i16s
------END PGP SIGNATURE-----
-
---nextPart6214711.kLSjZWLZ1i--
+--
+"Se oli kuin noituutta:  Ei pystytty k=E4sitt=E4m=E4=E4n, kuinka suurmieh=
+i=E4kin
+Gleb ivallaan sai itkem=E4=E4n!  Mursi muutamalla sanalla: lause tai kaks=
+i!=20
+H=E4nt=E4 alettiin kutsua teurastajaksi. " - YUP
 
 
 -------------------------------------------------------
