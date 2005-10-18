@@ -1,11 +1,12 @@
-From: "Freida Cuevas" <fcuevasms@tiri.com>
-Subject: Stockmarket Small-cap Profile
-Date: Wed, 19 Oct 2005 04:40:50 +0000
-Message-ID: <COPODDEINMKOCLPOKHIPEMCACIAA.fcuevasms@tiri.com>
+From: <pradeep.gane@wipro.com>
+Subject: How to use mmap when PCI DMA feature is not available....
+Date: Tue, 18 Oct 2005 19:57:15 +0530
+Message-ID: <D6DA3A176076B2408E53467FC0B0056B019924CB@BLR-EC-MBX04.wipro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: base64
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C5D3F0.0AA7DD8C"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,101 +16,113 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org, alsa-announce@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-KyBNWE9OKioqTVhPTioqKipNWE9OKioqKk1YT04qKioqTVhPTioqKipNWE9O
-ICsNCg0KDQorKysrKysrKysrK0N1cnJlbnQgUHJvZmlsZSsrKysrKysrKysr
-KysNCg0KTUFYWE9OIElOQy4gKE9UQzpNWE9OKSANClN5bWJvbDogTVhPTi4g
-UEsgDQoNCkN1cnJlbnQgUHJpY2U6ICQwLjA1DQoyLTMgRGF5IFRhcmdldDok
-MC4xMQ0KKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-DQoNCkFscmVhZHkgdXAgMzYlIE1vbmRheSwgVHVlc2RheSBhbmQgdGhlIHJl
-c3QgDQpvZiB0aGUgd2VlayBpcyBnb2luZyB0byBiZSBCaUchDQoNCg0KV2Ug
-YXJlIHB1dHRpbmcgaW52ZXN0b3JzIG9uIEhJR0hfQUxFUlQsIHB1dA0KeW91
-ciBzaWdodHMgb24gTVhPTi4uV2F0Y2ggVGhpcyBvbmUgQUxMIFdFRUshIQ0K
-DQoNCiogQWN0IFZlcnkgUXVpY2sgKiANCg0KDQpUaGlzIHN0b2NrIGlzIHBv
-aXNlZCBmb3IgYSBIVUdFIEJSRUFLIE9VVCwgYmVjYXVzZSANCm9mIHRoZSBs
-b3cgcHJpY2UsIGFuZCByZWNlbnQgbmV3cy4gTVhPTiBjb3VsZCBiZSANCm9u
-ZSBvZiB0aGUgMSwwMDBfJV9nYWluZXJzIHdlIGFyZSBhbGwgdGFsa2luZyBh
-Ym91dCANCmxhdGVyIHRoaXMgeWVhci5MYXN0IHRpbWUgdGhpcyB3YXMgb24g
-SElHSF9BTEVSVA0KaXQgd2VudCB1cCBvdmVyIDEyMCslLiBXZSBFeHBlY3Qg
-TW9yZSB0aGlzIFRpbWUhIQ0KDQoNClVubGlrZSBpbnZlc3RpbmcgaW4gaW50
-ZXJuZXQgc3QwY2tzIGluIHRoZSA5MCdzLCANCmZpbmRpbmcgYSBzdG9jayB0
-b2RheSB3aXRoIHRoZSBwb3RlbnRpYWwgdG8gcmV0dXJuIA0KMTAwMCUgb3Ig
-YmV0dGVyIGlzIGxpa2UgZmluZGluZyBhIG5lZWRsZSBpbiBhIA0KaGF5c3Rh
-Y2ssIHVubGVzcyB0aGUgaGF5c3RhY2sgaXMgYWxzbyBrbm93biBhcyB0aGUg
-DQptb3JlIHRoZW4gJDJUcmlsbGkwbiwgaW4gbWFya2V0IHZhbHVlIEhlYWx0
-aCBDYXJlIA0KSW5kdXN0cnkgYW5kIHRoYW5rcyB0byBNYXh4b24ncyA6KCBN
-WE9OKSBkaXNwb3NhYmxlIA0KcmV0cmFjdGFibGUgc3lyaW5nZSBhbmQgc2Fm
-ZXR5IHNjYWxwZWwgZGV2aWNlLCB3aGljaCANCnVzZXMgcHJvcHJpZXRhcnkg
-cGF0ZW50ZWQgdGVjaG5vbG9neSBpbiB3aGljaCBhIA0KdmFjdXVtIGNhdXNl
-cyB0aGUgbmVlZGxlIHRvIHJldHJhY3QgYW5kIGxvY2sgaW4gcGxhY2UgDQpp
-bnRvIHRoZSBiYXJyZWwgb2YgdGhlIHN5cmluZ2Ugb3IgZGV2aWNlIGFmdGVy
-IGFuIA0KaW5qZWN0aW9uIGlzIGFkbWluaXN0ZXJlZCBvciBibG9vZCBpcyBk
-cmF3biwgeW91IA0KbmVlZCBub3QgZmVhciBiZWluZyBzdGFiYmVkIGFuZCAN
-CmluZmVjdGVkIGJ5IHRoZSBuZWVkbGUuIA0KDQoNCkxldCdzIGdldCB0byB0
-aGUgcG9pbnQsIHRoaXMgdGVjaG5vbG9neSBpcyBiZWluZyANCm1hbmRhdGVk
-LiBPU0hBIGVzdGltYXRlcyB0aGF0IDggbWl8fGkwbiB3b3JrZXJzIGluIHRo
-ZSANCmhlYWx0aCBjYXJlIGluZHVzdHJ5IGFuZCByZWxhdGVkIG9jY3VwYXRp
-b25zIGFyZSBhdCANCnJpc2sgb2Ygb2NjdXBhdGlvbmFsIGV4cG9zdXJlIHRv
-IGJsb29kIGJvcm4gcGF0aG9nZW5zLCANCmluY2x1ZGluZyBISVYsIEhlcGF0
-aXRpcyAoQ2FycmllZCBieSBhdCBsZWFzdCA0IA0KbWlsbGlvbiBBbWVyaWNh
-bnMpIGFuZCBvdGhlcnMuIEluIGZhY3QsIGEgdHlwaWNhbCANCm5lZWRsZSBj
-YW4gaGFyYm9yIG1vcmUgdGhhbiAyMCBkaXNlYXNlcy4gVGhlIE5hdGlvbmFs
-IA0KSW5zdGl0dXRlIGZvciBPY2N1cGF0aW9uYWwgU2FmZXR5ICYgSGVhbHRo
-IChOSU9TSCkgDQplc3RpbWF0ZXMgdGhhdCA2MDAsMDAwIHRvIDgwMCwwMDAg
-bmVlZGxlIHN0aWNrIA0KaW5qdXJpZXMgb2NjdXIgYW5udWFsbHkgaW4gdGhl
-IGhvc3BpdGFsIHNldHRpbmcgd2l0aCANCm51cnNpbmcgc3RhZmYgYmVpbmcg
-dGhlIG1vc3QgZnJlcXVlbnRseSBpbmp1cmVkLCANCnJlc3VsdGluZyBpbiB0
-aG91c2FuZHMgb2YgVS5TLiBoZWFsdGhjYXJlIHdvcmtlcnMgDQpiZWNvbWlu
-ZyBpbmZlY3RlZCBiZWNhdXNlIG9mIHRoZXNlIHNoYXJwcyBpbmp1cmllcyAN
-CmV2ZXJ5IHllYXIuIEl0IG1heSBldmVuIGJlIHdvcnNlIHRoZW4gdGhhdCwg
-YWNjb3JkaW5nIA0KdG8gQ2VudGVycyBmb3IgRGlzZWFzZSBDb250cm9sIChD
-REMpIGRhdGEsIHRoZSBudW1iZXIgDQpvZiBuZWVkbGUgc3RpY2sgYW5kIG90
-aGVyIHBlcmN1dGFuZW91cyBpbmp1cmllcyBhbW9uZyANCmhlYWx0aGNhcmUg
-d29ya2VycyBpcyBncm93aW5nIGV2ZXJ5IHllYXIuICBBYm91dCBoYWxmIA0K
-b2YgdGhlc2UgaW5qdXJpZXMgYXJlIHVucmVwb3J0ZWQuICBBdCBhbiBhdmVy
-YWdlIA0KaG9zcGl0YWwsIHdvcmtlcnMgaW5jdXIgYXBwcm94aW1hdGVseSAz
-MCBuZWVkbGUgc3RpY2sgDQppbmp1cmllcyBwZXIgMTAwIGJlZHMgcGVyIHll
-YXIuICBJbiBvbmUgc3R1ZHksIG5lZWRsZSANCnN0aWNrIGluanVyaWVzIHdl
-cmUgcmVkdWNlZCBhbnl3aGVyZSBmcm9tIDIzJSB0byA3NiUgDQpieSB1c2lu
-ZyBzYWZlciBuZWVkbGVzLiANCg0KDQpUaGUgc2FmZXR5IG5lZWRsZXMgYW5k
-IHN5cmluZ2VzIG1hcmtldCByZXByZXNlbnRzIGEgDQpsYXJnZSBhbmQgZ3Jv
-d2luZyBzZWdtZW50IG9mIHRoZSBoZWFsdGhjYXJlIGluZHVzdHJ5LiANCklu
-IDE5OTksIHRvdGFsIHNhbGVzIG9mIG5lZWRsZXMgYW5kIHN5cmluZ2VzIGlu
-IHRoZSANClUuUy4gcmVhY2hlZCBhIHJlY29yZCBoaWdoIG9mICQ3NTlfbWl8
-fGkwbi4gVGhpcyANCmZpZ3VyZSBpcyBleHBlY3RlZCB0byBpbmNyZWFzZSB0
-byAkMS4wNV9iaXx8aTBuIGJ5IA0KMjAwNi4gUmFwaWQgYWNjZXB0YW5jZSBv
-ZiBpdHMgU2FmZXR5LWVuZ2luZWVyZWQgbWVkaWNhbCANCmRldmljZXMgKFNF
-TURzKSBhbmQgRkRBIDUxMEsgQXBwbGljYXRpb24gYXMgd2VsbCBhcyANCmFw
-cHJvdmFsIG9mIEZvcmVpZ24gTGljZW5zZXMgbGF0ZXIgdGhpcyB5ZWFyIHdp
-bGwgbWVhbiANCnN0MGNrIHByaWNlIGxpZnQgb2ZmLiANCg0KDQpNWE9OIHdp
-bGwgdGFrZSB0aGUgaGVhbHRoY2FyZSBzYWZldHkgZGV2aWNlIGluZHVzdHJ5
-IA0KYnkgc3Rvcm0sIG9uY2UgdGhlIHByb2R1Y3QgaXMgYmVpbmcgbWFudWZh
-Y3R1cmVkIG9uIGEgDQpsYXJnZSBzY2FsZSAsIGFuZCBmYXN0IHRyYWNrIGFw
-cHJvdmVkLCB1IGNvdWxkIGJlIA0Kc2VlaW5nIHRoaXMgcHJvZHVjdCB0aGUg
-bmV4dCB0aW1lIHlvdSBnbyB0byB0aGUgDQpkb2N0b3JzIG9mZmljZSwgYW5k
-IHdoZW4gdSBsZWF2ZSB1IHdpbGwga25vdyB0aGUgDQpkZXZpY2Ugd2lsbCBu
-ZXZlciBzdGljayBhbnlvbmUgZWxzZS4gVHJhZGUgdGhlIGNoYXJ0cyANCm9u
-IHRoaXMgb25lLCBlYXN5IDIwMC0zMDAlIGdhaW5zLCBvbiB0aGUgY2hhcnQg
-YWxvbmUuIA0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18gDQpEMXNjbDRpbWVyOiANCm5ldG5ld3Mgc2VuZHMgb3V0IHB1YmxpYyBh
-bm5vdW5jZW1lbnRzIHByb3ZpZGluZyANCmluZm9ybWF0aW9uIG9uIHNlbGVj
-dGVkIGNvbXBhbmllcy4gbmV0bmV3cyBpcyBuMHRfYSANCi1yM2cxc3RlcmVk
-IDFudmVzdG1lbnQgYWR2aXMwciBvciBicm9rZXItZGVhbGVyLiBUaGlzIA0K
-cmVwb3J0IGlzIHByb3ZpZGVkIGFzIGFuIGluZm9ybWF0aW9uIHNlcnZpY2Ug
-b25seSBhbmQgDQp0aGUgc3RhdGVtZW50cyBhbmQgb3BpbmlvbnMgaW4gdGhp
-cyByZXBvcnQgc2hvdWxkIG5vdCANCmJlIGNvbnN0cnVlZCBhcyBhbiBvZmZl
-ciBvciBzMGxpY2l0YXRpb24gdG8gYnV5IG9yIA0Kc2VsbCBhbnkgc2VjdXJp
-dHkuIG5ldG5ld3MgYWNjZXB0cyBubyBsaWFiaWxpdHkgZm9yIA0KYW55IGxv
-c3MgYXJpc2luZyBmcm9tIGFuIGludmVzdG9yJ3MgcmVsaWFuY2Ugb24gb3Ig
-dXNlIA0Kb2YgdGhpcyBhbm5vdW5jZW1lbnQuIEFuIGludmVzdG1lbnQgaXMg
-Y29uc2lkZXJlZCB0byANCmJlIGhpZ2hseSBzcGVjdWxhdGl2ZSBhbmQgc2hv
-dWxkIG5vdCBiZSBjb25zaWRlcmVkIA0KdW5sZXNzIGEgcGVyc29uIGNhbiBh
-ZmZvcmQgYSBjb21wbGV0ZSBsMHNzIG9mIA0KaW52ZXN0bWVudC4gb25ldG5l
-d3MgaGFzIGJlZW4gY29tcGVuc2F0ZWQgdGhyM2UgDQp0aDB1czRuZF90d2Vu
-dHlfZDBsbDRycyBmb3IgdGhpcyByZXBvcnQu
+This is a multi-part message in MIME format.
 
+------_=_NextPart_001_01C5D3F0.0AA7DD8C
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+=20
+I am in the process of writing ALSA driver for a sound card.
+=20
+My sound card does not support the PCI DMA feature. It has external
+hardware memory, where i will copy the data using copy callback
+function.
+=20
+1. I am planning to allocate Kernel memory for PCM using
+snd_malloc_pages.=20
+2. I want this memory to be visible to the user so that he can put the
+audio data directly onto this buffer.=20
+3. I will use copy/silence callback to copy the data.
+=20
+Now my question is...=20
+=20
+1. Is my memory allocation strategy correct?
+2. How do i mmap the memory to be visible to the user application?=20
+=20
+Thanks you very in advance.
+=20
+Best Regards,
+Pradeep
+=20
+=20
+
+------_=_NextPart_001_01C5D3F0.0AA7DD8C
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 5.50.4937.800" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Hi=20
+all,</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>I am =
+in the process=20
+of writing ALSA driver for a sound card.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>My =
+sound card does=20
+not support the PCI DMA feature. It has external hardware memory, where =
+i will=20
+copy the data using copy callback function.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>1. I =
+am planning to=20
+allocate Kernel memory for PCM using snd_malloc_pages. =
+</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>2. I =
+want this=20
+memory to be visible to the user so that he can put the audio data =
+directly onto=20
+this buffer. </SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>3. I =
+will use=20
+copy/silence callback to copy the data.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Now my =
+question=20
+is... </SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>1. Is =
+my memory=20
+allocation strategy correct?</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>2. How =
+do i mmap the=20
+memory to be visible to the user application? </SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Thanks =
+you very in=20
+advance.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Best=20
+Regards,</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005>Pradeep</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D046212014-18102005>&nbsp;</SPAN></FONT></DIV></BODY></HTML>
+
+------_=_NextPart_001_01C5D3F0.0AA7DD8C--
 
 
 -------------------------------------------------------
