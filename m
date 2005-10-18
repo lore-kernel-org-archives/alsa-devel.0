@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001481]: No "Master" is shown in alsamixer
-Date: Tue, 18 Oct 2005 17:24:44 +0200
-Message-ID: <f89e69f1e3f7f5742942ec9e873d15dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001477]: inserting maestro3 hangs system
+Date: Tue, 18 Oct 2005 17:27:13 +0200
+Message-ID: <9d409ed10ededc29ff2b595c48d3c494@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC7FF1A2
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 17:24:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 727171A2
+	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 17:27:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1481> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1477> 
 ======================================================================
-Reported By:                cartman
+Reported By:                cra
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1481
-Category:                   PCI - hda-intel
+Issue ID:                   1477
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Pardus
-Kernel Version:             2.6.14-rc2
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core 5 (development)
+Kernel Version:             2.6.13-1.1600_FC5
 ======================================================================
-Date Submitted:             10-18-2005 11:17 CEST
-Last Modified:              10-18-2005 17:24 CEST
+Date Submitted:             10-16-2005 17:03 CEST
+Last Modified:              10-18-2005 17:27 CEST
 ======================================================================
-Summary:                    No "Master" is shown in alsamixer
+Summary:                    inserting maestro3 hangs system
 Description: 
-Chipset is Realtek ALC260. All sound modules loaded :
+Kernel hangs upon loading snd-maestro3 driver during hardware
+initialization.  The system only hangs if Windows was not booted prior to
+booting Linux.  So it seems that the Windows driver is poking the hardware
+in some way that "helps" the Linux driver, and basically the ALSA driver
+is not initializing the hardware correctly.
 
-cartman@pardus ~ $ lsmod|grep snd
-snd_pcm_oss            47328  0
-snd_mixer_oss          15936  1 snd_pcm_oss
-snd_seq_dummy           2628  0
-snd_seq_oss            30464  0
-snd_seq_midi_event      5888  1 snd_seq_oss
-snd_seq                47056  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
-snd_seq_device          6732  3 snd_seq_dummy,snd_seq_oss,snd_seq
-snd_hda_intel          13696  6
-snd_hda_codec          81024  1 snd_hda_intel
-snd_pcm                79752  4 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              20932  3 snd_seq,snd_pcm
-snd                    46564  19
-snd_pcm_oss,snd_mixer_oss,snd_seq_oss,snd_seq,snd_seq_device,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8072  2 snd_hda_intel,snd_pcm
+Bug cross-reference:
+
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000376
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=134507
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-18-05 17:24 
+ cra - 10-17-05 19:37 
 ----------------------------------------------------------------------
-ALC260 has no master volume control.  It has separate headphone and
-line-out volume controls.
+The attached patch linux-2.6-maestro3-assp-init.patch fixes this issue for
+me.  It seems that the driver tries to start the ASSP before downloading
+the DSP code to it, which explains why booting Windows before warm-booting
+Linux works.  A warm boot must not clear the DSP memory, which allows the
+ASSP startup to succeed.
+
+The fix is to call the snd_m3_assp_init function to write the DSP firmware
+into the ASSP chip before sending the RUN_ASSP command.  I also made the
+same fix in the OSS driver, but I did not test the OSS fix.
+
+----------------------------------------------------------------------
+ tiwai - 10-18-05 17:27 
+----------------------------------------------------------------------
+Could you give a changelog and a signed-off-by line to submit your patch? 
+Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-18-05 11:17 cartman        New Issue                                    
-10-18-05 11:17 cartman        Distribution              => Pardus          
-10-18-05 11:17 cartman        Kernel Version            => 2.6.14-rc2      
-10-18-05 17:24 tiwai          Status                   assigned => resolved
-10-18-05 17:24 tiwai          Resolution               open => not an issue
-10-18-05 17:24 tiwai          Note Added: 0006489                          
+10-16-05 17:03 cra            New Issue                                    
+10-16-05 17:03 cra            Distribution              => Fedora Core 5
+(development)
+10-16-05 17:03 cra            Kernel Version            => 2.6.13-1.1600_FC5
+10-16-05 17:18 cra            File Added: dmesg.txt                        
+10-16-05 17:19 cra            File Added: lspci.txt                        
+10-16-05 17:19 cra            File Added: dmidecode.txt                    
+10-16-05 17:40 cra            File Added: linux-2.6-debug-maestro3.patch        
+           
+10-16-05 17:41 cra            File Added: alsa-warmboot-after-win2k.txt         
+          
+10-16-05 17:43 cra            File Added: alsa-coldboot-hang.txt                
+   
+10-16-05 17:44 cra            File Added: oss-coldboot-hang.txt                 
+  
+10-17-05 19:32 cra            File Added: linux-2.6-maestro3-assp-init.patch    
+               
+10-17-05 19:37 cra            Note Added: 0006487                          
+10-18-05 17:27 tiwai          Note Added: 0006491                          
 ======================================================================
 
 
