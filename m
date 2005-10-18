@@ -1,12 +1,13 @@
-From: <pradeep.gane@wipro.com>
-Subject: How to use mmap when PCI DMA feature is not available....
-Date: Tue, 18 Oct 2005 19:57:15 +0530
-Message-ID: <D6DA3A176076B2408E53467FC0B0056B019924CB@BLR-EC-MBX04.wipro.com>
+From: Szekeres =?iso-8859-2?Q?Istv=E1n?= <szekeres@iii.hu>
+Subject: Re: USB headset problem
+Date: Tue, 18 Oct 2005 21:46:08 +0200
+Message-ID: <20051018194608.GA23908@pulsussoft.hu>
+References: <20051014091716.GA30524@pulsussoft.hu> <Pine.HPX.4.33n.0510141250040.23443-100000@studcom.urz.uni-halle.de> <20051014202153.GA1428@pulsussoft.hu> <20051014220539.GA1818@pulsussoft.hu> <s5hll0szbdp.wl%tiwai@suse.de> <20051017124011.GA16144@pulsussoft.hu> <s5hhdbgz6m2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C5D3F0.0AA7DD8C"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <s5hhdbgz6m2.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,113 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------_=_NextPart_001_01C5D3F0.0AA7DD8C
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+> > I already tried aoss, the result is a big fat SIGSEGV.
+> 
+> That's more interesting.
+> Can you get a stack trace via gdb?
 
-Hi all,
-=20
-I am in the process of writing ALSA driver for a sound card.
-=20
-My sound card does not support the PCI DMA feature. It has external
-hardware memory, where i will copy the data using copy callback
-function.
-=20
-1. I am planning to allocate Kernel memory for PCM using
-snd_malloc_pages.=20
-2. I want this memory to be visible to the user so that he can put the
-audio data directly onto this buffer.=20
-3. I will use copy/silence callback to copy the data.
-=20
-Now my question is...=20
-=20
-1. Is my memory allocation strategy correct?
-2. How do i mmap the memory to be visible to the user application?=20
-=20
-Thanks you very in advance.
-=20
-Best Regards,
-Pradeep
-=20
-=20
+I have a stack trace but I think a patch for the solution is more useful ;-)
 
-------_=_NextPart_001_01C5D3F0.0AA7DD8C
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I don't know if it is necessary or useful, but:
+Signed-off-by: Szekeres Istvan <szekeres@iii.hu>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
+--- alsa-oss.c~ 2005-10-18 21:04:21.000000000 +0200
++++ alsa-oss.c  2005-10-18 21:04:21.000000000 +0200
+@@ -344,10 +344,13 @@
+ int fcntl(int fd, int cmd, ...)
+ {
+        va_list args;
+        void *arg;
 
-<META content=3D"MSHTML 5.50.4937.800" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Hi=20
-all,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>I am =
-in the process=20
-of writing ALSA driver for a sound card.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>My =
-sound card does=20
-not support the PCI DMA feature. It has external hardware memory, where =
-i will=20
-copy the data using copy callback function.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>1. I =
-am planning to=20
-allocate Kernel memory for PCM using snd_malloc_pages. =
-</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>2. I =
-want this=20
-memory to be visible to the user so that he can put the audio data =
-directly onto=20
-this buffer. </SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>3. I =
-will use=20
-copy/silence callback to copy the data.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Now my =
-question=20
-is... </SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>1. Is =
-my memory=20
-allocation strategy correct?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>2. How =
-do i mmap the=20
-memory to be visible to the user application? </SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Thanks =
-you very in=20
-advance.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D046212014-18102005>Best=20
-Regards,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005>Pradeep</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D046212014-18102005>&nbsp;</SPAN></FONT></DIV></BODY></HTML>
++       if (!initialized)
++               initialize();
++
+        va_start(args, cmd);
+        arg = va_arg(args, void *);
+        va_end(args);
+        if (fd < 0 || fd >= open_max || fds[fd] == NULL)
+                return _fcntl(fd, cmd, arg);
 
-------_=_NextPart_001_01C5D3F0.0AA7DD8C--
+
+Next thing is to compare the kernel oss emulation with aoss on a non-working
+kernel.
+
+Best regards,
+Szekeres Istvan
 
 
 -------------------------------------------------------
