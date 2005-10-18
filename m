@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001477]: inserting maestro3 hangs system
-Date: Tue, 18 Oct 2005 17:27:13 +0200
-Message-ID: <9d409ed10ededc29ff2b595c48d3c494@bugtrack.alsa-project.org>
+Date: Tue, 18 Oct 2005 18:40:49 +0200
+Message-ID: <3171f1123d4dd6b1bfa45c2461bd5aa7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 727171A2
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 17:27:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F181C178
+	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 18:40:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5 (development)
 Kernel Version:             2.6.13-1.1600_FC5
 ======================================================================
 Date Submitted:             10-16-2005 17:03 CEST
-Last Modified:              10-18-2005 17:27 CEST
+Last Modified:              10-18-2005 18:40 CEST
 ======================================================================
 Summary:                    inserting maestro3 hangs system
 Description: 
@@ -58,23 +58,21 @@ https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=134507
 ======================================================================
 
 ----------------------------------------------------------------------
- cra - 10-17-05 19:37 
-----------------------------------------------------------------------
-The attached patch linux-2.6-maestro3-assp-init.patch fixes this issue for
-me.  It seems that the driver tries to start the ASSP before downloading
-the DSP code to it, which explains why booting Windows before warm-booting
-Linux works.  A warm boot must not clear the DSP memory, which allows the
-ASSP startup to succeed.
-
-The fix is to call the snd_m3_assp_init function to write the DSP firmware
-into the ASSP chip before sending the RUN_ASSP command.  I also made the
-same fix in the OSS driver, but I did not test the OSS fix.
-
-----------------------------------------------------------------------
  tiwai - 10-18-05 17:27 
 ----------------------------------------------------------------------
 Could you give a changelog and a signed-off-by line to submit your patch? 
 Thanks.
+
+----------------------------------------------------------------------
+ cra - 10-18-05 18:40 
+----------------------------------------------------------------------
+Summary: Fix maestro3 hang after cold boot
+
+This patch fixes the maestro3 driver to call the snd_m3_assp_init
+function to write the DSP firmware into the ASSP chip before sending the
+RUN_ASSP command, thereby solving the hang after a cold boot.
+
+Signed-off-by: Charles R. Anderson <cra@alum.wpi.edu>
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +96,7 @@ Date Modified  Username       Field                    Change
                
 10-17-05 19:37 cra            Note Added: 0006487                          
 10-18-05 17:27 tiwai          Note Added: 0006491                          
+10-18-05 18:40 cra            Note Added: 0006492                          
 ======================================================================
 
 
