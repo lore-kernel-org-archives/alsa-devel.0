@@ -1,14 +1,14 @@
-From: =?ISO-8859-15?Q?Hor=E1cio_Hiroiti_Sawame?= <horacio@lit.inpe.br>
-Subject: LG Netodragon PCI modem support request for snd-intel8x0m
-Date: Tue, 18 Oct 2005 17:41:15 -0200
-Message-ID: <43554FDB.5060502@lit.inpe.br>
+From: Ville Herva <vherva@vianova.fi>
+Subject: Re: ice1724 M-Audio Revolution 5.1 support?
+Date: Tue, 18 Oct 2005 23:37:15 +0300
+Message-ID: <20051018203715.GQ24719@vianova.fi>
+References: <20051017192155.GA16945@v.iki.fi> <s5hu0ffkxgx.wl%tiwai@suse.de>
+Reply-To: vherva@vianova.fi
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from net3.lit.inpe.br (net3.lit.inpe.br [150.163.13.242])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1EEAC161
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 21:41:20 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hu0ffkxgx.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,44 +18,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: perex@suse.cz, sashakh@gmail.com
+To: alsa-devel@lists.sf.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi !
+On Tue, Oct 18, 2005 at 11:04:14AM +0200, you [Takashi Iwai] wrote:
+> At Mon, 17 Oct 2005 22:21:56 +0300,
+> Ville Herva wrote:
+> > 
+> > Hi,
+> >  
+> > is support for M-Audio Revolution 5.1 planned? It appears quite similar to
+> > 7.1. I tried the monkey-see-monkey-do approach, and simply added the device
+> > ID to the driver (see the attached patch against 2.6.14-rc4), but that
+> > doesn't quite work - I get
+> >  
+> >    alsa_setup(): Sample format not available for playback: Invalid argument
+> 
+> If you used "hw" PCM, the above is no fatal error.
+> ICE1724 supports only 32bit format.  For playing 16bit or other
+> formats, you have to convert it via plug layer.  For example,
+> 
+> 	% aplay -Dplughw foo.wav
+> 
+> But, the default configuration is already like above, so even just
+> "aplay foo.wav" should work.
 
-I have a PCI modem LG Netodragon and I think it should be supported by 
-your snd-intel8x0m driver.
-This modem is supported by slmodem package but when new kernel version 
-is released the binary code (slamr) sometimes breaks. So I tested the 
-alsa driver in a HP Compaq nx7010 (Intel 82801DB-ICH4 Modem) and worked. 
-But in my house a can not work with the Netodragon modem.
+Well, I can get sound out of the device, but no matter what I try, I only
+get seriously distorded sound. And the volume setting (I'm using headphone
+output) doesn't work at all.
 
-Some information:
+I'm trying 
 
-# lspci -s 00:07.0 -n
-0000:00:07.0 Class 0703: 10b9:5459
+aplay -Dpcm.dsp0 test.wav
 
-# lspci -s 00:07.0 -vvv
-0000:00:07.0 Modem: ALi Corporation SmartLink SmartPCI561 56K Modem 
-(prog-if 00 [Generic])
-	Subsystem: Smart Link Ltd.: Unknown device 5459
-	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR- FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR-
-	Latency: 32
-	Interrupt: pin A routed to IRQ 209
-	Region 0: Memory at cfffe000 (32-bit, non-prefetchable) [size=4K]
-	Region 1: I/O ports at e800 [size=256]
-	Capabilities: [40] Power Management version 2
-		Flags: PMEClk- DSI+ D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+and I have this in my .asoundrc:
 
--- 
-Horacio Hiroiti Sawame (e-mail: horacio@lit.inpe.br) Tecnologista Sr.
-phone: +55(12)3945 6310 / fax: +55(12)3941 1884
-MCT / INPE / LIT (http://www.lit.inpe.br)
+pcm.mix {
+    type dmix
+    ipc_key 1024
+    slave {
+        pcm "hw:0,0"      # you cannot use a "plug" device here, darn.
+        period_time 0
+        period_size 512
+        buffer_size 4096
+        format S32_LE
+    }
+}
+ 
+pcm.dsp0 {
+    type plug
+    slave.pcm "mix"
+}
+
+But I've tried a bunch of other setting none of which seemed to make
+different. Among others I tried:
+
+pcm.ice1724 {
+           type hw
+           card 0 
+}
+ 
+ctl.ice1724 {
+    type hw  
+    card 0   
+}
+ 
+pcm_slave.ice1724_S32_LE {
+    pcm ice1724
+    format S32_LE
+}
+ 
+pcm.ice1724_convert {
+    type plug
+    slave ice1724_S32_LE
+}
+
+and 
+
+aplay -Dpcm.ice1724_convert test.wav
+
+
+But at least I'm getting sound out of the device :)
 
 
 -------------------------------------------------------
