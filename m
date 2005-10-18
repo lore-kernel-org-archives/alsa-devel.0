@@ -1,21 +1,14 @@
-From: "Madge" <khooozkb@thestar.com.my>
-Subject: Receivables Manager - Part Time Income Opportunity with Private Equity Company.
-Date: Tue, 18 Oct 2005 09:00:25 -0400
-Message-ID: <0758121565.20051018090025@fylbbsisj>
-Reply-To: "Madge Varner" <khooozkb@thestar.com.my>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001480]: alsa-driver 1.0.10rc2 fails to compile with kernel suse-2.4.21
+Date: Tue, 18 Oct 2005 17:25:23 +0200
+Message-ID: <4604e56911aad759bb0363ae47cba2cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from abo75.neoplus.adsl.tpnet.pl (abo75.neoplus.adsl.tpnet.pl [83.25.40.75])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 81AC91A2
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 14:59:30 +0200 (MEST)
-Received: from cluster5.us.messagelabs.com
-	by abo75.neoplus.adsl.tpnet.pl (8.12.11/8.12.11) with ESMTP id QwA42GAqAsGrQe
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 09:00:25 -0400
-Received: from wmnisphdkknw (HELO fylbbsisj) ([74.244.168.64])
-	by cluster5.us.messagelabs.com with SMTP
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 09:00:25 -0400
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86C5D1A2
+	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 17:25:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,41 +21,82 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-What's up, then?
 
-Firebird Private Equity Ltd. (Kaunas, Lithuania) is looking for prospective Receivables Managers in the United States. 
-This is home-based position ideal for anyone looking for an extra income opportunity with a flexible schedule. 
-Your key responsibilities will be to manage and facilitate the payments made by our US clients into the investment accounts 
-under the supervision of the regional Collections Executive. 
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1480> 
+======================================================================
+Reported By:                roadrunner
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1480
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               SuSE Linux
+Kernel Version:             Linux version 2.4.21-297-default (root@i386.suse.de)
+(gcc version 3.3.1 (SuSE Linux)) #1 Sat Jul 23 07:47:39 UTC 2005
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             10-18-2005 00:20 CEST
+Last Modified:              10-18-2005 17:25 CEST
+======================================================================
+Summary:                    alsa-driver 1.0.10rc2 fails to compile with kernel
+suse-2.4.21
+Description: 
+Compiling fails:
 
-A perfect candidate should be a good communicator who is also comfortable with numbers. 
-College education or basic administrative experience is a plus.
+command:
+./cvscompile --with-cards=ca0106 --with-debug=basic
 
-Found in 1996, Firebird Private Equity specializes in private equity investment in the emerging markets of Eastern Europe, 
-Middle and Central Asia. 
-Over the years, we have successfully completed several projects in the telecom, energy and mining industries, generating 
-substantial revenues for our institutional and private clients.
+result:
+[...]
+make[1]: Entering directory
+`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
+gcc -D__KERNEL__ -DMODULE=1
+-I/home/erik/archiv/alsa-driver-1.0.10rc2/include 
+-I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include -DMODVERSIONS -include
+/lib/modules/2.4.21-297-default/build/include/linux/modversions.h  
+-DEXPORT_SYMTAB -c memalloc.c
+In file included from memalloc.inc:13,
+                 from memalloc.c:1:
+/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:667:5: missing
+binary operator before token "("
+/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:688:5: missing
+binary operator before token "("
+make[1]: *** [memalloc.o] Error 1
+make[1]: Leaving directory
+`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
+make: *** [compile] Error 1
 
-To learn more about our company, please visit us online at www.firebirdequity.com.
+compiler: gcc-3.3.6
 
-Since we are currently unable to establish full-scale presence in the US due to the severe restrictions imposed by the Patriot Act of 2001, 
-we are looking for proactive individuals to act as our receivables managers in the Americas. 
-The position is commission based, and would require no more than 2-5 hours per week to fulfill your duties. 
-Your core duty will be to receive the funds from our investors into your designated account. 
-Reconcile the payments if required and transfer the funds into our investment accounts.
-You will be receiving a 5% commission for each transfer that you forward to us. 
-For instance, if $5000 is credited to your account, you will earn a commission of $250. 
-Your commission is available immediately, so there is no need to wait for the payment check in the end of the month.
+======================================================================
 
-Firebird Private Equity is an equal opportunity employer. 
-We will be happy to offer employment opportunities to senior citizens, minority nationals and physically challenged individuals.
+----------------------------------------------------------------------
+ tiwai - 10-18-05 17:25 
+----------------------------------------------------------------------
+A known problem.  Already fixed on CVS.
 
-In order to qualify for the position, you must be a permanent US resident aged 21 and above. 
-It is recommended that you set up a separate bank account for escrow service; however, you may use an existing account. 
-Since most communication with your supervisor will be via email/fax/phone, you should have good access to these facilities.
-
-To apply for the position or to make an inquiry, please email us at hr@firebirdequity.net. Please use the following reference 
-code in the header of your email: RMUS02.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-18-05 00:20 roadrunner     New Issue                                    
+10-18-05 00:20 roadrunner     Distribution              => SuSE Linux      
+10-18-05 00:20 roadrunner     Kernel Version            => Linux version
+2.4.21-297-default (root@i386.suse.de) (gcc version 3.3.1 (SuSE Linux)) #1 Sat
+Jul 23 07:47:39 UTC 2005
+10-18-05 17:25 tiwai          Status                   assigned => resolved
+10-18-05 17:25 tiwai          Resolution               open => fixed       
+10-18-05 17:25 tiwai          Note Added: 0006490                          
+======================================================================
 
 
 
