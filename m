@@ -1,12 +1,14 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: timer/sequencer driver issues: pulling my grey hair out
-Date: Tue, 18 Oct 2005 23:00:40 +0200
-Message-ID: <20051018210040.GB27858@rhlx01.fht-esslingen.de>
-Reply-To: andi@lisas.de
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: [patch 2.6.14-rc4] nm256: reset workaround for Latitude CSx
+Date: Tue, 18 Oct 2005 21:31:02 -0400
+Message-ID: <10182005213102.13024@bilbo.tuxdriver.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from ra.tuxdriver.com (ra.tuxdriver.com [24.172.12.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6885C150
+	for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2005 03:33:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,118 +18,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: perex@suse.cz, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+The current snd-nm256 driver can cause Dell Latitude CSx laptops to
+lock-up during module (un)load.  I have isolated this to the writes to
+the control port register at offset 0x6cc which were not already
+protected by the existing reset_workaround.
 
-ok, it's not THAT bad yet, but I've certainly spent some consecutive 3
-evenings or so trying to get the azt3328 DirectX timer accepted as
-a *well-working* ALSA sequencer timer.
+I tried grouping these writes with the existing reset_workaround
+clause, but that caused the driver to have (un)load problems on the
+Dell Latitude LS laptops.  So, I have implemented a reset_workaround_2
+clause (please feel free to suggest a better name!) to cover this
+situation and added a quirk entry for the CSx laptops.
 
-This timer has:
-- a maximum tick value of 1048575 in its value register
-- a frequency of 1024000/s, it seems (a 1000 value got me exactly 1024 IRQs
-  per second in syslog)
+Signed-off-by: John W. Linville <linville@tuxdriver.com>
+---
 
-Thus its main characteristics are:
+ sound/pci/nm256/nm256.c |   23 ++++++++++++++++++++---
+ 1 files changed, 20 insertions(+), 3 deletions(-)
 
-static int snd_azf3328_timer_precise_resolution(snd_timer_t *timer,
-                                               unsigned long *num, unsigned long *den)
-{
-        snd_azf3328_dbgcallenter();
-        *num = 1;
-        *den = 1024000;
-        snd_azf3328_dbgcallleave();
-        return 0;
-}
-
-static struct _snd_timer_hardware snd_azf3328_timer_hw = {
-        .flags = SNDRV_TIMER_HW_AUTO,
-        .resolution = 977, /* 1000000/1024000 = 0.9765625us */
-        .ticks = 1048576, /* max tick count, defined by the value register */
-        .start = snd_azf3328_timer_start,
-        .stop = snd_azf3328_timer_stop,
-        .precise_resolution = snd_azf3328_timer_precise_resolution,
-};
-
-
-Now if I'm optimistic and let these values harrass a
-schedtool -I -p 0 -e timidity -iAv -B2,8 -Os -EFreverb=0
-pmidi -p 128:0 /home/andi/jazz.mid
-, then all I get is a completely locked-up PC.
-
-Why?
-Simple! It's because the program sets an sticks value of 1, since my
-timer announces a very high-speed resolution.
-This of course results in an IRQ DoS which completely locks up my PC,
-due to triggering a timer IRQ every 0.976us.
-
-Now I've seen that snd_emu10k1_timer_start() has the following very nice code:
-
-static int snd_emu10k1_timer_start(snd_timer_t *timer)
-{
-        emu10k1_t *emu;
-        unsigned long flags;
-        unsigned int delay;
-
-        emu = snd_timer_chip(timer);
-        delay = timer->sticks - 1;
-        if (delay < 5 ) /* minimum time is 5 ticks */
-                delay = 5;
-        spin_lock_irqsave(&emu->reg_lock, flags);
-        snd_emu10k1_intr_enable(emu, INTE_INTERVALTIMERENB);
-        outw(delay & TIMER_RATE_MASK, emu->port + TIMER);
-        spin_unlock_irqrestore(&emu->reg_lock, flags);
-        return 0;
-}
-
-IOW, if the sticks value is too low, it will *bend* it to a minimum value
-of 5, i.e. 100us in this card timer's case.
-Since this 5 value translates to about a 110 value in my case to reach about
-100us, too, I did that modification, which resulted in a working MIDI output
-which *finally* didn't stop after the first note (I had timer value issues
-before due to completely wrong _snd_timer_hardware configuration, so
-the music execution was *very* slow).
-
-Again, with the new 110 limit value the music now started playing several
-notes, however *very* slow (one note every 10 seconds or so),
-most likely **since the program didn't know at all about my evil
-backyard tweak** and instead did its timing calculations with the assumption
-of my timer using the sticks value of 1 it asked me to set.
-
-IOW, the 5 value limitation in snd_emu10k1_timer_start will *break*
-correct timing execution - its only purpose seems to be to protect the
-PC from timer IRQ overload conditions.
-
-In my case, the situation is *terribly* aggravated, since I'm not simply
-using a 48kHz timer, but a >1MHz timer even which can much more easily
-cause timer IRQ overload!
-
-Questions:
-- why is the program configuring a dangerously low sticks value of 1?
-  Is it due to a remaining misdeclaration of my timer attributes somewhere,
-  or is it because of this program being stupid in its timer parameter choice?
-- it's a very good idea to get rid of the "stupid" *hidden* sticks bending
-  in snd_emu10k1_timer_start(), right? Preferrably use an intelligent
-  communication instead that makes sure that the program uses an sticks value
-  that won't cause IRQ overload?
-
-One currently doable way of handling this overload problem would be to
-*algorithmically* down-scale the resolution of my timer and then announce
-a lower-res timer in _snd_timer_hardware, thus making sure that only
-timer countdown values of say > 256 will be configured by my driver
-and the program is *properly* informed about what *exactly* my (now virtual)
-timer resolution is.
-But this seems to be somewhat stupid IMHO.
-
-For now I'll go with this software down-scaling approach, but if you have
-any better idea or can tell me where I'm terribly wrong, then just go ahead
-and tell me!
-
-Thanks!
-
-Andreas Mohr
+diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
+--- a/sound/pci/nm256/nm256.c
++++ b/sound/pci/nm256/nm256.c
+@@ -62,6 +62,7 @@ static int buffer_top[SNDRV_CARDS] = {[0
+ static int use_cache[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 0}; /* disabled */
+ static int vaio_hack[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 0}; /* disabled */
+ static int reset_workaround[SNDRV_CARDS];
++static int reset_workaround_2[SNDRV_CARDS];
+ 
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for " CARD_NAME " soundcard.");
+@@ -83,6 +84,8 @@ module_param_array(vaio_hack, bool, NULL
+ MODULE_PARM_DESC(vaio_hack, "Enable workaround for Sony VAIO notebooks.");
+ module_param_array(reset_workaround, bool, NULL, 0444);
+ MODULE_PARM_DESC(reset_workaround, "Enable AC97 RESET workaround for some laptops.");
++module_param_array(reset_workaround_2, bool, NULL, 0444);
++MODULE_PARM_DESC(reset_workaround_2, "Enable extended AC97 RESET workaround for some other laptops.");
+ 
+ /*
+  * hw definitions
+@@ -226,6 +229,7 @@ struct snd_nm256 {
+ 	unsigned int coeffs_current: 1;	/* coeff. table is loaded? */
+ 	unsigned int use_cache: 1;	/* use one big coef. table */
+ 	unsigned int reset_workaround: 1; /* Workaround for some laptops to avoid freeze */
++	unsigned int reset_workaround_2: 1; /* Extended workaround for some other laptops to avoid freeze */
+ 
+ 	int mixer_base;			/* register offset of ac97 mixer */
+ 	int mixer_status_offset;	/* offset of mixer status reg. */
+@@ -1199,8 +1203,11 @@ snd_nm256_ac97_reset(ac97_t *ac97)
+ 		/* Dell latitude LS will lock up by this */
+ 		snd_nm256_writeb(chip, 0x6cc, 0x87);
+ 	}
+-	snd_nm256_writeb(chip, 0x6cc, 0x80);
+-	snd_nm256_writeb(chip, 0x6cc, 0x0);
++	if (! chip->reset_workaround_2) {
++		/* Dell latitude CSx will lock up by this */
++		snd_nm256_writeb(chip, 0x6cc, 0x80);
++		snd_nm256_writeb(chip, 0x6cc, 0x0);
++	}
+ }
+ 
+ /* create an ac97 mixer interface */
+@@ -1542,7 +1549,7 @@ struct nm256_quirk {
+ 	int type;
+ };
+ 
+-enum { NM_BLACKLISTED, NM_RESET_WORKAROUND };
++enum { NM_BLACKLISTED, NM_RESET_WORKAROUND, NM_RESET_WORKAROUND_2 };
+ 
+ static struct nm256_quirk nm256_quirks[] __devinitdata = {
+ 	/* HP omnibook 4150 has cs4232 codec internally */
+@@ -1551,6 +1558,8 @@ static struct nm256_quirk nm256_quirks[]
+ 	{ .vendor = 0x104d, .device = 0x8041, .type = NM_RESET_WORKAROUND },
+ 	/* Dell Latitude LS */
+ 	{ .vendor = 0x1028, .device = 0x0080, .type = NM_RESET_WORKAROUND },
++	/* Dell Latitude CSx */
++	{ .vendor = 0x1028, .device = 0x0091, .type = NM_RESET_WORKAROUND_2 },
+ 	{ } /* terminator */
+ };
+ 
+@@ -1582,6 +1591,9 @@ static int __devinit snd_nm256_probe(str
+ 			case NM_BLACKLISTED:
+ 				printk(KERN_INFO "nm256: The device is blacklisted.  Loading stopped\n");
+ 				return -ENODEV;
++			case NM_RESET_WORKAROUND_2:
++				reset_workaround_2[dev] = 1;
++				/* Fall-through */
+ 			case NM_RESET_WORKAROUND:
+ 				reset_workaround[dev] = 1;
+ 				break;
+@@ -1638,6 +1650,11 @@ static int __devinit snd_nm256_probe(str
+ 		chip->reset_workaround = 1;
+ 	}
+ 
++	if (reset_workaround_2[dev]) {
++		snd_printdd(KERN_INFO "nm256: reset_workaround_2 activated\n");
++		chip->reset_workaround_2 = 1;
++	}
++
+ 	if ((err = snd_nm256_pcm(chip, 0)) < 0 ||
+ 	    (err = snd_nm256_mixer(chip)) < 0) {
+ 		snd_card_free(card);
 
 
 -------------------------------------------------------
