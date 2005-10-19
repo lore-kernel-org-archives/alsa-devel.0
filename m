@@ -1,16 +1,14 @@
-From: Eric Shattow <lucent@gmail.com>
-Subject: Re: Hercules PC DJ Console (Windows Edition) information
-Date: Wed, 19 Oct 2005 01:03:15 -0500
-Message-ID: <2c746f620510182303k782e04f2xa18b60cea49030a@mail.gmail.com>
-References: <2c746f620510180211hf803801mdda93f93aeae84c2@mail.gmail.com>
-	 <Pine.HPX.4.33n.0510181124030.2094-100000@studcom.urz.uni-halle.de>
-	 <2c746f620510182301j3419d000o857c2c72ef29880a@mail.gmail.com>
+From: Andreas Mohr <andim2@users.sourceforge.net>
+Subject: Re: timer/sequencer driver issues: pulling my grey hair out
+Date: Wed, 19 Oct 2005 08:52:06 +0200
+Message-ID: <20051019065206.GA3321@rhlx01.fht-esslingen.de>
+References: <20051018210040.GB27858@rhlx01.fht-esslingen.de> <1129692832.8910.51.camel@mindpipe>
+Reply-To: andi@lisas.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2c746f620510182301j3419d000o857c2c72ef29880a@mail.gmail.com>
 Content-Disposition: inline
+In-Reply-To: <1129692832.8910.51.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,75 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: andi@lisas.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 10/18/05, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Eric Shattow wrote:
-> > I have been able to make capture logs of the USB transactions as the
-> > device is plugged in and initialized by the Hercules Windows (tm)
-> > driver.  Would anyone be interested?
->
-> Yes.  Are there any vendor-specific commands, i.e., is there anything
-> that snd-usb-audio wouldn't be able to do?
->
->
-> Regards,
-> Clemens
->
->
+Hi,
 
-I believe there are vendor specific commands, to handle the "push to
-talk" potentiometer with built in momentary push switch. My basis for
-this is I enabled the feature using Hercules software mixer control
-program, and there is output in the capture program log. Then I push
-the aforementioned button on the HPCDJ Console hardware, and there is
-(what must be) a vendor specific command in the event viewer.
 
-Some functions which I think may apply:  selecting which output the
-headphone preamp is routed from, 44.1k / 48k function, MIDI button or
-MIDI port (pick one), LED lamps and lights (not currently working for
-me)
+ah, you again, and fast response, too :)
 
-There may be other functions.  I have capture logs which are formatted
-in HTML/Unicode/ASCII and quite large (about 30mb uncompressed). I
-tried to keep the logs small, however they invariably contained data
-of that annoyingly zen-like calming sound which Windows XP plays when
-you plug in a new USB device. I activated and de-activated Hercules
-software mixer features on the device. Omitted from the capture logs
-are the device being used with user deejay software, as this resulted
-in the device outputting many megabytes of ISO asynchronous data.
+On Tue, Oct 18, 2005 at 11:33:52PM -0400, Lee Revell wrote:
+> On Tue, 2005-10-18 at 23:00 +0200, Andreas Mohr wrote:
+> > - why is the program configuring a dangerously low sticks value of 1?
+> >   Is it due to a remaining misdeclaration of my timer attributes
+> > somewhere, or is it because of this program being stupid in its timer
+> > parameter choice?
+> 
+> Sorry, no idea.  The timer API is the one part of ALSA that is still
+> quite poorly documented.  Does the timer test utility that comes with
+> alsa-lib work?
+I cannot confirm that currently. It was no help whatsoever in implementing
+this timer, instead I used timidity/pmidi (with a reconfigured snd-seq module,
+of course), since that provided some actual acustical feedback.
+But I guess it should work now, given that I actually managed to achieve useful
+operation yesterday, by adding a down-scale define of 100 which thus downscaled
+my 10240000Hz timer to 10240Hz, enough to not cause an IRQ storm anymore and
+allow the CPU (1.8GHz Athlon) to keep up with the extreme CPU requirements of
+timidity (a scale factor of 50 already caused rather weird sound playback
+effects due to CPU overload).
 
-For a short while I will make these "giveitago.*" captures available,
-at the following directory URL:
+So it's finally working relatively fine, whew.
+(BTW, I'm getting 10% hardirq and 5% softirq CPU load when playing that MIDI
+song when downscaling by 100)
+And that with an INSANELY optimized IRQ handler in my driver, mind you.
 
-http://www.cuodan.net/~jnc/djconsolehacker/
+I'm planning to add an azt3328 module parameter to adjust this downscale value
+manually.
 
-I would like to note that the Macintosh edition of the DJ Console is
-"hardwired" to be in MIDI button mode. The Windows edition (producing
-"giveitago.*" output) is runtime selectable between a DirectInput+MIDI
-USB device and a MIDI Button+Disabled MIDI USB i/o device. There are
-reported hardware improvements in the sound chips of the Macintosh
-edition versus the Windows edition.
+> > - it's a very good idea to get rid of the "stupid" *hidden* sticks
+> > bending in snd_emu10k1_timer_start(), right? Preferrably use an
+> > intelligent communication instead that makes sure that the program
+> > uses an sticks value that won't cause IRQ overload?
+> > 
+> 
+> I just copied this code over from the OSS driver.  I have no reason to
+> think it's correct.  All the information we have on the emu10k1's
+> interval timer comes from these comment by some anonymous Creative
+> engineer in emu10k1.h:
+> 
+> 263 #define TIMER                   0x1a            /* Timer terminal count register                */
+> 264                                                 /* NOTE: After the rate is changed, a maximum   */
+> 265                                                 /* of 1024 sample periods should be allowed     */
+> 266                                                 /* before the new rate is guaranteed accurate.  */
+> 267 #define TIMER_RATE_MASK         0x000003ff      /* Timer interrupt rate in sample periods       */
+> 268                                                 /* 0 == 1024 periods, [1..4] are not useful     */
+I'm just about 100% certain that this comment is due to the IRQ overload
+issues. Or OTOH maybe even the emu10k1 itself doesn't manage to trigger an
+IRQ properly with such a fast setting (but I highly doubt that one, it must
+simply be a CPU speed issue).
 
-Also of note is that upon using my DJ Console (windows edition)
-hardware on a Windows XP system and Hercules drivers, the Hercules
-software prompted a firmware upgrade. I allowed it, and the device
-does not seem to behave any differently when used with ALSA sound
-drivers. I am unsure which firmware was previously on the device. Also
-unfortunate is I did not chance a capture of the firmware upgrade
-process. Oh, well. The list of parts I gave should be enough to write
-a firmware flasher, right?
+I'm going to polish my driver today and then submit it ASAP.
 
-Some of this may not apply to the scope of ALSA. Sorry about the
-overlap, I know we have access to the DirectSound / DirectInput
-specifications but it is covered by an NDA. I suck at coding. Anyone
-else feel lucky?
-
- E
-
-P.S. Apologies to Clemens for the duplicate mail. Gmail interface is
-kind of clumsy for me.
+Andreas Mohr
 
 
 -------------------------------------------------------
