@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001484]: Sound works only after volume change
-Date: Wed, 19 Oct 2005 14:11:07 +0200
-Message-ID: <9aaad7c0a3411c63d37cae000df2609c@bugtrack.alsa-project.org>
+From: Sander van Grieken <sander@3v8.net>
+Subject: audiophile usb and snd-usb-audio report
+Date: Wed, 19 Oct 2005 16:43:20 +0200
+Message-ID: <200510191643.20866.sander@3v8.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_IulVDiL4vBy5lXR"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0EF74161
-	for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2005 14:11:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +15,122 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
+--Boundary-00=_IulVDiL4vBy5lXR
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1484> 
-======================================================================
-Reported By:                kyromaster
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1484
-Category:                   PCI - maestro3
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13.2-2-default
-======================================================================
-Date Submitted:             10-19-2005 14:11 CEST
-Last Modified:              10-19-2005 14:11 CEST
-======================================================================
-Summary:                    Sound works only after volume change
-Description: 
-Much information about this bug is available on
-https://bugzilla.novell.com/show_bug.cgi?id=118711
-but here is the report again.
+Hi,
 
-I have a ES1988 Allegro-1 soundcard (reported by YaST). When I start my
-system
-the sound doesn´t work. But when I
-change the volume via kmix or another ALSA mixer(no matter whether up or
-down) sound starts to work
-correctly until I shutdown my system.
-======================================================================
+I've had some minor success with _analog_ recording from an audiophile USB 
+Attached is a simple report of various combinations when capturing using the 
+alsa-driver-1.0.10rc2 drivers.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-19-05 14:11 kyromaster     New Issue                                    
-10-19-05 14:11 kyromaster     Kernel Version            => 2.6.13.2-2-default
-======================================================================
+SUMMARY:
+
+- only 48001-96000hz capturing works
+- only capturing through plughw:x,1 works
+- format is 24/32 bits regardless of plug conversion (? at least, as reported 
+by audacity)
+- only the signal on the jack inputs is captured
+- only 2-channel capture
+- only the SYNC/48001-96000/S24_3BE altset on device #1 can be captured, only 
+through plughw.
 
 
+--Boundary-00=_IulVDiL4vBy5lXR
+Content-Type: text/plain;
+  charset="us-ascii";
+  name="audiophile-alsa.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="audiophile-alsa.txt"
+
+SUMMARY:
+
+- only 48001-96000hz capturing works
+- only capturing through plughw:x,1 works
+- format is 24/32 bits regardless of plug conversion (? at least, as reported by audacity)
+- only the signal on the jack inputs is captured
+- only 2-channel capture
+- only the SYNC/48001-96000/S24_3BE altset on device #1 can be captured, only through plughw.
+
+
+signal (from the jacks, not the cinch connectors)
+-------------------------------------------------
+
+s1) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv test.wav 
+- output :
+Plug PCM: Linear conversion PCM (S24_3BE)
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_LE
+- audacity reports 24b/96khz
+- amplitude suspects 24 bit sound despite S16_LE setting
+- altset reportedly used :
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 5 IN (SYNC)
+    Rates: 48001 - 96000 (continuous)
+- see (n1) and (e3)
+
+s2) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S32_LE -d 2 -vv test.wav
+- output :
+Plug PCM: Linear conversion PCM (S24_3BE)
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S32_LE
+- audacity reports 32b/96khz
+- altset used same as (s1)
+
+
+no signal
+---------
+
+n1) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3BE -d 2 -vv test.raw
+- output :
+Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
+
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S24_3BE
+
+n2) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_LE -d 2 -vv test.raw
+n3) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3LE -d 2 -vv test.raw
+n4) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3LE -d 2 -vv test.raw
+n5) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3BE -d 2 -vv test.raw
+
+errors/'lock'
+-------------
+
+e1) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_LE -d 2 -vv test.raw
+- output :
+Plug PCM: Linear conversion PCM (S16_BE)
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_LE
+
+e2) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_BE -d 2 -vv test.raw
+- output :
+Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
+
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_BE
+
+e3) arecord -D plughw:0,0 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv test.wav
+e3) arecord -D plughw:0,1 -t wav -c 1 -r 96000 -f S16_LE -d 2 -vv test.wav
+
+--Boundary-00=_IulVDiL4vBy5lXR--
 
 
 -------------------------------------------------------
