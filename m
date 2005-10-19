@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001469]: Japanese characters are broken with alsaconf
-Date: Wed, 19 Oct 2005 17:47:40 +0200
-Message-ID: <3d4ca0af456511452dd7fe050fcc0e44@bugtrack.alsa-project.org>
+From: Sander van Grieken <sander@3v8.net>
+Subject: audiophile usb and snd-usb-audio report #2
+Date: Wed, 19 Oct 2005 17:58:38 +0200
+Message-ID: <200510191758.38630.sander@3v8.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B7DE169
-	for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2005 17:47:40 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +17,147 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+ok here are the contents of stream[01]
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1469> 
-======================================================================
-Reported By:                speedking
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1469
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             10-05-2005 18:01 CEST
-Last Modified:              10-19-2005 17:47 CEST
-======================================================================
-Summary:                    Japanese characters are broken with alsaconf
-Description: 
-"alsaconf" displays broken characters for k/d button messages while using
-Japanese.
-======================================================================
+stream0
+-----------
+M-Audio Audiophile USB (tm) at usb-0000:00:02.0-2, full speed : USB Audio
 
-----------------------------------------------------------------------
- tiwai - 10-05-05 18:36 
-----------------------------------------------------------------------
-It works for me.  You need ncurses with wide-char support, and pass the
-proper configure optoin for that.
+Playback:
+  Status: Running
+    Interface = 2
+    Altset = 5
+    URBs = 5 [ 4 4 4 4 4 ]
+    Packet Size = 192
+    Momentary freq = 48000 Hz (0x30.0000)
+  Interface 2
+    Altset 1
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 3 OUT (ADAPTIVE)
+    Rates: 48001 - 96000 (continuous)
+  Interface 2
+    Altset 2
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 3 OUT (ASYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 2
+    Altset 3
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 3 OUT (ADAPTIVE)
+    Rates: 8000 - 48000 (continuous)
+  Interface 2
+    Altset 4
+    Format: S16_BE
+    Channels: 2
+    Endpoint: 3 OUT (ASYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 2
+    Altset 5
+    Format: S16_BE
+    Channels: 2
+    Endpoint: 3 OUT (ADAPTIVE)
+    Rates: 8000 - 48000 (continuous)
 
-----------------------------------------------------------------------
- speedking - 10-19-05 17:47 
-----------------------------------------------------------------------
-At the risk of sounding silly, where do I get 'ncurses with wide-char
-support' and how do I pass the proper configure option for that?  Is there
-some documentation I can read on this?
+Capture:
+  Status: Stop
+  Interface 5
+    Altset 1
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 6 IN (ASYNC)
+    Rates: 48001 - 96000 (continuous)
+  Interface 5
+    Altset 2
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 6 IN (ASYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 5
+    Altset 4
+    Format: S16_BE
+    Channels: 2
+    Endpoint: 6 IN (ASYNC)
+    Rates: 8000 - 48000 (continuous)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-05-05 18:01 speedking      New Issue                                    
-10-05-05 18:36 tiwai          Note Added: 0006431                          
-10-19-05 17:47 speedking      Note Added: 0006493                          
-======================================================================
 
 
+
+
+stream1
+-----------
+M-Audio Audiophile USB (tm) at usb-0000:00:02.0-2, full speed : USB Audio #1
+
+Playback:
+  Status: Stop
+  Interface 3
+    Altset 1
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 4 OUT (ADAPTIVE)
+    Rates: 48001 - 96000 (continuous)
+  Interface 3
+    Altset 2
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 4 OUT (ASYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 3
+    Altset 3
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 4 OUT (ADAPTIVE)
+    Rates: 8000 - 48000 (continuous)
+  Interface 3
+    Altset 4
+    Format: S16_BE
+    Channels: 2
+    Endpoint: 4 OUT (ASYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 3
+    Altset 5
+    Format: S16_BE
+    Channels: 2
+    Endpoint: 4 OUT (ADAPTIVE)
+    Rates: 8000 - 48000 (continuous)
+
+Capture:
+  Status: Stop
+  Interface 4
+    Altset 1
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 5 IN (SYNC)
+    Rates: 48001 - 96000 (continuous)
+  Interface 4
+    Altset 2
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 5 IN (ASYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 4
+    Altset 3
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 5 IN (SYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 4
+    Altset 4
+    Format: S16_BE
+    Channels: 2
+    Endpoint: 5 IN (ASYNC)
+    Rates: 8000 - 48000 (continuous)
+  Interface 4
+    Altset 5
+    Format: S16_BE
+    Channels: 2
+    Endpoint: 5 IN (SYNC)
+    Rates: 8000 - 48000 (continuous)
 
 
 -------------------------------------------------------
