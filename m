@@ -1,12 +1,17 @@
-From: Mike Hearn <mike@plan99.net>
-Subject: Re: Switch to dmix pure by default?
-Date: Wed, 19 Oct 2005 19:17:37 +0100
-Message-ID: <pan.2005.10.19.18.17.37.68892@plan99.net>
-References: <20051019154420.GA14091@piware.de> <s5hwtk9jv8g.wl%tiwai@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Hercules PC DJ Console (Windows Edition)
+	information
+Date: Wed, 19 Oct 2005 14:32:27 -0400
+Message-ID: <1129746748.5203.1.camel@mindpipe>
+References: <2c746f620510180211hf803801mdda93f93aeae84c2@mail.gmail.com>
+	 <Pine.HPX.4.33n.0510181124030.2094-100000@studcom.urz.uni-halle.de>
+	 <2c746f620510182301j3419d000o857c2c72ef29880a@mail.gmail.com>
+	 <2c746f620510182303k782e04f2xa18b60cea49030a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <2c746f620510182303k782e04f2xa18b60cea49030a@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,19 +21,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Eric Shattow <lucent@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 19 Oct 2005 19:02:23 +0200, Takashi Iwai wrote:
-> dmix uses mmap, and assumes fine enough periods.  So, it wouldn't work
-> well the cards supporting only 2 periods, for example.
+On Wed, 2005-10-19 at 01:03 -0500, Eric Shattow wrote:
+> I would like to note that the Macintosh edition of the DJ Console is
+> "hardwired" to be in MIDI button mode. The Windows edition (producing
+> "giveitago.*" output) is runtime selectable between a DirectInput+MIDI
+> USB device and a MIDI Button+Disabled MIDI USB i/o device. There are
+> reported hardware improvements in the sound chips of the Macintosh
+> edition versus the Windows edition. 
 
-Is that for performance? I don't really understand why dmix can't just,
-well, mix the streams together and then forward it on as a regular
-bytestream using the non-mmap interface. Esound works with any hardware,
-so couldn't dmix have a compatibility mode?
+They make a DIFFERENT DEVICE with a DIFFERENT CHIPSET for Mac and
+Windows?!?  WTF?
 
-thanks -mike
+Lee
 
 
 
