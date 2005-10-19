@@ -1,14 +1,13 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: timer/sequencer driver issues: pulling my grey hair out
-Date: Wed, 19 Oct 2005 08:52:06 +0200
-Message-ID: <20051019065206.GA3321@rhlx01.fht-esslingen.de>
-References: <20051018210040.GB27858@rhlx01.fht-esslingen.de> <1129692832.8910.51.camel@mindpipe>
-Reply-To: andi@lisas.de
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: timer/sequencer driver issues: pulling my grey hair
+ out
+Date: Wed, 19 Oct 2005 09:56:07 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0510190935050.13768-100000@studcom.urz.uni-halle.de>
+References: <20051018210040.GB27858@rhlx01.fht-esslingen.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1129692832.8910.51.camel@mindpipe>
+In-Reply-To: <20051018210040.GB27858@rhlx01.fht-esslingen.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +17,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: andi@lisas.de, alsa-devel@lists.sourceforge.net
+To: Andreas Mohr <andi@lisas.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Andreas Mohr wrote:
+> This timer has:
+> - a frequency of 1024000/s
+> [...]
+> pmidi -p 128:0 /home/andi/jazz.mid
+> , then all I get is a completely locked-up PC.
+>
+> Why?
+> Simple! It's because the program sets an sticks value of 1, since my
+> timer announces a very high-speed resolution.
+> This of course results in an IRQ DoS which completely locks up my PC,
+> due to triggering a timer IRQ every 0.976us.
+
+This is a bug in the sequencer timer code -- it uses the maximum
+available frequency when no default has been set (that would be done
+with the seq_default_timer_resolution parameter of the snd-seq
+module).
+
+> Now I've seen that snd_emu10k1_timer_start() has the following very nice code:
+>
+>         delay = timer->sticks - 1;
+>         if (delay < 5 ) /* minimum time is 5 ticks */
+>                 delay = 5;
+>
+> IOW, if the sticks value is too low, it will *bend* it to a minimum value
+> of 5, i.e. 100us in this card timer's case.
+> Since this 5 value translates to about a 110 value in my case to reach about
+> 100us, too, I did that modification, which resulted in a working MIDI output
+> which *finally* didn't stop after the first note (I had timer value issues
+> before due to completely wrong _snd_timer_hardware configuration, so
+> the music execution was *very* slow).
+>
+> Again, with the new 110 limit value the music now started playing several
+> notes, however *very* slow (one note every 10 seconds or so),
+> most likely **since the program didn't know at all about my evil
+> backyard tweak** and instead did its timing calculations with the assumption
+> of my timer using the sticks value of 1 it asked me to set.
+>
+> IOW, the 5 value limitation in snd_emu10k1_timer_start will *break*
+> correct timing execution - its only purpose seems to be to protect the
+> PC from timer IRQ overload conditions.
+
+That code is based on my code for the ymfpci timer which has a similar
+lower limit which is due to a hardware limitation (the ymfpci timer
+has 96 kHz resolution, but the maximum frequency is 48 kHz).
+
+I guess I should just declare the timer to have 48 kHz resolution as
+long as the timer core doesn't know about minimum tick lengths that
+are greater that the resolution.
+
+> In my case, the situation is *terribly* aggravated, since I'm not simply
+> using a 48kHz timer, but a >1MHz timer even which can much more easily
+> cause timer IRQ overload!
+>
+> Questions:
+> - why is the program configuring a dangerously low sticks value of 1?
+
+Because I haven't yet applied the patch I'm writing just now that
+limits the sequencer timer frequency to some sane value.
+
+> - it's a very good idea to get rid of the "stupid" *hidden* sticks bending
+>   in snd_emu10k1_timer_start(), right?
+
+Yes.  I'll do this for the ymfpci driver.
+
+Lee, I don't know if the 5 ticks limit is a hardware limitation of the
+Emu10k1.  The comment you quoted seems to indicate it's not.  I guess
+we should just allow a frequency of 48 kHz; the sequencer won't
+actually use it.
 
 
-ah, you again, and fast response, too :)
+Regards,
+Clemens
 
-On Tue, Oct 18, 2005 at 11:33:52PM -0400, Lee Revell wrote:
-> On Tue, 2005-10-18 at 23:00 +0200, Andreas Mohr wrote:
-> > - why is the program configuring a dangerously low sticks value of 1?
-> >   Is it due to a remaining misdeclaration of my timer attributes
-> > somewhere, or is it because of this program being stupid in its timer
-> > parameter choice?
-> 
-> Sorry, no idea.  The timer API is the one part of ALSA that is still
-> quite poorly documented.  Does the timer test utility that comes with
-> alsa-lib work?
-I cannot confirm that currently. It was no help whatsoever in implementing
-this timer, instead I used timidity/pmidi (with a reconfigured snd-seq module,
-of course), since that provided some actual acustical feedback.
-But I guess it should work now, given that I actually managed to achieve useful
-operation yesterday, by adding a down-scale define of 100 which thus downscaled
-my 10240000Hz timer to 10240Hz, enough to not cause an IRQ storm anymore and
-allow the CPU (1.8GHz Athlon) to keep up with the extreme CPU requirements of
-timidity (a scale factor of 50 already caused rather weird sound playback
-effects due to CPU overload).
-
-So it's finally working relatively fine, whew.
-(BTW, I'm getting 10% hardirq and 5% softirq CPU load when playing that MIDI
-song when downscaling by 100)
-And that with an INSANELY optimized IRQ handler in my driver, mind you.
-
-I'm planning to add an azt3328 module parameter to adjust this downscale value
-manually.
-
-> > - it's a very good idea to get rid of the "stupid" *hidden* sticks
-> > bending in snd_emu10k1_timer_start(), right? Preferrably use an
-> > intelligent communication instead that makes sure that the program
-> > uses an sticks value that won't cause IRQ overload?
-> > 
-> 
-> I just copied this code over from the OSS driver.  I have no reason to
-> think it's correct.  All the information we have on the emu10k1's
-> interval timer comes from these comment by some anonymous Creative
-> engineer in emu10k1.h:
-> 
-> 263 #define TIMER                   0x1a            /* Timer terminal count register                */
-> 264                                                 /* NOTE: After the rate is changed, a maximum   */
-> 265                                                 /* of 1024 sample periods should be allowed     */
-> 266                                                 /* before the new rate is guaranteed accurate.  */
-> 267 #define TIMER_RATE_MASK         0x000003ff      /* Timer interrupt rate in sample periods       */
-> 268                                                 /* 0 == 1024 periods, [1..4] are not useful     */
-I'm just about 100% certain that this comment is due to the IRQ overload
-issues. Or OTOH maybe even the emu10k1 itself doesn't manage to trigger an
-IRQ properly with such a fast setting (but I highly doubt that one, it must
-simply be a CPU speed issue).
-
-I'm going to polish my driver today and then submit it ASAP.
-
-Andreas Mohr
 
 
 -------------------------------------------------------
