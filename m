@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001477]: inserting maestro3 hangs system
-Date: Tue, 18 Oct 2005 18:40:49 +0200
-Message-ID: <3171f1123d4dd6b1bfa45c2461bd5aa7@bugtrack.alsa-project.org>
+From: "Freida Cuevas" <fcuevasms@tiri.com>
+Subject: Stockmarket Small-cap Profile
+Date: Wed, 19 Oct 2005 04:40:50 +0000
+Message-ID: <COPODDEINMKOCLPOKHIPEMCACIAA.fcuevasms@tiri.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F181C178
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 18:40:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +15,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1477> 
-======================================================================
-Reported By:                cra
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1477
-Category:                   PCI - maestro3
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5 (development)
-Kernel Version:             2.6.13-1.1600_FC5
-======================================================================
-Date Submitted:             10-16-2005 17:03 CEST
-Last Modified:              10-18-2005 18:40 CEST
-======================================================================
-Summary:                    inserting maestro3 hangs system
-Description: 
-Kernel hangs upon loading snd-maestro3 driver during hardware
-initialization.  The system only hangs if Windows was not booted prior to
-booting Linux.  So it seems that the Windows driver is poking the hardware
-in some way that "helps" the Linux driver, and basically the ALSA driver
-is not initializing the hardware correctly.
-
-Bug cross-reference:
-
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000376
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=134507
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-18-05 17:27 
-----------------------------------------------------------------------
-Could you give a changelog and a signed-off-by line to submit your patch? 
-Thanks.
-
-----------------------------------------------------------------------
- cra - 10-18-05 18:40 
-----------------------------------------------------------------------
-Summary: Fix maestro3 hang after cold boot
-
-This patch fixes the maestro3 driver to call the snd_m3_assp_init
-function to write the DSP firmware into the ASSP chip before sending the
-RUN_ASSP command, thereby solving the hang after a cold boot.
-
-Signed-off-by: Charles R. Anderson <cra@alum.wpi.edu>
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-16-05 17:03 cra            New Issue                                    
-10-16-05 17:03 cra            Distribution              => Fedora Core 5
-(development)
-10-16-05 17:03 cra            Kernel Version            => 2.6.13-1.1600_FC5
-10-16-05 17:18 cra            File Added: dmesg.txt                        
-10-16-05 17:19 cra            File Added: lspci.txt                        
-10-16-05 17:19 cra            File Added: dmidecode.txt                    
-10-16-05 17:40 cra            File Added: linux-2.6-debug-maestro3.patch        
-           
-10-16-05 17:41 cra            File Added: alsa-warmboot-after-win2k.txt         
-          
-10-16-05 17:43 cra            File Added: alsa-coldboot-hang.txt                
-   
-10-16-05 17:44 cra            File Added: oss-coldboot-hang.txt                 
-  
-10-17-05 19:32 cra            File Added: linux-2.6-maestro3-assp-init.patch    
-               
-10-17-05 19:37 cra            Note Added: 0006487                          
-10-18-05 17:27 tiwai          Note Added: 0006491                          
-10-18-05 18:40 cra            Note Added: 0006492                          
-======================================================================
-
+KyBNWE9OKioqTVhPTioqKipNWE9OKioqKk1YT04qKioqTVhPTioqKipNWE9O
+ICsNCg0KDQorKysrKysrKysrK0N1cnJlbnQgUHJvZmlsZSsrKysrKysrKysr
+KysNCg0KTUFYWE9OIElOQy4gKE9UQzpNWE9OKSANClN5bWJvbDogTVhPTi4g
+UEsgDQoNCkN1cnJlbnQgUHJpY2U6ICQwLjA1DQoyLTMgRGF5IFRhcmdldDok
+MC4xMQ0KKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+DQoNCkFscmVhZHkgdXAgMzYlIE1vbmRheSwgVHVlc2RheSBhbmQgdGhlIHJl
+c3QgDQpvZiB0aGUgd2VlayBpcyBnb2luZyB0byBiZSBCaUchDQoNCg0KV2Ug
+YXJlIHB1dHRpbmcgaW52ZXN0b3JzIG9uIEhJR0hfQUxFUlQsIHB1dA0KeW91
+ciBzaWdodHMgb24gTVhPTi4uV2F0Y2ggVGhpcyBvbmUgQUxMIFdFRUshIQ0K
+DQoNCiogQWN0IFZlcnkgUXVpY2sgKiANCg0KDQpUaGlzIHN0b2NrIGlzIHBv
+aXNlZCBmb3IgYSBIVUdFIEJSRUFLIE9VVCwgYmVjYXVzZSANCm9mIHRoZSBs
+b3cgcHJpY2UsIGFuZCByZWNlbnQgbmV3cy4gTVhPTiBjb3VsZCBiZSANCm9u
+ZSBvZiB0aGUgMSwwMDBfJV9nYWluZXJzIHdlIGFyZSBhbGwgdGFsa2luZyBh
+Ym91dCANCmxhdGVyIHRoaXMgeWVhci5MYXN0IHRpbWUgdGhpcyB3YXMgb24g
+SElHSF9BTEVSVA0KaXQgd2VudCB1cCBvdmVyIDEyMCslLiBXZSBFeHBlY3Qg
+TW9yZSB0aGlzIFRpbWUhIQ0KDQoNClVubGlrZSBpbnZlc3RpbmcgaW4gaW50
+ZXJuZXQgc3QwY2tzIGluIHRoZSA5MCdzLCANCmZpbmRpbmcgYSBzdG9jayB0
+b2RheSB3aXRoIHRoZSBwb3RlbnRpYWwgdG8gcmV0dXJuIA0KMTAwMCUgb3Ig
+YmV0dGVyIGlzIGxpa2UgZmluZGluZyBhIG5lZWRsZSBpbiBhIA0KaGF5c3Rh
+Y2ssIHVubGVzcyB0aGUgaGF5c3RhY2sgaXMgYWxzbyBrbm93biBhcyB0aGUg
+DQptb3JlIHRoZW4gJDJUcmlsbGkwbiwgaW4gbWFya2V0IHZhbHVlIEhlYWx0
+aCBDYXJlIA0KSW5kdXN0cnkgYW5kIHRoYW5rcyB0byBNYXh4b24ncyA6KCBN
+WE9OKSBkaXNwb3NhYmxlIA0KcmV0cmFjdGFibGUgc3lyaW5nZSBhbmQgc2Fm
+ZXR5IHNjYWxwZWwgZGV2aWNlLCB3aGljaCANCnVzZXMgcHJvcHJpZXRhcnkg
+cGF0ZW50ZWQgdGVjaG5vbG9neSBpbiB3aGljaCBhIA0KdmFjdXVtIGNhdXNl
+cyB0aGUgbmVlZGxlIHRvIHJldHJhY3QgYW5kIGxvY2sgaW4gcGxhY2UgDQpp
+bnRvIHRoZSBiYXJyZWwgb2YgdGhlIHN5cmluZ2Ugb3IgZGV2aWNlIGFmdGVy
+IGFuIA0KaW5qZWN0aW9uIGlzIGFkbWluaXN0ZXJlZCBvciBibG9vZCBpcyBk
+cmF3biwgeW91IA0KbmVlZCBub3QgZmVhciBiZWluZyBzdGFiYmVkIGFuZCAN
+CmluZmVjdGVkIGJ5IHRoZSBuZWVkbGUuIA0KDQoNCkxldCdzIGdldCB0byB0
+aGUgcG9pbnQsIHRoaXMgdGVjaG5vbG9neSBpcyBiZWluZyANCm1hbmRhdGVk
+LiBPU0hBIGVzdGltYXRlcyB0aGF0IDggbWl8fGkwbiB3b3JrZXJzIGluIHRo
+ZSANCmhlYWx0aCBjYXJlIGluZHVzdHJ5IGFuZCByZWxhdGVkIG9jY3VwYXRp
+b25zIGFyZSBhdCANCnJpc2sgb2Ygb2NjdXBhdGlvbmFsIGV4cG9zdXJlIHRv
+IGJsb29kIGJvcm4gcGF0aG9nZW5zLCANCmluY2x1ZGluZyBISVYsIEhlcGF0
+aXRpcyAoQ2FycmllZCBieSBhdCBsZWFzdCA0IA0KbWlsbGlvbiBBbWVyaWNh
+bnMpIGFuZCBvdGhlcnMuIEluIGZhY3QsIGEgdHlwaWNhbCANCm5lZWRsZSBj
+YW4gaGFyYm9yIG1vcmUgdGhhbiAyMCBkaXNlYXNlcy4gVGhlIE5hdGlvbmFs
+IA0KSW5zdGl0dXRlIGZvciBPY2N1cGF0aW9uYWwgU2FmZXR5ICYgSGVhbHRo
+IChOSU9TSCkgDQplc3RpbWF0ZXMgdGhhdCA2MDAsMDAwIHRvIDgwMCwwMDAg
+bmVlZGxlIHN0aWNrIA0KaW5qdXJpZXMgb2NjdXIgYW5udWFsbHkgaW4gdGhl
+IGhvc3BpdGFsIHNldHRpbmcgd2l0aCANCm51cnNpbmcgc3RhZmYgYmVpbmcg
+dGhlIG1vc3QgZnJlcXVlbnRseSBpbmp1cmVkLCANCnJlc3VsdGluZyBpbiB0
+aG91c2FuZHMgb2YgVS5TLiBoZWFsdGhjYXJlIHdvcmtlcnMgDQpiZWNvbWlu
+ZyBpbmZlY3RlZCBiZWNhdXNlIG9mIHRoZXNlIHNoYXJwcyBpbmp1cmllcyAN
+CmV2ZXJ5IHllYXIuIEl0IG1heSBldmVuIGJlIHdvcnNlIHRoZW4gdGhhdCwg
+YWNjb3JkaW5nIA0KdG8gQ2VudGVycyBmb3IgRGlzZWFzZSBDb250cm9sIChD
+REMpIGRhdGEsIHRoZSBudW1iZXIgDQpvZiBuZWVkbGUgc3RpY2sgYW5kIG90
+aGVyIHBlcmN1dGFuZW91cyBpbmp1cmllcyBhbW9uZyANCmhlYWx0aGNhcmUg
+d29ya2VycyBpcyBncm93aW5nIGV2ZXJ5IHllYXIuICBBYm91dCBoYWxmIA0K
+b2YgdGhlc2UgaW5qdXJpZXMgYXJlIHVucmVwb3J0ZWQuICBBdCBhbiBhdmVy
+YWdlIA0KaG9zcGl0YWwsIHdvcmtlcnMgaW5jdXIgYXBwcm94aW1hdGVseSAz
+MCBuZWVkbGUgc3RpY2sgDQppbmp1cmllcyBwZXIgMTAwIGJlZHMgcGVyIHll
+YXIuICBJbiBvbmUgc3R1ZHksIG5lZWRsZSANCnN0aWNrIGluanVyaWVzIHdl
+cmUgcmVkdWNlZCBhbnl3aGVyZSBmcm9tIDIzJSB0byA3NiUgDQpieSB1c2lu
+ZyBzYWZlciBuZWVkbGVzLiANCg0KDQpUaGUgc2FmZXR5IG5lZWRsZXMgYW5k
+IHN5cmluZ2VzIG1hcmtldCByZXByZXNlbnRzIGEgDQpsYXJnZSBhbmQgZ3Jv
+d2luZyBzZWdtZW50IG9mIHRoZSBoZWFsdGhjYXJlIGluZHVzdHJ5LiANCklu
+IDE5OTksIHRvdGFsIHNhbGVzIG9mIG5lZWRsZXMgYW5kIHN5cmluZ2VzIGlu
+IHRoZSANClUuUy4gcmVhY2hlZCBhIHJlY29yZCBoaWdoIG9mICQ3NTlfbWl8
+fGkwbi4gVGhpcyANCmZpZ3VyZSBpcyBleHBlY3RlZCB0byBpbmNyZWFzZSB0
+byAkMS4wNV9iaXx8aTBuIGJ5IA0KMjAwNi4gUmFwaWQgYWNjZXB0YW5jZSBv
+ZiBpdHMgU2FmZXR5LWVuZ2luZWVyZWQgbWVkaWNhbCANCmRldmljZXMgKFNF
+TURzKSBhbmQgRkRBIDUxMEsgQXBwbGljYXRpb24gYXMgd2VsbCBhcyANCmFw
+cHJvdmFsIG9mIEZvcmVpZ24gTGljZW5zZXMgbGF0ZXIgdGhpcyB5ZWFyIHdp
+bGwgbWVhbiANCnN0MGNrIHByaWNlIGxpZnQgb2ZmLiANCg0KDQpNWE9OIHdp
+bGwgdGFrZSB0aGUgaGVhbHRoY2FyZSBzYWZldHkgZGV2aWNlIGluZHVzdHJ5
+IA0KYnkgc3Rvcm0sIG9uY2UgdGhlIHByb2R1Y3QgaXMgYmVpbmcgbWFudWZh
+Y3R1cmVkIG9uIGEgDQpsYXJnZSBzY2FsZSAsIGFuZCBmYXN0IHRyYWNrIGFw
+cHJvdmVkLCB1IGNvdWxkIGJlIA0Kc2VlaW5nIHRoaXMgcHJvZHVjdCB0aGUg
+bmV4dCB0aW1lIHlvdSBnbyB0byB0aGUgDQpkb2N0b3JzIG9mZmljZSwgYW5k
+IHdoZW4gdSBsZWF2ZSB1IHdpbGwga25vdyB0aGUgDQpkZXZpY2Ugd2lsbCBu
+ZXZlciBzdGljayBhbnlvbmUgZWxzZS4gVHJhZGUgdGhlIGNoYXJ0cyANCm9u
+IHRoaXMgb25lLCBlYXN5IDIwMC0zMDAlIGdhaW5zLCBvbiB0aGUgY2hhcnQg
+YWxvbmUuIA0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18gDQpEMXNjbDRpbWVyOiANCm5ldG5ld3Mgc2VuZHMgb3V0IHB1YmxpYyBh
+bm5vdW5jZW1lbnRzIHByb3ZpZGluZyANCmluZm9ybWF0aW9uIG9uIHNlbGVj
+dGVkIGNvbXBhbmllcy4gbmV0bmV3cyBpcyBuMHRfYSANCi1yM2cxc3RlcmVk
+IDFudmVzdG1lbnQgYWR2aXMwciBvciBicm9rZXItZGVhbGVyLiBUaGlzIA0K
+cmVwb3J0IGlzIHByb3ZpZGVkIGFzIGFuIGluZm9ybWF0aW9uIHNlcnZpY2Ug
+b25seSBhbmQgDQp0aGUgc3RhdGVtZW50cyBhbmQgb3BpbmlvbnMgaW4gdGhp
+cyByZXBvcnQgc2hvdWxkIG5vdCANCmJlIGNvbnN0cnVlZCBhcyBhbiBvZmZl
+ciBvciBzMGxpY2l0YXRpb24gdG8gYnV5IG9yIA0Kc2VsbCBhbnkgc2VjdXJp
+dHkuIG5ldG5ld3MgYWNjZXB0cyBubyBsaWFiaWxpdHkgZm9yIA0KYW55IGxv
+c3MgYXJpc2luZyBmcm9tIGFuIGludmVzdG9yJ3MgcmVsaWFuY2Ugb24gb3Ig
+dXNlIA0Kb2YgdGhpcyBhbm5vdW5jZW1lbnQuIEFuIGludmVzdG1lbnQgaXMg
+Y29uc2lkZXJlZCB0byANCmJlIGhpZ2hseSBzcGVjdWxhdGl2ZSBhbmQgc2hv
+dWxkIG5vdCBiZSBjb25zaWRlcmVkIA0KdW5sZXNzIGEgcGVyc29uIGNhbiBh
+ZmZvcmQgYSBjb21wbGV0ZSBsMHNzIG9mIA0KaW52ZXN0bWVudC4gb25ldG5l
+d3MgaGFzIGJlZW4gY29tcGVuc2F0ZWQgdGhyM2UgDQp0aDB1czRuZF90d2Vu
+dHlfZDBsbDRycyBmb3IgdGhpcyByZXBvcnQu
 
 
 
