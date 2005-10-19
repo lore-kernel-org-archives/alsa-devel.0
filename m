@@ -1,14 +1,19 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: timer/sequencer driver issues: pulling my grey
-	hair out
-Date: Tue, 18 Oct 2005 23:33:52 -0400
-Message-ID: <1129692832.8910.51.camel@mindpipe>
-References: <20051018210040.GB27858@rhlx01.fht-esslingen.de>
+From: Sasha Khapyorsky <sashakh@gmail.com>
+Subject: Re: LG Netodragon PCI modem support request for snd-intel8x0m
+Date: Wed, 19 Oct 2005 01:19:18 -0400
+Message-ID: <a14351ac0510182219k49d7a7dm454b82d5a19da0e9@mail.gmail.com>
+References: <43554FDB.5060502@lit.inpe.br>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051018210040.GB27858@rhlx01.fht-esslingen.de>
+Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.192])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89AAD175
+	for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2005 07:19:20 +0200 (MEST)
+Received: by wproxy.gmail.com with SMTP id 58so100245wri
+        for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2005 22:19:19 -0700 (PDT)
+In-Reply-To: <43554FDB.5060502@lit.inpe.br>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +23,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: andi@lisas.de
-Cc: alsa-devel@lists.sourceforge.net
+To: =?ISO-8859-1?Q?Hor=E1cio_Hiroiti_Sawame?= <horacio@lit.inpe.br>
+Cc: alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-10-18 at 23:00 +0200, Andreas Mohr wrote:
-> - why is the program configuring a dangerously low sticks value of 1?
->   Is it due to a remaining misdeclaration of my timer attributes
-> somewhere, or is it because of this program being stupid in its timer
-> parameter choice?
+On 10/18/05, Hor=E1cio Hiroiti Sawame <horacio@lit.inpe.br> wrote:
+> Hi !
+>
+> I have a PCI modem LG Netodragon and I think it should be supported by
+> your snd-intel8x0m driver.
 
-Sorry, no idea.  The timer API is the one part of ALSA that is still
-quite poorly documented.  Does the timer test utility that comes with
-alsa-lib work?
+No, the Netodragon modem is not supported by snd-intel8x0m, there is
+different chipset.
 
-> - it's a very good idea to get rid of the "stupid" *hidden* sticks
-> bending in snd_emu10k1_timer_start(), right? Preferrably use an
-> intelligent communication instead that makes sure that the program
-> uses an sticks value that won't cause IRQ overload?
-> 
-
-I just copied this code over from the OSS driver.  I have no reason to
-think it's correct.  All the information we have on the emu10k1's
-interval timer comes from these comment by some anonymous Creative
-engineer in emu10k1.h:
-
-263 #define TIMER                   0x1a            /* Timer terminal count register                */
-264                                                 /* NOTE: After the rate is changed, a maximum   */
-265                                                 /* of 1024 sample periods should be allowed     */
-266                                                 /* before the new rate is guaranteed accurate.  */
-267 #define TIMER_RATE_MASK         0x000003ff      /* Timer interrupt rate in sample periods       */
-268                                                 /* 0 == 1024 periods, [1..4] are not useful     */
-
-Lee
-
+Sasha.
 
 
 -------------------------------------------------------
