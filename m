@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001469]: Japanese characters are broken with alsaconf
-Date: Wed, 19 Oct 2005 18:13:08 +0200
-Message-ID: <bda86a26ac227b4e738749488a35461e@bugtrack.alsa-project.org>
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Subject: Switch to dmix pure by default?
+Date: Wed, 19 Oct 2005 17:44:20 +0200
+Message-ID: <20051019154420.GA14091@piware.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0AFC13D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2005 18:13:08 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +16,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA Development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1469> 
-======================================================================
-Reported By:                speedking
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1469
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             10-05-2005 18:01 CEST
-Last Modified:              10-19-2005 18:13 CEST
-======================================================================
-Summary:                    Japanese characters are broken with alsaconf
-Description: 
-"alsaconf" displays broken characters for k/d button messages while using
-Japanese.
-======================================================================
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- tiwai - 10-19-05 18:11 
-----------------------------------------------------------------------
-The installation of wide-char ncurses lib strongly depends on the distro,
-so I can't tell you here.
-alsaconf uses dialog program, and this program must be linked with
-libncursesw to process the wide-char properly.  If dialog is i18nized,
-alsaconf should work as it is.
+Hi ALSA developers!
 
-----------------------------------------------------------------------
- speedking - 10-19-05 18:13 
-----------------------------------------------------------------------
-The distro is RHEL 3 U5 x86 and x86_64.
+I'm Martin Pitt, one of Ubuntu's core developers, and I hacked a fair
+bit around a better audio support in our latest release. We currently
+use ALSA 1.0.9 (thus with dmix enabled by default) and use esd on top
+of that since dmix pure still does not work on too many cards
+(including the powermac driver on my iBook).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-05-05 18:01 speedking      New Issue                                    
-10-05-05 18:36 tiwai          Note Added: 0006431                          
-10-19-05 17:47 speedking      Note Added: 0006493                          
-10-19-05 18:11 tiwai          Note Added: 0006494                          
-10-19-05 18:13 speedking      Note Added: 0006495                          
-======================================================================
+However, since esound sucks particularly in terms of A/V
+synchronisation and has annoying bugs, and the whole concept of a
+desktop sound daemon is more like a workaround than a sane piece in
+the software stack, we would like to drop esound entirely and just use
+ALSA by default in the future. I imagine that this is true for other
+Linux distros as well.
 
+Now I have several questions:
 
+ 1) Are you guys interested in reports about cards which do not work
+ with dmix (at least not with the default configuration)?
+
+ 2) Is there a document which describes dmix debugging, so that we can
+ already pre-process bug reports, can sort them out faster, make it
+ easier for you, and maybe even can help you with fixing?
+
+ 3) As it appears to me, dmix is a pure software mixing plugin, thus
+ from the mere concept, it seems hardware agnostic to me. Why does it
+ fail on some hardware in the first place?
+
+Thank you in advance, and have a nice day!
+
+Martin
+
+--=20
+Martin Pitt        http://www.piware.de
+Ubuntu Developer   http://www.ubuntu.com
+Debian Developer   http://www.debian.org
+
+In a world without walls and fences, who needs Windows and Gates?
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFDVmnUDecnbV4Fd/IRAu0tAKCb21zOeDGqUfWGONGXlX4FTVEzpACgni1Q
+86lyzSQTrecPAZAbMwuiDCY=
+=+9Z+
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
 
 
 -------------------------------------------------------
