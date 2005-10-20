@@ -1,19 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Hercules PC DJ Console (Windows Edition)
-	information
-Date: Wed, 19 Oct 2005 17:18:52 -0400
-Message-ID: <1129756733.5203.37.camel@mindpipe>
-References: <2c746f620510180211hf803801mdda93f93aeae84c2@mail.gmail.com>
-	 <Pine.HPX.4.33n.0510181124030.2094-100000@studcom.urz.uni-halle.de>
-	 <2c746f620510182301j3419d000o857c2c72ef29880a@mail.gmail.com>
-	 <2c746f620510182303k782e04f2xa18b60cea49030a@mail.gmail.com>
-	 <1129746748.5203.1.camel@mindpipe>
-	 <2c746f620510191410v5032b3ebp673545e5958192ac@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000321]: Left front channel always muted on boot
+Date: Thu, 20 Oct 2005 02:36:43 +0200
+Message-ID: <b13ce4aa545c83568786fbe8332413ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2c746f620510191410v5032b3ebp673545e5958192ac@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DBF7169
+	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 02:36:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,34 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Shattow <lucent@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-10-19 at 16:10 -0500, Eric Shattow wrote:
-> On 10/19/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> >
-> > They make a DIFFERENT DEVICE with a DIFFERENT CHIPSET for Mac and
-> > Windows?!?  WTF?
-> >
-> > Lee
-> >
-> 
-> Alexander Schussler owns both the Windows and Mac editions of the DJ
-> Console hardware. According to his correspondence with
-> Hercules/Guillemot representatives, the hardware is identical except
-> for improved audio function on the Mac edition. My guess is that the
-> Windows edition is first revision, and Mac edition is second revision.
-> The firmware is of course completely different between the two
-> editions.
-> 
 
-Christ, that's the stupidest thing I've heard this week.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=321> 
+======================================================================
+Reported By:                64bitten
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   321
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     acknowledged
+Distribution:               gentoo
+Kernel Version:             2.6.6
+======================================================================
+Date Submitted:             06-02-2004 08:09 CEST
+Last Modified:              10-20-2005 02:36 CEST
+======================================================================
+Summary:                    Left front channel always muted on boot
+Description: 
+ice1724 (M Audio Revolution 7.1 in my case) always restores the mixer
+settings at boot, but the left front channel is muted regardless.  The fix
+is to run alsamixer and adjust the slider again.  This forces the channel
+to unmute.  Should I be worried "amixer scontrols" reports everything as
+"Mono" as well?
+======================================================================
 
-I remember when software was designed around the hardware.  Now people
-are working around Windows bugs in hardware.  Depressing.
+----------------------------------------------------------------------
+ 64bitten - 12-21-04 07:10 
+----------------------------------------------------------------------
+The files diff identically.  Please see the attached amixer.bad file as an
+example of the output.
 
-Lee
+----------------------------------------------------------------------
+ sst4 - 10-20-05 02:36 
+----------------------------------------------------------------------
+I have the same problem on Mandriva 10.2 - was lazy to report it.
+
+I believe the problem existed in Mandriva 10.1 too.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-02-04 08:09 64bitten       New Issue                                    
+06-02-04 08:09 64bitten       Distribution              => gentoo          
+06-02-04 08:09 64bitten       Kernel Version            => 2.6.6           
+12-17-04 03:15 K6-III         Note Added: 0002845                          
+12-17-04 06:46 herby          Note Added: 0002846                          
+12-17-04 06:51 rlrevell       Note Added: 0002847                          
+12-21-04 07:09 64bitten       File Added: amixer.bad                       
+12-21-04 07:10 64bitten       Note Added: 0002896                          
+04-09-05 17:24 jdthood        Status                   new => acknowledged 
+10-20-05 02:36 sst4           Note Added: 0006497                          
+======================================================================
+
 
 
 
