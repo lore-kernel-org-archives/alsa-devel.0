@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000938]: AudioScience cards supported.
-Date: Fri, 21 Oct 2005 01:43:47 +0200
-Message-ID: <6da067b3f311bf222020fd4e9df22fe4@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001487]: AudioScience cards show as NOT supported.
+Date: Fri, 21 Oct 2005 01:50:24 +0200
+Message-ID: <1157ec751393ed7405c4a2826c8110c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC6EF169
-	for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2005 01:43:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB10F170
+	for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2005 01:50:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,36 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1487> 
 ======================================================================
-Reported By:                eliot
+Reported By:                dbx
 Assigned To:                
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   938
+Issue ID:                   1487
 Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-24-2005 04:11 CET
-Last Modified:              10-21-2005 01:43 CEST
+Date Submitted:             10-21-2005 01:50 CEST
+Last Modified:              10-21-2005 01:50 CEST
 ======================================================================
-Summary:                    AudioScience cards supported.
+Summary:                    AudioScience cards show as NOT supported.
 Description: 
-AudioScience entries in the matrix should be white (supported).
-
-Driver should be "asihpi" OR "asihpi plus HPI download from
-http://www.audioscience.com"
-
-ASI4215 mentioned twice.
+AudioScience entries in the matrix should be supported.
+Attaching an updated version of the xml card description file.
 ======================================================================
-
-----------------------------------------------------------------------
- eliot - 05-12-05 05:53 
-----------------------------------------------------------------------
-Download link is now
-http://audioscience.com/internet/download/linux_drivers.htm
-
-----------------------------------------------------------------------
- dbx - 10-21-05 01:43 
-----------------------------------------------------------------------
-21 oct 2005, uploaded file with the new xml card description.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-05 04:11 eliot          New Issue                                    
-05-12-05 05:53 eliot          Note Added: 0004640                          
-10-21-05 01:42 dbx            File Added: vendor-AudioScience.xml               
+10-21-05 01:50 dbx            New Issue                                    
+10-21-05 01:50 dbx            File Added: vendor-AudioScience.xml               
     
-10-21-05 01:43 dbx            Note Added: 0006508                          
 ======================================================================
 
 
