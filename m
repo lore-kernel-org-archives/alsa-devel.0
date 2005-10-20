@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001484]: Sound works only after volume change
-Date: Thu, 20 Oct 2005 10:59:19 +0200
-Message-ID: <c9aa289ee4f2395173c46720482e1cbd@bugtrack.alsa-project.org>
+Date: Thu, 20 Oct 2005 11:00:48 +0200
+Message-ID: <2b6daf5ac84194179efd3186ecefb856@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73382177
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 10:59:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A42717B
+	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 11:00:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as RELATED TO issue 0000442.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1484> 
 ======================================================================
@@ -55,6 +55,10 @@ change the volume via kmix or another ALSA mixer(no matter whether up or
 down) sound starts to work
 correctly until I shutdown my system.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000442 alsactl no loading pcm volume properly.
+======================================================================
 
 ----------------------------------------------------------------------
  jdthood - 10-20-05 10:59 
@@ -69,6 +73,7 @@ Date Modified  Username       Field                    Change
 10-19-05 14:11 kyromaster     New Issue                                    
 10-19-05 14:11 kyromaster     Kernel Version            => 2.6.13.2-2-default
 10-20-05 10:59 jdthood        Note Added: 0006501                          
+10-20-05 11:00 jdthood        Relationship added       related to 0000442  
 ======================================================================
 
 
