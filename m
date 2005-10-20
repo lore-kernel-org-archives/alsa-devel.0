@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: example of sending note on/off to MIDI port
-	(Timidity's virtual sequencer)
-Date: Thu, 20 Oct 2005 19:17:35 -0400
-Message-ID: <1129850256.7918.6.camel@mindpipe>
-References: <4358068C.3050405@dccnet.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0000938]: AudioScience cards supported.
+Date: Fri, 21 Oct 2005 01:43:47 +0200
+Message-ID: <6da067b3f311bf222020fd4e9df22fe4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4358068C.3050405@dccnet.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC6EF169
+	for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2005 01:43:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brolin Empey <f7@dccnet.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-10-20 at 14:05 -0700, Brolin Empey wrote:
-> Hello,
-> 
-> I want to add ALSA support to a MIDI program I wrote (in C) which 
-> currently supports only the Win32 API (using midiOutShortMsg).  More 
-> specifically, I want to do this using Timidity's virtual sequencer for 
-> playback of the output MIDI messages.  I can use playmidi (which uses 
-> the OSS API) or pmidi (which uses ALSA's API) to play MIDI files using 
-> Timidity's port (128:0).  After studying both of these application's 
-> sources, I tried without success to put together a minimal test program 
-> to simply send a note on and subsequent note off message using 
-> Timidity's port.
-> 
-> Does anyone have a simple example of how to do this?  It can use either 
-> the OSS API (e.g. /dev/sequencer interface) or ALSA's library.  I tried 
-> the rawmidi example, but could not get it to play anything using 
-> Timidity's port.
 
-You forgot to include a link to your code.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938> 
+======================================================================
+Reported By:                eliot
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   938
+Category:                   soundcard matrix
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-24-2005 04:11 CET
+Last Modified:              10-21-2005 01:43 CEST
+======================================================================
+Summary:                    AudioScience cards supported.
+Description: 
+AudioScience entries in the matrix should be white (supported).
 
-Lee
+Driver should be "asihpi" OR "asihpi plus HPI download from
+http://www.audioscience.com"
+
+ASI4215 mentioned twice.
+======================================================================
+
+----------------------------------------------------------------------
+ eliot - 05-12-05 05:53 
+----------------------------------------------------------------------
+Download link is now
+http://audioscience.com/internet/download/linux_drivers.htm
+
+----------------------------------------------------------------------
+ dbx - 10-21-05 01:43 
+----------------------------------------------------------------------
+21 oct 2005, uploaded file with the new xml card description.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-24-05 04:11 eliot          New Issue                                    
+05-12-05 05:53 eliot          Note Added: 0004640                          
+10-21-05 01:42 dbx            File Added: vendor-AudioScience.xml               
+    
+10-21-05 01:43 dbx            Note Added: 0006508                          
+======================================================================
+
 
 
 
